@@ -14,11 +14,31 @@ class MessageLogger {
         self.bot.on(.messageCreate) { data in
             let msg = data as! Message
             
+            // Stop the bot from responding to other bots and itself
+            if msg.member?.user?.isBot == true {
+                return
+            }
+            
+            // TODO: remove in production
             if msg.channel.id != 441327731486097429 {
                 return
             }
             
-            print("Sent from \(msg.channel.id)")
+            // Check for coin suffix and if the message contains a user
+            if msg.content.hasCoinSuffix && msg.content.containsUser {
+                let receiver = msg.content.getUser
+                
+                // A user is not allowed to give themselves coins
+                if "<@!\(msg.author!.id)>" == receiver {
+                    return
+                }
+                    
+                // Insert api call here
+                
+                
+                // Reply
+                msg.reply(with: "\(msg.author?.username ?? "Penny-bot") gave a penny to \(receiver)")
+            }
         }
     }
 }
