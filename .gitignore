@@ -10,3 +10,4 @@ BOT/.build/*
 API/.swiftpm/*
 API/.build/*
 *.xcscheme
+BOT/.swiftpm/xcode/xcshareddata/xcschemes/BOT.xcscheme
