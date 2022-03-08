@@ -1,7 +1,7 @@
 import AWSLambdaRuntime
 
 struct Request: Codable {
-    let body: String
+    let name: String
 }
 
 struct Response: Codable {
@@ -21,6 +21,6 @@ struct MyLambda: LambdaHandler {
 
     func handle(_ event: Request, context: LambdaContext) async throws -> Response {
         // as an example, respond with the input event's reversed body
-        Response(body: String(event.body))
+        Response(body: "Hello \(event.name)")
     }
 }

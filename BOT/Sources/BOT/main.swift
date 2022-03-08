@@ -1,6 +1,8 @@
 import Swiftcord
+import Foundation
 
-let bot = Swiftcord(token: "Yout bot token here")
+let options = ShieldOptions(willBeCaseSensitive: false, willIgnoreBots: true)
+let bot = Shield(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", shieldOptions: options)
 
 // Set activity
 let activity = Activities(name: "Working on myself", type: .playing)
@@ -16,5 +18,8 @@ bot.on(.messageCreate) { data in
         msg.reply(with: "Pong!")
     }
 }
+
+let messageLogger = MessageLogger(bot: bot)
+messageLogger.messageLogger()
 
 bot.connect()
