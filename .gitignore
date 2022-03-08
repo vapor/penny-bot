@@ -6,4 +6,6 @@ xcuserdata/
 DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 BOT/.swiftpm/*
+BOT/.build/*
 API/.swiftpm/*
+API/.build/*
