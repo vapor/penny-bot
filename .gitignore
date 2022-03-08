@@ -9,3 +9,4 @@ BOT/.swiftpm/*
 BOT/.build/*
 API/.swiftpm/*
 API/.build/*
+*.xcscheme
