@@ -9,13 +9,17 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/SketchMaster2001/Swiftcord", .branch("master")),
+        .package(name: "PennyShared", path: "../SHARED")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
             name: "BOT",
-            dependencies: ["Swiftcord"]),
+            dependencies: [
+                "Swiftcord",
+                .product(name: "Shared", package: "PennyShared")
+            ]),
         .testTarget(
             name: "BOTTests",
             dependencies: ["BOT"]),
