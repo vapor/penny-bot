@@ -2,6 +2,15 @@
   "object": {
     "pins": [
       {
+        "package": "swift-aws-lambda-events",
+        "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-events.git",
+        "state": {
+          "branch": "main",
+          "revision": "87e09a7f7d0cc5645637b500edaeebedfbd013b9",
+          "version": null
+        }
+      },
+      {
         "package": "swift-aws-lambda-runtime",
         "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-runtime.git",
         "state": {
