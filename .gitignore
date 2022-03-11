@@ -14,3 +14,4 @@ SHARED/.build/*
 *.xcscheme
 BOT/.swiftpm/xcode/xcshareddata/xcschemes/BOT.xcscheme
 SHARED/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+.vscode/launch.json
