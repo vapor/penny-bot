@@ -4,6 +4,7 @@ import Swiftcord
 class MessageLogger {
     let bot: Swiftcord
     var messageCache = [Snowflake:Message]()
+    let coinService: CoinService = CoinService()
     
     init(bot: Swiftcord) {
         self.bot = bot
@@ -32,12 +33,16 @@ class MessageLogger {
                 if "<@!\(msg.author!.id)>" == receiver {
                     return
                 }
-                    
-                // Insert api call here
                 
+                // Insert api call here
+                _ = Task {
+                    let response = try await self.coinService.postCoin(to: receiver, with: 10)
+                    
+                    msg.reply(with: response)
+                }
                 
                 // Reply
-                msg.reply(with: "\(msg.author?.username ?? "Penny-bot") gave a penny to \(receiver)")
+//                msg.reply(with: "\(msg.author?.username ?? "Penny-bot") gave a penny to \(receiver)")
             }
         }
     }

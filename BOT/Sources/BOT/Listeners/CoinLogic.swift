@@ -31,6 +31,15 @@ let validSuffixes = [
     "thx!"
 ]
 
+public struct CoinReq : Codable {
+    let value: Int
+    let receiver: String
+}
+
+public struct CoinRes : Codable {
+    let message: String
+}
+
 extension String {
     var hasCoinSuffix: Bool {
         for suffix in validSuffixes where hasSuffix(suffix) {

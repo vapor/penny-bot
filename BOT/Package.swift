@@ -9,7 +9,8 @@ let package = Package(
     dependencies: [
         // Dependencies declare other packages that this package depends on.
         .package(url: "https://github.com/SketchMaster2001/Swiftcord", .branch("master")),
-        .package(name: "PennyShared", path: "../SHARED")
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0")
+        //.package(name: "PennyShared", path: "../SHARED")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -18,7 +19,8 @@ let package = Package(
             name: "BOT",
             dependencies: [
                 "Swiftcord",
-                .product(name: "Shared", package: "PennyShared")
+                .product(name: "AsyncHTTPClient", package: "async-http-client")
+                //.product(name: "Shared", package: "PennyShared")
             ]),
         .testTarget(
             name: "BOTTests",
