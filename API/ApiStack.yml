@@ -3,10 +3,10 @@ Description: CF Stack for the Penny Discord Bot
 Parameters:
   apiGatewayName:
     Type: String
-    Default: discord-penny-api
-  apiGatewayHTTPMethod:
-    Type: String
-    Default: POST
+    Default: penny-bot-api
+  #apiGatewayHTTPMethod:
+  #  Type: String
+  #  Default: POST
   lambdaFunctionName:
     Type: String
     AllowedPattern: "[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+"
@@ -47,7 +47,7 @@ Resources:
           KeySchema:
             -
               AttributeName: "data1"
-              AttributeType: "HASH"
+              KeyType: "HASH"
           Projection:
             ProjectionType: KEYS_ONLY
         -
@@ -55,7 +55,7 @@ Resources:
           KeySchema:
             - 
               AttributeName: "GSI-2"
-              AttributeType: "HASH"
+              KeyType: "HASH"
           Projection:
             ProjectionType: KEYS_ONLY
       BillingMode: PAY_PER_REQUEST
@@ -65,7 +65,7 @@ Resources:
   apiGateway: 
     Type: AWS::ApiGatewayV2::Api
     Properties: 
-      Name: penny-bot-api
+      Name: !Ref apiGatewayName
       Description: API Endpoints for the discord Penny bot
       ProtocolType: HTTP
       Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${lambdaFunctionName}/invocations
