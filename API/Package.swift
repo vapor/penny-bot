@@ -13,7 +13,8 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "main"),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main")
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
+        .package(url: "https://github.com/soto-project/soto.git", from: "5.12.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -23,6 +24,7 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoDynamoDB", package: "soto"),
             ]),
         .testTarget(
             name: "HelloWorldTests",
