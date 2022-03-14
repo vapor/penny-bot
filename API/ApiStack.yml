@@ -48,6 +48,9 @@ Resources:
             -
               AttributeName: "data1"
               KeyType: "HASH"
+            -
+              AttributeName: "pk"
+              KeyType: "RANGE"
           Projection:
             ProjectionType: KEYS_ONLY
         -
@@ -56,6 +59,9 @@ Resources:
             - 
               AttributeName: "data2"
               KeyType: "HASH"
+            -
+              AttributeName: "pk"
+              KeyType: "RANGE"
           Projection:
             ProjectionType: KEYS_ONLY
       BillingMode: PAY_PER_REQUEST
