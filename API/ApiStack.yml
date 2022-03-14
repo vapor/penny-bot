@@ -51,10 +51,10 @@ Resources:
           Projection:
             ProjectionType: KEYS_ONLY
         -
-          IndexName: "UserByGithubID"
+          IndexName: "GSI-2"
           KeySchema:
             - 
-              AttributeName: "GSI-2"
+              AttributeName: "data2"
               KeyType: "HASH"
           Projection:
             ProjectionType: KEYS_ONLY
