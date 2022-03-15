@@ -4,7 +4,12 @@ struct User: Codable {
     let id: UUID
     let discordID: String?
     let githubID: String?
-    let numberOfCoins: Int
-    let coinEntries: [CoinEntry]
+    var numberOfCoins: Int
+    var coinEntries: [CoinEntry]
     let createdAt: Date
+    
+    mutating func addCoinEntry(_ entry: CoinEntry) {
+        coinEntries.append(entry)
+        numberOfCoins = coinEntries.count
+    }
 }

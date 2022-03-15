@@ -11,24 +11,34 @@ struct AddCoins: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
     
+    let userService: UserService
+    
     init(context: Lambda.InitializationContext) async throws {
         // setup your resources that you want to reuse for every invocation here.
+        userService = UserService(context.eventLoop, context.logger)
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
         
         switch (event.context.http.path, event.context.http.method) {
-        case ("/hello", .GET):
+        case ("/coin", .GET):
             response = APIGatewayV2Response(statusCode: .ok, body: "This is an AWS Lambda response made in swift")
-        case("/hello", .POST):
+        case("/coin", .POST):
             do {
                 let product: Coin = try event.bodyObject()
-                response = APIGatewayV2Response(statusCode: .ok, body: "\(product.receiver) has \(product.value) coins")
+                
+                
+                let coinEntry = CoinEntry(createdAt: Date.now, amount: 1, from: UUID(), source: .discord, reason: .userProvided)
+                let user = User(id: UUID(), discordID: product.receiver, githubID: nil, numberOfCoins: 0, coinEntries: [], createdAt: Date.now)
+                
+                let message = try await userService.addCoins(with: coinEntry, to: user)
+                response = APIGatewayV2Response(statusCode: .ok, body: message)
             }
             catch {
                 let error = APIError.invalidRequest
                 response = APIGatewayV2Response(statusCode: .badRequest, body: String(describing: error))
+                
             }
         default:
             response = APIGatewayV2Response(statusCode: .notFound)

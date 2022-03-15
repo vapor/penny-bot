@@ -1,4 +1,5 @@
 import Foundation
+import SotoDynamoDB
 
 struct DynamoDBUser: Codable {
     let pk: String
@@ -25,5 +26,15 @@ struct DynamoDBUser: Codable {
         self.numberOfCoins = user.numberOfCoins
         self.coinEntries = user.coinEntries
         self.createdAt = user.createdAt
+    }
+}
+
+extension DynamoDBUser {
+    func toDynamoDBObject() throws -> [String: DynamoDB.AttributeValue] {
+        return try DynamoDBEncoder().encode(self)
+    }
+    
+    func fromDynamoDBObject(_ userAttributes: [String: DynamoDB.AttributeValue]) throws -> DynamoDBUser {
+        return try DynamoDBDecoder().decode(DynamoDBUser.self, from: userAttributes)
     }
 }

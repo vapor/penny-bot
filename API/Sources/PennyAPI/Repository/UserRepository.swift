@@ -10,14 +10,14 @@ import Foundation
 protocol UserRepository {
     
     // MARK: - Insert
-    func insertUser(_ user: DynamoDBUser) async throws -> Task
-    func updateUser(_ user: DynamoDBUser) async throws -> Task
+    func insertUser(_ user: DynamoDBUser) async throws -> Void
+    func updateUser(_ user: DynamoDBUser) async throws -> Void
     
     // MARK: - Retrieve
-    func getUser(with discordId: String) async throws -> Task
-    func getUser(with githubId: String) async throws -> Task
+    func getUser(discord id: String) async throws -> User
+    func getUser(github id: String) async throws -> User
     
     // MARK: - Link users
-    func linkGithub(with discordId: String, _ githubId: String) async throws -> Task
-    func linkDiscord(with githubId: String, _ discordId: String) async throws -> Task
+    func linkGithub(with discordId: String, _ githubId: String) async throws -> Void
+    func linkDiscord(with githubId: String, _ discordId: String) async throws -> Void
 }
