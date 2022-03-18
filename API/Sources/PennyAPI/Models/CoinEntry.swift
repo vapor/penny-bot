@@ -1,6 +1,7 @@
 import Foundation
 
 struct CoinEntry: Codable {
+    let id: UUID
     let createdAt: Date
     let amount: Int
     let from: UUID?

@@ -9,27 +9,20 @@ struct UserService {
         case noUserFound
     }
     
-    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-    let awsClient = AWSClient(
-        credentialProvider: .static(accessKeyId: "sdm", secretAccessKey: "sdf;kesfe"),
-        httpClientProvider: .createNew
-    )
     let logger: Logger
-    let eventLoop: EventLoop
-    
     let userRepo: DynamoUserRepository
     
-    init(_ eventLoop: EventLoop, _ logger: Logger) {
+    init(_ awsClient: AWSClient, _ logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-2")
-        let dynamoDB = DynamoDB(client: awsClient, region: euWest)
-        self.eventLoop = eventLoop
+        let endpoint = "http://localhost:8091/"
+        let dynamoDB = DynamoDB(client: awsClient, region: euWest, endpoint: endpoint)
         self.logger = logger
-        self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: eventLoop, logger: logger)
+        self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: awsClient.eventLoopGroup.next(), logger: logger)
     }
     
     func addCoins(with coinEntry: CoinEntry, to user: User) async throws -> String {
         var localUser: User
-        
+                
         switch coinEntry.source {
         case .discord:
             do {
@@ -38,6 +31,8 @@ struct UserService {
                 localUser.addCoinEntry(coinEntry)
                 
                 let dbUser = DynamoDBUser(user: localUser)
+                
+                print("User after update \(dbUser)")
                 try await userRepo.updateUser(dbUser)
             }
             catch {

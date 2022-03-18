@@ -29,19 +29,13 @@ public struct DynamoUserRepository: UserRepository {
     
     // MARK: - Insert & Update
     func insertUser(_ user: DynamoDBUser) async throws -> Void {
-        guard let dynamoUser = try? user.toDynamoDBObject() else {
-            throw DBError.invalidItem
-        }
-        let input = DynamoDB.PutItemCodableInput(item: dynamoUser, tableName: self.tableName)
+        let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
         
         _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
     }
     
     func updateUser(_ user: DynamoDBUser) async throws -> Void {
-        guard let dynamoUser = try? user.toDynamoDBObject() else {
-            throw DBError.invalidItem
-        }
-        let input = DynamoDB.UpdateItemCodableInput(key: ["pk", "sk"], tableName: self.tableName, updateItem: dynamoUser)
+        let input = DynamoDB.UpdateItemCodableInput(key: ["pk", "sk"], tableName: self.tableName, updateItem: user)
         
         _ = try await db.updateItem(input, logger: self.logger, on: self.eventLoop)
     }
@@ -49,31 +43,35 @@ public struct DynamoUserRepository: UserRepository {
     // MARK: - Retrieve
     func getUser(discord id: String) async throws -> User {
         let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s("\(id)")],
+            expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
             indexName: discordIndex,
             keyConditionExpression: "data1 = :v1",
             limit: 1,
             tableName: self.tableName
         )
+        
         let results = try await db.query(query, type: DynamoDBUser.self, logger: self.logger, on: self.eventLoop)
         guard let user = results.items?.first else {
             throw DBError.itemNotFound
         }
         
+        print("User before update: \(user)")
+                
         let localUser = User(
-            id: UUID(uuidString: String(user.pk.split(separator: "-")[1]))!,
-            discordID: user.data1,
-            githubID: user.data2,
-            numberOfCoins: user.numberOfCoins,
+            id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
+            discordID: user.data1?.deletePrefix("DISCORD-"),
+            githubID: user.data2?.deletePrefix("GITHUB-"),
+            numberOfCoins: user.coinEntries.count,
             coinEntries: user.coinEntries,
             createdAt: user.createdAt
         )
+        
         return localUser
     }
     
     func getUser(github id: String) async throws -> User {
         let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s("\(id)")],
+            expressionAttributeValues: [":v1": .s("GITHUB-\(id)")],
             indexName: githubIndex,
             keyConditionExpression: "data2 = :v1",
             limit: 1,
@@ -88,7 +86,7 @@ public struct DynamoUserRepository: UserRepository {
             id: UUID(uuidString: String(user.pk.split(separator: "-")[1]))!,
             discordID: user.data1,
             githubID: user.data2,
-            numberOfCoins: user.numberOfCoins,
+            numberOfCoins: user.coinEntries.count,
             coinEntries: user.coinEntries,
             createdAt: user.createdAt
         )

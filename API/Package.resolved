@@ -33,8 +33,8 @@
         "repositoryURL": "https://github.com/soto-project/soto-core.git",
         "state": {
           "branch": null,
-          "revision": "a216ea49b9ff2480ccbc5880b1aa648032433798",
-          "version": "5.9.2"
+          "revision": "3079d17f2576cff5f2a3f68865629af455c673d1",
+          "version": "5.9.3"
         }
       },
       {
@@ -62,15 +62,6 @@
           "branch": null,
           "revision": "d3e04a9d4b3833363fb6192065b763310b156d54",
           "version": "1.3.1"
-        }
-      },
-      {
-        "package": "swift-crypto",
-        "repositoryURL": "https://github.com/apple/swift-crypto.git",
-        "state": {
-          "branch": null,
-          "revision": "a8911e0fadc25aef1071d582355bd1037a176060",
-          "version": "2.0.4"
         }
       },
       {
