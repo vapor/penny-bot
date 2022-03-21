@@ -74,7 +74,6 @@ Resources:
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
                   - !GetAtt dynamoUserTable.Arn
           PolicyName: lamda
-    DependsOn: dynamoUserTable
   
   lambdaLogGroup:
     Type: AWS::Logs::LogGroup
