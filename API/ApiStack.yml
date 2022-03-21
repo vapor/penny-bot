@@ -65,10 +65,16 @@ Resources:
                   - logs:CreateLogStream
                   - logs:PutLogEvents
                   - lambda:InvokeFunction
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
                 Effect: Allow 
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
+                  - !Ref dynamoDBArn
           PolicyName: lamda
+    DependsOn: dynamoUserTable
   
   lambdaLogGroup:
     Type: AWS::Logs::LogGroup
