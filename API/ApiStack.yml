@@ -72,7 +72,7 @@ Resources:
                 Effect: Allow 
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
-                  - !Sub ${dynamoDBArn}
+                  - !GetAtt dynamoUserTable.Arn
           PolicyName: lamda
     DependsOn: dynamoUserTable
   
