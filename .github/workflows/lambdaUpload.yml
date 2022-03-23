@@ -22,7 +22,7 @@ jobs:
           swift:5.5-amazonlinux2 \
           swift build --product $BUILD_NAME -c release -Xswiftc -static-stdlib
         
-        sudo scripts/package.sh $BUILD_NAME
+        scripts/package.sh $BUILD_NAME
       env:
         BUILD_NAME: PennyAPI
     - name: Deploy to S3
