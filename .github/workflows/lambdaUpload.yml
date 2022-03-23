@@ -25,7 +25,8 @@ jobs:
           swift build --product $BUILD_NAME -c release -Xswiftc -static-stdlib
         
         ls -a
-        
+        sudo chown -R runner /.build
+
         scripts/package.sh $BUILD_NAME
       env:
         BUILD_NAME: PennyAPI
