@@ -14,16 +14,15 @@ jobs:
       uses: actions/checkout@v3.0.0
     - name: Build and package build 
       run: |
-        sudo
         cd API
-        docker run \
+        sudo docker run \
           --rm \
           --volume "$(pwd)/:/src" \
           --workdir "/src/" \
           swift:5.5-amazonlinux2 \
           swift build --product $BUILD_NAME -c release -Xswiftc -static-stdlib
         
-        scripts/package.sh $BUILD_NAME
+        sudo scripts/package.sh $BUILD_NAME
       env:
         BUILD_NAME: PennyAPI
     - name: Deploy to S3
