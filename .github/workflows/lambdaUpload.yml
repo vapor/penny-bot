@@ -22,6 +22,11 @@ jobs:
       run: |
         cd API
         make --jobs=1 --debug=j,b package_all package_all
+
+        echo "================"
+        echo "================"
+        echo "================"
+        ls -a
     - name: Deploy to S3
       id: s3deploy
       uses: jakejarvis/s3-sync-action@master
