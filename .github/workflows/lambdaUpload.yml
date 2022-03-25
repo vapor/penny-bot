@@ -14,22 +14,14 @@ jobs:
       run: ls -a
     - name: Checkout repository
       uses: actions/checkout@v3.0.0
-    - name: Build and package build 
+    - name: Build Docker image
       run: |
         cd API
-        docker run \
-          --rm \
-          --volume "$(pwd)/:/src" \
-          --workdir "/src/" \
-          swift:5.5-amazonlinux2 \
-          swift build --product $BUILD_NAME -c release -Xswiftc -static-stdlib
-        
-        ls -a
-        sudo chown -R runner .build/
-
-        scripts/package.sh $BUILD_NAME
-      env:
-        BUILD_NAME: PennyAPI
+        run: docker build . --file Dockerfile --tag swift-lambda-builder:$(date +%s) --tag swift-lambda-builder:latest
+    - name: Build AWS Lambda packages
+      run: |
+        cd API
+        make --jobs=1 --debug=j,b package_all package_all
     - name: Deploy to S3
       id: s3deploy
       uses: jakejarvis/s3-sync-action@master
