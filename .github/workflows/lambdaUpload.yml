@@ -22,12 +22,10 @@ jobs:
       run: |
         cd API
         make --jobs=1 --debug=j,b package_all package_all
-    - name: Print files
+    - name: Remove build file
       run: |
-        ls -a
-        cd API
-        echo "==========="
-        ls -a
+        cd './API/.build/lambda/'
+        rm -rf PennyAPI
     - name: Deploy to S3
       id: s3deploy
       uses: jakejarvis/s3-sync-action@master
