@@ -30,7 +30,7 @@ struct AddCoins: LambdaHandler {
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
         
-        context.logger.critical("Reading incoming request:\(event)")
+        context.logger.info("Reading incoming request:\(event)")
                 
         switch (event.context.http.path, event.context.http.method) {
         case ("/coin", .GET):
