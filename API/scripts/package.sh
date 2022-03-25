@@ -3,13 +3,17 @@
 set -eu
 
 executable=$1
+targetExec=".build/lambda/${executable}"
 
-target=".build/lambda/$executable"
-rm -rf "$target"
-mkdir -p "$target"
-cp ".build/release/$executable" "$target/"
-# add the target deps based on ldd
-ldd ".build/release/$executable" | grep swift | awk '{print $3}' | xargs cp -Lv -t "$target"
-cd "$target"
-ln -s "$executable" "bootstrap"
-zip --symlinks lambda.zip *
+echo "Cleanup ..."
+rm -rf "${targetExec}"
+
+echo "Package exe ..."
+mkdir -p "$targetExec"
+cp -v ".build/release/${executable}" "${targetExec}/"
+pushd ${targetExec}
+ln -s "${executable}" "bootstrap"
+zip --symlinks ../${executable}.zip * */*
+popd
+
+libs=`ldd .build/release/${executable} | grep swift | awk '{print $3}'`
