@@ -38,7 +38,8 @@ struct AddCoins: LambdaHandler {
         case("/coin", .POST):
             do {
                 let product: Coin = try event.bodyObject()
-                
+                context.logger.info("Reading received coin:\(product)")
+
                 let coinEntry = CoinEntry(id: UUID(), createdAt: Date(), amount: 1, from: UUID(), source: .discord, reason: .userProvided)
                 let user = User(id: UUID(), discordID: product.receiver, githubID: nil, numberOfCoins: 0, coinEntries: [], createdAt: Date())
                 
