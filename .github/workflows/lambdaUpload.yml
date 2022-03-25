@@ -30,6 +30,6 @@ jobs:
       env:
         AWS_S3_BUCKET: 'penny-bot-discord'
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_SECRET_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
         AWS_REGION: 'eu-west-2'
         SOURCE_DIR: '/API/.build/lambda/PennyAPI'
