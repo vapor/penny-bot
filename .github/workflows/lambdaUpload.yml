@@ -17,7 +17,7 @@ jobs:
     - name: Build Docker image
       run: |
         cd API
-        run: docker build . --file Dockerfile --tag swift-lambda-builder:$(date +%s) --tag swift-lambda-builder:latest
+        docker build . --file Dockerfile --tag swift-lambda-builder:$(date +%s) --tag swift-lambda-builder:latest
     - name: Build AWS Lambda packages
       run: |
         cd API
