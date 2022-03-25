@@ -27,6 +27,7 @@ jobs:
         echo "================"
         echo "================"
         cd .build
+        cd lambda
         ls -a
     - name: Deploy to S3
       id: s3deploy
@@ -38,4 +39,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
         AWS_REGION: 'eu-west-2'
-        SOURCE_DIR: '/API/.build/lambda/PennyAPI'
+        SOURCE_DIR: 'API/.build/lambda/PennyAPI'
