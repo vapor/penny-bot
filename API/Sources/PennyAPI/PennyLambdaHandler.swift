@@ -18,6 +18,7 @@ struct AddCoins: LambdaHandler {
     
     init(context: Lambda.InitializationContext) async throws {
         // setup your resources that you want to reuse for every invocation here.
+        context.logger.logLevel = .trace
         self.awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop))
         self.userService = UserService(awsClient, context.logger)
@@ -29,6 +30,8 @@ struct AddCoins: LambdaHandler {
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
+        
+        context.logger.trace("Reading incoming request:\(event)")
                 
         switch (event.context.http.path, event.context.http.method) {
         case ("/coin", .GET):
