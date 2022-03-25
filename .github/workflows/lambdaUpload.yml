@@ -26,6 +26,7 @@ jobs:
         echo "================"
         echo "================"
         echo "================"
+        cd .build
         ls -a
     - name: Deploy to S3
       id: s3deploy
