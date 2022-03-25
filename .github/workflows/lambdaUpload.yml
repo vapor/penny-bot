@@ -25,7 +25,7 @@ jobs:
     - name: Remove build file
       run: |
         cd './API/.build/lambda/'
-        rm -rf PennyAPI
+        sudo rm -rf PennyAPI
     - name: Deploy to S3
       id: s3deploy
       uses: jakejarvis/s3-sync-action@master
