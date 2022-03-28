@@ -29,16 +29,13 @@ struct AddCoins: LambdaHandler {
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
-        
-        context.logger.info("Reading incoming request:\(event)")
-                
+                        
         switch (event.context.http.path, event.context.http.method) {
         case ("/coin", .GET):
             response = APIGatewayV2Response(statusCode: .ok, body: "This is an AWS Lambda response made in swift")
         case("/coin", .POST):
             do {
                 let product: Coin = try event.bodyObject()
-                context.logger.info("Reading received coin:\(product)")
 
                 let coinEntry = CoinEntry(id: UUID(), createdAt: Date(), amount: 1, from: UUID(), source: .discord, reason: .userProvided)
                 let user = User(id: UUID(), discordID: product.receiver, githubID: nil, numberOfCoins: 0, coinEntries: [], createdAt: Date())
