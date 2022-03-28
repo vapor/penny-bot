@@ -123,7 +123,7 @@ Resources:
               AttributeName: "pk"
               KeyType: "RANGE"
           Projection:
-            ProjectionType: KEYS_ONLY
+            ProjectionType: ALL
         -
           IndexName: "GSI-2"
           KeySchema:
@@ -134,7 +134,7 @@ Resources:
               AttributeName: "pk"
               KeyType: "RANGE"
           Projection:
-            ProjectionType: KEYS_ONLY
+            ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
