@@ -11,7 +11,7 @@ struct DynamoDBUser: Codable {
     
     init(user: User) {
         self.pk = "USER-\(user.id.uuidString)"
-        self.sk = "NUMBER_OF_COINS"
+        self.sk = "CREATEDAT-\(Date())"
         if let discordID = user.discordID {
             self.data1 = "DISCORD-\(discordID)"
         } else {

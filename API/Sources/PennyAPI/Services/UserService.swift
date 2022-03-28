@@ -35,7 +35,8 @@ struct UserService {
                 print("User after update \(dbUser)")
                 try await userRepo.updateUser(dbUser)
             }
-            catch {
+            catch let error {
+                logger.info("\(error.localizedDescription)")
                 localUser = user
                 
                 localUser.addCoinEntry(coinEntry)
