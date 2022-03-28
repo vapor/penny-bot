@@ -6,7 +6,7 @@ struct DynamoDBUser: Codable {
     let sk: String
     let data1: String?
     let data2: String?
-    let coinEntries: [CoinEntry]
+    let coinEntries: [CoinEntry]?
     let createdAt: Date
     
     init(user: User) {

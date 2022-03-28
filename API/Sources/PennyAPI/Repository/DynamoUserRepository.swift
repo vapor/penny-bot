@@ -61,8 +61,8 @@ public struct DynamoUserRepository: UserRepository {
             id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
             discordID: user.data1?.deletePrefix("DISCORD-"),
             githubID: user.data2?.deletePrefix("GITHUB-"),
-            numberOfCoins: user.coinEntries.count,
-            coinEntries: user.coinEntries,
+            numberOfCoins: user.coinEntries?.count ?? 0,
+            coinEntries: user.coinEntries ?? [],
             createdAt: user.createdAt
         )
         
@@ -86,8 +86,8 @@ public struct DynamoUserRepository: UserRepository {
             id: UUID(uuidString: String(user.pk.split(separator: "-")[1]))!,
             discordID: user.data1,
             githubID: user.data2,
-            numberOfCoins: user.coinEntries.count,
-            coinEntries: user.coinEntries,
+            numberOfCoins: user.coinEntries?.count ?? 0,
+            coinEntries: user.coinEntries ?? [],
             createdAt: user.createdAt
         )
         return localUser
