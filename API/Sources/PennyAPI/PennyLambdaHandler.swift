@@ -29,10 +29,7 @@ struct AddCoins: LambdaHandler {
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
-        context.logger.error("This is the last new piece of code, if this does not log online then the lambda isn't updated")
         switch (event.context.http.path, event.context.http.method) {
-        case ("/coin", .GET):
-            response = APIGatewayV2Response(statusCode: .ok, body: "This is an AWS Lambda response made in swift")
         case("/coin", .POST):
             do {
                 let product: Coin = try event.bodyObject()
@@ -43,9 +40,11 @@ struct AddCoins: LambdaHandler {
                 let message = try await userService.addCoins(with: coinEntry, to: user)
                 response = APIGatewayV2Response(statusCode: .ok, body: message)
             }
+            catch UserService.ServiceError.failedToUpdate {
+                response = APIGatewayV2Response(statusCode: .notFound)
+            }
             catch let error {
-                //let error = APIError.invalidRequest
-                response = APIGatewayV2Response(statusCode: .badRequest, body: String(describing: error))
+                response = APIGatewayV2Response(statusCode: .badRequest, body: "ERROR-\(error.localizedDescription)")
                 
             }
         default:

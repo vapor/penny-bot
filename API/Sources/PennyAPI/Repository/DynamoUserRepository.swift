@@ -50,23 +50,7 @@ public struct DynamoUserRepository: UserRepository {
             tableName: self.tableName
         )
         
-        let results = try await db.query(query, type: DynamoDBUser.self, logger: self.logger, on: self.eventLoop)
-        guard let user = results.items?.first else {
-            throw DBError.itemNotFound
-        }
-        
-        print("User before update: \(user)")
-                
-        let localUser = User(
-            id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
-            discordID: user.data1?.deletePrefix("DISCORD-"),
-            githubID: user.data2?.deletePrefix("GITHUB-"),
-            numberOfCoins: user.coinEntries?.count ?? 0,
-            coinEntries: user.coinEntries ?? [],
-            createdAt: user.createdAt
-        )
-        
-        return localUser
+        return try await queryUser(with: query)
     }
     
     func getUser(github id: String) async throws -> User {
@@ -77,24 +61,30 @@ public struct DynamoUserRepository: UserRepository {
             limit: 1,
             tableName: self.tableName
         )
+        
+        return try await queryUser(with: query)
+    }
+    
+    private func queryUser(with query: DynamoDB.QueryInput) async throws -> User {
         let results = try await db.query(query, type: DynamoDBUser.self, logger: self.logger, on: self.eventLoop)
         guard let user = results.items?.first else {
             throw DBError.itemNotFound
         }
-        
+                        
         let localUser = User(
-            id: UUID(uuidString: String(user.pk.split(separator: "-")[1]))!,
-            discordID: user.data1,
-            githubID: user.data2,
-            numberOfCoins: user.coinEntries?.count ?? 0,
+            id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
+            discordID: user.data1?.deletePrefix("DISCORD-"),
+            githubID: user.data2?.deletePrefix("GITHUB-"),
+            numberOfCoins: user.amountOfCoins ?? 0,
             coinEntries: user.coinEntries ?? [],
             createdAt: user.createdAt
         )
+        
         return localUser
     }
     
     // MARK: - Link users
-    func linkGithub(with discordId: String, _ githubId: String) async throws -> Void {
+    func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
         // TODO: Implement
         // Check if the users github already exists
         
@@ -103,25 +93,30 @@ public struct DynamoUserRepository: UserRepository {
         // If the the given discordId already has a github account linked, overwrite the githubId
         
         // Delete the account that's not up-to-date
-        
+        abort()
     }
     
-    func linkDiscord(with githubId: String, _ discordId: String) async throws -> Void {
+    func linkDiscord(with githubId: String, _ discordId: String) async throws -> String {
         // TODO: Implement
         // Check if the users discord already exists
+        
         // If it exists, merge the 2 accounts
         
-        // If the the given discordId already has a discord account linked, overwrite the githubId
+        // If the the given discordId already has a github account linked, overwrite the githubId
         
         // Delete the account that's not up-to-date
-        
+        abort()
     }
     
-    private func mergeAccounts() async throws -> Void {
-        
+    private func mergeAccounts() async throws -> Bool {
+        // TODO: Implement
+        // Return true if the merge was successful
+        abort()
     }
     
-    private func deleteAccount() async throws -> Void {
-        
+    private func deleteAccount() async throws -> Bool {
+        // TODO: Implement
+        // Return true if the deletion was successful
+        abort()
     }
 }

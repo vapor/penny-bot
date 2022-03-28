@@ -6,6 +6,7 @@ struct DynamoDBUser: Codable {
     let sk: String
     let data1: String?
     let data2: String?
+    let amountOfCoins: Int?
     let coinEntries: [CoinEntry]?
     let createdAt: Date
     
@@ -22,17 +23,8 @@ struct DynamoDBUser: Codable {
         } else {
             self.data2 = nil
         }
+        self.amountOfCoins = user.numberOfCoins
         self.coinEntries = user.coinEntries
         self.createdAt = user.createdAt
     }
 }
-
-//extension DynamoDBUser {
-//    func toDynamoDBObject() throws -> [String: DynamoDB.AttributeValue] {
-//        return try DynamoDBEncoder().encode(self)
-//    }
-//    
-//    func fromDynamoDBObject(_ userAttributes: [String: DynamoDB.AttributeValue]) throws -> DynamoDBUser {
-//        return try DynamoDBDecoder().decode(DynamoDBUser.self, from: userAttributes)
-//    }
-//}

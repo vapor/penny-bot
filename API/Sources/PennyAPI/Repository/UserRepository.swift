@@ -18,6 +18,6 @@ protocol UserRepository {
     func getUser(github id: String) async throws -> User
     
     // MARK: - Link users
-    func linkGithub(with discordId: String, _ githubId: String) async throws -> Void
-    func linkDiscord(with githubId: String, _ discordId: String) async throws -> Void
+    func linkGithub(with discordId: String, _ githubId: String) async throws -> String
+    func linkDiscord(with githubId: String, _ discordId: String) async throws -> String
 }

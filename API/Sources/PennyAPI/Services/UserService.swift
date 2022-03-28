@@ -6,7 +6,7 @@ import AsyncHTTPClient
 
 struct UserService {
     enum ServiceError: Error {
-        case noUserFound
+        case failedToUpdate
     }
     
     let logger: Logger
@@ -14,7 +14,7 @@ struct UserService {
     
     init(_ awsClient: AWSClient, _ logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-2")
-        let endpoint = ProcessInfo.processInfo.environment["DynamoDBEndpointScript"]
+        //let endpoint = ProcessInfo.processInfo.environment["DynamoDBEndpointScript"]
         let dynamoDB = DynamoDB(client: awsClient, region: euWest/*, endpoint: endpoint*/)
         self.logger = logger
         self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: awsClient.eventLoopGroup.next(), logger: logger)
@@ -35,19 +35,18 @@ struct UserService {
                 print("User after update \(dbUser)")
                 try await userRepo.updateUser(dbUser)
             }
+            catch DBError.itemNotFound {
+                localUser = try await insertIntoDB(user: user, with: coinEntry)
+            }
             catch let error {
-                logger.info("\(error.localizedDescription)")
-                localUser = user
-                
-                localUser.addCoinEntry(coinEntry)
-                
-                let dbUser = DynamoDBUser(user: localUser)
-                try await userRepo.insertUser(dbUser)
+                logger.error("\(error.localizedDescription)")
+                throw ServiceError.failedToUpdate
             }
             
             return "\(localUser.discordID!) has \(localUser.numberOfCoins) coins."
             
         case .github:
+            print("TO BE IMPLEMENTED")
             return ""
             
             
@@ -56,5 +55,16 @@ struct UserService {
             print("TO BE IMPLEMENTED")
             return ""
         }
+    }
+    
+    private func insertIntoDB(user account: User, with coinEntry: CoinEntry) async throws -> User{
+        var localUser = account
+        
+        localUser.addCoinEntry(coinEntry)
+        
+        let dbUser = DynamoDBUser(user: localUser)
+        try await userRepo.insertUser(dbUser)
+        
+        return localUser
     }
 }
