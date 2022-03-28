@@ -4,9 +4,6 @@ Parameters:
   apiGatewayName:
     Type: String
     Default: penny-bot-api
-  #apiGatewayHTTPMethod:
-  #  Type: String
-  #  Default: POST
   lambdaFunctionName:
     Type: String
     AllowedPattern: "[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+"
@@ -80,6 +77,7 @@ Resources:
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
                   - !GetAtt dynamoUserTable.Arn
+                  - !GetAtt dynamoUserTable.Arn/*
           PolicyName: lamda
   
   lambdaLogGroup:
