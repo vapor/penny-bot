@@ -72,6 +72,10 @@ Resources:
                   - dynamodb:UpdateItem
                   - dynamodb:BatchGetItem
                   - dynamodb:DeleteItem
+                  - dynamodb:Attributes
+                  - dynamodb:LeadingKeys
+                  - dynamodb:ConditionCheckItem
+                  - dynamodb:Scan
                 Effect: Allow 
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
