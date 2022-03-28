@@ -29,7 +29,7 @@ struct AddCoins: LambdaHandler {
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
-                        
+        context.logger.error("This is the last new piece of code, if this does not log online then the lambda isn't updated")
         switch (event.context.http.path, event.context.http.method) {
         case ("/coin", .GET):
             response = APIGatewayV2Response(statusCode: .ok, body: "This is an AWS Lambda response made in swift")
