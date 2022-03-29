@@ -10,6 +10,6 @@ struct User: Codable {
     
     mutating func addCoinEntry(_ entry: CoinEntry) {
         coinEntries.append(entry)
-        numberOfCoins = coinEntries.count
+        numberOfCoins += entry.amount
     }
 }

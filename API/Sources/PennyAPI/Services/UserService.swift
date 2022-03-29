@@ -22,38 +22,51 @@ struct UserService {
     
     func addCoins(with coinEntry: CoinEntry, to user: User) async throws -> String {
         var localUser: User
-                
-        switch coinEntry.source {
-        case .discord:
-            do {
+        
+        do {
+            switch coinEntry.source {
+            case .discord:
                 localUser = try await userRepo.getUser(discord: user.discordID!)
-                
-                localUser.addCoinEntry(coinEntry)
-                
-                let dbUser = DynamoDBUser(user: localUser)
-                
-                print("User after update \(dbUser)")
-                try await userRepo.updateUser(dbUser)
-            }
-            catch DBError.itemNotFound {
-                localUser = try await insertIntoDB(user: user, with: coinEntry)
-            }
-            catch let error {
-                logger.error("\(error.localizedDescription)")
-                throw ServiceError.failedToUpdate
+            case .github:
+                localUser = try await userRepo.getUser(github: user.githubID!)
+            case .penny:
+                print("TO BE IMPLEMENTED")
+                return ""
             }
             
+            localUser.addCoinEntry(coinEntry)
+            let dbUser = DynamoDBUser(user: localUser)
+                
+            try await userRepo.updateUser(dbUser)
             return "\(localUser.discordID!) has \(localUser.numberOfCoins) coins."
+        }
+        catch DBError.itemNotFound {
+            localUser = try await insertIntoDB(user: user, with: coinEntry)
+            return "\(localUser.discordID!) has \(localUser.numberOfCoins) coins."
+        }
+        catch let error {
+            logger.error("\(error.localizedDescription)")
+            throw ServiceError.failedToUpdate
+        }
+    }
+    
+    func getUserUUID(from user: User, with source: CoinEntrySource) async throws -> UUID {
+        var localUser: User
+        
+        do {
+            switch source {
+            case .discord:
+                localUser = try await userRepo.getUser(discord: user.discordID!)
+            case .github:
+                localUser = try await userRepo.getUser(github: user.githubID!)
+            case .penny:
+                abort()
+            }
             
-        case .github:
-            print("TO BE IMPLEMENTED")
-            return ""
-            
-            
-            
-        case .penny:
-            print("TO BE IMPLEMENTED")
-            return ""
+            return localUser.id
+        }
+        catch {
+            return UUID()
         }
     }
     
