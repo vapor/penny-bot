@@ -22,7 +22,25 @@ Resources:
       ProtocolType: HTTP
       Target: !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${lambdaFunctionName}/invocations
 
-  lambdaFunction:
+  addCoinIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda Add Coin Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET 
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !Ref addCoinFunction
+      PayloadFormatVersion: '2.0'
+
+  addCoinRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /coin'
+      Target: !Sub "integrations/${addCoinIntegration}"
+
+  addCoinFunction:
     Type: AWS::Lambda::Function
     Properties:
       Code:
@@ -39,7 +57,7 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Ref lambdaFunctionName
       Principal: apigateway.amazonaws.com
-    DependsOn: lambdaFunction
+    DependsOn: addCoinFunction
 
   lambdaIAMRole:
     Type: AWS::IAM::Role
@@ -53,6 +71,7 @@ Resources:
             Principal:
               Service: 
                 - lambda.amazonaws.com
+                - apigateway.amazonaws.com
       Policies: 
         - PolicyDocument: 
             Version: 2012-10-17
@@ -77,7 +96,7 @@ Resources:
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
                   - !GetAtt dynamoUserTable.Arn
-                  - !GetAtt dynamoUserTable.Arn/*
+                  #- !GetAtt dynamoUserTable.Arn/*
           PolicyName: lamda
   
   lambdaLogGroup:
@@ -139,7 +158,7 @@ Resources:
 
 Outputs:
   lambdaArn:
-    Value: !GetAtt lambdaFunction.Arn
+    Value: !GetAtt addCoinFunction.Arn
 
   dynamoDBArn:
     Value: !GetAtt dynamoUserTable.Arn
