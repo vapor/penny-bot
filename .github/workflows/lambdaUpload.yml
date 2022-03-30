@@ -16,16 +16,16 @@ jobs:
       uses: actions/checkout@v3.0.0
     - name: Build Docker image
       run: |
-        cd API
+        cd CODE
         docker build . --file Dockerfile --tag swift-lambda-builder:$(date +%s) --tag swift-lambda-builder:latest
     - name: Build AWS Lambda packages
       run: |
-        cd API
+        cd CODE
         make --jobs=1 --debug=j,b package_all package_all
     - name: Remove build file
       run: |
-        cd './API/.build/lambda/'
-        sudo rm -rf PennyAPI
+        cd './CODE/.build/lambda/'
+        sudo rm -rf PennyLambdaAddCoins
     - name: Deploy to S3
       id: s3deploy
       uses: jakejarvis/s3-sync-action@master
@@ -36,4 +36,4 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
         AWS_REGION: 'eu-west-2'
-        SOURCE_DIR: './API/.build/lambda/'
+        SOURCE_DIR: './CODE/.build/lambda/'
