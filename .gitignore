@@ -5,13 +5,9 @@
 xcuserdata/
 DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-BOT/.swiftpm/*
-BOT/.build/*
-API/.swiftpm/*
-API/.build/*
-SHARED/.swiftpm/*
-SHARED/.build/*
+CODE/.swiftpm/*
+CODE/.build/*
 *.xcscheme
-BOT/.swiftpm/xcode/xcshareddata/xcschemes/BOT.xcscheme
-SHARED/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
+CODE/.swiftpm/xcode/xcshareddata/xcschemes/BOT.xcscheme
+CODE/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .vscode/launch.json
