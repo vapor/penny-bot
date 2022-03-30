@@ -30,7 +30,7 @@ Resources:
       ConnectionType: INTERNET 
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
-      IntegrationUri: !Ref addCoinFunction
+      IntegrationUri: !GetAtt addCoinFunction.Arn
       PayloadFormatVersion: '2.0'
 
   addCoinRoute:
