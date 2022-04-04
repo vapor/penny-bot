@@ -92,11 +92,13 @@ Resources:
                   - dynamodb:LeadingKeys
                   - dynamodb:ConditionCheckItem
                   - dynamodb:Scan
+                  - lambda:UpdateFunctionCode
                 Effect: Allow 
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
                   - !GetAtt dynamoUserTable.Arn
-                  #- !GetAtt dynamoUserTable.Arn/*
+                  - !GetAtt addCoinFunction.Arn
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
           PolicyName: lamda
   
   lambdaLogGroup:
