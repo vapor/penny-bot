@@ -37,3 +37,10 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
         AWS_REGION: 'eu-west-2'
         SOURCE_DIR: './CODE/.build/lambda/'
+    - name: Update Lambda code
+      run: |
+        aws update-function-code \
+          --function-name 'penny-api-addCoin-lambda' \
+          --s3-bucket 'penny-bot-discord' \
+          --s3-key 'PennyLambdaAddCoins.zip' \
+          --dry-run
