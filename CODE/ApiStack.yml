@@ -97,7 +97,7 @@ Resources:
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
                   - !GetAtt dynamoUserTable.Arn
-                  - !GetAtt addCoinFunction.Arn
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${lambdaFunctionName}
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
           PolicyName: lamda
   
