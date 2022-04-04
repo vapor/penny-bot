@@ -43,7 +43,6 @@ jobs:
           --function-name 'penny-api-addCoin-lambda' \
           --s3-bucket 'penny-bot-discord' \
           --s3-key 'PennyLambdaAddCoins.zip' \
-          --dry-run
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
