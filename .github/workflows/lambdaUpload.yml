@@ -39,7 +39,7 @@ jobs:
         SOURCE_DIR: './CODE/.build/lambda/'
     - name: Update Lambda code
       run: |
-        aws update-function-code \
+        aws lambda update-function-code \
           --function-name 'penny-api-addCoin-lambda' \
           --s3-bucket 'penny-bot-discord' \
           --s3-key 'PennyLambdaAddCoins.zip' \
