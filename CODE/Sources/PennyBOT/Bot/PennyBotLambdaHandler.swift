@@ -24,6 +24,7 @@ struct Bot: LambdaHandler {
     }
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
+        var response: APIGatewayV2Response
         context.logger.info("Event: \(event)")
         context.logger.info("Event body: \(event.body)")
         do {
@@ -33,12 +34,16 @@ struct Bot: LambdaHandler {
             if !verified {
                 return APIGatewayV2Response(statusCode: .unauthorized, body: "invalid request signature")
             }
+            
+            let response = Response(type: 1)
+            response = APIGatewayV2Response(with: response, statusCode: .ok)
         }
         catch {
-            
+            response = APIGatewayV2Response(statusCode: .badRequest, body: "Something went wrong parsing the request")
         }
-        let response = Response(type: 1)
-        return APIGatewayV2Response(with: response, statusCode: .ok)
+        
+        context.logger.info("\(response.body)")
+        return response
     }
 }
 
