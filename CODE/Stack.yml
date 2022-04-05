@@ -4,13 +4,12 @@ Parameters:
   apiGatewayName:
     Type: String
     Default: penny-bot-api
-  lambdaFunctionName:
+  FileNameAddCoins:
     Type: String
-    AllowedPattern: "[a-zA-Z0-9]+[a-zA-Z0-9-]+[a-zA-Z0-9]+"
-    Default: penny-api-lambda
-  Filename:
+    Description: Filename of the code function for the adding of coins uploaded to S3
+  FileNameBot:
     Type: String
-    Description: Filename of the code function uploaded to S3
+    Description: Filename of the code function for the bot uploaded to S3
 
 
 Resources:
@@ -45,19 +44,53 @@ Resources:
     Properties:
       Code:
         S3Bucket: penny-bot-discord
-        S3Key: !Sub ${Filename}
-      FunctionName: !Ref lambdaFunctionName
+        S3Key: !Sub ${FileNameAddCoins}.zip
+      FunctionName: !Sub ${FileNameAddCoins}-lambda
       Handler: handler 
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
+
+  botIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda Penny Bot Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET 
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt botFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  botRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /'
+      Target: !Sub "integrations/${botIntegration}"
+
+  botFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-bot-discord
+        S3Key: !Sub ${FileNameBot}.zip
+      FunctionName: !Sub ${FileNameBot}-lambda
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+      
 
   lambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref lambdaFunctionName
+      FunctionName: 
+        - !Sub ${FileNameAddCoins}-lambda
+        - !Sub ${FileNameBot}-lambda
       Principal: apigateway.amazonaws.com
-    DependsOn: addCoinFunction
+    DependsOn: 
+      - addCoinFunction
+      - botFunction
 
   lambdaIAMRole:
     Type: AWS::IAM::Role
@@ -95,16 +128,18 @@ Resources:
                   - lambda:UpdateFunctionCode
                 Effect: Allow 
                 Resource: 
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${lambdaFunctionName}:*
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FileNameAddCoins}-lambda:*
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FileNameBot}-lambda:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameAddCoins}-lambda
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameBot}-lambda
                   - !GetAtt dynamoUserTable.Arn
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${lambdaFunctionName}
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
           PolicyName: lamda
   
   lambdaLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub /aws/lambda/${lambdaFunctionName}
+      LogGroupName: /aws/lambda/PennyLambda
       RetentionInDays: 30
 
   dynamoUserTable:
