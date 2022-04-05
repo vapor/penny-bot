@@ -39,7 +39,7 @@ jobs:
         aws lambda update-function-code \
           --function-name 'PennyLambdaAddCoins-lambda' \
           --s3-bucket 'penny-bot-discord' \
-          --s3-key 'PennyLambdaAddCoins.zip' \
+          --s3-key 'PennyLambdaAddCoins.zip'
         aws lambda update-function-code \
           --function-name 'PennyLambdaBot-lambda' \
           --s3-bucket 'penny-bot-discord' \
