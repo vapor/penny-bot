@@ -35,8 +35,8 @@ struct Bot: LambdaHandler {
                 return APIGatewayV2Response(statusCode: .unauthorized, body: "invalid request signature")
             }
             
-            let response = Response(type: 1)
-            response = APIGatewayV2Response(with: response, statusCode: .ok)
+            let discordResponse = Response(type: 1)
+            response = APIGatewayV2Response(with: discordResponse, statusCode: .ok)
         }
         catch {
             response = APIGatewayV2Response(statusCode: .badRequest, body: "Something went wrong parsing the request")
