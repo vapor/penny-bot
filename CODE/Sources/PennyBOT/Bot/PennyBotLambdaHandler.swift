@@ -28,7 +28,8 @@ struct Bot: LambdaHandler {
     }
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
-        context.logger.info("\(event.body)")
+        context.logger.info("Event: \(event)")
+        context.logger.info("Event body: \(event.body)")
         do {
             let verified = try event.verifyRequest(with: (PUBLIC_KEY?.data(using: .utf8))!)
             
