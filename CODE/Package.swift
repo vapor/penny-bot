@@ -10,7 +10,8 @@ let package = Package(
     ],
     products: [
         .executable(name: "PennyLambdaAddCoins", targets: ["PennyLambdaAddCoins"]),
-        .executable(name: "PennyBOT", targets: ["PennyBOT"]),
+        .executable(name: "PennyLambdaBot", targets: ["PennyLambdaBot"]),
+        /*.executable(name: "PennyBOT", targets: ["PennyBOT"]),*/
         .library(name: "PennyExtensions", targets: ["PennyExtensions"]),
         .library(name: "PennyRepositories", targets: ["PennyRepositories"]),
         .library(name: "PennyModels", targets: ["PennyModels"]),
@@ -22,6 +23,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "5.12.1"),
         .package(url: "https://github.com/SketchMaster2001/Swiftcord", .branch("master")),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -36,18 +38,30 @@ let package = Package(
                 "PennyServices",
                 "PennyModels",
             ],
-            path: "./Sources/PennyAPI/AddCoin"),
+            path: "./Sources/PennyAPI/AddCoin"
+        ),
         .executableTarget(
+            name: "PennyLambdaBot",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                "PennyModels",
+                "PennyExtensions",
+            ],
+            path: "./Sources/PennyBOT/Bot"
+        ),
+        /*.executableTarget(
             name: "PennyBOT",
             dependencies: [
                 "Swiftcord",
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
-            ]),
+            ]),*/
         .target(
             name: "PennyExtensions",
             dependencies: [
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events")
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "Crypto", package: "swift-crypto"),
             ],
             path: "./Sources/PennySHARED/Extensions"),
         .target(
@@ -69,8 +83,8 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
             ],
             path: "./Sources/PennySHARED/Services"),
-        .testTarget(
+        /*.testTarget(
             name: "HelloWorldTests",
-            dependencies: ["PennyLambdaAddCoins"]),
+            dependencies: ["PennyLambdaAddCoins"]),*/
     ]
 )

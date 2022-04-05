@@ -1,5 +1,7 @@
 import AWSLambdaEvents
+import Crypto
 import Foundation
+import CryptoKit
 
 extension APIGatewayV2Request {
     static private let decoder = JSONDecoder()
@@ -11,6 +13,21 @@ extension APIGatewayV2Request {
             throw APIError.invalidRequest
         }
         return try Self.decoder.decode(T.self, from: dataBody)
+    }
+    
+    public func verifyRequest(with publicKey: Data) throws -> Bool {
+        let key = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
+        
+        guard let signature = self.headers["X-Signature-Ed25519"], let timestamp = self.headers["X-Signature-Timestamp"], let body = self.body else {
+            // Throw error to return a 401
+            fatalError()
+        }
+        
+        //possibly convert from hex
+        let signatureBytes: [UInt8] = .init(signature.utf8)
+        let bodyBytes: [UInt8] = .init("\(timestamp)\(body)".utf8)
+        
+        return key.isValidSignature(signatureBytes, for: bodyBytes)
     }
 }
 
