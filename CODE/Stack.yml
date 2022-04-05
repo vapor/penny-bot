@@ -19,9 +19,9 @@ Resources:
       Name: !Ref apiGatewayName
       Description: API Endpoints for the discord Penny bot
       ProtocolType: HTTP
-      Target: 
-        - !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameAddCoins}-lambda/invocations
-        - !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameBot}-lambda/invocations
+      #Target: 
+        #- !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameAddCoins}-lambda/invocations
+        #- !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameBot}-lambda/invocations
 
   addCoinIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -86,8 +86,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: 
-        - !Sub ${FileNameAddCoins}-lambda
+      FunctionName: !Sub ${FileNameAddCoins}-lambda
       Principal: apigateway.amazonaws.com
     DependsOn: 
       - addCoinFunction
@@ -96,8 +95,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: 
-        - !Sub ${FileNameBot}-lambda
+      FunctionName: !Sub ${FileNameBot}-lambda
       Principal: apigateway.amazonaws.com
     DependsOn: 
       - botFunction
