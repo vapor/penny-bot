@@ -1,7 +1,6 @@
 import AWSLambdaEvents
 import Crypto
 import Foundation
-import CryptoKit
 
 extension APIGatewayV2Request {
     static private let decoder = JSONDecoder()
