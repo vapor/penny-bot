@@ -11,7 +11,7 @@ let package = Package(
     products: [
         .executable(name: "PennyLambdaAddCoins", targets: ["PennyLambdaAddCoins"]),
         .executable(name: "PennyLambdaBot", targets: ["PennyLambdaBot"]),
-        /*.executable(name: "PennyBOT", targets: ["PennyBOT"]),*/
+//        .executable(name: "PennyBOT", targets: ["PennyBOT"]),
         .library(name: "PennyExtensions", targets: ["PennyExtensions"]),
         .library(name: "PennyRepositories", targets: ["PennyRepositories"]),
         .library(name: "PennyModels", targets: ["PennyModels"]),
@@ -47,6 +47,7 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 "PennyModels",
                 "PennyExtensions",
+                "Swiftcord",
             ],
             path: "./Sources/PennyBOT/Bot"
         ),
@@ -66,6 +67,9 @@ let package = Package(
             path: "./Sources/PennySHARED/Extensions"),
         .target(
             name: "PennyModels",
+            dependencies: [
+                "Swiftcord"
+            ],
             path: "./Sources/PennySHARED/Models"),
         .target(
             name: "PennyRepositories",
