@@ -80,22 +80,6 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-  
-  botWebhookFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      CodeUri: 
-        Bucket: penny-bot-discord
-        Key: !Sub ${FileNameBot}-webhook-lambda
-      Handler: handler
-      Runtime: provided.al2
-      FunctionUrlConfig:
-        AuthType: NONE
-        Cors:
-            AllowOrigins:
-                - "*"
-      Role: !GetAtt lambdaIAMRole.Arn
-      
 
   lambdaAddCoinPermission:
     Type: AWS::Lambda::Permission
