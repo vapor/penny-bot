@@ -11,7 +11,7 @@ Parameters:
     Type: String
     Description: Filename of the code function for the bot uploaded to S3
 
-Transform: AWS::Serverless-2016-10-31
+
 Resources:
   apiGateway: 
     Type: AWS::ApiGatewayV2::Api
