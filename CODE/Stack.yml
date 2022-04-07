@@ -85,9 +85,8 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: 
-        FunctionCode:
-          Bucket: penny-bot-discord
-          Key: !Sub ${FileNameBot}-webhook-lambda
+        Bucket: penny-bot-discord
+        Key: !Sub ${FileNameBot}-webhook-lambda
       Handler: handler
       Runtime: provided.al2
       FunctionUrlConfig:
