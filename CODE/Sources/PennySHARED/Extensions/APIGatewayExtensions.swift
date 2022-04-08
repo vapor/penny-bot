@@ -14,16 +14,20 @@ extension APIGatewayV2Request {
         return try Self.decoder.decode(T.self, from: dataBody)
     }
     
-    public func verifyRequest(with publicKey: Data) throws -> Bool {
+    public func verifyRequest() throws -> Bool {
+        guard let publicKey = ProcessInfo.processInfo.environment["PUBLIC_KEY"]?.hexDecodedData() else {
+            fatalError()
+        }
         let key = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
         
-        guard let signature = self.headers["X-Signature-Ed25519"], let timestamp = self.headers["X-Signature-Timestamp"], let body = self.body else {
+        guard let signature = self.headers["x-signature-ed25519"], let timestamp = self.headers["x-signature-timestamp"], var body = self.body else {
             // Throw error to return a 401
             fatalError()
         }
         
         //possibly convert from hex
-        let signatureBytes: [UInt8] = .init(signature.utf8)
+        let signatureBytes: [UInt8] = .init(signature.hexDecodedData())
+
         let bodyBytes: [UInt8] = .init("\(timestamp)\(body)".utf8)
         
         return key.isValidSignature(signatureBytes, for: bodyBytes)

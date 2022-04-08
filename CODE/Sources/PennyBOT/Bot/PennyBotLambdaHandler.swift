@@ -17,7 +17,7 @@ struct Bot: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
     
-    let PUBLIC_KEY = ProcessInfo.processInfo.environment["PUBLIC_KEY"]
+    
     
     init(context: Lambda.InitializationContext) async throws {
         
@@ -25,11 +25,10 @@ struct Bot: LambdaHandler {
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         var response: APIGatewayV2Response
-        context.logger.info("Event: \(event)")
-        context.logger.info("Event body: \(event.body)")
+        //context.logger.info("Event: \(event)")
+        //context.logger.info("Event body: \(event.body)")
         do {
-            
-            let verified = try event.verifyRequest(with: (PUBLIC_KEY?.data(using: .utf8))!)
+            let verified = try event.verifyRequest()
             
             if !verified {
                 return APIGatewayV2Response(statusCode: .unauthorized, body: "invalid request signature")
@@ -38,11 +37,12 @@ struct Bot: LambdaHandler {
             let discordResponse = Response(type: 1)
             response = APIGatewayV2Response(with: discordResponse, statusCode: .ok)
         }
-        catch {
+        catch let error {
+            print("\(error)")
             response = APIGatewayV2Response(statusCode: .badRequest, body: "Something went wrong parsing the request")
         }
         
-        context.logger.info("\(response.body)")
+        //context.logger.info("\(response.body)")
         return response
     }
 }
