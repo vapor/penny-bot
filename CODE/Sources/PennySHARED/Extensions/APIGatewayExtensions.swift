@@ -20,7 +20,7 @@ extension APIGatewayV2Request {
         }
         let key = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
         
-        guard let signature = self.headers["x-signature-ed25519"], let timestamp = self.headers["x-signature-timestamp"], var body = self.body else {
+        guard let signature = self.headers["x-signature-ed25519"], let timestamp = self.headers["x-signature-timestamp"], let body = self.body else {
             // Throw error to return a 401
             fatalError()
         }
