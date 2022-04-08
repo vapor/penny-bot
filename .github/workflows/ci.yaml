@@ -13,8 +13,6 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Setup cloudformation lint
-      uses: ScottBrenner/cfn-lint-action@v2.2.1
+      uses: ScottBrenner/cfn-lint-action@v2.2.2
     - name: Run cloudformation lint
       run: cfn-lint -t CODE/Stack.yml
-    - name: Run serverless lint
-      run: cfn-lint -t CODE/ServerlessStack.yml
