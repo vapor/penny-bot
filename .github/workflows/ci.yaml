@@ -17,3 +17,4 @@ jobs:
     - name: Run cloudformation lint on lambda deployment stack
       run: cfn-lint -t CODE/Stack.yml
     - name: Run cloudformation lint on bot deployment stack
+      run: cfn-lint -t CODE/BotStack.yml
