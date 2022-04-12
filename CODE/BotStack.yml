@@ -16,7 +16,10 @@ Resources:
   botAppRunner:
     Type: AWS::AppRunner::Service
     Properties:
+      ServiceName: Penny-Bot
       SourceConfiguration:
+        AuthenticationConfiguration:
+          AccessRoleArn: arn:aws:iam::177420307256:role/service-role/PennyBotAppRunner
         AutoDeploymentsEnabled: true
         ImageRepository:
           #ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
@@ -30,6 +33,7 @@ Resources:
               - 
                 Name: API_BASE_URL
                 Value: !Sub ${ApiGatewayEndpoint}
+    DependsOn: botECRRepository
   
   botECRRepository:
     Type: AWS::ECR::Repository
