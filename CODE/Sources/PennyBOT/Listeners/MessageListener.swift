@@ -28,11 +28,11 @@ class MessageLogger {
             
             // Check for coin suffix and if the message contains a user
             if msg.content.hasCoinSuffix && msg.content.containsUser {
-                let sender = "<@!\(msg.author!.id)>"
+                let sender = "<@\(msg.author!.id)>"
                 let receiver = msg.content.getUser
                 
                 // A user is not allowed to give themselves coins
-                if "<@!\(msg.author!.id)>" == receiver {
+                if "<@!\(msg.author!.id)>" == receiver || "<@\(msg.author!.id)>" == receiver {
                     return
                 }
                 

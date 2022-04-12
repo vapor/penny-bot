@@ -52,7 +52,7 @@ extension String {
         let parts = self.split(separator: " ")
         
         for part in parts {
-            if part.hasPrefix("<@!") {
+            if part.hasPrefix("<@!") || part.hasPrefix("<@") {
                 return true
             }
         }
@@ -64,7 +64,7 @@ extension String {
         let parts = self.split(separator: " ")
         
         for part in parts {
-            if part.hasPrefix("<@!") {
+            if part.hasPrefix("<@!") || part.hasPrefix("<@") {
                 return String(part)
             }
         }
