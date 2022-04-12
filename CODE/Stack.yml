@@ -7,9 +7,34 @@ Parameters:
   FileNameAddCoins:
     Type: String
     Description: Filename of the code function for the adding of coins uploaded to S3
+  BotToken:
+    Type: String
+    Description: The private token of the Penny-Bot
+  
 
 
 Resources:
+  botAppRunner:
+    Type: AWS::AppRunner::Service
+    Properties:
+      SourceConfiguration:
+        AutoDeploymentsEnabled: true
+        ImageRepository:
+          ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
+          ImageRepositoryType: ECR
+          ImageConfiguration:
+            RuntimeEnvironmentVariable:
+              - Name: BOT_TOKEN
+                Value: !Sub ${BotToken}
+              - Name: API_BASE_URL
+                Value: !GetAtt apiGateway.ApiEndpoint
+  
+  botECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: penny-bot-discord-image
+
+
   apiGateway: 
     Type: AWS::ApiGatewayV2::Api
     Properties: 
