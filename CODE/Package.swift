@@ -10,8 +10,7 @@ let package = Package(
     ],
     products: [
         .executable(name: "PennyLambdaAddCoins", targets: ["PennyLambdaAddCoins"]),
-        .executable(name: "PennyLambdaBot", targets: ["PennyLambdaBot"]),
-//        .executable(name: "PennyBOT", targets: ["PennyBOT"]),
+        .executable(name: "PennyBOT", targets: ["PennyBOT"]),
         .library(name: "PennyExtensions", targets: ["PennyExtensions"]),
         .library(name: "PennyRepositories", targets: ["PennyRepositories"]),
         .library(name: "PennyModels", targets: ["PennyModels"]),
@@ -41,23 +40,12 @@ let package = Package(
             path: "./Sources/PennyAPI/AddCoin"
         ),
         .executableTarget(
-            name: "PennyLambdaBot",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                "PennyModels",
-                "PennyExtensions",
-                "Swiftcord",
-            ],
-            path: "./Sources/PennyBOT/Bot"
-        ),
-        /*.executableTarget(
             name: "PennyBOT",
             dependencies: [
                 "Swiftcord",
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
-            ]),*/
+            ]),
         .target(
             name: "PennyExtensions",
             dependencies: [
