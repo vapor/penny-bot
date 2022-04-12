@@ -7,12 +7,7 @@ Parameters:
   FileNameAddCoins:
     Type: String
     Description: Filename of the code function for the adding of coins uploaded to S3
-  BotToken:
-    Type: String
-    Description: The private token of the Penny-Bot
   
-
-
 Resources:
   apiGateway: 
     Type: AWS::ApiGatewayV2::Api
