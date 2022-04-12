@@ -23,10 +23,12 @@ Resources:
           ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
           ImageRepositoryType: ECR
           ImageConfiguration:
-            RuntimeEnvironmentVariable:
-              - Name: BOT_TOKEN
+            RuntimeEnvironmentVariables:
+              - 
+                Name: BOT_TOKEN
                 Value: !Sub ${BotToken}
-              - Name: API_BASE_URL
+              - 
+                Name: API_BASE_URL
                 Value: !GetAtt apiGateway.ApiEndpoint
   
   botECRRepository:
