@@ -24,7 +24,7 @@ Resources:
                 Value: !Sub ${BotToken}
               - 
                 Name: API_BASE_URL
-                Value: !GetAtt ${ApiGatewayEndpoint}
+                Value: !Sub ${ApiGatewayEndpoint}
   
   botECRRepository:
     Type: AWS::ECR::Repository
