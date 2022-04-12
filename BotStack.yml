@@ -1,0 +1,32 @@
+Description: CF Stack for the Penny Discord Bot Deployment
+
+Parameters:
+  BotToken:
+    Type: String
+    Description: The private token of the Penny-Bot
+  ApiGatewayEndpoint:
+    Type: String
+    Description: The endpoint url of the api gateway
+
+Resources:
+  botAppRunner:
+    Type: AWS::AppRunner::Service
+    Properties:
+      SourceConfiguration:
+        AutoDeploymentsEnabled: true
+        ImageRepository:
+          ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
+          ImageRepositoryType: ECR
+          ImageConfiguration:
+            RuntimeEnvironmentVariables:
+              - 
+                Name: BOT_TOKEN
+                Value: !Sub ${BotToken}
+              - 
+                Name: API_BASE_URL
+                Value: !GetAtt ${ApiGatewayEndpoint}
+  
+  botECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: penny-bot-discord-image
