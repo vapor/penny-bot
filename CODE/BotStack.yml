@@ -7,6 +7,10 @@ Parameters:
   ApiGatewayEndpoint:
     Type: String
     Description: The endpoint url of the api gateway
+  RepositoryName:
+    Type: String
+    Description: The name of the ECR repository
+    Default: penny-bot-discord-image
 
 Resources:
   botAppRunner:
@@ -15,7 +19,8 @@ Resources:
       SourceConfiguration:
         AutoDeploymentsEnabled: true
         ImageRepository:
-          ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
+          #ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
+          ImageIdentifier: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${RepositoryName}:latest
           ImageRepositoryType: ECR
           ImageConfiguration:
             RuntimeEnvironmentVariables:
@@ -29,4 +34,4 @@ Resources:
   botECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: penny-bot-discord-image
+      RepositoryName: !Sub ${RepositoryName}
