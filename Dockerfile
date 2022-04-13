@@ -31,7 +31,7 @@ RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app
 
 WORKDIR /app
 
-COPY --form=build --chown=vapor:vapor /staging /app
+COPY --from=build --chown=vapor:vapor /staging /app
 
 USER vapor:vapor
 
