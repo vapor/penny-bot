@@ -1,0 +1,31 @@
+name: Build and upload Penny Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and upload to ECR 
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repo 
+      uses: actions/checkout@v3.0.0
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+        aws-region: eu-west-1
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag and push image to amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: penny-bot-discord-image
+        IMAGE_TAG: latest
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
