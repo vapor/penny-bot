@@ -11,7 +11,6 @@ app.routes.get { _ in
 }
 
 DispatchQueue.global().async {
-    app.environment.arguments = ["serve"]
     app.logger.info("Running Vapor Application")
     try? app.run()
 }

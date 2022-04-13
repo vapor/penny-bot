@@ -32,6 +32,7 @@ Resources:
           ImageIdentifier: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${RepositoryName}:latest
           ImageRepositoryType: ECR
           ImageConfiguration:
+            StartCommand: docker run -p 8080:8080 177420307256.dkr.ecr.eu-west-1.amazonaws.com/penny-bot-discord-image
             Port: 8080
             RuntimeEnvironmentVariables:
               - 
