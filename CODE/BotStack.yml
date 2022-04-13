@@ -25,7 +25,7 @@ Resources:
         UnhealthyThreshold: 2
       SourceConfiguration:
         AuthenticationConfiguration:
-          AccessRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:user/penny-bot-deployer
+          AccessRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/service-role/PennyBotAppRunner
         AutoDeploymentsEnabled: true
         ImageRepository:
           #ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
