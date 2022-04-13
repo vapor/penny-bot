@@ -1,5 +1,20 @@
 import Swiftcord
 import Foundation
+import Vapor
+
+var env = try Environment.detect()
+try LoggingSystem.bootstrap(from: &env)
+let app = Application(env)
+defer { app.shutdown() }
+app.routes.get { _ in
+    return "Ok"
+}
+
+DispatchQueue.global().async {
+    app.environment.arguments = ["serve"]
+    app.logger.info("Running Vapor Application")
+    try? app.run()
+}
 
 let options = ShieldOptions(willBeCaseSensitive: false, willIgnoreBots: true)
 let bot = Shield(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", shieldOptions: options)

@@ -16,7 +16,13 @@ Resources:
   botAppRunner:
     Type: AWS::AppRunner::Service
     Properties:
-      ServiceName: Penny-Bot
+      ServiceName: Penny-Bot  
+      HealthCheckConfiguration:
+        HealthyThreshold: 2
+        Interval: 5
+        Path: /
+        Timeout: 2
+        UnhealthyThreshold: 2
       SourceConfiguration:
         AuthenticationConfiguration:
           AccessRoleArn: arn:aws:iam::177420307256:role/service-role/PennyBotAppRunner
@@ -26,6 +32,7 @@ Resources:
           ImageIdentifier: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${RepositoryName}:latest
           ImageRepositoryType: ECR
           ImageConfiguration:
+            Port: 8080
             RuntimeEnvironmentVariables:
               - 
                 Name: BOT_TOKEN
@@ -33,9 +40,3 @@ Resources:
               - 
                 Name: API_BASE_URL
                 Value: !Sub ${ApiGatewayEndpoint}
-    DependsOn: botECRRepository
-  
-  botECRRepository:
-    Type: AWS::ECR::Repository
-    Properties:
-      RepositoryName: !Sub ${RepositoryName}
