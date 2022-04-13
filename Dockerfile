@@ -12,11 +12,11 @@ RUN swift package resolve
 
 COPY ./CODE .
 
-RUN swift build -c release --static-swift-stdlib --target PennyBOT
+RUN swift build -c release --static-swift-stdlib
 
 WORKDIR /staging
 
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Run" ./
+RUN cp "$(swift build --package-path /build -c release --show-bin-path)/PennyBOT" ./
 
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
