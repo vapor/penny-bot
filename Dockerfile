@@ -16,7 +16,7 @@ RUN swift build -c release --static-swift-stdlib --target PennyBOT
 
 WORKDIR /staging
 
-RUN cp "$(swift build --package-path /build -c release --show-bin-path/Run)" ./
+RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Run" ./
 
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
