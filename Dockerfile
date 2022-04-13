@@ -2,7 +2,7 @@ FROM swift:5.5-amazonlinux2
 
 COPY ./CODE /app/CODE
 
-WORKDIR /app
+WORKDIR /app/CODE
 
 EXPOSE 8080
 
