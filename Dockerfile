@@ -37,5 +37,5 @@ USER vapor:vapor
 
 EXPOSE 8080
 
-ENTRYPOINT [ "./Run" ]
+ENTRYPOINT [ "./PennyBOT" ]
 CMD [ "serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080" ]
