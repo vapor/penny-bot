@@ -2,7 +2,6 @@ FROM swift:5.6-focal as build
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
-    && apt-get install -y --no-install-recommends apt-utils \
     && apt-get -q dist-upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -24,9 +23,12 @@ RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -
 # ===== RUN IMAGE =====
 FROM ubuntu:focal
 
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true && \
-    apt-get -q update && apt-get -q dist-upgrade -y && apt-get -q install -y ca-certificates tzdata && \
-    rm -r /var/lib/apt/lists/*
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+    && apt-get -q update \
+    && apt-get -q dist-upgrade -y \
+    && apt-get -q install -y ca-certificates tzdata \
+    && apt-get -q install -y libcurl4-openssl-dev \
+    && rm -r /var/lib/apt/lists/*
 
 RUN useradd --user-group --create-home --system --skel /dev/null --home-dir /app vapor
 
