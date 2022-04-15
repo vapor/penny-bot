@@ -2,6 +2,7 @@ FROM swift:5.6-focal as build
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
+    && apt-get install -y --no-install-recommends apt-utils \
     && apt-get -q dist-upgrade -y \
     && rm -rf /var/lib/apt/lists/*
 
