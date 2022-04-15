@@ -41,7 +41,7 @@ Resources:
             RuntimeEnvironmentVariables:
               - 
                 Name: BOT_TOKEN
-                Value: !Sub ${BotToken}
+                Value: !Ref BotToken
               - 
                 Name: API_BASE_URL
                 Value: !GetAtt apiGateway.ApiEndpoint
