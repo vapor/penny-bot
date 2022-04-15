@@ -1,28 +1,9 @@
-FROM swift:5.5-focal as build
+FROM swift:5.5-amazonlinux2 as build
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
     && rm -rf /var/lib/apt/lists/*
-
-RUN yum -y install \
-  git \
-  libuuid-devel \
-  libicu-devel \
-  libedit-devel \
-  libxml2-devel \
-  sqlite-devel \
-  python-devel \
-  ncurses-devel \
-  curl-devel \
-  openssl-devel \
-  tzdata \
-  libtool \
-  gcc-c++ \
-  jq \
-  tar \
-  zip \
-  glibc-static
 
 WORKDIR /build
 
@@ -31,7 +12,7 @@ RUN swift package resolve
 
 COPY ./CODE .
 
-RUN swift build -c release
+RUN swift build -c release --static-swift-stdlib
 
 WORKDIR /staging
 
