@@ -28,19 +28,19 @@ jobs:
       with:
         args: --acl public-read --follow-symlinks --delete
       env:
-        AWS_S3_BUCKET: 'penny-bot-discord'
+        AWS_S3_BUCKET: 'penny-discord-bot'
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
-        AWS_REGION: 'eu-west-2'
+        AWS_REGION: 'eu-west-1'
         SOURCE_DIR: './CODE/.build/lambda/'
     - name: Update Lambda code
       run: |
         aws lambda update-function-code \
           --function-name 'PennyLambdaAddCoins-lambda' \
-          --s3-bucket 'penny-bot-discord' \
+          --s3-bucket 'penny-discord-bot' \
           --s3-key 'PennyLambdaAddCoins.zip'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
-        AWS_REGION: 'eu-west-2'
+        AWS_REGION: 'eu-west-1'
 
