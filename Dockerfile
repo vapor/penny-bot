@@ -12,7 +12,7 @@ RUN swift package resolve
 
 COPY ./CODE .
 
-RUN swift build -c release --static-swift-stdlib
+RUN swift build -c release --static-swift-stdlib --product PennyBOT
 
 WORKDIR /staging
 

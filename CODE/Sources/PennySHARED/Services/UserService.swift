@@ -14,7 +14,7 @@ public struct UserService {
     let userRepo: DynamoUserRepository
     
     public init(_ awsClient: AWSClient, _ logger: Logger) {
-        let euWest = Region(awsRegionName: "eu-west-2")
+        let euWest = Region(awsRegionName: "eu-west-1")
         //let endpoint = ProcessInfo.processInfo.environment["DynamoDBEndpointScript"]
         let dynamoDB = DynamoDB(client: awsClient, region: euWest/*, endpoint: endpoint*/)
         self.logger = logger
