@@ -1,4 +1,4 @@
-FROM swift:5.5-amazonlinux2 as build
+FROM swift:5.6-focal as build
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
