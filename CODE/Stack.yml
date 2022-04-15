@@ -56,6 +56,12 @@ Resources:
         #- !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameAddCoins}-lambda/invocations
         #- !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameBot}-lambda/invocations
 
+  apiGatewayStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref apiGateway
+      StageName: $default
+
   addCoinIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
