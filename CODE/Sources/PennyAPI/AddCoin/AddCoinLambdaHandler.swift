@@ -63,7 +63,7 @@ struct AddCoins: LambdaHandler {
             response = APIGatewayV2Response(statusCode: .ok, body: message)
         }
         catch UserService.ServiceError.failedToUpdate {
-            response = APIGatewayV2Response(statusCode: .notFound)
+            response = APIGatewayV2Response(statusCode: .notFound, body: "ERROR- The user in particular wasn't found.")
         }
         catch let error {
             response = APIGatewayV2Response(statusCode: .badRequest, body: "ERROR-\(error.localizedDescription)")
