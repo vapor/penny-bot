@@ -11,6 +11,7 @@ let package = Package(
     products: [
         .executable(name: "PennyLambdaAddCoins", targets: ["PennyLambdaAddCoins"]),
         .executable(name: "PennyBOT", targets: ["PennyBOT"]),
+        //.executable(name: "DBMigration", targets: ["DBMigration"]),
         .library(name: "PennyExtensions", targets: ["PennyExtensions"]),
         .library(name: "PennyRepositories", targets: ["PennyRepositories"]),
         .library(name: "PennyModels", targets: ["PennyModels"]),
@@ -48,6 +49,18 @@ let package = Package(
                 "PennyModels",
                 .product(name: "Vapor", package: "vapor")
             ]),
+//        .executableTarget(
+//            name: "DBMigration",
+//            dependencies: [
+//                .product(name: "SotoDynamoDB", package: "soto"),
+//                "PennyExtensions",
+//                "PennyServices",
+//                "PennyModels",
+//            ],
+//            resources: [
+//                .copy("Data/accounts.txt"),
+//                .copy("Data/coins.txt")
+//            ]),
         .target(
             name: "PennyExtensions",
             dependencies: [

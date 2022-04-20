@@ -15,7 +15,7 @@ Parameters:
     Type: String
     Description: The name of the ECR repository
     Default: penny-bot-discord-image
-  
+
 Resources:
   botAppRunner:
     Type: AWS::AppRunner::Service
@@ -60,7 +60,15 @@ Resources:
     Type: AWS::ApiGatewayV2::Stage
     Properties:
       ApiId: !Ref apiGateway
-      StageName: $default
+      StageName: prod
+      AutoDeploy: true
+
+
+  apiDeployment:
+    Type: AWS::ApiGatewayV2::Deployment
+    Properties:
+      ApiId: !Ref apiGateway
+      StageName: !Ref apiGatewayStage
 
   addCoinIntegration:
     Type: AWS::ApiGatewayV2::Integration
