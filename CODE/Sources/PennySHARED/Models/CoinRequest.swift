@@ -26,4 +26,6 @@ public enum CoinEntryReason: String, Codable {
     case userProvided
     case prSubmittedAndClosed
     case startedSponsoring
+    case transferred
+    case linkedProfile
 }

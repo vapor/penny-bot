@@ -1,16 +1,18 @@
 import Foundation
 import AsyncHTTPClient
 import PennyModels
+import Vapor
 //import PennyShared
 
 public struct CoinService {
     
     func postCoin(with coinRequest: CoinRequest) async throws -> String {
         let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+        let logger = Logger(label: "CoinService")
         
         do {
             let BASE_URL = ProcessInfo.processInfo.environment["API_BASE_URL"]
-            
+            logger.warning("\(BASE_URL)")
             var request = HTTPClientRequest(url: "\(BASE_URL ?? "")/coin")
             request.method = .POST
             request.headers.add(name: "Content-Type", value: "application/json")
