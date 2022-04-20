@@ -12,7 +12,7 @@ public struct CoinService {
         
         do {
             let BASE_URL = ProcessInfo.processInfo.environment["API_BASE_URL"]
-            logger.warning("\(BASE_URL)")
+            logger.warning("\(String(describing: BASE_URL))")
             var request = HTTPClientRequest(url: "\(BASE_URL ?? "")/coin")
             request.method = .POST
             request.headers.add(name: "Content-Type", value: "application/json")

@@ -44,7 +44,7 @@ Resources:
                 Value: !Ref BotToken
               - 
                 Name: API_BASE_URL
-                Value: !GetAtt apiGateway.ApiEndpoint
+                Value: !Join [ '/', [ !GetAtt apiGateway.ApiEndpoint, !Ref apiGatewayStage ] ]
 
   apiGateway: 
     Type: AWS::ApiGatewayV2::Api
