@@ -5,7 +5,7 @@
 //  Created by Benny De Bock on 30/03/2022.
 //
 
-import Foundation
+/*import Foundation
 import Swiftcord
 
 class SlashCommandListener {
@@ -44,4 +44,4 @@ class SlashCommandListener {
             }
         }
     }
-}
+}*/

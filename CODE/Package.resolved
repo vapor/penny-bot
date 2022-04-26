@@ -47,15 +47,6 @@
         }
       },
       {
-        "package": "Rainbow",
-        "repositoryURL": "https://github.com/onevcat/Rainbow",
-        "state": {
-          "branch": null,
-          "revision": "e0dada9cd44e3fa7ec3b867e49a8ddbf543e3df3",
-          "version": "4.0.1"
-        }
-      },
-      {
         "package": "routing-kit",
         "repositoryURL": "https://github.com/vapor/routing-kit.git",
         "state": {
@@ -87,7 +78,7 @@
         "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-events.git",
         "state": {
           "branch": "main",
-          "revision": "f646dc99c8d52b181553070c1ad8d4323bca6621",
+          "revision": "2a118fb01608ca8d8b34d10c100043e1d145bfbf",
           "version": null
         }
       },
@@ -96,7 +87,7 @@
         "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-runtime.git",
         "state": {
           "branch": "main",
-          "revision": "f2a0ef59ac021e2175d2df9d3a6efb45e63e1f5d",
+          "revision": "ac52960abda0c8c06183fe1e61cc712fbc1df2c1",
           "version": null
         }
       },
@@ -183,10 +174,10 @@
       },
       {
         "package": "Swiftcord",
-        "repositoryURL": "https://github.com/BennyDeBock/Swiftcord",
+        "repositoryURL": "https://github.com/SketchMaster2001/Swiftcord",
         "state": {
-          "branch": "master",
-          "revision": "18eb2fe69a4b15001948b8b0a7235dfd886dbf02",
+          "branch": "dev",
+          "revision": "2ebee663947f0df4b1e82cc65ce26b3552d48ca0",
           "version": null
         }
       },
@@ -195,8 +186,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "a2c1e5d9903103e6f0c458e84e6bd11effd0e4a1",
-          "version": "4.55.4"
+          "revision": "b05266f863ee93eeff4b6d075364ccc8f81bbc1e",
+          "version": "4.57.0"
         }
       },
       {
