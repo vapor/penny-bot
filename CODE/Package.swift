@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", branch: "main"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
         .package(url: "https://github.com/soto-project/soto.git", from: "5.12.1"),
-        .package(url: "https://github.com/SketchMaster2001/Swiftcord", .branch("dev")),
+        .package(url: "https://github.com/BennyDeBock/Swiftcord", .branch("master")),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0")

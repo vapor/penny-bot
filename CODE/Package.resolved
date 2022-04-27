@@ -174,10 +174,10 @@
       },
       {
         "package": "Swiftcord",
-        "repositoryURL": "https://github.com/SketchMaster2001/Swiftcord",
+        "repositoryURL": "https://github.com/BennyDeBock/Swiftcord",
         "state": {
-          "branch": "dev",
-          "revision": "2ebee663947f0df4b1e82cc65ce26b3552d48ca0",
+          "branch": "master",
+          "revision": "f5f06f88ae2ad967efb2225c1220a2442552fa0e",
           "version": null
         }
       },
