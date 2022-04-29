@@ -1,9 +1,11 @@
 import Foundation
 import Swiftcord
 import PennyModels
+import Vapor
 
 class MessageLogger: ListenerAdapter {
     let coinService: CoinService = CoinService()
+    let logger = Logger(label: "[MessageListener]")
     
     override func onMessageCreate(event: Message) async {
         // Stop the bot from responding to other bots and itself
@@ -39,8 +41,8 @@ class MessageLogger: ListenerAdapter {
                 let response = try await self.coinService.postCoin(with: coinRequest)
                 
                 if response.starts(with: "ERROR-") {
-                    event.swiftcord.log("\(response)")
-                    _ try await event.reply(with: "Oops. Something went wrong! Please try again later")
+                    logger.log(level: .error, "Received an incoming error: \(response)")
+                    _ = try await event.reply(with: "Oops. Something went wrong! Please try again later")
                 } else {
                     _ = try await event.reply(with: response)
                 }
