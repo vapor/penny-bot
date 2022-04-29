@@ -86,8 +86,8 @@
         "package": "swift-aws-lambda-runtime",
         "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-runtime.git",
         "state": {
-          "branch": "main",
-          "revision": "ac52960abda0c8c06183fe1e61cc712fbc1df2c1",
+          "branch": null,
+          "revision": "c1f694f35ae9a273919d1978111f32309e749617",
           "version": null
         }
       },

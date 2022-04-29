@@ -38,7 +38,12 @@ class MessageLogger: ListenerAdapter {
             _ = Task {
                 let response = try await self.coinService.postCoin(with: coinRequest)
                 
-                _ = try await event.reply(with: response)
+                if response.starts(with: "ERROR-") {
+                    event.swiftcord.log("\(response)")
+                    _ try await event.reply(with: "Oops. Something went wrong! Please try again later")
+                } else {
+                    _ = try await event.reply(with: response)
+                }
             }
         }
     }
