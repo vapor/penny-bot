@@ -18,15 +18,16 @@ struct AddCoins: LambdaHandler {
     
     let userService: UserService
     
-    init(context: Lambda.InitializationContext) async throws {
+    init(context: LambdaInitializationContext) async throws {
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop))
         self.userService = UserService(awsClient, context.logger)
-    }
-    
-    func shutdown(context: Lambda.ShutdownContext) async throws {
-        try awsClient.syncShutdown()
+        
+        context.terminator.register(name: "Shutdown AWSClient", handler: { eventLoop in
+            self.awsClient.syncShutdown()
+            eventLoop.makeSucceededVoidFuture()
+        })
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
