@@ -27,13 +27,15 @@ struct Penny {
         try LoggingSystem.bootstrap(from: &env)
         let app = Application(env)
         defer { app.shutdown() }
+        
+        app.logger.logLevel = .debug
 
         app.routes.get { _ in
             return "Ok"
         }
 
         let options = SwiftcordOptions(isBot: true, willLog: true)
-        let bot = Swiftcord(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", options: options)
+        let bot = Swiftcord(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", options: options, logger: app.logger, eventLoopGroup: app.eventLoopGroup)
 
         
         // Set activity
@@ -43,7 +45,7 @@ struct Penny {
         // Set intents
         bot.setIntents(intents: .guildMessages)
 
-        bot.addListeners(MessageLogger())
+        bot.addListeners(MessageLogger(logger: app.logger, httpClient: app.http.client.shared))
         //let messageLogger = MessageLogger(bot: bot)
         //messageLogger.messageLogger()
 
@@ -53,5 +55,7 @@ struct Penny {
         
         try await app.run()
         bot.connect()
+        
+        dispatchMain()
     }
 }

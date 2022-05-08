@@ -4,8 +4,13 @@ import PennyModels
 import Vapor
 
 class MessageLogger: ListenerAdapter {
-    let coinService: CoinService = CoinService()
-    let logger = Logger(label: "[MessageListener]")
+    let coinService: CoinService
+    let logger: Logger
+    
+    init(logger: Logger, httpClient: HTTPClient) {
+        self.logger = logger
+        self.coinService = CoinService(logger: logger, httpClient: httpClient)
+    }
     
     override func onMessageCreate(event: Message) async {
         // Stop the bot from responding to other bots and itself
