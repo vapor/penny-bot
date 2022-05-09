@@ -39,7 +39,7 @@ struct Penny {
 
         
         // Set activity
-        let activity = Activities(name: "Working on myself", type: .playing)
+        let activity = Activities(name: "Showing appreciation to the amazing Vapor community", type: .playing)
         bot.editStatus(status: .online, activity: activity)
 
         // Set intents
