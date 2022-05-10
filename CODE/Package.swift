@@ -24,7 +24,8 @@ let package = Package(
         .package(url: "https://github.com/BennyDeBock/Swiftcord", .branch("master")),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0")
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
+        .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -45,6 +46,7 @@ let package = Package(
             name: "PennyBOT",
             dependencies: [
                 "Swiftcord",
+                .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
                 .product(name: "Vapor", package: "vapor")

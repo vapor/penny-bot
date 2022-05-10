@@ -1,6 +1,7 @@
 import Swiftcord
 import Foundation
 import Vapor
+import Backtrace
 
 extension Application {
     func run() async throws {
@@ -23,6 +24,7 @@ extension Application {
 @main
 struct Penny {
     static func main() async throws {
+        Backtrace.install()
         var env = try Environment.detect()
         try LoggingSystem.bootstrap(from: &env)
         let app = Application(env)
