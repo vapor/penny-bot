@@ -6,7 +6,7 @@ import Vapor
 class MessageLogger: ListenerAdapter {
     let coinService: CoinService
     let logger: Logger
-    let testChannelId = 441327731486097429
+    let testChannelId:Snowflake = 441327731486097429
     
     init(logger: Logger, httpClient: HTTPClient) {
         self.logger = logger
@@ -50,7 +50,7 @@ class MessageLogger: ListenerAdapter {
                     if event.channel.id == testChannelId {
                         _ = try await event.reply(with: "Received an incoming error: \(response)")
                     }
-                    logger.error(level: .error, "Received an incoming error: \(response)")
+                    logger.error("Received an incoming error: \(response)")
                     _ = try await event.reply(with: "Oops. Something went wrong! Please try again later")
                 } else {
                     _ = try await event.reply(with: response)
