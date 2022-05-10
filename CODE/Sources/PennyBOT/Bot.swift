@@ -28,7 +28,7 @@ struct Penny {
         let app = Application(env)
         defer { app.shutdown() }
         
-        app.logger.logLevel = .debug
+        app.logger.logLevel = .trace
 
         app.routes.get { _ in
             return "Ok"
