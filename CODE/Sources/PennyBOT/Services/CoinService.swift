@@ -1,7 +1,7 @@
 import Foundation
 import AsyncHTTPClient
 import PennyModels
-import Vapor
+import Logging
 //import PennyShared
 
 public struct CoinService {

@@ -11,48 +11,12 @@
         }
       },
       {
-        "package": "async-kit",
-        "repositoryURL": "https://github.com/vapor/async-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "e2f741640364c1d271405da637029ea6a33f754e",
-          "version": "1.11.1"
-        }
-      },
-      {
-        "package": "console-kit",
-        "repositoryURL": "https://github.com/vapor/console-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "75ea3b627d88221440b878e5dfccc73fd06842ed",
-          "version": "4.2.7"
-        }
-      },
-      {
         "package": "jmespath.swift",
         "repositoryURL": "https://github.com/adam-fowler/jmespath.swift.git",
         "state": {
           "branch": null,
           "revision": "4513d319c4aaa6c3b2ac18e1e6566a803515ad91",
           "version": "1.0.2"
-        }
-      },
-      {
-        "package": "multipart-kit",
-        "repositoryURL": "https://github.com/vapor/multipart-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "2dd9368a3c9580792b77c7ef364f3735909d9996",
-          "version": "4.5.1"
-        }
-      },
-      {
-        "package": "routing-kit",
-        "repositoryURL": "https://github.com/vapor/routing-kit.git",
-        "state": {
-          "branch": null,
-          "revision": "5603b81ceb744b8318feab1e60943704977a866b",
-          "version": "4.3.1"
         }
       },
       {
@@ -179,15 +143,6 @@
           "branch": "master",
           "revision": "8d9661647fdebf6948d0927eb1670bcaa5bad2d8",
           "version": null
-        }
-      },
-      {
-        "package": "vapor",
-        "repositoryURL": "https://github.com/vapor/vapor.git",
-        "state": {
-          "branch": null,
-          "revision": "b05266f863ee93eeff4b6d075364ccc8f81bbc1e",
-          "version": "4.57.0"
         }
       },
       {

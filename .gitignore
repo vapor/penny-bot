@@ -16,3 +16,4 @@ CODE/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .devcontainer/library-scripts/common-debian.sh
 .devcontainer/library-scripts/node-debian.sh
 CODE/Sources/DBMigration/Data
+.vscode/

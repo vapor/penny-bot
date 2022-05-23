@@ -1,43 +1,28 @@
 import Swiftcord
 import Foundation
-import Vapor
+import Logging
+import NIOPosix
+import NIOCore
+import AsyncHTTPClient
 import Backtrace
-
-extension Application {
-    func run() async throws {
-        let appThread = Thread {
-            do {
-                self.logger.info("Running Vapor Application")
-                try self.run()
-                exit(0)
-            } catch {
-                print(error)
-                exit(1)
-            }
-        }
-
-        appThread.name = "Application"
-        appThread.start()
-    }
-}
 
 @main
 struct Penny {
     static func main() async throws {
         Backtrace.install()
-        var env = try Environment.detect()
-        try LoggingSystem.bootstrap(from: &env)
-        let app = Application(env)
-        defer { app.shutdown() }
+//        try LoggingSystem.bootstrap(from: &env)
+        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
+        var logger = Logger(label: "Penny")
+        logger.logLevel = .trace
+        let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
         
-        app.logger.logLevel = .trace
-
-        app.routes.get { _ in
-            return "Ok"
+        defer {
+            try! client.syncShutdown()
+            try! eventLoopGroup.syncShutdownGracefully()
         }
 
         let options = SwiftcordOptions(isBot: true, willLog: true)
-        let bot = Swiftcord(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", options: options, logger: app.logger, eventLoopGroup: app.eventLoopGroup)
+        let bot = Swiftcord(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", options: options, logger: logger, eventLoopGroup: eventLoopGroup)
 
         
         // Set activity
@@ -47,7 +32,7 @@ struct Penny {
         // Set intents
         bot.setIntents(intents: .guildMessages)
 
-        bot.addListeners(MessageLogger(logger: app.logger, httpClient: app.http.client.shared))
+        bot.addListeners(MessageLogger(logger: logger, httpClient: client))
         //let messageLogger = MessageLogger(bot: bot)
         //messageLogger.messageLogger()
 
@@ -55,9 +40,6 @@ struct Penny {
         //slashCommandListener.BuildCommands()
         //slashCommandListener.ListenToSlashCommands()
         
-        try await app.run()
         bot.connect()
-        
-        dispatchMain()
     }
 }

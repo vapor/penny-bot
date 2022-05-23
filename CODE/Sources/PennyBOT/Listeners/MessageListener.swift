@@ -1,7 +1,8 @@
 import Foundation
 import Swiftcord
 import PennyModels
-import Vapor
+import Logging
+import AsyncHTTPClient
 
 class MessageLogger: ListenerAdapter {
     let coinService: CoinService
