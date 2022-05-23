@@ -1,0 +1,44 @@
+{
+    "family": "penny-bot", 
+    "networkMode": "awsvpc", 
+    "containerDefinitions": [
+        {
+            "name": "penny-bot", 
+            "image": "177420307256.dkr.ecr.eu-west-1.amazonaws.com/penny-bot-discord-image:latest", 
+            "portMappings": [
+                {
+                    "containerPort": 8080, 
+                    "protocol": "tcp"
+                }
+            ], 
+            "essential": true,
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/penny-bot-api",
+                    "awslogs-region": "eu-west-1",
+                    "awslogs-stream-prefix": "ecs"
+                  }
+            },
+            "environment": [
+                {
+                    "name": "API_BASE_URL",
+                    "value": "https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod"
+                }
+            ],
+            "secrets": [
+                {
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH",
+                    "name": "BOT_TOKEN"
+                }
+            ]
+        }
+    ], 
+    "requiresCompatibilities": [
+        "FARGATE"
+    ], 
+    "cpu": "256", 
+    "memory": "512",
+    "executionRoleArn": "arn:aws:iam::177420307256:role/ecsTaskExecutionRole",
+    "taskRoleArn": "arn:aws:iam::177420307256:role/ecsTaskIAMRole"
+}

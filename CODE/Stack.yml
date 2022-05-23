@@ -8,43 +8,54 @@ Parameters:
     Type: String
     Description: Filename of the code function for the adding of coins uploaded to S3
     Default: PennyLambdaAddCoins
-  BotToken:
-    Type: String
-    Description: The private token of the Penny-Bot
-  RepositoryName:
-    Type: String
-    Description: The name of the ECR repository
-    Default: penny-bot-discord-image
+  VPC:
+    Description: VPC for the app
+    Type: AWS::EC2::VPC::Id
+  Subnet:
+    Description: Subnet for the app
+    Type: AWS::EC2::Subnet::Id
 
 Resources:
-  botAppRunner:
-    Type: AWS::AppRunner::Service
+  Cluster:
+    Type: AWS::ECS::Cluster
+    Properties: 
+      ClusterName: !Sub "${apiGatewayName}-Cluster"
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
     Properties:
-      ServiceName: Penny-Bot  
-      HealthCheckConfiguration:
-        HealthyThreshold: 2
-        Interval: 5
-        Path: /
-        Timeout: 2
-        UnhealthyThreshold: 2
-      SourceConfiguration:
-        AuthenticationConfiguration:
-          AccessRoleArn: !Sub arn:aws:iam::${AWS::AccountId}:role/service-role/PennyBotAppRunner
-        AutoDeploymentsEnabled: true
-        ImageRepository:
-          #ImageIdentifier: !GetAtt botECRRepository.RepositoryUri
-          ImageIdentifier: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${RepositoryName}:latest
-          ImageRepositoryType: ECR
-          ImageConfiguration:
-            #StartCommand: docker run -p 8080:8080 177420307256.dkr.ecr.eu-west-1.amazonaws.com/penny-bot-discord-image
-            Port: 8080
-            RuntimeEnvironmentVariables:
-              - 
-                Name: BOT_TOKEN
-                Value: !Ref BotToken
-              - 
-                Name: API_BASE_URL
-                Value: !Join [ '/', [ !GetAtt apiGateway.ApiEndpoint, !Ref apiGatewayStage ] ]
+      GroupDescription: !Join ['-', [!Ref apiGatewayName, SecurityGroup]]
+      VpcId: 
+        'Fn::ImportValue': !Ref VPC
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['/', [/ecs, !Ref ServiceNameBase]]
+      RetentionInDays: 1
+  Service:
+    Type: AWS::ECS::Service
+    Properties: 
+      ServiceName: Penny-Bot
+      Cluster: !Ref Cluster
+      TaskDefinition: !Ref TaskDefinition
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 100
+        MaximumPercent: 200
+      DesiredCount: 1
+      LaunchType: FARGATE
+      PlatformVersion: 1.4.0
+      NetworkConfiguration: 
+        AwsvpcConfiguration:
+          # change to DISABLED if you're using private subnets that have access to a NAT gateway
+          AssignPublicIp: ENABLED
+          Subnets:
+            - !Ref Subnet
+          SecurityGroups:
+            - !Ref AppSecurityGroup
 
   apiGateway: 
     Type: AWS::ApiGatewayV2::Api
