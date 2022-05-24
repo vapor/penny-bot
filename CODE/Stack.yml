@@ -11,9 +11,11 @@ Parameters:
   VPC:
     Description: VPC for the app
     Type: AWS::EC2::VPC::Id
+    Default: vpc-08d1e66947d6200d6
   Subnet:
     Description: Subnet for the app
     Type: AWS::EC2::Subnet::Id
+    Default: subnet-088d7192c6c67e077
   TaskDefinition:
     Description: Task def for the ECS task
     Type: String
