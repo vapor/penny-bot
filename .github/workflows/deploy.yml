@@ -46,6 +46,12 @@ jobs:
         run: |
           JSON=$(cat ${{ steps.task-def.outputs.task-definition }})
           echo $JSON
+      - name: Deploy to Amazon ECS Service
+        id: task-dep
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          wait-for-service-stability: true
       - name: Deploy to AWS cloudformation
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
         with:
@@ -53,4 +59,4 @@ jobs:
           template: ./CODE/Stack.yml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: >-
-            TaskDefinition="penny-bot:1"
+            TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
