@@ -46,7 +46,6 @@ jobs:
         run: |
           JSON=$(cat ${{ steps.task-def.outputs.task-definition }})
           echo $JSON
-          echo "${{ fromJSON(JSON) }}"
       - name: Deploy to AWS cloudformation
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
         with:
