@@ -44,7 +44,7 @@ jobs:
           image: ${{ steps.build-image.outputs.image }}
       - name: Print output aws task definition
         run: |
-          echo ${{ steps.task-def.outputs.task-definition }}
+          echo ${{ fromJSON(steps.task-def.outputs.task-definition) }}
       - name: Deploy to AWS cloudformation
         uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
         with:
