@@ -53,4 +53,4 @@ jobs:
           template: ./CODE/Stack.yml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: >-
-            TaskDefinition=${{ steps.task-def.outputs.task-definition }}
+            TaskDefinition="penny-bot:1"
