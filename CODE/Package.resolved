@@ -24,8 +24,8 @@
         "repositoryURL": "https://github.com/soto-project/soto.git",
         "state": {
           "branch": null,
-          "revision": "b98994beabdced18cbedbe50e947e6f2c8e0d602",
-          "version": "5.12.1"
+          "revision": "3648a7fcbaa1ac06b6ab2b4b227d521ed065e780",
+          "version": "5.13.1"
         }
       },
       {
@@ -42,7 +42,7 @@
         "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-events.git",
         "state": {
           "branch": "main",
-          "revision": "2a118fb01608ca8d8b34d10c100043e1d145bfbf",
+          "revision": "94642d229fea2459ee8400898431160d6f13ffb4",
           "version": null
         }
       },
@@ -87,8 +87,8 @@
         "repositoryURL": "https://github.com/apple/swift-metrics.git",
         "state": {
           "branch": null,
-          "revision": "eadb828f878fed144387e3845866225bb7082c56",
-          "version": "2.3.0"
+          "revision": "1c1408bf8fc21be93713e897d2badf500ea38419",
+          "version": "2.3.1"
         }
       },
       {
@@ -141,7 +141,7 @@
         "repositoryURL": "https://github.com/BennyDeBock/Swiftcord",
         "state": {
           "branch": "master",
-          "revision": "8d9661647fdebf6948d0927eb1670bcaa5bad2d8",
+          "revision": "ec6ba8771074d86b8f8514092f37964f0bcc2278",
           "version": null
         }
       },
@@ -150,7 +150,7 @@
         "repositoryURL": "https://github.com/vapor/websocket-kit",
         "state": {
           "branch": "main",
-          "revision": "586745eb0528621b9d64b2632135c8cef82701d8",
+          "revision": "09212f4c2b9ebdef00f04b913b57f5d77bc4ea62",
           "version": null
         }
       }
