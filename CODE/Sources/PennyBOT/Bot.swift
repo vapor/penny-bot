@@ -1,4 +1,4 @@
-import Swiftcord
+import DiscordBM
 import Foundation
 import Logging
 import NIOPosix
@@ -8,7 +8,7 @@ import Backtrace
 
 @main
 struct Penny {
-    static func main() async throws {
+    static func main() throws {
         Backtrace.install()
 //        try LoggingSystem.bootstrap(from: &env)
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
@@ -20,26 +20,54 @@ struct Penny {
             try! client.syncShutdown()
             try! eventLoopGroup.syncShutdownGracefully()
         }
-
-        let options = SwiftcordOptions(isBot: true, willLog: true)
-        let bot = Swiftcord(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", options: options, logger: logger, eventLoopGroup: eventLoopGroup)
-
         
-        // Set activity
-        let activity = Activities(name: "Showing appreciation to the amazing Vapor community", type: .playing)
-        bot.editStatus(status: .online, activity: activity)
-
-        // Set intents
-        bot.setIntents(intents: .guildMessages)
-
-        bot.addListeners(MessageLogger(logger: logger, httpClient: client))
-        //let messageLogger = MessageLogger(bot: bot)
-        //messageLogger.messageLogger()
-
-        //let slashCommandListener = SlashCommandListener(bot: bot)
-        //slashCommandListener.BuildCommands()
-        //slashCommandListener.ListenToSlashCommands()
+        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
+              let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
+            fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
+        }
+        
+        // For a day not to come. Checks for zombied connections every 2 hours.
+        DiscordGlobalConfiguration.zombiedConnectionCheckerTolerance = 2 * 60 * 60
+        
+        DiscordGlobalConfiguration.makeLogger = { label in
+            var _logger = Logger(label: label)
+            _logger.logLevel = logger.logLevel
+            return _logger
+        }
+        
+        let bot = GatewayManager(
+            eventLoopGroup: eventLoopGroup,
+            httpClient: client,
+            token: token,
+            appId: appId,
+            presence: .init(
+                activities: [
+                    .init(name: "Showing appreciation to the amazing Vapor community", type: .game)
+                ],
+                status: .online,
+                afk: false
+            ),
+            intents: [.guildMessages, .messageContent]
+        )
+        
+        Task {
+            await bot.addEventHandler { event in
+                EventHandler(
+                    event: event,
+                    discordClient: bot.client,
+                    coinService: CoinService(logger: logger, httpClient: client),
+                    logger: logger
+                ).handle()
+            }
+        }
         
         bot.connect()
+        
+        SlashCommandHandler(
+            discordClient: bot.client,
+            logger: logger
+        ).registerCommands()
+        
+        RunLoop.current.run()
     }
 }

@@ -6,8 +6,17 @@
         "repositoryURL": "https://github.com/swift-server/async-http-client.git",
         "state": {
           "branch": null,
-          "revision": "24425989dadab6d6e4167174791a23d4e2a6d0c3",
-          "version": "1.10.0"
+          "revision": "fc510a39cff61b849bf5cdff17eb2bd6d0777b49",
+          "version": "1.11.5"
+        }
+      },
+      {
+        "package": "DiscordBM",
+        "repositoryURL": "https://github.com/mahdibm/DiscordBM.git",
+        "state": {
+          "branch": "main",
+          "revision": "8a0311362ccd0b6fa3a508b97d4d73176935633f",
+          "version": null
         }
       },
       {
@@ -38,11 +47,20 @@
         }
       },
       {
+        "package": "swift-atomics",
+        "repositoryURL": "https://github.com/apple/swift-atomics.git",
+        "state": {
+          "branch": null,
+          "revision": "919eb1d83e02121cdb434c7bfc1f0c66ef17febe",
+          "version": "1.0.2"
+        }
+      },
+      {
         "package": "swift-aws-lambda-events",
         "repositoryURL": "https://github.com/swift-server/swift-aws-lambda-events.git",
         "state": {
           "branch": "main",
-          "revision": "94642d229fea2459ee8400898431160d6f13ffb4",
+          "revision": "6a9065203ee1564d2353ec53983da8ac49292369",
           "version": null
         }
       },
@@ -60,8 +78,8 @@
         "repositoryURL": "https://github.com/swift-server/swift-backtrace.git",
         "state": {
           "branch": null,
-          "revision": "d3e04a9d4b3833363fb6192065b763310b156d54",
-          "version": "1.3.1"
+          "revision": "f25620d5d05e2f1ba27154b40cafea2b67566956",
+          "version": "1.3.3"
         }
       },
       {
@@ -78,8 +96,8 @@
         "repositoryURL": "https://github.com/apple/swift-log.git",
         "state": {
           "branch": null,
-          "revision": "5d66f7ba25daf4f94100e7022febf3c75e37a6c7",
-          "version": "1.4.2"
+          "revision": "6fe203dc33195667ce1759bf0182975e4653ba1c",
+          "version": "1.4.4"
         }
       },
       {
@@ -87,8 +105,8 @@
         "repositoryURL": "https://github.com/apple/swift-metrics.git",
         "state": {
           "branch": null,
-          "revision": "1c1408bf8fc21be93713e897d2badf500ea38419",
-          "version": "2.3.1"
+          "revision": "53be78637ecd165d1ddedc4e20de69b8f43ec3b7",
+          "version": "2.3.2"
         }
       },
       {
@@ -96,8 +114,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "124119f0bb12384cef35aa041d7c3a686108722d",
-          "version": "2.40.0"
+          "revision": "b4e0a274f7f34210e97e2f2c50ab02a10b549250",
+          "version": "2.41.1"
         }
       },
       {
@@ -105,8 +123,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio-extras.git",
         "state": {
           "branch": null,
-          "revision": "8eea84ec6144167354387ef9244b0939f5852dc8",
-          "version": "1.11.0"
+          "revision": "5334d949febb396a4e2e5235e9fbcd9c3c014bb3",
+          "version": "1.13.0"
         }
       },
       {
@@ -114,8 +132,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio-http2.git",
         "state": {
           "branch": null,
-          "revision": "72bcaf607b40d7c51044f65b0f5ed8581a911832",
-          "version": "1.21.0"
+          "revision": "f9ab1c94c80d568efd762d2a638f25162691d766",
+          "version": "1.22.1"
         }
       },
       {
@@ -123,8 +141,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio-ssl.git",
         "state": {
           "branch": null,
-          "revision": "1750873bce84b4129b5303655cce2c3d35b9ed3a",
-          "version": "2.19.0"
+          "revision": "a6f9a034e5903024c6bac4ce2c56b157688d844f",
+          "version": "2.22.0"
         }
       },
       {
@@ -132,26 +150,17 @@
         "repositoryURL": "https://github.com/apple/swift-nio-transport-services.git",
         "state": {
           "branch": null,
-          "revision": "1a4692acb88156e3da1b0c6732a8a38b2a744166",
-          "version": "1.12.0"
-        }
-      },
-      {
-        "package": "Swiftcord",
-        "repositoryURL": "https://github.com/BennyDeBock/Swiftcord",
-        "state": {
-          "branch": "master",
-          "revision": "ec6ba8771074d86b8f8514092f37964f0bcc2278",
-          "version": null
+          "revision": "4e02d9cf35cabfb538c96613272fb027dd0c8692",
+          "version": "1.13.1"
         }
       },
       {
         "package": "websocket-kit",
         "repositoryURL": "https://github.com/vapor/websocket-kit",
         "state": {
-          "branch": "main",
-          "revision": "09212f4c2b9ebdef00f04b913b57f5d77bc4ea62",
-          "version": null
+          "branch": null,
+          "revision": "2d9d2188a08eef4a869d368daab21b3c08510991",
+          "version": "2.6.1"
         }
       }
     ]

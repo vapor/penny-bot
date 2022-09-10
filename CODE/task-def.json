@@ -24,6 +24,10 @@
                 {
                     "name": "API_BASE_URL",
                     "value": "https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod"
+                },
+                {
+                    "name": "BOT_APP_ID",
+                    "value": "950695294906007573"
                 }
             ],
             "secrets": [
