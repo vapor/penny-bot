@@ -74,7 +74,7 @@ struct EventHandler {
                     await respondToMessage(with: oops, channelId: event.channel_id)
                 }
             } else {
-                await respondToMessage(with: oops, channelId: event.channel_id)
+                await respondToMessage(with: response, channelId: event.channel_id)
             }
         }
     }
