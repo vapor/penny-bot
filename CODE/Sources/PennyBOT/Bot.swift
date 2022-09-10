@@ -1,4 +1,4 @@
-import Swiftcord
+import DiscordBM
 import Foundation
 import Logging
 import NIOPosix
@@ -20,19 +20,30 @@ struct Penny {
             try! client.syncShutdown()
             try! eventLoopGroup.syncShutdownGracefully()
         }
-
-        let options = SwiftcordOptions(isBot: true, willLog: true)
-        let bot = Swiftcord(token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "", options: options, logger: logger, eventLoopGroup: eventLoopGroup)
-
         
-        // Set activity
-        let activity = Activities(name: "Showing appreciation to the amazing Vapor community", type: .playing)
-        bot.editStatus(status: .online, activity: activity)
-
-        // Set intents
-        bot.setIntents(intents: .guildMessages)
-
-        bot.addListeners(MessageLogger(logger: logger, httpClient: client))
+        let bot = GatewayManager(
+            eventLoopGroup: eventLoopGroup,
+            httpClient: client,
+            token: ProcessInfo.processInfo.environment["BOT_TOKEN"] ?? "",
+            appId: ProcessInfo.processInfo.environment["BOT_APP_ID"] ?? "",
+            presence: .init(
+                activities: [
+                    .init(name: "Showing appreciation to the amazing Vapor community", type: .game)
+                ],
+                status: .online,
+                afk: false
+            ),
+            intents: [.guildMessages, .messageContent]
+        )
+        
+        await bot.addEventHandler { event in
+            EventHandler(
+                event: event,
+                discordClient: bot.client,
+                coinService: CoinService(logger: logger, httpClient: client),
+                logger: logger
+            ).handle()
+        }
         //let messageLogger = MessageLogger(bot: bot)
         //messageLogger.messageLogger()
 

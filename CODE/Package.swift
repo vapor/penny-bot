@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", .revisionItem("c1f694f35ae9a273919d1978111f32309e749617")),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
         .package(url: "https://github.com/soto-project/soto.git", from: "5.12.1"),
-        .package(url: "https://github.com/BennyDeBock/Swiftcord", .branch("master")),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
@@ -44,7 +44,7 @@ let package = Package(
         .executableTarget(
             name: "PennyBOT",
             dependencies: [
-                "Swiftcord",
+                .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
@@ -70,9 +70,6 @@ let package = Package(
             path: "./Sources/PennySHARED/Extensions"),
         .target(
             name: "PennyModels",
-            dependencies: [
-                "Swiftcord"
-            ],
             path: "./Sources/PennySHARED/Models"),
         .target(
             name: "PennyRepositories",

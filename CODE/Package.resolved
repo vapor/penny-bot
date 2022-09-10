@@ -11,6 +11,15 @@
         }
       },
       {
+        "package": "DiscordBM",
+        "repositoryURL": "https://github.com/mahdibm/DiscordBM.git",
+        "state": {
+          "branch": "main",
+          "revision": "3f57a626296b54f671add236a6ebafc137b03e58",
+          "version": null
+        }
+      },
+      {
         "package": "jmespath.swift",
         "repositoryURL": "https://github.com/adam-fowler/jmespath.swift.git",
         "state": {
@@ -35,6 +44,15 @@
           "branch": null,
           "revision": "3079d17f2576cff5f2a3f68865629af455c673d1",
           "version": "5.9.3"
+        }
+      },
+      {
+        "package": "swift-atomics",
+        "repositoryURL": "https://github.com/apple/swift-atomics.git",
+        "state": {
+          "branch": null,
+          "revision": "919eb1d83e02121cdb434c7bfc1f0c66ef17febe",
+          "version": "1.0.2"
         }
       },
       {
@@ -96,8 +114,8 @@
         "repositoryURL": "https://github.com/apple/swift-nio.git",
         "state": {
           "branch": null,
-          "revision": "124119f0bb12384cef35aa041d7c3a686108722d",
-          "version": "2.40.0"
+          "revision": "b4e0a274f7f34210e97e2f2c50ab02a10b549250",
+          "version": "2.41.1"
         }
       },
       {
@@ -137,21 +155,12 @@
         }
       },
       {
-        "package": "Swiftcord",
-        "repositoryURL": "https://github.com/BennyDeBock/Swiftcord",
-        "state": {
-          "branch": "master",
-          "revision": "ec6ba8771074d86b8f8514092f37964f0bcc2278",
-          "version": null
-        }
-      },
-      {
         "package": "websocket-kit",
         "repositoryURL": "https://github.com/vapor/websocket-kit",
         "state": {
-          "branch": "main",
-          "revision": "09212f4c2b9ebdef00f04b913b57f5d77bc4ea62",
-          "version": null
+          "branch": null,
+          "revision": "2d9d2188a08eef4a869d368daab21b3c08510991",
+          "version": "2.6.1"
         }
       }
     ]
