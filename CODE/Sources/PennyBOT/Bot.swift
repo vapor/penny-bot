@@ -60,12 +60,13 @@ struct Penny {
                 ).handle()
             }
         }
-
-        //let slashCommandListener = SlashCommandListener(bot: bot)
-        //slashCommandListener.BuildCommands()
-        //slashCommandListener.ListenToSlashCommands()
         
         bot.connect()
+        
+        SlashCommandHandler(
+            discordClient: bot.client,
+            logger: logger
+        ).registerCommands()
         
         RunLoop.current.run()
     }

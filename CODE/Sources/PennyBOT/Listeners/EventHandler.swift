@@ -12,12 +12,18 @@ struct EventHandler {
     let testChannelId = "441327731486097429"
     
     func handle() {
-        switch event.data {
-        case .messageCreate(let message):
-            Task {
+        Task {
+            switch event.data {
+            case .messageCreate(let message):
                 await onMessageCreate(event: message)
+            case .interactionCreate(let interaction):
+                await InteractionHandler(
+                    discordClient: discordClient,
+                    logger: logger,
+                    event: interaction
+                ).handle()
+            default: break
             }
-        default: break
         }
     }
     
