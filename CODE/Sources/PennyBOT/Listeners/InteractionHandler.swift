@@ -17,6 +17,8 @@ struct InteractionHandler {
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
         let response = await processAndMakeResponse()
+        //TODO: For debugging purposes, remove in production
+        try? await Task.sleep(nanoseconds: 8 * 1_000_000_000)
         await respondToInteraction(with: response)
     }
     
@@ -44,9 +46,11 @@ struct InteractionHandler {
             case "slack":
                 return "This command is still a WIP. Linking Discord with Slack ID \(id)"
             default:
+                logger.error("Unrecognized link option: \(first.name)")
                 return "Option not recognized: \(first.name)"
             }
         default:
+            logger.error("Unrecognized command. Event: \(event)")
             return "Command not recognized"
         }
     }
@@ -57,7 +61,7 @@ struct InteractionHandler {
             let apiResponse = try await discordClient.createInteractionResponse(
                 id: event.id,
                 token: event.token,
-                payload: .init(type: .messageEditWithLoadingState)
+                payload: .init(type: .messageEditNoLoadingState)
             ).raw
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
