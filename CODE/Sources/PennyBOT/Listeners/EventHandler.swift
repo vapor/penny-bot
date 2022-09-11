@@ -81,10 +81,10 @@ struct EventHandler {
     
     private func respondToMessage(with response: String, channelId: String) async {
         do {
-            let apiResponse = try await discordClient.postChannelCreateMessage(
-                id: channelId,
+            let apiResponse = try await discordClient.createMessage(
+                channelId: channelId,
                 payload: .init(content: response)
-            )
+            ).raw
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API: \(apiResponse)")
             }

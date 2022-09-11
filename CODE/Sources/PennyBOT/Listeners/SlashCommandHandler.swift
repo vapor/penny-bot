@@ -62,7 +62,7 @@ struct SlashCommandHandler {
             do {
                 let apiResponse = try await discordClient.createApplicationGlobalCommand(
                     payload: linkCommand
-                )
+                ).raw
                 if !(200..<300).contains(apiResponse.status.code) {
                     logger.error("Received non-200 status from Discord API for slash commands: \(apiResponse)")
                 }

@@ -18,7 +18,7 @@ let package = Package(
         .library(name: "PennyServices", targets: ["PennyServices"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", .revisionItem("c1f694f35ae9a273919d1978111f32309e749617")),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", revision: "c1f694f35ae9a273919d1978111f32309e749617"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
         .package(url: "https://github.com/soto-project/soto.git", from: "5.12.1"),
         .package(url: "https://github.com/mahdibm/DiscordBM.git", branch: "main"),

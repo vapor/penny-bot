@@ -26,9 +26,6 @@ struct Penny {
             fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
         }
         
-        // For a day not to come. Checks for zombied connections every 2 hours.
-        DiscordGlobalConfiguration.zombiedConnectionCheckerTolerance = 2 * 60 * 60
-        
         DiscordGlobalConfiguration.makeLogger = { label in
             var _logger = Logger(label: label)
             _logger.logLevel = logger.logLevel
