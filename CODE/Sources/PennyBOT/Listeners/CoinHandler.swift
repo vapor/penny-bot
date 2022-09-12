@@ -64,6 +64,19 @@ struct CoinHandler {
             }
         }
         
+        // The logic above doesn't take care of message starting with @s and ending in a coin
+        // suffix. If there were no users found so far, we will try to check for this case.
+        if usersWithNewCoins.isEmpty,
+           components.reversed().first?.element.isCoinSuffix == true {
+            for mention in allMentions {
+                if mention.element.isUserMention {
+                    usersWithNewCoins.append(mention.element)
+                } else {
+                    break
+                }
+            }
+        }
+        
         // Support a maximum of 10 users in one message make abusing the bot harder.
         if usersWithNewCoins.count > 10 {
             return Array(usersWithNewCoins.dropLast(usersWithNewCoins.count - 10))
