@@ -9,6 +9,10 @@ struct Response: Codable {
     let body: String
 }
 
+struct FailedToShutdownAWSError: Error {
+    let message = "Failed to shutdown the AWS Client"
+}
+
 @main
 struct AddCoins: LambdaHandler {
     typealias Event = APIGatewayV2Request
@@ -18,15 +22,20 @@ struct AddCoins: LambdaHandler {
     
     let userService: UserService
     
-    init(context: Lambda.InitializationContext) async throws {
-        // setup your resources that you want to reuse for every invocation here.
-        self.awsClient = AWSClient(
+    init(context: LambdaInitializationContext) async throws {
+        let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop))
+        // setup your resources that you want to reuse for every invocation here.
+        self.awsClient = awsClient
         self.userService = UserService(awsClient, context.logger)
-    }
-    
-    func shutdown(context: Lambda.ShutdownContext) async throws {
-        try awsClient.syncShutdown()
+        context.terminator.register(name: "Shutdown AWS", handler: { eventloop in
+            do {
+                try awsClient.syncShutdown()
+                return eventloop.makeSucceededVoidFuture()
+            } catch {
+                return eventloop.makeFailedFuture(FailedToShutdownAWSError())
+            }
+        })
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
