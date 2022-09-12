@@ -46,7 +46,10 @@ struct CoinHandler {
     
     /// Finds users that need to get a coin, if anyone at all.
     func findUsers() -> [String] {
-        let components = text.components(separatedBy: " ").enumerated()
+        let components = text
+            .split(whereSeparator: { $0.isWhitespace || $0.isNewline })
+            .map({ String($0) })
+            .enumerated()
         let allMentions = components.filter(\.element.isUserMention)
         
         var usersWithNewCoins = [String]()
