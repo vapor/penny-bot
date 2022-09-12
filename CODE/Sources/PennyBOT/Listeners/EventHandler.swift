@@ -9,7 +9,6 @@ struct EventHandler {
     let discordClient: DiscordClient
     let coinService: CoinService
     let logger: Logger
-    let testChannelId = "441327731486097429"
     
     func handle() {
         Task {
@@ -30,11 +29,6 @@ struct EventHandler {
     func onMessageCreate(event: Gateway.Message) async {
         // Stop the bot from responding to other bots and itself
         if event.member?.user?.bot == true {
-            return
-        }
-        
-        // TODO: remove in production
-        if event.channel_id != testChannelId {
             return
         }
         
