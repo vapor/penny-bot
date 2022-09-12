@@ -59,14 +59,7 @@ struct EventHandler {
             }
             if response.starts(with: "ERROR-") {
                 logger.error("Received an incoming error: \(response)")
-                if event.channel_id == testChannelId {
-                    await respondToMessage(
-                        with: "Received an incoming error: \(response)",
-                        channelId: event.channel_id
-                    )
-                } else {
-                    await respondToMessage(with: oops, channelId: event.channel_id)
-                }
+                await respondToMessage(with: oops, channelId: event.channel_id)
             } else {
                 await respondToMessage(with: response, channelId: event.channel_id)
             }
