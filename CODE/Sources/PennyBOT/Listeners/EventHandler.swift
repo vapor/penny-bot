@@ -27,46 +27,72 @@ struct EventHandler {
     }
     
     func onMessageCreate(event: Gateway.Message) async {
+        guard let author = event.author else {
+            logger.error("Cannot find author of the message. Event: \(event)")
+            return
+        }
         // Stop the bot from responding to other bots and itself
         if event.member?.user?.bot == true {
             return
         }
         
-        // Check for coin suffix and if the message contains a user
-        if event.content.hasCoinSuffix && event.content.containsUser {
-            let sender = "<@\(event.author!.id)>"
-            let receiver = event.content.getUser
-            
-            // A user is not allowed to give themselves coins
-            if "<@!\(event.author!.id)>" == receiver || "<@\(event.author!.id)>" == receiver {
-                return
-            }
-            
+        let coinHandler = CoinHandler(
+            text: event.content,
+            excludedUserIds: [author.id] // Can't give yourself a coin
+        )
+        let usersWithNewCoins = coinHandler.findUsers()
+        // If there are no coins to be granted, then return.
+        if usersWithNewCoins.isEmpty { return }
+        
+        let sender = "<@\(author.id)>"
+        
+        var successfulResponses = [String]()
+        successfulResponses.reserveCapacity(usersWithNewCoins.count)
+        
+        for receiver in usersWithNewCoins {
             let coinRequest = CoinRequest(
-                amount: 1, //Possible to make this a variable later to include in the thanks message
+                // Possible to make this a variable later to include in the thanks message
+                amount: 1,
                 from: sender,
                 receiver: receiver,
                 source: .discord,
                 reason: .userProvided
             )
-            
-            let oops = "Oops. Something went wrong! Please try again later"
-            let response: String
             do {
-                response = try await self.coinService.postCoin(with: coinRequest)
+                let response = try await self.coinService.postCoin(with: coinRequest)
+                if response.starts(with: "ERROR-") {
+                    logger.error("CoinService returned. Request: \(coinRequest), Response: \(response)")
+                } else {
+                    successfulResponses.append(response)
+                }
             } catch {
-                return await respondToMessage(with: oops, channelId: event.channel_id)
+                logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")
             }
-            if response.starts(with: "ERROR-") {
-                logger.error("Received an incoming error: \(response)")
-                await respondToMessage(with: oops, channelId: event.channel_id)
+        }
+        
+        if successfulResponses.isEmpty {
+            // Definitely there were some coin requests that failed.
+            await self.createMessage(
+                "Oops. Something went wrong! Please try again later",
+                in: event.channel_id
+            )
+        } else {
+            // Stitch responses together instead of sending a lot of messages,
+            // to consume less Discord rate-limit.
+            let finalResponse = successfulResponses.joined(separator: "\n")
+            // Discord doesn't like messages with more than 2_000 content length.
+            if finalResponse.unicodeScalars.count > 2_000 {
+                await self.createMessage(
+                    "Coins were granted to a lot of members!",
+                    in: event.channel_id
+                )
             } else {
-                await respondToMessage(with: response, channelId: event.channel_id)
+                await self.createMessage(finalResponse, in: event.channel_id)
             }
         }
     }
     
-    private func respondToMessage(with response: String, channelId: String) async {
+    private func createMessage(_ response: String, in channelId: String) async {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: channelId,
