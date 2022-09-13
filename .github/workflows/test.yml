@@ -17,4 +17,4 @@ jobs:
       - name: Check out package
         uses: actions/checkout@v2
       - name: Run tests
-        run: swift test
+        run: swift test --package-path ./CODE
