@@ -36,15 +36,14 @@ struct EventHandler {
             return
         }
         
+        let sender = "<@\(author.id)>"
         let coinHandler = CoinHandler(
             text: event.content,
-            excludedUserIds: [author.id] // Can't give yourself a coin
+            excludedUsers: [sender] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
         // If there are no coins to be granted, then return.
         if usersWithNewCoins.isEmpty { return }
-        
-        let sender = "<@\(author.id)>"
         
         var successfulResponses = [String]()
         successfulResponses.reserveCapacity(usersWithNewCoins.count)
