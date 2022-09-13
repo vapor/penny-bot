@@ -1,0 +1,20 @@
+name: test
+on: [push, pull_request]
+
+jobs:
+  linux-all:
+    strategy:
+      fail-fast: false
+      matrix:
+        swiftver:
+          - swift:5.6
+          - swiftlang/swift:nightly-main
+        swiftos:
+          - focal
+    container: ${{ format('{0}-{1}', matrix.swiftver, matrix.swiftos) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out package
+        uses: actions/checkout@v2
+      - name: Run tests
+        run: swift test --package-path ./CODE
