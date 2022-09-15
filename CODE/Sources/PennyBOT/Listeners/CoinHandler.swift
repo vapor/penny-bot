@@ -62,15 +62,20 @@ struct CoinHandler {
             let allMentions = components.filter(\.element.isUserMention)
             
             var usersWithNewCoins = [String]()
+            /// Not using `Set` to keep order. Will look nicer to users.
+            func appendUser(_ user: String) {
+                if !usersWithNewCoins.contains(user) {
+                    usersWithNewCoins.append(user)
+                }
+            }
             
             for mention in allMentions {
                 for (offset, element) in components where offset > mention.offset {
                     // If there are some user mentions in a row and there is a thanks-suffix after those, they should all get a coin.
                     if element.isUserMention { continue }
                     
-                    if components.dropFirst(offset).isPrefixedWithCoinSuffix,
-                       !usersWithNewCoins.contains(mention.element) {
-                        usersWithNewCoins.append(mention.element)
+                    if components.dropFirst(offset).isPrefixedWithCoinSuffix {
+                        appendUser(mention.element)
                     }
                     
                     break
@@ -83,7 +88,7 @@ struct CoinHandler {
                components.isSuffixedWithCoinSuffix {
                 for component in components {
                     if component.element.isUserMention {
-                        usersWithNewCoins.append(component.element)
+                        appendUser(component.element)
                     } else {
                         break
                     }
