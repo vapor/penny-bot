@@ -80,10 +80,10 @@ struct CoinHandler {
             // The logic above doesn't take care of message starting with @s and ending in a coin
             // suffix. If there were no users found so far, we will try to check for this case.
             if usersWithNewCoins.isEmpty,
-               components.reversed().isPrefixedWithCoinSuffix {
-                for mention in allMentions {
-                    if mention.element.isUserMention {
-                        usersWithNewCoins.append(mention.element)
+               components.isSuffixedWithCoinSuffix {
+                for component in components {
+                    if component.element.isUserMention {
+                        usersWithNewCoins.append(component.element)
                     } else {
                         break
                     }
@@ -110,7 +110,14 @@ struct CoinHandler {
 
 private extension String {
     var isUserMention: Bool {
-        hasPrefix("<@") && hasSuffix(">")
+        hasSuffix(">") && hasPrefix("<@") && {
+            /// Make sure the third element is a number and is not something like `!`.
+            /// Because if the string starts with `<@!` it means it's a role id not a user id.
+            /// We can add role support later,
+            /// something to give all people with the role a coin perhaps.
+            let index = self.index(self.startIndex, offsetBy: 2)
+            return self[index].isNumber
+        }()
     }
 }
 
@@ -123,6 +130,13 @@ private extension Sequence where Element == (offset: Int, element: String) {
         let elements = self.map(\.element)
         return departedSuffixes.contains {
             elements.starts(with: $0)
+        }
+    }
+    
+    var isSuffixedWithCoinSuffix: Bool {
+        let reversedElements = self.map(\.element).reversed()
+        return departedSuffixes.contains {
+            reversedElements.starts(with: $0.reversed())
         }
     }
 }

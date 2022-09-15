@@ -26,7 +26,7 @@ class CoinHandlerTests: XCTestCase {
     func testUserAtTheBeginningAndCoinSuffixAtTheEnd() throws {
         let coinHandler = CoinHandler(
             text: """
-            <@21939123912932193> xxxx xxxx :thumbsup:
+            <@21939123912932193> xxxx xxxx <@4912300012398455> xxxx thank you!
             """,
             excludedUsers: []
         )
@@ -143,6 +143,19 @@ class CoinHandlerTests: XCTestCase {
                 xxxx xxxx <@21939123912932193> thanks xxxx xxxx <@4912300012398455> :thumbsup:
                 """,
                 excludedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, [])
+        }
+    }
+    
+    func testExcludeRoles() throws {
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                <@!800138494885124> thanks!
+                """,
+                excludedUsers: []
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
