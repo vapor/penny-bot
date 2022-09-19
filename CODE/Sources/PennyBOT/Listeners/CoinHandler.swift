@@ -43,6 +43,8 @@ struct CoinRes : Codable {
 struct CoinHandler {
     /// The content of the message.
     let text: String
+    /// User that was replied to, if any.
+    let repliedUser: String?
     /// Users to not be able to get a coin. Such as the author of the message.
     let excludedUsers: [String]
     /// Maximum users allowed to get a new coin in one message.
@@ -52,25 +54,28 @@ struct CoinHandler {
     func findUsers() -> [String] {
         var finalUsers = [String]()
         
-        for line in text.split(whereSeparator: \.isNewline) {
+        let lines = text.split(whereSeparator: \.isNewline)
+        for line in lines {
             if finalUsers.count == maxUsers { break }
             
             let components = line
                 .split(whereSeparator: \.isWhitespace)
-                .map(String.init)
-                .enumerated()
-            let allMentions = components.filter(\.element.isUserMention)
+                // Empty strings happen if there are two whitespaces one after the other
+                .filter({ !$0.isEmpty })
+            let enumeratedComponents = components.enumerated()
+            let allMentions = enumeratedComponents.filter(\.element.isUserMention)
             
             var usersWithNewCoins = [String]()
-            /// Not using `Set` to keep order. Will look nicer to users.
-            func appendUser(_ user: String) {
+            // Not using `Set` to keep order. Will look nicer to users.
+            func appendUser(_ user: Substring) {
+                let user = String(user)
                 if !usersWithNewCoins.contains(user) {
                     usersWithNewCoins.append(user)
                 }
             }
             
             for mention in allMentions {
-                for (offset, element) in components where offset > mention.offset {
+                for (offset, element) in enumeratedComponents where offset > mention.offset {
                     // If there are some user mentions in a row and there is a thanks-suffix after those, they should all get a coin.
                     if element.isUserMention { continue }
                     
@@ -83,12 +88,12 @@ struct CoinHandler {
             }
             
             // The logic above doesn't take care of message starting with @s and ending in a coin
-            // suffix. If there were no users found so far, we will try to check for this case.
+            // suffix. If there were no users found so far, we try to check for this case.
             if usersWithNewCoins.isEmpty,
                components.isSuffixedWithCoinSuffix {
                 for component in components {
-                    if component.element.isUserMention {
-                        appendUser(component.element)
+                    if component.isUserMention {
+                        appendUser(component)
                     } else {
                         break
                     }
@@ -109,11 +114,39 @@ struct CoinHandler {
             }
         }
         
+        // If we don't have any users at all, we check to see if the message was in reply
+        // to another message and contains a coni suffix in a proper place.
+        // It would mean that someone has replied to another one and thanked them.
+        if let repliedUser = repliedUser,
+           !excludedUsers.contains(repliedUser),
+           finalUsers.isEmpty {
+            
+            // At the beginning of the first line.
+            if let firstLine = lines.first {
+                let components = firstLine
+                    .split(whereSeparator: \.isWhitespace)
+                    .filter({ !$0.isEmpty })
+                if components.isPrefixedWithCoinSuffix {
+                    finalUsers.append(repliedUser)
+                }
+            }
+            
+            // At the end of the last line.
+            if finalUsers.isEmpty, let lastLine = lines.last {
+                let components = lastLine
+                    .split(whereSeparator: \.isWhitespace)
+                    .filter({ !$0.isEmpty })
+                if components.isSuffixedWithCoinSuffix {
+                    finalUsers.append(repliedUser)
+                }
+            }
+        }
+        
         return finalUsers
     }
 }
 
-private extension String {
+private extension Substring {
     var isUserMention: Bool {
         hasSuffix(">") && hasPrefix("<@") && {
             /// Make sure the third element is a number and is not something like `!`.
@@ -126,22 +159,25 @@ private extension String {
     }
 }
 
-private let departedSuffixes = validSuffixes.map {
-    $0.split(whereSeparator: \.isWhitespace).map(String.init)
+private let splitSuffixes = validSuffixes.map {
+    $0.split(whereSeparator: \.isWhitespace)
 }
 
-private extension Sequence where Element == (offset: Int, element: String) {
+private let reversedSplitSuffixes = splitSuffixes.map {
+    $0.reversed()
+}
+
+private extension Sequence where Element == Substring {
     var isPrefixedWithCoinSuffix: Bool {
-        let elements = self.map(\.element)
-        return departedSuffixes.contains {
-            elements.starts(with: $0)
+        return splitSuffixes.contains {
+            self.starts(with: $0)
         }
     }
     
     var isSuffixedWithCoinSuffix: Bool {
-        let reversedElements = self.map(\.element).reversed()
-        return departedSuffixes.contains {
-            reversedElements.starts(with: $0.reversed())
+        let reversedElements = self.reversed()
+        return reversedSplitSuffixes.contains {
+            reversedElements.starts(with: $0)
         }
     }
 }

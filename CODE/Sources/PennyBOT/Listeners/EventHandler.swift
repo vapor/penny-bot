@@ -31,18 +31,21 @@ struct EventHandler {
             logger.error("Cannot find author of the message. Event: \(event)")
             return
         }
+        
         // Stop the bot from responding to other bots and itself
-        if event.member?.user?.bot == true {
+        if author.bot == true {
             return
         }
         
         let sender = "<@\(author.id)>"
+        let repliedUser = event.referenced_message?.value.author.map({ "<@\($0.id)>" })
         let coinHandler = CoinHandler(
             text: event.content,
+            repliedUser: repliedUser,
             excludedUsers: [sender] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
-        // If there are no coins to be granted, then return.
+        // Return if there are no coins to be granted.
         if usersWithNewCoins.isEmpty { return }
         
         var successfulResponses = [String]()
