@@ -15,7 +15,7 @@
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "a1996fbe0a206757548f041d76d7ae00240b7e3f"
+        "revision" : "7f070d06e76c3749d7e43992c6018be42073ae56"
       }
     },
     {
@@ -60,7 +60,7 @@
       "location" : "https://github.com/swift-server/swift-aws-lambda-events.git",
       "state" : {
         "branch" : "main",
-        "revision" : "6a9065203ee1564d2353ec53983da8ac49292369"
+        "revision" : "b415da20e7633f7d3b1e9d80cf4278605ea3035f"
       }
     },
     {
@@ -121,8 +121,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-extras.git",
       "state" : {
-        "revision" : "5334d949febb396a4e2e5235e9fbcd9c3c014bb3",
-        "version" : "1.13.0"
+        "revision" : "6c84d247754ad77487a6f0694273b89b83efd056",
+        "version" : "1.14.0"
       }
     },
     {
@@ -139,8 +139,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-ssl.git",
       "state" : {
-        "revision" : "a6f9a034e5903024c6bac4ce2c56b157688d844f",
-        "version" : "2.22.0"
+        "revision" : "ba7c0d7f82affc518147ea61d240330bf7f7ea9b",
+        "version" : "2.22.1"
       }
     },
     {
