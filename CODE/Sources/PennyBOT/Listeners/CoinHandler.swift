@@ -68,9 +68,8 @@ struct CoinHandler {
             var usersWithNewCoins = [String]()
             // Not using `Set` to keep order. Will look nicer to users.
             func appendUser(_ user: Substring) {
-                let user = String(user)
-                if !usersWithNewCoins.contains(user) {
-                    usersWithNewCoins.append(user)
+                if !usersWithNewCoins.contains(where: { $0.elementsEqual(user) }) {
+                    usersWithNewCoins.append(String(user))
                 }
             }
             
