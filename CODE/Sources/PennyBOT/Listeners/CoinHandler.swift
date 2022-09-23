@@ -8,7 +8,7 @@
 import Foundation
 
 // Coun suffix doesn't work
-private let validSuffixes = [
+private let validSigns = [
     "++",
     "🪙",
     ":coin:",
@@ -60,8 +60,7 @@ struct CoinHandler {
             
             let components = line
                 .split(whereSeparator: \.isWhitespace)
-                // Empty strings happen if there are two whitespaces one after the other
-                .filter({ !$0.isEmpty })
+                .filter({ !$0.isIgnorable })
             let enumeratedComponents = components.enumerated()
             let allMentions = enumeratedComponents.filter(\.element.isUserMention)
             
@@ -73,12 +72,31 @@ struct CoinHandler {
                 }
             }
             
+        outerLoop:
             for mention in allMentions {
-                for (offset, element) in enumeratedComponents where offset > mention.offset {
-                    // If there are some user mentions in a row and there is a thanks-suffix after those, they should all get a coin.
+                
+                // If the coin sign is in front of the @s
+                for (offset, element) in enumeratedComponents
+                where offset > mention.offset {
+                    // If there are some user mentions in a row and there is a coin-sign after those, they should all get a coin.
                     if element.isUserMention { continue }
                     
-                    if components.dropFirst(offset).isPrefixedWithCoinSuffix {
+                    if components.dropFirst(offset).isPrefixedWithCoinSign {
+                        appendUser(mention.element)
+                        continue outerLoop
+                    }
+                    
+                    break
+                }
+                
+                // If the coin sign is behind of the @s
+                for (offset, element) in enumeratedComponents.reversed()
+                where offset < mention.offset {
+                    // If there are some user mentions in a row and there is a coin-suffix before those, they should all get a coin.
+                    if element.isUserMention { continue }
+                    
+                    let dropCount = components.count - offset - 1
+                    if components.dropLast(dropCount).isSuffixedWithCoinSign {
                         appendUser(mention.element)
                     }
                     
@@ -87,9 +105,9 @@ struct CoinHandler {
             }
             
             // The logic above doesn't take care of message starting with @s and ending in a coin
-            // suffix. If there were no users found so far, we try to check for this case.
+            // sign. If there were no users found so far, we try to check for this case.
             if usersWithNewCoins.isEmpty,
-               components.isSuffixedWithCoinSuffix {
+               components.isSuffixedWithCoinSign {
                 for component in components {
                     if component.isUserMention {
                         appendUser(component)
@@ -114,7 +132,7 @@ struct CoinHandler {
         }
         
         // If we don't have any users at all, we check to see if the message was in reply
-        // to another message and contains a coni suffix in a proper place.
+        // to another message and contains a coin sign in a proper place.
         // It would mean that someone has replied to another one and thanked them.
         if let repliedUser = repliedUser,
            !excludedUsers.contains(repliedUser),
@@ -125,7 +143,7 @@ struct CoinHandler {
                 let components = firstLine
                     .split(whereSeparator: \.isWhitespace)
                     .filter({ !$0.isEmpty })
-                if components.isPrefixedWithCoinSuffix {
+                if components.isPrefixedWithCoinSign {
                     finalUsers.append(repliedUser)
                 }
             }
@@ -135,7 +153,7 @@ struct CoinHandler {
                 let components = lastLine
                     .split(whereSeparator: \.isWhitespace)
                     .filter({ !$0.isEmpty })
-                if components.isSuffixedWithCoinSuffix {
+                if components.isSuffixedWithCoinSign {
                     finalUsers.append(repliedUser)
                 }
             }
@@ -151,14 +169,14 @@ private extension Substring {
             /// Make sure the third element is a number and is not something like `!`.
             /// Because if the string starts with `<@!` it means it's a role id not a user id.
             /// We can add role support later,
-            /// something to give all people with the role a coin perhaps.
+            /// something to give all people with the role a coin, perhaps.
             let index = self.index(self.startIndex, offsetBy: 2)
             return self[index].isNumber
         }()
     }
 }
 
-private let splitSuffixes = validSuffixes.map {
+private let splitSuffixes = validSigns.map {
     $0.split(whereSeparator: \.isWhitespace)
 }
 
@@ -167,16 +185,27 @@ private let reversedSplitSuffixes = splitSuffixes.map {
 }
 
 private extension Sequence where Element == Substring {
-    var isPrefixedWithCoinSuffix: Bool {
+    var isPrefixedWithCoinSign: Bool {
         return splitSuffixes.contains {
             self.starts(with: $0)
         }
     }
     
-    var isSuffixedWithCoinSuffix: Bool {
+    var isSuffixedWithCoinSign: Bool {
         let reversedElements = self.reversed()
         return reversedSplitSuffixes.contains {
             reversedElements.starts(with: $0)
         }
+    }
+}
+
+private extension Substring {
+    /// "and", ",", and empty strings are considered neutral,
+    /// and in the logic above we can ignore them.
+    var isIgnorable: Bool {
+        self.isEmpty || {
+            let lowercased = self.lowercased()
+            return lowercased == "and" || lowercased == ","
+        }()
     }
 }

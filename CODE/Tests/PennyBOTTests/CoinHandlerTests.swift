@@ -10,19 +10,31 @@ import XCTest
 
 class CoinHandlerTests: XCTestCase {
     
-    /// Pattern `@mahdi xxxx thanks!`
-    func testUserAndCoinSuffixTheWholeMessage() throws {
-        let coinHandler = CoinHandler(
-            text: """
+    /// Pattern `@mahdi thanks!`
+    func testUserAndCoinSignTheWholeMessage() throws {
+        do {
+            let coinHandler = CoinHandler(
+                text: """
             <@21939123912932193> thanks!
             """
-        )
-        let users = coinHandler.findUsers()
-        XCTAssertEqual(users, ["<@21939123912932193>"])
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                <@21939123912932193> thank you!
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>"])
+        }
     }
     
     /// Pattern `@mahdi xxxx thanks!`
-    func testUserAtTheBeginningAndCoinSuffixAtTheEnd() throws {
+    func testUserAtTheBeginningAndCoinSignAtTheEnd() throws {
         let coinHandler = CoinHandler(
             text: """
             <@21939123912932193> xxxx xxxx <@4912300012398455> xxxx thank you!
@@ -32,34 +44,112 @@ class CoinHandlerTests: XCTestCase {
         XCTAssertEqual(users, ["<@21939123912932193>"])
     }
     
-    /// Pattern `xxxx @mahdi thanks!`
-    func testUserAndCoinSuffixAtTheEnd() throws {
-        let coinHandler = CoinHandler(
-            text: """
-            xxxx <@21939123912932193> :coin:
-            """
-        )
-        let users = coinHandler.findUsers()
-        XCTAssertEqual(users, ["<@21939123912932193>"])
+    /// Patterns `xxxx @mahdi thanks!`
+    /// `xxxx thanks! @mahdi`
+    func testUserAndCoinSignAtTheEnd() throws {
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx <@21939123912932193> :coin:
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx <@21939123912932193> <@4912300012398455> :coin:
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx :coin: <@21939123912932193>
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx :coin: <@21939123912932193> <@4912300012398455>
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
     }
     
-    /// Pattern `xxxx @mahdi thanks! xxxx`
-    func testUserAndCoinSuffixInTheMiddle() throws {
-        let coinHandler = CoinHandler(
-            text: """
-            xxxx <@21939123912932193> thank you! xxx
-            """
-        )
-        let users = coinHandler.findUsers()
-        XCTAssertEqual(users, ["<@21939123912932193>"])
+    /// Patterns `xxxx @mahdi thanks! xxxx`
+    /// `xxxx thanks! @mahdi xxxx`
+    func testUserAndCoinSignInTheMiddle() throws {
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx <@21939123912932193> thank you! xxx
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx <@21939123912932193> <@4912300012398455> thank you! xxx
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx thank you! <@21939123912932193> xxx
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx thank you! <@21939123912932193> <@4912300012398455> xxx
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
+        
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                xxxx ++ <@21939123912932193> <@4912300012398455> xxx
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
     }
     
     /// Patterns `xxxx @mahdi thanks! xxxx @benny thanks! xxxx`
     /// `@mahdi thanks! xxxx @benny thanks! xxxx`
+    /// `thanks! @mahdi xxxx thanks! @benny xxxx`
     /// `xxxx @mahdi thanks! xxxx @benny thanks!`
     /// `@mahdi thanks! xxxx @benny thanks!`
     /// `@mahdi thanks! @benny thanks!`
-    func testMultipleUsersWithCoinSuffix() throws {
+    /// `thanks! @mahdi thanks! @benny`
+    func testMultipleUsersWithCoinSign() throws {
         /// `xxxx @mahdi thanks! xxxx @benny thanks! xxxx`
         do {
             let coinHandler = CoinHandler(
@@ -76,6 +166,17 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 <@21939123912932193> thanks xxxx <@4912300012398455>  :thumbsup: xxxx xxxx
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
+        
+        /// `thanks! @mahdi xxxx thanks! @benny xxxx`
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                thank you!  <@21939123912932193> xxxx :thumbsup:  <@4912300012398455>   xxxx xxxx
                 """
             )
             let users = coinHandler.findUsers()
@@ -109,6 +210,17 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 <@21939123912932193>  thanks!  <@4912300012398455> :thumbsup:
+                """
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, ["<@21939123912932193>", "<@4912300012398455>"])
+        }
+        
+        /// `thanks! @mahdi thanks! @benny`
+        do {
+            let coinHandler = CoinHandler(
+                text: """
+                thanks!  <@21939123912932193> ++  <@4912300012398455>
                 """
             )
             let users = coinHandler.findUsers()
