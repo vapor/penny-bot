@@ -92,7 +92,7 @@ struct CoinHandler {
                 // If the coin sign is behind of the @s
                 for (offset, element) in enumeratedComponents.reversed()
                 where offset < mention.offset {
-                    // If there are some user mentions in a row and there is a coin-suffix before those, they should all get a coin.
+                    // If there are some user mentions in a row and there is a coin-sign before those, they should all get a coin.
                     if element.isUserMention { continue }
                     
                     let dropCount = components.count - offset - 1
@@ -123,9 +123,8 @@ struct CoinHandler {
             let count = finalUsers.count + validUsers.count
             if count > maxUsers {
                 let remainingCapacity = min(count - maxUsers, maxUsers)
-                finalUsers.append(
-                    contentsOf: validUsers.dropLast(validUsers.count - remainingCapacity)
-                )
+                let dropCount = validUsers.count - remainingCapacity
+                finalUsers.append(contentsOf: validUsers.dropLast(dropCount))
             } else {
                 finalUsers.append(contentsOf: validUsers)
             }
@@ -200,12 +199,9 @@ private extension Sequence where Element == Substring {
 }
 
 private extension Substring {
-    /// "and", ",", and empty strings are considered neutral,
+    /// "and", "&", ",", and empty strings are considered neutral,
     /// and in the logic above we can ignore them.
     var isIgnorable: Bool {
-        self.isEmpty || {
-            let lowercased = self.lowercased()
-            return lowercased == "and" || lowercased == ","
-        }()
+        ["and", "&", ""].contains(self)
     }
 }
