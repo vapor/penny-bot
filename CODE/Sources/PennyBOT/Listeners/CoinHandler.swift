@@ -45,7 +45,7 @@ struct CoinHandler {
     let text: String
     /// User that was replied to, if any.
     let repliedUser: String?
-    /// Users that are able to get coins.
+    /// Users that are mentioned and able to get coins.
     /// Using this is to prevent giving coins to normal texts that look like user-ids.
     let mentionedUsers: [String]
     /// Users to not be able to get a coin. Such as the author of the message.
@@ -61,22 +61,19 @@ struct CoinHandler {
             return []
         }
         
-        var finalUsers = [String]()
+        var text = text
         
-        var lines = text.split(whereSeparator: \.isNewline).map(String.init)
-        
-        for idx in lines.indices {
-            for mentionedUser in mentionedUsers {
-                /// Replacing `mentionedUser` with `" " + mentionedUser + " "` because
-                /// if there is a user mention in the text and there are no spaces after
-                /// or behind it, the logic below won't be able to catch the mention since
-                /// it relies on spaces to find meaningful components of each line.
-                lines[idx] = lines[idx].replacingOccurrences(
-                    of: mentionedUser,
-                    with: " \(mentionedUser) "
-                )
-            }
+        for mentionedUser in mentionedUsers {
+            // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
+            // if there is a user mention in the text and there are no spaces after
+            // or behind it, the logic below won't be able to catch the mention since
+            // it relies on spaces to find meaningful components of each line.
+            text = text.replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
         }
+        
+        let lines = text.split(whereSeparator: \.isNewline)
+        
+        var finalUsers = [String]()
         
         // Start trying to find the users that should get a coin.
         for line in lines {
