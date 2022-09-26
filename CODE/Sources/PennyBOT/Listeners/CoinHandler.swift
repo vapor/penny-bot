@@ -96,35 +96,22 @@ struct CoinHandler {
                 }
             }
             
-        middleLoop:
             for mention in allMentions {
                 
                 // If the coin sign is in front of the @s
-                for (offset, element) in enumeratedComponents
-                where offset > mention.offset {
-                    // If there are some user mentions in a row and there is a coin-sign after those, they should all get a coin.
-                    if isUserMention(element) { continue }
-                    
-                    if components.dropFirst(offset).isPrefixedWithCoinSign {
-                        appendUser(mention.element)
-                        continue middleLoop
-                    }
-                    
-                    break
+                if let after = enumeratedComponents.first(where: { offset, component in
+                    offset > mention.offset && !isUserMention(component)
+                }), components.dropFirst(after.offset).isPrefixedWithCoinSign {
+                    appendUser(mention.element)
+                    continue
                 }
                 
-                // If the coin sign is behind of the @s
-                for (offset, element) in enumeratedComponents.reversed()
-                where offset < mention.offset {
-                    // If there are some user mentions in a row and there is a coin-sign before those, they should all get a coin.
-                    if isUserMention(element) { continue }
-                    
-                    let dropCount = components.count - offset - 1
-                    if components.dropLast(dropCount).isSuffixedWithCoinSign {
-                        appendUser(mention.element)
-                    }
-                    
-                    break
+                // If the coin sign is behind the @s
+                if let before = enumeratedComponents.reversed().first(where: { offset, component in
+                    offset < mention.offset && !isUserMention(component)
+                }), components.dropLast(components.count - before.offset - 1).isSuffixedWithCoinSign {
+                    appendUser(mention.element)
+                    continue
                 }
             }
             
@@ -158,8 +145,8 @@ struct CoinHandler {
         // to another message and contains a coin sign in a proper place.
         // It would mean that someone has replied to another one and thanked them.
         if let repliedUser = repliedUser,
-           !excludedUsers.contains(repliedUser),
-           finalUsers.isEmpty {
+           finalUsers.isEmpty,
+           !excludedUsers.contains(repliedUser) {
             
             // At the beginning of the first line.
             if let firstLine = lines.first {
