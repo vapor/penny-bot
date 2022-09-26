@@ -25,7 +25,10 @@ struct ReactionHandler {
               user.bot != true,
               let emoji = event.emoji.name,
               coinSignEmojis.contains(emoji),
-              let receiverId = await ReactionCache.shared.getAuthorId(
+              await ReactionCache.shared.canGiveCoin(
+                fromSender: user.id,
+                toAuthorOfMessage: event.message_id
+              ), let receiverId = await ReactionCache.shared.getAuthorId(
                 channelId: event.channel_id,
                 messageId: event.message_id,
                 client: discordClient,
@@ -73,20 +76,26 @@ struct ReactionHandler {
     }
 }
 
+/// Cache for message authors.
+///
+/// Optimally you would use some service like Redis to handle time-to-live
+/// and disk-persistence for you, but this actor will suffice for us.
 private actor ReactionCache {
-    /// [[ChannelID, MessageID]: AuthorID]
-    var cachedAuthorIds: [[String]: String] = [:]
+    /// `[MessageID: AuthorID]`
+    var cachedAuthorIds: [String: String] = [:]
+    /// `Set<[SenderID, MessageID]>`
+    var givenCoins: Set<[String]> = []
     
     static let shared = ReactionCache()
     
+    /// Returns author of the message.
     func getAuthorId(
         channelId: String,
         messageId: String,
         client: DiscordClient,
         logger: Logger
     ) async -> String? {
-        let id = [channelId, messageId]
-        if let authorId = cachedAuthorIds[id] {
+        if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
             do {
@@ -95,15 +104,24 @@ private actor ReactionCache {
                     messageId: messageId
                 ).decode()
                 if let authorId = message.author?.id {
-                    cachedAuthorIds[id] = authorId
+                    cachedAuthorIds[messageId] = authorId
                     return authorId
                 } else {
                     return nil
                 }
             } catch {
-                logger.error("ReactionCache could not a message's author id. Error: \(error)")
+                logger.error("ReactionCache could not find a message's author id. Error: \(error)")
                 return nil
             }
         }
+    }
+    
+    /// This is to prevent spams. In case someone removes their reaction and reacts again,
+    /// we should not give coins to message's author anymore.
+    func canGiveCoin(
+        fromSender senderId: String,
+        toAuthorOfMessage messageId: String
+    ) -> Bool {
+        givenCoins.insert([senderId, messageId]).inserted
     }
 }
