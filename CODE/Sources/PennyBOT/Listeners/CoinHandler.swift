@@ -7,7 +7,6 @@
 
 import Foundation
 
-// Coun suffix doesn't work
 private let validSigns = [
     "++",
     "🪙",
@@ -30,15 +29,6 @@ private let validSigns = [
     "thx",
     "thx!"
 ]
-
-struct CoinReq : Codable {
-    let value: Int
-    let receiver: String
-}
-
-struct CoinRes : Codable {
-    let message: String
-}
 
 struct CoinHandler {
     /// The content of the message.
@@ -174,24 +164,24 @@ struct CoinHandler {
     }
 }
 
-private let splitSuffixes = validSigns.map {
+private let splitSigns = validSigns.map {
     $0.split(whereSeparator: \.isWhitespace)
 }
 
-private let reversedSplitSuffixes = splitSuffixes.map {
+private let reversedSplitSigns = splitSigns.map {
     $0.reversed()
 }
 
 private extension Sequence where Element == Substring {
     var isPrefixedWithCoinSign: Bool {
-        return splitSuffixes.contains {
+        return splitSigns.contains {
             self.starts(with: $0)
         }
     }
     
     var isSuffixedWithCoinSign: Bool {
         let reversedElements = self.reversed()
-        return reversedSplitSuffixes.contains {
+        return reversedSplitSigns.contains {
             reversedElements.starts(with: $0)
         }
     }
