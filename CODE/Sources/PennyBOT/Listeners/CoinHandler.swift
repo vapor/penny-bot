@@ -68,7 +68,7 @@ struct CoinHandler {
         for idx in lines.indices {
             for mentionedUser in mentionedUsers {
                 /// Replacing `mentionedUser` with `" " + mentionedUser + " "` because
-                /// if there is a user mention in the text and there is no spaces after
+                /// if there is a user mention in the text and there are no spaces after
                 /// or behind it, the logic below won't be able to catch the mention since
                 /// it relies on spaces to find meaningful components of each line.
                 lines[idx] = lines[idx].replacingOccurrences(
@@ -96,7 +96,7 @@ struct CoinHandler {
                 }
             }
             
-        outerLoop:
+        middleLoop:
             for mention in allMentions {
                 
                 // If the coin sign is in front of the @s
@@ -107,7 +107,7 @@ struct CoinHandler {
                     
                     if components.dropFirst(offset).isPrefixedWithCoinSign {
                         appendUser(mention.element)
-                        continue outerLoop
+                        continue middleLoop
                     }
                     
                     break
@@ -221,6 +221,6 @@ private extension Substring {
     /// user-mention. That means we _need_ to remove empty strings to neutralize those
     /// intentional spaces.
     var isIgnorable: Bool {
-        ["and", "&", ",", ""].contains(self.lowercased())
+        ["", "and", "&", ","].contains(self.lowercased())
     }
 }
