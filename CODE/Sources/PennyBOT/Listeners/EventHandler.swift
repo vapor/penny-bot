@@ -42,6 +42,7 @@ struct EventHandler {
         let coinHandler = CoinHandler(
             text: event.content,
             repliedUser: repliedUser,
+            mentionedUsers: event.mentions.map(\.id).map({ "<@\($0)>" }),
             excludedUsers: [sender] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()

@@ -45,6 +45,9 @@ struct CoinHandler {
     let text: String
     /// User that was replied to, if any.
     let repliedUser: String?
+    /// Users that are able to get coins.
+    /// Using this is to prevent giving coins to normal texts that look like user-ids.
+    let mentionedUsers: [String]
     /// Users to not be able to get a coin. Such as the author of the message.
     let excludedUsers: [String]
     /// Maximum users allowed to get a new coin in one message.
@@ -52,9 +55,30 @@ struct CoinHandler {
     
     /// Finds users that need to get a coin, if anyone at all.
     func findUsers() -> [String] {
+        // If there are no mentioned users or replied users,
+        // then there is no way that anyone will get any coins.
+        guard mentionedUsers.count + (repliedUser == nil ? 0 : 1) > 0 else {
+            return []
+        }
+        
         var finalUsers = [String]()
         
-        let lines = text.split(whereSeparator: \.isNewline)
+        var lines = text.split(whereSeparator: \.isNewline).map(String.init)
+        
+        for idx in lines.indices {
+            for mentionedUser in mentionedUsers {
+                /// Replacing `mentionedUser` with `" " + mentionedUser + " "` because
+                /// if there is a user mention in the text and there is no spaces after
+                /// or behind it, the logic below won't be able to catch the mention since
+                /// it relies on spaces to find meaningful components of each line.
+                lines[idx] = lines[idx].replacingOccurrences(
+                    of: mentionedUser,
+                    with: " \(mentionedUser) "
+                )
+            }
+        }
+        
+        // Start trying to find the users that should get a coin.
         for line in lines {
             if finalUsers.count == maxUsers { break }
             
@@ -62,7 +86,7 @@ struct CoinHandler {
                 .split(whereSeparator: \.isWhitespace)
                 .filter({ !$0.isIgnorable })
             let enumeratedComponents = components.enumerated()
-            let allMentions = enumeratedComponents.filter(\.element.isUserMention)
+            let allMentions = enumeratedComponents.filter({ isUserMention($0.element) })
             
             var usersWithNewCoins = [String]()
             // Not using `Set` to keep order. Will look nicer to users.
@@ -79,7 +103,7 @@ struct CoinHandler {
                 for (offset, element) in enumeratedComponents
                 where offset > mention.offset {
                     // If there are some user mentions in a row and there is a coin-sign after those, they should all get a coin.
-                    if element.isUserMention { continue }
+                    if isUserMention(element) { continue }
                     
                     if components.dropFirst(offset).isPrefixedWithCoinSign {
                         appendUser(mention.element)
@@ -93,7 +117,7 @@ struct CoinHandler {
                 for (offset, element) in enumeratedComponents.reversed()
                 where offset < mention.offset {
                     // If there are some user mentions in a row and there is a coin-sign before those, they should all get a coin.
-                    if element.isUserMention { continue }
+                    if isUserMention(element) { continue }
                     
                     let dropCount = components.count - offset - 1
                     if components.dropLast(dropCount).isSuffixedWithCoinSign {
@@ -109,7 +133,7 @@ struct CoinHandler {
             if usersWithNewCoins.isEmpty,
                components.isSuffixedWithCoinSign {
                 for component in components {
-                    if component.isUserMention {
+                    if isUserMention(component) {
                         appendUser(component)
                     } else {
                         break
@@ -160,18 +184,9 @@ struct CoinHandler {
         
         return finalUsers
     }
-}
-
-private extension Substring {
-    var isUserMention: Bool {
-        hasSuffix(">") && hasPrefix("<@") && {
-            /// Make sure the third element is a number and is not something like `!`.
-            /// Because if the string starts with `<@!` it means it's a role id not a user id.
-            /// We can add role support later,
-            /// something to give all people with the role a coin, perhaps.
-            let index = self.index(self.startIndex, offsetBy: 2)
-            return self[index].isNumber
-        }()
+    
+    private func isUserMention(_ string: Substring) -> Bool {
+        mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }
 
@@ -201,7 +216,11 @@ private extension Sequence where Element == Substring {
 private extension Substring {
     /// "and", "&", ",", and empty strings are considered neutral,
     /// and in the logic above we can ignore them.
+    ///
+    /// NOTE: The logic in `CoinHandler`, intentionally adds spaces after and before each
+    /// user-mention. That means we _need_ to remove empty strings to neutralize those
+    /// intentional spaces.
     var isIgnorable: Bool {
-        ["and", "&", ""].contains(self)
+        ["and", "&", ",", ""].contains(self.lowercased())
     }
 }
