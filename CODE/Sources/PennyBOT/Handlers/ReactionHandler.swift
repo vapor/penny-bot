@@ -1,10 +1,3 @@
-//
-//  File.swift
-//
-//
-//  Created by Mahdi Bahrami on 25/10/22.
-//
-
 import DiscordBM
 import Logging
 import PennyModels

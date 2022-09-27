@@ -44,7 +44,7 @@ struct Penny {
                 status: .online,
                 afk: false
             ),
-            intents: [.guildMessages, .messageContent, .guildMessageReactions]
+            intents: [.guildMessages, .messageContent]
         )
         
         Task {
