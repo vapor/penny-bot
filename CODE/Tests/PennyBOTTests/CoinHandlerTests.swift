@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Mahdi Bahrami on 9/13/22.
-//
-
 import XCTest
 @testable import PennyBOT
 
@@ -436,7 +429,8 @@ class CoinHandlerTests: XCTestCase {
     }
     
     func testMaxUserCount() throws {
-        let coinedUsers = (0..<55).map { _ in
+        let count = 55
+        let coinedUsers = (0..<count).map { _ in
             "<@\(Int.random(in: 1_000_000_000_000..<1_000_000_000_000_000))>"
         }
         let coinStrings = coinedUsers.map { "\($0) ++" }
@@ -446,7 +440,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, coinHandler.maxUsers)
+            XCTAssertEqual(users.count, CoinHandler.maxUsers)
         }
         
         do {
@@ -455,7 +449,29 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, coinHandler.maxUsers)
+            XCTAssertEqual(users.count, CoinHandler.maxUsers)
+        }
+        
+        do {
+            let part1 = coinStrings[0..<5]
+            let part2 = coinStrings[5..<count]
+            let coinHandler = CoinHandler(
+                text: part1.joined(separator: " ") + "\n" + part2.joined(separator: "\n"),
+                mentionedUsers: coinedUsers
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users.count, CoinHandler.maxUsers)
+        }
+        
+        do {
+            let part1 = coinStrings[0..<15]
+            let part2 = coinStrings[15..<count]
+            let coinHandler = CoinHandler(
+                text: part1.joined(separator: " ") + "\n" + part2.joined(separator: "\n"),
+                mentionedUsers: coinedUsers
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users.count, CoinHandler.maxUsers)
         }
     }
 }

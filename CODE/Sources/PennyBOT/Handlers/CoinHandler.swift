@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Benny De Bock on 08/03/2022.
-//
-
 import Foundation
 
 private let validSigns = [
@@ -41,7 +34,7 @@ struct CoinHandler {
     /// Users to not be able to get a coin. Such as the author of the message.
     let excludedUsers: [String]
     /// Maximum users allowed to get a new coin in one message.
-    let maxUsers = 10
+    static let maxUsers = 10
     
     /// Finds users that need to get a coin, if anyone at all.
     func findUsers() -> [String] {
@@ -67,7 +60,7 @@ struct CoinHandler {
         
         // Start trying to find the users that should get a coin.
         for line in lines {
-            if finalUsers.count == maxUsers { break }
+            if finalUsers.count == Self.maxUsers { break }
             
             let components = line
                 .split(whereSeparator: \.isWhitespace)
@@ -118,14 +111,10 @@ struct CoinHandler {
             let validUsers = usersWithNewCoins.filter {
                 !excludedUsers.contains($0) && !finalUsers.contains($0)
             }
-            let count = finalUsers.count + validUsers.count
-            if count > maxUsers {
-                let remainingCapacity = min(count - maxUsers, maxUsers)
-                let dropCount = validUsers.count - remainingCapacity
-                finalUsers.append(contentsOf: validUsers.dropLast(dropCount))
-            } else {
-                finalUsers.append(contentsOf: validUsers)
-            }
+            
+            let remainingCapacity = min(Self.maxUsers - finalUsers.count, validUsers.count)
+            let dropCount = validUsers.count - remainingCapacity
+            finalUsers.append(contentsOf: validUsers.dropLast(dropCount))
         }
         
         // If we don't have any users at all, we check to see if the message was in reply
