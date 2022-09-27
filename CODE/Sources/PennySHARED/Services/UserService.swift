@@ -1,5 +1,4 @@
 import Foundation
-import AWSLambdaRuntimeCore
 import SotoCore
 import SotoDynamoDB
 import PennyRepositories

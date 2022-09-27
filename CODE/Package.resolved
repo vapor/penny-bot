@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "b4b3c8e16f088ce412adc1de2be80fec61d38a8a",
-        "version" : "1.0.0-beta.1"
+        "revision" : "9e4fd635029008345159df6efd7a719a10409ae6",
+        "version" : "1.0.0-beta.5"
       }
     },
     {
@@ -121,8 +121,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-extras.git",
       "state" : {
-        "revision" : "5334d949febb396a4e2e5235e9fbcd9c3c014bb3",
-        "version" : "1.13.0"
+        "revision" : "6c84d247754ad77487a6f0694273b89b83efd056",
+        "version" : "1.14.0"
       }
     },
     {
@@ -139,8 +139,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-ssl.git",
       "state" : {
-        "revision" : "a6f9a034e5903024c6bac4ce2c56b157688d844f",
-        "version" : "2.22.0"
+        "revision" : "ba7c0d7f82affc518147ea61d240330bf7f7ea9b",
+        "version" : "2.22.1"
       }
     },
     {

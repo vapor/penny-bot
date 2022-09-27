@@ -87,8 +87,7 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
             ],
             path: "./Sources/PennySHARED/Services"),
-        /*.testTarget(
-            name: "HelloWorldTests",
-            dependencies: ["PennyLambdaAddCoins"]),*/
+        .testTarget(name: "PennyBOTTests",
+                   dependencies: ["PennyBOT"]),
     ]
 )
