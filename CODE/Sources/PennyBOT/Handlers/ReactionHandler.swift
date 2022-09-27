@@ -50,6 +50,10 @@ struct ReactionHandler {
             logger.error("Received an incoming error: \(response)")
             await respondToMessage(with: oops, channelId: event.channel_id)
         } else {
+            await ReactionCache.shared.didGiveCoin(
+                fromSender: user.id,
+                toAuthorOfMessage: event.message_id
+            )
             await respondToMessage(with: response, channelId: event.channel_id)
         }
     }
@@ -115,6 +119,13 @@ private actor ReactionCache {
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
     ) -> Bool {
-        givenCoins.insert([senderId, messageId]).inserted
+        givenCoins.contains([senderId, messageId])
+    }
+    
+    func didGiveCoin(
+        fromSender senderId: String,
+        toAuthorOfMessage messageId: String
+    ) {
+        givenCoins.insert([senderId, messageId])
     }
 }
