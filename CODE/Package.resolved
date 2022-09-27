@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "7f070d06e76c3749d7e43992c6018be42073ae56"
+        "revision" : "9e4fd635029008345159df6efd7a719a10409ae6",
+        "version" : "1.0.0-beta.5"
       }
     },
     {
