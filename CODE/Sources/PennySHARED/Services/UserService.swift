@@ -38,11 +38,11 @@ public struct UserService {
             let dbUser = DynamoDBUser(user: localUser)
                 
             try await userRepo.updateUser(dbUser)
-            return "\(localUser.discordID!) has \(localUser.numberOfCoins) coins."
+            return "\(localUser.discordID!) now has \(localUser.numberOfCoins) coins!"
         }
         catch DBError.itemNotFound {
             localUser = try await insertIntoDB(user: user, with: coinEntry)
-            return "\(localUser.discordID!) has \(localUser.numberOfCoins) coins."
+            return "\(localUser.discordID!) now has \(localUser.numberOfCoins) coins!"
         }
         catch let error {
             logger.error("\(error.localizedDescription)")

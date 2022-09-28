@@ -1,5 +1,6 @@
 import Foundation
 
+// All coin signs must be lowercased.
 private let validSigns = [
     "++",
     "🪙",
@@ -44,7 +45,8 @@ struct CoinHandler {
             return []
         }
         
-        var text = text
+        // Lowercased for case-insensitive coin-sign checking.
+        var text = text.lowercased()
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -117,12 +119,10 @@ struct CoinHandler {
             finalUsers.append(contentsOf: validUsers.dropLast(dropCount))
         }
         
-        // If we don't have any users at all, we check to see if the message was in reply
-        // to another message and contains a coin sign in a proper place.
+        // Here we check to see if the message was in reply to another message and contains
+        // a coin sign in a proper place.
         // It would mean that someone has replied to another one and thanked them.
-        if let repliedUser = repliedUser,
-           finalUsers.isEmpty,
-           !excludedUsers.contains(repliedUser) {
+        if let repliedUser = repliedUser, !excludedUsers.contains(repliedUser) {
             
             // At the beginning of the first line.
             if let firstLine = lines.first {
@@ -134,7 +134,7 @@ struct CoinHandler {
                 }
             }
             
-            // At the end of the last line.
+            // At the end of the last line, only if there are no other users that get any coins.
             if finalUsers.isEmpty, let lastLine = lines.last {
                 let components = lastLine
                     .split(whereSeparator: \.isWhitespace)
@@ -149,6 +149,9 @@ struct CoinHandler {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
+        // `.hasPrefix("<")` is for a bit better performance.
+        // Removes a lot of no-match strings, much faster than the containment check.
+        string.hasPrefix("<") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }

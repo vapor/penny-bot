@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Benny De Bock on 19/04/2022.
-//
-
 import Foundation
 import PennyModels
 import SotoCore

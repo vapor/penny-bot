@@ -38,9 +38,7 @@ struct Penny {
             token: token,
             appId: appId,
             presence: .init(
-                activities: [
-                    .init(name: "Showing appreciation to the amazing Vapor community", type: .game)
-                ],
+                activities: [.init(name: "Showing Appreciation", type: .game)],
                 status: .online,
                 afk: false
             ),
