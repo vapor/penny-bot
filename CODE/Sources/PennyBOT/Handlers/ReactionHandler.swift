@@ -44,25 +44,37 @@ struct ReactionHandler {
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
-            return await respondToMessage(with: oops, channelId: event.channel_id)
+            logger.error("Error when posting coins: \(error)")
+            return await respondToMessage(with: oops)
         }
         if response.starts(with: "ERROR-") {
             logger.error("Received an incoming error: \(response)")
-            await respondToMessage(with: oops, channelId: event.channel_id)
+            await respondToMessage(with: oops)
         } else {
             await ReactionCache.shared.didGiveCoin(
                 fromSender: user.id,
                 toAuthorOfMessage: event.message_id
             )
-            await respondToMessage(with: response, channelId: event.channel_id)
+            await respondToMessage(with: response)
         }
     }
     
-    private func respondToMessage(with response: String, channelId: String) async {
+    private func respondToMessage(with response: String) async {
         do {
             let apiResponse = try await discordClient.createMessage(
-                channelId: channelId,
-                payload: .init(content: response)
+                channelId: event.channel_id,
+                payload: .init(
+                    embeds: [.init(
+                        description: response,
+                        color: .vaporPurple
+                    )],
+                    message_reference: .init(
+                        message_id: event.message_id,
+                        channel_id: event.channel_id,
+                        guild_id: event.guild_id,
+                        fail_if_not_exists: false
+                    )
+                )
             ).raw
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API: \(apiResponse)")
@@ -73,10 +85,10 @@ struct ReactionHandler {
     }
 }
 
-/// Cache for message authors.
+/// Cache for reactions-related stuff.
 ///
-/// Optimally you would use some service like Redis to handle time-to-live
-/// and disk-persistence for you, but this actor will suffice for us.
+/// Optimally we would use some service like Redis to handle time-to-live
+/// and disk-persistence for us, but this actor is more than enough at our scale.
 private actor ReactionCache {
     /// `[MessageID: AuthorID]`
     var cachedAuthorIds: [String: String] = [:]
