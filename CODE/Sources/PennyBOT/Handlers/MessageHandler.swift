@@ -80,7 +80,13 @@ struct MessageHandler {
                     embeds: [.init(
                         description: response,
                         color: .vaporPurple
-                    )]
+                    )],
+                    message_reference: .init(
+                        message_id: event.id,
+                        channel_id: event.channel_id,
+                        guild_id: event.guild_id,
+                        fail_if_not_exists: false
+                    )
                 )
             ).raw
             if !(200..<300).contains(apiResponse.status.code) {

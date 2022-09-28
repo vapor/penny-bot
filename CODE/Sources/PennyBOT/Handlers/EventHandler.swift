@@ -19,7 +19,7 @@ struct EventHandler {
                     coinService: coinService,
                     logger: logger,
                     event: message
-                )
+                ).handle()
             case .interactionCreate(let interaction):
                 await InteractionHandler(
                     discordClient: discordClient,
