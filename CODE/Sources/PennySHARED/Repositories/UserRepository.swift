@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Benny De Bock on 14/03/2022.
-//
-
 import Foundation
 import PennyModels
 

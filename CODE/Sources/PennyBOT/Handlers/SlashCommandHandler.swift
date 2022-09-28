@@ -1,10 +1,3 @@
-//
-//  File.swift
-//
-//
-//  Created by Benny De Bock on 30/03/2022.
-//
-
 import Foundation
 import DiscordBM
 import Logging
