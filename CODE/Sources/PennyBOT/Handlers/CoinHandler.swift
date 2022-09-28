@@ -1,5 +1,6 @@
 import Foundation
 
+// All coin signs must be lowercased.
 private let validSigns = [
     "++",
     "🪙",
@@ -44,7 +45,8 @@ struct CoinHandler {
             return []
         }
         
-        var text = text
+        // Lowercased for case-insensitive coin-sign checking.
+        var text = text.lowercased()
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -147,6 +149,9 @@ struct CoinHandler {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
+        // `.hasPrefix("<")` is for a bit better performance.
+        // Removes a lot of no-match strings, much faster than the containment check.
+        string.hasPrefix("<") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }
