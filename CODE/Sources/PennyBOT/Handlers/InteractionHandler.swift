@@ -61,9 +61,7 @@ struct InteractionHandler {
             let apiResponse = try await discordClient.createInteractionResponse(
                 id: event.id,
                 token: event.token,
-                // TODO: try changing to `.messageEditWithLoadingState`.
-                // Previously was not working due to a Discord bug.
-                payload: .init(type: .message, data: .init(content: "Processing..."))
+                payload: .init(type: .messageEditWithLoadingState)
             ).raw
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
@@ -81,7 +79,12 @@ struct InteractionHandler {
         do {
             let apiResponse = try await discordClient.editInteractionResponse(
                 token: event.token,
-                payload: .init(content: response)
+                payload: .init(
+                    embeds: [.init(
+                        description: response,
+                        color: .vaporPurple
+                    )]
+                )
             )
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction: \(apiResponse)")

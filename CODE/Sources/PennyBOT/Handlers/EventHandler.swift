@@ -83,8 +83,8 @@ struct EventHandler {
             // Stitch responses together instead of sending a lot of messages,
             // to consume less Discord rate-limit.
             let finalResponse = successfulResponses.joined(separator: "\n")
-            // Discord doesn't like messages with more than 2_000 content length.
-            if finalResponse.unicodeScalars.count > 2_000 {
+            // Discord doesn't like embed-descriptions with more than 4_000 content length.
+            if finalResponse.unicodeScalars.count > 4_000 {
                 await self.createMessage(
                     "Coins were granted to a lot of members!",
                     in: event.channel_id
@@ -99,7 +99,12 @@ struct EventHandler {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: channelId,
-                payload: .init(content: response)
+                payload: .init(
+                    embeds: [.init(
+                        description: response,
+                        color: .vaporPurple
+                    )]
+                )
             ).raw
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API: \(apiResponse)")
