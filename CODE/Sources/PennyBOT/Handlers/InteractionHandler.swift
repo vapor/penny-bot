@@ -61,7 +61,6 @@ struct InteractionHandler {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
                 return false
             } else {
-                logger.debug("Sent successful interaction acknowledgment response")
                 return true
             }
         } catch {
@@ -83,8 +82,6 @@ struct InteractionHandler {
             )
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction: \(apiResponse)")
-            } else {
-                logger.debug("Sent successful interaction response")
             }
         } catch {
             logger.error("Discord Client error: \(error)")
