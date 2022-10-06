@@ -26,6 +26,13 @@ struct EventHandler {
                     logger: logger,
                     event: interaction
                 ).handle()
+            case .messageReactionAdd(let reaction):
+                await ReactionHandler(
+                    discordClient: discordClient,
+                    coinService: coinService,
+                    logger: logger,
+                    event: reaction
+                ).handle()
             default: break
             }
         }
