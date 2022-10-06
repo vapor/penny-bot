@@ -1,10 +1,3 @@
-//
-//  File.swift
-//  
-//
-//  Created by Mahdi Bahrami on 9/10/22.
-//
-
 import Foundation
 import Logging
 import DiscordBM
@@ -24,6 +17,7 @@ struct InteractionHandler {
     
     private func processAndMakeResponse() async -> String {
         guard let name = event.data?.name else {
+            logger.error("Discord did not send required interaction info. ID: 1. Event: \(event)")
             return "Failed to recognize the interaction"
         }
         var options = event.data?.options ?? []
@@ -31,11 +25,13 @@ struct InteractionHandler {
         case "link":
             /// This is required based on the slash commands settings we send to discord.
             if options.isEmpty {
+                logger.error("Discord did not send required interaction info. ID: 2. Event: \(event)")
                 return "Please provide more options"
             }
             let first = options.removeFirst()
             /// This is required based on the slash commands settings we send to discord.
             guard let id = first.options?.first?.value?.asString else {
+                logger.error("Discord did not send required interaction info. ID: 3. Event: \(event)")
                 return "No ID option recognized"
             }
             switch first.name {
@@ -67,6 +63,7 @@ struct InteractionHandler {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
                 return false
             } else {
+                logger.debug("Sent successful interaction acknowledgment response")
                 return true
             }
         } catch {
@@ -88,6 +85,8 @@ struct InteractionHandler {
             )
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction: \(apiResponse)")
+            } else {
+                logger.debug("Sent successful interaction response")
             }
         } catch {
             logger.error("Discord Client error: \(error)")
