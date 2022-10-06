@@ -10,8 +10,6 @@ struct InteractionHandler {
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
         let response = await processAndMakeResponse()
-        //TODO: For debugging purposes, remove in production
-        try? await Task.sleep(nanoseconds: 8 * 1_000_000_000)
         await respondToInteraction(with: response)
     }
     
