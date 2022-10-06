@@ -133,7 +133,7 @@ private actor ReactionCache {
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
     ) -> Bool {
-        givenCoins.contains([senderId, messageId])
+        !givenCoins.contains([senderId, messageId])
     }
     
     func didGiveCoin(
