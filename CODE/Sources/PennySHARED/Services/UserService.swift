@@ -5,6 +5,7 @@ import PennyRepositories
 import PennyModels
 
 public struct UserService {
+    
     public enum ServiceError: Error {
         case failedToUpdate
         case unimplemented

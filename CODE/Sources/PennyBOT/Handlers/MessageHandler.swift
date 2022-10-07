@@ -29,7 +29,7 @@ struct MessageHandler {
             excludedUsers: [sender] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
-        // Return if there are no coins to be granted.
+        // Return if there are no coins to be granted
         if usersWithNewCoins.isEmpty { return }
         
         var successfulResponses = [String]()
@@ -55,21 +55,21 @@ struct MessageHandler {
         
         if successfulResponses.isEmpty {
             // Definitely there were some coin requests that failed.
-            await self.createMessage("Oops. Something went wrong! Please try again later")
+            await self.respond(with: "Oops. Something went wrong! Please try again later")
         } else {
             // Stitch responses together instead of sending a lot of messages,
             // to consume less Discord rate-limit.
             let finalResponse = successfulResponses.joined(separator: "\n")
             // Discord doesn't like embed-descriptions with more than 4_000 content length.
             if finalResponse.unicodeScalars.count > 4_000 {
-                await self.createMessage("Coins were granted to a lot of members!")
+                await self.respond(with: "Coins were granted to a lot of members!")
             } else {
-                await self.createMessage(finalResponse)
+                await self.respond(with: finalResponse)
             }
         }
     }
     
-    private func createMessage(_ response: String) async {
+    private func respond(with response: String) async {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: event.channel_id,

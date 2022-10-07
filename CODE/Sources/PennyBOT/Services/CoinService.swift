@@ -2,9 +2,8 @@ import Foundation
 import AsyncHTTPClient
 import PennyModels
 import Logging
-//import PennyShared
 
-public struct CoinService {
+struct CoinService {
     
     enum ServiceError: Error {
         case badStatus

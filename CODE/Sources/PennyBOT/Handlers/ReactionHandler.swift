@@ -41,19 +41,18 @@ struct ReactionHandler {
             reason: .userProvided
         )
         
-        let oops = "Oops. Something went wrong! Please try again later"
         let response: CoinResponse
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
             logger.error("Error when posting coins: \(error)")
-            return await respondToMessage(with: oops)
+            await respond(with: "Oops. Something went wrong! Please try again later")
+            return
         }
-        let responseString = "\(response.sender) gave a coin to \(response.receiver) and they now have \(response.coins) coins!"
-        await respondToMessage(with: responseString)
+        await respond(with: "\(response.sender) gave a coin to \(response.receiver) and they now have \(response.coins) coins!")
     }
     
-    private func respondToMessage(with response: String) async {
+    private func respond(with response: String) async {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: event.channel_id,
