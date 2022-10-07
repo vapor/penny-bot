@@ -46,11 +46,8 @@ struct MessageHandler {
             )
             do {
                 let response = try await self.coinService.postCoin(with: coinRequest)
-                if response.starts(with: "ERROR-") {
-                    logger.error("CoinService returned. Request: \(coinRequest), Response: \(response)")
-                } else {
-                    successfulResponses.append(response)
-                }
+                let responseString = "\(response.receiver) now has \(response.coins) coins!"
+                successfulResponses.append(responseString)
             } catch {
                 logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")
             }

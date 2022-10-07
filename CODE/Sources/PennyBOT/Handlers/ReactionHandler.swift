@@ -42,23 +42,15 @@ struct ReactionHandler {
         )
         
         let oops = "Oops. Something went wrong! Please try again later"
-        let response: String
+        let response: CoinResponse
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
             logger.error("Error when posting coins: \(error)")
             return await respondToMessage(with: oops)
         }
-        if response.starts(with: "ERROR-") {
-            logger.error("Received an incoming error: \(response)")
-            await respondToMessage(with: oops)
-        } else {
-            await ReactionCache.shared.didGiveCoin(
-                fromSender: user.id,
-                toAuthorOfMessage: event.message_id
-            )
-            await respondToMessage(with: response)
-        }
+        let responseString = "\(response.sender) gave a coin to \(response.receiver) and they now have \(response.coins) coins!"
+        await respondToMessage(with: responseString)
     }
     
     private func respondToMessage(with response: String) async {
@@ -133,7 +125,7 @@ private actor ReactionCache {
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
     ) -> Bool {
-        !givenCoins.contains([senderId, messageId])
+        givenCoins.insert([senderId, messageId]).inserted
     }
     
     func didGiveCoin(

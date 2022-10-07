@@ -7,6 +7,7 @@ import PennyModels
 public struct UserService {
     public enum ServiceError: Error {
         case failedToUpdate
+        case unimplemented
     }
     
     let logger: Logger
@@ -20,7 +21,7 @@ public struct UserService {
         self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: awsClient.eventLoopGroup.next(), logger: logger)
     }
     
-    public func addCoins(with coinEntry: CoinEntry, to user: User) async throws -> String {
+    public func addCoins(with coinEntry: CoinEntry, to user: User) async throws -> CoinResponse {
         var localUser: User
         
         do {
@@ -30,19 +31,26 @@ public struct UserService {
             case .github:
                 localUser = try await userRepo.getUser(github: user.githubID!)
             case .penny:
-                print("TO BE IMPLEMENTED")
-                return ""
+                throw ServiceError.unimplemented
             }
             
             localUser.addCoinEntry(coinEntry)
             let dbUser = DynamoDBUser(user: localUser)
                 
             try await userRepo.updateUser(dbUser)
-            return "\(localUser.discordID!) now has \(localUser.numberOfCoins) coins!"
+            return CoinResponse(
+                sender: coinEntry.from.discordID,
+                receiver: localUser.discordID!,
+                coins: localUser.numberOfCoins
+            )
         }
         catch DBError.itemNotFound {
             localUser = try await insertIntoDB(user: user, with: coinEntry)
-            return "\(localUser.discordID!) now has \(localUser.numberOfCoins) coins!"
+            return CoinResponse(
+                sender: coinEntry.from.discordID,
+                receiver: localUser.discordID!,
+                coins: localUser.numberOfCoins
+            )
         }
         catch let error {
             logger.error("\(error.localizedDescription)")
