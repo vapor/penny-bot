@@ -32,7 +32,7 @@ struct Penny {
             return _logger
         }
         
-        let bot = GatewayManager(
+        let bot = BotGatewayManager(
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
             token: token,

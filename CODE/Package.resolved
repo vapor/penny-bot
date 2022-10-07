@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "fc510a39cff61b849bf5cdff17eb2bd6d0777b49",
-        "version" : "1.11.5"
+        "revision" : "03b3e7b34153299e9b4c4b5c2a6ac790a582a3ac",
+        "version" : "1.12.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "9e4fd635029008345159df6efd7a719a10409ae6",
-        "version" : "1.0.0-beta.5"
+        "revision" : "402518cb957c2351209fda009bb7b643b53fe55d",
+        "version" : "1.0.0-beta.7"
       }
     },
     {
@@ -81,6 +81,15 @@
       }
     },
     {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections.git",
+      "state" : {
+        "revision" : "f504716c27d2e5d4144fa4794b12129301d17729",
+        "version" : "1.0.3"
+      }
+    },
+    {
       "identity" : "swift-crypto",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
@@ -112,8 +121,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "b4e0a274f7f34210e97e2f2c50ab02a10b549250",
-        "version" : "2.41.1"
+        "revision" : "bc4c55b9f9584f09eb971d67d956e28d08caa9d0",
+        "version" : "2.43.1"
       }
     },
     {
@@ -130,8 +139,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-http2.git",
       "state" : {
-        "revision" : "f9ab1c94c80d568efd762d2a638f25162691d766",
-        "version" : "1.22.1"
+        "revision" : "00576e6f1efa5c46dca2ca3081dc56dd233b402d",
+        "version" : "1.23.0"
       }
     },
     {
@@ -148,8 +157,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-transport-services.git",
       "state" : {
-        "revision" : "4e02d9cf35cabfb538c96613272fb027dd0c8692",
-        "version" : "1.13.1"
+        "revision" : "b6e37a0d442745760d6ed0195d8f283d3ce0414a",
+        "version" : "1.14.1"
       }
     },
     {
