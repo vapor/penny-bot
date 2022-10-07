@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "03b3e7b34153299e9b4c4b5c2a6ac790a582a3ac",
-        "version" : "1.12.0"
+        "revision" : "fc510a39cff61b849bf5cdff17eb2bd6d0777b49",
+        "version" : "1.11.5"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "402518cb957c2351209fda009bb7b643b53fe55d",
-        "version" : "1.0.0-beta.7"
+        "revision" : "3081ecd1a323fde97a15430afa2fa49d06eee3b5",
+        "version" : "1.0.0-beta.8"
       }
     },
     {
