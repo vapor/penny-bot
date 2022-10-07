@@ -64,14 +64,15 @@ struct AddCoins: LambdaHandler {
                 id: UUID(),
                 createdAt: Date(),
                 amount: product.amount,
-                from: .init(
-                    userID: userUUID,
-                    discordID: product.from
-                ),
+                from: userUUID,
                 source: product.source,
                 reason: product.reason)
             
-            let coinResponse = try await userService.addCoins(with: coinEntry, to: user)
+            let coinResponse = try await userService.addCoins(
+                with: coinEntry,
+                fromDiscordID: product.from,
+                to: user
+            )
             let data = try JSONEncoder().encode(coinResponse)
             let string = String(data: data, encoding: .utf8)
             response = APIGatewayV2Response(statusCode: .ok, body: string)

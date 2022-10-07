@@ -22,7 +22,11 @@ public struct UserService {
         self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: awsClient.eventLoopGroup.next(), logger: logger)
     }
     
-    public func addCoins(with coinEntry: CoinEntry, to user: User) async throws -> CoinResponse {
+    public func addCoins(
+        with coinEntry: CoinEntry,
+        fromDiscordID: String,
+        to user: User
+    ) async throws -> CoinResponse {
         var localUser: User
         
         do {
@@ -40,7 +44,7 @@ public struct UserService {
                 
             try await userRepo.updateUser(dbUser)
             return CoinResponse(
-                sender: coinEntry.from.discordID,
+                sender: fromDiscordID,
                 receiver: localUser.discordID!,
                 coins: localUser.numberOfCoins
             )
@@ -48,7 +52,7 @@ public struct UserService {
         catch DBError.itemNotFound {
             localUser = try await insertIntoDB(user: user, with: coinEntry)
             return CoinResponse(
-                sender: coinEntry.from.discordID,
+                sender: fromDiscordID,
                 receiver: localUser.discordID!,
                 coins: localUser.numberOfCoins
             )
