@@ -126,11 +126,4 @@ private actor ReactionCache {
     ) -> Bool {
         givenCoins.insert([senderId, messageId]).inserted
     }
-    
-    func didGiveCoin(
-        fromSender senderId: String,
-        toAuthorOfMessage messageId: String
-    ) {
-        givenCoins.insert([senderId, messageId])
-    }
 }
