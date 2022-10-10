@@ -4,7 +4,7 @@ import PennyModels
 
 private let coinSignEmojis = [
     "🪙",
-    "coin-1",
+    "coin~1",
     "❤️",
     "vaporlove"
 ]
