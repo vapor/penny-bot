@@ -5,7 +5,7 @@ import DiscordBM
 struct InteractionHandler {
     let discordClient: DiscordClient
     let logger: Logger
-    let event: Gateway.InteractionCreate
+    let event: Interaction
     
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }

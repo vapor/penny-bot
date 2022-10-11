@@ -7,7 +7,7 @@ struct MessageHandler {
     let discordClient: DiscordClient
     let coinService: CoinService
     let logger: Logger
-    let event: Gateway.Message
+    let event: Gateway.MessageCreate
     
     func handle() async {
         guard let author = event.author else {
@@ -29,7 +29,7 @@ struct MessageHandler {
             excludedUsers: [sender] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
-        // Return if there are no coins to be granted.
+        // Return if there are no coins to be granted
         if usersWithNewCoins.isEmpty { return }
         
         var successfulResponses = [String]()
