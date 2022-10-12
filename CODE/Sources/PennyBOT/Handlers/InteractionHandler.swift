@@ -10,7 +10,7 @@ struct InteractionHandler {
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
         let response = await processAndMakeResponse()
-        await respondToInteraction(with: response)
+        await respond(with: response)
     }
     
     private func processAndMakeResponse() async -> String {
@@ -18,16 +18,14 @@ struct InteractionHandler {
             logger.error("Discord did not send required interaction info. ID: 1. Event: \(event)")
             return "Failed to recognize the interaction"
         }
-        var options = event.data?.options ?? []
+        let options = event.data?.options ?? []
         switch name {
         case "link":
-            /// This is required based on the slash commands settings we send to discord.
             if options.isEmpty {
                 logger.error("Discord did not send required interaction info. ID: 2. Event: \(event)")
                 return "Please provide more options"
             }
-            let first = options.removeFirst()
-            /// This is required based on the slash commands settings we send to discord.
+            let first = options[0]
             guard let id = first.options?.first?.value?.asString else {
                 logger.error("Discord did not send required interaction info. ID: 3. Event: \(event)")
                 return "No ID option recognized"
@@ -69,7 +67,7 @@ struct InteractionHandler {
         }
     }
     
-    private func respondToInteraction(with response: String) async {
+    private func respond(with response: String) async {
         do {
             let apiResponse = try await discordClient.editInteractionResponse(
                 token: event.token,
