@@ -1,5 +1,26 @@
-import DiscordBM
+@testable import DiscordBM
 import AsyncHTTPClient
+import Foundation
+
+private let testData: [String: Any] = {
+    let fileManager = FileManager.default
+    let currentDirectory = fileManager.currentDirectoryPath
+    let path = currentDirectory + "/Tests/Resources/data.json"
+    let data = fileManager.contents(atPath: path)!
+    let object = try! JSONSerialization.jsonObject(with: data, options: [])
+    return object as! [String: Any]
+}()
+
+/// Probably could be more efficient than encoding then decoding again?!
+func testData(for key: String) -> Data {
+    try! JSONSerialization.data(
+        withJSONObject: testData[key]!
+    )
+}
+
+enum EventKey: String {
+    case message_1
+}
 
 actor MockedManager: GatewayManager {
     nonisolated let client: any DiscordClient = MockedDiscordClient()
@@ -18,7 +39,11 @@ actor MockedManager: GatewayManager {
     func addEventParseFailureHandler(_ handler: @escaping (Error, String) -> Void) async { }
     nonisolated func disconnect() { }
     
-    func send(event: Gateway.Event) {
+    func send(key: EventKey) {
+        let data = testData(for: key.rawValue)
+        let decoder = JSONDecoder()
+        let event = try! decoder.decode(Gateway.Event.self, from: data)
+        print("EVENT", event)
         for handler in eventHandlers {
             handler(event)
         }
@@ -26,9 +51,7 @@ actor MockedManager: GatewayManager {
 }
 
 private struct MockedDiscordClient: DiscordClient {
-    var appId: String? = "mocked"
-    
-    init() { }
+    let appId: String? = "11111111"
     
     func send(
         to endpoint: Endpoint,
@@ -39,7 +62,7 @@ private struct MockedDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: nil
+            body: .init(data: testData(for: endpoint.urlSuffix))
         )
     }
     
@@ -48,12 +71,17 @@ private struct MockedDiscordClient: DiscordClient {
         queries: [(String, String?)],
         payload: E
     ) async throws -> DiscordHTTPResponse {
-        DiscordHTTPResponse(
+        let key: String?
+        switch endpoint {
+        case .createApplicationGlobalCommand: key = nil
+        default: key = endpoint.urlSuffix
+        }
+        return DiscordHTTPResponse(
             host: "discord.com",
             status: .ok,
             version: .http2,
             headers: [:],
-            body: nil
+            body: key.map { .init(data: testData(for: $0) ) }
         )
     }
 }
