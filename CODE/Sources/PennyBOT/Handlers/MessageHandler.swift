@@ -46,11 +46,8 @@ struct MessageHandler {
             )
             do {
                 let response = try await self.coinService.postCoin(with: coinRequest)
-                if response.starts(with: "ERROR-") {
-                    logger.error("CoinService returned. Request: \(coinRequest), Response: \(response)")
-                } else {
-                    successfulResponses.append(response)
-                }
+                let responseString = "\(response.receiver) now has \(response.coins) coins!"
+                successfulResponses.append(responseString)
             } catch {
                 logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")
             }
@@ -58,21 +55,21 @@ struct MessageHandler {
         
         if successfulResponses.isEmpty {
             // Definitely there were some coin requests that failed.
-            await self.createMessage("Oops. Something went wrong! Please try again later")
+            await self.respond(with: "Oops. Something went wrong! Please try again later")
         } else {
             // Stitch responses together instead of sending a lot of messages,
             // to consume less Discord rate-limit.
             let finalResponse = successfulResponses.joined(separator: "\n")
             // Discord doesn't like embed-descriptions with more than 4_000 content length.
             if finalResponse.unicodeScalars.count > 4_000 {
-                await self.createMessage("Coins were granted to a lot of members!")
+                await self.respond(with: "Coins were granted to a lot of members!")
             } else {
-                await self.createMessage(finalResponse)
+                await self.respond(with: finalResponse)
             }
         }
     }
     
-    private func createMessage(_ response: String) async {
+    private func respond(with response: String) async {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: event.channel_id,

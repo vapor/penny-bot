@@ -44,27 +44,18 @@ struct ReactionHandler {
             reason: .userProvided
         )
         
-        let oops = "Oops. Something went wrong! Please try again later"
-        let response: String
+        let response: CoinResponse
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
             logger.error("Error when posting coins: \(error)")
-            return await respondToMessage(with: oops)
+            await respond(with: "Oops. Something went wrong! Please try again later")
+            return
         }
-        if response.starts(with: "ERROR-") {
-            logger.error("Received an incoming error: \(response)")
-            await respondToMessage(with: oops)
-        } else {
-            await ReactionCache.shared.didGiveCoin(
-                fromSender: user.id,
-                toAuthorOfMessage: event.message_id
-            )
-            await respondToMessage(with: response)
-        }
+        await respond(with: "\(response.sender) gave a coin to \(response.receiver)!\n\(response.receiver) now has \(response.coins) shiny coins.")
     }
     
-    private func respondToMessage(with response: String) async {
+    private func respond(with response: String) async {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: event.channel_id,
@@ -136,13 +127,6 @@ private actor ReactionCache {
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
     ) -> Bool {
-        !givenCoins.contains([senderId, messageId])
-    }
-    
-    func didGiveCoin(
-        fromSender senderId: String,
-        toAuthorOfMessage messageId: String
-    ) {
-        givenCoins.insert([senderId, messageId])
+        givenCoins.insert([senderId, messageId]).inserted
     }
 }

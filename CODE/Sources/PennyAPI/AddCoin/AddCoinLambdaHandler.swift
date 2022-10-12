@@ -68,14 +68,20 @@ struct AddCoins: LambdaHandler {
                 source: product.source,
                 reason: product.reason)
             
-            let message = try await userService.addCoins(with: coinEntry, to: user)
-            response = APIGatewayV2Response(statusCode: .ok, body: message)
+            let coinResponse = try await userService.addCoins(
+                with: coinEntry,
+                fromDiscordID: product.from,
+                to: user
+            )
+            let data = try JSONEncoder().encode(coinResponse)
+            let string = String(data: data, encoding: .utf8)
+            response = APIGatewayV2Response(statusCode: .ok, body: string)
         }
         catch UserService.ServiceError.failedToUpdate {
             response = APIGatewayV2Response(statusCode: .notFound, body: "ERROR- The user in particular wasn't found.")
         }
         catch let error {
-            response = APIGatewayV2Response(statusCode: .badRequest, body: "ERROR-\(error.localizedDescription)")
+            response = APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
             
         }
         return response
