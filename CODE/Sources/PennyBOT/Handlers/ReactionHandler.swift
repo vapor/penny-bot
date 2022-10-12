@@ -49,7 +49,7 @@ struct ReactionHandler {
             await respond(with: "Oops. Something went wrong! Please try again later")
             return
         }
-        await respond(with: "\(response.sender) gave a coin to \(response.receiver) and they now have \(response.coins) coins!")
+        await respond(with: "\(response.sender) gave a coin to \(response.receiver)!\n\(response.receiver) now has \(response.coins) shiny coins.")
     }
     
     private func respond(with response: String) async {
