@@ -18,7 +18,8 @@ struct CoinService {
         var request = HTTPClientRequest(url: "\(BASE_URL ?? "")/coin")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        request.body = .bytes(Data(try! JSONEncoder().encode(coinRequest)))
+        let data = try JSONEncoder().encode(coinRequest)
+        request.body = .bytes(data)
         
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
         logger.trace("HTTP head \(response)")
