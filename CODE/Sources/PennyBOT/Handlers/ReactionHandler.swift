@@ -3,16 +3,13 @@ import Logging
 import PennyModels
 
 private let coinSignEmojis = [
+    "coin~1", "vaporlove",
     "🪙",
-    "coin~1",
-    "❤️",
-    "vaporlove",
-    "pray"
-]
-
-/// For different tones of the emojis
-private let coinSignPrefixes = [
-    "pray_tone"
+    "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
+    "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",
+    "😍", "😻",
+    "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
+    "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿"
 ]
 
 struct ReactionHandler {
@@ -25,7 +22,7 @@ struct ReactionHandler {
         guard let user = event.member?.user,
               user.bot != true,
               let emoji = event.emoji.name,
-              isCoinEmoji(emoji),
+              coinSignEmojis.contains(emoji),
               await ReactionCache.shared.canGiveCoin(
                 fromSender: user.id,
                 toAuthorOfMessage: event.message_id
@@ -65,11 +62,6 @@ struct ReactionHandler {
             )
             await respondToMessage(with: response)
         }
-    }
-    
-    private func isCoinEmoji(_ emoji: String) -> Bool {
-        coinSignEmojis.contains(emoji)
-        || coinSignPrefixes.contains(where: { emoji.hasPrefix($0) })
     }
     
     private func respondToMessage(with response: String) async {
