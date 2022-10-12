@@ -8,6 +8,27 @@ import Backtrace
 
 @main
 struct Penny {
+    
+    static var makeBot: (EventLoopGroup, HTTPClient) -> GatewayManager = {
+        eventLoopGroup, client in
+        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
+              let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
+            fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
+        }
+        return BotGatewayManager(
+            eventLoopGroup: eventLoopGroup,
+            httpClient: client,
+            token: token,
+            appId: appId,
+            presence: .init(
+                activities: [.init(name: "Showing Appreciation", type: .game)],
+                status: .online,
+                afk: false
+            ),
+            intents: [.guildMessages, .messageContent, .guildMessageReactions]
+        )
+    }
+    
     static func main() throws {
         Backtrace.install()
 //        try LoggingSystem.bootstrap(from: &env)
@@ -21,29 +42,13 @@ struct Penny {
             try! eventLoopGroup.syncShutdownGracefully()
         }
         
-        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
-              let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
-            fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
-        }
-        
         DiscordGlobalConfiguration.makeLogger = { label in
             var _logger = Logger(label: label)
             _logger.logLevel = logger.logLevel
             return _logger
         }
         
-        let bot = BotGatewayManager(
-            eventLoopGroup: eventLoopGroup,
-            httpClient: client,
-            token: token,
-            appId: appId,
-            presence: .init(
-                activities: [.init(name: "Showing Appreciation", type: .game)],
-                status: .online,
-                afk: false
-            ),
-            intents: [.guildMessages, .messageContent, .guildMessageReactions]
-        )
+        let bot = makeBot(eventLoopGroup, client)
         
         Task {
             await bot.addEventHandler { event in

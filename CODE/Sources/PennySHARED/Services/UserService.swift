@@ -10,7 +10,7 @@ public struct UserService {
     }
     
     let logger: Logger
-    let userRepo: DynamoUserRepository
+    let userRepo: UserRepository
     
     public init(_ awsClient: AWSClient, _ logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
