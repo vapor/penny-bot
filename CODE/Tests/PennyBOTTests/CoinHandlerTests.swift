@@ -46,7 +46,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> :coin:
+                xxxx <@21939123912932193> 🪙
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -57,7 +57,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> <@4912300012398455> :coin:
+                xxxx <@21939123912932193> <@4912300012398455> 🚀
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -68,7 +68,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx :coin: <@21939123912932193>
+                xxxx ++ <@21939123912932193>
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -79,7 +79,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx :coin: <@21939123912932193> <@4912300012398455>
+                xxxx advance(by: 1) <@21939123912932193> <@4912300012398455>
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -159,7 +159,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :thumbsup: xxxx
+                xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :coin~1: xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -171,7 +171,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                <@21939123912932193> thanks xxxx <@4912300012398455> & :thumbsup: xxxx xxxx
+                <@21939123912932193> thanks xxxx <@4912300012398455> & 🙌🏽 xxxx xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -183,7 +183,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                thank you!  <@21939123912932193> xxxx :thumbsup:  <@4912300012398455>   xxxx xxxx
+                thank you!  <@21939123912932193> xxxx 👍🏿  <@4912300012398455>   xxxx xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -195,7 +195,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193> thanks xxxx xxxx <@4912300012398455>  :thumbsup:
+                xxxx xxxx <@21939123912932193> thanks xxxx xxxx <@4912300012398455>  successor()
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -207,7 +207,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193>thanks xxxx <@4912300012398455> :thumbsup: xxxx
+                xxxx <@21939123912932193>thanks xxxx <@4912300012398455> += 1 xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -282,7 +282,7 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 xxxx xxxx
-                xxxx xxxx :coin:
+                xxxx xxxx 🪙
                 """,
                 replied: "<@21939123912932193>"
             )
@@ -419,7 +419,7 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 <@21939123912932193> xxxx xxxx thanks!
-                xxxx <@4912300012398455> :thumbsup: xxxx
+                xxxx <@4912300012398455> 👍 xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )

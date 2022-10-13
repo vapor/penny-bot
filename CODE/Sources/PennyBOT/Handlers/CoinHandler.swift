@@ -2,26 +2,16 @@ import Foundation
 
 // All coin signs must be lowercased.
 private let validSigns = [
+    "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
+    "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
+    "🪙", ":coin~1:",
+    "thank you", "thank you!",
+    "thanks", "thanks!",
+    "thx", "thx!",
+    "+= 1", "+ 1",
+    "advance(by: 1)", "successor()",
     "++",
-    "🪙",
-    ":coin:",
-    "+= 1",
-    "+ 1",
-    "advance(by: 1)",
-    "successor()",
-    "👍",
-    ":+1:",
-    ":thumbsup:",
-    "🙌",
-    ":raised_hands:",
     "🚀",
-    ":rocket:",
-    "thanks",
-    "thanks!",
-    "thank you",
-    "thank you!",
-    "thx",
-    "thx!"
 ]
 
 struct CoinHandler {
