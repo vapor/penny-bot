@@ -87,7 +87,24 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
             ],
             path: "./Sources/PennySHARED/Services"),
-        .testTarget(name: "PennyBOTTests",
-                   dependencies: ["PennyBOT"]),
+        .target(
+            name: "Fake",
+            dependencies: [
+                "PennyRepositories",
+                "PennyLambdaAddCoins",
+                .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+            ],
+            path: "./Tests/Fake"
+        ),
+        .testTarget(
+            name: "PennyBOTTests",
+            dependencies: [
+                "PennyBOT",
+                "PennyRepositories",
+                "PennyLambdaAddCoins",
+                "Fake",
+                .product(name: "SotoDynamoDB", package: "soto"),
+            ]),
     ]
 )

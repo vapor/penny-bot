@@ -13,14 +13,12 @@ struct CoinService {
     let httpClient: HTTPClient
     
     func postCoin(with coinRequest: CoinRequest) async throws -> CoinResponse {
-        let BASE_URL = ProcessInfo.processInfo.environment["API_BASE_URL"]
-        logger.trace("\(String(describing: BASE_URL))")
-        var request = HTTPClientRequest(url: "\(BASE_URL ?? "")/coin")
+        var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl)/coin")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
         let data = try JSONEncoder().encode(coinRequest)
         request.body = .bytes(data)
-        
+        #warning("Need to mock responses here too")
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
         logger.trace("HTTP head \(response)")
         

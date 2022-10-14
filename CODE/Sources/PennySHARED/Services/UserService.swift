@@ -12,13 +12,18 @@ public struct UserService {
     }
     
     let logger: Logger
-    let userRepo: UserRepository
+    let userRepo: any UserRepository
     
     public init(_ awsClient: AWSClient, _ logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
         let dynamoDB = DynamoDB(client: awsClient, region: euWest)
         self.logger = logger
-        self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: awsClient.eventLoopGroup.next(), logger: logger)
+        self.userRepo = RepositoryFactory.makeUserRepository((
+            db: dynamoDB,
+            tableName: "penny-bot-table",
+            eventLoop: awsClient.eventLoopGroup.next(),
+            logger: logger
+        ))
     }
     
     public func addCoins(

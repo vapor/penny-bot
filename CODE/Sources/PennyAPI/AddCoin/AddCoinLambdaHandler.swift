@@ -23,8 +23,7 @@ struct AddCoins: LambdaHandler {
     let userService: UserService
     
     init(context: LambdaInitializationContext) async throws {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop))
+        let awsClient = AWSClientFactory.makeClient(context.eventLoop)
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
         self.userService = UserService(awsClient, context.logger)
