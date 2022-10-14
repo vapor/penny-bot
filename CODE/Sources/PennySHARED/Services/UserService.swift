@@ -8,7 +8,7 @@ public struct UserService {
     
     public enum ServiceError: Error {
         case failedToUpdate
-        case unimplemented
+        case unimplemented(line: UInt = #line)
     }
     
     let logger: Logger
@@ -16,8 +16,7 @@ public struct UserService {
     
     public init(_ awsClient: AWSClient, _ logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
-        //let endpoint = ProcessInfo.processInfo.environment["DynamoDBEndpointScript"]
-        let dynamoDB = DynamoDB(client: awsClient, region: euWest/*, endpoint: endpoint*/)
+        let dynamoDB = DynamoDB(client: awsClient, region: euWest)
         self.logger = logger
         self.userRepo = DynamoUserRepository(db: dynamoDB, tableName: "penny-bot-table", eventLoop: awsClient.eventLoopGroup.next(), logger: logger)
     }
@@ -36,7 +35,7 @@ public struct UserService {
             case .github:
                 localUser = try await userRepo.getUser(github: user.githubID!)
             case .penny:
-                throw ServiceError.unimplemented
+                throw ServiceError.unimplemented()
             }
             
             localUser.addCoinEntry(coinEntry)
@@ -73,7 +72,7 @@ public struct UserService {
             case .github:
                 localUser = try await userRepo.getUser(github: user.githubID!)
             case .penny:
-                abort()
+                throw ServiceError.unimplemented()
             }
             
             return localUser.id

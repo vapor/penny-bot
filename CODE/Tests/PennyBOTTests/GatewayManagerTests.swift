@@ -12,10 +12,12 @@ class GatewayManagerTests: XCTestCase {
     }
     
     func testSomething() async throws {
-//        let event = try! JSONDecoder().decode(
-//            Gateway.Event.self,
-//            from: Data(messageText.utf8)
-//        )
-        await manager.send(key: .message_1)
+        let response = try await manager.sendAndAwaitResponse(
+            key: .thanksMessage,
+            endpoint: .postCreateMessage(channelId: "441327731486097429"),
+            as: DiscordChannel.CreateMessage.self
+        )
+        let description = try XCTUnwrap(response.embeds?.first?.description)
+//        XCTAssertEqual(description, "")
     }
 }

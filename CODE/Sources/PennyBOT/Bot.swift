@@ -59,9 +59,9 @@ struct Penny {
                     logger: logger
                 ).handle()
             }
+            
+            await bot.connect()
         }
-        
-        bot.connect()
         
         SlashCommandHandler(
             discordClient: bot.client,

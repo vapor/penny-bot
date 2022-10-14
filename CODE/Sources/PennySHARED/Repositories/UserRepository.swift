@@ -1,7 +1,7 @@
 import Foundation
 import PennyModels
 
-protocol UserRepository {
+public protocol UserRepository {
     
     // MARK: - Insert
     func insertUser(_ user: DynamoDBUser) async throws -> Void
