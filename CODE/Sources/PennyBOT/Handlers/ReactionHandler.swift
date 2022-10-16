@@ -3,8 +3,8 @@ import Logging
 import PennyModels
 
 private let coinSignEmojis = [
-    "coin~1", "vaporlove",
-    "🪙", "coin", // Discord has a bug that sends 'coin' instead of 'coin~1'
+    "vaporlove",
+    "🪙", "coin", // 'coin' is also Vapor server's coin
     "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
     "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",
     "😍", "😻",
