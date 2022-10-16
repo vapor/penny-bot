@@ -8,16 +8,14 @@ struct DynamoUserRepository: UserRepository {
     // MARK: - Properties
     let db: DynamoDB
     let tableName: String
-    let eventLoop: EventLoop
     let logger: Logger
     
     let discordIndex = "GSI-1"
     let githubIndex = "GSI-2"
     
-    init(db: DynamoDB, tableName: String, eventLoop: EventLoop, logger: Logger) {
+    init(db: DynamoDB, tableName: String, logger: Logger) {
         self.db = db
         self.tableName = tableName
-        self.eventLoop = eventLoop
         self.logger = logger
     }
     
@@ -25,13 +23,13 @@ struct DynamoUserRepository: UserRepository {
     func insertUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
         
-        _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
+        _ = try await db.putItem(input, logger: self.logger, on: db.eventLoopGroup.next())
     }
     
     func updateUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.UpdateItemCodableInput(key: ["pk", "sk"], tableName: self.tableName, updateItem: user)
         
-        _ = try await db.updateItem(input, logger: self.logger, on: self.eventLoop)
+        _ = try await db.updateItem(input, logger: self.logger, on: db.eventLoopGroup.next())
     }
     
     // MARK: - Retrieve
@@ -60,7 +58,12 @@ struct DynamoUserRepository: UserRepository {
     }
     
     private func queryUser(with query: DynamoDB.QueryInput) async throws -> User {
-        let results = try await db.query(query, type: DynamoDBUser.self, logger: self.logger, on: self.eventLoop)
+        let results = try await db.query(
+            query,
+            type: DynamoDBUser.self,
+            logger: self.logger,
+            on: db.eventLoopGroup.next()
+        )
         guard let user = results.items?.first else {
             throw DBError.itemNotFound
         }

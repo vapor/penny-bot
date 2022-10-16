@@ -21,7 +21,6 @@ public struct UserService {
         self.userRepo = RepositoryFactory.makeUserRepository((
             db: dynamoDB,
             tableName: "penny-bot-table",
-            eventLoop: awsClient.eventLoopGroup.next(),
             logger: logger
         ))
     }

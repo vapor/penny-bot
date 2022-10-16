@@ -21,6 +21,8 @@ func testData(for key: String) -> Data {
 
 public enum EventKey: String {
     case thanksMessage
+    case linkInteraction
+    case thanksReaction
 }
 
 public actor FakeManager: GatewayManager {
