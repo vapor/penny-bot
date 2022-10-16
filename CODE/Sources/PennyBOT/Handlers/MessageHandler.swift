@@ -4,8 +4,8 @@ import PennyModels
 
 struct MessageHandler {
     
-    let discordClient: DiscordClient
-    let coinService: CoinService
+    let discordClient: any DiscordClient
+    let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageCreate
     
@@ -71,24 +71,7 @@ struct MessageHandler {
     
     private func respond(with response: String) async {
         do {
-//            let apiResponse = try await discordClient.createMessage(
-//                channelId: event.channel_id,
-//                payload: .init(
-//                    embeds: [.init(
-//                        description: response,
-//                        color: .vaporPurple
-//                    )],
-//                    message_reference: .init(
-//                        message_id: event.id,
-//                        channel_id: event.channel_id,
-//                        guild_id: event.guild_id,
-//                        fail_if_not_exists: false
-//                    )
-//                )
-//            ).raw
-        
-        let data = try JSONEncoder().encode(
-            try await discordClient.createMessage(
+            let apiResponse = try await discordClient.createMessage(
                 channelId: event.channel_id,
                 payload: .init(
                     embeds: [.init(
@@ -102,19 +85,14 @@ struct MessageHandler {
                         fail_if_not_exists: false
                     )
                 )
-            ).decode()
-        )
-        print("HEYHEY")
-        print(
-            String(data: data, encoding: .utf8)!
-        )
-//            if !(200..<300).contains(apiResponse.status.code) {
-//                logger.error("Received non-200 status from Discord API: \(apiResponse)")
-//            }
+            )
+            
+            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
+                logger.error("Received non-200 status from Discord API: \(apiResponse)")
+            }
         } catch {
             logger.error("Discord Client error: \(error)")
         }
     }
     
 }
-import Foundation

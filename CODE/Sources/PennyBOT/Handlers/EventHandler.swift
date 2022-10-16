@@ -6,8 +6,8 @@ import AsyncHTTPClient
 
 struct EventHandler {
     let event: Gateway.Event
-    let discordClient: DiscordClient
-    let coinService: CoinService
+    let discordClient: any DiscordClient
+    let coinService: any CoinService
     let logger: Logger
     
     func handle() {

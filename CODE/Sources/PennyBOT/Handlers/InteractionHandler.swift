@@ -3,7 +3,7 @@ import Logging
 import DiscordBM
 
 struct InteractionHandler {
-    let discordClient: DiscordClient
+    let discordClient: any DiscordClient
     let logger: Logger
     let event: Interaction
     
@@ -54,7 +54,7 @@ struct InteractionHandler {
                 id: event.id,
                 token: event.token,
                 payload: .init(type: .messageEditWithLoadingState)
-            ).raw
+            ).httpResponse
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
                 return false

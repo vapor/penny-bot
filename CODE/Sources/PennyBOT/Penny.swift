@@ -35,7 +35,7 @@ struct Penny {
                 EventHandler(
                     event: event,
                     discordClient: bot.client,
-                    coinService: CoinService(logger: logger, httpClient: client),
+                    coinService: ServiceFactory.makeCoinService(client, logger),
                     logger: logger
                 ).handle()
             }

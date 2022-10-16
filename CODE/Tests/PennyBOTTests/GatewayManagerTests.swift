@@ -16,13 +16,11 @@ class GatewayManagerTests: XCTestCase {
         AWSClientFactory.makeClient = { 
             AWSClient(httpClientProvider: .shared(FakeAWSHTTPClient(eventLoopGroup: $0)))
         }
-        RepositoryFactory.makeUserRepository = {
-            FakeUserRepository(
-                db: $0.db,
-                tableName: $0.tableName,
-                eventLoop: $0.eventLoop,
-                logger: $0.logger
-            )
+        RepositoryFactory.makeUserRepository = { _ in
+            FakeUserRepository()
+        }
+        ServiceFactory.makeCoinService = { _, _ in
+            FakeCoinService()
         }
         try await Penny.main()
     }
@@ -34,6 +32,7 @@ class GatewayManagerTests: XCTestCase {
             as: DiscordChannel.CreateMessage.self
         )
         let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertEqual(description, "")
+        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
+        XCTAssertTrue(description.hasSuffix(" coins!"))
     }
 }

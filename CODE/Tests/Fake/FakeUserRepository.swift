@@ -6,25 +6,12 @@ import PennyRepositories
 
 public struct FakeUserRepository: UserRepository {
     
-    // MARK: - Properties
-    let db: DynamoDB
-    let tableName: String
-    let eventLoop: EventLoop
-    let logger: Logger
+    public init() { }
     
-    public init(db: DynamoDB, tableName: String, eventLoop: EventLoop, logger: Logger) {
-        self.db = db
-        self.tableName = tableName
-        self.eventLoop = eventLoop
-        self.logger = logger
-    }
-    
-    // MARK: - Insert & Update
     public func insertUser(_ user: DynamoDBUser) async throws -> Void { }
     
     public func updateUser(_ user: DynamoDBUser) async throws -> Void { }
     
-    // MARK: - Retrieve
     public func getUser(discord id: String) async throws -> User {
         User(
             id: UUID(),
@@ -47,7 +34,6 @@ public struct FakeUserRepository: UserRepository {
         )
     }
     
-    // MARK: - Link users
     public func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
         abort()
     }
