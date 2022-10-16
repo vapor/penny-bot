@@ -60,7 +60,7 @@ public actor FakeManager: GatewayManager {
     ) async throws -> T {
         self.send(key: key)
         let value = await withCheckedContinuation { cont in
-            Task { waiters[endpoint.urlSuffix] = cont }
+            Task { continuations[endpoint.urlSuffix] = cont }
         }
         let unwrapped = try XCTUnwrap(
             value as? T,
@@ -69,10 +69,10 @@ public actor FakeManager: GatewayManager {
         return unwrapped
     }
     
-    private var waiters = [String: CheckedContinuation<Any, Never>]()
+    private var continuations = [String: CheckedContinuation<Any, Never>]()
     
     fileprivate func respond(to endpoint: Endpoint, with payload: Any) {
-        waiters.removeValue(forKey: endpoint.urlSuffix)?.resume(returning: payload)
+        continuations.removeValue(forKey: endpoint.urlSuffix)?.resume(returning: payload)
     }
 }
 

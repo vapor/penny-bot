@@ -25,7 +25,7 @@ class GatewayManagerTests: XCTestCase {
         try await Penny.main()
     }
     
-    func testSomething() async throws {
+    func testMessageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
             endpoint: .postCreateMessage(channelId: "441327731486097429"),
