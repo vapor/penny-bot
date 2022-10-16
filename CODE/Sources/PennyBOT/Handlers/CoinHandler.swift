@@ -4,7 +4,7 @@ import Foundation
 private let validSigns = [
     "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
-    "🪙", ":coin~1:",
+    "🪙", "<:coin:473588485962596352>", // This weird one is Vapor server's coin emoji
     "thank you", "thank you!",
     "thanks", "thanks!",
     "thx", "thx!",
