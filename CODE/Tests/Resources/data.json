@@ -171,5 +171,31 @@
             "burst": false,
             "guild_id": "808638139785936919"
         }
+    },
+    "/channels/966722151359057950/messages/1031112115928449034": {
+        "id": "966722151359057950",
+        "type": 0,
+        "content": "Testing! 684866",
+        "channel_id": "1030126766632742962",
+        "author": {
+            "id": "1030118727418646629",
+            "username": "DisBMLibTestBot",
+            "avatar": null,
+            "avatar_decoration": null,
+            "discriminator": "0861",
+            "public_flags": 0,
+            "bot": true
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
     }
 }
