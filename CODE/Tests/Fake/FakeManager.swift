@@ -64,7 +64,7 @@ public actor FakeManager: GatewayManager {
         file: String = #file,
         line: UInt = #line
     ) async throws -> T {
-        let value = await withCheckedContinuation { cont in
+        let value: Any = await withCheckedContinuation { cont in
             Task {
                 continuations[endpoint.urlSuffix] = cont
                 self.send(key: key)
