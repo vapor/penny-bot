@@ -27,19 +27,33 @@ public enum EventKey: String {
     case thanksMessage
     case linkInteraction
     case thanksReaction
+    
+    /// The endpoints from which the bot will send a response, after receiving each event.
+    var responseEndpoints: [Endpoint] {
+        switch self {
+        case .thanksMessage:
+            return [.postCreateMessage(channelId: "441327731486097429")]
+        case .linkInteraction:
+            return [.editOriginalInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
+        case .thanksReaction:
+            return [.postCreateMessage(channelId: "966722151359057950")]
+        }
+    }
 }
 
 public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id = 0
     public nonisolated let state: GatewayState = .connected
+    var eventHandlers = [(Gateway.Event) -> Void]()
     
     public init() { }
-    public static var shared = FakeManager()
     
     public nonisolated func connect() { }
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
-    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async { }
+    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
+        eventHandlers.append(handler)
+    }
     public func addEventParseFailureHandler(
         _ handler: @escaping (Error, String) -> Void
     ) async { }
@@ -49,45 +63,67 @@ public actor FakeManager: GatewayManager {
         let data = testData(for: key.rawValue)!
         let decoder = JSONDecoder()
         let event = try! decoder.decode(Gateway.Event.self, from: data)
-        EventHandler(
-            event: event,
-            discordClient: FakeDiscordClient(),
-            coinService: FakeCoinService(),
-            logger: Logger(label: "Test_EventHandler")
-        ).handle()
+        for handler in eventHandlers {
+            handler(event)
+        }
     }
     
     public func sendAndAwaitResponse<T>(
         key: EventKey,
-        endpoint: Endpoint,
         as type: T.Type = T.self,
         file: String = #file,
         line: UInt = #line
     ) async throws -> T {
-        let value: Any = await withCheckedContinuation { cont in
+        let value: Any = await withCheckedContinuation { continuation in
             Task {
-                continuations[endpoint.urlSuffix] = cont
+                let endpoint = key.responseEndpoints.first!
+                FakeResponseStorage.shared.expect(at: endpoint, continuation: continuation)
                 self.send(key: key)
-                try await Task.sleep(nanoseconds: 3_000_000_000)
-                if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
-                    XCTFail("Penny did not respond in-time to \(endpoint.urlSuffix)")
-                    cont.resume(with: .success(Optional<Never>.none as Any))
-                }
             }
         }
-
+        
         let unwrapped = try XCTUnwrap(
             value as? T,
-            "Value \(value) can't be cast to \(_typeName(T.self))."
+            "Value '\(value)' can't be cast to '\(_typeName(T.self))'"
         )
         return unwrapped
     }
+}
+
+public class FakeResponseStorage {
     
     private var continuations = [String: CheckedContinuation<Any, Never>]()
+    private var unhandledResponses = [String: Any]()
     
-    fileprivate func respond(to endpoint: Endpoint, with payload: Any) {
-        if let cont = continuations.removeValue(forKey: endpoint.urlSuffix) {
-            cont.resume(returning: payload)
+    public init() { }
+    public static var shared = FakeResponseStorage()
+    
+    public func awaitResponse(at endpoint: Endpoint) async -> Any {
+        await withCheckedContinuation { continuation in
+            self.expect(at: endpoint, continuation: continuation)
+        }
+    }
+    
+    func expect(at endpoint: Endpoint, continuation: CheckedContinuation<Any, Never>) {
+        if let response = unhandledResponses[endpoint.urlSuffix] {
+            continuation.resume(returning: response)
+        } else {
+            continuations[endpoint.urlSuffix] = continuation
+            Task {
+                try await Task.sleep(nanoseconds: 3_000_000_000)
+                if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
+                    XCTFail("Penny did not respond in-time at '\(endpoint.urlSuffix)'")
+                    continuation.resume(with: .success(Optional<Never>.none as Any))
+                }
+            }
+        }
+    }
+    
+    func respond(to endpoint: Endpoint, with payload: Any) {
+        if let continuation = continuations.removeValue(forKey: endpoint.urlSuffix) {
+            continuation.resume(returning: payload)
+        } else {
+            unhandledResponses[endpoint.urlSuffix] = payload
         }
     }
 }
@@ -101,7 +137,7 @@ private struct FakeDiscordClient: DiscordClient {
     ) async throws -> DiscordHTTPResponse {
         // Notify the mocked manager that the app has responded
         // to the message by trying to send a message to Discord.
-        await FakeManager.shared.respond(to: endpoint, with: "")
+        FakeResponseStorage.shared.respond(to: endpoint, with: Optional<Never>.none as Any)
         
         return DiscordHTTPResponse(
             host: "discord.com",
@@ -119,7 +155,7 @@ private struct FakeDiscordClient: DiscordClient {
     ) async throws -> DiscordHTTPResponse {
         // Notify the mocked manager that the app has responded
         // to the message by trying to send a message to Discord.
-        await FakeManager.shared.respond(to: endpoint, with: payload)
+        FakeResponseStorage.shared.respond(to: endpoint, with: payload)
         
         return DiscordHTTPResponse(
             host: "discord.com",

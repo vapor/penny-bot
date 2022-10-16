@@ -8,11 +8,10 @@ import XCTest
 
 class GatewayProcessingTests: XCTestCase {
     
-    var manager: FakeManager { .shared }
+    var responseStorage: FakeResponseStorage { .shared }
+    var manager: FakeManager!
     
     override func setUp() async throws {
-        Constants.coinServiceBaseUrl = "https://fake.com"
-        BotFactory.makeBot = { _, _ in FakeManager.shared }
         AWSClientFactory.makeClient = {
             AWSClient(httpClientProvider: .shared(
                 FakeAWSHTTPClient(eventLoopGroup: $0)
@@ -21,17 +20,27 @@ class GatewayProcessingTests: XCTestCase {
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()
         }
+        Constants.coinServiceBaseUrl = "https://fake.com"
         ServiceFactory.makeCoinService = { _, _ in
             FakeCoinService()
         }
-        FakeManager.shared = FakeManager()
+        FakeResponseStorage.shared = FakeResponseStorage()
+        self.manager = FakeManager()
+        BotFactory.makeBot = { _, _ in self.manager! }
         try await Penny.main()
+    }
+    
+    func testSlashCommandsRegisterOnStartup() async throws {
+        let response = await responseStorage.awaitResponse(
+            at: .createApplicationGlobalCommand(appId: "11111111")
+        )
+        let slashCommand = try XCTUnwrap(response as? SlashCommand)
+        XCTAssertEqual(slashCommand.name, "link")
     }
     
     func testMessageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
-            endpoint: .postCreateMessage(channelId: "441327731486097429"),
             as: DiscordChannel.CreateMessage.self
         )
         
@@ -43,7 +52,6 @@ class GatewayProcessingTests: XCTestCase {
     func testInteractionHandler() async throws {
         let response = try await self.manager.sendAndAwaitResponse(
             key: .linkInteraction,
-            endpoint: .editOriginalInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"),
             as: InteractionResponse.CallbackData.self
         )
         
@@ -54,7 +62,6 @@ class GatewayProcessingTests: XCTestCase {
     func testReactionHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksReaction,
-            endpoint: .postCreateMessage(channelId: "966722151359057950"),
             as: DiscordChannel.CreateMessage.self
         )
         

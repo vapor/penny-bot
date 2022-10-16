@@ -1,5 +1,5 @@
 import Foundation
 
 enum Constants {
-    static var coinServiceBaseUrl = ProcessInfo.processInfo.environment["API_BASE_URL"] ?? ""
+    static var coinServiceBaseUrl: String! = ProcessInfo.processInfo.environment["API_BASE_URL"]
 }

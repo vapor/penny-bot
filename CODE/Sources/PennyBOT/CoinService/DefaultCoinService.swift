@@ -13,7 +13,7 @@ struct DefaultCoinService: CoinService {
     let logger: Logger
     
     func postCoin(with coinRequest: CoinRequest) async throws -> CoinResponse {
-        var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl)/coin")
+        var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl!)/coin")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
         let data = try JSONEncoder().encode(coinRequest)
