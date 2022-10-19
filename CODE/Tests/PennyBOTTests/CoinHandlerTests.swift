@@ -159,7 +159,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> <:coin:473588485962596352> xxxx
+                xxxx <@21939123912932193>  thanks, xxxx xxxx <@4912300012398455> <:coin:473588485962596352> xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -219,7 +219,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                <@21939123912932193>THANK YOU!  <@4912300012398455> and :thumbsup:
+                <@21939123912932193>THANK YOU!  <@4912300012398455> and 👍🏼
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -322,7 +322,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :thumbsup:
+                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> 🙌🏼
                 """,
                 mentionedUsers: []
             )
@@ -346,21 +346,9 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :thumbsup:
+                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> 👍🏼
                 """,
                 excludedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
-            )
-            let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
-        }
-    }
-    
-    func testExcludeRoles() throws {
-        do {
-            let coinHandler = CoinHandler(
-                text: """
-                <@!800138494885124> thanks!
-                """
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -393,7 +381,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193> thanks xxxx <@21939123912932193> :thumbsup: xxxx
+                xxxx xxxx <@21939123912932193> thanks xxxx <@21939123912932193> 👌🏻 xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )

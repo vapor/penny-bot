@@ -4,6 +4,8 @@ import Foundation
 private let validSigns = [
     "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
+    "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
+    "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
     "🪙", "<:coin:473588485962596352>", // This weird one is Vapor server's coin emoji
     "thank you", "thank you!",
     "thanks", "thanks!",
@@ -31,7 +33,7 @@ struct CoinHandler {
     func findUsers() -> [String] {
         // If there are no mentioned users or replied users,
         // then there is no way that anyone will get any coins.
-        guard mentionedUsers.count + (repliedUser == nil ? 0 : 1) > 0 else {
+        if mentionedUsers.isEmpty && (repliedUser == nil) {
             return []
         }
         
@@ -43,7 +45,12 @@ struct CoinHandler {
             // if there is a user mention in the text and there are no spaces after
             // or behind it, the logic below won't be able to catch the mention since
             // it relies on spaces to find meaningful components of each line.
-            text = text.replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
+            // These extra spaces are filtered later.
+            text = text
+                .replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
+            // `,` can be problematic if someone sticks it to the end of a coin sign, like:
+            // "@Penny thanks, and congrats on your success!"
+                .replacingOccurrences(of: ",", with: "")
         }
         
         let lines = text.split(whereSeparator: \.isNewline)
@@ -62,7 +69,7 @@ struct CoinHandler {
             
             var usersWithNewCoins = [String]()
             // Not using `Set` to keep order. Will look nicer to users.
-            func appendUser(_ user: Substring) {
+            func append(user: Substring) {
                 if !usersWithNewCoins.contains(where: { $0.elementsEqual(user) }) {
                     usersWithNewCoins.append(String(user))
                 }
@@ -74,7 +81,7 @@ struct CoinHandler {
                 if let after = enumeratedComponents.first(where: { offset, component in
                     offset > mention.offset && !isUserMention(component)
                 }), components.dropFirst(after.offset).isPrefixedWithCoinSign {
-                    appendUser(mention.element)
+                    append(user: mention.element)
                     continue
                 }
                 
@@ -82,7 +89,7 @@ struct CoinHandler {
                 if let before = enumeratedComponents.reversed().first(where: { offset, component in
                     offset < mention.offset && !isUserMention(component)
                 }), components.dropLast(components.count - before.offset - 1).isSuffixedWithCoinSign {
-                    appendUser(mention.element)
+                    append(user: mention.element)
                     continue
                 }
             }
@@ -93,7 +100,7 @@ struct CoinHandler {
                components.isSuffixedWithCoinSign {
                 for component in components {
                     if isUserMention(component) {
-                        appendUser(component)
+                        append(user: component)
                     } else {
                         break
                     }
