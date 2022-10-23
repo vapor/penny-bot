@@ -5,6 +5,13 @@ import Logging
 import Foundation
 
 public class FakeAWSHTTPClient: AWSHTTPClient {
+    
+    public var eventLoopGroup: EventLoopGroup
+    
+    public init(eventLoopGroup: EventLoopGroup) {
+        self.eventLoopGroup = eventLoopGroup
+    }
+    
     public func execute(
         request: AWSHTTPRequest,
         timeout: TimeAmount,
@@ -20,16 +27,10 @@ public class FakeAWSHTTPClient: AWSHTTPClient {
     }
     
     public func shutdown(queue: DispatchQueue, _ callback: @escaping (Error?) -> Void) { }
-    
-    public var eventLoopGroup: EventLoopGroup
-    
-    public init(eventLoopGroup: EventLoopGroup) {
-        self.eventLoopGroup = eventLoopGroup
-    }
 }
 
 private struct FakeHTTPResponse: AWSHTTPResponse {
     var status: HTTPResponseStatus
     var headers: HTTPHeaders
-    var body: NIOCore.ByteBuffer?
+    var body: ByteBuffer?
 }
