@@ -2,14 +2,11 @@ import Foundation
 
 // All coin signs must be lowercased.
 private let validSigns = [
-    "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
     "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
     "🪙", "<:coin:473588485962596352>", // This weird one is Vapor server's coin emoji
-    "thank you", "thank you!",
-    "thanks", "thanks!",
-    "thx", "thx!",
+    "thx", "thanks", "thank you", "thanks a lot", "thanks a bunch",
     "+= 1", "+ 1",
     "advance(by: 1)", "successor()",
     "++",
@@ -38,7 +35,12 @@ struct CoinHandler {
         }
         
         // Lowercased for case-insensitive coin-sign checking.
-        var text = text.lowercased()
+        var text = text
+            .lowercased()
+        // `,` or `!` can be problematic if someone sticks it to the end of a coin sign, like:
+        // "@Penny thanks, and congrats on your success!"
+            .replacingOccurrences(of: ",", with: "")
+            .replacingOccurrences(of: "!", with: "")
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -46,11 +48,7 @@ struct CoinHandler {
             // or behind it, the logic below won't be able to catch the mention since
             // it relies on spaces to find meaningful components of each line.
             // These extra spaces are filtered later.
-            text = text
-                .replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
-            // `,` can be problematic if someone sticks it to the end of a coin sign, like:
-            // "@Penny thanks, and congrats on your success!"
-                .replacingOccurrences(of: ",", with: "")
+            text = text.replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
         }
         
         let lines = text.split(whereSeparator: \.isNewline)
@@ -146,9 +144,9 @@ struct CoinHandler {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
-        // `.hasPrefix("<")` is for a bit better performance.
+        // `.hasPrefix()` is for a better performance.
         // Removes a lot of no-match strings, much faster than the containment check.
-        string.hasPrefix("<") &&
+        string.hasPrefix("<@") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }

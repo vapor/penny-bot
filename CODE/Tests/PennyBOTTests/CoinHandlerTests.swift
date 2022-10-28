@@ -183,7 +183,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                thank you!  <@21939123912932193> xxxx 👍🏿  <@4912300012398455>   xxxx xxxx
+                thanks a bunch!  <@21939123912932193> xxxx thanks a lot  <@4912300012398455>   xxxx xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -407,7 +407,7 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 <@21939123912932193> xxxx xxxx thanks!
-                xxxx <@4912300012398455> 👍 xxxx
+                xxxx <@4912300012398455> thanks xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
