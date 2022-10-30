@@ -13,6 +13,13 @@ enum BotFactory {
         return BotGatewayManager(
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
+            clientConfiguration: .init(
+                retryPolicy: {
+                    var policy = ClientConfiguration.RetryPolicy.default
+                    policy.shouldRetryConnectionErrors = true
+                    return policy
+                }()
+            ),
             token: token,
             appId: appId,
             presence: .init(
