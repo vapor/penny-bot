@@ -32,7 +32,7 @@ class CoinHandlerTests: XCTestCase {
     func testUserAtTheBeginningAndCoinSignAtTheEnd() throws {
         let coinHandler = CoinHandler(
             text: """
-            <@21939123912932193> xxxx xxxx <@4912300012398455> xxxx thank you!
+            <@21939123912932193> xxxx xxxx <@4912300012398455> xxxx thank you so much!
             """,
             mentionedUsers: ["<@21939123912932193>"]
         )
@@ -94,7 +94,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> thank you! xxx
+                xxxx <@21939123912932193> thanks a bunch! xxx
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -105,7 +105,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> <@4912300012398455> thank you! xxx
+                xxxx <@21939123912932193> <@4912300012398455> thank you a bunch! xxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )

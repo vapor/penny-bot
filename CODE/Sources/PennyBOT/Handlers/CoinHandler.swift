@@ -2,15 +2,17 @@ import Foundation
 
 // All coin signs must be lowercased.
 private let validSigns = [
+    "++",
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
     "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
     "🪙", "<:coin:473588485962596352>", // This weird one is Vapor server's coin emoji
-    "thx", "thanks", "thank you", "thanks a lot", "thanks a bunch",
+    "🚀",
+    "thx", "thanks", "thank you",
+    "thanks a lot", "thanks a bunch", "thanks so much",
+    "thank you a lot", "thank you a bunch", "thank you so much",
     "+= 1", "+ 1",
     "advance(by: 1)", "successor()",
-    "++",
-    "🚀",
 ]
 
 struct CoinHandler {
@@ -37,8 +39,8 @@ struct CoinHandler {
         // Lowercased for case-insensitive coin-sign checking.
         var text = text
             .lowercased()
-        // `,` or `!` can be problematic if someone sticks it to the end of a coin sign, like:
-        // "@Penny thanks, and congrats on your success!"
+        // `,` or `!` can be problematic if someone sticks it to the end of a coin sign, like
+        // "@Penny thanks, ..." or  "@Penny thanks!"
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: "!", with: "")
         
@@ -92,8 +94,8 @@ struct CoinHandler {
                 }
             }
             
-            // The logic above doesn't take care of message starting with @s and ending in a coin
-            // sign. If there were no users found so far, we try to check for this case.
+            // If there were no users found so far, we try to check if
+            // the message starts with @s and ends in a coin sign.
             if usersWithNewCoins.isEmpty,
                components.isSuffixedWithCoinSign {
                 for component in components {
