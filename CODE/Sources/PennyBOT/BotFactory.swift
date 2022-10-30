@@ -14,7 +14,7 @@ enum BotFactory {
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
             clientConfiguration: .init(
-                retryPolicy: {
+                retryPolicy: { () -> ClientConfiguration.RetryPolicy in
                     var policy = ClientConfiguration.RetryPolicy.default
                     policy.shouldRetryConnectionErrors = true
                     return policy
