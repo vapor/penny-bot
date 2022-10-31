@@ -53,11 +53,24 @@ public actor FakeManager: GatewayManager {
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
         eventHandlers.append(handler)
+        /// After the handler is added, we consider this fake manager "connected".
+        connectionWaiter?.resume()
     }
     public func addEventParseFailureHandler(
         _ handler: @escaping (Error, String) -> Void
     ) async { }
     public nonisolated func disconnect() { }
+    
+    var connectionWaiter: CheckedContinuation<(), Never>?
+    public func waitUntilConnected() async {
+        if eventHandlers.isEmpty {
+            await withCheckedContinuation {
+                self.connectionWaiter = $0
+            }
+        } else {
+            return
+        }
+    }
     
     public func send(key: EventKey) {
         let data = testData(for: key.rawValue)!
@@ -74,14 +87,8 @@ public actor FakeManager: GatewayManager {
         file: String = #file,
         line: UInt = #line
     ) async throws -> T {
-        let value: Any = await withCheckedContinuation { continuation in
-            Task {
-                let endpoint = key.responseEndpoints.first!
-                FakeResponseStorage.shared.expect(at: endpoint, continuation: continuation)
-                self.send(key: key)
-            }
-        }
-        
+        self.send(key: key)
+        let value = await FakeResponseStorage.shared.awaitResponse(at: key.responseEndpoints[0])
         let unwrapped = try XCTUnwrap(
             value as? T,
             "Value '\(value)' can't be cast to '\(_typeName(T.self))'"
@@ -104,13 +111,14 @@ public class FakeResponseStorage {
         }
     }
     
-    func expect(at endpoint: Endpoint, continuation: CheckedContinuation<Any, Never>) {
+    private func expect(at endpoint: Endpoint, continuation: CheckedContinuation<Any, Never>) {
         if let response = unhandledResponses[endpoint.urlSuffix] {
             continuation.resume(returning: response)
         } else {
             continuations[endpoint.urlSuffix] = continuation
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
+                try Task.checkCancellation()
                 if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
                     XCTFail("Penny did not respond in-time at '\(endpoint.urlSuffix)'")
                     continuation.resume(with: .success(Optional<Never>.none as Any))

@@ -24,10 +24,16 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makeCoinService = { _, _ in
             FakeCoinService()
         }
+        /// reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
-        try await Penny.main()
+        /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before the work
+        /// is done and the fake manager is ready. That's why we need to do this.
+        Task {
+            try await Penny.main()
+        }
+        await manager.waitUntilConnected()
     }
     
     func testSlashCommandsRegisterOnStartup() async throws {

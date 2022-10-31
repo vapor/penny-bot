@@ -9,11 +9,11 @@ struct InteractionHandler {
     
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
-        let response = await processAndMakeResponse()
+        let response = processAndMakeResponse()
         await respond(with: response)
     }
     
-    private func processAndMakeResponse() async -> String {
+    private func processAndMakeResponse() -> String {
         guard let name = event.data?.name else {
             logger.error("Discord did not send required interaction info. ID: 1. Event: \(event)")
             return "Failed to recognize the interaction"
