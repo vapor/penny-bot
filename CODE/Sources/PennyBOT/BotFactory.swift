@@ -4,7 +4,7 @@ import NIOCore
 import Foundation
 
 enum BotFactory {
-    static var makeBot: (EventLoopGroup, HTTPClient) -> any GatewayManager = {
+    static var makeBot: (any EventLoopGroup, HTTPClient) -> any GatewayManager = {
         eventLoopGroup, client in
         guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
               let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {

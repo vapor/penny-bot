@@ -6,9 +6,9 @@ import Foundation
 
 public class FakeAWSHTTPClient: AWSHTTPClient {
     
-    public var eventLoopGroup: EventLoopGroup
+    public var eventLoopGroup: any EventLoopGroup
     
-    public init(eventLoopGroup: EventLoopGroup) {
+    public init(eventLoopGroup: any EventLoopGroup) {
         self.eventLoopGroup = eventLoopGroup
     }
     
