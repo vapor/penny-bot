@@ -48,16 +48,32 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
             ]),
+        .executableTarget(
+            name: "SponsorLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                "PennyExtensions",
+                "PennyRepositories",
+                "PennyServices",
+                "PennyModels"
+            ],
+            path: "./Sources/PennyAPI/Sponsors"
+        ),
         .target(
             name: "PennyExtensions",
             dependencies: [
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "Crypto", package: "swift-crypto"),
             ],
-            path: "./Sources/PennySHARED/Extensions"),
+            path: "./Sources/PennySHARED/Extensions"
+        ),
         .target(
             name: "PennyModels",
-            path: "./Sources/PennySHARED/Models"),
+            path: "./Sources/PennySHARED/Models"
+        ),
         .target(
             name: "PennyRepositories",
             dependencies: [
@@ -65,7 +81,8 @@ let package = Package(
                 "PennyModels",
                 "PennyExtensions"
             ],
-            path: "./Sources/PennySHARED/Repositories"),
+            path: "./Sources/PennySHARED/Repositories"
+        ),
         .target(
             name: "PennyServices",
             dependencies: [
@@ -73,7 +90,8 @@ let package = Package(
                 "PennyModels",
                 .product(name: "SotoDynamoDB", package: "soto"),
             ],
-            path: "./Sources/PennySHARED/Services"),
+            path: "./Sources/PennySHARED/Services"
+        ),
         .target(
             name: "Fake",
             dependencies: [
@@ -93,6 +111,7 @@ let package = Package(
                 "PennyLambdaAddCoins",
                 "Fake",
                 .product(name: "SotoDynamoDB", package: "soto"),
-            ]),
+            ]
+        ),
     ]
 )
