@@ -5,7 +5,9 @@ enum TestData {
         let fileManager = FileManager.default
         let currentDirectory = fileManager.currentDirectoryPath
         let path = currentDirectory + "/Tests/Resources/test_data.json"
-        let data = fileManager.contents(atPath: path)!
+        guard let data = fileManager.contents(atPath: path) else {
+            fatalError("Make sure you've set the custom working directory for the 'PennyBOT' scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory")
+        }
         let object = try! JSONSerialization.jsonObject(with: data, options: [])
         return object as! [String: Any]
     }()

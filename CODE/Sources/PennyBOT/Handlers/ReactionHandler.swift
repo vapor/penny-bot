@@ -113,6 +113,7 @@ private actor ReactionCache {
                     cachedAuthorIds[messageId] = authorId
                     return authorId
                 } else {
+                    logger.error("ReactionCache could not find a message's author id. message: \(message)")
                     return nil
                 }
             } catch {

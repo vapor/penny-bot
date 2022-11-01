@@ -22,7 +22,6 @@ public actor FakeResponseStorage {
             continuations[endpoint.urlSuffix] = continuation
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
-                try Task.checkCancellation()
                 if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
                     XCTFail("Penny did not respond in-time at '\(endpoint.urlSuffix)'")
                     continuation.resume(with: .success(Optional<Never>.none as Any))
