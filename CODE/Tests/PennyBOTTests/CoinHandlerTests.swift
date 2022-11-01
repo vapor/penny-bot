@@ -32,7 +32,7 @@ class CoinHandlerTests: XCTestCase {
     func testUserAtTheBeginningAndCoinSignAtTheEnd() throws {
         let coinHandler = CoinHandler(
             text: """
-            <@21939123912932193> xxxx xxxx <@4912300012398455> xxxx thank you!
+            <@21939123912932193> xxxx xxxx <@4912300012398455> xxxx thank you so much!
             """,
             mentionedUsers: ["<@21939123912932193>"]
         )
@@ -46,7 +46,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> :coin:
+                xxxx <@21939123912932193> 🪙
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -57,7 +57,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> <@4912300012398455> :coin:
+                xxxx <@21939123912932193> <@4912300012398455> 🚀
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -68,7 +68,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx :coin: <@21939123912932193>
+                xxxx ++ <@21939123912932193>
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -79,7 +79,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx :coin: <@21939123912932193> <@4912300012398455>
+                xxxx advance(by: 1) <@21939123912932193> <@4912300012398455>
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -94,7 +94,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> thank you! xxx
+                xxxx <@21939123912932193> thanks a bunch! xxx
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -105,7 +105,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193> <@4912300012398455> thank you! xxx
+                xxxx <@21939123912932193> <@4912300012398455> thank you a bunch! xxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -159,7 +159,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :thumbsup: xxxx
+                xxxx <@21939123912932193>  thanks, xxxx xxxx <@4912300012398455> <:coin:473588485962596352> xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -171,7 +171,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                <@21939123912932193> thanks xxxx <@4912300012398455> & :thumbsup: xxxx xxxx
+                <@21939123912932193> thanks xxxx <@4912300012398455> & 🙌🏽 xxxx xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -183,7 +183,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                thank you!  <@21939123912932193> xxxx :thumbsup:  <@4912300012398455>   xxxx xxxx
+                thanks a bunch!  <@21939123912932193> xxxx thanks a lot  <@4912300012398455>   xxxx xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -195,7 +195,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193> thanks xxxx xxxx <@4912300012398455>  :thumbsup:
+                xxxx xxxx <@21939123912932193> thanks xxxx xxxx <@4912300012398455>  successor()
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -207,7 +207,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx <@21939123912932193>thanks xxxx <@4912300012398455> :thumbsup: xxxx
+                xxxx <@21939123912932193>thanks xxxx <@4912300012398455> += 1 xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -219,7 +219,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                <@21939123912932193>THANK YOU!  <@4912300012398455> and :thumbsup:
+                <@21939123912932193>THANK YOU!  <@4912300012398455> and 👍🏼
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )
@@ -282,7 +282,7 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 xxxx xxxx
-                xxxx xxxx :coin:
+                xxxx xxxx 🪙
                 """,
                 replied: "<@21939123912932193>"
             )
@@ -322,7 +322,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :thumbsup:
+                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> 🙌🏼
                 """,
                 mentionedUsers: []
             )
@@ -346,21 +346,9 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> :thumbsup:
+                xxxx xxxx <@21939123912932193>  thanks xxxx xxxx <@4912300012398455> 👍🏼
                 """,
                 excludedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
-            )
-            let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
-        }
-    }
-    
-    func testExcludeRoles() throws {
-        do {
-            let coinHandler = CoinHandler(
-                text: """
-                <@!800138494885124> thanks!
-                """
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -393,7 +381,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx <@21939123912932193> thanks xxxx <@21939123912932193> :thumbsup: xxxx
+                xxxx xxxx <@21939123912932193> thanks xxxx <@21939123912932193> 👌🏻 xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>"]
             )
@@ -419,7 +407,7 @@ class CoinHandlerTests: XCTestCase {
             let coinHandler = CoinHandler(
                 text: """
                 <@21939123912932193> xxxx xxxx thanks!
-                xxxx <@4912300012398455> :thumbsup: xxxx
+                xxxx <@4912300012398455> thanks xxxx
                 """,
                 mentionedUsers: ["<@21939123912932193>", "<@4912300012398455>"]
             )

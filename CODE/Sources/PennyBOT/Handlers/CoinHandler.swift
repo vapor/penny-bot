@@ -3,25 +3,16 @@ import Foundation
 // All coin signs must be lowercased.
 private let validSigns = [
     "++",
-    "🪙",
-    ":coin:",
-    "+= 1",
-    "+ 1",
-    "advance(by: 1)",
-    "successor()",
-    "👍",
-    ":+1:",
-    ":thumbsup:",
-    "🙌",
-    ":raised_hands:",
+    "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
+    "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
+    "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
+    "🪙", "<:coin:473588485962596352>", // This weird one is Vapor server's coin emoji
     "🚀",
-    ":rocket:",
-    "thanks",
-    "thanks!",
-    "thank you",
-    "thank you!",
-    "thx",
-    "thx!"
+    "thx", "thanks", "thank you",
+    "thanks a lot", "thanks a bunch", "thanks so much",
+    "thank you a lot", "thank you a bunch", "thank you so much",
+    "+= 1", "+ 1",
+    "advance(by: 1)", "successor()",
 ]
 
 struct CoinHandler {
@@ -41,18 +32,24 @@ struct CoinHandler {
     func findUsers() -> [String] {
         // If there are no mentioned users or replied users,
         // then there is no way that anyone will get any coins.
-        guard mentionedUsers.count + (repliedUser == nil ? 0 : 1) > 0 else {
+        if mentionedUsers.isEmpty && (repliedUser == nil) {
             return []
         }
         
         // Lowercased for case-insensitive coin-sign checking.
-        var text = text.lowercased()
+        var text = text
+            .lowercased()
+        // `,` or `!` can be problematic if someone sticks it to the end of a coin sign, like
+        // "@Penny thanks, ..." or  "@Penny thanks!"
+            .replacingOccurrences(of: ",", with: "")
+            .replacingOccurrences(of: "!", with: "")
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
             // if there is a user mention in the text and there are no spaces after
             // or behind it, the logic below won't be able to catch the mention since
             // it relies on spaces to find meaningful components of each line.
+            // These extra spaces are filtered later.
             text = text.replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
         }
         
@@ -72,7 +69,7 @@ struct CoinHandler {
             
             var usersWithNewCoins = [String]()
             // Not using `Set` to keep order. Will look nicer to users.
-            func appendUser(_ user: Substring) {
+            func append(user: Substring) {
                 if !usersWithNewCoins.contains(where: { $0.elementsEqual(user) }) {
                     usersWithNewCoins.append(String(user))
                 }
@@ -84,7 +81,7 @@ struct CoinHandler {
                 if let after = enumeratedComponents.first(where: { offset, component in
                     offset > mention.offset && !isUserMention(component)
                 }), components.dropFirst(after.offset).isPrefixedWithCoinSign {
-                    appendUser(mention.element)
+                    append(user: mention.element)
                     continue
                 }
                 
@@ -92,18 +89,18 @@ struct CoinHandler {
                 if let before = enumeratedComponents.reversed().first(where: { offset, component in
                     offset < mention.offset && !isUserMention(component)
                 }), components.dropLast(components.count - before.offset - 1).isSuffixedWithCoinSign {
-                    appendUser(mention.element)
+                    append(user: mention.element)
                     continue
                 }
             }
             
-            // The logic above doesn't take care of message starting with @s and ending in a coin
-            // sign. If there were no users found so far, we try to check for this case.
+            // If there were no users found so far, we try to check if
+            // the message starts with @s and ends in a coin sign.
             if usersWithNewCoins.isEmpty,
                components.isSuffixedWithCoinSign {
                 for component in components {
                     if isUserMention(component) {
-                        appendUser(component)
+                        append(user: component)
                     } else {
                         break
                     }
@@ -149,9 +146,9 @@ struct CoinHandler {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
-        // `.hasPrefix("<")` is for a bit better performance.
+        // `.hasPrefix()` is for a better performance.
         // Removes a lot of no-match strings, much faster than the containment check.
-        string.hasPrefix("<") &&
+        string.hasPrefix("<@") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }
