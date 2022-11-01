@@ -12,10 +12,8 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
-        AWSClientFactory.makeClient = {
-            AWSClient(httpClientProvider: .shared(
-                FakeAWSHTTPClient(eventLoopGroup: $0)
-            ))
+        LambdaHandlerFactory.makeCoinLambdaHandler = { context in
+            try await FakeCoinHandler(context: context)
         }
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()

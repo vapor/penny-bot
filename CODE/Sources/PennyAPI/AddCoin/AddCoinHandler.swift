@@ -5,25 +5,21 @@ import SotoCore
 import PennyServices
 import PennyModels
 
-struct Response: Codable {
-    let body: String
-}
-
 struct FailedToShutdownAWSError: Error {
     let message = "Failed to shutdown the AWS Client"
 }
 
-@main
-struct AddCoins: LambdaHandler {
+struct AddCoinHandler: CoinLambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
     
     let awsClient: AWSClient
-    
     let userService: UserService
     
     init(context: LambdaInitializationContext) async throws {
-        let awsClient = AWSClientFactory.makeClient(context.eventLoop)
+        let awsClient = AWSClient(
+            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
+        )
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
         self.userService = UserService(awsClient, context.logger)
@@ -36,7 +32,7 @@ struct AddCoins: LambdaHandler {
             }
         })
     }
-
+    
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
         do {
@@ -86,3 +82,4 @@ struct AddCoins: LambdaHandler {
         return response
     }
 }
+

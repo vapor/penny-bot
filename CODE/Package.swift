@@ -90,6 +90,7 @@ let package = Package(
         .target(
             name: "Fake",
             dependencies: [
+                "PennyBOT",
                 "PennyRepositories",
                 "PennyLambdaAddCoins",
                 .product(name: "SotoDynamoDB", package: "soto"),
