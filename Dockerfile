@@ -1,4 +1,4 @@
-FROM swift:5.6-focal as build
+FROM swift:5.7-jammy as build
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
@@ -21,7 +21,7 @@ RUN cp "$(swift build --package-path /build -c release --show-bin-path)/PennyBOT
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
 # ===== RUN IMAGE =====
-FROM ubuntu:focal
+FROM ubuntu:jammy
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
