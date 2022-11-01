@@ -9,7 +9,7 @@ struct FailedToShutdownAWSError: Error {
     let message = "Failed to shutdown the AWS Client"
 }
 
-struct AddCoinHandler: CoinLambdaHandler {
+struct AddCoinHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
     

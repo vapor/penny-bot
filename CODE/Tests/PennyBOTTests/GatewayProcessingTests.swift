@@ -12,9 +12,7 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
-        LambdaHandlerFactory.makeCoinLambdaHandler = { context in
-            try await FakeCoinHandler(context: context)
-        }
+        LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinHandler.self
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()
         }
