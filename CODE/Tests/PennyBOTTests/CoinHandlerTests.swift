@@ -1,5 +1,5 @@
-import XCTest
 @testable import PennyBOT
+import XCTest
 
 class CoinHandlerTests: XCTestCase {
     
