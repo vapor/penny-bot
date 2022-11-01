@@ -2,6 +2,7 @@
 @testable import PennyBOT
 import AsyncHTTPClient
 import Logging
+import Atomics
 import Foundation
 import XCTest
 
@@ -44,17 +45,24 @@ public enum EventKey: String {
 public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id = 0
-    public nonisolated let state: GatewayState = .connected
+    let _state = ManagedAtomic<GatewayState>(.noConnection)
+    /// This `nonisolated let state` is just for protocol conformance
+    public nonisolated var state: GatewayState {
+        self._state.load(ordering: .relaxed)
+    }
     var eventHandlers = [(Gateway.Event) -> Void]()
     
     public init() { }
     
-    public nonisolated func connect() { }
+    public nonisolated func connect() {
+        Task {
+            self._state.store(.connected, ordering: .relaxed)
+            await connectionWaiter?.resume()
+        }
+    }
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
         eventHandlers.append(handler)
-        /// After the handler is added, we consider this fake manager "connected".
-        connectionWaiter?.resume()
     }
     public func addEventParseFailureHandler(
         _ handler: @escaping (Error, String) -> Void
@@ -63,19 +71,19 @@ public actor FakeManager: GatewayManager {
     
     var connectionWaiter: CheckedContinuation<(), Never>?
     public func waitUntilConnected() async {
-        if eventHandlers.isEmpty {
+        if self.state == .connected {
+            return
+        } else {
             await withCheckedContinuation {
                 self.connectionWaiter = $0
             }
-        } else {
-            return
         }
     }
     
-    public func send(key: EventKey) {
+    public func send(key: EventKey) throws {
         let data = testData(for: key.rawValue)!
         let decoder = JSONDecoder()
-        let event = try! decoder.decode(Gateway.Event.self, from: data)
+        let event = try decoder.decode(Gateway.Event.self, from: data)
         for handler in eventHandlers {
             handler(event)
         }
@@ -87,7 +95,7 @@ public actor FakeManager: GatewayManager {
         file: String = #file,
         line: UInt = #line
     ) async throws -> T {
-        self.send(key: key)
+        try self.send(key: key)
         let value = await FakeResponseStorage.shared.awaitResponse(at: key.responseEndpoints[0])
         let unwrapped = try XCTUnwrap(
             value as? T,
@@ -97,7 +105,7 @@ public actor FakeManager: GatewayManager {
     }
 }
 
-public class FakeResponseStorage {
+public actor FakeResponseStorage {
     
     private var continuations = [String: CheckedContinuation<Any, Never>]()
     private var unhandledResponses = [String: Any]()
@@ -145,7 +153,7 @@ private struct FakeDiscordClient: DiscordClient {
     ) async throws -> DiscordHTTPResponse {
         // Notify the mocked manager that the app has responded
         // to the message by trying to send a message to Discord.
-        FakeResponseStorage.shared.respond(to: endpoint, with: Optional<Never>.none as Any)
+        await FakeResponseStorage.shared.respond(to: endpoint, with: Optional<Never>.none as Any)
         
         return DiscordHTTPResponse(
             host: "discord.com",
@@ -163,7 +171,7 @@ private struct FakeDiscordClient: DiscordClient {
     ) async throws -> DiscordHTTPResponse {
         // Notify the mocked manager that the app has responded
         // to the message by trying to send a message to Discord.
-        FakeResponseStorage.shared.respond(to: endpoint, with: payload)
+        await FakeResponseStorage.shared.respond(to: endpoint, with: payload)
         
         return DiscordHTTPResponse(
             host: "discord.com",

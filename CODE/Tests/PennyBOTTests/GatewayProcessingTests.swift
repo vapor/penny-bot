@@ -30,9 +30,7 @@ class GatewayProcessingTests: XCTestCase {
         BotFactory.makeBot = { _, _ in self.manager! }
         /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before the work
         /// is done and the fake manager is ready. That's why we need to do this.
-        Task {
-            try await Penny.main()
-        }
+        Task { await Penny.main() }
         await manager.waitUntilConnected()
     }
     

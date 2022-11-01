@@ -9,7 +9,7 @@ import Backtrace
 @main
 struct Penny {
     
-    static func main() throws {
+    static func main() {
         Backtrace.install()
 //        try LoggingSystem.bootstrap(from: &env)
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
