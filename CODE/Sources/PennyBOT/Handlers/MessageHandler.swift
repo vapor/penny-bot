@@ -4,8 +4,8 @@ import PennyModels
 
 struct MessageHandler {
     
-    let discordClient: DiscordClient
-    let coinService: CoinService
+    let discordClient: any DiscordClient
+    let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageCreate
     
@@ -85,8 +85,9 @@ struct MessageHandler {
                         fail_if_not_exists: false
                     )
                 )
-            ).raw
-            if !(200..<300).contains(apiResponse.status.code) {
+            )
+            
+            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
                 logger.error("Received non-200 status from Discord API: \(apiResponse)")
             }
         } catch {

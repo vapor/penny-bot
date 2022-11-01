@@ -1,44 +1,29 @@
+import PennyLambdaAddCoins
 import AWSLambdaRuntime
 import AWSLambdaEvents
-import Foundation
-import SotoCore
-import PennyServices
 import PennyModels
+import Foundation
+import PennyServices
+import Logging
+import SotoCore
 
-struct Response: Codable {
-    let body: String
-}
-
-struct FailedToShutdownAWSError: Error {
-    let message = "Failed to shutdown the AWS Client"
-}
-
-@main
-struct AddCoins: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
-    
-    let awsClient: AWSClient
+public struct FakeCoinHandler: LambdaHandler {
+    public typealias Event = APIGatewayV2Request
+    public typealias Output = APIGatewayV2Response
     
     let userService: UserService
     
-    init(context: LambdaInitializationContext) async throws {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop))
-        // setup your resources that you want to reuse for every invocation here.
-        self.awsClient = awsClient
-        self.userService = UserService(awsClient, context.logger)
-        context.terminator.register(name: "Shutdown AWS", handler: { eventloop in
-            do {
-                try awsClient.syncShutdown()
-                return eventloop.makeSucceededVoidFuture()
-            } catch {
-                return eventloop.makeFailedFuture(FailedToShutdownAWSError())
-            }
-        })
+    public init(context: LambdaInitializationContext) async throws {
+        // The `client` won't be used at all, but still needs to be passed to user service
+        let client = AWSClient(httpClientProvider: .createNew)
+        self.userService = .init(client, Logger(label: "Test_UserService"))
+        context.terminator.register(name: "Shut Down") { eventLoop in
+            try! client.syncShutdown()
+            return eventLoop.makeSucceededVoidFuture()
+        }
     }
-
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
+    
+    public func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         let response: APIGatewayV2Response
         do {
             let product: CoinRequest = try event.bodyObject()

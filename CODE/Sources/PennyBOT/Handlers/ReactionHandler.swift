@@ -14,8 +14,8 @@ private let coinSignEmojis = [
 ]
 
 struct ReactionHandler {
-    let discordClient: DiscordClient
-    let coinService: CoinService
+    let discordClient: any DiscordClient
+    let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageReactionAdd
     
@@ -72,7 +72,7 @@ struct ReactionHandler {
                         fail_if_not_exists: false
                     )
                 )
-            ).raw
+            ).httpResponse
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API: \(apiResponse)")
             }
@@ -98,7 +98,7 @@ private actor ReactionCache {
     func getAuthorId(
         channelId: String,
         messageId: String,
-        client: DiscordClient,
+        client: any DiscordClient,
         logger: Logger
     ) async -> String? {
         if let authorId = cachedAuthorIds[messageId] {

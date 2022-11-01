@@ -11,9 +11,6 @@ CODE/.build/*
 CODE/.swiftpm/xcode/xcshareddata/xcschemes/BOT.xcscheme
 CODE/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .vscode/launch.json
-.devcontainer/devcontainer.json
-.devcontainer/Dockerfile
-.devcontainer/library-scripts/common-debian.sh
-.devcontainer/library-scripts/node-debian.sh
+.devcontainer
 CODE/Sources/DBMigration/Data
 .vscode/

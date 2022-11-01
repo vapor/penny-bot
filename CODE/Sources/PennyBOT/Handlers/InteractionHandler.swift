@@ -3,17 +3,17 @@ import Logging
 import DiscordBM
 
 struct InteractionHandler {
-    let discordClient: DiscordClient
+    let discordClient: any DiscordClient
     let logger: Logger
     let event: Interaction
     
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
-        let response = await processAndMakeResponse()
+        let response = processAndMakeResponse()
         await respond(with: response)
     }
     
-    private func processAndMakeResponse() async -> String {
+    private func processAndMakeResponse() -> String {
         guard let name = event.data?.name else {
             logger.error("Discord did not send required interaction info. ID: 1. Event: \(event)")
             return "Failed to recognize the interaction"
@@ -54,7 +54,7 @@ struct InteractionHandler {
                 id: event.id,
                 token: event.token,
                 payload: .init(type: .messageEditWithLoadingState)
-            ).raw
+            ).httpResponse
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
                 return false

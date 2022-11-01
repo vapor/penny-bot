@@ -21,7 +21,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", revision: "98a23b64bb5feadf43eed2fc1edf08817d8449b4"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
         .package(url: "https://github.com/soto-project/soto.git", from: "5.12.1"),
-        .package(url: "https://github.com/mahdibm/DiscordBM.git", from: "1.0.0-beta.1"),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", from: "1.0.0-beta.11"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
@@ -87,7 +87,25 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
             ],
             path: "./Sources/PennySHARED/Services"),
-        .testTarget(name: "PennyBOTTests",
-                   dependencies: ["PennyBOT"]),
+        .target(
+            name: "Fake",
+            dependencies: [
+                "PennyBOT",
+                "PennyRepositories",
+                "PennyLambdaAddCoins",
+                .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+            ],
+            path: "./Tests/Fake"
+        ),
+        .testTarget(
+            name: "PennyBOTTests",
+            dependencies: [
+                "PennyBOT",
+                "PennyRepositories",
+                "PennyLambdaAddCoins",
+                "Fake",
+                .product(name: "SotoDynamoDB", package: "soto"),
+            ]),
     ]
 )

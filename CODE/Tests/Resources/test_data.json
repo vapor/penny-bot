@@ -1,0 +1,201 @@
+{
+    "thanksMessage": {
+        "t": "MESSAGE_CREATE",
+        "s": 54,
+        "op": 0,
+        "d": {
+            "type": 0,
+            "tts": false,
+            "timestamp": "2022-10-12T06:12:54.114000+00:00",
+            "referenced_message": null,
+            "pinned": false,
+            "nonce": "1029637767555973120",
+            "mentions": [
+                {
+                    "username": "Penny",
+                    "public_flags": 0,
+                    "member": {
+                        "roles": [
+                            "950719637044207689",
+                            "441346871651336193"
+                        ],
+                        "premium_since": null,
+                        "pending": false,
+                        "nick": null,
+                        "mute": false,
+                        "joined_at": "2022-03-08T11:40:25.028000+00:00",
+                        "flags": 0,
+                        "deaf": false,
+                        "communication_disabled_until": null,
+                        "avatar": null
+                    },
+                    "id": "950695294906007573",
+                    "discriminator": "9194",
+                    "bot": true,
+                    "avatar_decoration": null,
+                    "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
+                }
+            ],
+            "mention_roles": [],
+            "mention_everyone": false,
+            "member": {
+                "roles": [
+                    "431920712505098240"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2020-04-07T20:49:57.563000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "id": "1029637770005717042",
+            "flags": 0,
+            "embeds": [],
+            "edited_timestamp": null,
+            "content": "<@950695294906007573> thank you :\\) nice job!",
+            "components": [],
+            "channel_id": "441327731486097429",
+            "author": {
+                "username": "Mahdi BM",
+                "public_flags": 0,
+                "id": "290483761559240704",
+                "discriminator": "0517",
+                "avatar_decoration": null,
+                "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+            },
+            "attachments": [],
+            "guild_id": "431917998102675485"
+        }
+    },
+    "linkInteraction": {
+        "t": "INTERACTION_CREATE",
+        "s": 2,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 2,
+            "token": "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 0,
+                    "id": "290483761559240704",
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "permissions": "4398046511103",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1031112113978089502",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "data": {
+                "type": 1,
+                "options": [
+                    {
+                        "type": 1,
+                        "options": [
+                            {
+                                "value": "9123813923",
+                                "type": 3,
+                                "name": "id"
+                            }
+                        ],
+                        "name": "discord"
+                    }
+                ],
+                "name": "link",
+                "id": "1018162735864872971"
+            },
+            "channel_id": "966722151359057950",
+            "application_id": "1016612301262041098",
+            "app_permissions": "1071698665025"
+        }
+    },
+    "thanksReaction": {
+        "t": "MESSAGE_REACTION_ADD",
+        "s": 5,
+        "op": 0,
+        "d": {
+            "user_id": "290483761559240704",
+            "message_id": "1031112115928449034",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 0,
+                    "id": "290483761559240704",
+                    "discriminator": "0517",
+                    "bot": false,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "emoji": {
+                "name": "🪙",
+                "id": null
+            },
+            "channel_id": "966722151359057950",
+            "burst": false,
+            "guild_id": "808638139785936919"
+        }
+    },
+    "/channels/966722151359057950/messages/1031112115928449034": {
+        "id": "966722151359057950",
+        "type": 0,
+        "content": "Testing! 684866",
+        "channel_id": "1030126766632742962",
+        "author": {
+            "id": "1030118727418646629",
+            "username": "DisBMLibTestBot",
+            "avatar": null,
+            "avatar_decoration": null,
+            "discriminator": "0861",
+            "public_flags": 0,
+            "bot": true
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
+    }
+}

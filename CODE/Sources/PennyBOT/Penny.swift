@@ -8,7 +8,8 @@ import Backtrace
 
 @main
 struct Penny {
-    static func main() throws {
+    
+    static func main() {
         Backtrace.install()
 //        try LoggingSystem.bootstrap(from: &env)
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
@@ -21,42 +22,26 @@ struct Penny {
             try! eventLoopGroup.syncShutdownGracefully()
         }
         
-        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
-              let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
-            fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
-        }
-        
         DiscordGlobalConfiguration.makeLogger = { label in
             var _logger = Logger(label: label)
             _logger.logLevel = logger.logLevel
             return _logger
         }
         
-        let bot = BotGatewayManager(
-            eventLoopGroup: eventLoopGroup,
-            httpClient: client,
-            token: token,
-            appId: appId,
-            presence: .init(
-                activities: [.init(name: "Showing Appreciation", type: .game)],
-                status: .online,
-                afk: false
-            ),
-            intents: [.guildMessages, .messageContent, .guildMessageReactions]
-        )
+        let bot = BotFactory.makeBot(eventLoopGroup, client)
         
         Task {
             await bot.addEventHandler { event in
                 EventHandler(
                     event: event,
                     discordClient: bot.client,
-                    coinService: CoinService(logger: logger, httpClient: client),
+                    coinService: ServiceFactory.makeCoinService(client, logger),
                     logger: logger
                 ).handle()
             }
+            
+            await bot.connect()
         }
-        
-        bot.connect()
         
         SlashCommandHandler(
             discordClient: bot.client,

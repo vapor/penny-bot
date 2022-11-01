@@ -3,15 +3,7 @@ import SotoDynamoDB
 import PennyModels
 import PennyExtensions
 
-public enum DBError: Error {
-    case invalidItem
-    case tableNameNotFound
-    case invalidRequest
-    case invalidHandler
-    case itemNotFound
-}
-
-public struct DynamoUserRepository: UserRepository {
+struct DynamoUserRepository: UserRepository {
     
     // MARK: - Properties
     let db: DynamoDB
@@ -22,7 +14,7 @@ public struct DynamoUserRepository: UserRepository {
     let discordIndex = "GSI-1"
     let githubIndex = "GSI-2"
     
-    public init(db: DynamoDB, tableName: String, eventLoop: EventLoop, logger: Logger) {
+    init(db: DynamoDB, tableName: String, eventLoop: EventLoop, logger: Logger) {
         self.db = db
         self.tableName = tableName
         self.eventLoop = eventLoop
@@ -30,20 +22,20 @@ public struct DynamoUserRepository: UserRepository {
     }
     
     // MARK: - Insert & Update
-    public func insertUser(_ user: DynamoDBUser) async throws -> Void {
+    func insertUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
         
         _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
     }
     
-    public func updateUser(_ user: DynamoDBUser) async throws -> Void {
+    func updateUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.UpdateItemCodableInput(key: ["pk", "sk"], tableName: self.tableName, updateItem: user)
         
         _ = try await db.updateItem(input, logger: self.logger, on: self.eventLoop)
     }
     
     // MARK: - Retrieve
-    public func getUser(discord id: String) async throws -> User {
+    func getUser(discord id: String) async throws -> User {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
             indexName: discordIndex,
@@ -55,7 +47,7 @@ public struct DynamoUserRepository: UserRepository {
         return try await queryUser(with: query)
     }
     
-    public func getUser(github id: String) async throws -> User {
+    func getUser(github id: String) async throws -> User {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("GITHUB-\(id)")],
             indexName: githubIndex,
@@ -68,7 +60,12 @@ public struct DynamoUserRepository: UserRepository {
     }
     
     private func queryUser(with query: DynamoDB.QueryInput) async throws -> User {
-        let results = try await db.query(query, type: DynamoDBUser.self, logger: self.logger, on: self.eventLoop)
+        let results = try await db.query(
+            query,
+            type: DynamoDBUser.self,
+            logger: self.logger,
+            on: self.eventLoop
+        )
         guard let user = results.items?.first else {
             throw DBError.itemNotFound
         }
@@ -86,7 +83,7 @@ public struct DynamoUserRepository: UserRepository {
     }
     
     // MARK: - Link users
-    public func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
+    func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
         // TODO: Implement
         // Check if the users github already exists
         
@@ -98,7 +95,7 @@ public struct DynamoUserRepository: UserRepository {
         abort()
     }
     
-    public func linkDiscord(with githubId: String, _ discordId: String) async throws -> String {
+    func linkDiscord(with githubId: String, _ discordId: String) async throws -> String {
         // TODO: Implement
         // Check if the users discord already exists
         

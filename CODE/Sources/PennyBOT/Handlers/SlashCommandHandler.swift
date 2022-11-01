@@ -3,7 +3,7 @@ import DiscordBM
 import Logging
 
 struct SlashCommandHandler {
-    let discordClient: DiscordClient
+    let discordClient: any DiscordClient
     let logger: Logger
     let guildId = "431917998102675485"
     
@@ -55,7 +55,7 @@ struct SlashCommandHandler {
             do {
                 let apiResponse = try await discordClient.createApplicationGlobalCommand(
                     payload: linkCommand
-                ).raw
+                ).httpResponse
                 if !(200..<300).contains(apiResponse.status.code) {
                     logger.error("Received non-200 status from Discord API for slash commands: \(apiResponse)")
                 }
