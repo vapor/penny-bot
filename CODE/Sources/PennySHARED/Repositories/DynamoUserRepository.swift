@@ -8,13 +8,13 @@ struct DynamoUserRepository: UserRepository {
     // MARK: - Properties
     let db: DynamoDB
     let tableName: String
-    let eventLoop: EventLoop
+    let eventLoop: any EventLoop
     let logger: Logger
     
     let discordIndex = "GSI-1"
     let githubIndex = "GSI-2"
     
-    init(db: DynamoDB, tableName: String, eventLoop: EventLoop, logger: Logger) {
+    init(db: DynamoDB, tableName: String, eventLoop: any EventLoop, logger: Logger) {
         self.db = db
         self.tableName = tableName
         self.eventLoop = eventLoop

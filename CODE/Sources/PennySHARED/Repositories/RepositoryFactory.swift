@@ -4,7 +4,7 @@ public enum RepositoryFactory {
     public typealias UserRepoParameters = (
         db: DynamoDB,
         tableName: String,
-        eventLoop: EventLoop,
+        eventLoop: any EventLoop,
         logger: Logger
     )
     
