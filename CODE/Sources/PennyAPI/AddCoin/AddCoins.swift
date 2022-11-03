@@ -1,5 +1,3 @@
-import AWSLambdaRuntime
-import AWSLambdaEvents
 
 @main
 struct AddCoin {

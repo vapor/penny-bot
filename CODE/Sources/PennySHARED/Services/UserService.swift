@@ -1,6 +1,5 @@
-import Foundation
-import SotoCore
 import SotoDynamoDB
+import Foundation
 import PennyRepositories
 import PennyModels
 

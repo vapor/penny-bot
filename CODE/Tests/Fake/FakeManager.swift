@@ -1,4 +1,4 @@
-@testable import DiscordBM
+import DiscordBM
 import Atomics
 import XCTest
 
@@ -6,7 +6,7 @@ public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id = 0
     let _state = ManagedAtomic<GatewayState>(.noConnection)
-    /// This `nonisolated let state` is just for protocol conformance
+    /// This `nonisolated var state` is just for protocol conformance
     public nonisolated var state: GatewayState {
         self._state.load(ordering: .relaxed)
     }

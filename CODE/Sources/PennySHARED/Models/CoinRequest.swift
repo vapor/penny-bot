@@ -1,4 +1,3 @@
-import Foundation
 
 public struct CoinRequest: Codable {
     public let amount: Int

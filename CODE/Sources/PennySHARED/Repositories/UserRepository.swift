@@ -1,4 +1,3 @@
-import Foundation
 import PennyModels
 
 public protocol UserRepository {

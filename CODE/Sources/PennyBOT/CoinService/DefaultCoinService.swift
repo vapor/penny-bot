@@ -31,4 +31,3 @@ struct DefaultCoinService: CoinService {
         return try JSONDecoder().decode(CoinResponse.self, from: body)
     }
 }
-

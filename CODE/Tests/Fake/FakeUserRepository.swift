@@ -1,7 +1,5 @@
 import Foundation
-import SotoDynamoDB
 import PennyModels
-import PennyExtensions
 import PennyRepositories
 
 public struct FakeUserRepository: UserRepository {

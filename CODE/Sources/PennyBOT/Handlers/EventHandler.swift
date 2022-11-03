@@ -1,8 +1,5 @@
-import Foundation
 import DiscordBM
-import PennyModels
 import Logging
-import AsyncHTTPClient
 
 struct EventHandler {
     let event: Gateway.Event
