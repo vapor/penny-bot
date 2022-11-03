@@ -58,7 +58,6 @@ let package = Package(
                 "PennyExtensions",
                 "PennyRepositories",
                 "PennyServices",
-                "PennyModels"
             ],
             path: "./Sources/PennyAPI/Sponsors"
         ),

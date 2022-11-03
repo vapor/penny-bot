@@ -8,7 +8,6 @@ import PennyExtensions
 import PennyRepositories
 import PennyServices
 import SotoCore
-import PennyModels
 
 enum GitHubRequestError: Error {
     case runWorkflowError(message: String)
@@ -35,41 +34,34 @@ struct AddSponsor: LambdaHandler {
     init(context: LambdaInitializationContext) async throws {
         let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
         self.httpClient = httpClient
-        let awsClient = AWSClient(httpClientProvider: .createNewWithEventLoopGroup(httpClient.eventLoopGroup.next()))
+        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
         self.awsClient = awsClient
         context.terminator.register(name: "HTTP Client shutdown") { eventLoop in
             do {
-                try httpClient.syncShutdown()
                 try awsClient.syncShutdown()
+                try httpClient.syncShutdown()
                 return eventLoop.makeSucceededVoidFuture()
             } catch {
                 return eventLoop.makeFailedFuture(HTTPClientFailedShutdownError())
             }
         }
-        // Get bot data from env vars
+        // Pull in Penny bot and use its Discord client
         guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
               let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
             fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
         }
-        
-        // Pull in Penny bot and use its Discord client
-        let penny = BotGatewayManager(
-            eventLoopGroup: httpClient.eventLoopGroup,
+        self.discordClient = DefaultDiscordClient(
             httpClient: httpClient,
             token: token,
-            appId: appId,
-            intents: [.guildMessages, .messageContent]
+            appId: appId
         )
-        self.discordClient = penny.client
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
-        
         // Only accept sponsorship events
         guard event.headers["X-Github-Event"] == "sponsorship" else {
             return APIGatewayV2Response(statusCode: HTTPResponseStatus(code: 200))
         }
-        let apiGatewayResponse: APIGatewayV2Response
         do {
             // Try updating the GitHub Readme with the new sponsor
             try await requestReadmeWorkflowTrigger(on: event, context: context)
@@ -82,19 +74,17 @@ struct AddSponsor: LambdaHandler {
             let userService = UserService(awsClient, context.logger)
             let user = try await userService.getUserWith(githubID: String(newSponsorID))
             guard let user = user else {
-                apiGatewayResponse = APIGatewayV2Response(
+                return APIGatewayV2Response(
                     statusCode: .notFound,
                     body: "Error: there is no user with GitHub ID \(newSponsorID)"
                 )
-                return apiGatewayResponse
             }
             
             guard let userDiscordID = user.discordID else {
-                apiGatewayResponse = APIGatewayV2Response(
+                return APIGatewayV2Response(
                     statusCode: .notFound,
                     body: "Error: user \(newSponsorID) did not link a Discord account"
                 )
-                return apiGatewayResponse
             }
             
             // Get role ID based on sponsorship tier
@@ -111,12 +101,12 @@ struct AddSponsor: LambdaHandler {
             // Send message to new sponsor
             try await sendMessage(to: userDiscordID, from: payload, role: role, context: context)
 
+            return APIGatewayV2Response(statusCode: .ok)
         } catch let error {
-            apiGatewayResponse = APIGatewayV2Response(
+            return APIGatewayV2Response(
                 statusCode: .badRequest,
                 body: "Error: \(error.localizedDescription)"
             )
-            return apiGatewayResponse
         }
     }
     
@@ -142,7 +132,6 @@ struct AddSponsor: LambdaHandler {
                 message: "Failed to add \(role.rawValue) role to member with error: \(addRoleResponse.status.description)"
             )
         }
-        
         context.logger.info("Successfully added \(role.rawValue) role to user \(userDiscordID) with response code: \(addRoleResponse.status.code)")
     }
 
@@ -161,7 +150,7 @@ struct AddSponsor: LambdaHandler {
             channelId: SponsorType.backer.channelID,
             payload: .init(
                 embeds: [.init(
-                    description: "Welcome <@\(userDiscordID)>, our new \(role.rawValue)"
+                    description: "Welcome <@\(userDiscordID)>, our new \(role.rawValue) ++"
                 )]
             )
         )
@@ -172,7 +161,6 @@ struct AddSponsor: LambdaHandler {
                 message: "Failed to send message with error: \(createMessageResponse.httpResponse.status.code)"
             )
         }
-        
         context.logger.info("Successfully sent message to user \(userDiscordID) with response code: \(createMessageResponse.httpResponse.status.code)")
     }
     
@@ -192,7 +180,7 @@ struct AddSponsor: LambdaHandler {
         // The token is going to have to be in the SecretsManager in AWS
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
-            "Authorization": "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"
+            "Authorization": String(ProcessInfo.processInfo.environment["GH_WORKFLOW_TOKEN"]!)
         ])
         
         // Send request to trigger workflow and read response
@@ -203,7 +191,6 @@ struct AddSponsor: LambdaHandler {
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )
         }
-        
         context.logger.info("Successfully ran GitHub workflow with response code: \(githubResponse.status.code)")
     }
 }

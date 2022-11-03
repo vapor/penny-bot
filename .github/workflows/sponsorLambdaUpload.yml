@@ -1,0 +1,45 @@
+name: Build and upload sponsor lambda function
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and upload to S3
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log directory
+        run: ls -a
+      - name: Checkout repository
+        uses: actions/checkout@v3.0.0
+      - name: Build and zip
+        run: |
+          cd ./CODE 
+          ./scripts/build-and-package.sh SponsorLambda
+      - name: Remove build file
+        run: |
+          cd './CODE/.build/lambda/'
+          sudo rm -rf SponsorLambda
+      - name: Deploy to S3
+        id: s3deploy
+        uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: "penny-discord-bot"
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+          AWS_REGION: "eu-west-1"
+          SOURCE_DIR: "./CODE/.build/lambda/"
+      - name: Update Lambda code
+        run: |
+          aws lambda update-function-code \
+            --function-name 'SponsorLambda-lambda' \
+            --s3-bucket 'penny-discord-bot' \
+            --s3-key 'SponsorLambda.zip'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+          AWS_REGION: "eu-west-1"
