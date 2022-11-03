@@ -1,5 +1,3 @@
-import AsyncHTTPClient
-import Logging
 import PennyModels
 
 public protocol CoinService {

@@ -7,7 +7,7 @@ import PennyServices
 import Logging
 import SotoCore
 
-public struct FakeCoinHandler: LambdaHandler {
+public struct FakeCoinLambdaHandler: LambdaHandler {
     public typealias Event = APIGatewayV2Request
     public typealias Output = APIGatewayV2Response
     

@@ -1,4 +1,3 @@
-import Logging
 import SotoDynamoDB
 
 public enum RepositoryFactory {

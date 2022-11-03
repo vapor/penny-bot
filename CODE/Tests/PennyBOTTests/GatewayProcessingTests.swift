@@ -1,7 +1,6 @@
 @testable import PennyBOT
-@testable import DiscordBM
-@testable import PennyLambdaAddCoins
-import SotoCore
+import DiscordBM
+import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
 import XCTest
@@ -12,7 +11,7 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
-        LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinHandler.self
+        LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()
         }
@@ -26,7 +25,7 @@ class GatewayProcessingTests: XCTestCase {
         BotFactory.makeBot = { _, _ in self.manager! }
         /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         /// the fake manager is ready. That's why we need to use `waitUntilConnected()`.
-        Task { await Penny.main() }
+        await Penny.main()
         await manager.waitUntilConnected()
     }
     

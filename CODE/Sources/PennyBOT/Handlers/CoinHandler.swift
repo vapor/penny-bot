@@ -1,4 +1,3 @@
-import Foundation
 
 // All coin signs must be lowercased.
 private let validSigns = [

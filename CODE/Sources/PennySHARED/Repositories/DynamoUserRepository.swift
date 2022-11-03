@@ -1,5 +1,5 @@
-import Foundation
 import SotoDynamoDB
+import Foundation
 import PennyModels
 import PennyExtensions
 
