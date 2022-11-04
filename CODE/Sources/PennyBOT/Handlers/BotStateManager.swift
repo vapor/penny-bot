@@ -3,10 +3,11 @@ import Foundation
 import Logging
 
 /*
- When we update the bot, AWS waits a few minutes before taking down the old Penny instance.
+ When we update Penny, AWS waits a few minutes before taking down the old Penny instance to
+ make sure the new instance is healthy.
  This makes it so there is a short period where there are 2 Penny bots that will respond to
  Discord Gateway events.
- This Handler's job is to prevent that. Only the new bot should respond to events.
+ This actor's job is to prevent that. Only the new bot should respond to events.
  */
 actor BotStateManager {
     
@@ -16,7 +17,7 @@ actor BotStateManager {
     let id = Date().timeIntervalSince1970
     
     let signal = "Hello the other Pennys 👋 you can retire now :)"
-    let disableTime = Duration.seconds(4 * 60)
+    let disableTime = Duration.seconds(3 * 60)
     
     static private(set) var shared = BotStateManager()
     
