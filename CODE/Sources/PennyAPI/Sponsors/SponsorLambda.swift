@@ -86,7 +86,7 @@ struct AddSponsorHandler: LambdaHandler {
             // TODO: Create gh user
             guard let userDiscordID = user.discordID else {
                 return APIGatewayV2Response(
-                    statusCode: .notFound,
+                    statusCode: .ok,
                     body: "Error: user \(newSponsorID) did not link a Discord account"
                 )
             }

@@ -134,11 +134,14 @@ Resources:
   sponsorsIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Sub ${SponsorsFilename}-lambda
-      Principal: apigateway.amazonaws.com
-    DependsOn:
-      - sponsorsFunction
+    Properties:
+      Description: Lambda Sponsor Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt sponsorsFunction.Arn
+      PayloadFormatVersion: '2.0'
 
   sponsorsRoute:
     Type: AWS::ApiGatewayV2::Route
