@@ -134,7 +134,6 @@ Resources:
   sponsorsIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-    Properties:
       Description: Lambda Sponsor Integration
       ApiId: !Ref apiGateway
       ConnectionType: INTERNET
