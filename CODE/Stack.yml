@@ -158,7 +158,7 @@ Resources:
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
     
-  lambdaAddCoinPermission:
+  lambdaSponsorsPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
