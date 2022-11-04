@@ -17,12 +17,8 @@ enum DiscordRequestError: Error {
     case sendWelcomeMessageError(message: String)
 }
 
-struct HTTPClientFailedShutdownError: Error {
+struct ClientFailedShutdownError: Error {
     let message = "Failed to shutdown HTTP Client"
-}
-
-struct AWSClientFailedShutdownError: Error {
-    let message = "Failed to shutdown AWS Client"
 }
 
 @main
@@ -43,20 +39,13 @@ struct AddSponsorHandler: LambdaHandler {
         self.httpClient = httpClient
         let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
         self.awsClient = awsClient
-        context.terminator.register(name: "AWS Client shutdown") { eventLoop in
+        context.terminator.register(name: "Client shutdown") { eventLoop in
             do {
                 try awsClient.syncShutdown()
-                return eventLoop.makeSucceededVoidFuture()
-            } catch {
-                return eventLoop.makeFailedFuture(AWSClientFailedShutdownError())
-            }
-        }
-        context.terminator.register(name: "HTTP Client shutdown") { eventLoop in
-            do {
                 try httpClient.syncShutdown()
                 return eventLoop.makeSucceededVoidFuture()
             } catch {
-                return eventLoop.makeFailedFuture(HTTPClientFailedShutdownError())
+                return eventLoop.makeFailedFuture(ClientFailedShutdownError())
             }
         }
         // Pull in Penny bot and use its Discord client
@@ -102,7 +91,7 @@ struct AddSponsorHandler: LambdaHandler {
             }
             
             // Get role ID based on sponsorship tier
-            let role = SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)
+            let role = try SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)
             
             // Do different stuff depending on what happened to the sponsorship
             let actionType = GithubWebhookPayload.ActionType(rawValue: payload.action)!
@@ -124,7 +113,7 @@ struct AddSponsorHandler: LambdaHandler {
                 break
             case .tierChanged:
                 // This means that the user downgraded from a sponsor role to a backer role
-                if SponsorType.for(sponsorshipAmount: payload.changes.tier.from.monthlyPriceInCents) == .sponsor,
+                if try SponsorType.for(sponsorshipAmount: payload.changes.tier.from.monthlyPriceInCents) == .sponsor,
                    role == .backer {
                     try await removeRole(from: userDiscordID, using: payload, role: .sponsor, context: context)
                 }
