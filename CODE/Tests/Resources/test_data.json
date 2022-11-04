@@ -58,7 +58,7 @@
             "edited_timestamp": null,
             "content": "<@950695294906007573> thank you :\\) nice job!",
             "components": [],
-            "channel_id": "441327731486097429",
+            "channel_id": "1016614538398937098",
             "author": {
                 "username": "Mahdi BM",
                 "public_flags": 0,
@@ -197,5 +197,50 @@
         "edited_timestamp": null,
         "flags": 0,
         "components": []
+    },
+    "stopRespondingToMessages": {
+        "t": "MESSAGE_CREATE",
+        "s": 4,
+        "op": 0,
+        "d": {
+            "type": 0,
+            "tts": false,
+            "timestamp": "2022-11-04T07:53:19.920000+00:00",
+            "referenced_message": null,
+            "pinned": false,
+            "mentions": [],
+            "mention_roles": [],
+            "mention_everyone": false,
+            "member": {
+                "roles": [],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2022-09-11T14:26:19.569000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "id": "1037997964976726088",
+            "flags": 0,
+            "embeds": [],
+            "edited_timestamp": null,
+            "content": "Hello the other Pennys 👋 you can retire now :)\n1667554166.92193",
+            "components": [],
+            "channel_id": "441327731486097429",
+            "author": {
+                "username": "TestApp",
+                "public_flags": 0,
+                "id": "1016612301262041098",
+                "discriminator": "7843",
+                "bot": true,
+                "avatar_decoration": null,
+                "avatar": null
+            },
+            "attachments": [],
+            "guild_id": "808638139785936919"
+        }
     }
 }

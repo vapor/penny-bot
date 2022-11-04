@@ -14,7 +14,7 @@ public struct FakeCoinLambdaHandler: LambdaHandler {
     let userService: UserService
     
     public init(context: LambdaInitializationContext) async throws {
-        // The `client` won't be used at all, but still needs to be passed to user service
+        // The 'client' won't be used at all, but still needs to be passed to user service
         let client = AWSClient(httpClientProvider: .createNew)
         self.userService = .init(client, Logger(label: "Test_UserService"))
         context.terminator.register(name: "Shut Down") { eventLoop in

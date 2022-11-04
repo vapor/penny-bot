@@ -31,6 +31,8 @@ struct Penny {
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         
         Task {
+            await BotStateManager.shared.initialize(discordClient: bot.client, logger: logger)
+            
             await bot.addEventHandler { event in
                 EventHandler(
                     event: event,

@@ -14,11 +14,9 @@ public actor FakeManager: GatewayManager {
     
     public init() { }
     
-    public nonisolated func connect() {
-        Task {
-            self._state.store(.connected, ordering: .relaxed)
-            await connectionWaiter?.resume()
-        }
+    public func connect() {
+        self._state.store(.connected, ordering: .relaxed)
+        connectionWaiter?.resume()
     }
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
@@ -27,7 +25,7 @@ public actor FakeManager: GatewayManager {
     public func addEventParseFailureHandler(
         _ handler: @escaping (Error, String) -> Void
     ) async { }
-    public nonisolated func disconnect() { }
+    public func disconnect() { }
     
     var connectionWaiter: CheckedContinuation<(), Never>?
     
@@ -41,7 +39,7 @@ public actor FakeManager: GatewayManager {
         }
     }
     
-    public func send(key: EventKey) throws {
+    func send(key: EventKey) throws {
         let data = TestData.for(key: key.rawValue)!
         let decoder = JSONDecoder()
         let event = try decoder.decode(Gateway.Event.self, from: data)
@@ -70,16 +68,19 @@ public enum EventKey: String {
     case thanksMessage
     case linkInteraction
     case thanksReaction
+    case stopRespondingToMessages
     
     /// The endpoints from which the bot will send a response, after receiving each event.
     var responseEndpoints: [Endpoint] {
         switch self {
         case .thanksMessage:
-            return [.postCreateMessage(channelId: "441327731486097429")]
+            return [.postCreateMessage(channelId: "1016614538398937098")]
         case .linkInteraction:
             return [.editOriginalInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(id: "1031112113978089502", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
             return [.postCreateMessage(channelId: "966722151359057950")]
+        case .stopRespondingToMessages:
+            return [.postCreateMessage(channelId: "441327731486097429")]
         }
     }
 }

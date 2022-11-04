@@ -9,6 +9,12 @@ struct EventHandler {
     
     func handle() {
         Task {
+            guard await BotStateManager.shared.canRespond(to: event) else {
+                logger.debug("BotStateManager doesn't allow responding to event", metadata: [
+                    "event": "\(event)"
+                ])
+                return
+            }
             switch event.data {
             case .messageCreate(let message):
                 await MessageHandler(

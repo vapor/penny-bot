@@ -6,8 +6,7 @@ import Foundation
 enum BotFactory {
     static var makeBot: (any EventLoopGroup, HTTPClient) -> any GatewayManager = {
         eventLoopGroup, client in
-        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
-              let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
+        guard let token = Constants.botToken, let appId = Constants.botId else {
             fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
         }
         return BotGatewayManager(

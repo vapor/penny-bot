@@ -11,6 +11,7 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
+        Constants.botId = "1016612301262041098"
         LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()
@@ -25,6 +26,7 @@ class GatewayProcessingTests: XCTestCase {
         BotFactory.makeBot = { _, _ in self.manager! }
         /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         /// the fake manager is ready. That's why we need to use `waitUntilConnected()`.
+        await BotStateManager.shared.tests_reset()
         await Penny.main()
         await manager.waitUntilConnected()
     }
@@ -33,6 +35,7 @@ class GatewayProcessingTests: XCTestCase {
         let response = await responseStorage.awaitResponse(
             at: .createApplicationGlobalCommand(appId: "11111111")
         )
+        
         let slashCommand = try XCTUnwrap(response as? SlashCommand)
         XCTAssertEqual(slashCommand.name, "link")
     }
@@ -70,5 +73,32 @@ class GatewayProcessingTests: XCTestCase {
         <@1030118727418646629> now has
         """))
         XCTAssertTrue(description.hasSuffix(" shiny coins."))
+    }
+    
+    func testBotStateManagerSendsSignalOnStartUp() async throws {
+        let canRespond = await BotStateManager.shared.canRespond
+        XCTAssertEqual(canRespond, true)
+        
+        let response = await responseStorage.awaitResponse(
+            at: .postCreateMessage(channelId: Constants.internalChannelId)
+        )
+        
+        let message = try XCTUnwrap(response as? DiscordChannel.CreateMessage)
+        XCTAssertGreaterThan(message.content?.count ?? -1, 20)
+    }
+    
+    func testBotStateManagerReceivesSignal() async throws {
+        let response = try await manager.sendAndAwaitResponse(
+            key: .stopRespondingToMessages,
+            as: DiscordChannel.CreateMessage.self
+        )
+        
+        XCTAssertGreaterThan(response.content?.count ?? -1, 20)
+        
+        // Wait to make sure BotStateManager has had enough time to process
+        try await Task.sleep(for: .seconds(1))
+        let testEvent = Gateway.Event(opcode: .dispatch)
+        let canRespond = await BotStateManager.shared.canRespond(to: testEvent)
+        XCTAssertEqual(canRespond, false)
     }
 }
