@@ -78,11 +78,12 @@ struct AddSponsorHandler: LambdaHandler {
             let user = try await userService.getUserWith(githubID: String(newSponsorID))
             guard let user = user else {
                 return APIGatewayV2Response(
-                    statusCode: .notFound,
+                    statusCode: .ok,
                     body: "Error: there is no user with GitHub ID \(newSponsorID)"
                 )
             }
             
+            // TODO: Create gh user
             guard let userDiscordID = user.discordID else {
                 return APIGatewayV2Response(
                     statusCode: .notFound,
