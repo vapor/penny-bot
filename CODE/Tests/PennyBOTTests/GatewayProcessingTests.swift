@@ -7,6 +7,7 @@ import XCTest
 
 class GatewayProcessingTests: XCTestCase {
     
+    var stateManager: BotStateManager { .shared }
     var responseStorage: FakeResponseStorage { .shared }
     var manager: FakeManager!
     
@@ -26,7 +27,7 @@ class GatewayProcessingTests: XCTestCase {
         BotFactory.makeBot = { _, _ in self.manager! }
         /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         /// the fake manager is ready. That's why we need to use `waitUntilConnected()`.
-        await BotStateManager.shared.tests_reset()
+        await stateManager.tests_reset()
         await Penny.main()
         await manager.waitUntilConnected()
     }
@@ -76,7 +77,7 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testBotStateManagerSendsSignalOnStartUp() async throws {
-        let canRespond = await BotStateManager.shared.canRespond
+        let canRespond = await stateManager.canRespond
         XCTAssertEqual(canRespond, true)
         
         let response = await responseStorage.awaitResponse(
@@ -88,6 +89,8 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testBotStateManagerReceivesSignal() async throws {
+        await stateManager.tests_setDisableDuration(to: .seconds(3))
+        
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
             as: DiscordChannel.CreateMessage.self
@@ -96,9 +99,19 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertGreaterThan(response.content?.count ?? -1, 20)
         
         // Wait to make sure BotStateManager has had enough time to process
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .milliseconds(800))
         let testEvent = Gateway.Event(opcode: .dispatch)
-        let canRespond = await BotStateManager.shared.canRespond(to: testEvent)
-        XCTAssertEqual(canRespond, false)
+        do {
+            let canRespond = await stateManager.canRespond(to: testEvent)
+            XCTAssertEqual(canRespond, false)
+        }
+        
+        // After 3 seconds, the state manager should allow responses again, because
+        // `BotStateManager.disableDuration` has already been passed
+        try await Task.sleep(for: .milliseconds(2600))
+        do {
+            let canRespond = await stateManager.canRespond(to: testEvent)
+            XCTAssertEqual(canRespond, true)
+        }
     }
 }

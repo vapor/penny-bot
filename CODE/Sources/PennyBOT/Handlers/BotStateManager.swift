@@ -17,7 +17,7 @@ actor BotStateManager {
     let id = Date().timeIntervalSince1970
     
     let signal = "Hello the other Pennys 👋 you can retire now :)"
-    let disableTime = Duration.seconds(3 * 60)
+    var disableDuration = Duration.seconds(3 * 60)
     
     static private(set) var shared = BotStateManager()
     
@@ -49,7 +49,7 @@ actor BotStateManager {
         logger.warning("Received shutdown signal from another Penny")
         self.canRespond = false
         Task {
-            try await Task.sleep(for: disableTime)
+            try await Task.sleep(for: disableDuration)
             self.canRespond = true
             await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
@@ -80,6 +80,10 @@ actor BotStateManager {
     #if DEBUG
     func tests_reset() {
         BotStateManager.shared = BotStateManager()
+    }
+    
+    func tests_setDisableDuration(to duration: Duration) {
+        self.disableDuration = duration
     }
     #endif
 }
