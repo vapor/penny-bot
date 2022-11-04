@@ -56,7 +56,6 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 "PennyExtensions",
-                "PennyRepositories",
                 "PennyServices",
             ],
             path: "./Sources/PennyAPI/Sponsors"

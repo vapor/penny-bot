@@ -1,9 +1,47 @@
 import Foundation
 
-public struct GitHubWebhookPayload: Codable {
+public struct GithubWebhookPayload: Codable {
     let action: String
     let sponsorship: Sponsorship
     let sender: Sender
+    let changes: Changes
+    
+    enum ActionType: String {
+        case created
+        case cancelled
+        case edited
+        case tierChanged = "tier_changed"
+        case pendingCancellation = "pending_cancellation"
+        case pendingTierChange = "pending_tier_change"
+    }
+}
+
+struct Changes: Codable {
+    let tier: ChangesTier
+}
+
+struct ChangesTier: Codable {
+    let from: FromClass
+}
+
+struct FromClass: Codable {
+    let nodeID: String
+    let createdAt: Date
+    let tierDescription: String
+    let monthlyPriceInCents, monthlyPriceInDollars: Int
+    let name: String
+    let isOneTime, isCustomAmount: Bool?
+
+    enum CodingKeys: String, CodingKey {
+        case nodeID = "node_id"
+        case createdAt = "created_at"
+        case tierDescription = "description"
+        case monthlyPriceInCents = "monthly_price_in_cents"
+        case monthlyPriceInDollars = "monthly_price_in_dollars"
+        case name
+        case isOneTime = "is_one_time"
+        case isCustomAmount = "is_custom_amount"
+    }
 }
 
 struct Sender: Codable {

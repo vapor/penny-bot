@@ -5,11 +5,10 @@ import DiscordBM
 import Foundation
 import NIOHTTP1
 import PennyExtensions
-import PennyRepositories
 import PennyServices
 import SotoCore
 
-enum GitHubRequestError: Error {
+enum GithubRequestError: Error {
     case runWorkflowError(message: String)
 }
 
@@ -22,23 +21,38 @@ struct HTTPClientFailedShutdownError: Error {
     let message = "Failed to shutdown HTTP Client"
 }
 
+struct AWSClientFailedShutdownError: Error {
+    let message = "Failed to shutdown AWS Client"
+}
+
 @main
-struct AddSponsor: LambdaHandler {
+struct AddSponsorHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
     
     let httpClient: HTTPClient
     let awsClient: AWSClient
     let discordClient: DiscordClient
+    
+    struct Constants {
+        static let guildID = "431917998102675485"
+    }
 
     init(context: LambdaInitializationContext) async throws {
         let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
         self.httpClient = httpClient
         let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
         self.awsClient = awsClient
-        context.terminator.register(name: "HTTP Client shutdown") { eventLoop in
+        context.terminator.register(name: "AWS Client shutdown") { eventLoop in
             do {
                 try awsClient.syncShutdown()
+                return eventLoop.makeSucceededVoidFuture()
+            } catch {
+                return eventLoop.makeFailedFuture(AWSClientFailedShutdownError())
+            }
+        }
+        context.terminator.register(name: "HTTP Client shutdown") { eventLoop in
+            do {
                 try httpClient.syncShutdown()
                 return eventLoop.makeSucceededVoidFuture()
             } catch {
@@ -67,7 +81,7 @@ struct AddSponsor: LambdaHandler {
             try await requestReadmeWorkflowTrigger(on: event, context: context)
             
             // Decode GitHub Webhook Response
-            let payload: GitHubWebhookPayload = try event.bodyObject()
+            let payload: GithubWebhookPayload = try event.bodyObject()
             
             // Look for the user in the DB
             let newSponsorID = payload.sender.id
@@ -88,19 +102,37 @@ struct AddSponsor: LambdaHandler {
             }
             
             // Get role ID based on sponsorship tier
-            let role = try SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)
+            let role = SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)
             
-            // Add roles to new sponsor
-            try await addRole(to: userDiscordID, from: payload, role: role, context: context)
+            // Do different stuff depending on what happened to the sponsorship
+            let actionType = GithubWebhookPayload.ActionType(rawValue: payload.action)!
             
-            // If it's a sponsor, we need to add the backer role too
-            if role == .sponsor {
-                try await addRole(to: userDiscordID, from: payload, role: .backer, context: context)
+            switch actionType {
+            case .created:
+                // Add roles to new sponsor
+                try await addRole(to: userDiscordID, from: payload, role: role, context: context)
+                // If it's a sponsor, we need to add the backer role too
+                if role == .sponsor {
+                    try await addRole(to: userDiscordID, from: payload, role: .backer, context: context)
+                }
+                // Send message to new sponsor
+                try await sendMessage(to: userDiscordID, from: payload, role: role, context: context)
+            case .cancelled:
+                try await removeRole(from: userDiscordID, using: payload, role: .sponsor, context: context)
+                try await removeRole(from: userDiscordID, using: payload, role: .backer, context: context)
+            case .edited:
+                break
+            case .tierChanged:
+                // This means that the user downgraded from a sponsor role to a backer role
+                if SponsorType.for(sponsorshipAmount: payload.changes.tier.from.monthlyPriceInCents) == .sponsor,
+                   role == .backer {
+                    try await removeRole(from: userDiscordID, using: payload, role: .sponsor, context: context)
+                }
+            case .pendingCancellation:
+                break
+            case .pendingTierChange:
+                break
             }
-            
-            // Send message to new sponsor
-            try await sendMessage(to: userDiscordID, from: payload, role: role, context: context)
-
             return APIGatewayV2Response(statusCode: .ok)
         } catch let error {
             return APIGatewayV2Response(
@@ -110,18 +142,40 @@ struct AddSponsor: LambdaHandler {
         }
     }
     
+    private func removeRole(
+        from userDiscordID: String,
+        using githubPayload: GithubWebhookPayload,
+        role: SponsorType,
+        context: LambdaContext
+    ) async throws {
+        // Try removing role from user
+        let removeRoleResponse = try await discordClient.removeGuildMemberRole(
+            guildId: Constants.guildID,
+            userId: userDiscordID,
+            roleId: SponsorType.backer.roleID
+        )
+        
+        // Throw if adding new role response is invalid
+        guard 200...299 ~= removeRoleResponse.status.code else {
+            throw DiscordRequestError.addMemberRoleError(
+                message: "Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(removeRoleResponse.status.description)"
+            )
+        }
+        context.logger.info("Successfully removed \(role.rawValue) role from user \(userDiscordID) with response code: \(removeRoleResponse.status.code)")
+    }
+    
     /**
      Adds a new Discord role to the selected user, depending on the sponsorship tier they selected (**sponsor**, **backer**).
      */
     private func addRole(
         to userDiscordID: String,
-        from githubPayload: GitHubWebhookPayload,
+        from githubPayload: GithubWebhookPayload,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
         // Try adding role to new sponsor
         let addRoleResponse = try await discordClient.addGuildMemberRole(
-            guildId: "431917998102675485",
+            guildId: Constants.guildID,
             userId: userDiscordID,
             roleId: role.roleID
         )
@@ -129,7 +183,7 @@ struct AddSponsor: LambdaHandler {
         // Throw if adding new role response is invalid
         guard 200...299 ~= addRoleResponse.status.code else {
             throw DiscordRequestError.addMemberRoleError(
-                message: "Failed to add \(role.rawValue) role to member with error: \(addRoleResponse.status.description)"
+                message: "Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description)"
             )
         }
         context.logger.info("Successfully added \(role.rawValue) role to user \(userDiscordID) with response code: \(addRoleResponse.status.code)")
@@ -140,7 +194,7 @@ struct AddSponsor: LambdaHandler {
      */
     private func sendMessage(
         to userDiscordID: String,
-        from githubPayload: GitHubWebhookPayload,
+        from githubPayload: GithubWebhookPayload,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
@@ -187,7 +241,7 @@ struct AddSponsor: LambdaHandler {
         let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
         
         guard 200...299 ~= githubResponse.status.code else {
-            throw GitHubRequestError.runWorkflowError(
+            throw GithubRequestError.runWorkflowError(
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )
         }
