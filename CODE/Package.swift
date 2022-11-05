@@ -55,6 +55,7 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "SotoSecretsManager", package: "soto"),
                 "PennyExtensions",
                 "PennyServices",
             ],

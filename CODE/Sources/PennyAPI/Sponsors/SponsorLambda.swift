@@ -7,6 +7,7 @@ import NIOHTTP1
 import PennyExtensions
 import PennyServices
 import SotoCore
+import SotoSecretsManager
 
 enum GithubRequestError: Error {
     case runWorkflowError(message: String)
@@ -28,7 +29,7 @@ struct AddSponsorHandler: LambdaHandler {
     
     let httpClient: HTTPClient
     let awsClient: AWSClient
-    let discordClient: DiscordClient
+    let secretsManager: SecretsManager
     
     struct Constants {
         static let guildID = "431917998102675485"
@@ -48,15 +49,28 @@ struct AddSponsorHandler: LambdaHandler {
                 return eventLoop.makeFailedFuture(ClientFailedShutdownError())
             }
         }
-        // Pull in Penny bot and use its Discord client
-        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"],
-              let appId = ProcessInfo.processInfo.environment["BOT_APP_ID"] else {
-            fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
+        self.secretsManager = SecretsManager(client: awsClient)
+    }
+    
+    private func setupDiscordClient() async throws -> DefaultDiscordClient {
+        // Get the ARN to retrieve the appID stored inside of the secrets manager
+        guard let appIDArn = ProcessInfo.processInfo.environment["APP_ID_ARN"] else {
+            fatalError("Couldn't retrieve APP_ID_ARN env var")
         }
-        self.discordClient = DefaultDiscordClient(
+        
+        // Request the appID secret from the secrets manager
+        let appIDSecretRequest = SecretsManager.GetSecretValueRequest(secretId: appIDArn)
+        let appIDResponse = try await secretsManager.getSecretValue(appIDSecretRequest)
+        guard let appID = appIDResponse.secretString else {
+            fatalError("Couldn't retrieve Bot App ID Secret")
+        }
+        guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"] else {
+            fatalError("Missing 'BOT_TOKEN' env var")
+        }
+        return DefaultDiscordClient(
             httpClient: httpClient,
             token: token,
-            appId: appId
+            appId: appID
         )
     }
 
@@ -66,6 +80,8 @@ struct AddSponsorHandler: LambdaHandler {
             return APIGatewayV2Response(statusCode: HTTPResponseStatus(code: 200))
         }
         do {
+            let discordClient = try await setupDiscordClient()
+            
             // Try updating the GitHub Readme with the new sponsor
             try await requestReadmeWorkflowTrigger(on: event, context: context)
             
@@ -100,23 +116,23 @@ struct AddSponsorHandler: LambdaHandler {
             switch actionType {
             case .created:
                 // Add roles to new sponsor
-                try await addRole(to: userDiscordID, from: payload, role: role, context: context)
+                try await addRole(to: userDiscordID, from: payload, discordClient: discordClient, role: role, context: context)
                 // If it's a sponsor, we need to add the backer role too
                 if role == .sponsor {
-                    try await addRole(to: userDiscordID, from: payload, role: .backer, context: context)
+                    try await addRole(to: userDiscordID, from: payload, discordClient: discordClient, role: .backer, context: context)
                 }
                 // Send message to new sponsor
-                try await sendMessage(to: userDiscordID, from: payload, role: role, context: context)
+                try await sendMessage(to: userDiscordID, from: payload, discordClient: discordClient, role: role, context: context)
             case .cancelled:
-                try await removeRole(from: userDiscordID, using: payload, role: .sponsor, context: context)
-                try await removeRole(from: userDiscordID, using: payload, role: .backer, context: context)
+                try await removeRole(from: userDiscordID, using: payload, discordClient: discordClient, role: .sponsor, context: context)
+                try await removeRole(from: userDiscordID, using: payload, discordClient: discordClient, role: .backer, context: context)
             case .edited:
                 break
             case .tierChanged:
                 // This means that the user downgraded from a sponsor role to a backer role
                 if try SponsorType.for(sponsorshipAmount: payload.changes.tier.from.monthlyPriceInCents) == .sponsor,
                    role == .backer {
-                    try await removeRole(from: userDiscordID, using: payload, role: .sponsor, context: context)
+                    try await removeRole(from: userDiscordID, using: payload, discordClient: discordClient, role: .sponsor, context: context)
                 }
             case .pendingCancellation:
                 break
@@ -135,6 +151,7 @@ struct AddSponsorHandler: LambdaHandler {
     private func removeRole(
         from userDiscordID: String,
         using githubPayload: GithubWebhookPayload,
+        discordClient: DiscordClient,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
@@ -160,6 +177,7 @@ struct AddSponsorHandler: LambdaHandler {
     private func addRole(
         to userDiscordID: String,
         from githubPayload: GithubWebhookPayload,
+        discordClient: DiscordClient,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
@@ -185,6 +203,7 @@ struct AddSponsorHandler: LambdaHandler {
     private func sendMessage(
         to userDiscordID: String,
         from githubPayload: GithubWebhookPayload,
+        discordClient: DiscordClient,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
@@ -221,10 +240,20 @@ struct AddSponsorHandler: LambdaHandler {
         var triggerActionRequest = HTTPClientRequest(url: url)
         triggerActionRequest.method = .POST
         
+        // Retrieve GH token from AWS Secrets Manager
+        guard let workflowTokenArn = ProcessInfo.processInfo.environment["GH_WORKFLOW_TOKEN_ARN"] else {
+            fatalError("Couldn't retrieve GH_WORKFLOW_TOKEN_ARN env var")
+        }
+        let workflowTokenRequest = SecretsManager.GetSecretValueRequest(secretId: workflowTokenArn)
+        let workflowToken = try await secretsManager.getSecretValue(workflowTokenRequest)
+        guard let workflowTokenString = workflowToken.secretString else {
+            fatalError("Couldn't retrieve Github token from AWS Secrets Manager")
+        }
+        
         // The token is going to have to be in the SecretsManager in AWS
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
-            "Authorization": String(ProcessInfo.processInfo.environment["GH_WORKFLOW_TOKEN"]!)
+            "Authorization": workflowTokenString
         ])
         
         // Send request to trigger workflow and read response
