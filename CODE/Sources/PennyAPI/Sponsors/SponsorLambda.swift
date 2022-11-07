@@ -52,13 +52,14 @@ struct AddSponsorHandler: LambdaHandler {
         self.secretsManager = SecretsManager(client: awsClient)
     }
     
-    private func setupDiscordClient() async throws -> DefaultDiscordClient {
+    private func setupDiscordClient(context: LambdaContext) async throws -> DefaultDiscordClient {
         // Get the ARN to retrieve the appID stored inside of the secrets manager
         guard let appIDArn = ProcessInfo.processInfo.environment["APP_ID_ARN"] else {
             fatalError("Couldn't retrieve APP_ID_ARN env var")
         }
         
         // Request the appID secret from the secrets manager
+        context.logger.debug("Retrieving secrets...")
         let appIDSecretRequest = SecretsManager.GetSecretValueRequest(secretId: appIDArn)
         let appIDResponse = try await secretsManager.getSecretValue(appIDSecretRequest)
         guard let appID = appIDResponse.secretString else {
@@ -67,6 +68,7 @@ struct AddSponsorHandler: LambdaHandler {
         guard let token = ProcessInfo.processInfo.environment["BOT_TOKEN"] else {
             fatalError("Missing 'BOT_TOKEN' env var")
         }
+        context.logger.debug("Secrets retrieved")
         return DefaultDiscordClient(
             httpClient: httpClient,
             token: token,
@@ -77,30 +79,36 @@ struct AddSponsorHandler: LambdaHandler {
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         // Only accept sponsorship events
         guard event.headers["X-Github-Event"] == "sponsorship" else {
+            context.logger.debug("Did not get sponsorship event, exiting with code 200")
             return APIGatewayV2Response(statusCode: HTTPResponseStatus(code: 200))
         }
         do {
-            let discordClient = try await setupDiscordClient()
+            context.logger.debug("Received sponsorship event")
+            let discordClient = try await setupDiscordClient(context: context)
             
             // Try updating the GitHub Readme with the new sponsor
             try await requestReadmeWorkflowTrigger(on: event, context: context)
             
             // Decode GitHub Webhook Response
+            context.logger.debug("Decoding GitHub Payload")
             let payload: GithubWebhookPayload = try event.bodyObject()
             
             // Look for the user in the DB
+            context.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
             let userService = UserService(awsClient, context.logger)
             let user = try await userService.getUserWith(githubID: String(newSponsorID))
             guard let user = user else {
+                context.logger.error("No user found with Github ID \(newSponsorID)")
                 return APIGatewayV2Response(
                     statusCode: .ok,
-                    body: "Error: there is no user with GitHub ID \(newSponsorID)"
+                    body: "Error: no user found with GitHub ID \(newSponsorID)"
                 )
             }
             
             // TODO: Create gh user
             guard let userDiscordID = user.discordID else {
+                context.logger.error("User \(newSponsorID) did not link a Discord account")
                 return APIGatewayV2Response(
                     statusCode: .ok,
                     body: "Error: user \(newSponsorID) did not link a Discord account"
@@ -112,6 +120,8 @@ struct AddSponsorHandler: LambdaHandler {
             
             // Do different stuff depending on what happened to the sponsorship
             let actionType = GithubWebhookPayload.ActionType(rawValue: payload.action)!
+            
+            context.logger.debug("Managing Discord roles")
             
             switch actionType {
             case .created:
@@ -139,8 +149,10 @@ struct AddSponsorHandler: LambdaHandler {
             case .pendingTierChange:
                 break
             }
-            return APIGatewayV2Response(statusCode: .ok)
+            context.logger.debug("Done, returning 200")
+            return APIGatewayV2Response(statusCode: .ok, body: "All jobs executed correctly")
         } catch let error {
+            context.logger.error("Error: \(error.localizedDescription)")
             return APIGatewayV2Response(
                 statusCode: .badRequest,
                 body: "Error: \(error.localizedDescription)"
@@ -148,6 +160,9 @@ struct AddSponsorHandler: LambdaHandler {
         }
     }
     
+    /**
+     Removes a role from the selected Discord user.
+     */
     private func removeRole(
         from userDiscordID: String,
         using githubPayload: GithubWebhookPayload,
@@ -164,6 +179,7 @@ struct AddSponsorHandler: LambdaHandler {
         
         // Throw if adding new role response is invalid
         guard 200...299 ~= removeRoleResponse.status.code else {
+            context.logger.error("Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(removeRoleResponse.status.description)")
             throw DiscordRequestError.addMemberRoleError(
                 message: "Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(removeRoleResponse.status.description)"
             )
@@ -190,6 +206,7 @@ struct AddSponsorHandler: LambdaHandler {
         
         // Throw if adding new role response is invalid
         guard 200...299 ~= addRoleResponse.status.code else {
+            context.logger.error("Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description)")
             throw DiscordRequestError.addMemberRoleError(
                 message: "Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description)"
             )
@@ -217,9 +234,9 @@ struct AddSponsorHandler: LambdaHandler {
                 )]
             )
         )
-        
         // Throw if response is invalid
         guard 200...299 ~= createMessageResponse.httpResponse.status.code else {
+            context.logger.error("Failed to send message with error: \(createMessageResponse.httpResponse.status.code)")
             throw DiscordRequestError.sendWelcomeMessageError(
                 message: "Failed to send message with error: \(createMessageResponse.httpResponse.status.code)"
             )
@@ -260,6 +277,7 @@ struct AddSponsorHandler: LambdaHandler {
         let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
         
         guard 200...299 ~= githubResponse.status.code else {
+            context.logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code)")
             throw GithubRequestError.runWorkflowError(
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )
