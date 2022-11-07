@@ -78,7 +78,11 @@ struct AddSponsorHandler: LambdaHandler {
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
         // Only accept sponsorship events
-        guard event.headers["X-Github-Event"] == "sponsorship" else {
+        context.logger.debug("Headers are: \(event.headers.description)")
+        context.logger.debug("Body is: \(event.body?.description ?? "empty")")
+        guard event.headers["X-Github-Event"] == "sponsorship"
+                || event.headers["x-github-events"] == "sponsorship"
+        else {
             context.logger.debug("Did not get sponsorship event, exiting with code 200")
             return APIGatewayV2Response(statusCode: HTTPResponseStatus(code: 200))
         }
