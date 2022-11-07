@@ -23,6 +23,14 @@ Parameters:
   TaskDefinition:
     Description: Task def for the ECS task
     Type: String
+  DiscordBotToken:
+    Description: Secret Token used by the Discord client
+    Type: String
+    Default: discord-bot-token-VmhBXH
+  GithubWorkflowTriggerToken:
+    Description: Secret Token used to trigger workflows on Github
+    Type: String
+    Default: trigger-gh-readme-workflow-token-cpZwMv
 
 Resources:
   Cluster:
@@ -203,6 +211,7 @@ Resources:
                   - dynamodb:ConditionCheckItem
                   - dynamodb:Scan
                   - lambda:UpdateFunctionCode
+                  - secretsmanager:GetSecretValue
                 Effect: Allow 
                 Resource: 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FileNameAddCoins}-lambda:*
@@ -211,6 +220,8 @@ Resources:
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}-lambda
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/${DiscordBotToken}
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/${GithubWorkflowTriggerToken}
           PolicyName: lamda
   
   lambdaLogGroup:
