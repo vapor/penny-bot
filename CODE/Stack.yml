@@ -23,14 +23,6 @@ Parameters:
   TaskDefinition:
     Description: Task def for the ECS task
     Type: String
-  DiscordBotToken:
-    Description: Secret Token used by the Discord client
-    Type: String
-    Default: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH'
-  GithubWorkflowTriggerToken:
-    Description: Secret Token used to trigger workflows on Github
-    Type: String
-    Default: !Sub 'arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv'
 
 Resources:
   Cluster:
@@ -220,8 +212,8 @@ Resources:
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}-lambda
-                  - !Sub ${DiscordBotToken}
-                  - !Sub ${GithubWorkflowTriggerToken}
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
           PolicyName: lamda
   
   lambdaLogGroup:
