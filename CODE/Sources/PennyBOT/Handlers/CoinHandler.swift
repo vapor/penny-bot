@@ -152,13 +152,8 @@ struct CoinHandler {
     }
 }
 
-private let splitSigns = validSigns.map {
-    $0.split(whereSeparator: \.isWhitespace)
-}
-
-private let reversedSplitSigns = splitSigns.map {
-    $0.reversed()
-}
+private let splitSigns = validSigns.map { $0.split(whereSeparator: \.isWhitespace) }
+private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
 private extension Sequence where Element == Substring {
     var isPrefixedWithCoinSign: Bool {
