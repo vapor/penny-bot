@@ -77,7 +77,7 @@ actor BotStateManager {
         }
     }
     
-    #if DEBUG
+#if DEBUG
     func tests_reset() {
         BotStateManager.shared = BotStateManager()
     }
@@ -85,5 +85,5 @@ actor BotStateManager {
     func tests_setDisableDuration(to duration: Duration) {
         self.disableDuration = duration
     }
-    #endif
+#endif
 }
