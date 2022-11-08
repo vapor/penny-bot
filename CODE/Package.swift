@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", revision: "98a23b64bb5feadf43eed2fc1edf08817d8449b4"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
-        .package(url: "https://github.com/mahdibm/DiscordBM.git", from: "1.0.0-beta.15"),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", from: "1.0.0-beta.18"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
@@ -48,16 +48,31 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
             ]),
+        .executableTarget(
+            name: "SponsorLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "SotoSecretsManager", package: "soto"),
+                "PennyExtensions",
+                "PennyServices",
+            ],
+            path: "./Sources/PennyAPI/Sponsors"
+        ),
         .target(
             name: "PennyExtensions",
             dependencies: [
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "Crypto", package: "swift-crypto"),
             ],
-            path: "./Sources/PennySHARED/Extensions"),
+            path: "./Sources/PennySHARED/Extensions"
+        ),
         .target(
             name: "PennyModels",
-            path: "./Sources/PennySHARED/Models"),
+            path: "./Sources/PennySHARED/Models"
+        ),
         .target(
             name: "PennyRepositories",
             dependencies: [
@@ -65,7 +80,8 @@ let package = Package(
                 "PennyModels",
                 "PennyExtensions"
             ],
-            path: "./Sources/PennySHARED/Repositories"),
+            path: "./Sources/PennySHARED/Repositories"
+        ),
         .target(
             name: "PennyServices",
             dependencies: [
@@ -73,7 +89,8 @@ let package = Package(
                 "PennyModels",
                 .product(name: "SotoDynamoDB", package: "soto"),
             ],
-            path: "./Sources/PennySHARED/Services"),
+            path: "./Sources/PennySHARED/Services"
+        ),
         .target(
             name: "Fake",
             dependencies: [
@@ -93,6 +110,7 @@ let package = Package(
                 "PennyLambdaAddCoins",
                 "Fake",
                 .product(name: "SotoDynamoDB", package: "soto"),
-            ]),
+            ]
+        ),
     ]
 )

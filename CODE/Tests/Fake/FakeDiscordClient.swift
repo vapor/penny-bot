@@ -1,14 +1,14 @@
 @testable import DiscordBM
+import NIOHTTP1
 
 struct FakeDiscordClient: DiscordClient {
     let appId: String? = "11111111"
     
     func send(
         to endpoint: Endpoint,
-        queries: [(String, String?)]
+        queries: [(String, String?)],
+        headers: HTTPHeaders
     ) async throws -> DiscordHTTPResponse {
-        // Notify the mocked manager that the app has responded
-        // to the message by trying to send a message to Discord.
         await FakeResponseStorage.shared.respond(
             to: endpoint,
             with: Optional<Never>.none as Any
@@ -26,10 +26,26 @@ struct FakeDiscordClient: DiscordClient {
     func send<E: Encodable>(
         to endpoint: Endpoint,
         queries: [(String, String?)],
+        headers: HTTPHeaders,
         payload: E
     ) async throws -> DiscordHTTPResponse {
-        // Notify the mocked manager that the app has responded
-        // to the message by trying to send a message to Discord.
+        await FakeResponseStorage.shared.respond(to: endpoint, with: payload)
+        
+        return DiscordHTTPResponse(
+            host: "discord.com",
+            status: .ok,
+            version: .http2,
+            headers: [:],
+            body: TestData.for(key: endpoint.urlSuffix).map { .init(data: $0) }
+        )
+    }
+    
+    func sendMultipart<E: MultipartEncodable>(
+        to endpoint: Endpoint,
+        queries: [(String, String?)],
+        headers: HTTPHeaders,
+        payload: E
+    ) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(to: endpoint, with: payload)
         
         return DiscordHTTPResponse(

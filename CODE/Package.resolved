@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "9a2c131979e300bf91f65cc7a6da2f4d143dacab",
-        "version" : "1.0.0-beta.15"
+        "revision" : "d7222706734b1df9005a6259c4bb4002374ed497",
+        "version" : "1.0.0-beta.18"
       }
     },
     {
@@ -25,6 +25,15 @@
       "state" : {
         "revision" : "4513d319c4aaa6c3b2ac18e1e6566a803515ad91",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "multipart-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/multipart-kit.git",
+      "state" : {
+        "revision" : "0d55c35e788451ee27222783c7d363cb88092fab",
+        "version" : "4.5.2"
       }
     },
     {
