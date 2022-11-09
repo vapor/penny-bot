@@ -3,8 +3,8 @@ import PennyModels
 public protocol UserRepository {
     
     // MARK: - Insert
-    func insertUser(_ user: DynamoDBUser) async throws -> Void
-    func updateUser(_ user: DynamoDBUser) async throws -> Void
+    func insertUser(_ user: DynamoDBUser) async throws
+    func updateUser(_ user: DynamoDBUser) async throws
     
     // MARK: - Retrieve
     func getUser(discord id: String) async throws -> User

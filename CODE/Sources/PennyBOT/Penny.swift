@@ -43,12 +43,12 @@ struct Penny {
             }
             
             await bot.connect()
+            
+            await SlashCommandHandler(
+                discordClient: bot.client,
+                logger: logger
+            ).registerCommands()
         }
-        
-        SlashCommandHandler(
-            discordClient: bot.client,
-            logger: logger
-        ).registerCommands()
         
         RunLoop.current.run()
     }
