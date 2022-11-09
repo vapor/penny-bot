@@ -257,9 +257,10 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                thanks! xxxx xxxx
+                Thanks <@21939123912932193> for your help
                 """,
-                replied: "<@21939123912932193>"
+                replied: "<@21939123912932193>",
+                mentionedUsers: ["<@21939123912932193>"]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, ["<@21939123912932193>"])
