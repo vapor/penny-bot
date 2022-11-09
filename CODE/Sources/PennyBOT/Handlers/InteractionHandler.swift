@@ -8,11 +8,11 @@ struct InteractionHandler {
     
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
-        let response = processAndMakeResponse()
+        let response = await processAndMakeResponse()
         await respond(with: response)
     }
     
-    private func processAndMakeResponse() -> String {
+    private func processAndMakeResponse() async -> String {
         guard let name = event.data?.name else {
             logger.error("Discord did not send required info. ID: 1. Event: \(event)")
             return "Failed to recognize the interaction"
@@ -22,7 +22,7 @@ struct InteractionHandler {
         case "link":
             return handleLinkCommand(options: options)
         case "automated-pings":
-            return handlePingsCommand(options: options)
+            return await handlePingsCommand(options: options)
         default:
             logger.error("Unrecognized command. Event: \(event)")
             return "Command not recognized"
@@ -52,10 +52,14 @@ struct InteractionHandler {
         }
     }
     
-    func handlePingsCommand(options: [Interaction.Data.Option]) -> String {
+    func handlePingsCommand(options: [Interaction.Data.Option]) async -> String {
         if options.isEmpty {
             logger.error("Discord did not send required interaction info. ID: 4. Event: \(event)")
             return "Please provide more options"
+        }
+        guard event.guild_id == nil else {
+            await sendDM("Hey 👋 please use the slash command here again :)")
+            return "Please DM me so we can talk privately about this :)"
         }
         let first = options[0]
         switch first.name {
@@ -92,7 +96,7 @@ struct InteractionHandler {
                 id: event.id,
                 token: event.token,
                 payload: .init(type: .messageEditWithLoadingState)
-            ).httpResponse
+            )
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
                 return false
@@ -122,5 +126,21 @@ struct InteractionHandler {
         } catch {
             logger.error("Discord Client error: \(error)")
         }
+    }
+    
+    private func sendDM(_ response: String) async {
+        guard let userId = (event.member?.user ?? event.user)?.id else {
+            logger.error("Can't find user id. Event: \(event)")
+            return
+        }
+        await DMService.shared.sendDM(
+            userId: userId,
+            payload: .init(
+                embeds: [.init(
+                    description: response,
+                    color: .vaporPurple
+                )]
+            )
+        )
     }
 }

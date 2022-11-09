@@ -74,13 +74,13 @@ public enum EventKey: String {
     var responseEndpoints: [Endpoint] {
         switch self {
         case .thanksMessage:
-            return [.postCreateMessage(channelId: "1016614538398937098")]
+            return [.createMessage(channelId: "1016614538398937098")]
         case .linkInteraction:
             return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(id: "1031112113978089502", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
-            return [.postCreateMessage(channelId: "966722151359057950")]
+            return [.createMessage(channelId: "966722151359057950")]
         case .stopRespondingToMessages:
-            return [.postCreateMessage(channelId: "441327731486097429")]
+            return [.createMessage(channelId: "441327731486097429")]
         }
     }
 }
