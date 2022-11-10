@@ -9,13 +9,27 @@ import PennyServices
 import SotoCore
 import SotoSecretsManager
 
-enum GithubRequestError: Error {
+enum GithubRequestError: Error, LocalizedError {
     case runWorkflowError(message: String)
+    var errorDescription: String? {
+        switch self {
+        case let .runWorkflowError(message):
+            return NSLocalizedString(message, comment: "")
+        }
+    }
 }
 
-enum DiscordRequestError: Error {
+enum DiscordRequestError: Error, LocalizedError {
     case addMemberRoleError(message: String)
     case sendWelcomeMessageError(message: String)
+    var errorDescription: String? {
+        switch self {
+        case let .addMemberRoleError(message):
+            return NSLocalizedString(message, comment: "")
+        case let .sendWelcomeMessageError(message):
+            return NSLocalizedString(message, comment: "")
+        }
+    }
 }
 
 struct ClientFailedShutdownError: Error {
@@ -84,7 +98,7 @@ struct AddSponsorHandler: LambdaHandler {
                 || event.headers["x-github-event"] == "sponsorship"
         else {
             context.logger.debug("Did not get sponsorship event, exiting with code 200")
-            return APIGatewayV2Response(statusCode: HTTPResponseStatus(code: 200))
+            return APIGatewayV2Response(statusCode: .ok)
         }
         do {
             context.logger.debug("Received sponsorship event")
@@ -183,7 +197,7 @@ struct AddSponsorHandler: LambdaHandler {
         
         // Throw if adding new role response is invalid
         guard 200...299 ~= removeRoleResponse.status.code else {
-            context.logger.error("Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(removeRoleResponse.status.description)")
+            context.logger.error("Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(removeRoleResponse.status.description) and body: \(removeRoleResponse.body.string)")
             throw DiscordRequestError.addMemberRoleError(
                 message: "Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(removeRoleResponse.status.description)"
             )
@@ -210,7 +224,7 @@ struct AddSponsorHandler: LambdaHandler {
         
         // Throw if adding new role response is invalid
         guard 200...299 ~= addRoleResponse.status.code else {
-            context.logger.error("Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description)")
+            context.logger.error("Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description) and body: \(addRoleResponse.body.string)")
             throw DiscordRequestError.addMemberRoleError(
                 message: "Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description)"
             )
@@ -240,7 +254,7 @@ struct AddSponsorHandler: LambdaHandler {
         )
         // Throw if response is invalid
         guard 200...299 ~= createMessageResponse.httpResponse.status.code else {
-            context.logger.error("Failed to send message with error: \(createMessageResponse.httpResponse.status.code)")
+            context.logger.error("Failed to send message with error: \(createMessageResponse.httpResponse.status.code) and body: \(createMessageResponse.httpResponse.body.string)")
             throw DiscordRequestError.sendWelcomeMessageError(
                 message: "Failed to send message with error: \(createMessageResponse.httpResponse.status.code)"
             )
@@ -281,12 +295,22 @@ struct AddSponsorHandler: LambdaHandler {
         let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
         
         guard 200...299 ~= githubResponse.status.code else {
-            context.logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code)")
+            let body = try await githubResponse.body.collect(upTo: 1024 * 1024)
+            context.logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code) and body: \(String(buffer: body))")
             throw GithubRequestError.runWorkflowError(
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )
         }
         context.logger.info("Successfully ran GitHub workflow with response code: \(githubResponse.status.code)")
+    }
+}
+
+extension ByteBuffer? {
+    var string: String {
+        guard let self = self else {
+            return "empty"
+        }
+        return String(buffer: self)
     }
 }
 
