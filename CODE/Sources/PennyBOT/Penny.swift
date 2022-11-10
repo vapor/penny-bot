@@ -32,7 +32,7 @@ struct Penny {
         
         Task {
             await DiscordService.shared.initialize(discordClient: bot.client, logger: logger)
-            
+            await DefaultPingsService.shared.initialize(httpClient: client, logger: logger)
             await BotStateManager.shared.initialize(logger: logger)
             
             await bot.addEventHandler { event in

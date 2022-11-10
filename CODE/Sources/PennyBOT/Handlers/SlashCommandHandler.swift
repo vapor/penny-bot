@@ -63,7 +63,7 @@ private extension ApplicationCommand {
         options: [
             .init(
                 type: .subCommand,
-                name: "on-text",
+                name: "add",
                 description: "Ping when a message case-insensitively contains a text",
                 options: [.init(
                     type: .string,
@@ -87,16 +87,6 @@ private extension ApplicationCommand {
                 type: .subCommand,
                 name: "list",
                 description: "See what you're subscribed to"
-            ),
-            .init(
-                type: .subCommand,
-                name: "disable",
-                description: "Disable the pings for now"
-            ),
-            .init(
-                type: .subCommand,
-                name: "enable",
-                description: "Enable the pings if you had disabled them"
             )
         ]
     )

@@ -1,9 +1,12 @@
-import Logging
 import DiscordBM
+import Logging
 
 struct InteractionHandler {
     let logger: Logger
     let event: Interaction
+    var pingsService: AutoPingsService {
+        ServiceFactory.makePingsService()
+    }
     
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
@@ -60,31 +63,44 @@ struct InteractionHandler {
             await sendDM("Hey 👋 please use the slash command here again :)")
             return "Please DM me so we can talk privately about this :)"
         }
+        guard let _id = (event.member?.user ?? event.user)?.id else {
+            logger.error("Can't find a user's id. Event: \(event)")
+            return "Can't find your user id :("
+        }
+        let discordId = "<@\(_id)>"
         let first = options[0]
-        switch first.name {
-        case "on-text":
-            guard let option = first.options?.first,
-                  let text = option.value?.asString else {
-                logger.error("Discord did not send required info. ID: 5. Event: \(event)")
-                return "No 'text' option recognized"
+        do {
+            switch first.name {
+            case "add":
+                guard let option = first.options?.first,
+                      let text = option.value?.asString else {
+                    logger.error("Discord did not send required info. ID: 5. Event: \(event)")
+                    return "No 'text' option recognized"
+                }
+                try await pingsService.insert(text, forDiscordID: discordId)
+                return "Successfully added `\(text)` to your pings list"
+            case "remove":
+                guard let option = first.options?.first,
+                      let text = option.value?.asString else {
+                    logger.error("Discord did not send required info. ID: 5. Event: \(event)")
+                    return "No 'text' option recognized"
+                }
+                try await pingsService.remove(text, forDiscordID: discordId)
+                return "Successfully removed `\(text)` from your pings list"
+            case "list":
+                let list = try await pingsService
+                    .get(discordID: discordId)
+                    .enumerated().map { idx, text in
+                        "**\(idx).** `\(text)`"
+                    }.joined(separator: "\n")
+                return list
+            default:
+                logger.error("Unrecognized link option: \(first.name)")
+                return "Option not recognized: \(first.name)"
             }
-            return "'on-text' is still a WIP: \(text)"
-        case "remove":
-            guard let option = first.options?.first,
-                  let text = option.value?.asString else {
-                logger.error("Discord did not send required info. ID: 5. Event: \(event)")
-                return "No 'text' option recognized"
-            }
-            return "'remove' is still a WIP: \(text)"
-        case "list":
-            return "'list' is still a WIP"
-        case "disable":
-            return "'disable' is still a WIP"
-        case "enable":
-            return "'enable' is still a WIP"
-        default:
-            logger.error("Unrecognized link option: \(first.name)")
-            return "Option not recognized: \(first.name)"
+        } catch {
+            logger.error("An error happened. Error: \(error)")
+            return "Sorry some errors happened :( please report this to us id it happens again."
         }
     }
     

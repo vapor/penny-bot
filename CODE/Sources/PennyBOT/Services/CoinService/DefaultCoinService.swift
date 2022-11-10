@@ -4,11 +4,6 @@ import Logging
 import PennyModels
 
 struct DefaultCoinService: CoinService {
-    
-    enum ServiceError: Error {
-        case badStatus
-    }
-    
     let httpClient: HTTPClient
     let logger: Logger
     

@@ -1,4 +1,4 @@
-import PennyBOT
+@testable import PennyBOT
 import PennyModels
 
 public struct FakeCoinService: CoinService {
