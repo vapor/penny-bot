@@ -3,6 +3,7 @@ import PennyModels
 import AsyncHTTPClient
 import Foundation
 import Logging
+import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
     
@@ -10,7 +11,6 @@ actor DefaultPingsService: AutoPingsService {
     var logger: Logger!
     lazy var pingsRepo = RepositoryFactory.makeAutoPingsRepository(logger)
     
-    var lastUpdate = Date()
     var cachedItems: S3AutoPingItems?
     var resetItemsTask: Task<(), Never>?
     
@@ -25,49 +25,19 @@ actor DefaultPingsService: AutoPingsService {
     }
     
     func insert(_ text: String, forDiscordID id: String) async throws {
-        var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl!)/\(id)")
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try JSONEncoder().encode(AutoPingRequest(text: text))
-        request.body = .bytes(data)
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
+        try await self.send(
+            pathParameter: id,
+            method: .PUT,
+            pingRequest: .init(text: text)
         )
-        logger.trace("HTTP head \(response)")
-        
-        guard (200..<300).contains(response.status.code) else {
-            logger.error("Post-coin failed. Response: \(response)")
-            throw ServiceError.badStatus
-        }
-        
-        let body = try await response.body.collect(upTo: 1024 * 1024 * 64)
-        let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
-        freshenCache(items)
     }
     
     func remove(_ text: String, forDiscordID id: String) async throws {
-        var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl!)/\(id)")
-        request.method = .DELETE
-        request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try JSONEncoder().encode(AutoPingRequest(text: text))
-        request.body = .bytes(data)
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
+        try await self.send(
+            pathParameter: id,
+            method: .DELETE,
+            pingRequest: .init(text: text)
         )
-        logger.trace("HTTP head \(response)")
-        
-        guard (200..<300).contains(response.status.code) else {
-            logger.error("Post-coin failed. Response: \(response)")
-            throw ServiceError.badStatus
-        }
-        
-        let body = try await response.body.collect(upTo: 1024 * 1024 * 64)
-        let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
-        freshenCache(items)
     }
     
     func get(discordID id: String) async throws -> [S3AutoPingItems.Expression] {
@@ -83,24 +53,45 @@ actor DefaultPingsService: AutoPingsService {
         if let cachedItems = cachedItems {
             return cachedItems
         } else {
-            var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl!)/all")
-            request.method = .GET
-            let response = try await httpClient.execute(
-                request,
-                timeout: .seconds(30),
-                logger: self.logger
+            return try await self.send(
+                pathParameter: "all",
+                method: .GET,
+                pingRequest: nil
             )
-            logger.trace("HTTP head \(response)")
-            
-            guard (200..<300).contains(response.status.code) else {
-                logger.error("Post-coin failed. Response: \(response)")
-                throw ServiceError.badStatus
-            }
-            let body = try await response.body.collect(upTo: 1024 * 1024 * 64)
-            let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
-            freshenCache(items)
-            return items
         }
+    }
+    
+    @discardableResult
+    func send(
+        pathParameter: String,
+        method: HTTPMethod,
+        pingRequest: AutoPingRequest?
+    ) async throws -> S3AutoPingItems {
+        let url = Constants.pingsServiceBaseUrl + "/" + pathParameter
+        var request = HTTPClientRequest(url: url)
+        request.method = method
+        if let pingRequest {
+            request.headers.add(name: "Content-Type", value: "application/json")
+            let data = try JSONEncoder().encode(pingRequest)
+            request.body = .bytes(data)
+        }
+        let response = try await httpClient.execute(
+            request,
+            timeout: .seconds(30),
+            logger: self.logger
+        )
+        logger.trace("HTTP head \(response)")
+        
+        guard (200..<300).contains(response.status.code) else {
+            logger.error("PingsService failed. Response: \(response)")
+            throw ServiceError.badStatus
+        }
+        
+        let body = try await response.body.collect(upTo: 1024 * 1024 * 64)
+        let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
+        freshenCache(items)
+        resetItemsTask?.cancel()
+        return items
     }
     
     private func freshenCache(_ new: S3AutoPingItems) {

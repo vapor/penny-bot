@@ -8,5 +8,5 @@ enum Constants {
     static var botToken: String! = env("BOT_TOKEN")
     static var botId: String! = env("BOT_APP_ID")
     static var coinServiceBaseUrl: String! = env("API_BASE_URL")
-    static var pingServiceBaseUrl: String! = env("PINGS_ API_BASE_URL")
+    static var pingsServiceBaseUrl: String! = env("PINGS_API_BASE_URL")
 }

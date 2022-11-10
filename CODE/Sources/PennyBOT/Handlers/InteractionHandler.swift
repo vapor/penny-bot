@@ -61,7 +61,7 @@ struct InteractionHandler {
         }
         guard event.guild_id == nil else {
             await sendDM("Hey 👋 please use the slash command here again :)")
-            return "Please DM me so we can talk privately about this :)"
+            return "Please DM me so we can talk about this privately :)"
         }
         guard let _id = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id. Event: \(event)")

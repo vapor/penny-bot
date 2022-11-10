@@ -4,13 +4,13 @@ import Foundation
 import SotoCore
 import PennyModels
 import PennyRepositories
+import NIOConcurrencyHelpers
 
 struct FailedToShutdownAWSError: Error {
     let message = "Failed to shutdown the AWS Client"
 }
 
-#warning("should here be a NIOLock so we make sure every update is done sequentially?!")
-//private let autoPingLock = NIOLock() /// need to pull NIO as a dependency :(
+private let autoPingLock = NIOLock()
 
 struct AutoPingHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
@@ -41,6 +41,9 @@ struct AutoPingHandler: LambdaHandler {
         _ event: APIGatewayV2Request,
         context: LambdaContext
     ) async throws -> APIGatewayV2Response {
+        autoPingLock.lock()
+        defer { autoPingLock.unlock() }
+        
         let newItems: S3AutoPingItems
         if event.rawPath == "/all" {
             newItems = try await pingsRepo.getAll()

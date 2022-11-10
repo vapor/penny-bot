@@ -22,7 +22,6 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         expression: S3AutoPingItems.Expression,
         forDiscordID id: String
     ) async throws -> S3AutoPingItems {
-        #warning("Throw error id the item doesn't exist, so we can avoid sending all the data")
         var all = try await self.getAll()
         all.items[expression]?.remove(id)
         if all.items[expression]?.isEmpty == true {
@@ -32,24 +31,15 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         return all
     }
     
-    private var localPath: String {
-        FileManager.default.currentDirectoryPath + "/Tests/Resources/autoPings.json"
-    }
-    
     func getAll() async throws -> S3AutoPingItems {
-#if DEBUG
-        if let data = FileManager.default.contents(atPath: localPath) {
-            return try JSONDecoder().decode(S3AutoPingItems.self, from: data)
-        } else {
-            return S3AutoPingItems()
-        }
-#else
-        #warning("compile error")
-#endif
+        /// Get the file from S3
+        #warning("IMPLEMENT")
+        fatalError()
     }
     
     func save(items: S3AutoPingItems) async throws {
-        let data = try JSONEncoder().encode(items)
-        FileManager.default.createFile(atPath: localPath, contents: data)
+        /// Save the file to S3
+        #warning("IMPLEMENT")
+        fatalError()
     }
 }

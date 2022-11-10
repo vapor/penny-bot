@@ -76,37 +76,45 @@ struct MessageHandler {
     func checkForPings() async {
         if event.content.isEmpty { return }
         guard let guildId = event.guild_id else { return }
-        #warning("fix these")
-        let words: Set<String> = { fatalError("PINGS - to be implemented") }()
-        /// `[Word: [Users]]`
-        let wordPeople: [String: Set<String>] = { fatalError("PINGS - to be implemented") }()
+        let wordAndUsers: [S3AutoPingItems.Expression: Set<String>]
+        do {
+            wordAndUsers = try await DefaultPingsService.shared.getAll().items
+        } catch {
+            logger.error("Can't retrieve ping-words. Error: \(error)")
+            return
+        }
         let folded = event.content.foldForPingCommand()
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
-        for word in words {
-            if folded.contains(word),
-               let users = wordPeople[word] {
+        for word in wordAndUsers.keys {
+            let innerValue = word.innerValue
+            if folded.contains(innerValue),
+               let users = wordAndUsers[word] {
                 for user in users {
-                    usersToPing[user, default: []].insert(word)
+                    usersToPing[user, default: []].insert(innerValue)
                 }
             }
         }
+        let _usersToPing = usersToPing
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
-        for (user, words) in usersToPing {
-            let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
-            await DiscordService.shared.sendDM(
-                userId: user,
-                payload: .init(
-                    embeds: [.init(
-                        description: """
-                        There is a new message that might be of interest to you.
-                        Triggered by: \(words)
-                        Link: \(messageLink)
-                        """,
-                        color: .vaporPurple
-                    )]
+        Task {
+            for (user, words) in _usersToPing {
+                try await Task.sleep(for: .seconds(1))
+                let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
+                await DiscordService.shared.sendDM(
+                    userId: user,
+                    payload: .init(
+                        embeds: [.init(
+                            description: """
+                            There is a new message that might be of interest to you.
+                            Triggered by: \(words)
+                            Message: \(messageLink)
+                            """,
+                            color: .vaporPurple
+                        )]
+                    )
                 )
-            )
+            }
         }
     }
     
