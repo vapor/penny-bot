@@ -30,6 +30,7 @@ public actor FakeResponseStorage {
         }
     }
     
+    /// Used to notify this storage that a response have been received.
     func respond(to endpoint: Endpoint, with payload: Any) {
         if let continuation = continuations.removeValue(forKey: endpoint.urlSuffix) {
             continuation.resume(returning: payload)
