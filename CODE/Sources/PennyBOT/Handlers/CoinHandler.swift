@@ -118,7 +118,9 @@ struct CoinHandler {
         // Here we check to see if the message was in reply to another message and contains
         // a coin sign in a proper place.
         // It would mean that someone has replied to another one and thanked them.
-        if let repliedUser = repliedUser, !excludedUsers.contains(repliedUser) {
+        if let repliedUser = repliedUser,
+           !excludedUsers.contains(repliedUser),
+           !finalUsers.contains(repliedUser) {
             
             // At the beginning of the first line.
             if let firstLine = lines.first {
