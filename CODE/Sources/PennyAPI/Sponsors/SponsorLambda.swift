@@ -288,7 +288,8 @@ struct AddSponsorHandler: LambdaHandler {
         // The token is going to have to be in the SecretsManager in AWS
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
-            "Authorization": workflowTokenString
+            "Authorization": workflowTokenString,
+            "User-Agent": "penny-bot"
         ])
         
         // Send request to trigger workflow and read response
@@ -313,4 +314,3 @@ extension ByteBuffer? {
         return String(buffer: self)
     }
 }
-
