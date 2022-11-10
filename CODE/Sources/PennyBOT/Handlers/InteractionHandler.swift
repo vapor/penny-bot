@@ -2,7 +2,6 @@ import Logging
 import DiscordBM
 
 struct InteractionHandler {
-    let discordClient: any DiscordClient
     let logger: Logger
     let event: Interaction
     
@@ -89,43 +88,25 @@ struct InteractionHandler {
         }
     }
     
-    /// Returns if the acknowledgement was successfully sent
+    /// Returns `true` if the acknowledgement was successfully sent
     private func sendInteractionAcknowledgement() async -> Bool {
-        do {
-            let apiResponse = try await discordClient.createInteractionResponse(
-                id: event.id,
-                token: event.token,
-                payload: .init(type: .messageEditWithLoadingState)
-            )
-            if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
-                return false
-            } else {
-                return true
-            }
-        } catch {
-            logger.error("Discord Client error: \(error)")
-            return false
-        }
+        await DiscordService.shared.respondToInteraction(
+            id: event.id,
+            token: event.token,
+            payload: .init(type: .messageEditWithLoadingState)
+        )
     }
     
     private func respond(with response: String) async {
-        do {
-            let apiResponse = try await discordClient.editInteractionResponse(
-                token: event.token,
-                payload: .init(
-                    embeds: [.init(
-                        description: response,
-                        color: .vaporPurple
-                    )]
-                )
+        await DiscordService.shared.editInteraction(
+            token: event.token,
+            payload: .init(
+                embeds: [.init(
+                    description: response,
+                    color: .vaporPurple
+                )]
             )
-            if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API for interaction: \(apiResponse)")
-            }
-        } catch {
-            logger.error("Discord Client error: \(error)")
-        }
+        )
     }
     
     private func sendDM(_ response: String) async {
@@ -133,7 +114,7 @@ struct InteractionHandler {
             logger.error("Can't find user id. Event: \(event)")
             return
         }
-        await DMService.shared.sendDM(
+        await DiscordService.shared.sendDM(
             userId: userId,
             payload: .init(
                 embeds: [.init(

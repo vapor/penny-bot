@@ -10,19 +10,9 @@ struct SlashCommandHandler {
         /// Optimally we would register command only if not already registered,
         /// because currently there is a 100 commands per day limit. For now it
         /// should not be a problem, if the command is available, it'll just be overridden.
-        
         let commands: [ApplicationCommand] = [.link, .ping]
         for command in commands {
-            do {
-                let apiResponse = try await discordClient.createApplicationGlobalCommand(
-                    payload: command
-                ).httpResponse
-                if !(200..<300).contains(apiResponse.status.code) {
-                    logger.error("Received non-200 status from Discord API for slash commands: \(apiResponse)")
-                }
-            } catch {
-                logger.error("Discord Client error: \(error)")
-            }
+            await DiscordService.shared.createSlashCommand(payload: command)
         }
     }
 }

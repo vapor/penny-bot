@@ -4,7 +4,6 @@ import PennyModels
 
 struct MessageHandler {
     
-    let discordClient: any DiscordClient
     let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageCreate
@@ -81,7 +80,7 @@ struct MessageHandler {
         let words: Set<String> = { fatalError("PINGS - to be implemented") }()
         /// `[Word: [Users]]`
         let wordPeople: [String: Set<String>] = { fatalError("PINGS - to be implemented") }()
-        let folded = event.content.foldForPings()
+        let folded = event.content.foldForPingCommand()
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
         for word in words {
@@ -95,7 +94,7 @@ struct MessageHandler {
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
         for (user, words) in usersToPing {
             let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
-            await DMService.shared.sendDM(
+            await DiscordService.shared.sendDM(
                 userId: user,
                 payload: .init(
                     embeds: [.init(
@@ -112,28 +111,20 @@ struct MessageHandler {
     }
     
     private func respond(with response: String) async {
-        do {
-            let apiResponse = try await discordClient.createMessage(
-                channelId: event.channel_id,
-                payload: .init(
-                    embeds: [.init(
-                        description: response,
-                        color: .vaporPurple
-                    )],
-                    message_reference: .init(
-                        message_id: event.id,
-                        channel_id: event.channel_id,
-                        guild_id: event.guild_id,
-                        fail_if_not_exists: false
-                    )
+        await DiscordService.shared.sendMessage(
+            channelId: event.channel_id,
+            payload: .init(
+                embeds: [.init(
+                    description: response,
+                    color: .vaporPurple
+                )],
+                message_reference: .init(
+                    message_id: event.id,
+                    channel_id: event.channel_id,
+                    guild_id: event.guild_id,
+                    fail_if_not_exists: false
                 )
             )
-            
-            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.error("Received non-200 status from Discord API: \(apiResponse)")
-            }
-        } catch {
-            logger.error("Discord Client error: \(error)")
-        }
+        )
     }
 }

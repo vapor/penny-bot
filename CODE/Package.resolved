@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "03b3e7b34153299e9b4c4b5c2a6ac790a582a3ac",
-        "version" : "1.12.0"
+        "revision" : "5bee16a79922e3efcb5cea06ecd27e6f8048b56b",
+        "version" : "1.13.1"
       }
     },
     {
@@ -15,7 +15,7 @@
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "421968eb84f9b734539af382aeb3069db618e242"
+        "revision" : "aa00114e6a9d308698b147e90d30ce1e6b53fe91"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "f8a8db612a6bca7a05f69e975464f7a841f43617",
-        "version" : "6.1.3"
+        "revision" : "fee2fdbe28fef7288415c0545081c235a4941a54",
+        "version" : "6.2.1"
       }
     },
     {

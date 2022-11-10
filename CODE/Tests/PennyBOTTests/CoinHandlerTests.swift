@@ -253,11 +253,11 @@ class CoinHandlerTests: XCTestCase {
             XCTAssertEqual(users, ["<@21939123912932193>"])
         }
         
-        /// thanks! xxxx xxxx
+        /// thanks! @tim xxxx xxxx
         do {
             let coinHandler = CoinHandler(
                 text: """
-                Thanks <@21939123912932193> for your help
+                Thanks <@21939123912932193> xxxx xxxx
                 """,
                 replied: "<@21939123912932193>",
                 mentionedUsers: ["<@21939123912932193>"]

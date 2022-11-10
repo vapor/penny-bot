@@ -60,21 +60,10 @@ actor BotStateManager {
     }
     
     private func send(content: String) async {
-        // The DiscordClient will retry the request too in some situations,
-        // so we shouldn't need to retry it ourselves.
-        do {
-            let response = try await discordClient.createMessage(
-                channelId: Constants.internalChannelId,
-                payload: .init(content: content + "\n\(self.id)")
-            )
-            if (200..<300).contains(response.httpResponse.status.code) {
-                logger.debug("BotStateManager failed to send a message")
-            } else {
-                logger.error("BotStateManager received non-200 status code. Response: \(response)")
-            }
-        } catch {
-            logger.error("BotStateManager received error: \(error)")
-        }
+        await DiscordService.shared.sendMessage(
+            channelId: Constants.internalChannelId,
+            payload: .init(content: content + "\n\(self.id)")
+        )
     }
     
 #if DEBUG

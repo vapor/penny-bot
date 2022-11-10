@@ -14,7 +14,6 @@ private let coinSignEmojis = [
 ]
 
 struct ReactionHandler {
-    let discordClient: any DiscordClient
     let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageReactionAdd
@@ -30,7 +29,6 @@ struct ReactionHandler {
               ), let receiverId = await ReactionCache.shared.getAuthorId(
                 channelId: event.channel_id,
                 messageId: event.message_id,
-                client: discordClient,
                 logger: logger
               ), user.id != receiverId
         else { return }
@@ -57,28 +55,21 @@ struct ReactionHandler {
     }
     
     private func respond(with response: String) async {
-        do {
-            let apiResponse = try await discordClient.createMessage(
-                channelId: event.channel_id,
-                payload: .init(
-                    embeds: [.init(
-                        description: response,
-                        color: .vaporPurple
-                    )],
-                    message_reference: .init(
-                        message_id: event.message_id,
-                        channel_id: event.channel_id,
-                        guild_id: event.guild_id,
-                        fail_if_not_exists: false
-                    )
+        await DiscordService.shared.sendMessage(
+            channelId: event.channel_id,
+            payload: .init(
+                embeds: [.init(
+                    description: response,
+                    color: .vaporPurple
+                )],
+                message_reference: .init(
+                    message_id: event.message_id,
+                    channel_id: event.channel_id,
+                    guild_id: event.guild_id,
+                    fail_if_not_exists: false
                 )
-            ).httpResponse
-            if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API: \(apiResponse)")
-            }
-        } catch {
-            logger.error("Discord Client error: \(error)")
-        }
+            )
+        )
     }
 }
 
@@ -98,33 +89,30 @@ private actor ReactionCache {
     func getAuthorId(
         channelId: String,
         messageId: String,
-        client: any DiscordClient,
         logger: Logger
     ) async -> String? {
         if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
-            do {
-                let message = try await client.getChannelMessage(
-                    channelId: channelId,
-                    messageId: messageId
-                ).decode()
-                if let authorId = message.author?.id {
-                    cachedAuthorIds[messageId] = authorId
-                    return authorId
-                } else {
-                    logger.error("ReactionCache could not find a message's author id. message: \(message)")
-                    return nil
-                }
-            } catch {
-                logger.error("ReactionCache could not find a message's author id. Error: \(error)")
+            guard let message = await DiscordService.shared.getChannelMessage(
+                channelId: channelId,
+                messageId: messageId
+            ) else {
+                logger.error("ReactionCache could not find a message's author id. channelId: \(channelId), messageId: \(messageId)")
+                return nil
+            }
+            if let authorId = message.author?.id {
+                cachedAuthorIds[messageId] = authorId
+                return authorId
+            } else {
+                logger.error("ReactionCache could not find a message's author id. message: \(message)")
                 return nil
             }
         }
     }
     
-    /// This is to prevent spams. In case someone removes their reaction and reacts again,
-    /// we should not give coins to message's author anymore.
+    /// This is to prevent spams. In case someone removes their reaction and
+    /// reacts again, we should not give coins to message's author anymore.
     func canGiveCoin(
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
