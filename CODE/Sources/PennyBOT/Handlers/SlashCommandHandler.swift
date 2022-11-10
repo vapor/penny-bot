@@ -2,7 +2,6 @@ import DiscordBM
 import Logging
 
 struct SlashCommandHandler {
-    let discordClient: any DiscordClient
     let logger: Logger
     let guildId = "431917998102675485"
     

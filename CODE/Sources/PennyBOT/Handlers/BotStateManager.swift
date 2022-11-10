@@ -11,7 +11,6 @@ import Logging
  */
 actor BotStateManager {
     
-    var discordClient: (any DiscordClient)!
     var logger: Logger!
     var canRespond = true
     let id = Date().timeIntervalSince1970
@@ -23,8 +22,7 @@ actor BotStateManager {
     
     private init() { }
     
-    func initialize(discordClient: any DiscordClient, logger: Logger) {
-        self.discordClient = discordClient
+    func initialize(logger: Logger) {
         self.logger = logger
         Task { await send(content: signal) }
     }

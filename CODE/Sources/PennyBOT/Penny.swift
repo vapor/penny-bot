@@ -33,7 +33,7 @@ struct Penny {
         Task {
             await DiscordService.shared.initialize(discordClient: bot.client, logger: logger)
             
-            await BotStateManager.shared.initialize(discordClient: bot.client, logger: logger)
+            await BotStateManager.shared.initialize(logger: logger)
             
             await bot.addEventHandler { event in
                 EventHandler(
@@ -45,10 +45,7 @@ struct Penny {
             
             await bot.connect()
             
-            await SlashCommandHandler(
-                discordClient: bot.client,
-                logger: logger
-            ).registerCommands()
+            await SlashCommandHandler(logger: logger).registerCommands()
         }
         
         RunLoop.current.run()
