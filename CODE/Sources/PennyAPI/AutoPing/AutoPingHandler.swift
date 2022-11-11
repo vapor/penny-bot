@@ -13,6 +13,7 @@ struct FailedToShutdownAWSError: Error {
 /// So the s3-file-updates happen in a sequential order
 private let autoPingLock = NIOLock()
 
+@main
 struct AutoPingHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
@@ -27,7 +28,7 @@ struct AutoPingHandler: LambdaHandler {
         )
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
-        self.pingsRepo = RepositoryFactory.makeAutoPingsRepository(context.logger)
+        self.pingsRepo = RepositoryFactory.makeAutoPingsRepository((awsClient, context.logger))
         context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
             do {
                 try awsClient.syncShutdown()

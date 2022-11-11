@@ -1,12 +1,19 @@
-import SotoDynamoDB
+import SotoS3
 import Foundation
 import PennyModels
 import PennyExtensions
 
 struct S3AutoPingsRepository: AutoPingsRepository {
     
-    // MARK: - Properties
+    let s3: S3
     let logger: Logger
+    let bucket = ProcessInfo.processInfo.environment["BUCKET"]!
+    let key = ProcessInfo.processInfo.environment["KEY"]!
+    
+    init(awsClient: AWSClient, logger: Logger) {
+        self.s3 = S3(client: awsClient, region: .euwest1)
+        self.logger = logger
+    }
     
     func insert(
         expressions: [S3AutoPingItems.Expression],
@@ -36,14 +43,24 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     }
     
     func getAll() async throws -> S3AutoPingItems {
-        /// Get the file from S3
-        #warning("IMPLEMENT")
-        fatalError()
+        let getObjectRequest = S3.GetObjectRequest(bucket: bucket, key: key)
+        let response = try await s3.getObject(getObjectRequest, logger: logger)
+        if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
+            return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
+        } else {
+            logger.warning("Cannot find any data in the bucket. Response: \(response)")
+            return S3AutoPingItems()
+        }
     }
     
     func save(items: S3AutoPingItems) async throws {
-        /// Save the file to S3
-        #warning("IMPLEMENT")
-        fatalError()
+        let data = try JSONEncoder().encode(items)
+        let putObjectRequest = S3.PutObjectRequest(
+            acl: .private,
+            body: .data(data),
+            bucket: bucket,
+            key: "hello.txt"
+        )
+        _ = try await s3.putObject(putObjectRequest)
     }
 }

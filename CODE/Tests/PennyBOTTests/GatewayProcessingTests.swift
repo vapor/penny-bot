@@ -14,7 +14,6 @@ class GatewayProcessingTests: XCTestCase {
     override func setUp() async throws {
         DiscordGlobalConfiguration.enableLoggingDuringDecode = false
         Constants.botId = "1016612301262041098"
-        LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()
         }

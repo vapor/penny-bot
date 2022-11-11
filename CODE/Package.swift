@@ -90,6 +90,7 @@ let package = Package(
             name: "PennyRepositories",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoS3", package: "soto"),
                 "PennyModels",
                 "PennyExtensions"
             ],
