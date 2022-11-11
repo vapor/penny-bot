@@ -22,11 +22,9 @@ struct AutoPingHandler: LambdaHandler {
     let pingsRepo: any AutoPingsRepository
     
     init(context: LambdaInitializationContext) async throws {
-        #warning("might need awsClient, otherwise remove")
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
-        // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
         self.pingsRepo = RepositoryFactory.makeAutoPingsRepository((awsClient, context.logger))
         context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
