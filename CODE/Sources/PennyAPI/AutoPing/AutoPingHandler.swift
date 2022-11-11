@@ -62,13 +62,13 @@ struct AutoPingHandler: LambdaHandler {
             case .PUT:
                 let request: AutoPingRequest = try event.bodyObject()
                 newItems = try await pingsRepo.insert(
-                    expressions: request.text.map { .text($0) },
+                    expressions: request.texts.map { .text($0) },
                     forDiscordID: discordId
                 )
             case .DELETE:
                 let request: AutoPingRequest = try event.bodyObject()
                 newItems = try await pingsRepo.remove(
-                    expressions: request.text.map { .text($0) },
+                    expressions: request.texts.map { .text($0) },
                     forDiscordID: discordId
                 )
             default:

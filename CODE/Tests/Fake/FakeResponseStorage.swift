@@ -22,9 +22,11 @@ public actor FakeResponseStorage {
             continuations[endpoint.urlSuffix, default: []].append(continuation)
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
-                if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
+                let current = continuations[endpoint.urlSuffix]
+                guard current == nil || current?.isEmpty == true else {
                     XCTFail("Penny did not respond in-time at '\(endpoint.urlSuffix)'")
                     continuation.resume(with: .success(Optional<Never>.none as Any))
+                    return
                 }
             }
         }
