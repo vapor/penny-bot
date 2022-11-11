@@ -77,6 +77,9 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info. ID: 5. Event: \(event)")
                     return "No 'text' option recognized"
                 }
+                if text.unicodeScalars.count < 3 {
+                    return "The text is less than 3 letters. This is not acceptable"
+                }
                 try await pingsService.insert([text.foldForPingCommand()], forDiscordID: discordId)
                 return "Successfully added `\(text)` to your pings list"
             case "bulk-add":
@@ -88,6 +91,9 @@ struct InteractionHandler {
                 let texts = _text.split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
+                if texts.contains(where: { $0.unicodeScalars.count < 3 }) {
+                    return "One of the texts is less than 3 letters. This is not acceptable"
+                }
                 try await pingsService.insert(texts, forDiscordID: discordId)
                 let textsList = texts.map({ "`\($0)`" }).joined(separator: "\n")
                 return """
