@@ -46,7 +46,7 @@ class GatewayProcessingTests: XCTestCase {
         )
         
         let slashCommand = try XCTUnwrap(response as? ApplicationCommand)
-        XCTAssertEqual(slashCommand.name, "link")
+        XCTAssertEqual(slashCommand.name, "automated-pings")
     }
     
     func testMessageHandler() async throws {
