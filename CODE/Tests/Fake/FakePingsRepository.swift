@@ -1,14 +1,12 @@
-import SotoDynamoDB
 import Foundation
 import PennyModels
-import PennyExtensions
+import PennyRepositories
 
-struct S3AutoPingsRepository: AutoPingsRepository {
+public struct FakePingsRepository: AutoPingsRepository {
     
-    // MARK: - Properties
-    let logger: Logger
+    public init() { }
     
-    func insert(
+    public func insert(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: String
     ) async throws -> S3AutoPingItems {
@@ -16,11 +14,10 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         for expression in expressions {
             all.items[expression, default: []].insert(id)
         }
-        try await self.save(items: all)
         return all
     }
     
-    func remove(
+    public func remove(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: String
     ) async throws -> S3AutoPingItems {
@@ -31,19 +28,14 @@ struct S3AutoPingsRepository: AutoPingsRepository {
                 all.items[expression] = nil
             }
         }
-        try await self.save(items: all)
         return all
     }
     
-    func getAll() async throws -> S3AutoPingItems {
-        /// Get the file from S3
-        #warning("IMPLEMENT")
-        fatalError()
-    }
-    
-    func save(items: S3AutoPingItems) async throws {
-        /// Save the file to S3
-        #warning("IMPLEMENT")
-        fatalError()
+    public func getAll() async throws -> S3AutoPingItems {
+        S3AutoPingItems(items: [
+            .text("penny"): ["<@21939123912932193>", "<@4912300012398455>"],
+            .text("vapor"): ["<@21939123912932193>"],
+            .text("mongo"): ["<@4912300012398455>"]
+        ])
     }
 }

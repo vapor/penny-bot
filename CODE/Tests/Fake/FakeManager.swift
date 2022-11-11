@@ -39,7 +39,7 @@ public actor FakeManager: GatewayManager {
         }
     }
     
-    func send(key: EventKey) throws {
+    public func send(key: EventKey) throws {
         let data = TestData.for(key: key.rawValue)!
         let decoder = JSONDecoder()
         let event = try decoder.decode(Gateway.Event.self, from: data)
@@ -69,9 +69,10 @@ public enum EventKey: String {
     case linkInteraction
     case thanksReaction
     case stopRespondingToMessages
+    case autoPingsTrigger
     
     /// The endpoints from which the bot will send a response, after receiving each event.
-    var responseEndpoints: [Endpoint] {
+    public var responseEndpoints: [Endpoint] {
         switch self {
         case .thanksMessage:
             return [.createMessage(channelId: "1016614538398937098")]
@@ -81,6 +82,11 @@ public enum EventKey: String {
             return [.createMessage(channelId: "966722151359057950")]
         case .stopRespondingToMessages:
             return [.createMessage(channelId: "441327731486097429")]
+        case .autoPingsTrigger:
+            return [
+                .createDM,
+                .createMessage(channelId: "1018169583619821619")
+            ]
         }
     }
 }

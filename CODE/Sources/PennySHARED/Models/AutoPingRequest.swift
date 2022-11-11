@@ -1,8 +1,8 @@
 
 public struct AutoPingRequest: Codable {
-    public let text: String
+    public let texts: [String]
     
-    public init(text: String) {
-        self.text = text
+    public init(texts: [String]) {
+        self.texts = texts
     }
 }

@@ -7,6 +7,9 @@ struct MessageHandler {
     let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageCreate
+    var pingsService: any AutoPingsService {
+        ServiceFactory.makePingsService()
+    }
     
     func handle() async {
         await checkForNewCoins()
@@ -76,9 +79,9 @@ struct MessageHandler {
     func checkForPings() async {
         if event.content.isEmpty { return }
         guard let guildId = event.guild_id else { return }
-        let wordAndUsers: [S3AutoPingItems.Expression: Set<String>]
+        let wordUsersDict: [S3AutoPingItems.Expression: Set<String>]
         do {
-            wordAndUsers = try await DefaultPingsService.shared.getAll().items
+            wordUsersDict = try await pingsService.getAll().items
         } catch {
             logger.error("Can't retrieve ping-words. Error: \(error)")
             return
@@ -86,10 +89,10 @@ struct MessageHandler {
         let folded = event.content.foldForPingCommand()
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
-        for word in wordAndUsers.keys {
+        for word in wordUsersDict.keys {
             let innerValue = word.innerValue
             if folded.contains(innerValue),
-               let users = wordAndUsers[word] {
+               let users = wordUsersDict[word] {
                 for user in users {
                     usersToPing[user, default: []].insert(innerValue)
                 }
@@ -99,7 +102,7 @@ struct MessageHandler {
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
         Task {
             for (user, words) in _usersToPing {
-                try await Task.sleep(for: .seconds(1))
+                try await Task.sleep(for: .milliseconds(250))
                 let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
                 await DiscordService.shared.sendDM(
                     userId: user,

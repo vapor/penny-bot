@@ -74,6 +74,17 @@ private extension ApplicationCommand {
             ),
             .init(
                 type: .subCommand,
+                name: "bulk-add",
+                description: "Ping when a message case-insensitively contains these texts",
+                options: [.init(
+                    type: .string,
+                    name: "texts",
+                    description: "The texts you want to be pinged for, separated by a comma (`,`)",
+                    required: true
+                )]
+            ),
+            .init(
+                type: .subCommand,
                 name: "remove",
                 description: "Remove pings for certain texts",
                 options: [.init(

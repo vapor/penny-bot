@@ -30,5 +30,7 @@ public struct S3AutoPingItems: Codable {
     /// `[Expression: Set<UserID>]`
     public var items: [Expression: Set<String>] = [:]
     
-    public init() { }
+    public init(items: [Expression: Set<String>] = [:]) {
+        self.items = items
+    }
 }

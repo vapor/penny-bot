@@ -77,15 +77,31 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info. ID: 5. Event: \(event)")
                     return "No 'text' option recognized"
                 }
-                try await pingsService.insert(text, forDiscordID: discordId)
+                try await pingsService.insert([text.foldForPingCommand()], forDiscordID: discordId)
                 return "Successfully added `\(text)` to your pings list"
+            case "bulk-add":
+                guard let option = first.options?.first,
+                      let _text = option.value?.asString else {
+                    logger.error("Discord did not send required info. ID: 5. Event: \(event)")
+                    return "No 'text' option recognized"
+                }
+                let texts = _text.split(separator: ",")
+                    .map(String.init)
+                    .map({ $0.foldForPingCommand() })
+                try await pingsService.insert(texts, forDiscordID: discordId)
+                let textsList = texts.map({ "`\($0)`" }).joined(separator: "\n")
+                return """
+                Successfully added
+                \(textsList)
+                to your pings list
+                """
             case "remove":
                 guard let option = first.options?.first,
                       let text = option.value?.asString else {
                     logger.error("Discord did not send required info. ID: 5. Event: \(event)")
                     return "No 'text' option recognized"
                 }
-                try await pingsService.remove(text, forDiscordID: discordId)
+                try await pingsService.remove([text.foldForPingCommand()], forDiscordID: discordId)
                 return "Successfully removed `\(text)` from your pings list"
             case "list":
                 let list = try await pingsService

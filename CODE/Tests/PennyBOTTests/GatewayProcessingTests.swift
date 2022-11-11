@@ -1,5 +1,5 @@
 @testable import PennyBOT
-import DiscordBM
+@testable import DiscordBM
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
@@ -12,12 +12,20 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
+        DiscordGlobalConfiguration.enableLoggingDuringDecode = false
         Constants.botId = "1016612301262041098"
         LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()
         }
-        Constants.coinServiceBaseUrl = "https://fake.com"
+        RepositoryFactory.makeAutoPingsRepository = { _ in
+            FakePingsRepository()
+        }
+        Constants.pingsServiceBaseUrl = "https://fake.com"
+        ServiceFactory.makePingsService = {
+            FakePingsService()
+        }
+        Constants.coinServiceBaseUrl = "https://fake2.com"
         ServiceFactory.makeCoinService = { _, _ in
             FakeCoinService()
         }
@@ -25,9 +33,9 @@ class GatewayProcessingTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
+        await stateManager.tests_reset()
         /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         /// the fake manager is ready. That's why we need to use `waitUntilConnected()`.
-        await stateManager.tests_reset()
         await Penny.main()
         await manager.waitUntilConnected()
     }
@@ -113,5 +121,20 @@ class GatewayProcessingTests: XCTestCase {
             let canRespond = await stateManager.canRespond(to: testEvent)
             XCTAssertEqual(canRespond, true)
         }
+    }
+    
+    func testAutoPings() async throws {
+        let event = EventKey.autoPingsTrigger
+        try await manager.send(key: event)
+        let (createDM, sendDM) = await (
+            responseStorage.awaitResponse(at: event.responseEndpoints[0]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[1])
+        )
+        let dmPayload = try XCTUnwrap(createDM as? RequestBody.CreateDM, "\(createDM)")
+        XCTAssertEqual(dmPayload.recipient_id, "4912300012398455")
+        
+        let dmMessage = try XCTUnwrap(sendDM as? DiscordChannel.CreateMessage, "\(sendDM)")
+        let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
+        XCTAssertTrue(message.hasPrefix("There is a new message"), message)
     }
 }

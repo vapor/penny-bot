@@ -9,7 +9,6 @@ actor DefaultPingsService: AutoPingsService {
     
     var httpClient: HTTPClient!
     var logger: Logger!
-    lazy var pingsRepo = RepositoryFactory.makeAutoPingsRepository(logger)
     
     var cachedItems: S3AutoPingItems?
     var resetItemsTask: Task<(), Never>?
@@ -24,19 +23,19 @@ actor DefaultPingsService: AutoPingsService {
         self.setUpResetItemsTask()
     }
     
-    func insert(_ text: String, forDiscordID id: String) async throws {
+    func insert(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
             pathParameter: id,
             method: .PUT,
-            pingRequest: .init(text: text)
+            pingRequest: .init(texts: texts)
         )
     }
     
-    func remove(_ text: String, forDiscordID id: String) async throws {
+    func remove(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
             pathParameter: id,
             method: .DELETE,
-            pingRequest: .init(text: text)
+            pingRequest: .init(texts: texts)
         )
     }
     
@@ -67,6 +66,9 @@ actor DefaultPingsService: AutoPingsService {
         method: HTTPMethod,
         pingRequest: AutoPingRequest?
     ) async throws -> S3AutoPingItems {
+#if DEBUG
+        return S3AutoPingItems()
+#else
         let url = Constants.pingsServiceBaseUrl + "/" + pathParameter
         var request = HTTPClientRequest(url: url)
         request.method = method
@@ -92,6 +94,7 @@ actor DefaultPingsService: AutoPingsService {
         freshenCache(items)
         resetItemsTask?.cancel()
         return items
+#endif
     }
     
     private func freshenCache(_ new: S3AutoPingItems) {
