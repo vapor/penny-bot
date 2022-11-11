@@ -85,6 +85,8 @@ public enum EventKey: String {
         case .autoPingsTrigger:
             return [
                 .createDM,
+                .createDM,
+                .createMessage(channelId: "1018169583619821619"),
                 .createMessage(channelId: "1018169583619821619")
             ]
         }

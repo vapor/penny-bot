@@ -41,12 +41,17 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testSlashCommandsRegisterOnStartup() async throws {
-        let response = await responseStorage.awaitResponse(
-            at: .createApplicationGlobalCommand(appId: "11111111")
-        )
+        let responses = await [
+            responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111")),
+            responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111"))
+        ]
         
-        let slashCommand = try XCTUnwrap(response as? ApplicationCommand)
-        XCTAssertEqual(slashCommand.name, "automated-pings")
+        let commandNames = ["link", "automated-pings"]
+        
+        for response in responses {
+            let slashCommand = try XCTUnwrap(response as? ApplicationCommand)
+            XCTAssertTrue(commandNames.contains(slashCommand.name), slashCommand.name)
+        }
     }
     
     func testMessageHandler() async throws {
@@ -126,15 +131,35 @@ class GatewayProcessingTests: XCTestCase {
     func testAutoPings() async throws {
         let event = EventKey.autoPingsTrigger
         try await manager.send(key: event)
-        let (createDM, sendDM) = await (
+        let (createDM1, createDM2, sendDM1, sendDM2) = await (
             responseStorage.awaitResponse(at: event.responseEndpoints[0]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[1])
+            responseStorage.awaitResponse(at: event.responseEndpoints[1]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[2]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[3])
         )
-        let dmPayload = try XCTUnwrap(createDM as? RequestBody.CreateDM, "\(createDM)")
-        XCTAssertEqual(dmPayload.recipient_id, "4912300012398455")
         
-        let dmMessage = try XCTUnwrap(sendDM as? DiscordChannel.CreateMessage, "\(sendDM)")
-        let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
-        XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+        let recipients = ["4912300012398455", "21939123912932193"]
+        
+        do {
+            let dmPayload = try XCTUnwrap(createDM1 as? RequestBody.CreateDM, "\(createDM1)")
+            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
+        }
+        
+        do {
+            let dmPayload = try XCTUnwrap(createDM2 as? RequestBody.CreateDM, "\(createDM2)")
+            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
+        }
+        
+        do {
+            let dmMessage = try XCTUnwrap(sendDM1 as? DiscordChannel.CreateMessage, "\(sendDM1)")
+            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+        }
+        
+        do {
+            let dmMessage = try XCTUnwrap(sendDM2 as? DiscordChannel.CreateMessage, "\(sendDM2)")
+            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+        }
     }
 }

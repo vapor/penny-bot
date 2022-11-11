@@ -3,7 +3,7 @@ import XCTest
 
 public actor FakeResponseStorage {
     
-    private var continuations = [String: CheckedContinuation<Any, Never>]()
+    private var continuations = [String: [CheckedContinuation<Any, Never>]]()
     private var unhandledResponses = [String: Any]()
     
     public init() { }
@@ -19,7 +19,7 @@ public actor FakeResponseStorage {
         if let response = unhandledResponses[endpoint.urlSuffix] {
             continuation.resume(returning: response)
         } else {
-            continuations[endpoint.urlSuffix] = continuation
+            continuations[endpoint.urlSuffix, default: []].append(continuation)
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
                 if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
@@ -32,7 +32,8 @@ public actor FakeResponseStorage {
     
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: Endpoint, with payload: Any) {
-        if let continuation = continuations.removeValue(forKey: endpoint.urlSuffix) {
+        if continuations[endpoint.urlSuffix] != nil {
+            let continuation = continuations[endpoint.urlSuffix]!.removeFirst()
             continuation.resume(returning: payload)
         } else {
             unhandledResponses[endpoint.urlSuffix] = payload
