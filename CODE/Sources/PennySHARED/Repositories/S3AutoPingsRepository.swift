@@ -8,7 +8,7 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     let s3: S3
     let logger: Logger
     let bucket = ProcessInfo.processInfo.environment["BUCKET"]!
-    let key = ProcessInfo.processInfo.environment["KEY"]!
+    let key = "autoPingsRepo.json"
     
     init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
@@ -59,7 +59,7 @@ struct S3AutoPingsRepository: AutoPingsRepository {
             acl: .private,
             body: .data(data),
             bucket: bucket,
-            key: "hello.txt"
+            key: key
         )
         _ = try await s3.putObject(putObjectRequest)
     }
