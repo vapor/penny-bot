@@ -292,6 +292,8 @@ struct AddSponsorHandler: LambdaHandler {
             "User-Agent": "penny-bot"
         ])
         
+        triggerActionRequest.body = .bytes(ByteBuffer(string: "{\"ref\": \"main\"}"))
+        
         // Send request to trigger workflow and read response
         let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
         
