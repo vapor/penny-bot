@@ -17,7 +17,7 @@ actor DiscordService {
         self.logger = logger
     }
     
-    func sendDM(userId: String, payload: DiscordChannel.CreateMessage) async {
+    func sendDM(userId: String, payload: RequestBody.CreateMessage) async {
         let userId = userId.makePlainUserID()
         guard let dmChannelID = await getDMChannelID(userId: userId) else { return }
         await self.sendMessage(channelId: dmChannelID, payload: payload)
@@ -39,7 +39,7 @@ actor DiscordService {
     
     func sendMessage(
         channelId: String,
-        payload: DiscordChannel.CreateMessage
+        payload: RequestBody.CreateMessage
     ) async {
         do {
             let response = try await discordClient.createMessage(
@@ -56,7 +56,7 @@ actor DiscordService {
     func respondToInteraction(
         id: String,
         token: String,
-        payload: InteractionResponse
+        payload: RequestBody.InteractionResponse
     ) async -> Bool {
         do {
             let response = try await discordClient.createInteractionResponse(
@@ -74,7 +74,7 @@ actor DiscordService {
     
     func editInteraction(
         token: String,
-        payload: InteractionResponse.CallbackData
+        payload: RequestBody.InteractionResponse.CallbackData
     ) async {
         do {
             let response = try await discordClient.editInteractionResponse(

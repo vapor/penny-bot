@@ -56,7 +56,7 @@ class GatewayProcessingTests: XCTestCase {
     func testMessageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
-            as: DiscordChannel.CreateMessage.self
+            as: RequestBody.CreateMessage.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -67,7 +67,7 @@ class GatewayProcessingTests: XCTestCase {
     func testInteractionHandler() async throws {
         let response = try await self.manager.sendAndAwaitResponse(
             key: .linkInteraction,
-            as: InteractionResponse.CallbackData.self
+            as: RequestBody.InteractionResponse.CallbackData.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -77,7 +77,7 @@ class GatewayProcessingTests: XCTestCase {
     func testReactionHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksReaction,
-            as: DiscordChannel.CreateMessage.self
+            as: RequestBody.CreateMessage.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -96,7 +96,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .createMessage(channelId: Constants.internalChannelId)
         )
         
-        let message = try XCTUnwrap(response as? DiscordChannel.CreateMessage)
+        let message = try XCTUnwrap(response as? RequestBody.CreateMessage)
         XCTAssertGreaterThan(message.content?.count ?? -1, 20)
     }
     
@@ -105,7 +105,7 @@ class GatewayProcessingTests: XCTestCase {
         
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
-            as: DiscordChannel.CreateMessage.self
+            as: RequestBody.CreateMessage.self
         )
         
         XCTAssertGreaterThan(response.content?.count ?? -1, 20)
@@ -150,13 +150,13 @@ class GatewayProcessingTests: XCTestCase {
         }
         
         do {
-            let dmMessage = try XCTUnwrap(sendDM1 as? DiscordChannel.CreateMessage, "\(sendDM1)")
+            let dmMessage = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
             let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
         }
         
         do {
-            let dmMessage = try XCTUnwrap(sendDM2 as? DiscordChannel.CreateMessage, "\(sendDM2)")
+            let dmMessage = try XCTUnwrap(sendDM2 as? RequestBody.CreateMessage, "\(sendDM2)")
             let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
         }

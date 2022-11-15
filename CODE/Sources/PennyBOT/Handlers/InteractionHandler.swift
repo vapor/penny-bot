@@ -131,7 +131,7 @@ struct InteractionHandler {
         await DiscordService.shared.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .init(type: .messageEditWithLoadingState)
+            payload: .init(type: .deferredChannelMessageWithSource)
         )
     }
     
