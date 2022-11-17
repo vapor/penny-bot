@@ -10,7 +10,7 @@ struct SlashCommandHandler {
         /// Optimally we would register command only if not already registered,
         /// because currently there is a 100 commands per day limit. For now it
         /// should not be a problem, if the command is available, it'll just be overridden.
-        let linkCommand = SlashCommand(
+        let linkCommand = ApplicationCommand(
             name: "link",
             description: "Links your accounts in Penny",
             options: [

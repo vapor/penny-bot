@@ -33,7 +33,7 @@ class GatewayProcessingTests: XCTestCase {
         let response = await responseStorage.awaitResponse(
             at: .createApplicationGlobalCommand(appId: "11111111")
         )
-        let slashCommand = try XCTUnwrap(response as? SlashCommand)
+        let slashCommand = try XCTUnwrap(response as? ApplicationCommand)
         XCTAssertEqual(slashCommand.name, "link")
     }
     
