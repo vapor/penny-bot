@@ -271,7 +271,7 @@ struct AddSponsorHandler: LambdaHandler {
         context: LambdaContext
     ) async throws {
         // Create request to trigger workflow
-        let url = "https://api.github.com/repos/vapor/vapor/actions/workflows/sponsor.yml/dispatches"
+        let url = "https://api.github.com/repos/vapor/vapor/actions/workflows/sponsors.yml/dispatches"
         var triggerActionRequest = HTTPClientRequest(url: url)
         triggerActionRequest.method = .POST
         
@@ -288,7 +288,7 @@ struct AddSponsorHandler: LambdaHandler {
         // The token is going to have to be in the SecretsManager in AWS
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
-            "Authorization": workflowTokenString,
+            "Authorization": "Bearer \(workflowTokenString)",
             "User-Agent": "penny-bot"
         ])
         
