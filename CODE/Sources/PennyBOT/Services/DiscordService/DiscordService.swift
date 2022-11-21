@@ -5,7 +5,7 @@ actor DiscordService {
     
     private var discordClient: (any DiscordClient)!
     private var logger: Logger!
-    /// `[UserDiscordID: DMChanelID]`
+    /// `[UserDiscordID: DMChannelID]`
     private var channels: [String: String] = [:]
     
     private init () { }
@@ -19,11 +19,11 @@ actor DiscordService {
     
     func sendDM(userId: String, payload: RequestBody.CreateMessage) async {
         let userId = userId.makePlainUserID()
-        guard let dmChannelID = await getDMChannelID(userId: userId) else { return }
-        await self.sendMessage(channelId: dmChannelID, payload: payload)
+        guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
+        await self.sendMessage(channelId: dmChannelId, payload: payload)
     }
     
-    private func getDMChannelID(userId: String) async -> String? {
+    private func getDMChannelId(userId: String) async -> String? {
         if let existing = channels[userId] {
             return existing
         } else {
