@@ -66,9 +66,6 @@ actor DefaultPingsService: AutoPingsService {
         method: HTTPMethod,
         pingRequest: AutoPingRequest?
     ) async throws -> S3AutoPingItems {
-#if DEBUG
-        return S3AutoPingItems()
-#else
         let url = Constants.pingsServiceBaseUrl + "/" + pathParameter
         var request = HTTPClientRequest(url: url)
         request.method = method
@@ -94,7 +91,6 @@ actor DefaultPingsService: AutoPingsService {
         freshenCache(items)
         resetItemsTask?.cancel()
         return items
-#endif
     }
     
     private func freshenCache(_ new: S3AutoPingItems) {
