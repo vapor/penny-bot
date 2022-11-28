@@ -46,7 +46,7 @@ struct MessageHandler {
             )
             do {
                 let response = try await self.coinService.postCoin(with: coinRequest)
-                let responseString = "\(response.receiver) now has \(response.coins) coins!"
+                let responseString = "\(response.receiver) now has \(response.coins) \(Constants.vaporCoinEmoji)!"
                 successfulResponses.append(responseString)
             } catch {
                 logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")

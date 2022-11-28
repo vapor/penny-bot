@@ -20,7 +20,8 @@ struct ReactionHandler {
     let event: Gateway.MessageReactionAdd
     
     func handle() async {
-        guard let user = event.member?.user,
+        guard let member = event.member,
+              let user = member.user,
               user.bot != true,
               let emoji = event.emoji.name,
               coinSignEmojis.contains(emoji),
@@ -53,7 +54,7 @@ struct ReactionHandler {
             await respond(with: "Oops. Something went wrong! Please try again later")
             return
         }
-        await respond(with: "\(response.sender) gave a coin to \(response.receiver)!\n\(response.receiver) now has \(response.coins) shiny coins.")
+        await respond(with: "`\(member.nick ?? user.username)` gave a coin to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!")
     }
     
     private func respond(with response: String) async {

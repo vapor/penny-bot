@@ -45,14 +45,14 @@ actor BotStateManager {
             logger.warning("Can't find id of the other Penny")
             return
         }
-        guard otherId != "\(self.id)" else { return }
+        if otherId == "\(self.id)" { return }
         logger.warning("Received shutdown signal from another Penny")
         self.canRespond = false
         Task {
             try await Task.sleep(for: disableDuration)
             self.canRespond = true
-            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
+            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
         }
         Task {
             await send(content: "Ok the new Penny! I'll retire myself for a few minutes :)")

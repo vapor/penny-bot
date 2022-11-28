@@ -5,7 +5,7 @@ private let validSigns = [
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
     "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
-    "🪙", "<:coin:473588485962596352>", // This weird one is Vapor server's coin emoji
+    "🪙", Constants.vaporCoinEmoji,
     "🚀",
     "thx", "thanks", "thank you",
     "thanks a lot", "thanks a bunch", "thanks so much",

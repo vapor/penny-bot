@@ -49,7 +49,7 @@ class GatewayProcessingTests: XCTestCase {
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
         XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
-        XCTAssertTrue(description.hasSuffix(" coins!"))
+        XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
     }
     
     func testInteractionHandler() async throws {
@@ -69,11 +69,10 @@ class GatewayProcessingTests: XCTestCase {
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertTrue(description.hasPrefix("""
-        <@290483761559240704> gave a coin to <@1030118727418646629>!
-        <@1030118727418646629> now has
-        """))
-        XCTAssertTrue(description.hasSuffix(" shiny coins."))
+        XCTAssertTrue(description.hasPrefix(
+            "`Mahdi BM` gave a coin to <@1030118727418646629>, who now has "
+        ))
+        XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
     }
     
     func testBotStateManagerSendsSignalOnStartUp() async throws {
