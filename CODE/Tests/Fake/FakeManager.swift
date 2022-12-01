@@ -50,12 +50,15 @@ public actor FakeManager: GatewayManager {
     
     public func sendAndAwaitResponse<T>(
         key: EventKey,
+        endpoint: Endpoint? = nil,
         as type: T.Type = T.self,
         file: String = #file,
         line: UInt = #line
     ) async throws -> T {
         try self.send(key: key)
-        let value = await FakeResponseStorage.shared.awaitResponse(at: key.responseEndpoints[0])
+        let value = await FakeResponseStorage.shared.awaitResponse(
+            at: endpoint ?? key.responseEndpoints[0]
+        )
         let unwrapped = try XCTUnwrap(
             value as? T,
             "Value '\(value)' can't be cast to '\(_typeName(T.self))'"
@@ -68,17 +71,23 @@ public enum EventKey: String {
     case thanksMessage
     case linkInteraction
     case thanksReaction
+    case thanksReaction2
     case stopRespondingToMessages
     
     /// The endpoints from which the bot will send a response, after receiving each event.
-    var responseEndpoints: [Endpoint] {
+    public var responseEndpoints: [Endpoint] {
         switch self {
         case .thanksMessage:
             return [.postCreateMessage(channelId: "1016614538398937098")]
         case .linkInteraction:
             return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(id: "1031112113978089502", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
-            return [.postCreateMessage(channelId: "966722151359057950")]
+            return [.postCreateMessage(channelId: "966722151359057911")]
+        case .thanksReaction2:
+            return [.patchEditMessage(
+                channelId: "966722151359057911",
+                messageId: "1031112115928449022"
+            )]
         case .stopRespondingToMessages:
             return [.postCreateMessage(channelId: "441327731486097429")]
         }

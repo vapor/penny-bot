@@ -16,14 +16,14 @@ public actor FakeResponseStorage {
     }
     
     private func expect(at endpoint: Endpoint, continuation: CheckedContinuation<Any, Never>) {
-        if let response = unhandledResponses[endpoint.urlSuffix] {
+        if let response = unhandledResponses[endpoint.testingKey] {
             continuation.resume(returning: response)
         } else {
-            continuations[endpoint.urlSuffix] = continuation
+            continuations[endpoint.testingKey] = continuation
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
-                if continuations.removeValue(forKey: endpoint.urlSuffix) != nil {
-                    XCTFail("Penny did not respond in-time at '\(endpoint.urlSuffix)'")
+                if continuations.removeValue(forKey: endpoint.testingKey) != nil {
+                    XCTFail("Penny did not respond in-time at '\(endpoint.testingKey)'")
                     continuation.resume(with: .success(Optional<Never>.none as Any))
                 }
             }
@@ -32,10 +32,10 @@ public actor FakeResponseStorage {
     
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: Endpoint, with payload: Any) {
-        if let continuation = continuations.removeValue(forKey: endpoint.urlSuffix) {
+        if let continuation = continuations.removeValue(forKey: endpoint.testingKey) {
             continuation.resume(returning: payload)
         } else {
-            unhandledResponses[endpoint.urlSuffix] = payload
+            unhandledResponses[endpoint.testingKey] = payload
         }
     }
 }

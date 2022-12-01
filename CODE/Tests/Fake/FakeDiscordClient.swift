@@ -19,7 +19,7 @@ struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData.for(key: endpoint.urlSuffix).map { .init(data: $0) }
+            body: TestData.for(key: endpoint.testingKey).map { .init(data: $0) }
         )
     }
     
@@ -36,7 +36,7 @@ struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData.for(key: endpoint.urlSuffix).map { .init(data: $0) }
+            body: TestData.for(key: endpoint.testingKey).map { .init(data: $0) }
         )
     }
     
@@ -53,7 +53,7 @@ struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData.for(key: endpoint.urlSuffix).map { .init(data: $0) }
+            body: TestData.for(key: endpoint.testingKey).map { .init(data: $0) }
         )
     }
 }

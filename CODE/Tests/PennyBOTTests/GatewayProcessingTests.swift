@@ -1,5 +1,5 @@
 @testable import PennyBOT
-import DiscordBM
+@testable import DiscordBM
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
@@ -23,6 +23,7 @@ class GatewayProcessingTests: XCTestCase {
         }
         /// reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
+        ReactionCache.tests_reset()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
         /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
@@ -63,16 +64,90 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testReactionHandler() async throws {
-        let response = try await manager.sendAndAwaitResponse(
-            key: .thanksReaction,
-            as: DiscordChannel.CreateMessage.self
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction,
+                as: DiscordChannel.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "Mahdi BM gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+        
+        // There appears to be some kind of concurrency issue which are solved by waiting a second.
+        // Realistically we'll wait much more than a second till the second message comes, anyway.
+        try await Task.sleep(for: .seconds(1))
+        
+        // The second thanks message should just edit the last one, because the
+        // receiver is the same person and the channel is the same channel.
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction2,
+                as: DiscordChannel.EditMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "Mahdi BM & 0xTim gave \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+    }
+    
+    func testReactionHandler2() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction,
+                as: DiscordChannel.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "Mahdi BM gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+        
+        // There appears to be some kind of concurrency issue which are solved by waiting a second.
+        // Realistically we'll wait much more than a second till the second message comes, anyway.
+        try await Task.sleep(for: .seconds(1))
+        
+        await ReactionCache.shared.invalidateCachesIfNeeded(
+            event: .init(
+                id: "1313",
+                channel_id: "966722151359057911",
+                content: "",
+                timestamp: .fake,
+                tts: false,
+                mention_everyone: false,
+                mentions: [],
+                mention_roles: [],
+                attachments: [],
+                embeds: [],
+                pinned: false,
+                type: .default
+            )
         )
         
-        let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertTrue(description.hasPrefix(
-            "Mahdi BM gave a coin to <@1030118727418646629>, who now has "
-        ))
-        XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        // The second thanks message should NOT edit the last one, because although the
+        // receiver is the same person and the channel is the same channel, Penny's message
+        // is not the last message anymore.
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction2,
+                endpoint: EventKey.thanksReaction.responseEndpoints[0],
+                as: DiscordChannel.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "0xTim gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
     }
     
     func testBotStateManagerSendsSignalOnStartUp() async throws {
@@ -113,4 +188,12 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertEqual(canRespond, true)
         }
     }
+}
+
+private extension DiscordTimestamp {
+    static let fake: DiscordTimestamp = {
+        let string = #""2022-11-23T09:59:04.037259+00:00""#
+        let data = Data(string.utf8)
+        return try! JSONDecoder().decode(DiscordTimestamp.self, from: data)
+    }()
 }

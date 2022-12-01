@@ -18,6 +18,7 @@ struct ReactionHandler {
     let coinService: any CoinService
     let logger: Logger
     let event: Gateway.MessageReactionAdd
+    private var cache: ReactionCache { .shared }
     
     func handle() async {
         guard let member = event.member,
@@ -25,10 +26,10 @@ struct ReactionHandler {
               user.bot != true,
               let emoji = event.emoji.name,
               coinSignEmojis.contains(emoji),
-              await ReactionCache.shared.canGiveCoin(
+              await cache.canGiveCoin(
                 fromSender: user.id,
                 toAuthorOfMessage: event.message_id
-              ), let receiverId = await ReactionCache.shared.getAuthorId(
+              ), let receiverId = await cache.getAuthorId(
                 channelId: event.channel_id,
                 messageId: event.message_id,
                 client: discordClient,
@@ -51,13 +52,34 @@ struct ReactionHandler {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
             logger.error("Error when posting coins: \(error)")
-            await respond(with: "Oops. Something went wrong! Please try again later")
+            await respond(
+                with: "Oops. Something went wrong! Please try again later",
+                senderName: nil
+            )
             return
         }
-        await respond(with: "\(member.nick ?? user.username) gave a coin to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!")
+        
+        let senderName = member.nick ?? user.username
+        if let (pennyResponseMessageId, lastUsers) = await cache.messageToEditIfAvailable(
+            in: event.channel_id,
+            receiverMessageId: event.message_id
+        ) {
+            let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
+            await editResponse(
+                messageId: pennyResponseMessageId,
+                with: "\(names) gave \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                senderName: senderName
+            )
+        } else {
+            await respond(
+                with: "\(senderName) gave a \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                senderName: senderName
+            )
+        }
     }
     
-    private func respond(with response: String) async {
+    /// `senderName` only should be included if its not a error-response.
+    private func respond(with response: String, senderName: String?) async {
         do {
             let apiResponse = try await discordClient.createMessage(
                 channelId: event.channel_id,
@@ -73,9 +95,54 @@ struct ReactionHandler {
                         fail_if_not_exists: false
                     )
                 )
-            ).httpResponse
-            if !(200..<300).contains(apiResponse.status.code) {
+            )
+            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
                 logger.error("Received non-200 status from Discord API: \(apiResponse)")
+            } else {
+                if let senderName {
+                    let decoded = try apiResponse.decode()
+                    await cache.didRespond(
+                        in: event.channel_id,
+                        to: event.message_id,
+                        with: decoded.id,
+                        senderName: senderName
+                    )
+                }
+            }
+        } catch {
+            logger.error("Discord Client error: \(error)")
+        }
+    }
+    
+    /// `senderName` only should be included if its not a error-response.
+    private func editResponse(
+        messageId: String,
+        with response: String,
+        senderName: String?
+    ) async {
+        do {
+            let apiResponse = try await discordClient.editMessage(
+                channelId: event.channel_id,
+                messageId: messageId,
+                payload: .init(
+                    embeds: [.init(
+                        description: response,
+                        color: .vaporPurple
+                    )]
+                )
+            )
+            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
+                logger.error("Received non-200 status from Discord API: \(apiResponse)")
+            } else {
+                if let senderName {
+                    let decoded = try apiResponse.decode()
+                    await cache.didRespond(
+                        in: event.channel_id,
+                        to: event.message_id,
+                        with: decoded.id,
+                        senderName: senderName
+                    )
+                }
             }
         } catch {
             logger.error("Discord Client error: \(error)")
@@ -87,16 +154,21 @@ struct ReactionHandler {
 ///
 /// Optimally we would use some service like Redis to handle time-to-live
 /// and disk-persistence for us, but this actor is more than enough at our scale.
-private actor ReactionCache {
+actor ReactionCache {
     /// `[MessageID: AuthorID]`
     var cachedAuthorIds: [String: String] = [:]
     /// `Set<[SenderID, MessageID]>`
     var givenCoins: Set<[String]> = []
+    /// `[ChannelID: (ReceiverMessageID, PennyResponseMessageID, [SenderUsers])]`.
+    /// Channel's last message id if it is a thanks message to another message.
+    var channelWithLastThanksMessage: [String: (String, String, [String])] = [:] 
     
-    static let shared = ReactionCache()
+    private init() { }
+    
+    static var shared = ReactionCache()
     
     /// Returns author of the message.
-    func getAuthorId(
+    fileprivate func getAuthorId(
         channelId: String,
         messageId: String,
         client: any DiscordClient,
@@ -126,10 +198,54 @@ private actor ReactionCache {
     
     /// This is to prevent spams. In case someone removes their reaction and reacts again,
     /// we should not give coins to message's author anymore.
-    func canGiveCoin(
+    fileprivate func canGiveCoin(
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
     ) -> Bool {
         givenCoins.insert([senderId, messageId]).inserted
     }
+    
+    fileprivate func didRespond(
+        in channelId: String,
+        to receiverMessageId: String,
+        with responseMessageId: String,
+        senderName: String
+    ) {
+        let names = (channelWithLastThanksMessage[channelId]?.2 ?? []) + [senderName]
+        channelWithLastThanksMessage[channelId] = (receiverMessageId, responseMessageId, names)
+    }
+    
+    fileprivate func messageToEditIfAvailable(
+        in channelId: String,
+        receiverMessageId: String
+    ) -> (pennyResponseMessageId: String, lastUsers: [String])? {
+        if let existing = channelWithLastThanksMessage[channelId] {
+            if existing.0 == receiverMessageId {
+                return (existing.1, existing.2)
+            } else {
+                channelWithLastThanksMessage[channelId] = nil
+                return nil
+            }
+        } else {
+            return nil
+        }
+    }
+    
+    /// If there is a new message in a channel, we need to invalidate the cache.
+    /// Existence of a cached value for a channel implies that penny should
+    /// edit its own last message.
+    func invalidateCachesIfNeeded(event: Gateway.MessageCreate) {
+        if let id = event.member?.user?.id ?? event.author?.id,
+           id == Constants.botId {
+            return
+        } else {
+            channelWithLastThanksMessage[event.channel_id] = nil
+        }
+    }
+    
+#if DEBUG
+    static func tests_reset() {
+        shared = .init()
+    }
+#endif
 }
