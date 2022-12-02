@@ -67,7 +67,7 @@ struct ReactionHandler {
             let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
             await editResponse(
                 messageId: pennyResponseMessageId,
-                with: "\(names) gave \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                with: "\(names) gave some \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
                 senderName: senderName
             )
         } else {

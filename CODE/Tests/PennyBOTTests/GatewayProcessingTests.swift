@@ -45,7 +45,7 @@ class GatewayProcessingTests: XCTestCase {
     func testMessageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
-            as: DiscordChannel.CreateMessage.self
+            as: RequestBody.CreateMessage.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -56,7 +56,7 @@ class GatewayProcessingTests: XCTestCase {
     func testInteractionHandler() async throws {
         let response = try await self.manager.sendAndAwaitResponse(
             key: .linkInteraction,
-            as: InteractionResponse.CallbackData.self
+            as: RequestBody.InteractionResponse.CallbackData.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -67,7 +67,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
-                as: DiscordChannel.CreateMessage.self
+                as: RequestBody.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -86,22 +86,23 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction2,
-                as: DiscordChannel.EditMessage.self
+                as: RequestBody.EditMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertTrue(description.hasPrefix(
-                "Mahdi BM & 0xTim gave \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+                "Mahdi BM & 0xTim gave some \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
             ))
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
-    }
-    
-    func testReactionHandler2() async throws {
+        
+        ReactionCache.tests_reset()
+        try await Task.sleep(for: .seconds(1))
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
-                as: DiscordChannel.CreateMessage.self
+                as: RequestBody.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -115,6 +116,8 @@ class GatewayProcessingTests: XCTestCase {
         // Realistically we'll wait much more than a second till the second message comes, anyway.
         try await Task.sleep(for: .seconds(1))
         
+        /// Tell `ReactionCache` that someone sent a new message
+        /// in the same channel that the reaction happened.
         await ReactionCache.shared.invalidateCachesIfNeeded(
             event: .init(
                 id: "1313",
@@ -139,7 +142,7 @@ class GatewayProcessingTests: XCTestCase {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction2,
                 endpoint: EventKey.thanksReaction.responseEndpoints[0],
-                as: DiscordChannel.CreateMessage.self
+                as: RequestBody.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -155,10 +158,10 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertEqual(canRespond, true)
         
         let response = await responseStorage.awaitResponse(
-            at: .postCreateMessage(channelId: Constants.internalChannelId)
+            at: .createMessage(channelId: Constants.internalChannelId)
         )
         
-        let message = try XCTUnwrap(response as? DiscordChannel.CreateMessage)
+        let message = try XCTUnwrap(response as? RequestBody.CreateMessage)
         XCTAssertGreaterThan(message.content?.count ?? -1, 20)
     }
     
@@ -167,7 +170,7 @@ class GatewayProcessingTests: XCTestCase {
         
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
-            as: DiscordChannel.CreateMessage.self
+            as: RequestBody.CreateMessage.self
         )
         
         XCTAssertGreaterThan(response.content?.count ?? -1, 20)

@@ -52,8 +52,8 @@ struct InteractionHandler {
             let apiResponse = try await discordClient.createInteractionResponse(
                 id: event.id,
                 token: event.token,
-                payload: .init(type: .messageEditWithLoadingState)
-            ).httpResponse
+                payload: .init(type: .deferredChannelMessageWithSource)
+            )
             if !(200..<300).contains(apiResponse.status.code) {
                 logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
                 return false
