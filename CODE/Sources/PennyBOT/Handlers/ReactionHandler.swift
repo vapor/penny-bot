@@ -65,9 +65,10 @@ struct ReactionHandler {
             receiverMessageId: event.message_id
         ) {
             let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
+            let count = lastUsers.count + 1
             await editResponse(
                 messageId: pennyResponseMessageId,
-                with: "\(names) gave some \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
                 senderName: senderName
             )
         } else {

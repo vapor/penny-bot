@@ -91,7 +91,7 @@ class GatewayProcessingTests: XCTestCase {
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertTrue(description.hasPrefix(
-                "Mahdi BM & 0xTim gave some \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+                "Mahdi BM & 0xTim gave 2 \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
             ))
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
