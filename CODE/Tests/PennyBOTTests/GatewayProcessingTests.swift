@@ -77,10 +77,6 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
         
-        // There appears to be some kind of concurrency issue which are solved by waiting a second.
-        // Realistically we'll wait much more than a second till the second message comes, anyway.
-        try await Task.sleep(for: .seconds(1))
-        
         // The second thanks message should just edit the last one, because the
         // receiver is the same person and the channel is the same channel.
         do {
@@ -95,10 +91,9 @@ class GatewayProcessingTests: XCTestCase {
             ))
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
-        
-        ReactionCache.tests_reset()
-        try await Task.sleep(for: .seconds(1))
-        
+    }
+    
+    func testReactionHandler2() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
@@ -112,8 +107,9 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
         
-        // There appears to be some kind of concurrency issue which are solved by waiting a second.
-        // Realistically we'll wait much more than a second till the second message comes, anyway.
+        /// We need to wait a little bit to make sure Discord's response
+        /// is decoded and is used-in/added-to the `ReactionCache`.
+        /// This would happen in a real-world situation too.
         try await Task.sleep(for: .seconds(1))
         
         /// Tell `ReactionCache` that someone sent a new message

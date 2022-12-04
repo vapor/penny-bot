@@ -162,7 +162,7 @@ actor ReactionCache {
     var givenCoins: Set<[String]> = []
     /// `[ChannelID: (ReceiverMessageID, PennyResponseMessageID, [SenderUsers])]`.
     /// Channel's last message id if it is a thanks message to another message.
-    var channelWithLastThanksMessage: [String: (String, String, [String])] = [:] 
+    var channelWithLastThanksMessage: [String: (String, String, [String])] = [:]
     
     private init() { }
     

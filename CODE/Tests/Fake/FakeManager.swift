@@ -39,10 +39,10 @@ public actor FakeManager: GatewayManager {
         }
     }
     
-    func send(key: EventKey) throws {
+    func send(key: EventKey) {
         let data = TestData.for(key: key.rawValue)!
         let decoder = JSONDecoder()
-        let event = try decoder.decode(Gateway.Event.self, from: data)
+        let event = try! decoder.decode(Gateway.Event.self, from: data)
         for handler in eventHandlers {
             handler(event)
         }
@@ -52,16 +52,24 @@ public actor FakeManager: GatewayManager {
         key: EventKey,
         endpoint: Endpoint? = nil,
         as type: T.Type = T.self,
-        file: String = #file,
+        file: StaticString = #filePath,
         line: UInt = #line
     ) async throws -> T {
-        try self.send(key: key)
-        let value = await FakeResponseStorage.shared.awaitResponse(
-            at: endpoint ?? key.responseEndpoints[0]
-        )
+        let value = await withCheckedContinuation {
+            (continuation: CheckedContinuation<Any, Never>) in
+            FakeResponseStorage.shared.expect(
+                at: endpoint ?? key.responseEndpoints[0],
+                continuation: continuation,
+                file: file,
+                line: line
+            )
+            self.send(key: key)
+        }
         let unwrapped = try XCTUnwrap(
             value as? T,
-            "Value '\(value)' can't be cast to '\(_typeName(T.self))'"
+            "Value '\(value)' can't be cast to '\(_typeName(T.self))'",
+            file: file,
+            line: line
         )
         return unwrapped
     }

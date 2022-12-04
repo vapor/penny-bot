@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "6cf4f2bd522d715577c6b1517bd4430a281e516c",
-        "version" : "1.0.0-beta.22"
+        "revision" : "c9a118ec7a6c9b0b3e3c3f564f645cfdfdc1c261",
+        "version" : "1.0.0-beta.23"
       }
     },
     {
@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "30bc0b8bdd5f096032b159d02784bef0da29a016",
-        "version" : "6.2.0"
+        "revision" : "ad93b6bfb76696324bc0c9f0354f59b5060d4317",
+        "version" : "6.3.0"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "fee2fdbe28fef7288415c0545081c235a4941a54",
-        "version" : "6.2.1"
+        "revision" : "84a53eaef17c29ec8eb14dfcee1e44d5880b85b7",
+        "version" : "6.3.0"
       }
     },
     {
