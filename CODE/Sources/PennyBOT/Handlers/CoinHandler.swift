@@ -69,7 +69,9 @@ struct CoinHandler {
             var usersWithNewCoins = [String]()
             // Not using `Set` to keep order. Will look nicer to users.
             func append(user: Substring) {
-                if !usersWithNewCoins.contains(where: { $0.elementsEqual(user) }) {
+                if !usersWithNewCoins.contains(where: { $0.elementsEqual(user) }),
+                    !excludedUsers.contains(where: { $0.elementsEqual(user) }),
+                    !finalUsers.contains(where: { $0.elementsEqual(user) }) {
                     usersWithNewCoins.append(String(user))
                 }
             }
@@ -105,14 +107,23 @@ struct CoinHandler {
                     }
                 }
             }
-            
-            let validUsers = usersWithNewCoins.filter {
-                !excludedUsers.contains($0) && !finalUsers.contains($0)
+
+            // If there were no users found so far, we try to check if
+            // the message starts with a coin sign and ends in @s.
+            if usersWithNewCoins.isEmpty,
+               components.isPrefixedWithCoinSign {
+                for component in components.reversed() {
+                    if isUserMention(component) {
+                        append(user: component)
+                    } else {
+                        break
+                    }
+                }
             }
             
-            let remainingCapacity = min(Self.maxUsers - finalUsers.count, validUsers.count)
-            let dropCount = validUsers.count - remainingCapacity
-            finalUsers.append(contentsOf: validUsers.dropLast(dropCount))
+            let remainingCapacity = min(Self.maxUsers - finalUsers.count, usersWithNewCoins.count)
+            let dropCount = usersWithNewCoins.count - remainingCapacity
+            finalUsers.append(contentsOf: usersWithNewCoins.dropLast(dropCount))
         }
         
         // Here we check to see if the message was in reply to another message and contains

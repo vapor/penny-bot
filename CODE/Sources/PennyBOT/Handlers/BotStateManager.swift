@@ -14,7 +14,7 @@ actor BotStateManager {
     var discordClient: (any DiscordClient)!
     var logger: Logger!
     var canRespond = true
-    let id = Date().timeIntervalSince1970
+    let id = Int(Date().timeIntervalSince1970)
     
     let signal = "Hello the other Pennys 👋 you can retire now :)"
     var disableDuration = Duration.seconds(3 * 60)
@@ -41,7 +41,7 @@ actor BotStateManager {
               author.id == Constants.botId,
               message.content.hasPrefix(signal)
         else { return }
-        guard let otherId = message.content.split(whereSeparator: \.isNewline).last else {
+        guard let otherId = message.content.split(whereSeparator: \.isWhitespace).last else {
             logger.warning("Can't find id of the other Penny")
             return
         }
@@ -65,7 +65,7 @@ actor BotStateManager {
         do {
             let response = try await discordClient.createMessage(
                 channelId: Constants.internalChannelId,
-                payload: .init(content: content + "\n\(self.id)")
+                payload: .init(content: content + " \(self.id)")
             )
             if (200..<300).contains(response.httpResponse.status.code) {
                 logger.debug("BotStateManager failed to send a message")

@@ -40,6 +40,18 @@ class CoinHandlerTests: XCTestCase {
         XCTAssertEqual(users, ["<@21939123912932193>"])
     }
     
+    /// Pattern `thank you xxxx @mahdi!`
+    func testUserAtTheEndAndCoinSignAtTheBeginning() throws {
+        let coinHandler = CoinHandler(
+            text: """
+            thank you xxxx xxxx <@4912300012398455> xxxx xxxx <@21939123912932193>!
+            """,
+            mentionedUsers: ["<@21939123912932193>"]
+        )
+        let users = coinHandler.findUsers()
+        XCTAssertEqual(users, ["<@21939123912932193>"])
+    }
+    
     /// Patterns `xxxx @mahdi thanks!`
     /// `xxxx thanks! @mahdi`
     func testUserAndCoinSignAtTheEnd() throws {
