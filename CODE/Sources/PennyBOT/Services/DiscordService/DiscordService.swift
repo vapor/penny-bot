@@ -28,13 +28,8 @@ actor DiscordService {
             return existing
         } else {
             do {
-                #warning("delete")
-                print("will")
-                let dmChannel = try await discordClient.createDM(recipient_id: userId)
-                print("got \(dmChannel.httpResponse)")
-                let decoded = try dmChannel.decode()
-                print("decoded \(decoded.id)")
-                return decoded.id
+                let dmChannel = try await discordClient.createDM(recipient_id: userId).decode()
+                return dmChannel.id
             } catch {
                 logger.error("Couldn't get DM channel for user: \(userId)")
                 return nil
