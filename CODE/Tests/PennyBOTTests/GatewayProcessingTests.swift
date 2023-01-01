@@ -28,13 +28,14 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makeCoinService = { _, _ in
             FakeCoinService()
         }
-        /// reset the storage
+        // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
+        ReactionCache.tests_reset()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
         await stateManager.tests_reset()
-        /// Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
-        /// the fake manager is ready. That's why we need to use `waitUntilConnected()`.
+        // Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
+        // the fake manager is ready. That's why we need to use `waitUntilConnected()`.
         await Penny.main()
         await manager.waitUntilConnected()
     }
@@ -61,7 +62,7 @@ class GatewayProcessingTests: XCTestCase {
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
         XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
-        XCTAssertTrue(description.hasSuffix(" coins!"))
+        XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
     }
     
     func testInteractionHandler() async throws {
@@ -75,17 +76,93 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testReactionHandler() async throws {
-        let response = try await manager.sendAndAwaitResponse(
-            key: .thanksReaction,
-            as: RequestBody.CreateMessage.self
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction,
+                as: RequestBody.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "Mahdi BM gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+        
+        // For consistency with `testReactionHandler2()`
+        try await Task.sleep(for: .seconds(1))
+        
+        // The second thanks message should just edit the last one, because the
+        // receiver is the same person and the channel is the same channel.
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction2,
+                as: RequestBody.EditMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "Mahdi BM & 0xTim gave 2 \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+    }
+    
+    func testReactionHandler2() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction,
+                as: RequestBody.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "Mahdi BM gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+        
+        // We need to wait a little bit to make sure Discord's response
+        // is decoded and is used-in/added-to the `ReactionCache`.
+        // This would happen in a real-world situation too.
+        try await Task.sleep(for: .seconds(1))
+        
+        // Tell `ReactionCache` that someone sent a new message
+        // in the same channel that the reaction happened.
+        await ReactionCache.shared.invalidateCachesIfNeeded(
+            event: .init(
+                id: "1313",
+                // Based on how the function works right now, only `channel_id` matters
+                channel_id: "966722151359057911",
+                content: "",
+                timestamp: .fake,
+                tts: false,
+                mention_everyone: false,
+                mentions: [],
+                mention_roles: [],
+                attachments: [],
+                embeds: [],
+                pinned: false,
+                type: .default
+            )
         )
         
-        let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertTrue(description.hasPrefix("""
-        <@290483761559240704> gave a coin to <@1030118727418646629>!
-        <@1030118727418646629> now has
-        """))
-        XCTAssertTrue(description.hasSuffix(" shiny coins."))
+        // The second thanks message should NOT edit the last one, because although the
+        // receiver is the same person and the channel is the same channel, Penny's message
+        // is not the last message anymore.
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction2,
+                endpoint: EventKey.thanksReaction.responseEndpoints[0],
+                as: RequestBody.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix(
+                "0xTim gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has "
+            ))
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
     }
     
     func testBotStateManagerSendsSignalOnStartUp() async throws {
@@ -129,7 +206,7 @@ class GatewayProcessingTests: XCTestCase {
     
     func testAutoPings() async throws {
         let event = EventKey.autoPingsTrigger
-        try await manager.send(key: event)
+        await manager.send(key: event)
         let (createDM1, createDM2, sendDM1, sendDM2) = await (
             responseStorage.awaitResponse(at: event.responseEndpoints[0]),
             responseStorage.awaitResponse(at: event.responseEndpoints[1]),
@@ -161,4 +238,12 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
         }
     }
+}
+
+private extension DiscordTimestamp {
+    static let fake: DiscordTimestamp = {
+        let string = #""2022-11-23T09:59:04.037259+00:00""#
+        let data = Data(string.utf8)
+        return try! JSONDecoder().decode(DiscordTimestamp.self, from: data)
+    }()
 }

@@ -157,8 +157,15 @@ struct AddSponsorHandler: LambdaHandler {
             case .edited:
                 break
             case .tierChanged:
+                guard let changes = payload.changes else {
+                    context.logger.error("Error: Github returned 'tier_changed' event but no 'changes' data in the payload")
+                    return APIGatewayV2Response(
+                        statusCode: .ok,
+                        body: "Error: Github returned 'tier_changed' event but no 'changes' data in the payload"
+                    )
+                }
                 // This means that the user downgraded from a sponsor role to a backer role
-                if try SponsorType.for(sponsorshipAmount: payload.changes.tier.from.monthlyPriceInCents) == .sponsor,
+                if try SponsorType.for(sponsorshipAmount: changes.tier.from.monthlyPriceInCents) == .sponsor,
                    role == .backer {
                     try await removeRole(from: userDiscordID, using: payload, discordClient: discordClient, role: .sponsor, context: context)
                 }

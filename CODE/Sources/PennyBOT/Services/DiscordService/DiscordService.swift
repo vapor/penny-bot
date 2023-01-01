@@ -28,8 +28,13 @@ actor DiscordService {
             return existing
         } else {
             do {
-                let dmChannel = try await discordClient.createDM(recipient_id: userId).decode()
-                return dmChannel.id
+                #warning("delete")
+                print("will")
+                let dmChannel = try await discordClient.createDM(recipient_id: userId)
+                print("got \(dmChannel.httpResponse)")
+                let decoded = try dmChannel.decode()
+                print("decoded \(decoded.id)")
+                return decoded.id
             } catch {
                 logger.error("Couldn't get DM channel for user: \(userId)")
                 return nil
@@ -37,18 +42,41 @@ actor DiscordService {
         }
     }
     
+    @discardableResult
     func sendMessage(
         channelId: String,
         payload: RequestBody.CreateMessage
-    ) async {
+    ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
             let response = try await discordClient.createMessage(
                 channelId: channelId,
                 payload: payload
             )
             try response.guardIsSuccessfulResponse()
+            return response
         } catch {
             logger.error("Couldn't send a message. Error: \(error)")
+            return nil
+        }
+    }
+    
+    @discardableResult
+    func editMessage(
+        messageId: String,
+        channelId: String,
+        payload: RequestBody.EditMessage
+    ) async -> DiscordClientResponse<DiscordChannel.Message>? {
+        do {
+            let response = try await discordClient.editMessage(
+                channelId: channelId,
+                messageId: messageId,
+                payload: payload
+            )
+            try response.guardIsSuccessfulResponse()
+            return response
+        } catch {
+            logger.error("Couldn't edit a message. Error: \(error)")
+            return nil
         }
     }
     

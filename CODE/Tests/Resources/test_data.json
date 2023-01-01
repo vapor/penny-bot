@@ -167,16 +167,83 @@
                 "name": "🪙",
                 "id": null
             },
-            "channel_id": "966722151359057950",
+            "channel_id": "966722151359057911",
             "burst": false,
             "guild_id": "808638139785936919"
         }
     },
-    "channels/966722151359057950/messages/1031112115928449034": {
-        "id": "966722151359057950",
+    "thanksReaction2": {
+        "t": "MESSAGE_REACTION_ADD",
+        "s": 6,
+        "op": 0,
+        "d": {
+            "user_id": "290483761559240704",
+            "message_id": "1031112115928449034",
+            "member": {
+                "user": {
+                    "username": "0xTim",
+                    "public_flags": 0,
+                    "id": "432065887202181142",
+                    "discriminator": "1157",
+                    "avatar_decoration": null,
+                    "avatar": "800bfcd31ae4a77f61646226df46c204"
+                },
+                "roles": [
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "emoji": {
+                "name": "🪙",
+                "id": null
+            },
+            "channel_id": "966722151359057911",
+            "burst": false,
+            "guild_id": "808638139785936919"
+        }
+    },
+    "POST/channels/966722151359057911/messages": {
+        "id": "1031112115928449022",
+        "type": 0,
+        "content": "Mahdi BM gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
+        "channel_id": "966722151359057911",
+        "author": {
+            "username": "TestApp",
+            "public_flags": 0,
+            "id": "1016612301262041098",
+            "discriminator": "7843",
+            "bot": true,
+            "avatar_decoration": null,
+            "avatar": null
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
+    },
+    "GET/channels/966722151359057911/messages/1031112115928449034": {
+        "id": "1031112115928449034",
         "type": 0,
         "content": "Testing! 684866",
-        "channel_id": "1030126766632742962",
+        "channel_id": "966722151359057911",
         "author": {
             "id": "1030118727418646629",
             "username": "DisBMLibTestBot",
@@ -227,7 +294,7 @@
             "flags": 0,
             "embeds": [],
             "edited_timestamp": null,
-            "content": "Hello the other Pennys 👋 you can retire now :)\n1667554166.92193",
+            "content": "Hello the other Pennys 👋 you can retire now :) 1667554166",
             "components": [],
             "channel_id": "441327731486097429",
             "author": {
@@ -315,7 +382,7 @@
             "guild_id": "431917998102675485"
         }
     },
-    "users/@me/channels": {
+    "POST/users/@me/channels": {
         "id": "1018169583619821619",
         "type": 1,
         "last_message_id": "1040523601310392370",

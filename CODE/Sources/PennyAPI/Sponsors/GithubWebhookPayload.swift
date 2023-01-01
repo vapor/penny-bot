@@ -4,7 +4,7 @@ public struct GithubWebhookPayload: Codable {
     let action: String
     let sponsorship: Sponsorship
     let sender: Sender
-    let changes: Changes
+    let changes: Changes?
     
     enum ActionType: String {
         case created
@@ -26,7 +26,7 @@ struct ChangesTier: Codable {
 
 struct FromClass: Codable {
     let nodeID: String
-    let createdAt: Date
+    let createdAt: String
     let tierDescription: String
     let monthlyPriceInCents, monthlyPriceInDollars: Int
     let name: String
@@ -81,7 +81,7 @@ struct Sender: Codable {
 
 struct Sponsorship: Codable {
     let nodeID: String
-    let createdAt: Date
+    let createdAt: String
     let sponsorable, sponsor: Sender
     let privacyLevel: String
     let tier: Tier
@@ -97,7 +97,7 @@ struct Sponsorship: Codable {
 
 struct Tier: Codable {
     let nodeID: String
-    let createdAt: Date
+    let createdAt: String
     let tierDescription: String
     let monthlyPriceInCents, monthlyPriceInDollars: Int
     let name: String

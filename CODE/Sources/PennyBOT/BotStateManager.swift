@@ -13,7 +13,7 @@ actor BotStateManager {
     
     var logger: Logger!
     var canRespond = true
-    let id = Date().timeIntervalSince1970
+    let id = Int(Date().timeIntervalSince1970)
     
     let signal = "Hello the other Pennys 👋 you can retire now :)"
     var disableDuration = Duration.seconds(3 * 60)
@@ -39,18 +39,18 @@ actor BotStateManager {
               author.id == Constants.botId,
               message.content.hasPrefix(signal)
         else { return }
-        guard let otherId = message.content.split(whereSeparator: \.isNewline).last else {
+        guard let otherId = message.content.split(whereSeparator: \.isWhitespace).last else {
             logger.warning("Can't find id of the other Penny")
             return
         }
-        guard otherId != "\(self.id)" else { return }
+        if otherId == "\(self.id)" { return }
         logger.warning("Received shutdown signal from another Penny")
         self.canRespond = false
         Task {
             try await Task.sleep(for: disableDuration)
             self.canRespond = true
-            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
+            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
         }
         Task {
             await send(content: "Ok the new Penny! I'll retire myself for a few minutes :)")

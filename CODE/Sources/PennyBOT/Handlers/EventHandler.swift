@@ -16,6 +16,7 @@ struct EventHandler {
             }
             switch event.data {
             case .messageCreate(let message):
+                await ReactionCache.shared.invalidateCachesIfNeeded(event: message)
                 await MessageHandler(
                     coinService: coinService,
                     logger: logger,
