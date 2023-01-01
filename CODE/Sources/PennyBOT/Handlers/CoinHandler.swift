@@ -19,7 +19,7 @@ struct CoinHandler {
     let text: String
     /// User that was replied to, if any.
     let repliedUser: String?
-    /// Users that are mentioned and able to get coins.
+    /// Users that are mentioned and able to get coins. These are validated by Discord.
     /// Using this is to prevent giving coins to normal texts that look like user-ids.
     let mentionedUsers: [String]
     /// Users to not be able to get a coin. Such as the author of the message.
