@@ -18,13 +18,11 @@ public actor FakeManager: GatewayManager {
         self._state.store(.connected, ordering: .relaxed)
         connectionWaiter?.resume()
     }
-    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
-    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
+    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) { }
+    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) {
         eventHandlers.append(handler)
     }
-    public func addEventParseFailureHandler(
-        _ handler: @escaping (Error, String) -> Void
-    ) async { }
+    public func addEventParseFailureHandler(_ handler: @escaping (Error, String) -> Void) { }
     public func disconnect() { }
     
     var connectionWaiter: CheckedContinuation<(), Never>?
