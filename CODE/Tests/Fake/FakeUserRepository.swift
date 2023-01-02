@@ -10,7 +10,7 @@ public struct FakeUserRepository: UserRepository {
     
     public func updateUser(_ user: DynamoDBUser) async throws -> Void { }
     
-    public func getUser(discord id: String) async throws -> User {
+    public func getUser(discord id: String) async throws -> User? {
         User(
             id: UUID(),
             discordID: id,
@@ -21,7 +21,7 @@ public struct FakeUserRepository: UserRepository {
         )
     }
     
-    public func getUser(github id: String) async throws -> User {
+    public func getUser(github id: String) async throws -> User? {
         User(
             id: UUID(),
             discordID: nil,

@@ -30,7 +30,7 @@ public struct UserService {
         fromDiscordID: String,
         to user: User
     ) async throws -> CoinResponse {
-        var localUser: User
+        var localUser: User?
         
         do {
             switch coinEntry.source {
@@ -41,33 +41,34 @@ public struct UserService {
             case .penny:
                 throw ServiceError.unimplemented()
             }
-            
+        }
+        catch let error {
+            logger.error("\(error.localizedDescription)")
+            throw ServiceError.failedToUpdate
+        }
+        
+        if var localUser {
             localUser.addCoinEntry(coinEntry)
             let dbUser = DynamoDBUser(user: localUser)
-                
+            
             try await userRepo.updateUser(dbUser)
             return CoinResponse(
                 sender: fromDiscordID,
                 receiver: localUser.discordID!,
                 coins: localUser.numberOfCoins
             )
-        }
-        catch DBError.itemNotFound {
-            localUser = try await insertIntoDB(user: user, with: coinEntry)
+        } else {
+            let localUser = try await insertIntoDB(user: user, with: coinEntry)
             return CoinResponse(
                 sender: fromDiscordID,
                 receiver: localUser.discordID!,
                 coins: localUser.numberOfCoins
             )
         }
-        catch let error {
-            logger.error("\(error.localizedDescription)")
-            throw ServiceError.failedToUpdate
-        }
     }
     
     public func getUserUUID(from user: User, with source: CoinEntrySource) async throws -> UUID {
-        var localUser: User
+        var localUser: User?
         
         do {
             switch source {
@@ -79,38 +80,24 @@ public struct UserService {
                 throw ServiceError.unimplemented()
             }
             
-            return localUser.id
+            return localUser?.id ?? UUID()
         }
         catch {
             return UUID()
         }
     }
     
-    public func getUserCoinCount(discordID id: String) async throws -> Int {
-        do {
-            return try await getUserWith(discordID: id).numberOfCoins
-        } catch DBError.itemNotFound {
-            return 0
-        }
-    }
-    
-    public func getUserCoinCount(githubID id: String) async throws -> Int {
-        do {
-            return try await getUserWith(githubID: id).numberOfCoins
-        } catch DBError.itemNotFound {
-            return 0
-        }
-    }
-    
-    func getUserWith(discordID id: String) async throws -> User {
+    /// Returns nil if user does not exist.
+    public func getUserWith(discordID id: String) async throws -> User? {
         try await userRepo.getUser(discord: id)
     }
     
-    func getUserWith(githubID id: String) async throws -> User {
+    /// Returns nil if user does not exist.
+    public func getUserWith(githubID id: String) async throws -> User? {
         try await userRepo.getUser(github: id)
     }
     
-    private func insertIntoDB(user account: User, with coinEntry: CoinEntry) async throws -> User{
+    private func insertIntoDB(user account: User, with coinEntry: CoinEntry) async throws -> User {
         var localUser = account
         
         localUser.addCoinEntry(coinEntry)
