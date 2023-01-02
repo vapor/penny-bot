@@ -69,7 +69,7 @@ struct DynamoUserRepository: UserRepository {
         guard let user = results.items?.first else {
             throw DBError.itemNotFound
         }
-                        
+        
         let localUser = User(
             id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
             discordID: user.data1?.deletePrefix("DISCORD-"),

@@ -44,6 +44,7 @@ struct AddCoinHandler: LambdaHandler {
                 return await handleGetCoinCountRequest(id: user)
             }
         } catch {
+            context.logger.error("Received a bad request. Event: \(event)")
             return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
         }
     }
@@ -92,8 +93,8 @@ struct AddCoinHandler: LambdaHandler {
     
     func handleGetCoinCountRequest(id: String) async -> APIGatewayV2Response {
         do {
-            let user = try await userService.getUserWith(discordID: id)
-            return APIGatewayV2Response(statusCode: .ok, body: "\(user.numberOfCoins)")
+            let coinCount = try await userService.getUserCoinCount(discordID: id)
+            return APIGatewayV2Response(statusCode: .ok, body: "\(coinCount)")
         } catch {
             return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
         }

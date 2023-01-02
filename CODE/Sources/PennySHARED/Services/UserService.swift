@@ -86,11 +86,27 @@ public struct UserService {
         }
     }
     
-    public func getUserWith(discordID id: String) async throws -> User {
+    public func getUserCoinCount(discordID id: String) async throws -> Int {
+        do {
+            return try await getUserWith(discordID: id).numberOfCoins
+        } catch DBError.itemNotFound {
+            return 0
+        }
+    }
+    
+    public func getUserCoinCount(githubID id: String) async throws -> Int {
+        do {
+            return try await getUserWith(githubID: id).numberOfCoins
+        } catch DBError.itemNotFound {
+            return 0
+        }
+    }
+    
+    func getUserWith(discordID id: String) async throws -> User {
         try await userRepo.getUser(discord: id)
     }
     
-    public func getUserWith(githubID id: String) async throws -> User {
+    func getUserWith(githubID id: String) async throws -> User {
         try await userRepo.getUser(github: id)
     }
     
