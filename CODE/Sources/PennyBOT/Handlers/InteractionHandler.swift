@@ -149,7 +149,7 @@ struct InteractionHandler {
         }
         do {
             let coinCount = try await coinService.getCoinCount(of: user)
-            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)."
+            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)"
         } catch {
             logger.error("How-Many-Coins command could not get coin count of user. Error: \(error) | User: \(user) | Event: \(event)")
             return oops

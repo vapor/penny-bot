@@ -238,6 +238,26 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
         }
     }
+    
+    func testHowManyCoins() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .howManyCoins1,
+                as: RequestBody.InteractionResponse.CallbackData.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.vaporCoinEmoji)")
+        }
+        
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .howManyCoins2,
+                as: RequestBody.InteractionResponse.CallbackData.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)")
+        }
+    }
 }
 
 private extension DiscordTimestamp {
