@@ -4,9 +4,11 @@ import Logging
 struct InteractionHandler {
     let logger: Logger
     let event: Interaction
+    let coinService: CoinService
     var pingsService: AutoPingsService {
         ServiceFactory.makePingsService()
     }
+    let oops = "Oopsie Woopsie... Something went wrong :("
     
     func handle() async {
         guard await sendInteractionAcknowledgement() else { return }
@@ -25,6 +27,11 @@ struct InteractionHandler {
             return handleLinkCommand(options: options)
         case "automated-pings":
             return await handlePingsCommand(options: options)
+        case "how-many-coins":
+            return await handleHowManyCoinsCommand(
+                author: event.member?.user ?? event.user,
+                options: options
+            )
         default:
             logger.error("Unrecognized command. Event: \(event)")
             return "Command not recognized"
@@ -123,6 +130,29 @@ struct InteractionHandler {
         } catch {
             logger.error("An error happened. Error: \(error)")
             return "Sorry some errors happened :( please report this to us id it happens again."
+        }
+    }
+    
+    func handleHowManyCoinsCommand(
+        author: DiscordUser?,
+        options: [Interaction.Data.Option]
+    ) async -> String {
+        let user: String
+        if let userOption = options.first?.value?.asString {
+            user = "<@\(userOption)>"
+        } else {
+            guard let id = author?.id else {
+                logger.error("How-Many-Coins command could not find a user. Event: \(event)")
+                return oops
+            }
+            user = "<@\(id)>"
+        }
+        do {
+            let coinCount = try await coinService.getCoinCount(of: user)
+            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)."
+        } catch {
+            logger.error("How-Many-Coins command could not get coin count of user. Error: \(error) | User: \(user) | Event: \(event)")
+            return oops
         }
     }
     

@@ -1,17 +1,28 @@
 
-public struct CoinRequest: Codable {
-    public let amount: Int
-    public let from: String
-    public let receiver: String
-    public let source: CoinEntrySource
-    public let reason: CoinEntryReason
+public enum CoinRequest: Codable {
+    case addCoin(AddCoin)
+    case getCoinCount(user: String)
     
-    public init(amount: Int, from: String, receiver: String, source: CoinEntrySource, reason: CoinEntryReason) {
-        self.amount = amount
-        self.from = from
-        self.receiver = receiver
-        self.source = source
-        self.reason = reason
+    public struct AddCoin: Codable {
+        public let amount: Int
+        public let from: String
+        public let receiver: String
+        public let source: CoinEntrySource
+        public let reason: CoinEntryReason
+        
+        public init(
+            amount: Int,
+            from: String,
+            receiver: String,
+            source: CoinEntrySource,
+            reason: CoinEntryReason
+        ) {
+            self.amount = amount
+            self.from = from
+            self.receiver = receiver
+            self.source = source
+            self.reason = reason
+        }
     }
 }
 

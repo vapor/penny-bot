@@ -25,7 +25,8 @@ struct EventHandler {
             case .interactionCreate(let interaction):
                 await InteractionHandler(
                     logger: logger,
-                    event: interaction
+                    event: interaction,
+                    coinService: coinService
                 ).handle()
             case .messageReactionAdd(let reaction):
                 await ReactionHandler(

@@ -34,53 +34,69 @@ struct AddCoinHandler: LambdaHandler {
         })
     }
     
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
-        let response: APIGatewayV2Response
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
-            let product: CoinRequest = try event.bodyObject()
-            
-            let from = User(
-                id: UUID(),
-                discordID: product.from,
-                githubID: product.from,
-                numberOfCoins: 0,
-                coinEntries: [],
-                createdAt: Date())
-            
-            let user = User(
-                id: UUID(),
-                discordID: product.receiver,
-                githubID: product.receiver,
-                numberOfCoins: 0,
-                coinEntries: [],
-                createdAt: Date())
-            
-            let userUUID = try await userService.getUserUUID(from: from, with: product.source)
+            let request: CoinRequest = try event.bodyObject()
+            switch request {
+            case .addCoin(let addCoin):
+                return await handleAddCoinRequest(request: addCoin)
+            case .getCoinCount(let user):
+                return await handleGetCoinCountRequest(id: user)
+            }
+        } catch {
+            return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
+        }
+    }
+    
+    func handleAddCoinRequest(request: CoinRequest.AddCoin) async -> APIGatewayV2Response {
+        let from = User(
+            id: UUID(),
+            discordID: request.from,
+            githubID: request.from,
+            numberOfCoins: 0,
+            coinEntries: [],
+            createdAt: Date())
+        
+        let user = User(
+            id: UUID(),
+            discordID: request.receiver,
+            githubID: request.receiver,
+            numberOfCoins: 0,
+            coinEntries: [],
+            createdAt: Date())
+        
+        do {
+            let userUUID = try await userService.getUserUUID(from: from, with: request.source)
             let coinEntry = CoinEntry(
                 id: UUID(),
                 createdAt: Date(),
-                amount: product.amount,
+                amount: request.amount,
                 from: userUUID,
-                source: product.source,
-                reason: product.reason)
+                source: request.source,
+                reason: request.reason)
             
             let coinResponse = try await userService.addCoins(
                 with: coinEntry,
-                fromDiscordID: product.from,
+                fromDiscordID: request.from,
                 to: user
             )
             let data = try JSONEncoder().encode(coinResponse)
             let string = String(data: data, encoding: .utf8)
-            response = APIGatewayV2Response(statusCode: .ok, body: string)
+            return APIGatewayV2Response(statusCode: .ok, body: string)
+        } catch UserService.ServiceError.failedToUpdate {
+            return APIGatewayV2Response(statusCode: .notFound, body: "ERROR- The user in particular wasn't found.")
+        } catch {
+            return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
         }
-        catch UserService.ServiceError.failedToUpdate {
-            response = APIGatewayV2Response(statusCode: .notFound, body: "ERROR- The user in particular wasn't found.")
+    }
+    
+    func handleGetCoinCountRequest(id: String) async -> APIGatewayV2Response {
+        do {
+            let user = try await userService.getUserWith(discordID: id)
+            return APIGatewayV2Response(statusCode: .ok, body: "\(user.numberOfCoins)")
+        } catch {
+            return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
         }
-        catch let error {
-            response = APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
-            
-        }
-        return response
     }
 }
 

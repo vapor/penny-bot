@@ -9,7 +9,7 @@ struct SlashCommandHandler {
         /// Optimally we would register command only if not already registered,
         /// because currently there is a 100 commands per day limit. For now it
         /// should not be a problem, if the command is available, it'll just be overridden.
-        let commands: [ApplicationCommand] = [.link, .ping]
+        let commands: [ApplicationCommand] = [.link, .ping, .howManyCoins]
         for command in commands {
             await DiscordService.shared.createSlashCommand(payload: command)
         }
@@ -99,6 +99,14 @@ private extension ApplicationCommand {
                 name: "list",
                 description: "See what you're subscribed to"
             )
+        ]
+    )
+    
+    static let howManyCoins = ApplicationCommand(
+        name: "how-many-coins",
+        description: "See how many coins members have",
+        options: [
+            .init(type: .user, name: "member", description: "The member to check their coin count")
         ]
     )
 }

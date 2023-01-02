@@ -86,8 +86,12 @@ public struct UserService {
         }
     }
     
-    public func getUserWith(githubID id: String) async throws -> User? {
-        return try await userRepo.getUser(github: id)
+    public func getUserWith(discordID id: String) async throws -> User {
+        try await userRepo.getUser(discord: id)
+    }
+    
+    public func getUserWith(githubID id: String) async throws -> User {
+        try await userRepo.getUser(github: id)
     }
     
     private func insertIntoDB(user account: User, with coinEntry: CoinEntry) async throws -> User{

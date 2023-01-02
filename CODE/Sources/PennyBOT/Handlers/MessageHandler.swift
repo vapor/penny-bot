@@ -43,7 +43,7 @@ struct MessageHandler {
         successfulResponses.reserveCapacity(usersWithNewCoins.count)
         
         for receiver in usersWithNewCoins {
-            let coinRequest = CoinRequest(
+            let coinRequest = CoinRequest.AddCoin(
                 // Possible to make this a variable later to include in the thanks message
                 amount: 1,
                 from: sender,
