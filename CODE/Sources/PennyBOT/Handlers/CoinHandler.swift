@@ -1,7 +1,6 @@
 
 // All coin signs must be lowercased.
-private let validSigns = [
-    "++",
+private let coinSigns = [
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
     "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
@@ -13,6 +12,9 @@ private let validSigns = [
     "+= 1", "+ 1",
     "advance(by: 1)", "successor()",
 ]
+
+// Two or more of these characters.
+private let twoOrMore_coinSigns: [Character] = ["+"]
 
 struct CoinHandler {
     /// The content of the message.
@@ -165,21 +167,31 @@ struct CoinHandler {
     }
 }
 
-private let splitSigns = validSigns.map { $0.split(whereSeparator: \.isWhitespace) }
+private let splitSigns = coinSigns.map { $0.split(whereSeparator: \.isWhitespace) }
 private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
 private extension Sequence where Element == Substring {
     var isPrefixedWithCoinSign: Bool {
         return splitSigns.contains {
             self.starts(with: $0)
-        }
+        } || self.isPrefixedWithOtherCoinSigns
     }
     
     var isSuffixedWithCoinSign: Bool {
         let reversedElements = self.reversed()
         return reversedSplitSigns.contains {
             reversedElements.starts(with: $0)
-        }
+        } || reversedElements.isPrefixedWithOtherCoinSigns
+    }
+    
+    /// Coins signs that accept two or more of the same character.
+    private var isPrefixedWithOtherCoinSigns: Bool {
+        self.first(where: { _ in true }).map { element in
+            twoOrMore_coinSigns.contains { sign in
+                element.underestimatedCount > 1 &&
+                element.allSatisfy({ sign == $0 })
+            }
+        } == true
     }
 }
 
