@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "ad93b6bfb76696324bc0c9f0354f59b5060d4317",
-        "version" : "6.3.0"
+        "revision" : "258094b83797fb9ad4fe3882b1a6a46a92d2c2ae",
+        "version" : "6.4.0"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "84a53eaef17c29ec8eb14dfcee1e44d5880b85b7",
-        "version" : "6.3.0"
+        "revision" : "02d3054ed054a587ce1778bd946a783abd8f62e3",
+        "version" : "6.4.0"
       }
     },
     {
@@ -103,8 +103,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "92a04c10fc5ce0504f8396aac7392126033e547c",
-        "version" : "2.2.2"
+        "revision" : "9cc89f0170308b813af05dadcd26f9a2dee47713",
+        "version" : "2.2.3"
       }
     },
     {

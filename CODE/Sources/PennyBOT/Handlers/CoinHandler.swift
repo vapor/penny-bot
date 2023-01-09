@@ -1,5 +1,5 @@
 
-// All coin signs must be lowercased.
+/// All coin signs must be lowercased.
 private let coinSigns = [
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
@@ -9,11 +9,12 @@ private let coinSigns = [
     "thx", "thanks", "thank you",
     "thanks a lot", "thanks a bunch", "thanks so much",
     "thank you a lot", "thank you a bunch", "thank you so much",
+    "thanks for the help",
     "+= 1", "+ 1",
     "advance(by: 1)", "successor()",
 ]
 
-// Two or more of these characters.
+/// Two or more of these characters, like `++` or `++++++++++++`.
 private let twoOrMore_coinSigns: [Character] = ["+"]
 
 struct CoinHandler {
