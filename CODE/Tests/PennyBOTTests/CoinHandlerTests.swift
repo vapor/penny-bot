@@ -153,7 +153,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx ++\(user1)  \(user2) xxx
+                xxxx thanks for the help\(user1)  \(user2) xxx
                 """,
                 mentionedUsers: [user1, user2]
             )
@@ -200,7 +200,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx \(user1)  thanks, xxxx xxxx \(user2) \(Constants.vaporCoinEmoji) xxxx
+                xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.vaporCoinEmoji) xxxx
                 """,
                 mentionedUsers: [user1, user2]
             )

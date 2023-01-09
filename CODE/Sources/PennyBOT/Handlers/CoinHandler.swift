@@ -10,6 +10,7 @@ private let coinSigns = [
     "thanks a lot", "thanks a bunch", "thanks so much",
     "thank you a lot", "thank you a bunch", "thank you so much",
     "thanks for the help",
+    "thanks for the", /// This will only work as a suffix, and will catch anything like `@mahdi thanks for amazing dinner that blah bleh blah`. Implementing it as a prefix would be more complicated.
     "+= 1", "+ 1",
     "advance(by: 1)", "successor()",
 ]
