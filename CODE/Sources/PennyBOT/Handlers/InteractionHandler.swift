@@ -14,19 +14,28 @@ struct InteractionHandler {
     
     private func processAndMakeResponse() -> String {
         guard let name = event.data?.name else {
-            logger.error("Discord did not send required interaction info. ID: 1. Event: \(event)")
+            logger.error("Discord did not send required interaction info", metadata: [
+                "id": .stringConvertible(1),
+                "event": "\(event)"
+            ])
             return "Failed to recognize the interaction"
         }
         let options = event.data?.options ?? []
         switch name {
         case "link":
             if options.isEmpty {
-                logger.error("Discord did not send required interaction info. ID: 2. Event: \(event)")
+                logger.error("Discord did not send required interaction info", metadata: [
+                    "id": .stringConvertible(2),
+                    "event": "\(event)"
+                ])
                 return "Please provide more options"
             }
             let first = options[0]
             guard let id = first.options?.first?.value?.asString else {
-                logger.error("Discord did not send required interaction info. ID: 3. Event: \(event)")
+                logger.error("Discord did not send required interaction info", metadata: [
+                    "id": .stringConvertible(3),
+                    "event": "\(event)"
+                ])
                 return "No ID option recognized"
             }
             switch first.name {
@@ -37,11 +46,13 @@ struct InteractionHandler {
             case "slack":
                 return "This command is still a WIP. Linking Discord with Slack ID \(id)"
             default:
-                logger.error("Unrecognized link option: \(first.name)")
+                logger.error("Unrecognized link option", metadata: [
+                    "name": .string(first.name)
+                ])
                 return "Option not recognized: \(first.name)"
             }
         default:
-            logger.error("Unrecognized command. Event: \(event)")
+            logger.error("Unrecognized command", metadata: ["event": "\(event)"])
             return "Command not recognized"
         }
     }
@@ -55,13 +66,16 @@ struct InteractionHandler {
                 payload: .init(type: .deferredChannelMessageWithSource)
             )
             if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API for interaction acknowledgement: \(apiResponse)")
+                logger.error("Received non-200 status from Discord API for interaction acknowledgement",
+                             metadata: ["apiResponse": "\(apiResponse)"])
                 return false
             } else {
                 return true
             }
         } catch {
-            logger.error("Discord Client error: \(error)")
+            logger.error("Discord Client error", metadata: [
+                "error": "\(error)"
+            ])
             return false
         }
     }
@@ -78,10 +92,12 @@ struct InteractionHandler {
                 )
             )
             if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API for interaction: \(apiResponse)")
+                logger.error("Received non-200 status from Discord API for interaction", metadata: [
+                    "apiResponse": "\(apiResponse)"
+                ])
             }
         } catch {
-            logger.error("Discord Client error: \(error)")
+            logger.error("Discord Client error", metadata: ["error": "\(error)"])
         }
     }
 }

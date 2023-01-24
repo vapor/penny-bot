@@ -1,5 +1,5 @@
 @testable import PennyBOT
-@testable import DiscordBM
+@testable import DiscordModels
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
@@ -12,6 +12,9 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
+        /// Fake webhook url
+        Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
+        Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
         Constants.botId = "1016612301262041098"
         LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
         RepositoryFactory.makeUserRepository = { _ in

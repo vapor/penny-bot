@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "5bee16a79922e3efcb5cea06ecd27e6f8048b56b",
-        "version" : "1.13.1"
+        "revision" : "7f05a8da46cc2a4ab43218722298b81ac7a08031",
+        "version" : "1.13.2"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "dc91d3d980d3de366aceddd5b9a612409c0624c1",
-        "version" : "1.0.0-beta.24"
+        "revision" : "d5e3fe2a4f0d19b924b01531535861cfa45c5bff",
+        "version" : "1.0.0-beta.27"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "02d3054ed054a587ce1778bd946a783abd8f62e3",
-        "version" : "6.4.0"
+        "revision" : "cf1c872126e4874144ed2f91aa2124e72388abe0",
+        "version" : "6.4.1"
       }
     },
     {
@@ -69,7 +69,7 @@
       "location" : "https://github.com/swift-server/swift-aws-lambda-events.git",
       "state" : {
         "branch" : "main",
-        "revision" : "501fe8ced1aa8325b2f570b214ced93c423eabdc"
+        "revision" : "0bd5d23606c612e05a3a07ee41dd575a803514a9"
       }
     },
     {
@@ -103,8 +103,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "9cc89f0170308b813af05dadcd26f9a2dee47713",
-        "version" : "2.2.3"
+        "revision" : "75ec60b8b4cc0f085c3ac414f3dca5625fa3588e",
+        "version" : "2.2.4"
       }
     },
     {
@@ -112,8 +112,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-log.git",
       "state" : {
-        "revision" : "6fe203dc33195667ce1759bf0182975e4653ba1c",
-        "version" : "1.4.4"
+        "revision" : "32e8d724467f8fe623624570367e3d50c5638e46",
+        "version" : "1.5.2"
       }
     },
     {
@@ -130,8 +130,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "7e3b50b38e4e66f31db6cf4a784c6af148bac846",
-        "version" : "2.46.0"
+        "revision" : "4ad2c3733845abd9ee8892a323b0fa0d80f37e34",
+        "version" : "2.47.0"
       }
     },
     {
@@ -168,15 +168,6 @@
       "state" : {
         "revision" : "c0d9a144cfaec8d3d596aadde3039286a266c15c",
         "version" : "1.15.0"
-      }
-    },
-    {
-      "identity" : "websocket-kit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/vapor/websocket-kit.git",
-      "state" : {
-        "revision" : "2d9d2188a08eef4a869d368daab21b3c08510991",
-        "version" : "2.6.1"
       }
     }
   ],
