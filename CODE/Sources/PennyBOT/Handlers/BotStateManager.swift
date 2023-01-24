@@ -70,10 +70,14 @@ actor BotStateManager {
             if (200..<300).contains(response.httpResponse.status.code) {
                 logger.debug("BotStateManager failed to send a message")
             } else {
-                logger.error("BotStateManager received non-200 status code. Response: \(response)")
+                logger.error("BotStateManager received non-200 status code", metadata: [
+                    "response": "\(response)"
+                ])
             }
         } catch {
-            logger.error("BotStateManager received error: \(error)")
+            logger.error("BotStateManager received error", metadata: [
+                "error": "\(error)"
+            ])
         }
     }
     

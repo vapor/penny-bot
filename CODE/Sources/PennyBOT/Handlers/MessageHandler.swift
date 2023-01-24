@@ -11,7 +11,9 @@ struct MessageHandler {
     
     func handle() async {
         guard let author = event.author else {
-            logger.error("Cannot find author of the message. Event: \(event)")
+            logger.error("Cannot find author of the message", metadata: [
+                "event": "\(event)"
+            ])
             return
         }
         
@@ -49,7 +51,10 @@ struct MessageHandler {
                 let responseString = "\(response.receiver) now has \(response.coins) \(Constants.vaporCoinEmoji)!"
                 successfulResponses.append(responseString)
             } catch {
-                logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")
+                logger.error("CoinService failed", metadata: [
+                    "request": "\(coinRequest)",
+                    "error": "\(error)"
+                ])
             }
         }
         
@@ -88,10 +93,12 @@ struct MessageHandler {
             )
             
             if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.error("Received non-200 status from Discord API: \(apiResponse)")
+                logger.error("Received non-200 status from Discord API", metadata: [
+                    "apiResponse": "\(apiResponse)"
+                ])
             }
         } catch {
-            logger.error("Discord Client error: \(error)")
+            logger.error("Discord Client error", metadata: ["error": "\(error)"])
         }
     }
     
