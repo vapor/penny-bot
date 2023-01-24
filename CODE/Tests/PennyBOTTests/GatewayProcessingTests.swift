@@ -1,5 +1,5 @@
 @testable import PennyBOT
-@testable import DiscordBM
+@testable import DiscordModels
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
