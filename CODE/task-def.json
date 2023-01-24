@@ -34,6 +34,10 @@
                 {
                     "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH",
                     "name": "BOT_TOKEN"
+                },
+                {
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH",
+                    "name": "LOGGING_WEBHOOK_URL"
                 }
             ]
         }
