@@ -12,6 +12,8 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
+        /// Fake webhook url
+        Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/1066287437724266536/dSmCyqTEGP1lBnpWJAVU-CgQy4s3GRXpzKIeHs0ApHm62FngQZPn7kgaOyaiZE5wl_"
         Constants.botId = "1016612301262041098"
         LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
         RepositoryFactory.makeUserRepository = { _ in
