@@ -51,16 +51,15 @@ struct Penny {
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
         guard let webhookUrl = Constants.loggingWebhookUrl,
-              let token = Constants.botToken,
-              let appId = Constants.botId
+              let token = Constants.botToken
         else {
-            fatalError("Missing 'LOGGING_WEBHOOK_URL' or 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
+            fatalError("Missing 'LOGGING_WEBHOOK_URL' or 'BOT_TOKEN' env vars")
         }
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
             client: DefaultDiscordClient(
                 httpClient: httpClient,
                 token: token,
-                appId: appId
+                appId: nil
             ),
             configuration: .init(
                 fallbackLogger: Logger(
