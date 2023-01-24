@@ -74,9 +74,10 @@ struct Penny {
                 ),
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
-                    .error: .user(Constants.botDevUserId)
+                    .error: .user(Constants.botDevUserId),
+                    .critical: .user(Constants.botDevUserId)
                 ],
-                extraMetadata: [.warning, .error],
+                extraMetadata: [.warning, .error, .critical],
                 disabledLogLevels: [.debug, .trace]
             )
         )
