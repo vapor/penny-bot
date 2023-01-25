@@ -93,9 +93,7 @@ struct MessageHandler {
             )
             
             if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.error("Received non-200 status from Discord API", metadata: [
-                    "apiResponse": "\(apiResponse)"
-                ])
+                logger.report("Received non-200 status from Discord API", response: apiResponse)
             }
         } catch {
             logger.error("Discord Client error", metadata: ["error": "\(error)"])

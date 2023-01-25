@@ -98,9 +98,7 @@ struct ReactionHandler {
                 )
             )
             if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.error("Received non-200 status from Discord API", metadata: [
-                    "apiResponse": "\(apiResponse)"
-                ])
+                logger.report("Received non-200 status from Discord API", response: apiResponse)
             } else {
                 if let senderName {
                     let decoded = try apiResponse.decode()
@@ -135,9 +133,7 @@ struct ReactionHandler {
                 )
             )
             if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.error("Received non-200 status from Discord API", metadata: [
-                    "apiResponse": "\(apiResponse)"
-                ])
+                logger.report("Received non-200 status from Discord API", response: apiResponse)
             } else {
                 if let senderName {
                     let decoded = try apiResponse.decode()

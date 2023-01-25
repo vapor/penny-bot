@@ -98,7 +98,7 @@ public enum EventKey: String {
                 messageId: "1031112115928449022"
             )]
         case .stopRespondingToMessages:
-            return [.createMessage(channelId: "441327731486097429")]
+            return [.createMessage(channelId: "1067060193982156880")]
         }
     }
 }

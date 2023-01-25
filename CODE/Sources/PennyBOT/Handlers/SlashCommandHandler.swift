@@ -56,9 +56,10 @@ struct SlashCommandHandler {
                     payload: linkCommand
                 ).httpResponse
                 if !(200..<300).contains(apiResponse.status.code) {
-                    logger.error("Received non-200 status from Discord API for slash commands", metadata: [
-                        "apiResponse": "\(apiResponse)"
-                    ])
+                    logger.report(
+                        "Received non-200 status from Discord API for slash commands",
+                        response: apiResponse
+                    )
                 }
             } catch {
                 logger.error("Discord Client error", metadata: ["error": "\(error)"])
