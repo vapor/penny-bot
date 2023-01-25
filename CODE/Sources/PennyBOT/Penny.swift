@@ -50,6 +50,8 @@ struct Penny {
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
+        guard !alreadyBootstrapped else { return }
+        alreadyBootstrapped = true
         guard let webhookUrl = Constants.loggingWebhookUrl,
               let token = Constants.botToken
         else {
@@ -68,7 +70,7 @@ struct Penny {
                 ),
                 aliveNotice: .init(
                     address: try! .webhook(.url(webhookUrl)),
-                    interval: .hours(3),
+                    interval: .hours(12),
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
@@ -78,13 +80,17 @@ struct Penny {
                     .critical: .user(Constants.botDevUserId)
                 ],
                 extraMetadata: [.warning, .error, .critical],
-                disabledLogLevels: [.debug, .trace]
+                disabledLogLevels: [.notice, .debug, .trace]
             )
         )
         LoggingSystem.bootstrapWithDiscordLogger(
             address: try! .webhook(.url(webhookUrl)),
             level: .trace,
-            makeStdoutLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
+            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
         )
     }
 }
+
+// FIXME: This can be removed with next release of DiscordBm (beta 29 and higher)
+// This is to stop logging system to being bootstrapped more than once, when testing.
+private var alreadyBootstrapped = false

@@ -66,16 +66,16 @@ struct InteractionHandler {
                 payload: .init(type: .deferredChannelMessageWithSource)
             )
             if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API for interaction acknowledgement",
-                             metadata: ["apiResponse": "\(apiResponse)"])
+                logger.report(
+                    "Received non-200 status from Discord API for interaction acknowledgement",
+                    response: apiResponse
+                )
                 return false
             } else {
                 return true
             }
         } catch {
-            logger.error("Discord Client error", metadata: [
-                "error": "\(error)"
-            ])
+            logger.error("Discord Client error", metadata: ["error": "\(error)"])
             return false
         }
     }
@@ -92,9 +92,10 @@ struct InteractionHandler {
                 )
             )
             if !(200..<300).contains(apiResponse.status.code) {
-                logger.error("Received non-200 status from Discord API for interaction", metadata: [
-                    "apiResponse": "\(apiResponse)"
-                ])
+                logger.report(
+                    "Received non-200 status from Discord API for interaction",
+                    response: apiResponse
+                )
             }
         } catch {
             logger.error("Discord Client error", metadata: ["error": "\(error)"])
