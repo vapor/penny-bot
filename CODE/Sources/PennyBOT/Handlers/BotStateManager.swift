@@ -26,7 +26,7 @@ actor BotStateManager {
     func initialize(discordClient: any DiscordClient, logger: Logger) {
         self.discordClient = discordClient
         self.logger = logger
-        Task { await send(content: signal) }
+        Task { await sendSignal() }
     }
     
     func canRespond(to event: Gateway.Event) -> Bool {
@@ -52,20 +52,16 @@ actor BotStateManager {
             try await Task.sleep(for: disableDuration)
             self.canRespond = true
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
-            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
-        }
-        Task {
-            await send(content: "Ok the new Penny! I'll retire myself for a few minutes :)")
         }
     }
     
-    private func send(content: String) async {
+    private func sendSignal() async {
         // The DiscordClient will retry the request too in some situations,
         // so we shouldn't need to retry it ourselves.
         do {
             let response = try await discordClient.createMessage(
                 channelId: Constants.internalChannelId,
-                payload: .init(content: content + " \(self.id)")
+                payload: .init(content: signal + " \(self.id)")
             )
             if (200..<300).contains(response.httpResponse.status.code) {
                 logger.debug("BotStateManager failed to send a message")

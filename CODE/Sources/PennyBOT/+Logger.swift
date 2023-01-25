@@ -23,20 +23,21 @@ extension Logger {
                 source: @autoclosure () -> String? = nil,
                 file: String = #fileID, function: String = #function, line: UInt = #line) {
         let response = response()
+        let metadata = metadata() ?? .init()
         self.log(
             level: .error,
             message(),
             metadata: [
                 "status": "\(response.status)",
                 "body": "\(String(buffer: response.body ?? .init()))",
-            ].merging(metadata() ?? .init(), uniquingKeysWith: { a, _ in a }),
+            ].merging(metadata, uniquingKeysWith: { a, _ in a }),
             source: source(), file: file, function: function, line: line)
         self.log(
             level: .debug,
             message(),
             metadata: [
                 "response": "\(response)",
-            ].merging(metadata() ?? .init(), uniquingKeysWith: { a, _ in a }),
+            ].merging(metadata, uniquingKeysWith: { a, _ in a }),
             source: source(), file: file, function: function, line: line)
     }
 }
