@@ -80,7 +80,7 @@ struct Penny {
                     .critical: .user(Constants.botDevUserId)
                 ],
                 extraMetadata: [.warning, .error, .critical],
-                disabledLogLevels: [.notice, .debug, .trace]
+                disabledLogLevels: [.debug, .trace]
             )
         )
         LoggingSystem.bootstrapWithDiscordLogger(
