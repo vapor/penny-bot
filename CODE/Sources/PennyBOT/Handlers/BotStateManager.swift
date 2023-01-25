@@ -26,6 +26,7 @@ actor BotStateManager {
     func initialize(discordClient: any DiscordClient, logger: Logger) {
         self.discordClient = discordClient
         self.logger = logger
+        self.logger[metadataKey: "id"] = "\(self.id)"
         Task { await sendSignal() }
     }
     
@@ -63,10 +64,10 @@ actor BotStateManager {
                 channelId: Constants.internalChannelId,
                 payload: .init(content: signal + " \(self.id)")
             )
-            if (200..<300).contains(response.httpResponse.status.code) {
-                logger.debug("BotStateManager failed to send a message")
-            } else {
-                logger.report("BotStateManager received non-200 status code", response: response)
+            do {
+                try response.guardIsSuccessfulResponse()
+            } catch {
+                logger.report("BotStateManager received bad response", response: response)
             }
         } catch {
             logger.error("BotStateManager received error", metadata: ["error": "\(error)"])
