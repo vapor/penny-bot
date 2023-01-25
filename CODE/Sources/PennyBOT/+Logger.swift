@@ -26,17 +26,17 @@ extension Logger {
         self.log(
             level: .error,
             message(),
-            metadata: metadata()?.merging([
+            metadata: [
                 "status": "\(response.status)",
                 "body": "\(String(buffer: response.body ?? .init()))",
-            ], uniquingKeysWith: { a, _ in a }),
+            ].merging(metadata() ?? .init(), uniquingKeysWith: { a, _ in a }),
             source: source(), file: file, function: function, line: line)
         self.log(
             level: .debug,
             message(),
-            metadata: metadata()?.merging([
-                "response": "\(response)"
-            ], uniquingKeysWith: { a, _ in a }),
+            metadata: [
+                "response": "\(response)",
+            ].merging(metadata() ?? .init(), uniquingKeysWith: { a, _ in a }),
             source: source(), file: file, function: function, line: line)
     }
 }
