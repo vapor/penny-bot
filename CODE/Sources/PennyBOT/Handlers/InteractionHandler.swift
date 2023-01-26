@@ -15,25 +15,20 @@ struct InteractionHandler {
     }
     
     func handle() async {
-        guard await sendInteractionAcknowledgement() else { return }
-        let response = await processAndMakeResponse()
+        guard let kind = SlashCommandKind(name: event.data?.name) else {
+            logger.error("Unrecognized command")
+            return await sendInteractionNameResolveFailure()
+        }
+        guard await sendInteractionAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
+        let response = await processAndMakeResponse(kind: kind)
         await respond(with: response)
     }
     
-    private func processAndMakeResponse() async -> String {
-        guard let name = event.data?.name else {
-            logger.error("Discord did not send required interaction info", metadata: ["id": "1"])
-            return "Failed to recognize the interaction"
-        }
+    private func processAndMakeResponse(kind: SlashCommandKind) async -> String {
         let options = event.data?.options ?? []
-        switch name {
-        case "link":
-            return handleLinkCommand(options: options)
-        case "automated-pings":
-            return await handlePingsCommand(options: options)
-        default:
-            logger.error("Unrecognized command", metadata: ["event": "\(event)"])
-            return "Command not recognized"
+        switch kind {
+        case .link: return handleLinkCommand(options: options)
+        case .automatedPings: return await handlePingsCommand(options: options)
         }
     }
     
@@ -64,10 +59,6 @@ struct InteractionHandler {
         if options.isEmpty {
             logger.error("Discord did not send required interaction info", metadata: ["id": "4"])
             return "Please provide more options"
-        }
-        guard event.guild_id == nil else {
-            await sendDM("Hey 👋 please use the slash command here again :)")
-            return "Please DM me so we can talk about this privately :)"
         }
         guard let _id = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
@@ -128,44 +119,64 @@ struct InteractionHandler {
             }
         } catch {
             logger.error("Pings command error", metadata: ["error": "\(error)"])
-            return "Sorry some errors happened :( please report this to us id it happens again."
+            return "Sorry some errors happened :( please report this to us if it happens again"
         }
     }
     
     /// Returns `true` if the acknowledgement was successfully sent
-    private func sendInteractionAcknowledgement() async -> Bool {
+    private func sendInteractionAcknowledgement(isEphemeral: Bool) async -> Bool {
         await DiscordService.shared.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .init(type: .deferredChannelMessageWithSource)
+            payload: .init(
+                type: .deferredChannelMessageWithSource,
+                data: isEphemeral ? .init(flags: [.ephemeral]) : nil
+            )
+        )
+    }
+    
+    private func sendInteractionNameResolveFailure() async {
+        await DiscordService.shared.respondToInteraction(
+            id: event.id,
+            token: event.token,
+            payload: .init(
+                type: .channelMessageWithSource,
+                data: .init(embeds: [.init(
+                    description: "Failed to resolve the interaction name :(",
+                    color: .vaporPurple
+                )], flags: [.ephemeral])
+            )
         )
     }
     
     private func respond(with response: String) async {
         await DiscordService.shared.editInteraction(
             token: event.token,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )]
-            )
+            payload: .init(embeds: [.init(
+                description: response,
+                color: .vaporPurple
+            )])
         )
     }
+}
+
+private enum SlashCommandKind {
+    case link
+    case automatedPings
     
-    private func sendDM(_ response: String) async {
-        guard let userId = (event.member?.user ?? event.user)?.id else {
-            logger.error("Can't find user id")
-            return
+    /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
+    var isEphemeral: Bool {
+        switch self {
+        case .link: return true
+        case .automatedPings: return true
         }
-        await DiscordService.shared.sendDM(
-            userId: userId,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )]
-            )
-        )
+    }
+    
+    init? (name: String?) {
+        switch name {
+        case "link": self = .link
+        case "automated-pings": self = .automatedPings
+        default: return nil
+        }
     }
 }

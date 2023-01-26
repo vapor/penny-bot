@@ -54,7 +54,8 @@ private extension ApplicationCommand {
                     required: true
                 )]
             )
-        ]
+        ],
+        dm_permission: false
     )
     
     static let ping = ApplicationCommand(
@@ -99,6 +100,7 @@ private extension ApplicationCommand {
                 name: "list",
                 description: "See what you're subscribed to"
             )
-        ]
+        ],
+        dm_permission: false
     )
 }

@@ -76,6 +76,7 @@ actor DiscordService {
     }
     
     /// Returns whether or not the response has been successfully sent.
+    @discardableResult
     func respondToInteraction(
         id: String,
         token: String,

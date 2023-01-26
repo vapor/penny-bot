@@ -48,10 +48,16 @@ struct Penny {
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
-        guard let webhookUrl = Constants.loggingWebhookUrl,
-              let token = Constants.botToken
-        else {
-            fatalError("Missing 'LOGGING_WEBHOOK_URL' or 'BOT_TOKEN' env vars")
+#if DEBUG
+        // Discord-logging is disabled in debug, so we can just use a fake url.
+        let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
+#else
+        guard let webhookUrl = Constants.loggingWebhookUrl else {
+            fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
+        }
+#endif
+        guard let token = Constants.botToken else {
+            fatalError("Missing 'BOT_TOKEN' env var")
         }
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
             client: DefaultDiscordClient(
