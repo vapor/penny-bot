@@ -1,5 +1,6 @@
 import DiscordBM
 import Atomics
+import struct NIOCore.ByteBuffer
 import XCTest
 
 public actor FakeManager: GatewayManager {
@@ -22,7 +23,7 @@ public actor FakeManager: GatewayManager {
     public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) {
         eventHandlers.append(handler)
     }
-    public func addEventParseFailureHandler(_ handler: @escaping (Error, String) -> Void) { }
+    public func addEventParseFailureHandler(_ handler: @escaping (Error, ByteBuffer) -> Void) { }
     public func disconnect() { }
     
     var connectionWaiter: CheckedContinuation<(), Never>?
