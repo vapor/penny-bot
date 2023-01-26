@@ -48,8 +48,6 @@ struct Penny {
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
-        guard !alreadyBootstrapped else { return }
-        alreadyBootstrapped = true
         guard let webhookUrl = Constants.loggingWebhookUrl,
               let token = Constants.botToken
         else {
@@ -88,7 +86,3 @@ struct Penny {
         )
     }
 }
-
-// FIXME: This can be removed with next release of DiscordBm (beta 29 and higher)
-// This is to stop logging system to being bootstrapped more than once, when testing.
-private var alreadyBootstrapped = false

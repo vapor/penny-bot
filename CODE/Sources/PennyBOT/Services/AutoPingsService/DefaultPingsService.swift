@@ -79,10 +79,10 @@ actor DefaultPingsService: AutoPingsService {
             timeout: .seconds(30),
             logger: self.logger
         )
-        logger.trace("HTTP head \(response)")
+        logger.trace("HTTP head", metadata: ["response": "\(response)"])
         
         guard (200..<300).contains(response.status.code) else {
-            logger.error("PingsService failed. Response: \(response)")
+            logger.error("PingsService failed", metadata: ["response": "\(response)"])
             throw ServiceError.badStatus
         }
         

@@ -5,10 +5,17 @@ import PennyModels
 struct MessageHandler {
     
     let coinService: any CoinService
-    let logger: Logger
+    var logger: Logger
     let event: Gateway.MessageCreate
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
+    }
+    
+    init(coinService: any CoinService, logger: Logger, event: Gateway.MessageCreate) {
+        self.coinService = coinService
+        self.event = event
+        self.logger = logger
+        self.logger[metadataKey: "event"] = "\(event)"
     }
     
     func handle() async {
@@ -18,9 +25,7 @@ struct MessageHandler {
     
     func checkForNewCoins() async {
         guard let author = event.author else {
-            logger.error("Cannot find author of the message", metadata: [
-                "event": "\(event)"
-            ])
+            logger.error("Cannot find author of the message")
             return
         }
         
@@ -88,7 +93,7 @@ struct MessageHandler {
         do {
             wordUsersDict = try await pingsService.getAll().items
         } catch {
-            logger.error("Can't retrieve ping-words. Error: \(error)")
+            logger.error("Can't retrieve ping-words", metadata: ["error": "\(error)"])
             return
         }
         let folded = event.content.foldForPingCommand()

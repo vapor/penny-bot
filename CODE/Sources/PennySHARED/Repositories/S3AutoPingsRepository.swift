@@ -48,7 +48,10 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
             return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
         } else {
-            logger.warning("Cannot find any data in the bucket. Response: \(response)")
+            logger.warning(
+                "Cannot find any data in the bucket",
+                metadata: ["response": "\(response)"]
+            )
             return S3AutoPingItems()
         }
     }

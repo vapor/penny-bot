@@ -31,7 +31,7 @@ actor DiscordService {
                 let dmChannel = try await discordClient.createDM(recipient_id: userId).decode()
                 return dmChannel.id
             } catch {
-                logger.error("Couldn't get DM channel for user: \(userId)")
+                logger.error("Couldn't get DM channel for user", metadata: ["userId": "\(userId)"])
                 return nil
             }
         }
@@ -50,7 +50,7 @@ actor DiscordService {
             try response.guardIsSuccessfulResponse()
             return response
         } catch {
-            logger.error("Couldn't send a message. Error: \(error)")
+            logger.error("Couldn't send a message", metadata: ["error": "\(error)"])
             return nil
         }
     }
@@ -70,7 +70,7 @@ actor DiscordService {
             try response.guardIsSuccessfulResponse()
             return response
         } catch {
-            logger.error("Couldn't edit a message. Error: \(error)")
+            logger.error("Couldn't edit a message", metadata: ["error": "\(error)"])
             return nil
         }
     }
@@ -90,7 +90,7 @@ actor DiscordService {
             try response.guardIsSuccessfulResponse()
             return true
         } catch {
-            logger.error("Couldn't send interaction response. Error: \(error)")
+            logger.error("Couldn't send interaction response", metadata: ["error": "\(error)"])
             return false
         }
     }
@@ -106,7 +106,7 @@ actor DiscordService {
             )
             try response.guardIsSuccessfulResponse()
         } catch {
-            logger.error("Couldn't send interaction edit. Error: \(error)")
+            logger.error("Couldn't send interaction edit", metadata: ["error": "\(error)"])
         }
     }
     
@@ -117,7 +117,7 @@ actor DiscordService {
             )
             try response.guardIsSuccessfulResponse()
         } catch {
-            logger.error("Couldn't create slash command. Error: \(error)")
+            logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
         }
     }
     
@@ -131,7 +131,7 @@ actor DiscordService {
                 messageId: messageId
             ).decode()
         } catch {
-            logger.error("Couldn't get channel message. Error: \(error)")
+            logger.error("Couldn't get channel message", metadata: ["error": "\(error)"])
             return nil
         }
     }

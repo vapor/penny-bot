@@ -2,10 +2,16 @@ import DiscordBM
 import Logging
 
 struct InteractionHandler {
-    let logger: Logger
+    var logger: Logger
     let event: Interaction
     var pingsService: AutoPingsService {
         ServiceFactory.makePingsService()
+    }
+    
+    init(logger: Logger, event: Interaction) {
+        self.event = event
+        self.logger = logger
+        self.logger[metadataKey: "event"] = "\(event)"
     }
     
     func handle() async {
@@ -16,10 +22,7 @@ struct InteractionHandler {
     
     private func processAndMakeResponse() async -> String {
         guard let name = event.data?.name else {
-            logger.error("Discord did not send required interaction info", metadata: [
-                "id": .stringConvertible(1),
-                "event": "\(event)"
-            ])
+            logger.error("Discord did not send required interaction info", metadata: ["id": "1"])
             return "Failed to recognize the interaction"
         }
         let options = event.data?.options ?? []
@@ -36,12 +39,12 @@ struct InteractionHandler {
     
     func handleLinkCommand(options: [Interaction.Data.Option]) -> String {
         if options.isEmpty {
-            logger.error("Discord did not send required info. ID: 2. Event: \(event)")
+            logger.error("Discord did not send required info", metadata: ["id": "2"])
             return "Please provide more options"
         }
         let first = options[0]
         guard let id = first.options?.first?.value?.asString else {
-            logger.error("Discord did not send required info. ID: 3. Event: \(event)")
+            logger.error("Discord did not send required info", metadata: ["id": "3"])
             return "No ID option recognized"
         }
         switch first.name {
@@ -52,14 +55,14 @@ struct InteractionHandler {
         case "slack":
             return "This command is still a WIP. Linking Discord with Slack ID \(id)"
         default:
-            logger.error("Unrecognized link option: \(first.name)")
+            logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
             return "Option not recognized: \(first.name)"
         }
     }
     
     func handlePingsCommand(options: [Interaction.Data.Option]) async -> String {
         if options.isEmpty {
-            logger.error("Discord did not send required interaction info. ID: 4. Event: \(event)")
+            logger.error("Discord did not send required interaction info", metadata: ["id": "4"])
             return "Please provide more options"
         }
         guard event.guild_id == nil else {
@@ -67,7 +70,7 @@ struct InteractionHandler {
             return "Please DM me so we can talk about this privately :)"
         }
         guard let _id = (event.member?.user ?? event.user)?.id else {
-            logger.error("Can't find a user's id. Event: \(event)")
+            logger.error("Can't find a user's id")
             return "Can't find your user id :("
         }
         let discordId = "<@\(_id)>"
@@ -77,7 +80,7 @@ struct InteractionHandler {
             case "add":
                 guard let option = first.options?.first,
                       let text = option.value?.asString else {
-                    logger.error("Discord did not send required info. ID: 5. Event: \(event)")
+                    logger.error("Discord did not send required info", metadata: ["id": "5"])
                     return "No 'text' option recognized"
                 }
                 if text.unicodeScalars.count < 3 {
@@ -88,7 +91,7 @@ struct InteractionHandler {
             case "bulk-add":
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
-                    logger.error("Discord did not send required info. ID: 5. Event: \(event)")
+                    logger.error("Discord did not send required info", metadata: ["id": "6"])
                     return "No 'text' option recognized"
                 }
                 let texts = _text.split(separator: ",")
@@ -107,7 +110,7 @@ struct InteractionHandler {
             case "remove":
                 guard let option = first.options?.first,
                       let text = option.value?.asString else {
-                    logger.error("Discord did not send required info. ID: 5. Event: \(event)")
+                    logger.error("Discord did not send required info", metadata: ["id": "7"])
                     return "No 'text' option recognized"
                 }
                 try await pingsService.remove([text.foldForPingCommand()], forDiscordID: discordId)
@@ -120,7 +123,7 @@ struct InteractionHandler {
                     }.joined(separator: "\n")
                 return list
             default:
-                logger.error("Unrecognized link option: \(first.name)")
+                logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
                 return "Option not recognized: \(first.name)"
             }
         } catch {
@@ -152,7 +155,7 @@ struct InteractionHandler {
     
     private func sendDM(_ response: String) async {
         guard let userId = (event.member?.user ?? event.user)?.id else {
-            logger.error("Can't find user id. Event: \(event)")
+            logger.error("Can't find user id")
             return
         }
         await DiscordService.shared.sendDM(

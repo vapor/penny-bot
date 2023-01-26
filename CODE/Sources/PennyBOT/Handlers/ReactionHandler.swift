@@ -15,9 +15,16 @@ private let coinSignEmojis = [
 
 struct ReactionHandler {
     let coinService: any CoinService
-    let logger: Logger
+    var logger: Logger
     let event: Gateway.MessageReactionAdd
     private var cache: ReactionCache { .shared }
+    
+    init(coinService: any CoinService, logger: Logger, event: Gateway.MessageReactionAdd) {
+        self.coinService = coinService
+        self.event = event
+        self.logger = logger
+        self.logger[metadataKey: "event"] = "\(event)"
+    }
     
     func handle() async {
         guard let member = event.member,
