@@ -49,7 +49,7 @@ struct ReactionHandler {
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
-            logger.error("Error when posting coins: \(error)")
+            logger.error("Error when posting coins", metadata: ["error": "\(error)"])
             await respond(
                 with: "Oops. Something went wrong! Please try again later",
                 senderName: nil
@@ -105,7 +105,11 @@ struct ReactionHandler {
                 )
             }
         } catch {
-            self.logger.error("ReactionHandler could not decode message. Error: \(error). Response: \(apiResponse?.httpResponse.description ?? "null")")
+            self.logger.report(
+                "ReactionHandler could not decode message after send",
+                response: apiResponse,
+                metadata: ["error": "\(error)"]
+            )
         }
     }
     
@@ -136,7 +140,11 @@ struct ReactionHandler {
                 )
             }
         } catch {
-            self.logger.error("ReactionHandler could not decode message. Error: \(error). Response: \(apiResponse?.httpResponse.description ?? "null")")
+            self.logger.report(
+                "ReactionHandler could not decode message after edit",
+                response: apiResponse,
+                metadata: ["error": "\(error)"]
+            )
         }
     }
 }
@@ -171,14 +179,19 @@ actor ReactionCache {
                 channelId: channelId,
                 messageId: messageId
             ) else {
-                logger.error("ReactionCache could not find a message's author id. channelId: \(channelId), messageId: \(messageId)")
+                logger.error("ReactionCache could not find a message's author id", metadata: [
+                    "channelId": .string(channelId),
+                    "messageId": .string(messageId),
+                ])
                 return nil
             }
             if let authorId = message.author?.id {
                 cachedAuthorIds[messageId] = authorId
                 return authorId
             } else {
-                logger.error("ReactionCache could not find a message's author id. message: \(message)")
+                logger.error("ReactionCache could not find a message's author id", metadata: [
+                    "message": "\(message)"
+                ])
                 return nil
             }
         }

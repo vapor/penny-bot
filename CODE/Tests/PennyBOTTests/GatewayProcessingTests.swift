@@ -13,6 +13,9 @@ class GatewayProcessingTests: XCTestCase {
     
     override func setUp() async throws {
         DiscordGlobalConfiguration.enableLoggingDuringDecode = false
+        /// Fake webhook url
+        Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
+        Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
         Constants.botId = "1016612301262041098"
         RepositoryFactory.makeUserRepository = { _ in
             FakeUserRepository()

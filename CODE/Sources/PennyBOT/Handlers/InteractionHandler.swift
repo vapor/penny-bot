@@ -16,7 +16,10 @@ struct InteractionHandler {
     
     private func processAndMakeResponse() async -> String {
         guard let name = event.data?.name else {
-            logger.error("Discord did not send required info. ID: 1. Event: \(event)")
+            logger.error("Discord did not send required interaction info", metadata: [
+                "id": .stringConvertible(1),
+                "event": "\(event)"
+            ])
             return "Failed to recognize the interaction"
         }
         let options = event.data?.options ?? []
@@ -26,7 +29,7 @@ struct InteractionHandler {
         case "automated-pings":
             return await handlePingsCommand(options: options)
         default:
-            logger.error("Unrecognized command. Event: \(event)")
+            logger.error("Unrecognized command", metadata: ["event": "\(event)"])
             return "Command not recognized"
         }
     }
@@ -121,7 +124,7 @@ struct InteractionHandler {
                 return "Option not recognized: \(first.name)"
             }
         } catch {
-            logger.error("An error happened. Error: \(error)")
+            logger.error("Pings command error", metadata: ["error": "\(error)"])
             return "Sorry some errors happened :( please report this to us id it happens again."
         }
     }

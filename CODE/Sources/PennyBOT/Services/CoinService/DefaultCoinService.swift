@@ -14,10 +14,10 @@ struct DefaultCoinService: CoinService {
         let data = try JSONEncoder().encode(coinRequest)
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
-        logger.trace("HTTP head \(response)")
+        logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
         
         guard (200..<300).contains(response.status.code) else {
-            logger.error("Post-coin failed. Response: \(response)")
+            logger.error("Post-coin failed", metadata: ["response": "\(response)"])
             throw ServiceError.badStatus
         }
         

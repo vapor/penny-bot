@@ -11,10 +11,8 @@ struct Penny {
     
     static func main() {
         Backtrace.install()
-//        try LoggingSystem.bootstrap(from: &env)
+        
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
-        var logger = Logger(label: "Penny")
-        logger.logLevel = .trace
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
         
         defer {
@@ -22,11 +20,9 @@ struct Penny {
             try! eventLoopGroup.syncShutdownGracefully()
         }
         
-        DiscordGlobalConfiguration.makeLogger = { label in
-            var _logger = Logger(label: label)
-            _logger.logLevel = logger.logLevel
-            return _logger
-        }
+        bootstrapLoggingSystem(httpClient: client)
+        
+        let logger = Logger(label: "Penny")
         
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         
@@ -50,4 +46,49 @@ struct Penny {
         
         RunLoop.current.run()
     }
+    
+    static func bootstrapLoggingSystem(httpClient: HTTPClient) {
+        guard !alreadyBootstrapped else { return }
+        alreadyBootstrapped = true
+        guard let webhookUrl = Constants.loggingWebhookUrl,
+              let token = Constants.botToken
+        else {
+            fatalError("Missing 'LOGGING_WEBHOOK_URL' or 'BOT_TOKEN' env vars")
+        }
+        DiscordGlobalConfiguration.logManager = DiscordLogManager(
+            client: DefaultDiscordClient(
+                httpClient: httpClient,
+                token: token,
+                appId: nil
+            ),
+            configuration: .init(
+                fallbackLogger: Logger(
+                    label: "DiscordBMFallback",
+                    factory: StreamLogHandler.standardOutput(label:metadataProvider:)
+                ),
+                aliveNotice: .init(
+                    address: try! .webhook(.url(webhookUrl)),
+                    interval: .hours(12),
+                    message: "I'm Alive! :)",
+                    initialNoticeMention: .user(Constants.botDevUserId)
+                ),
+                mentions: [
+                    .warning: .user(Constants.botDevUserId),
+                    .error: .user(Constants.botDevUserId),
+                    .critical: .user(Constants.botDevUserId)
+                ],
+                extraMetadata: [.warning, .error, .critical],
+                disabledLogLevels: [.debug, .trace]
+            )
+        )
+        LoggingSystem.bootstrapWithDiscordLogger(
+            address: try! .webhook(.url(webhookUrl)),
+            level: .trace,
+            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
+        )
+    }
 }
+
+// FIXME: This can be removed with next release of DiscordBm (beta 29 and higher)
+// This is to stop logging system to being bootstrapped more than once, when testing.
+private var alreadyBootstrapped = false

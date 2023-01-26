@@ -24,7 +24,8 @@ actor BotStateManager {
     
     func initialize(logger: Logger) {
         self.logger = logger
-        Task { await send(content: signal) }
+        self.logger[metadataKey: "id"] = "\(self.id)"
+        Task { await sendSignal() }
     }
     
     func canRespond(to event: Gateway.Event) -> Bool {
@@ -50,17 +51,13 @@ actor BotStateManager {
             try await Task.sleep(for: disableDuration)
             self.canRespond = true
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
-            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
-        }
-        Task {
-            await send(content: "Ok the new Penny! I'll retire myself for a few minutes :)")
         }
     }
     
-    private func send(content: String) async {
+    private func sendSignal() async {
         await DiscordService.shared.sendMessage(
             channelId: Constants.internalChannelId,
-            payload: .init(content: content + "\n\(self.id)")
+            payload: .init(content: signal + " \(self.id)")
         )
     }
     

@@ -18,7 +18,9 @@ struct MessageHandler {
     
     func checkForNewCoins() async {
         guard let author = event.author else {
-            logger.error("Cannot find author of the message. Event: \(event)")
+            logger.error("Cannot find author of the message", metadata: [
+                "event": "\(event)"
+            ])
             return
         }
         
@@ -56,7 +58,10 @@ struct MessageHandler {
                 let responseString = "\(response.receiver) now has \(response.coins) \(Constants.vaporCoinEmoji)!"
                 successfulResponses.append(responseString)
             } catch {
-                logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")
+                logger.error("CoinService failed", metadata: [
+                    "request": "\(coinRequest)",
+                    "error": "\(error)"
+                ])
             }
         }
         
