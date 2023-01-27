@@ -41,10 +41,11 @@ struct CoinHandler {
         // Lowercased for case-insensitive coin-sign checking.
         var text = text
             .lowercased()
-        // `,` or `!` can be problematic if someone sticks it to the end of a coin sign, like
-        // "@Penny thanks, ..." or  "@Penny thanks!"
+        /// `,` / `!` / `.` can be problematic if someone sticks it to the end of a coin sign, like
+        /// "@Penny thanks, ..." or  "@Penny thanks!"
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: "!", with: "")
+            .replacingOccurrences(of: ".", with: "")
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -197,13 +198,12 @@ private extension Sequence where Element == Substring {
 }
 
 private extension Substring {
-    /// "and", "&", ",", and empty strings are considered neutral,
-    /// and in the logic above we can ignore them.
+    /// These strings are considered neutral, and in the logic above we can ignore them.
     ///
     /// NOTE: The logic in `CoinHandler`, intentionally adds spaces after and before each
     /// user-mention. That means we _need_ to remove empty strings to neutralize those
     /// intentional spaces.
     var isIgnorable: Bool {
-        ["", "and", "&", ","].contains(self.lowercased())
+        ["", ".", "and", "&", ","].contains(self.lowercased())
     }
 }

@@ -131,7 +131,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx thank you! \(user1) xxx
+                xxxx thank you. \(user1) xxx
                 """,
                 mentionedUsers: [user1]
             )

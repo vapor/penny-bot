@@ -50,12 +50,17 @@ struct Penny {
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
-        guard !alreadyBootstrapped else { return }
-        alreadyBootstrapped = true
-        guard let webhookUrl = Constants.loggingWebhookUrl,
-              let token = Constants.botToken
-        else {
-            fatalError("Missing 'LOGGING_WEBHOOK_URL' or 'BOT_TOKEN' env vars")
+#if DEBUG
+        // Discord-logging is disabled in debug based on the logger configuration,
+        // so we can just use a fake url.
+        let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
+#else
+        guard let webhookUrl = Constants.loggingWebhookUrl else {
+            fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
+        }
+#endif
+        guard let token = Constants.botToken else {
+            fatalError("Missing 'BOT_TOKEN' env var")
         }
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
             client: DefaultDiscordClient(
@@ -70,7 +75,7 @@ struct Penny {
                 ),
                 aliveNotice: .init(
                     address: try! .webhook(.url(webhookUrl)),
-                    interval: .hours(12),
+                    interval: nil,
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
@@ -90,7 +95,3 @@ struct Penny {
         )
     }
 }
-
-// FIXME: This can be removed with next release of DiscordBm (beta 29 and higher)
-// This is to stop logging system to being bootstrapped more than once, when testing.
-private var alreadyBootstrapped = false
