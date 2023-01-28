@@ -49,30 +49,24 @@ struct Penny {
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
 #if DEBUG
-        // Discord-logging is disabled in debug, so we can just use a fake url.
+        // Discord-logging is disabled in debug based on the logger configuration,
+        // so we can just use a fake url.
         let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 #else
         guard let webhookUrl = Constants.loggingWebhookUrl else {
             fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
         }
 #endif
-        guard let token = Constants.botToken else {
-            fatalError("Missing 'BOT_TOKEN' env var")
-        }
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
-            client: DefaultDiscordClient(
-                httpClient: httpClient,
-                token: token,
-                appId: nil
-            ),
+            httpClient: httpClient,
             configuration: .init(
                 fallbackLogger: Logger(
                     label: "DiscordBMFallback",
                     factory: StreamLogHandler.standardOutput(label:metadataProvider:)
                 ),
                 aliveNotice: .init(
-                    address: try! .webhook(.url(webhookUrl)),
-                    interval: .hours(12),
+                    address: try! .url(webhookUrl),
+                    interval: nil,
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
@@ -86,7 +80,7 @@ struct Penny {
             )
         )
         LoggingSystem.bootstrapWithDiscordLogger(
-            address: try! .webhook(.url(webhookUrl)),
+            address: try! .url(webhookUrl),
             level: .trace,
             makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
         )
