@@ -14,7 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "df7b148ae64db6ca9a2079250947915e62d60aeb"
+        "revision" : "fa881289824fef99fbae57136ee131c77cc334bb",
+        "version" : "1.0.0-beta.30"
       }
     },
     {
@@ -76,7 +77,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-runtime.git",
       "state" : {
-        "revision" : "98a23b64bb5feadf43eed2fc1edf08817d8449b4"
+        "revision" : "de730b240df25897c4b5b68889c178c994fd6817",
+        "version" : "1.0.0-alpha.1"
       }
     },
     {
