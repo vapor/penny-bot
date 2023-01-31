@@ -19,7 +19,7 @@ enum BotFactory {
                 status: .online,
                 afk: false
             ),
-            intents: [.guildMessages, .messageContent, .guildMessageReactions]
+            intents: [.guilds, .guildMessages, .messageContent, .guildMessageReactions]
         )
     }
 }
