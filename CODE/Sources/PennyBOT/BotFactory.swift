@@ -12,7 +12,6 @@ enum BotFactory {
         return BotGatewayManager(
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
-            compression: true,
             token: token,
             appId: appId,
             presence: .init(
@@ -20,7 +19,15 @@ enum BotFactory {
                 status: .online,
                 afk: false
             ),
-            intents: [.guildMessages, .messageContent, .guildMessageReactions]
+            intents: [.guilds, .guildMessages, .messageContent, .guildMessageReactions]
+        )
+    }
+    
+    static var makeCache: (any GatewayManager) async -> DiscordCache = {
+        await DiscordCache(
+            gatewayManager: $0,
+            intents: [.guilds],
+            requestAllMembers: nil
         )
     }
 }

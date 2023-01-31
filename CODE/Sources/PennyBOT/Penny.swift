@@ -25,11 +25,7 @@ struct Penny {
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         
         Task {
-            let cache = await DiscordCache(
-                gatewayManager: bot,
-                intents: nil,
-                requestAllMembers: nil
-            )
+            let cache = await BotFactory.makeCache(bot)
             
             await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
             await DefaultPingsService.shared.initialize(httpClient: client)

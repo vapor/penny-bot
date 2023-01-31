@@ -58,7 +58,7 @@
             "edited_timestamp": null,
             "content": "<@950695294906007573> thank you :\\) nice job penny!",
             "components": [],
-            "channel_id": "1016614538398937098",
+            "channel_id": "519613337638797315",
             "author": {
                 "username": "Mahdi BM",
                 "public_flags": 0,
@@ -128,7 +128,7 @@
                 "id": "1018162735864872971"
             },
             "channel_id": "966722151359057950",
-            "application_id": "1016612301262041098",
+            "application_id": "950695294906007573",
             "app_permissions": "1071698665025"
         }
     },
@@ -167,7 +167,7 @@
                 "name": "🪙",
                 "id": null
             },
-            "channel_id": "966722151359057911",
+            "channel_id": "684159753189982218",
             "burst": false,
             "guild_id": "808638139785936919"
         }
@@ -208,20 +208,20 @@
                 "name": "🪙",
                 "id": null
             },
-            "channel_id": "966722151359057911",
+            "channel_id": "684159753189982218",
             "burst": false,
             "guild_id": "808638139785936919"
         }
     },
-    "POST/channels/966722151359057911/messages": {
+    "POST/channels/684159753189982218/messages": {
         "id": "1031112115928449022",
         "type": 0,
         "content": "Mahdi BM gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
-        "channel_id": "966722151359057911",
+        "channel_id": "684159753189982218",
         "author": {
             "username": "TestApp",
             "public_flags": 0,
-            "id": "1016612301262041098",
+            "id": "950695294906007573",
             "discriminator": "7843",
             "bot": true,
             "avatar_decoration": null,
@@ -239,11 +239,11 @@
         "flags": 0,
         "components": []
     },
-    "GET/channels/966722151359057911/messages/1031112115928449034": {
+    "GET/channels/684159753189982218/messages/1031112115928449034": {
         "id": "1031112115928449034",
         "type": 0,
         "content": "Testing! 684866",
-        "channel_id": "966722151359057911",
+        "channel_id": "684159753189982218",
         "author": {
             "id": "1030118727418646629",
             "username": "DisBMLibTestBot",
@@ -300,7 +300,7 @@
             "author": {
                 "username": "TestApp",
                 "public_flags": 0,
-                "id": "1016612301262041098",
+                "id": "950695294906007573",
                 "discriminator": "7843",
                 "bot": true,
                 "avatar_decoration": null,
@@ -369,7 +369,7 @@
             "edited_timestamp": null,
             "content": "need help with some MongoDB stuff :)",
             "components": [],
-            "channel_id": "1016614538398937098",
+            "channel_id": "519613337638797315",
             "author": {
                 "username": "Mahdi BM",
                 "public_flags": 0,

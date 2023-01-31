@@ -6,7 +6,7 @@ enum Constants {
         ProcessInfo.processInfo.environment[key]
     }
     static let vaporGuildId = "431917998102675485"
-    static let internalChannelId = "1067060193982156880"
+    static let logsChannelId = "1067060193982156880"
     static let thanksChannelId = "443074453719744522"
     static let botDevUserId = "290483761559240704"
     static var botToken: String! = env("BOT_TOKEN")

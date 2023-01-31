@@ -1,5 +1,6 @@
 @testable import PennyBOT
 @testable import DiscordModels
+import DiscordGateway
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
@@ -16,7 +17,7 @@ class GatewayProcessingTests: XCTestCase {
         /// Fake webhook url
         Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
-        Constants.botId = "1016612301262041098"
+        Constants.botId = "950695294906007573"
         RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
         RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
         Constants.pingsServiceBaseUrl = "https://fake.com"
@@ -28,6 +29,16 @@ class GatewayProcessingTests: XCTestCase {
         ReactionCache.tests_reset()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
+        BotFactory.makeCache = {
+            var storage = DiscordCache.Storage()
+            storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
+            return await DiscordCache(
+                gatewayManager: $0,
+                intents: [.guilds],
+                requestAllMembers: nil,
+                storage: storage
+            )
+        }
         await stateManager.tests_reset()
         // Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         // the fake manager is ready. That's why we need to use `waitUntilConnected()`.
@@ -128,7 +139,7 @@ class GatewayProcessingTests: XCTestCase {
             event: .init(
                 id: "1313",
                 // Based on how the function works right now, only `channel_id` matters
-                channel_id: "966722151359057911",
+                channel_id: "684159753189982218",
                 content: "",
                 timestamp: .fake,
                 tts: false,
@@ -165,7 +176,7 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertEqual(canRespond, true)
         
         let response = await responseStorage.awaitResponse(
-            at: .createMessage(channelId: Constants.internalChannelId)
+            at: .createMessage(channelId: Constants.logsChannelId)
         )
         
         let message = try XCTUnwrap(response as? RequestBody.CreateMessage)
