@@ -171,6 +171,23 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
     
+    func testRespondsInThanksChannelWhenDoesNotHavePermission() async throws {
+        let response = try await manager.sendAndAwaitResponse(
+            key: .thanksMessage2,
+            as: RequestBody.CreateMessage.self
+        )
+        
+        let description = try XCTUnwrap(response.embeds?.first?.description)
+        let lines = description.split(separator: "\n")
+        
+        let line1 = try XCTUnwrap(lines.first)
+        XCTAssertEqual(line1, "https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042")
+        
+        let line2 = try XCTUnwrap(lines.last)
+        XCTAssertTrue(line2.hasPrefix("<@950695294906007573> now has "))
+        XCTAssertTrue(line2.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+    }
+    
     func testBotStateManagerSendsSignalOnStartUp() async throws {
         let canRespond = await stateManager.canRespond
         XCTAssertEqual(canRespond, true)

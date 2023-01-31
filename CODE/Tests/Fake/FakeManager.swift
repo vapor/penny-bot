@@ -1,4 +1,5 @@
 import DiscordBM
+@testable import PennyBOT
 import Atomics
 import struct NIOCore.ByteBuffer
 import XCTest
@@ -76,6 +77,7 @@ public actor FakeManager: GatewayManager {
 
 public enum EventKey: String {
     case thanksMessage
+    case thanksMessage2
     case linkInteraction
     case thanksReaction
     case thanksReaction2
@@ -87,6 +89,8 @@ public enum EventKey: String {
         switch self {
         case .thanksMessage:
             return [.createMessage(channelId: "519613337638797315")]
+        case .thanksMessage2:
+            return [.createMessage(channelId: Constants.thanksChannelId)]
         case .linkInteraction:
             return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(id: "1031112113978089502", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
