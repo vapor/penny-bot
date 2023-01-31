@@ -2,15 +2,14 @@ import DiscordBM
 import Logging
 
 struct InteractionHandler {
-    var logger: Logger
+    var logger = Logger(label: "InteractionHandler")
     let event: Interaction
     var pingsService: AutoPingsService {
         ServiceFactory.makePingsService()
     }
     
-    init(logger: Logger, event: Interaction) {
+    init(event: Interaction) {
         self.event = event
-        self.logger = logger
         self.logger[metadataKey: "event"] = "\(event)"
     }
     

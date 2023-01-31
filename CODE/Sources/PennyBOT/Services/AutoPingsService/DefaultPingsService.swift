@@ -8,7 +8,7 @@ import NIOHTTP1
 actor DefaultPingsService: AutoPingsService {
     
     var httpClient: HTTPClient!
-    var logger: Logger!
+    var logger = Logger(label: "DefaultPingsService")
     
     var cachedItems: S3AutoPingItems?
     var resetItemsTask: Task<(), Never>?
@@ -17,9 +17,8 @@ actor DefaultPingsService: AutoPingsService {
     
     static let shared = DefaultPingsService()
     
-    func initialize(httpClient: HTTPClient, logger: Logger) {
+    func initialize(httpClient: HTTPClient) {
         self.httpClient = httpClient
-        self.logger = logger
         self.setUpResetItemsTask()
     }
     

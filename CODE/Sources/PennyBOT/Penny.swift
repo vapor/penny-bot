@@ -22,26 +22,29 @@ struct Penny {
         
         bootstrapLoggingSystem(httpClient: client)
         
-        let logger = Logger(label: "Penny")
-        
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         
         Task {
-            await DiscordService.shared.initialize(discordClient: bot.client, logger: logger)
-            await DefaultPingsService.shared.initialize(httpClient: client, logger: logger)
-            await BotStateManager.shared.initialize(logger: logger)
+            let cache = await DiscordCache(
+                gatewayManager: bot,
+                intents: nil,
+                requestAllMembers: nil
+            )
+            
+            await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
+            await DefaultPingsService.shared.initialize(httpClient: client)
+            await BotStateManager.shared.initialize()
             
             await bot.addEventHandler { event in
                 EventHandler(
                     event: event,
-                    coinService: ServiceFactory.makeCoinService(client, logger),
-                    logger: logger
+                    coinService: ServiceFactory.makeCoinService(client)
                 ).handle()
             }
             
             await bot.connect()
             
-            await SlashCommandHandler(logger: logger).registerCommands()
+            await SlashCommandHandler().registerCommands()
         }
         
         RunLoop.current.run()

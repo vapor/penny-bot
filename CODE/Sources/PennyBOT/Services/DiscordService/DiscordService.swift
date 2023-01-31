@@ -4,17 +4,28 @@ import Logging
 actor DiscordService {
     
     private var discordClient: (any DiscordClient)!
-    private var logger: Logger!
+    private var cache: DiscordCache!
+    private var logger = Logger(label: "DiscordService")
     /// `[UserDiscordID: DMChannelID]`
     private var channels: [String: String] = [:]
+    var vaporGuild: Gateway.GuildCreate? {
+        get async {
+            guard let guild = await cache.guilds[Constants.vaporGuildId] else {
+                let guilds = await cache.guilds
+                logger.error("Cannot get cached vapor guild", metadata: ["guilds": "\(guilds)"])
+                return nil
+            }
+            return guild
+        }
+    }
     
     private init () { }
     
     static let shared = DiscordService()
     
-    func initialize(discordClient: any DiscordClient, logger: Logger) {
+    func initialize(discordClient: any DiscordClient, cache: DiscordCache) {
         self.discordClient = discordClient
-        self.logger = logger
+        self.cache = cache
     }
     
     func sendDM(userId: String, payload: RequestBody.CreateMessage) async {
@@ -52,6 +63,49 @@ actor DiscordService {
         } catch {
             logger.error("Couldn't send a message", metadata: ["error": "\(error)"])
             return nil
+        }
+    }
+    
+    /// Sends thanks response to the specified channel if Penny has the required permissions,
+    /// otherwise sends to the `#thanks` channel.
+    @discardableResult
+    func sendThanksResponse(
+        channelId: String,
+        replyingToMessageId messageId: String,
+        response: String
+    ) async -> DiscordClientResponse<DiscordChannel.Message>? {
+        let hasPermissionToSend = await vaporGuild?.memberHasPermissions(
+            userId: Constants.botId,
+            channelId: channelId,
+            permissions: [.sendMessages]
+        ) == true
+        if hasPermissionToSend {
+            return await self.sendMessage(
+                channelId: channelId,
+                payload: .init(
+                    embeds: [.init(
+                        description: response,
+                        color: .vaporPurple
+                    )],
+                    message_reference: .init(
+                        message_id: messageId,
+                        channel_id: channelId,
+                        guild_id: Constants.vaporGuildId,
+                        fail_if_not_exists: false
+                    )
+                )
+            )
+        } else {
+            let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)\n"
+            return await self.sendMessage(
+                channelId: Constants.thanksChannelId,
+                payload: .init(
+                    embeds: [.init(
+                        description: link + response,
+                        color: .vaporPurple
+                    )]
+                )
+            )
         }
     }
     

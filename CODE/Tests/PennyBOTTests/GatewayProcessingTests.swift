@@ -17,20 +17,12 @@ class GatewayProcessingTests: XCTestCase {
         Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
         Constants.botId = "1016612301262041098"
-        RepositoryFactory.makeUserRepository = { _ in
-            FakeUserRepository()
-        }
-        RepositoryFactory.makeAutoPingsRepository = { _ in
-            FakePingsRepository()
-        }
+        RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
+        RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
         Constants.pingsServiceBaseUrl = "https://fake.com"
-        ServiceFactory.makePingsService = {
-            FakePingsService()
-        }
+        ServiceFactory.makePingsService = { FakePingsService() }
         Constants.coinServiceBaseUrl = "https://fake2.com"
-        ServiceFactory.makeCoinService = { _, _ in
-            FakeCoinService()
-        }
+        ServiceFactory.makeCoinService = { _ in FakeCoinService() }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache.tests_reset()

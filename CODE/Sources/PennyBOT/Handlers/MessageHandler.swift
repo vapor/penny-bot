@@ -5,16 +5,15 @@ import PennyModels
 struct MessageHandler {
     
     let coinService: any CoinService
-    var logger: Logger
+    var logger = Logger(label: "MessageHandler")
     let event: Gateway.MessageCreate
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
     
-    init(coinService: any CoinService, logger: Logger, event: Gateway.MessageCreate) {
+    init(coinService: any CoinService, event: Gateway.MessageCreate) {
         self.coinService = coinService
         self.event = event
-        self.logger = logger
         self.logger[metadataKey: "event"] = "\(event)"
     }
     
@@ -132,20 +131,10 @@ struct MessageHandler {
     }
     
     private func respond(with response: String) async {
-        await DiscordService.shared.sendMessage(
+        await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )],
-                message_reference: .init(
-                    message_id: event.id,
-                    channel_id: event.channel_id,
-                    guild_id: event.guild_id,
-                    fail_if_not_exists: false
-                )
-            )
+            replyingToMessageId: event.id,
+            response: response
         )
     }
 }

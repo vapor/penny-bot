@@ -15,14 +15,13 @@ private let coinSignEmojis = [
 
 struct ReactionHandler {
     let coinService: any CoinService
-    var logger: Logger
+    var logger = Logger(label: "ReactionHandler")
     let event: Gateway.MessageReactionAdd
     private var cache: ReactionCache { .shared }
     
-    init(coinService: any CoinService, logger: Logger, event: Gateway.MessageReactionAdd) {
+    init(coinService: any CoinService, event: Gateway.MessageReactionAdd) {
         self.coinService = coinService
         self.event = event
-        self.logger = logger
         self.logger[metadataKey: "event"] = "\(event)"
     }
     
@@ -86,20 +85,10 @@ struct ReactionHandler {
     
     /// `senderName` only should be included if its not a error-response.
     private func respond(with response: String, senderName: String?) async {
-        let apiResponse = await DiscordService.shared.sendMessage(
+        let apiResponse = await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )],
-                message_reference: .init(
-                    message_id: event.message_id,
-                    channel_id: event.channel_id,
-                    guild_id: event.guild_id,
-                    fail_if_not_exists: false
-                )
-            )
+            replyingToMessageId: event.message_id,
+            response: response
         )
         do {
             if let senderName,

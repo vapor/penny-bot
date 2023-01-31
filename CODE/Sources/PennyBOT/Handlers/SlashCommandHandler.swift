@@ -2,9 +2,6 @@ import DiscordBM
 import Logging
 
 struct SlashCommandHandler {
-    let logger: Logger
-    let guildId = "431917998102675485"
-    
     func registerCommands() async {
         /// Optimally we would register command only if not already registered,
         /// because currently there is a 100 commands per day limit. For now it

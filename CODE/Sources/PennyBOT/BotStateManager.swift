@@ -11,7 +11,7 @@ import Logging
  */
 actor BotStateManager {
     
-    var logger: Logger!
+    var logger = Logger(label: "BotStateManager")
     var canRespond = true
     let id = Int(Date().timeIntervalSince1970)
     
@@ -22,8 +22,7 @@ actor BotStateManager {
     
     private init() { }
     
-    func initialize(logger: Logger) {
-        self.logger = logger
+    func initialize() {
         self.logger[metadataKey: "id"] = "\(self.id)"
         Task { await sendSignal() }
     }

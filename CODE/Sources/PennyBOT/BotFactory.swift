@@ -12,6 +12,7 @@ enum BotFactory {
         return BotGatewayManager(
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
+            compression: true,
             token: token,
             appId: appId,
             presence: .init(
