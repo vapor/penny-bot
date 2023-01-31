@@ -2,7 +2,7 @@ import Foundation
 import DiscordBM
 
 enum Constants {
-    static let internalChannelId = "1067060193982156880"
+    static let logsChannelId = "1067060193982156880"
     static let botDevUserId = "290483761559240704"
     static var botToken: String! = ProcessInfo.processInfo.environment["BOT_TOKEN"]
     static var botId: String! = ProcessInfo.processInfo.environment["BOT_APP_ID"]

@@ -161,7 +161,7 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertEqual(canRespond, true)
         
         let response = await responseStorage.awaitResponse(
-            at: .createMessage(channelId: Constants.internalChannelId)
+            at: .createMessage(channelId: Constants.logsChannelId)
         )
         
         let message = try XCTUnwrap(response as? RequestBody.CreateMessage)

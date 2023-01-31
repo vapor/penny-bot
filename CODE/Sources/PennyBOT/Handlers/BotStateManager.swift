@@ -37,7 +37,7 @@ actor BotStateManager {
     
     private func checkIfItsASlowdownSignal(event: Gateway.Event) {
         guard case let .messageCreate(message) = event.data,
-              message.channel_id == Constants.internalChannelId,
+              message.channel_id == Constants.logsChannelId,
               let author = message.author,
               author.id == Constants.botId,
               message.content.hasPrefix(signal)
@@ -61,7 +61,7 @@ actor BotStateManager {
         // so we shouldn't need to retry it ourselves.
         do {
             let response = try await discordClient.createMessage(
-                channelId: Constants.internalChannelId,
+                channelId: Constants.logsChannelId,
                 payload: .init(content: signal + " \(self.id)")
             )
             do {
