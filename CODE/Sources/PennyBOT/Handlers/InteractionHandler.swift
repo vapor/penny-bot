@@ -33,12 +33,12 @@ struct InteractionHandler {
     
     func handleLinkCommand(options: [Interaction.Data.Option]) -> String {
         if options.isEmpty {
-            logger.error("Discord did not send required info", metadata: ["id": "2"])
+            logger.error("Discord did not send required info")
             return "Please provide more options"
         }
         let first = options[0]
         guard let id = first.options?.first?.value?.asString else {
-            logger.error("Discord did not send required info", metadata: ["id": "3"])
+            logger.error("Discord did not send required info")
             return "No ID option recognized"
         }
         switch first.name {
@@ -55,13 +55,24 @@ struct InteractionHandler {
     }
     
     func handlePingsCommand(options: [Interaction.Data.Option]) async -> String {
+        guard let member = event.member else {
+            logger.error("Discord did not send required info")
+            return "Sorry something went wrong :("
+        }
+        guard await DiscordService.shared.memberHasAnyTechnicalRoles(member: member) else {
+            logger.warning("Someone tried to use 'automated-pings' but they don't have any of the required roles")
+            let rolesString = Constants.TechnicalRoles.allCases.map {
+                DiscordUtils.roleMention(id: $0.rawValue)
+            }.joined(separator: " ")
+            return "Sorry, this functionality is currently restricted to members with any of these roles: \(rolesString)"
+        }
         if options.isEmpty {
-            logger.error("Discord did not send required interaction info", metadata: ["id": "4"])
+            logger.error("Discord did not send required interaction info")
             return "Please provide more options"
         }
         guard let _id = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
-            return "Can't find your user id :("
+            return "Sorry something went wrong :("
         }
         let discordId = "<@\(_id)>"
         let first = options[0]
@@ -70,7 +81,7 @@ struct InteractionHandler {
             case "add":
                 guard let option = first.options?.first,
                       let text = option.value?.asString else {
-                    logger.error("Discord did not send required info", metadata: ["id": "5"])
+                    logger.error("Discord did not send required info")
                     return "No 'text' option recognized"
                 }
                 if text.unicodeScalars.count < 3 {
@@ -81,7 +92,7 @@ struct InteractionHandler {
             case "bulk-add":
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
-                    logger.error("Discord did not send required info", metadata: ["id": "6"])
+                    logger.error("Discord did not send required info")
                     return "No 'text' option recognized"
                 }
                 let texts = _text.split(separator: ",")
@@ -100,7 +111,7 @@ struct InteractionHandler {
             case "remove":
                 guard let option = first.options?.first,
                       let text = option.value?.asString else {
-                    logger.error("Discord did not send required info", metadata: ["id": "7"])
+                    logger.error("Discord did not send required info")
                     return "No 'text' option recognized"
                 }
                 try await pingsService.remove([text.foldForPingCommand()], forDiscordID: discordId)

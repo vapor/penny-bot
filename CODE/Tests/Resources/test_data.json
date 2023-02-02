@@ -423,13 +423,17 @@
             "mention_everyone": false,
             "member": {
                 "roles": [
-                    "431920712505098240"
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521"
                 ],
                 "premium_since": null,
                 "pending": false,
                 "nick": null,
                 "mute": false,
-                "joined_at": "2020-04-07T20:49:57.563000+00:00",
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "is_pending": false,
                 "flags": 0,
                 "deaf": false,
                 "communication_disabled_until": null,
@@ -443,12 +447,13 @@
             "components": [],
             "channel_id": "519613337638797315",
             "author": {
-                "username": "Mahdi BM",
+                "username": "0xTim",
                 "public_flags": 0,
-                "id": "290483761559240704",
-                "discriminator": "0517",
+                "id": "432065887202181142",
+                "display_name": null,
+                "discriminator": "1157",
                 "avatar_decoration": null,
-                "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                "avatar": "800bfcd31ae4a77f61646226df46c204"
             },
             "attachments": [],
             "guild_id": "431917998102675485"
@@ -460,12 +465,13 @@
         "last_message_id": "1040523601310392370",
         "flags": 0,
         "recipients": [{
-            "id": "290483761559240704",
-            "username": "Mahdi BM",
-            "avatar": "2df0a0198e00ba23bf2dc728c4db94d9",
+            "username": "0xTim",
+            "public_flags": 0,
+            "id": "432065887202181142",
+            "display_name": null,
+            "discriminator": "1157",
             "avatar_decoration": null,
-            "discriminator": "0517",
-            "public_flags": 4194304
+            "avatar": "800bfcd31ae4a77f61646226df46c204"
         }]
     }
 }

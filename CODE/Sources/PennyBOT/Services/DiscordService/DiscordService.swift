@@ -190,4 +190,17 @@ actor DiscordService {
             return nil
         }
     }
+    
+    func userHasAnyTechnicalRoles(userId: String) async -> Bool {
+        guard let member = await vaporGuild?.members.first(where: { $0.user?.id == userId }) else {
+            return false
+        }
+        return memberHasAnyTechnicalRoles(member: member)
+    }
+    
+    func memberHasAnyTechnicalRoles(member: Guild.Member) -> Bool {
+        Constants.TechnicalRoles.allCases.contains {
+            member.roles.contains($0.rawValue)
+        }
+    }
 }

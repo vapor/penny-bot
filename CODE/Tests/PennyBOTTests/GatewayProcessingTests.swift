@@ -34,8 +34,8 @@ class GatewayProcessingTests: XCTestCase {
             storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
             return await DiscordCache(
                 gatewayManager: $0,
-                intents: [.guilds],
-                requestAllMembers: nil,
+                intents: [.guilds, .guildMembers],
+                requestAllMembers: .enabled,
                 storage: storage
             )
         }
@@ -232,20 +232,15 @@ class GatewayProcessingTests: XCTestCase {
         await manager.send(key: event)
         let (createDM1, createDM2, sendDM1, sendDM2) = await (
             responseStorage.awaitResponse(at: event.responseEndpoints[0]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[1]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[1], expectFailure: true),
             responseStorage.awaitResponse(at: event.responseEndpoints[2]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[3])
+            responseStorage.awaitResponse(at: event.responseEndpoints[3], expectFailure: true)
         )
         
-        let recipients = ["4912300012398455", "21939123912932193"]
+        let recipients = ["950695294906007573", "432065887202181142"]
         
         do {
             let dmPayload = try XCTUnwrap(createDM1 as? RequestBody.CreateDM, "\(createDM1)")
-            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
-        }
-        
-        do {
-            let dmPayload = try XCTUnwrap(createDM2 as? RequestBody.CreateDM, "\(createDM2)")
             XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
         }
         
@@ -256,9 +251,11 @@ class GatewayProcessingTests: XCTestCase {
         }
         
         do {
-            let dmMessage = try XCTUnwrap(sendDM2 as? RequestBody.CreateMessage, "\(sendDM2)")
-            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+            /// These two must fail because user does not have enough permissions to receive pings
+            let payload1: Never? = try XCTUnwrap(createDM2 as? Optional<Never>)
+            XCTAssertEqual(payload1, .none)
+            let payload2: Never? = try XCTUnwrap(sendDM2 as? Optional<Never>)
+            XCTAssertEqual(payload2, .none)
         }
     }
 }

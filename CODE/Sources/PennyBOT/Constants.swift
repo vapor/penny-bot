@@ -16,4 +16,11 @@ enum Constants {
     static var pingsServiceBaseUrl: String! = env("PINGS_API_BASE_URL")
     /// Vapor's custom coin emoji in Discord's format.
     static let vaporCoinEmoji = DiscordUtils.customEmoji(name: "coin", id: "473588485962596352")
+    
+    enum TechnicalRoles: String, CaseIterable {
+        case contributor = "431920712505098240"
+        case maintainer = "530113860129259521"
+        case moderator = "431920836631592980"
+        case core = "431919254372089857"
+    }
 }

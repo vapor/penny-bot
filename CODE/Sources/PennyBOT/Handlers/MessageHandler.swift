@@ -103,7 +103,10 @@ struct MessageHandler {
             if folded.contains(innerValue),
                let users = wordUsersDict[word] {
                 for user in users {
-                    usersToPing[user, default: []].insert(innerValue)
+                    let plainId = user.makePlainUserID()
+                    if await DiscordService.shared.userHasAnyTechnicalRoles(userId: plainId) {
+                        usersToPing[user, default: []].insert(innerValue)
+                    }
                 }
             }
         }

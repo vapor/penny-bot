@@ -19,15 +19,15 @@ enum BotFactory {
                 status: .online,
                 afk: false
             ),
-            intents: [.guilds, .guildMessages, .messageContent, .guildMessageReactions]
+            intents: [.guilds, .guildMembers, .guildMessages, .messageContent, .guildMessageReactions]
         )
     }
     
     static var makeCache: (any GatewayManager) async -> DiscordCache = {
         await DiscordCache(
             gatewayManager: $0,
-            intents: [.guilds],
-            requestAllMembers: nil
+            intents: [.guilds, .guildMembers],
+            requestAllMembers: .enabled
         )
     }
 }

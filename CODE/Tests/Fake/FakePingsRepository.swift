@@ -33,9 +33,9 @@ public struct FakePingsRepository: AutoPingsRepository {
     
     public func getAll() async throws -> S3AutoPingItems {
         S3AutoPingItems(items: [
-            .text("mongo"): ["<@21939123912932193>", "<@4912300012398455>"],
-            .text("vapor"): ["<@21939123912932193>"],
-            .text("penny"): ["<@4912300012398455>"]
+            .text("mongo"): ["<@432065887202181142>", "<@950695294906007573>"],
+            .text("vapor"): ["<@432065887202181142>"],
+            .text("penny"): ["<@950695294906007573>"]
         ])
     }
 }

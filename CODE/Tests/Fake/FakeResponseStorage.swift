@@ -11,46 +11,71 @@ public actor FakeResponseStorage {
     
     public func awaitResponse(
         at endpoint: Endpoint,
+        expectFailure: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
     ) async -> Any {
         await withCheckedContinuation { continuation in
-            self.expect(at: endpoint, continuation: continuation, file: file, line: line)
+            self.expect(
+                at: endpoint,
+                expectFailure: expectFailure,
+                continuation: continuation,
+                file: file,
+                line: line
+            )
         }
     }
     
     nonisolated func expect(
         at endpoint: Endpoint,
+        expectFailure: Bool = false,
         continuation: CheckedContinuation<Any, Never>,
         file: StaticString,
         line: UInt
     ) {
         Task {
-            await _expect(at: endpoint, continuation: continuation, file: file, line: line)
+            await _expect(
+                at: endpoint,
+                expectFailure: expectFailure,
+                continuation: continuation,
+                file: file,
+                line: line
+            )
         }
     }
     
     private func _expect(
         at endpoint: Endpoint,
+        expectFailure: Bool = false,
         continuation: CheckedContinuation<Any, Never>,
         file: StaticString,
         line: UInt
     ) {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
-            continuation.resume(returning: response)
+            if expectFailure {
+                XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)")
+            } else {
+                continuation.resume(returning: response)
+            }
         } else {
             let id = UUID()
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
                 if continuations.retrieve(id: id) != nil {
-                    XCTFail(
-                        "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
-                        file: file,
-                        line: line
-                    )
+                    if !expectFailure {
+                        XCTFail(
+                            "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            file: file,
+                            line: line
+                        )
+                    }
                     continuation.resume(with: .success(Optional<Never>.none as Any))
                     return
+                } else {
+                    if expectFailure {
+                        XCTFail("Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)")
+                    }
                 }
             }
         }
