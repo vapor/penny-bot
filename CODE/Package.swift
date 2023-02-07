@@ -20,10 +20,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", branch: "main"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
-        .package(
-            url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "205d7b3abac26901766fb0d3f8e2b042f1d5cc50"
-        ),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.34"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")

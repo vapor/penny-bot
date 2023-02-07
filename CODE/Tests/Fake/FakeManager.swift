@@ -21,6 +21,8 @@ public actor FakeManager: GatewayManager {
         connectionWaiter?.resume()
     }
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) { }
+    public func updatePresence(payload: Gateway.Identify.Presence) async { }
+    public func updateVoiceState(payload: VoiceStateUpdate) async { }
     public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) {
         eventHandlers.append(handler)
     }
