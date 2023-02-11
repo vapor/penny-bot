@@ -100,13 +100,13 @@ actor DefaultPingsService: AutoPingsService {
     private func setUpResetItemsTask() {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {
-            if (try? await Task.sleep(for: .seconds(60 * 30))) != nil {
+            if (try? await Task.sleep(for: .seconds(60 * 60))) != nil {
                 self.cachedItems = nil
                 self.setUpResetItemsTask()
             } else {
                 /// If canceled, set up the task again.
                 /// This way, the functions above can cancel this when they've got fresh items
-                /// and this will just reschedule itself for another later time.
+                /// and this will just reschedule itself for a later time.
                 self.setUpResetItemsTask()
             }
         }

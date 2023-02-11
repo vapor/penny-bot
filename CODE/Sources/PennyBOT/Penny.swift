@@ -48,7 +48,7 @@ struct Penny {
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) {
 #if DEBUG
-        // Discord-logging is disabled in debug based on the logger configuration,
+        // Discord-logging is disabled in debug based in the logger configuration,
         // so we can just use a fake url.
         let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 #else
@@ -56,13 +56,15 @@ struct Penny {
             fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
         }
 #endif
+        LoggingSystem.bootstrapWithDiscordLogger(
+            address: try! .url(webhookUrl),
+            level: .trace,
+            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
+        )
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
-                fallbackLogger: Logger(
-                    label: "DiscordBMFallback",
-                    factory: StreamLogHandler.standardOutput(label:metadataProvider:)
-                ),
+                fallbackLogger: Logger(label: "DiscordBMFallback"),
                 aliveNotice: .init(
                     address: try! .url(webhookUrl),
                     interval: nil,
@@ -78,11 +80,6 @@ struct Penny {
                 disabledLogLevels: [.debug, .trace],
                 disabledInDebug: true
             )
-        )
-        LoggingSystem.bootstrapWithDiscordLogger(
-            address: try! .url(webhookUrl),
-            level: .trace,
-            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
         )
     }
 }
