@@ -75,7 +75,7 @@ actor DefaultPingsService: AutoPingsService {
         }
         let response = try await httpClient.execute(
             request,
-            timeout: .seconds(30),
+            timeout: .seconds(60),
             logger: self.logger
         )
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
@@ -85,7 +85,7 @@ actor DefaultPingsService: AutoPingsService {
             throw ServiceError.badStatus
         }
         
-        let body = try await response.body.collect(upTo: 1024 * 1024 * 64)
+        let body = try await response.body.collect(upTo: 1024 * 1024 * 256)
         let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
