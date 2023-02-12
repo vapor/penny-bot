@@ -20,36 +20,42 @@ struct Penny {
             try! eventLoopGroup.syncShutdownGracefully()
         }
         
-        bootstrapLoggingSystem(httpClient: client)
+        /// Can't use `RunLoop.main.run()` if I mark `static func main()` with `async`.
+        /// This is to work around that.
+        try! eventLoopGroup.next().makeFutureWithTask {
+            await start(eventLoopGroup: eventLoopGroup, client: client)
+        }.wait()
+        
+        RunLoop.main.run()
+    }
+    
+    static func start(eventLoopGroup: EventLoopGroup, client: HTTPClient) async {
+        await bootstrapLoggingSystem(httpClient: client)
         
         let logger = Logger(label: "Penny")
         
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         
-        Task {
-            await BotStateManager.shared.initialize(discordClient: bot.client, logger: logger)
-            
-            await bot.addEventHandler { event in
-                EventHandler(
-                    event: event,
-                    discordClient: bot.client,
-                    coinService: ServiceFactory.makeCoinService(client, logger),
-                    logger: logger
-                ).handle()
-            }
-            
-            await bot.connect()
+        await BotStateManager.shared.initialize(discordClient: bot.client, logger: logger)
+        
+        await bot.addEventHandler { event in
+            EventHandler(
+                event: event,
+                discordClient: bot.client,
+                coinService: ServiceFactory.makeCoinService(client, logger),
+                logger: logger
+            ).handle()
         }
+        
+        await bot.connect()
         
         SlashCommandHandler(
             discordClient: bot.client,
             logger: logger
         ).registerCommands()
-        
-        RunLoop.current.run()
     }
     
-    static func bootstrapLoggingSystem(httpClient: HTTPClient) {
+    static func bootstrapLoggingSystem(httpClient: HTTPClient) async {
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use a fake url.
@@ -62,10 +68,6 @@ struct Penny {
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
-                fallbackLogger: Logger(
-                    label: "DiscordBMFallback",
-                    factory: StreamLogHandler.standardOutput(label:metadataProvider:)
-                ),
                 aliveNotice: .init(
                     address: try! .url(webhookUrl),
                     interval: nil,
@@ -82,7 +84,7 @@ struct Penny {
                 disabledInDebug: true
             )
         )
-        LoggingSystem.bootstrapWithDiscordLogger(
+        await LoggingSystem.bootstrapWithDiscordLogger(
             address: try! .url(webhookUrl),
             level: .trace,
             makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
