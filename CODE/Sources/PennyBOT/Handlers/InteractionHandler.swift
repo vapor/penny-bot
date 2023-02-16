@@ -64,7 +64,7 @@ struct InteractionHandler {
             let rolesString = Constants.TechnicalRoles.allCases.map {
                 DiscordUtils.roleMention(id: $0.rawValue)
             }.joined(separator: " ")
-            return "Sorry, this functionality is currently restricted to members with any of these roles: \(rolesString)"
+            return "Sorry, this functionality is currently restricted to members with any of these roles, to make sure Penny can handle the load: \(rolesString)"
         }
         if options.isEmpty {
             logger.error("Discord did not send required interaction info")
