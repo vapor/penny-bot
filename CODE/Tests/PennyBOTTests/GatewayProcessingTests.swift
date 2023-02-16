@@ -41,7 +41,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .createApplicationGlobalCommand(appId: "11111111")
         )
         
-        let slashCommand = try XCTUnwrap(response as? ApplicationCommand)
+        let slashCommand = try XCTUnwrap(response as? RequestBody.ApplicationCommandCreate)
         XCTAssertEqual(slashCommand.name, "link")
     }
     
