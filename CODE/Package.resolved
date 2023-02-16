@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "7f05a8da46cc2a4ab43218722298b81ac7a08031",
-        "version" : "1.13.2"
+        "revision" : "864c8d9e0ead5de7ba70b61c8982f89126710863",
+        "version" : "1.15.0"
       }
     },
     {
@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "4dda55238a85efb98de71df86c4103b33ef9626b",
-        "version" : "1.0.0-beta.35"
+        "revision" : "888ca560c9ceb447224e3d258dfe1ef59f1895ff",
+        "version" : "1.0.0-beta.37"
       }
     },
     {
@@ -68,8 +68,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-events.git",
       "state" : {
-        "branch" : "main",
-        "revision" : "a374581e7a2bd1fb3a2bb3ee22be78e397513ce7"
+        "revision" : "8e836e0893bc906fafd6b09e1c46a7efcc441fd5",
+        "version" : "0.1.0"
       }
     },
     {
@@ -149,8 +149,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-http2.git",
       "state" : {
-        "revision" : "22757ac305f3d44d2b99ba541193ff1d64e77d00",
-        "version" : "1.24.1"
+        "revision" : "8dcda6828844022028025241e4e7d52cbbe250de",
+        "version" : "1.25.0"
       }
     },
     {

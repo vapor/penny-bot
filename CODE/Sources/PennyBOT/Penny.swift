@@ -20,7 +20,7 @@ struct Penny {
             try! eventLoopGroup.syncShutdownGracefully()
         }
         
-        /// Can't use `RunLoop.main.run()` if I mark `static func main()` with `async`.
+        /// Can't use `RunLoop.main.run()` if we mark `static func main()` with `async`.
         /// This is to work around that.
         try! eventLoopGroup.next().makeFutureWithTask {
             await start(eventLoopGroup: eventLoopGroup, client: client)

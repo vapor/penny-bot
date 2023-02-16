@@ -13,15 +13,15 @@ struct InteractionHandler {
     }
     
     private func processAndMakeResponse() -> String {
-        guard let name = event.data?.name else {
+        guard case let .applicationCommand(data) = event.data else {
             logger.error("Discord did not send required interaction info", metadata: [
-                "id": .stringConvertible(1),
+                "id": .stringConvertible(0),
                 "event": "\(event)"
             ])
             return "Failed to recognize the interaction"
         }
-        let options = event.data?.options ?? []
-        switch name {
+        let options = data.options ?? []
+        switch data.name {
         case "link":
             if options.isEmpty {
                 logger.error("Discord did not send required interaction info", metadata: [
