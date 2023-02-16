@@ -14,24 +14,28 @@ struct InteractionHandler {
     }
     
     func handle() async {
-        guard let kind = SlashCommandKind(name: event.data?.name) else {
+        guard case let .applicationCommand(data) = event.data,
+              let kind = SlashCommandKind(name: data.name) else {
             logger.error("Unrecognized command")
             return await sendInteractionNameResolveFailure()
         }
         guard await sendInteractionAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
-        let response = await processAndMakeResponse(kind: kind)
+        let response = await processAndMakeResponse(kind: kind, data: data)
         await respond(with: response)
     }
     
-    private func processAndMakeResponse(kind: SlashCommandKind) async -> String {
-        let options = event.data?.options ?? []
+    private func processAndMakeResponse(
+        kind: SlashCommandKind,
+        data: Interaction.ApplicationCommand
+    ) async -> String {
+        let options = data.options ?? []
         switch kind {
         case .link: return handleLinkCommand(options: options)
         case .automatedPings: return await handlePingsCommand(options: options)
         }
     }
     
-    func handleLinkCommand(options: [Interaction.Data.Option]) -> String {
+    func handleLinkCommand(options: [Interaction.ApplicationCommand.Option]) -> String {
         if options.isEmpty {
             logger.error("Discord did not send required info")
             return "Please provide more options"
@@ -54,7 +58,7 @@ struct InteractionHandler {
         }
     }
     
-    func handlePingsCommand(options: [Interaction.Data.Option]) async -> String {
+    func handlePingsCommand(options: [Interaction.ApplicationCommand.Option]) async -> String {
         guard let member = event.member else {
             logger.error("Discord did not send required info")
             return "Sorry something went wrong :("
@@ -182,7 +186,7 @@ private enum SlashCommandKind {
         }
     }
     
-    init? (name: String?) {
+    init? (name: String) {
         switch name {
         case "link": self = .link
         case "automated-pings": self = .automatedPings

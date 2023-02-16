@@ -6,6 +6,14 @@ import NIOCore
 import AsyncHTTPClient
 import Backtrace
 
+import DiscordBM
+import Foundation
+import Logging
+import NIOPosix
+import NIOCore
+import AsyncHTTPClient
+import Backtrace
+
 @main
 struct Penny {
     
@@ -20,35 +28,41 @@ struct Penny {
             try! eventLoopGroup.syncShutdownGracefully()
         }
         
-        bootstrapLoggingSystem(httpClient: client)
+        /// Can't use `RunLoop.main.run()` if we mark `static func main()` with `async`.
+        /// This is to work around that.
+        try! eventLoopGroup.next().makeFutureWithTask {
+            await start(eventLoopGroup: eventLoopGroup, client: client)
+        }.wait()
+        
+        RunLoop.main.run()
+    }
+    
+    static func start(eventLoopGroup: EventLoopGroup, client: HTTPClient) async {
+        await bootstrapLoggingSystem(httpClient: client)
         
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         
-        Task {
-            let cache = await BotFactory.makeCache(bot)
-            
-            await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
-            await DefaultPingsService.shared.initialize(httpClient: client)
-            await BotStateManager.shared.initialize()
-            
-            await bot.addEventHandler { event in
-                EventHandler(
-                    event: event,
-                    coinService: ServiceFactory.makeCoinService(client)
-                ).handle()
-            }
-            
-            await bot.connect()
-            
-            await SlashCommandHandler().registerCommands()
+        let cache = await BotFactory.makeCache(bot)
+        
+        await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
+        await DefaultPingsService.shared.initialize(httpClient: client)
+        await BotStateManager.shared.initialize()
+        
+        await bot.addEventHandler { event in
+            EventHandler(
+                event: event,
+                coinService: ServiceFactory.makeCoinService(client)
+            ).handle()
         }
         
-        RunLoop.current.run()
+        await bot.connect()
+        
+        await SlashCommandHandler().registerCommands()
     }
     
-    static func bootstrapLoggingSystem(httpClient: HTTPClient) {
+    static func bootstrapLoggingSystem(httpClient: HTTPClient) async {
 #if DEBUG
-        // Discord-logging is disabled in debug based in the logger configuration,
+        // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use a fake url.
         let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 #else
@@ -56,15 +70,9 @@ struct Penny {
             fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
         }
 #endif
-        LoggingSystem.bootstrapWithDiscordLogger(
-            address: try! .url(webhookUrl),
-            level: .trace,
-            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
-        )
         DiscordGlobalConfiguration.logManager = DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
-                fallbackLogger: Logger(label: "DiscordBMFallback"),
                 aliveNotice: .init(
                     address: try! .url(webhookUrl),
                     interval: nil,
@@ -80,6 +88,11 @@ struct Penny {
                 disabledLogLevels: [.debug, .trace],
                 disabledInDebug: true
             )
+        )
+        await LoggingSystem.bootstrapWithDiscordLogger(
+            address: try! .url(webhookUrl),
+            level: .trace,
+            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
         )
     }
 }

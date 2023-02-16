@@ -165,7 +165,7 @@ actor DiscordService {
         }
     }
     
-    func createSlashCommand(payload: ApplicationCommand) async {
+    func createSlashCommand(payload: RequestBody.ApplicationCommandCreate) async {
         do {
             let response = try await discordClient.createApplicationGlobalCommand(
                 payload: payload

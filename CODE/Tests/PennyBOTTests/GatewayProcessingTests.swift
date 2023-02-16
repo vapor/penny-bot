@@ -55,7 +55,7 @@ class GatewayProcessingTests: XCTestCase {
         let commandNames = ["link", "automated-pings"]
         
         for response in responses {
-            let slashCommand = try XCTUnwrap(response as? ApplicationCommand)
+            let slashCommand = try XCTUnwrap(response as? RequestBody.ApplicationCommandCreate)
             XCTAssertTrue(commandNames.contains(slashCommand.name), slashCommand.name)
         }
     }
