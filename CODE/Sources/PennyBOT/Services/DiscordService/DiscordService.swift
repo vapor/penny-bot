@@ -8,13 +8,23 @@ actor DiscordService {
     private var logger = Logger(label: "DiscordService")
     /// `[UserDiscordID: DMChannelID]`
     private var channels: [String: String] = [:]
-    var vaporGuild: Gateway.GuildCreate? {
+    private var vaporGuild: Gateway.GuildCreate? {
         get async {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
                 let guilds = await cache.guilds
                 logger.error("Cannot get cached vapor guild", metadata: ["guilds": "\(guilds)"])
                 return nil
             }
+            
+            /// This could cause problems so we need to somehow keep an eye on it.
+            /// `Array.count` is O(1) so not really a problem to do this.
+            let memberCount = guild.members.count
+            if memberCount < 1_000 {
+                logger.error("Vapor guild only has \(memberCount) members?!", metadata: [
+                    "guild": "\(guild)"
+                ])
+            }
+            
             return guild
         }
     }
@@ -137,12 +147,11 @@ actor DiscordService {
         payload: RequestBody.InteractionResponse
     ) async -> Bool {
         do {
-            let response = try await discordClient.createInteractionResponse(
+            try await discordClient.createInteractionResponse(
                 id: id,
                 token: token,
                 payload: payload
-            )
-            try response.guardIsSuccessfulResponse()
+            ).guardIsSuccessfulResponse()
             return true
         } catch {
             logger.error("Couldn't send interaction response", metadata: ["error": "\(error)"])
@@ -155,11 +164,10 @@ actor DiscordService {
         payload: RequestBody.InteractionResponse.CallbackData
     ) async {
         do {
-            let response = try await discordClient.editInteractionResponse(
+            try await discordClient.editInteractionResponse(
                 token: token,
                 payload: payload
-            )
-            try response.guardIsSuccessfulResponse()
+            ).guardIsSuccessfulResponse()
         } catch {
             logger.error("Couldn't send interaction edit", metadata: ["error": "\(error)"])
         }
@@ -167,10 +175,9 @@ actor DiscordService {
     
     func createSlashCommand(payload: RequestBody.ApplicationCommandCreate) async {
         do {
-            let response = try await discordClient.createApplicationGlobalCommand(
+            try await discordClient.createApplicationGlobalCommand(
                 payload: payload
-            )
-            try response.guardIsSuccessfulResponse()
+            ).guardIsSuccessfulResponse()
         } catch {
             logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
         }

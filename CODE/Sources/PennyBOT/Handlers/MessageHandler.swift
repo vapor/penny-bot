@@ -107,6 +107,8 @@ struct MessageHandler {
                let users = wordUsersDict[word] {
                 for user in users {
                     let plainId = user.makePlainUserID()
+                    /// Both checks if the user has the required roles,
+                    /// and if the user is in the guild at all.
                     if await DiscordService.shared.userHasAnyTechnicalRoles(userId: plainId) {
                         usersToPing[user, default: []].insert(innerValue)
                     }
