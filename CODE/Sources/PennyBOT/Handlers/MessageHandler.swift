@@ -71,16 +71,19 @@ struct MessageHandler {
         
         if successfulResponses.isEmpty {
             // Definitely there were some coin requests that failed.
-            await self.respond(with: "Oops. Something went wrong! Please try again later")
+            await self.respondToThanks(with: "Oops. Something went wrong! Please try again later")
         } else {
             // Stitch responses together instead of sending a lot of messages,
             // to consume less Discord rate-limit.
             let finalResponse = successfulResponses.joined(separator: "\n")
             // Discord doesn't like embed-descriptions with more than 4_000 content length.
             if finalResponse.unicodeScalars.count > 4_000 {
-                await self.respond(with: "Coins were granted to a lot of members!")
+                logger.warning("Can't send the full thanks-response", metadata: [
+                    "full": .string(finalResponse)
+                ])
+                await self.respondToThanks(with: "Coins were granted to a lot of members!")
             } else {
-                await self.respond(with: finalResponse)
+                await self.respondToThanks(with: finalResponse)
             }
         }
     }
@@ -113,8 +116,9 @@ struct MessageHandler {
         let _usersToPing = usersToPing
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
         Task {
+            /// Don't need any throttling for now, `DiscordBM` will
+            /// do enough and won't exceed rate-limits.
             for (user, words) in _usersToPing {
-                try await Task.sleep(for: .milliseconds(250))
                 let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
                 await DiscordService.shared.sendDM(
                     userId: user,
@@ -133,7 +137,7 @@ struct MessageHandler {
         }
     }
     
-    private func respond(with response: String) async {
+    private func respondToThanks(with response: String) async {
         await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.id,
