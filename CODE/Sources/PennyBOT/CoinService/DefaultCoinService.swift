@@ -22,7 +22,13 @@ struct DefaultCoinService: CoinService {
         logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
         
         guard (200..<300).contains(response.status.code) else {
-            logger.error("Post-coin failed", metadata: ["response": "\(response)"])
+            let collected = try await response.body.collect(upTo: 1 << 32)
+            let body = String(buffer: collected)
+            logger.error( "Post-coin failed", metadata: [
+                "status": "\(response.status)",
+                "headers": "\(response.headers)",
+                "body": "\(body)",
+            ])
             throw ServiceError.badStatus
         }
         
