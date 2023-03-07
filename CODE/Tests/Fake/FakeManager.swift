@@ -20,10 +20,11 @@ public actor FakeManager: GatewayManager {
         self._state.store(.connected, ordering: .relaxed)
         connectionWaiter?.resume()
     }
-    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) { }
+
+    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func updatePresence(payload: Gateway.Identify.Presence) async { }
     public func updateVoiceState(payload: VoiceStateUpdate) async { }
-    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) {
+    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
         eventHandlers.append(handler)
     }
     public func addEventParseFailureHandler(_ handler: @escaping (Error, ByteBuffer) -> Void) { }
