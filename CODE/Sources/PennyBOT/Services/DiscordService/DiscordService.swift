@@ -17,7 +17,7 @@ actor DiscordService {
             }
             
             /// This could cause problems so we need to somehow keep an eye on it.
-            /// `Array.count` is O(1) so not really a problem to do this.
+            /// `Array.count` is O(1) so this is fine.
             let memberCount = guild.members.count
             if memberCount < 1_000 {
                 logger.error("Vapor guild only has \(memberCount) members?!", metadata: [
@@ -68,7 +68,7 @@ actor DiscordService {
                 channelId: channelId,
                 payload: payload
             )
-            try response.guardIsSuccessfulResponse()
+            try response.guardSuccess()
             return response
         } catch {
             logger.error("Couldn't send a message", metadata: ["error": "\(error)"])
@@ -131,7 +131,7 @@ actor DiscordService {
                 messageId: messageId,
                 payload: payload
             )
-            try response.guardIsSuccessfulResponse()
+            try response.guardSuccess()
             return response
         } catch {
             logger.error("Couldn't edit a message", metadata: ["error": "\(error)"])
@@ -151,7 +151,7 @@ actor DiscordService {
                 id: id,
                 token: token,
                 payload: payload
-            ).guardIsSuccessfulResponse()
+            ).guardSuccess()
             return true
         } catch {
             logger.error("Couldn't send interaction response", metadata: ["error": "\(error)"])
@@ -167,7 +167,7 @@ actor DiscordService {
             try await discordClient.editInteractionResponse(
                 token: token,
                 payload: payload
-            ).guardIsSuccessfulResponse()
+            ).guardSuccess()
         } catch {
             logger.error("Couldn't send interaction edit", metadata: ["error": "\(error)"])
         }
@@ -177,7 +177,7 @@ actor DiscordService {
         do {
             try await discordClient.createApplicationGlobalCommand(
                 payload: payload
-            ).guardIsSuccessfulResponse()
+            ).guardSuccess()
         } catch {
             logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
         }

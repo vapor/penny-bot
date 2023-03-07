@@ -13,7 +13,6 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
-        DiscordGlobalConfiguration.enableLoggingDuringDecode = false
         /// Fake webhook url
         Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
@@ -138,18 +137,18 @@ class GatewayProcessingTests: XCTestCase {
         await ReactionCache.shared.invalidateCachesIfNeeded(
             event: .init(
                 id: "1313",
-                // Based on how the function works right now, only `channel_id` matters
+                /// Based on how the function works right now, only `channel_id` matters
                 channel_id: "684159753189982218",
                 content: "",
                 timestamp: .fake,
                 tts: false,
                 mention_everyone: false,
-                mentions: [],
                 mention_roles: [],
                 attachments: [],
                 embeds: [],
                 pinned: false,
-                type: .default
+                type: .default,
+                mentions: []
             )
         )
         
