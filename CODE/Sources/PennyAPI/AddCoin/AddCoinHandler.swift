@@ -5,10 +5,6 @@ import SotoCore
 import PennyServices
 import PennyModels
 
-struct FailedToShutdownAWSError: Error {
-    let message = "Failed to shutdown the AWS Client"
-}
-
 @main
 struct AddCoinHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request

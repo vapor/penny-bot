@@ -6,11 +6,7 @@ import PennyModels
 import PennyRepositories
 import NIOConcurrencyHelpers
 
-struct FailedToShutdownAWSError: Error {
-    let message = "Failed to shutdown the AWS Client"
-}
-
-/// So the s3-file-updates happen in a sequential order
+/// So the s3-file-updates happen in a sequential order?
 private let autoPingLock = NIOLock()
 
 @main
