@@ -18,6 +18,9 @@ struct MessageHandler {
     }
     
     func handle() async {
+        // Stop the bot from responding to other bots and itself
+        if event.author?.bot == true { return }
+        
         await checkForNewCoins()
         await checkForPings()
     }
@@ -25,11 +28,6 @@ struct MessageHandler {
     func checkForNewCoins() async {
         guard let author = event.author else {
             logger.error("Cannot find author of the message")
-            return
-        }
-        
-        // Stop the bot from responding to other bots and itself
-        if author.bot == true {
             return
         }
         
