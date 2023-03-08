@@ -246,7 +246,7 @@ Resources:
       RouteKey: 'POST /auto-pings'
       Target: !Sub "integrations/${autoPingsIntegration}"
 
-  autoPingsRoute:
+  autoPingsFunction:
     Type: AWS::Lambda::Function
     Properties:
       Code:
