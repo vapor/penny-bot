@@ -12,6 +12,10 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed when a new sponsor joins
     Default: SponsorLambda
+  AutoPingsFilename:
+    Type: String
+    Description: Filename containing the code to be executed for auto-pings
+    Default: AutoPingsLambda
   VPC:
     Description: VPC for the app
     Type: AWS::EC2::VPC::Id
@@ -221,6 +225,46 @@ Resources:
     Properties:
       LogGroupName: /aws/lambda/PennyLambda
       RetentionInDays: 30
+      
+  # Auto-Pings lambda config
+    
+  autoPingsIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda Auto-Pings Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt autoPingsFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  autoPingsRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /auto-pings'
+      Target: !Sub "integrations/${autoPingsIntegration}"
+
+  autoPingsRoute:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-discord-bot
+        S3Key: !Sub ${AutoPingsFilename}.zip
+      FunctionName: !Sub ${AutoPingsFilename}-lambda
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+
+  lambdaAutoPingsRoutePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub ${AutoPingsFilename}-lambda
+      Principal: apigateway.amazonaws.com
+    DependsOn:
+      - autoPingsFunction
 
   dynamoUserTable:
     Type: AWS::DynamoDB::Table
@@ -274,6 +318,9 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
 Outputs:
+  autoPingsLambdaArn:
+    Value: !GetAtt autoPingsFunction.Arn
+
   sponsorsLambdaArn:
     Value: !GetAtt sponsorsFunction.Arn
 
