@@ -14,11 +14,16 @@ private let coinSignEmojis = [
 ]
 
 struct ReactionHandler {
-    let discordClient: any DiscordClient
     let coinService: any CoinService
-    let logger: Logger
+    var logger = Logger(label: "ReactionHandler")
     let event: Gateway.MessageReactionAdd
     private var cache: ReactionCache { .shared }
+    
+    init(coinService: any CoinService, event: Gateway.MessageReactionAdd) {
+        self.coinService = coinService
+        self.event = event
+        self.logger[metadataKey: "event"] = "\(event)"
+    }
     
     func handle() async {
         guard let member = event.member,
@@ -32,7 +37,6 @@ struct ReactionHandler {
               ), let receiverId = await cache.getAuthorId(
                 channelId: event.channel_id,
                 messageId: event.message_id,
-                client: discordClient,
                 logger: logger
               ), user.id != receiverId
         else { return }
@@ -81,37 +85,27 @@ struct ReactionHandler {
     
     /// `senderName` only should be included if its not a error-response.
     private func respond(with response: String, senderName: String?) async {
+        let apiResponse = await DiscordService.shared.sendThanksResponse(
+            channelId: event.channel_id,
+            replyingToMessageId: event.message_id,
+            response: response
+        )
         do {
-            let apiResponse = try await discordClient.createMessage(
-                channelId: event.channel_id,
-                payload: .init(
-                    embeds: [.init(
-                        description: response,
-                        color: .vaporPurple
-                    )],
-                    message_reference: .init(
-                        message_id: event.message_id,
-                        channel_id: event.channel_id,
-                        guild_id: event.guild_id,
-                        fail_if_not_exists: false
-                    )
+            if let senderName,
+               let decoded = try apiResponse?.decode() {
+                await cache.didRespond(
+                    in: event.channel_id,
+                    to: event.message_id,
+                    with: decoded.id,
+                    senderName: senderName
                 )
-            )
-            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.report("Received non-200 status from Discord API", response: apiResponse)
-            } else {
-                if let senderName {
-                    let decoded = try apiResponse.decode()
-                    await cache.didRespond(
-                        in: event.channel_id,
-                        to: event.message_id,
-                        with: decoded.id,
-                        senderName: senderName
-                    )
-                }
             }
         } catch {
-            logger.error("Discord Client error", metadata: ["error": "\(error)"])
+            self.logger.report(
+                "ReactionHandler could not decode message after send",
+                response: apiResponse,
+                metadata: ["error": "\(error)"]
+            )
         }
     }
     
@@ -121,32 +115,32 @@ struct ReactionHandler {
         with response: String,
         senderName: String?
     ) async {
-        do {
-            let apiResponse = try await discordClient.editMessage(
-                channelId: event.channel_id,
-                messageId: messageId,
-                payload: .init(
-                    embeds: [.init(
-                        description: response,
-                        color: .vaporPurple
-                    )]
-                )
+        let apiResponse = await DiscordService.shared.editMessage(
+            messageId: messageId,
+            channelId: event.channel_id,
+            payload: .init(
+                embeds: [.init(
+                    description: response,
+                    color: .vaporPurple
+                )]
             )
-            if !(200..<300).contains(apiResponse.httpResponse.status.code) {
-                logger.report("Received non-200 status from Discord API", response: apiResponse)
-            } else {
-                if let senderName {
-                    let decoded = try apiResponse.decode()
-                    await cache.didRespond(
-                        in: event.channel_id,
-                        to: event.message_id,
-                        with: decoded.id,
-                        senderName: senderName
-                    )
-                }
+        )
+        do {
+            if let senderName,
+               let decoded = try apiResponse?.decode() {
+                await cache.didRespond(
+                    in: event.channel_id,
+                    to: event.message_id,
+                    with: decoded.id,
+                    senderName: senderName
+                )
             }
         } catch {
-            logger.error("Discord Client error", metadata: ["error": "\(error)"])
+            self.logger.report(
+                "ReactionHandler could not decode message after edit",
+                response: apiResponse,
+                metadata: ["error": "\(error)"]
+            )
         }
     }
 }
@@ -172,38 +166,36 @@ actor ReactionCache {
     fileprivate func getAuthorId(
         channelId: String,
         messageId: String,
-        client: any DiscordClient,
         logger: Logger
     ) async -> String? {
         if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
-            do {
-                let message = try await client.getChannelMessage(
-                    channelId: channelId,
-                    messageId: messageId
-                ).decode()
-                if let authorId = message.author?.id {
-                    cachedAuthorIds[messageId] = authorId
-                    return authorId
-                } else {
-                    logger.error("ReactionCache could not find a message's author id", metadata: [
-                        "message": "\(message)"
-                    ])
-                    return nil
-                }
-            } catch {
+            guard let message = await DiscordService.shared.getChannelMessage(
+                channelId: channelId,
+                messageId: messageId
+            ) else {
                 logger.error("ReactionCache could not find a message's author id", metadata: [
-                    "error": "\(error)"
+                    "channelId": .string(channelId),
+                    "messageId": .string(messageId),
+                ])
+                return nil
+            }
+            if let authorId = message.author?.id {
+                cachedAuthorIds[messageId] = authorId
+                return authorId
+            } else {
+                logger.error("ReactionCache could not find a message's author id", metadata: [
+                    "message": "\(message)"
                 ])
                 return nil
             }
         }
     }
     
-    /// This is to prevent spams. In case someone removes their reaction and reacts again,
-    /// we should not give coins to message's author anymore.
-    fileprivate func canGiveCoin(
+    /// This is to prevent spams. In case someone removes their reaction and
+    /// reacts again, we should not give coins to message's author anymore.
+    func canGiveCoin(
         fromSender senderId: String,
         toAuthorOfMessage messageId: String
     ) -> Bool {

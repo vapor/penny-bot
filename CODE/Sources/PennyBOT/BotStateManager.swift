@@ -11,8 +11,7 @@ import Logging
  */
 actor BotStateManager {
     
-    var discordClient: (any DiscordClient)!
-    var logger: Logger!
+    var logger = Logger(label: "BotStateManager")
     var canRespond = true
     let id = Int(Date().timeIntervalSince1970)
     
@@ -23,9 +22,7 @@ actor BotStateManager {
     
     private init() { }
     
-    func initialize(discordClient: any DiscordClient, logger: Logger) {
-        self.discordClient = discordClient
-        self.logger = logger
+    func initialize() {
         self.logger[metadataKey: "id"] = "\(self.id)"
         Task { await sendSignal() }
     }
@@ -57,21 +54,10 @@ actor BotStateManager {
     }
     
     private func sendSignal() async {
-        // The DiscordClient will retry the request too in some situations,
-        // so we shouldn't need to retry it ourselves.
-        do {
-            let response = try await discordClient.createMessage(
-                channelId: Constants.logsChannelId,
-                payload: .init(content: signal + " \(self.id)")
-            )
-            do {
-                try response.guardIsSuccessfulResponse()
-            } catch {
-                logger.report("BotStateManager received bad response", response: response)
-            }
-        } catch {
-            logger.error("BotStateManager received error", metadata: ["error": "\(error)"])
-        }
+        await DiscordService.shared.sendMessage(
+            channelId: Constants.logsChannelId,
+            payload: .init(content: signal + " \(self.id)")
+        )
     }
     
 #if DEBUG

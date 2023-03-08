@@ -4,13 +4,8 @@ import Logging
 import PennyModels
 
 struct DefaultCoinService: CoinService {
-    
-    enum ServiceError: Error {
-        case badStatus
-    }
-    
     let httpClient: HTTPClient
-    let logger: Logger
+    let logger = Logger(label: "DefaultCoinService")
     
     func postCoin(with coinRequest: CoinRequest) async throws -> CoinResponse {
         var request = HTTPClientRequest(url: "\(Constants.coinServiceBaseUrl!)/coin")

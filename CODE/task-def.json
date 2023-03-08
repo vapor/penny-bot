@@ -28,6 +28,10 @@
                 {
                     "name": "BOT_APP_ID",
                     "value": "950695294906007573"
+                },
+                {
+                    "name": "PINGS_API_BASE_URL",
+                    "value": "CHANGE_ME.com"
                 }
             ],
             "secrets": [

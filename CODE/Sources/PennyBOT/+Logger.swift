@@ -18,7 +18,7 @@ extension DiscordClientResponse: LoggableHTTPResponse {
 
 extension Logger {
     func report(_ message: @autoclosure () -> Logger.Message,
-                response: @autoclosure () -> LoggableHTTPResponse,
+                response: @autoclosure () -> LoggableHTTPResponse?,
                 metadata: @autoclosure () -> Logger.Metadata? = nil,
                 source: @autoclosure () -> String? = nil,
                 file: String = #fileID, function: String = #function, line: UInt = #line) {
@@ -28,15 +28,15 @@ extension Logger {
             level: .error,
             message(),
             metadata: [
-                "status": "\(response.status)",
-                "body": "\(String(buffer: response.body ?? .init()))",
+                "status": "\(String(describing: response?.status))",
+                "body": "\(String(buffer: response?.body ?? .init()))",
             ].merging(metadata, uniquingKeysWith: { a, _ in a }),
             source: source(), file: file, function: function, line: line)
         self.log(
             level: .debug,
             message(),
             metadata: [
-                "response": "\(response)",
+                "response": "\(String(describing: response))",
             ].merging(metadata, uniquingKeysWith: { a, _ in a }),
             source: source(), file: file, function: function, line: line)
     }

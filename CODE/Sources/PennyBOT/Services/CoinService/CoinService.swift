@@ -1,5 +1,5 @@
 import PennyModels
 
-public protocol CoinService {
+protocol CoinService {
     func postCoin(with coinRequest: CoinRequest) async throws -> CoinResponse
 }

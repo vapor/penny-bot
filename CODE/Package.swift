@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
-        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.37"),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.40"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
@@ -47,7 +47,9 @@ let package = Package(
                 .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
-            ]),
+                "PennyRepositories"
+            ]
+        ),
         .executableTarget(
             name: "SponsorLambda",
             dependencies: [
@@ -60,6 +62,17 @@ let package = Package(
                 "PennyServices",
             ],
             path: "./Sources/PennyAPI/Sponsors"
+        ),
+        .executableTarget(
+            name: "AutoPingLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                "PennyExtensions",
+                "PennyServices",
+                "PennyModels",
+            ],
+            path: "./Sources/PennyAPI/AutoPing"
         ),
         .target(
             name: "PennyExtensions",
@@ -77,6 +90,7 @@ let package = Package(
             name: "PennyRepositories",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoS3", package: "soto"),
                 "PennyModels",
                 "PennyExtensions"
             ],

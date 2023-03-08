@@ -1,5 +1,6 @@
 @testable import PennyBOT
 @testable import DiscordModels
+import DiscordGateway
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
@@ -15,34 +16,47 @@ class GatewayProcessingTests: XCTestCase {
         /// Fake webhook url
         Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
-        Constants.botId = "1016612301262041098"
-        LambdaHandlerStorage.coinLambdaHandlerType = FakeCoinLambdaHandler.self
-        RepositoryFactory.makeUserRepository = { _ in
-            FakeUserRepository()
-        }
-        Constants.coinServiceBaseUrl = "https://fake.com"
-        ServiceFactory.makeCoinService = { _, _ in
-            FakeCoinService()
-        }
+        Constants.botId = "950695294906007573"
+        RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
+        RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
+        Constants.pingsServiceBaseUrl = "https://fake.com"
+        ServiceFactory.makePingsService = { FakePingsService() }
+        Constants.coinServiceBaseUrl = "https://fake2.com"
+        ServiceFactory.makeCoinService = { _ in FakeCoinService() }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache.tests_reset()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
+        BotFactory.makeCache = {
+            var storage = DiscordCache.Storage()
+            storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
+            return await DiscordCache(
+                gatewayManager: $0,
+                intents: [.guilds, .guildMembers],
+                requestAllMembers: .enabled,
+                storage: storage
+            )
+        }
+        await stateManager.tests_reset()
         // Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         // the fake manager is ready. That's why we need to use `waitUntilConnected()`.
-        await stateManager.tests_reset()
         await Penny.main()
         await manager.waitUntilConnected()
     }
     
     func testSlashCommandsRegisterOnStartup() async throws {
-        let response = await responseStorage.awaitResponse(
-            at: .createApplicationGlobalCommand(appId: "11111111")
-        )
+        let responses = await [
+            responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111")),
+            responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111"))
+        ]
         
-        let slashCommand = try XCTUnwrap(response as? RequestBody.ApplicationCommandCreate)
-        XCTAssertEqual(slashCommand.name, "link")
+        let commandNames = ["link", "automated-pings"]
+        
+        for response in responses {
+            let slashCommand = try XCTUnwrap(response as? RequestBody.ApplicationCommandCreate)
+            XCTAssertTrue(commandNames.contains(slashCommand.name), slashCommand.name)
+        }
     }
     
     func testMessageHandler() async throws {
@@ -123,18 +137,18 @@ class GatewayProcessingTests: XCTestCase {
         await ReactionCache.shared.invalidateCachesIfNeeded(
             event: .init(
                 id: "1313",
-                // Based on how the function works right now, only `channel_id` matters
-                channel_id: "966722151359057911",
+                /// Based on how the function works right now, only `channel_id` matters
+                channel_id: "684159753189982218",
                 content: "",
                 timestamp: .fake,
                 tts: false,
                 mention_everyone: false,
-                mentions: [],
                 mention_roles: [],
                 attachments: [],
                 embeds: [],
                 pinned: false,
-                type: .default
+                type: .default,
+                mentions: []
             )
         )
         
@@ -154,6 +168,23 @@ class GatewayProcessingTests: XCTestCase {
             ))
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
+    }
+    
+    func testRespondsInThanksChannelWhenDoesNotHavePermission() async throws {
+        let response = try await manager.sendAndAwaitResponse(
+            key: .thanksMessage2,
+            as: RequestBody.CreateMessage.self
+        )
+        
+        let description = try XCTUnwrap(response.embeds?.first?.description)
+        let lines = description.split(separator: "\n")
+        
+        let line1 = try XCTUnwrap(lines.first)
+        XCTAssertEqual(line1, "https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042")
+        
+        let line2 = try XCTUnwrap(lines.last)
+        XCTAssertTrue(line2.hasPrefix("<@950695294906007573> now has "))
+        XCTAssertTrue(line2.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
     }
     
     func testBotStateManagerSendsSignalOnStartUp() async throws {
@@ -192,6 +223,38 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let canRespond = await stateManager.canRespond(to: testEvent)
             XCTAssertEqual(canRespond, true)
+        }
+    }
+    
+    func testAutoPings() async throws {
+        let event = EventKey.autoPingsTrigger
+        await manager.send(key: event)
+        let (createDM1, createDM2, sendDM1, sendDM2) = await (
+            responseStorage.awaitResponse(at: event.responseEndpoints[0]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[1], expectFailure: true),
+            responseStorage.awaitResponse(at: event.responseEndpoints[2]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[3], expectFailure: true)
+        )
+        
+        let recipients = ["950695294906007573", "432065887202181142"]
+        
+        do {
+            let dmPayload = try XCTUnwrap(createDM1 as? RequestBody.CreateDM, "\(createDM1)")
+            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
+        }
+        
+        do {
+            let dmMessage = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
+            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+        }
+        
+        do {
+            /// These two must fail because user does not have enough permissions to receive pings
+            let payload1: Never? = try XCTUnwrap(createDM2 as? Optional<Never>)
+            XCTAssertEqual(payload1, .none)
+            let payload2: Never? = try XCTUnwrap(sendDM2 as? Optional<Never>)
+            XCTAssertEqual(payload2, .none)
         }
     }
 }

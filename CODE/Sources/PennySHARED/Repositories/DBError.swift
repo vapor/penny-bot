@@ -5,4 +5,6 @@ public enum DBError: Error {
     case invalidRequest
     case invalidHandler
     case itemNotFound
+    case noItemsFound
+    case alreadyAvailable
 }

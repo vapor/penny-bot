@@ -3,9 +3,8 @@ import Logging
 
 struct EventHandler {
     let event: Gateway.Event
-    let discordClient: any DiscordClient
     let coinService: any CoinService
-    let logger: Logger
+    let logger = Logger(label: "EventHandler")
     
     func handle() {
         Task {
@@ -19,22 +18,14 @@ struct EventHandler {
             case .messageCreate(let message):
                 await ReactionCache.shared.invalidateCachesIfNeeded(event: message)
                 await MessageHandler(
-                    discordClient: discordClient,
                     coinService: coinService,
-                    logger: logger,
                     event: message
                 ).handle()
             case .interactionCreate(let interaction):
-                await InteractionHandler(
-                    discordClient: discordClient,
-                    logger: logger,
-                    event: interaction
-                ).handle()
+                await InteractionHandler(event: interaction).handle()
             case .messageReactionAdd(let reaction):
                 await ReactionHandler(
-                    discordClient: discordClient,
                     coinService: coinService,
-                    logger: logger,
                     event: reaction
                 ).handle()
             default: break
