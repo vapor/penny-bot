@@ -24,12 +24,9 @@ struct AddCoinHandler: LambdaHandler {
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
         self.userService = UserService(awsClient, context.logger)
-        context.terminator.register(name: "Shutdown AWS", handler: { eventloop in
-            do {
-                try awsClient.syncShutdown()
-                return eventloop.makeSucceededVoidFuture()
-            } catch {
-                return eventloop.makeFailedFuture(FailedToShutdownAWSError())
+        context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
+            eventLoop.makeFutureWithTask {
+                try await awsClient.shutdown()
             }
         })
     }

@@ -3,7 +3,7 @@ import DiscordModels
 
 public enum TestData {
     
-    private static func resource(name: String) -> Data {
+    private static func resource(named name: String) -> Data {
         let fileManager = FileManager.default
         let currentDirectory = fileManager.currentDirectoryPath
         let path = currentDirectory + "/Tests/Resources/" + name
@@ -14,12 +14,12 @@ public enum TestData {
     }
     
     public static let vaporGuild: Gateway.GuildCreate = {
-        let data = resource(name: "guild_create.json")
+        let data = resource(named: "guild_create.json")
         return try! JSONDecoder().decode(Gateway.GuildCreate.self, from: data)
     }()
     
     private static let testData: [String: Any] = {
-        let data = resource(name: "test_data.json")
+        let data = resource(named: "test_data.json")
         let object = try! JSONSerialization.jsonObject(with: data, options: [])
         return object as! [String: Any]
     }()

@@ -24,7 +24,7 @@ actor DefaultPingsService: AutoPingsService {
     
     func insert(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
-            pathParameter: id,
+            pathParameter: "users/\(id)",
             method: .PUT,
             pingRequest: .init(texts: texts)
         )
@@ -32,7 +32,7 @@ actor DefaultPingsService: AutoPingsService {
     
     func remove(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
-            pathParameter: id,
+            pathParameter: "users/\(id)",
             method: .DELETE,
             pingRequest: .init(texts: texts)
         )
@@ -65,7 +65,7 @@ actor DefaultPingsService: AutoPingsService {
         method: HTTPMethod,
         pingRequest: AutoPingRequest?
     ) async throws -> S3AutoPingItems {
-        let url = Constants.pingsServiceBaseUrl + "/" + pathParameter
+        let url = Constants.apiBaseUrl + "/auto-pings/" + pathParameter
         var request = HTTPClientRequest(url: url)
         request.method = method
         if let pingRequest {
@@ -81,11 +81,17 @@ actor DefaultPingsService: AutoPingsService {
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
         
         guard (200..<300).contains(response.status.code) else {
-            logger.error("PingsService failed", metadata: ["response": "\(response)"])
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let body = collected.map { String(buffer: $0) } ?? "nil"
+            logger.error( "Pings-service failed", metadata: [
+                "status": "\(response.status)",
+                "headers": "\(response.headers)",
+                "body": "\(body)",
+            ])
             throw ServiceError.badStatus
         }
         
-        let body = try await response.body.collect(upTo: 1024 * 1024 * 256)
+        let body = try await response.body.collect(upTo: 1 << 32)
         let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()

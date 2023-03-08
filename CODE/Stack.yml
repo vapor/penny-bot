@@ -239,11 +239,25 @@ Resources:
       IntegrationUri: !GetAtt autoPingsFunction.Arn
       PayloadFormatVersion: '2.0'
 
-  autoPingsRoute:
+  autoPingsRouteGetAll:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'POST /auto-pings'
+      RouteKey: 'GET /auto-pings/all'
+      Target: !Sub "integrations/${autoPingsIntegration}"
+
+  autoPingsRouteAddForUser:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'PUT /auto-pings/users/{id}'
+      Target: !Sub "integrations/${autoPingsIntegration}"
+
+  autoPingsRouteDeleteForUser:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'DELETE /auto-pings/users/{id}'
       Target: !Sub "integrations/${autoPingsIntegration}"
 
   autoPingsFunction:
