@@ -33,7 +33,7 @@ class GatewayProcessingTests: XCTestCase {
             storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
             return await DiscordCache(
                 gatewayManager: $0,
-                intents: [.guilds, .guildMembers],
+                intents: [.guilds],
                 requestAllMembers: .enabled,
                 storage: storage
             )
