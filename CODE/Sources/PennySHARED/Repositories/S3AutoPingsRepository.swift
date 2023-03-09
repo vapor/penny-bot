@@ -46,12 +46,21 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         let getObjectRequest = S3.GetObjectRequest(bucket: bucket, key: key)
         let response = try await s3.getObject(getObjectRequest, logger: logger)
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
-            return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
+            do {
+                return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
+            } catch {
+                let body = response.body?.asString() ?? "nil"
+                logger.error("Cannot find any data in the bucket", metadata: [
+                    "response-body": .string(body),
+                    "error": "\(error)"
+                ])
+                return S3AutoPingItems()
+            }
         } else {
-            logger.warning(
-                "Cannot find any data in the bucket",
-                metadata: ["response": "\(response)"]
-            )
+            let body = response.body?.asString() ?? "nil"
+            logger.error("Cannot find any data in the bucket", metadata: [
+                "response-body": .string(body)
+            ])
             return S3AutoPingItems()
         }
     }

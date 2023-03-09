@@ -62,18 +62,42 @@ struct AddCoinHandler: LambdaHandler {
                 fromDiscordID: product.from,
                 to: user
             )
-            let data = try JSONEncoder().encode(coinResponse)
-            let string = String(data: data, encoding: .utf8)
-            response = APIGatewayV2Response(statusCode: .ok, body: string)
+            
+            response = APIGatewayV2Response(status: .ok, content: coinResponse)
         }
         catch UserService.ServiceError.failedToUpdate {
-            response = APIGatewayV2Response(statusCode: .notFound, body: "ERROR- The user in particular wasn't found.")
+            response = APIGatewayV2Response(
+                status: .notFound,
+                content: Failure(reason: "Couldn't find the user")
+            )
         }
         catch let error {
-            response = APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
-            
+            response = APIGatewayV2Response(
+                status: .badRequest,
+                content: Failure(reason: "Error: \(error)")
+            )
         }
         return response
     }
 }
 
+extension APIGatewayV2Response {
+    init(status: HTTPResponseStatus, content: some Encodable) {
+        do {
+            let data = try JSONEncoder().encode(content)
+            let string = String(data: data, encoding: .utf8)
+            self.init(statusCode: status, body: string)
+        } catch {
+            if let data = try? JSONEncoder().encode(content) {
+                let string = String(data: data, encoding: .utf8)
+                self.init(statusCode: .internalServerError, body: string)
+            } else {
+                self.init(statusCode: .internalServerError, body: "Plain Error: \(error)")
+            }
+        }
+    }
+}
+
+struct Failure: Encodable {
+    var reason: String
+}
