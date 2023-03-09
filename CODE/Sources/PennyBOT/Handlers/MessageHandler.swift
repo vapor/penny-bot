@@ -108,9 +108,14 @@ struct MessageHandler {
                 for user in users {
                     let plainId = user.makePlainUserID()
                     /// Both checks if the user has the required roles,
-                    /// and if the user is in the guild at all.
-                    if await DiscordService.shared.userHasAnyTechnicalRoles(userId: plainId) {
-                        usersToPing[user, default: []].insert(innerValue)
+                    /// + if the user is in the guild at all,
+                    /// + if the user has read access in the channel at all.
+                    if await DiscordService.shared.userHasAnyTechnicalRoles(userId: plainId),
+                       await DiscordService.shared.userHasReadMessagesPermissionInChannel(
+                        id: event.channel_id,
+                        userId: plainId
+                       ) {
+                        usersToPing[user, default: []].insert(plainId)
                     }
                 }
             }
@@ -120,11 +125,10 @@ struct MessageHandler {
         Task {
             /// Don't need any throttling for now, `DiscordBM` will
             /// do enough and won't exceed rate-limits.
-            for (user, words) in _usersToPing {
+            for (userId, words) in _usersToPing {
                 let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
-                let userId = user.makePlainUserID()
                 /// Don't `@` someone for their own message.
-                if user == authorId { continue }
+                if userId == authorId { continue }
                 await DiscordService.shared.sendDM(
                     userId: userId,
                     payload: .init(

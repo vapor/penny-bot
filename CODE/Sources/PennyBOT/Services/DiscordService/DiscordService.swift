@@ -209,4 +209,15 @@ actor DiscordService {
             member.roles.contains($0.rawValue)
         }
     }
+    
+    func userHasReadMessagesPermissionInChannel(
+        id channelId: String,
+        userId: String
+    ) async -> Bool {
+        // FIXME: complete
+//        guard let channel = await vaporGuild?.channels.first(where: { $0.id == channelId }) else {
+//            return false
+//        }
+        return true
+    }
 }
