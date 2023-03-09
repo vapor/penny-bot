@@ -272,6 +272,12 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
+  
+  autoPingsS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: penny-auto-pings-bucket
 
   lambdaAutoPingsRoutePermission:
     Type: AWS::Lambda::Permission
