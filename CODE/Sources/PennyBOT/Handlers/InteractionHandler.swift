@@ -126,8 +126,12 @@ struct InteractionHandler {
                 if items.isEmpty {
                     return "You have not set any texts to be pinged for"
                 } else {
-                    let list = items.enumerated().map { idx, text in
-                        "**\(idx).** `\(text)`"
+                    let list = items.enumerated().map { idx, exp -> String in
+                        let escaped = DiscordUtils.escapingSpecialCharacters(
+                            exp.innerValue,
+                            forChannelType: .text
+                        )
+                        return "**\(idx + 1).** \(escaped)"
                     }.joined(separator: "\n")
                     return list
                 }
