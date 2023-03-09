@@ -47,27 +47,19 @@ struct AutoPingsHandler: LambdaHandler {
                     content: Failure(reason: "Error when getting the full list: \(error)")
                 )
             }
-        } else {
-            guard let _discordId = event.rawPath.split(separator: "/").last,
-                  _discordId.count > 10 else {
-                return APIGatewayV2Response(
-                    status: .badRequest,
-                    content: Failure(reason: "Couldn't find discord id from path: \(event.rawPath.debugDescription)")
-                )
-            }
-            let discordId = String(_discordId)
+        } else if event.rawPath.hasSuffix("users") {
             switch event.context.http.method {
             case .PUT:
                 let request: AutoPingRequest = try event.bodyObject()
                 newItems = try await pingsRepo.insert(
                     expressions: request.texts.map { .text($0) },
-                    forDiscordID: discordId
+                    forDiscordID: request.discordID
                 )
             case .DELETE:
                 let request: AutoPingRequest = try event.bodyObject()
                 newItems = try await pingsRepo.remove(
                     expressions: request.texts.map { .text($0) },
-                    forDiscordID: discordId
+                    forDiscordID: request.discordID
                 )
             default:
                 return APIGatewayV2Response(
@@ -75,6 +67,11 @@ struct AutoPingsHandler: LambdaHandler {
                     content: Failure(reason: "Unexpected method: \(event.context.http.method)")
                 )
             }
+        } else {
+            return APIGatewayV2Response(
+                status: .badRequest,
+                content: Failure(reason: "Unexpected path parameter: \(event.context.http.path)")
+            )
         }
         
         return APIGatewayV2Response(status: .ok, content: newItems)

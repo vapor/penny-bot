@@ -24,17 +24,17 @@ actor DefaultPingsService: AutoPingsService {
     
     func insert(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
-            pathParameter: "users/\(id)",
+            pathParameter: "users",
             method: .PUT,
-            pingRequest: .init(texts: texts)
+            pingRequest: .init(discordID: id, texts: texts)
         )
     }
     
     func remove(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
-            pathParameter: "users/\(id)",
+            pathParameter: "users",
             method: .DELETE,
-            pingRequest: .init(texts: texts)
+            pingRequest: .init(discordID: id, texts: texts)
         )
     }
     
