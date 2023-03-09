@@ -86,7 +86,6 @@ Resources:
       StageName: prod
       AutoDeploy: true
 
-
   apiDeployment:
     Type: AWS::ApiGatewayV2::Deployment
     Properties:
@@ -277,7 +276,7 @@ Resources:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
     Properties:
-      BucketName: penny-auto-pings-bucket
+      BucketName: penny-auto-pings-lambda
 
   lambdaAutoPingsRoutePermission:
     Type: AWS::Lambda::Permission

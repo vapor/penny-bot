@@ -7,8 +7,8 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     
     let s3: S3
     let logger: Logger
-    let bucket = "penny-auto-pings-bucket"
-    let key = "_auto-pings-repo.json"
+    let bucket = "penny-auto-pings-lambda"
+    let key = "auto-pings-repo.json"
     
     init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)

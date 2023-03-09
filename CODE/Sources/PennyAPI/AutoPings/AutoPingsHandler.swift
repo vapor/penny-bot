@@ -39,7 +39,14 @@ struct AutoPingsHandler: LambdaHandler {
         
         let newItems: S3AutoPingItems
         if event.rawPath.hasSuffix("all") {
-            newItems = try await pingsRepo.getAll()
+            do {
+                newItems = try await pingsRepo.getAll()
+            } catch {
+                return APIGatewayV2Response(
+                    status: .expectationFailed,
+                    content: Failure(reason: "Error when getting the full list: \(error)")
+                )
+            }
         } else {
             guard let _discordId = event.rawPath.split(separator: "/").last,
                   _discordId.count > 10 else {
