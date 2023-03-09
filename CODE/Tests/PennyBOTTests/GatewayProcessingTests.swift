@@ -19,9 +19,8 @@ class GatewayProcessingTests: XCTestCase {
         Constants.botId = "950695294906007573"
         RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
         RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
-        Constants.pingsServiceBaseUrl = "https://fake.com"
+        Constants.apiBaseUrl = "https://fake.com"
         ServiceFactory.makePingsService = { FakePingsService() }
-        Constants.coinServiceBaseUrl = "https://fake2.com"
         ServiceFactory.makeCoinService = { _ in FakeCoinService() }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
@@ -33,7 +32,7 @@ class GatewayProcessingTests: XCTestCase {
             storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
             return await DiscordCache(
                 gatewayManager: $0,
-                intents: [.guilds],
+                intents: [.guilds, .guildMembers],
                 requestAllMembers: .enabled,
                 storage: storage
             )

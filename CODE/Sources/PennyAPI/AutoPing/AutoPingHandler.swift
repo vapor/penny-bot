@@ -6,11 +6,7 @@ import PennyModels
 import PennyRepositories
 import NIOConcurrencyHelpers
 
-struct FailedToShutdownAWSError: Error {
-    let message = "Failed to shutdown the AWS Client"
-}
-
-/// So the s3-file-updates happen in a sequential order
+/// So the s3-file-updates happen in a sequential order?
 private let autoPingLock = NIOLock()
 
 @main
@@ -28,11 +24,8 @@ struct AutoPingHandler: LambdaHandler {
         self.awsClient = awsClient
         self.pingsRepo = RepositoryFactory.makeAutoPingsRepository((awsClient, context.logger))
         context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
-            do {
-                try awsClient.syncShutdown()
-                return eventLoop.makeSucceededVoidFuture()
-            } catch {
-                return eventLoop.makeFailedFuture(FailedToShutdownAWSError())
+            eventLoop.makeFutureWithTask {
+                try await awsClient.shutdown()
             }
         })
     }
@@ -45,18 +38,14 @@ struct AutoPingHandler: LambdaHandler {
         defer { autoPingLock.unlock() }
         
         let newItems: S3AutoPingItems
-        if event.rawPath == "/all" {
+        if event.rawPath == "/auto-pings/all" {
             newItems = try await pingsRepo.getAll()
         } else {
-            guard event.rawPath.hasPrefix("/"),
-                  !event.rawPath.dropFirst().contains("/")
-            else {
+            guard let _discordId = event.rawPath.split(separator: "/").last,
+                  _discordId.count < 10 else {
                 return APIGatewayV2Response(statusCode: .badRequest)
             }
-            let discordId = String(event.rawPath.dropFirst())
-            if discordId.count < 10 {
-                return APIGatewayV2Response(statusCode: .badRequest)
-            }
+            let discordId = String(_discordId)
             switch event.context.http.method {
             case .PUT:
                 let request: AutoPingRequest = try event.bodyObject()
