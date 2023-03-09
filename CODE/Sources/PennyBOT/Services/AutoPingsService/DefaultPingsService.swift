@@ -88,7 +88,7 @@ actor DefaultPingsService: AutoPingsService {
                 "headers": "\(response.headers)",
                 "body": "\(body)",
             ])
-            throw ServiceError.badStatus
+            throw ServiceError.badStatus(response.status)
         }
         
         let body = try await response.body.collect(upTo: 1 << 32)
