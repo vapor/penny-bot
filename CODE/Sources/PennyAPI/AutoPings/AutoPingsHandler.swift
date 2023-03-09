@@ -38,7 +38,7 @@ struct AutoPingsHandler: LambdaHandler {
         defer { autoPingLock.unlock() }
         
         let newItems: S3AutoPingItems
-        if event.rawPath == "/auto-pings/all" {
+        if event.rawPath.hasSuffix("all") {
             newItems = try await pingsRepo.getAll()
         } else {
             guard let _discordId = event.rawPath.split(separator: "/").last,
