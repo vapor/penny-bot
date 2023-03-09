@@ -39,7 +39,6 @@ actor DiscordService {
     }
     
     func sendDM(userId: String, payload: RequestBody.CreateMessage) async {
-        let userId = userId.makePlainUserID()
         guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
         await self.sendMessage(channelId: dmChannelId, payload: payload)
     }

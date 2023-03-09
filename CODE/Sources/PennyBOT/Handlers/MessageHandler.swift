@@ -88,7 +88,9 @@ struct MessageHandler {
     
     func checkForPings() async {
         if event.content.isEmpty { return }
-        guard let guildId = event.guild_id else { return }
+        guard let guildId = event.guild_id,
+              let authorId = event.author?.id
+        else { return }
         let wordUsersDict: [S3AutoPingItems.Expression: Set<String>]
         do {
             wordUsersDict = try await pingsService.getAll().items
@@ -120,8 +122,11 @@ struct MessageHandler {
             /// do enough and won't exceed rate-limits.
             for (user, words) in _usersToPing {
                 let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
+                let userId = user.makePlainUserID()
+                /// Don't `@` someone for their own message.
+                if user == authorId { continue }
                 await DiscordService.shared.sendDM(
-                    userId: user,
+                    userId: userId,
                     payload: .init(
                         embeds: [.init(
                             description: """
