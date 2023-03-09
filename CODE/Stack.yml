@@ -251,14 +251,14 @@ Resources:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'PUT /auto-pings/users/{id}'
+      RouteKey: 'PUT /auto-pings/users'
       Target: !Sub "integrations/${autoPingsIntegration}"
 
   autoPingsRouteDeleteForUser:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'DELETE /auto-pings/users/{id}'
+      RouteKey: 'DELETE /auto-pings/users'
       Target: !Sub "integrations/${autoPingsIntegration}"
 
   autoPingsFunction:

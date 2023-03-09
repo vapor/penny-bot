@@ -121,12 +121,16 @@ struct InteractionHandler {
                 try await pingsService.remove([text.foldForPingCommand()], forDiscordID: discordId)
                 return "Successfully removed `\(text)` from your pings list"
             case "list":
-                let list = try await pingsService
+                let items = try await pingsService
                     .get(discordID: discordId)
-                    .enumerated().map { idx, text in
+                if items.isEmpty {
+                    return "You have not set any texts to be pinged for"
+                } else {
+                    let list = items.enumerated().map { idx, text in
                         "**\(idx).** `\(text)`"
                     }.joined(separator: "\n")
-                return list
+                    return list
+                }
             default:
                 logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
                 return "Option not recognized: \(first.name)"
