@@ -115,7 +115,7 @@ struct MessageHandler {
                         id: event.channel_id,
                         userId: plainId
                        ) {
-                        usersToPing[user, default: []].insert(plainId)
+                        usersToPing[plainId, default: []].insert(innerValue)
                     }
                 }
             }
