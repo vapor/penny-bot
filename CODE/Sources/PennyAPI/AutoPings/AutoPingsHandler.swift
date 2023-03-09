@@ -10,7 +10,7 @@ import NIOConcurrencyHelpers
 private let autoPingLock = NIOLock()
 
 @main
-struct AutoPingHandler: LambdaHandler {
+struct AutoPingsHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
     
@@ -42,8 +42,11 @@ struct AutoPingHandler: LambdaHandler {
             newItems = try await pingsRepo.getAll()
         } else {
             guard let _discordId = event.rawPath.split(separator: "/").last,
-                  _discordId.count < 10 else {
-                return APIGatewayV2Response(statusCode: .badRequest)
+                  _discordId.count > 10 else {
+                return APIGatewayV2Response(
+                    status: .badRequest,
+                    content: Failure(reason: "Couldn't find discord id from path: \(event.rawPath.debugDescription)")
+                )
             }
             let discordId = String(_discordId)
             switch event.context.http.method {
@@ -60,13 +63,34 @@ struct AutoPingHandler: LambdaHandler {
                     forDiscordID: discordId
                 )
             default:
-                return APIGatewayV2Response(statusCode: .badRequest)
+                return APIGatewayV2Response(
+                    status: .badRequest,
+                    content: Failure(reason: "Unexpected method: \(event.context.http.method)")
+                )
             }
         }
         
-        let data = try JSONEncoder().encode(newItems)
-        let string = String(data: data, encoding: .utf8)
-        return APIGatewayV2Response(statusCode: .ok, body: string)
+        return APIGatewayV2Response(status: .ok, content: newItems)
     }
 }
 
+extension APIGatewayV2Response {
+    init(status: HTTPResponseStatus, content: some Encodable) {
+        do {
+            let data = try JSONEncoder().encode(content)
+            let string = String(data: data, encoding: .utf8)
+            self.init(statusCode: status, body: string)
+        } catch {
+            if let data = try? JSONEncoder().encode(content) {
+                let string = String(data: data, encoding: .utf8)
+                self.init(statusCode: .internalServerError, body: string)
+            } else {
+                self.init(statusCode: .internalServerError, body: "Plain Error: \(error)")
+            }
+        }
+    }
+}
+
+struct Failure: Encodable {
+    var reason: String
+}

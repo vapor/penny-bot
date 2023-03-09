@@ -77,7 +77,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "The texts you want to be pinged for, separated by a comma (`,`)",
+                    description: "The texts you want to be pinged for, separated by a comma (,)",
                     required: true
                 )]
             ),
@@ -88,7 +88,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "text",
-                    description: "The text you don't want to be notified for, anymore",
+                    description: "The text you don't want to be notified for anymore",
                     required: true
                 )]
             ),
