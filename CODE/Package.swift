@@ -64,7 +64,7 @@ let package = Package(
             path: "./Sources/PennyAPI/Sponsors"
         ),
         .executableTarget(
-            name: "AutoPingLambda",
+            name: "AutoPingsLambda",
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
@@ -72,7 +72,7 @@ let package = Package(
                 "PennyServices",
                 "PennyModels",
             ],
-            path: "./Sources/PennyAPI/AutoPing"
+            path: "./Sources/PennyAPI/AutoPings"
         ),
         .target(
             name: "PennyExtensions",
