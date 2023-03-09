@@ -17,11 +17,11 @@ jobs:
       - name: Build and zip
         run: |
           cd ./CODE 
-          ./scripts/build-and-package.sh PingsLambda
+          ./scripts/build-and-package.sh AutoPingsLambda
       - name: Remove build file
         run: |
           cd './CODE/.build/lambda/'
-          sudo rm -rf PingsLambda
+          sudo rm -rf AutoPingsLambda
       - name: Deploy to S3
         id: s3deploy
         uses: jakejarvis/s3-sync-action@master
@@ -36,9 +36,9 @@ jobs:
       - name: Update Lambda code
         run: |
           aws lambda update-function-code \
-            --function-name 'PingsLambda-lambda' \
+            --function-name 'AutoPingsLambda-lambda' \
             --s3-bucket 'penny-discord-bot' \
-            --s3-key 'PingsLambda.zip'
+            --s3-key 'AutoPingsLambda.zip'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
