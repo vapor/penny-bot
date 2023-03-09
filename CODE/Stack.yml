@@ -271,12 +271,6 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-  
-  autoPingsS3Bucket:
-    Type: AWS::S3::Bucket
-    DeletionPolicy: Retain
-    Properties:
-      BucketName: penny-auto-pings-lambda
 
   lambdaAutoPingsRoutePermission:
     Type: AWS::Lambda::Permission
@@ -286,6 +280,14 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn:
       - autoPingsFunction
+  
+  autoPingsS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: penny-auto-pings-lambda
+    DependsOn:
+      - lambdaAutoPingsRoutePermission
 
   dynamoUserTable:
     Type: AWS::DynamoDB::Table
