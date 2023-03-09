@@ -162,8 +162,8 @@ struct CoinHandler {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
-        // `.hasPrefix()` is for a better performance.
-        // Removes a lot of no-match strings, much faster than the containment check.
+        /// `.hasPrefix()` is for a better performance.
+        /// Removes a lot of no-match strings, much faster than the containment check.
         string.hasPrefix("<@") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
