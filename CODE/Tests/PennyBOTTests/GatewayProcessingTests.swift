@@ -50,7 +50,7 @@ class GatewayProcessingTests: XCTestCase {
             responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111"))
         ]
         
-        let commandNames = ["link", "automated-pings"]
+        let commandNames = ["link", "auto-pings"]
         
         for response in responses {
             let slashCommand = try XCTUnwrap(response as? RequestBody.ApplicationCommandCreate)

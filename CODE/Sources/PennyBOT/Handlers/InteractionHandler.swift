@@ -31,7 +31,7 @@ struct InteractionHandler {
         let options = data.options ?? []
         switch kind {
         case .link: return handleLinkCommand(options: options)
-        case .automatedPings: return await handlePingsCommand(options: options)
+        case .autoPings: return await handlePingsCommand(options: options)
         }
     }
     
@@ -64,7 +64,7 @@ struct InteractionHandler {
             return "Sorry something went wrong :("
         }
         guard await DiscordService.shared.memberHasAnyTechnicalRoles(member: member) else {
-            logger.warning("Someone tried to use 'automated-pings' but they don't have any of the required roles")
+            logger.warning("Someone tried to use 'auto-pings' but they don't have any of the required roles")
             let rolesString = Constants.TechnicalRoles.allCases.map {
                 DiscordUtils.roleMention(id: $0.rawValue)
             }.joined(separator: " ")
@@ -126,7 +126,10 @@ struct InteractionHandler {
                 if items.isEmpty {
                     return "You have not set any texts to be pinged for"
                 } else {
-                    return items.makeAutoPingsTextsList()
+                    return """
+                    Your pings texts:
+                    \(items.makeAutoPingsTextsList())
+                    """
                 }
             default:
                 logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
@@ -177,20 +180,20 @@ struct InteractionHandler {
 
 private enum SlashCommandKind {
     case link
-    case automatedPings
+    case autoPings
     
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
         case .link: return true
-        case .automatedPings: return true
+        case .autoPings: return true
         }
     }
     
     init? (name: String) {
         switch name {
         case "link": self = .link
-        case "automated-pings": self = .automatedPings
+        case "auto-pings": self = .autoPings
         default: return nil
         }
     }

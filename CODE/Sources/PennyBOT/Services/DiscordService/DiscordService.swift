@@ -172,6 +172,18 @@ actor DiscordService {
         }
     }
     
+    func removeSlashCommands() async {
+        do {
+            let commands = try await discordClient.getApplicationGlobalCommands().decode()
+            for command in commands {
+                try await discordClient.deleteApplicationGlobalCommand(id: command.id)
+                    .guardSuccess()
+            }
+        } catch {
+            logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
+        }
+    }
+    
     func createSlashCommand(payload: RequestBody.ApplicationCommandCreate) async {
         do {
             try await discordClient.createApplicationGlobalCommand(

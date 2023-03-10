@@ -4,8 +4,12 @@ import Logging
 struct SlashCommandHandler {
     func registerCommands() async {
         /// Optimally we would register command only if not already registered,
-        /// because currently there is a 100 commands per day limit. For now it
-        /// should not be a problem, if the command is available, it'll just be overridden.
+        /// because currently there is a 100 commands per day limit.
+        
+        /// Removes slash commands and registers them again.
+        
+        await DiscordService.shared.removeSlashCommands()
+        
         let commands: [RequestBody.ApplicationCommandCreate] = [.link, .ping]
         for command in commands {
             await DiscordService.shared.createSlashCommand(payload: command)
@@ -56,28 +60,28 @@ private extension RequestBody.ApplicationCommandCreate {
     )
     
     static let ping = RequestBody.ApplicationCommandCreate(
-        name: "automated-pings",
+        name: "auto-pings",
         description: "Penny pings you when certain things happen in Vapor's server",
         options: [
             .init(
                 type: .subCommand,
                 name: "add",
-                description: "Ping when a message contains a text (case & diacritic insensitive)",
+                description: "Ping when a message contains a text",
                 options: [.init(
                     type: .string,
                     name: "text",
-                    description: "The text you want to be pinged for",
+                    description: "Text to be pinged for (case & diacritic insensitive)",
                     required: true
                 )]
             ),
             .init(
                 type: .subCommand,
                 name: "bulk-add",
-                description: "Ping when a message contains these texts  (case & diacritic insensitive)",
+                description: "Ping when a message contains these texts",
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "The texts you want to be pinged for, separated by a comma (,)",
+                    description: "Text to be pinged for, separated by a comma (,) (case & diacritic insensitive)",
                     required: true
                 )]
             ),
@@ -88,7 +92,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "text",
-                    description: "The text you don't want to be notified for anymore",
+                    description: "The text you don't want to be pinged for anymore",
                     required: true
                 )]
             ),

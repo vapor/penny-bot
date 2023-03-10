@@ -281,13 +281,13 @@ Resources:
     DependsOn:
       - autoPingsFunction
   
-  # autoPingsS3Bucket:
-  #   Type: AWS::S3::Bucket
-  #   DeletionPolicy: Retain
-  #   Properties:
-  #     BucketName: penny-auto-pings-lambda
-  #   DependsOn:
-  #     - lambdaAutoPingsRoutePermission
+  autoPingsS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: penny-auto-pings-lambda
+    DependsOn:
+      - lambdaAutoPingsRoutePermission
 
   dynamoUserTable:
     Type: AWS::DynamoDB::Table
