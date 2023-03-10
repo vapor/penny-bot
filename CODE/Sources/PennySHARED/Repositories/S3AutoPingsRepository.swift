@@ -44,7 +44,16 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     
     func getAll() async throws -> S3AutoPingItems {
         let getObjectRequest = S3.GetObjectRequest(bucket: bucket, key: key)
-        let response = try await s3.getObject(getObjectRequest, logger: logger)
+        
+        let response: S3.GetObjectOutput
+        
+        do {
+            response = try await s3.getObject(getObjectRequest, logger: logger)
+        } catch {
+            logger.error("Cannot retrieve the file from the bucket. If this is the first time, manually create a file named '\(self.key)' in bucket '\(self.bucket)' and set its content to empty json ('{}'). This has not been automated to reduce the chance of data loss", metadata: ["error": "\(error)"])
+            throw error
+        }
+        
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
             do {
                 return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)

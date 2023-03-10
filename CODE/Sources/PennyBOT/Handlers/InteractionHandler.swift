@@ -92,7 +92,8 @@ struct InteractionHandler {
                     return "The text is less than 3 letters. This is not acceptable"
                 }
                 try await pingsService.insert([text.foldForPingCommand()], forDiscordID: discordId)
-                return "Successfully added `\(text)` to your pings list"
+                let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
+                return "Successfully added '\(escaped)' to your pings list"
             case "bulk-add":
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
@@ -106,11 +107,9 @@ struct InteractionHandler {
                     return "One of the texts is less than 3 letters. This is not acceptable"
                 }
                 try await pingsService.insert(texts, forDiscordID: discordId)
-                let textsList = texts.map({ "`\($0)`" }).joined(separator: "\n")
                 return """
-                Successfully added
-                \(textsList)
-                to your pings list
+                Successfully added the followings to you pings-list:
+                \(texts.makeAutoPingsTextsList())
                 """
             case "remove":
                 guard let option = first.options?.first,
@@ -123,17 +122,11 @@ struct InteractionHandler {
             case "list":
                 let items = try await pingsService
                     .get(discordID: discordId)
+                    .map(\.innerValue)
                 if items.isEmpty {
                     return "You have not set any texts to be pinged for"
                 } else {
-                    let list = items.enumerated().map { idx, exp -> String in
-                        let escaped = DiscordUtils.escapingSpecialCharacters(
-                            exp.innerValue,
-                            forChannelType: .text
-                        )
-                        return "**\(idx + 1).** \(escaped)"
-                    }.joined(separator: "\n")
-                    return list
+                    return items.makeAutoPingsTextsList()
                 }
             default:
                 logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
@@ -200,5 +193,17 @@ private enum SlashCommandKind {
         case "automated-pings": self = .automatedPings
         default: return nil
         }
+    }
+}
+
+private extension [String] {
+    func makeAutoPingsTextsList() -> String {
+        self.sorted().enumerated().map { idx, text -> String in
+            let escaped = DiscordUtils.escapingSpecialCharacters(
+                text,
+                forChannelType: .text
+            )
+            return "**\(idx + 1).** \(escaped)"
+        }.joined(separator: "\n")
     }
 }

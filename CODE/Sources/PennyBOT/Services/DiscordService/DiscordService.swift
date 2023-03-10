@@ -83,7 +83,7 @@ actor DiscordService {
         replyingToMessageId messageId: String,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
-        let hasPermissionToSend = await vaporGuild?.memberHasPermissions(
+        let hasPermissionToSend = await vaporGuild?.userHasPermissions(
             userId: Constants.botId,
             channelId: channelId,
             permissions: [.sendMessages]
@@ -197,27 +197,34 @@ actor DiscordService {
         }
     }
     
-    func userHasAnyTechnicalRoles(userId: String) async -> Bool {
-        guard let member = await vaporGuild?.members.first(where: { $0.user?.id == userId }) else {
+    func userHasAnyTechnicalRolesAndReadAccessOfChannel(
+        userId: String,
+        channelId: String
+    ) async -> Bool {
+        guard let guild = await vaporGuild,
+            let member = guild.members.first(where: { $0.user?.id == userId }) else {
             return false
         }
-        return memberHasAnyTechnicalRoles(member: member)
+        
+        if !self.memberHasAnyTechnicalRoles(member: member) {
+            return false
+        }
+        
+        if !guild.memberHasPermissions(
+            member: member,
+            userId: userId,
+            channelId: channelId,
+            permissions: [.readMessageHistory]
+        ) {
+            return false
+        }
+        
+        return true
     }
     
     func memberHasAnyTechnicalRoles(member: Guild.Member) -> Bool {
-        Constants.TechnicalRoles.allCases.contains {
+        Constants.TechnicalRoles.allCases.contains(where: {
             member.roles.contains($0.rawValue)
-        }
-    }
-    
-    func userHasReadMessagesPermissionInChannel(
-        id channelId: String,
-        userId: String
-    ) async -> Bool {
-        // FIXME: complete
-//        guard let channel = await vaporGuild?.channels.first(where: { $0.id == channelId }) else {
-//            return false
-//        }
-        return true
+        })
     }
 }

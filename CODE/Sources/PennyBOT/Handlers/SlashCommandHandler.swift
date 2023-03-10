@@ -62,7 +62,7 @@ private extension RequestBody.ApplicationCommandCreate {
             .init(
                 type: .subCommand,
                 name: "add",
-                description: "Ping when a message case-insensitively contains a text",
+                description: "Ping when a message contains a text (case & diacritic insensitive)",
                 options: [.init(
                     type: .string,
                     name: "text",
@@ -73,7 +73,7 @@ private extension RequestBody.ApplicationCommandCreate {
             .init(
                 type: .subCommand,
                 name: "bulk-add",
-                description: "Ping when a message case-insensitively contains these texts",
+                description: "Ping when a message contains these texts  (case & diacritic insensitive)",
                 options: [.init(
                     type: .string,
                     name: "texts",

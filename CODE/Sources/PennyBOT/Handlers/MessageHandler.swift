@@ -103,18 +103,22 @@ struct MessageHandler {
         var usersToPing: [String: Set<String>] = [:]
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
-            if folded.contains(innerValue),
+            /// The extra spaces are to make sure Penny looks for whole-word matches.
+            /// For example, without the spaces, Penny would ping someone who wants to be pinged for
+            /// `mongodb driver` if she sees `lslslslmongodb driverfadfa`, which could result in
+            /// sub-optimal pings. As another example, without the spaces, you could get pinged for
+            /// the word `bot`, only because someone's sentence contains `both`!
+            if folded.contains(" \(innerValue) "),
                let users = wordUsersDict[word] {
                 for user in users {
                     let plainId = user.makePlainUserID()
                     /// Both checks if the user has the required roles,
                     /// + if the user is in the guild at all,
                     /// + if the user has read access in the channel at all.
-                    if await DiscordService.shared.userHasAnyTechnicalRoles(userId: plainId),
-                       await DiscordService.shared.userHasReadMessagesPermissionInChannel(
-                        id: event.channel_id,
-                        userId: plainId
-                       ) {
+                    if await DiscordService.shared.userHasAnyTechnicalRolesAndReadAccessOfChannel(
+                        userId: plainId,
+                        channelId: event.channel_id
+                    ) {
                         usersToPing[plainId, default: []].insert(innerValue)
                     }
                 }

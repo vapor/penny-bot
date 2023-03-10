@@ -1,5 +1,5 @@
 
-extension String {
+extension StringProtocol {
     func foldForPingCommand() -> String {
         var lowercased = Substring(self.lowercased())
         while lowercased.first?.isWhitespace == true {
@@ -8,9 +8,11 @@ extension String {
         while lowercased.last?.isWhitespace == true {
             lowercased = lowercased.dropLast()
         }
-        return String(lowercased)
+        return String(lowercased.folding(options: .diacriticInsensitive, locale: nil))
     }
-    
+}
+
+extension String {
     /// Turns ids like `<@12012020120>` to plain `12012020120` if they are not already like that.
     func makePlainUserID() -> String {
         if self.hasPrefix("<@") && self.hasSuffix(">") {
