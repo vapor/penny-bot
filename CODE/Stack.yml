@@ -286,6 +286,8 @@ Resources:
     Properties: 
       LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
       RetentionInDays: 60
+    DependsOn:
+      - lambdaAutoPingsRoutePermission
 
   # autoPingsS3Bucket:
   #   Type: AWS::S3::Bucket
@@ -293,7 +295,7 @@ Resources:
   #   Properties:
   #     BucketName: penny-auto-pings-lambda
   #   DependsOn:
-  #     - lambdaAutoPingsRoutePermission
+  #     - autoPingsLogGroup
 
   dynamoUserTable:
     Type: AWS::DynamoDB::Table
