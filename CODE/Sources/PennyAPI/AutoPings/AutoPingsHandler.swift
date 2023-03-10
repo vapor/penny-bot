@@ -33,7 +33,7 @@ struct AutoPingsHandler: LambdaHandler {
     func handle(
         _ event: APIGatewayV2Request,
         context: LambdaContext
-    ) async throws -> APIGatewayV2Response {
+    ) async -> APIGatewayV2Response {
         autoPingLock.lock()
         defer { autoPingLock.unlock() }
         
@@ -50,17 +50,31 @@ struct AutoPingsHandler: LambdaHandler {
         } else if event.rawPath.hasSuffix("users") {
             switch event.context.http.method {
             case .PUT:
-                let request: AutoPingRequest = try event.bodyObject()
-                newItems = try await pingsRepo.insert(
-                    expressions: request.texts.map { .text($0) },
-                    forDiscordID: request.discordID
-                )
+                do {
+                    let request: AutoPingRequest = try event.bodyObject()
+                    newItems = try await pingsRepo.insert(
+                        expressions: request.texts.map { .text($0) },
+                        forDiscordID: request.discordID
+                    )
+                } catch {
+                    return APIGatewayV2Response(
+                        status: .expectationFailed,
+                        content: Failure(reason: "Error when adding texts for user: \(error)")
+                    )
+                }
             case .DELETE:
-                let request: AutoPingRequest = try event.bodyObject()
-                newItems = try await pingsRepo.remove(
-                    expressions: request.texts.map { .text($0) },
-                    forDiscordID: request.discordID
-                )
+                do {
+                    let request: AutoPingRequest = try event.bodyObject()
+                    newItems = try await pingsRepo.remove(
+                        expressions: request.texts.map { .text($0) },
+                        forDiscordID: request.discordID
+                    )
+                } catch {
+                    return APIGatewayV2Response(
+                        status: .expectationFailed,
+                        content: Failure(reason: "Error when removing texts for user: \(error)")
+                    )
+                }
             default:
                 return APIGatewayV2Response(
                     status: .badRequest,
