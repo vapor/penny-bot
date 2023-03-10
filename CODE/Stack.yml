@@ -280,7 +280,13 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn:
       - autoPingsFunction
-  
+
+  autoPingsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
+      RetentionInDays: 60
+
   # autoPingsS3Bucket:
   #   Type: AWS::S3::Bucket
   #   DeletionPolicy: Retain

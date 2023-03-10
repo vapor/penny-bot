@@ -127,7 +127,7 @@ struct InteractionHandler {
                     return "You have not set any texts to be pinged for"
                 } else {
                     return """
-                    Your pings texts:
+                    Your ping texts:
                     \(items.makeAutoPingsTextsList())
                     """
                 }
