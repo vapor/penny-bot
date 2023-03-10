@@ -22,6 +22,10 @@ actor DefaultPingsService: AutoPingsService {
         self.setUpResetItemsTask()
     }
     
+    func exists(text: String, forDiscordID id: String) -> Bool {
+        self.cachedItems?.items[.text(text)]?.contains(id) ?? false
+    }
+    
     func insert(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
             pathParameter: "users",
@@ -106,7 +110,7 @@ actor DefaultPingsService: AutoPingsService {
     private func setUpResetItemsTask() {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {
-            if (try? await Task.sleep(for: .seconds(60 * 60))) != nil {
+            if (try? await Task.sleep(for: .seconds(60 * 60 * 3))) != nil {
                 self.cachedItems = nil
                 self.setUpResetItemsTask()
             } else {

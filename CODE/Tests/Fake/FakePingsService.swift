@@ -5,6 +5,10 @@ public struct FakePingsService: AutoPingsService {
     
     public init() { }
     
+    public func exists(text: String, forDiscordID id: String) async -> Bool {
+        false
+    }
+    
     public func insert(_ texts: [String], forDiscordID id: String) async throws {
         _ = try await FakePingsRepository().insert(
             expressions: texts.map { .text($0) },

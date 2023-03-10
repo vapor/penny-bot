@@ -74,11 +74,10 @@ struct InteractionHandler {
             logger.error("Discord did not send required interaction info")
             return "Please provide more options"
         }
-        guard let _id = (event.member?.user ?? event.user)?.id else {
+        guard let discordId = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
             return "Sorry something went wrong :("
         }
-        let discordId = "<@\(_id)>"
         let first = options[0]
         do {
             switch first.name {
@@ -91,9 +90,14 @@ struct InteractionHandler {
                 if text.unicodeScalars.count < 3 {
                     return "The text is less than 3 letters. This is not acceptable"
                 }
-                try await pingsService.insert([text.foldForPingCommand()], forDiscordID: discordId)
+                let folded = text.foldForPingCommand()
                 let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
-                return "Successfully added '\(escaped)' to your pings list"
+                if await pingsService.exists(text: folded, forDiscordID: discordId) {
+                    return "Text '\(escaped)' already exists in your pings list"
+                } else {
+                    try await pingsService.insert([folded], forDiscordID: discordId)
+                    return "Successfully added '\(escaped)' to your pings list"
+                }
             case "bulk-add":
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
@@ -117,8 +121,14 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return "No 'text' option recognized"
                 }
-                try await pingsService.remove([text.foldForPingCommand()], forDiscordID: discordId)
-                return "Successfully removed `\(text)` from your pings list"
+                let folded = text.foldForPingCommand()
+                let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
+                if await pingsService.exists(text: folded, forDiscordID: discordId) {
+                    try await pingsService.remove([folded], forDiscordID: discordId)
+                    return "Successfully removed '\(escaped)' from your pings list"
+                } else {
+                    return "Text '\(escaped)' doesn't exist in your pings list"
+                }
             case "list":
                 let items = try await pingsService
                     .get(discordID: discordId)
