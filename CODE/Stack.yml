@@ -227,7 +227,7 @@ Resources:
       LogGroupName: /aws/lambda/PennyLambda
       RetentionInDays: 30
       
-  # Auto-Pings lambda config
+  # Auto-pings lambda config
     
   autoPingsIntegration:
     Type: AWS::ApiGatewayV2::Integration
