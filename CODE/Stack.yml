@@ -281,21 +281,21 @@ Resources:
     DependsOn:
       - autoPingsFunction
 
-  # autoPingsLogGroup:
-  #   Type: AWS::Logs::LogGroup
-  #   Properties: 
-  #     LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
-  #     RetentionInDays: 60
-  #   DependsOn:
-  #     - lambdaAutoPingsRoutePermission
+  autoPingsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
+      RetentionInDays: 60
+    DependsOn:
+      - lambdaAutoPingsRoutePermission
 
-  # autoPingsS3Bucket:
-  #   Type: AWS::S3::Bucket
-  #   DeletionPolicy: Retain
-  #   Properties:
-  #     BucketName: penny-auto-pings-lambda
-  #   DependsOn:
-  #     - autoPingsLogGroup
+  autoPingsS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    Properties:
+      BucketName: penny-auto-pings-lambda
+    DependsOn:
+      - autoPingsLogGroup
 
   dynamoUserTable:
     Type: AWS::DynamoDB::Table
