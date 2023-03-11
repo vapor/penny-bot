@@ -48,3 +48,17 @@ extension [String] {
         return (Array(lhs), Array(rhs))
     }
 }
+
+extension Array where Element: Equatable {
+    func containsSequence(_ other: Self) -> Bool {
+        
+        for idx in self.indices {
+            if idx + other.count > self.count { break }
+            if self[idx..<idx + other.count].elementsEqual(other) {
+                return true
+            }
+        }
+        
+        return false
+    }
+}

@@ -1,7 +1,6 @@
-import DiscordBM
+import DiscordModels
 import Logging
 import PennyModels
-import _StringProcessing
 
 struct MessageHandler {
     
@@ -113,7 +112,7 @@ struct MessageHandler {
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
             let splitValue = innerValue.split(whereSeparator: \.isWhitespace)
-            if folded.contains(splitValue),
+            if folded.containsSequence(splitValue),
                let users = wordUsersDict[word] {
                 for userId in users {
                     /// Both checks if the user has the required roles,
