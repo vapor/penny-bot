@@ -101,6 +101,11 @@ struct InteractionHandler {
                     return "A text is less than 3 letters: \(escaped)\n This is not acceptable"
                 }
                 
+                let current = try await pingsService.get(discordID: discordId)
+                if newTexts.count + current.count > 50 {
+                    return "You can't have more than 50 ping texts"
+                }
+                
                 try await pingsService.insert(newTexts, forDiscordID: discordId)
                 
                 var components = [String]()

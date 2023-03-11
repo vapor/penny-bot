@@ -1,6 +1,7 @@
 import DiscordBM
 import Logging
 import PennyModels
+import _StringProcessing
 
 struct MessageHandler {
     
