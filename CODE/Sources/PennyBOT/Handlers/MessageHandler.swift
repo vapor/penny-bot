@@ -104,7 +104,9 @@ struct MessageHandler {
             logger.error("Can't retrieve ping-words", metadata: ["error": "\(error)"])
             return
         }
-        let folded = event.content.foldForPingCommand().split(whereSeparator: \.isWhitespace)
+        let folded = event.content
+            .foldForPingCommand()
+            .split(whereSeparator: \.isWhitespace)
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
         for word in wordUsersDict.keys {

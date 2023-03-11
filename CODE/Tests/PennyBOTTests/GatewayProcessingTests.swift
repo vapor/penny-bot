@@ -176,7 +176,7 @@ class GatewayProcessingTests: XCTestCase {
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
-        let lines = description.split(separator: "\n")
+        let lines = description.split(whereSeparator: \.isNewline)
         
         let line1 = try XCTUnwrap(lines.first)
         XCTAssertEqual(line1, "https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042")
