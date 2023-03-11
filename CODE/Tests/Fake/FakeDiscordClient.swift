@@ -19,10 +19,14 @@ struct FakeDiscordClient: DiscordClient {
         )
     }
     
-    func send<E: Encodable>(
+    func send<E: Encodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
     ) async throws -> DiscordHTTPResponse {
+        /// Catches invalid payloads in tests, instead of in production.
+        /// Useful for validating for example the slash commands.
+        try payload.validate()
+        
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: payload)
         
         return DiscordHTTPResponse(
@@ -34,10 +38,14 @@ struct FakeDiscordClient: DiscordClient {
         )
     }
     
-    func sendMultipart<E: MultipartEncodable>(
+    func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
     ) async throws -> DiscordHTTPResponse {
+        /// Catches invalid payloads in tests, instead of in production.
+        /// Useful for validating for example the slash commands.
+        try payload.validate()
+        
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: payload)
         
         return DiscordHTTPResponse(

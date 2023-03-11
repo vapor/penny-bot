@@ -8,9 +8,10 @@ struct SlashCommandHandler {
         
         /// Removes slash commands and registers them again.
         
-        await DiscordService.shared.removeSlashCommands()
-        
         let commands: [RequestBody.ApplicationCommandCreate] = [.link, .ping]
+        
+        await DiscordService.shared.removeSlashCommands(excluding: commands.map(\.name))
+        
         for command in commands {
             await DiscordService.shared.createSlashCommand(payload: command)
         }

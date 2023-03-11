@@ -172,11 +172,12 @@ actor DiscordService {
         }
     }
     
-    func removeSlashCommands() async {
+    func removeSlashCommands(excluding: [String]) async {
         do {
             let commands = try await discordClient.getApplicationGlobalCommands().decode()
-            for command in commands {
-                try await discordClient.deleteApplicationGlobalCommand(id: command.id)
+            for command in commands where !excluding.contains(command.name) {
+                try await discordClient
+                    .deleteApplicationGlobalCommand(id: command.id)
                     .guardSuccess()
             }
         } catch {
