@@ -268,10 +268,10 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     }
     
     return """
-    **- Auto-Pings Help Menu**
+    **- Auto-Pings Help**
     
-    You can add texts to be pinged for whenever they're used.
-    When someone uses those texts, Penny will DM you and let you know about the message.
+    You can add texts to be pinged for.
+    When someone uses those texts, Penny will DM you about the message.
     
     - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
     
@@ -279,19 +279,19 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     **Adding Texts**
     
-    You can add multiple texts using the \(makeCommandLink("add")) command, separating the texts using a comma (,). This command is Slack-compatible so you can copy-paste your Slack texts-list to it.
+    You can add multiple texts using \(makeCommandLink("add")), separating the texts using commas `,`. This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
     - All texts are case-insensitive, diacritic-insensitive and also insensitive to the following characters: `.,:?!`
     
-    > Make sure Penny is able to DM you by enabling Vapor server members for direct messages, under your `Server Settings`.
+    > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
     
     **Removing Texts**
     
-    You can remove multiple texts using the \(makeCommandLink("remove")) command, separating the texts using a comma (,).
+    You can remove multiple texts using \(makeCommandLink("remove")), separating the texts using commas `,`.
     
     **Your Pings List**
     
-    You can use the \(makeCommandLink("list")) command to see your current ping texts.
+    You can use \(makeCommandLink("list")) to see your current ping texts.
     """
 }
 
