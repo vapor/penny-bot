@@ -22,7 +22,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         .package(
             url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "bbc39d3fc59e5e0b278afc36163ce0e4b078386c"
+            revision: "a2f6b3e2582780c4f60703f37505d11a49e1f499"
         ),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),

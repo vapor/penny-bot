@@ -70,7 +70,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "text",
-                    description: "Text to be pinged for (insensitive to cases, diacritics & these characters: .,:?!)",
+                    description: "Text to be pinged for. Insensitive to cases, diacritics & these chars: .,:?!",
                     required: true
                 )]
             ),
@@ -81,7 +81,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "Text to be pinged for, separated by a comma (,) (insensitive to cases, diacritics & these characters: .,:?!)",
+                    description: "Texts to be pinged for, separated by ','. Insensitive to cases, diacritics & these chars: .,:?!",
                     required: true
                 )]
             ),
@@ -103,7 +103,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "The texts you don't want to be pinged for anymore, separated by a comma (,)",
+                    description: "Texts you don't want to be pinged for anymore, separated by ','",
                     required: true
                 )]
             ),
