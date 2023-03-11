@@ -63,10 +63,6 @@ struct InteractionHandler {
             logger.error("Discord did not send required info")
             return "Sorry something went wrong :("
         }
-        guard await DiscordService.shared.memberHasAnyTechnicalRoles(member: member) else {
-            logger.warning("Someone tried to use 'auto-pings' but they don't have any of the required roles")
-            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(technicalRolesString)"
-        }
         if options.isEmpty {
             logger.error("Discord did not send required interaction info")
             return "Please provide more options"
@@ -76,12 +72,21 @@ struct InteractionHandler {
             return "Sorry something went wrong :("
         }
         let first = options[0]
+        guard let subcommand = AutoPingsSubCommand(rawValue: first.name) else {
+            logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
+            return "Option not recognized: \(first.name)"
+        }
+        if subcommand.requiresTechnicalRoles,
+           await !DiscordService.shared.memberHasAnyTechnicalRoles(member: member) {
+            logger.warning("Someone tried to use 'auto-pings' but they don't have any of the required roles")
+            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(technicalRolesString)"
+        }
         do {
-            switch first.name {
-            case "help":
+            switch subcommand {
+            case .help:
                 let allCommands = await DiscordService.shared.getSlashCommands()
                 return makeAutoPingsHelp(commands: allCommands)
-            case "add":
+            case .add:
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
@@ -111,7 +116,7 @@ struct InteractionHandler {
                 }
                 
                 return response
-            case "remove":
+            case .remove:
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
@@ -139,7 +144,7 @@ struct InteractionHandler {
                 }
                 
                 return response
-            case "list":
+            case .list:
                 let items = try await pingsService
                     .get(discordID: discordId)
                     .map(\.innerValue)
@@ -151,13 +156,10 @@ struct InteractionHandler {
                     \(items.makeAutoPingsTextsList())
                     """
                 }
-            default:
-                logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
-                return "Option not recognized: \(first.name)"
             }
         } catch {
             logger.error("Pings command error", metadata: ["error": "\(error)"])
-            return "Sorry, some errors happened :( please report this to us if it happens again"
+            return "Sorry, some errors happened :( Please try again"
         }
     }
     
@@ -223,6 +225,20 @@ private func escapeCharacters(_ text: String) -> String {
     DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
 }
 
+private enum AutoPingsSubCommand: String, CaseIterable {
+    case help
+    case add
+    case remove
+    case list
+    
+    var requiresTechnicalRoles: Bool {
+        switch self {
+        case .help: return false
+        case .add, .remove, .list: return true
+        }
+    }
+}
+
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     func makeCommandLink(_ name: String) -> String {
         guard let id = commands.first(where: { $0.name == "auto-pings" })?.id else {
@@ -260,5 +276,5 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
 private let technicalRolesString = Constants.TechnicalRoles
     .allCases
     .map(\.rawValue)
-    .map(DiscordUtils.roleMention)
+    .map(DiscordUtils.roleMention(id:))
     .joined(separator: " ")
