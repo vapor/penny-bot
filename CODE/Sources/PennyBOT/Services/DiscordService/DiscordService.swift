@@ -58,21 +58,22 @@ actor DiscordService {
                 ])
             case let .jsonError(jsonError):
                 if case .cannotSendMessagesToThisUser = jsonError.code {
-                    logger.warning("Could not send DM, will try to let them know", metadata: [
-                        "userId": .string(userId),
-                        "dmChannelId": .string(dmChannelId),
-                        "payload": "\(payload)",
-                        "jsonError": "\(jsonError)"
-                    ])
                     if !usersAlreadyWarnedAboutClosedDMS.contains(userId) {
+                        logger.warning("Could not send DM, will try to let them know", metadata: [
+                            "userId": .string(userId),
+                            "dmChannelId": .string(dmChannelId),
+                            "payload": "\(payload)",
+                            "jsonError": "\(jsonError)"
+                        ])
+                        
                         usersAlreadyWarnedAboutClosedDMS.append(userId)
                         let userMention = DiscordUtils.userMention(id: userId)
+                        let message = "I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu."
                         await self.sendMessage(
                             channelId: Constants.thanksChannelId,
-                            payload: .init(embeds: [.init(
-                                description: "\(userMention) I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu.",
-                                color: .vaporPurple
-                            )])
+                            payload: .init(
+                                content: userMention,
+                                embeds: [.init(description: message, color: .vaporPurple)])
                         )
                     }
                 } else {

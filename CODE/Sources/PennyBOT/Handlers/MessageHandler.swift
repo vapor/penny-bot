@@ -104,17 +104,13 @@ struct MessageHandler {
             logger.error("Can't retrieve ping-words", metadata: ["error": "\(error)"])
             return
         }
-        let folded = event.content.foldForPingCommand()
+        let folded = event.content.foldForPingCommand().split(whereSeparator: \.isWhitespace)
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
-            /// The extra spaces are to make sure Penny looks for whole-text matches.
-            /// For example, without the spaces, Penny would ping someone who wants to be pinged for
-            /// `mongodb driver` if she sees `lslslslmongodb driverfadfa`, which could result in
-            /// sub-optimal pings. As another example, without the spaces, you could get pinged for
-            /// the word `bot`, only because someone's sentence contains `both`!
-            if folded.contains(" \(innerValue) "),
+            let splitValue = innerValue.split(whereSeparator: \.isWhitespace)
+            if folded.contains(splitValue),
                let users = wordUsersDict[word] {
                 for userId in users {
                     /// Both checks if the user has the required roles,
