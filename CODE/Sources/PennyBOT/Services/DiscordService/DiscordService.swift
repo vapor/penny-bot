@@ -8,7 +8,8 @@ actor DiscordService {
     private var logger = Logger(label: "DiscordService")
     /// `[UserDiscordID: DMChannelID]`
     private var channels: [String: String] = [:]
-    var slashCommandsStorage: [ApplicationCommand] = []
+    private var usersAlreadyWarnedAboutClosedDMS: [String] = []
+    private var slashCommandsStorage: [ApplicationCommand] = []
     private var vaporGuild: Gateway.GuildCreate? {
         get async {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -41,7 +42,56 @@ actor DiscordService {
     
     func sendDM(userId: String, payload: RequestBody.CreateMessage) async {
         guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
-        await self.sendMessage(channelId: dmChannelId, payload: payload)
+        
+        do {
+            let response = try await discordClient.createMessage(
+                channelId: dmChannelId,
+                payload: payload
+            )
+            switch response.guardDecodeError() {
+            case .none: break
+            case let .badStatusCode(response):
+                logger.report("Could not send DM", response: response, metadata: [
+                    "userId": .string(userId),
+                    "dmChannelId": .string(dmChannelId),
+                    "payload": "\(payload)"
+                ])
+            case let .jsonError(jsonError):
+                if case .cannotSendMessagesToThisUser = jsonError.code {
+                    logger.warning("Could not send DM, will try to let them know", metadata: [
+                        "userId": .string(userId),
+                        "dmChannelId": .string(dmChannelId),
+                        "payload": "\(payload)",
+                        "jsonError": "\(jsonError)"
+                    ])
+                    if !usersAlreadyWarnedAboutClosedDMS.contains(userId) {
+                        usersAlreadyWarnedAboutClosedDMS.append(userId)
+                        let userMention = DiscordUtils.userMention(id: userId)
+                        await self.sendMessage(
+                            channelId: Constants.thanksChannelId,
+                            payload: .init(embeds: [.init(
+                                description: "\(userMention) I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu.",
+                                color: .vaporPurple
+                            )])
+                        )
+                    }
+                } else {
+                    logger.error("Could not send DM", metadata: [
+                        "userId": .string(userId),
+                        "dmChannelId": .string(dmChannelId),
+                        "payload": "\(payload)",
+                        "jsonError": "\(jsonError)"
+                    ])
+                }
+            }
+        } catch {
+            logger.error("Couldn't send DM", metadata: [
+                "userId": .string(userId),
+                "dmChannelId": .string(dmChannelId),
+                "payload": "\(payload)",
+                "error": "\(error)"
+            ])
+        }
     }
     
     private func getDMChannelId(userId: String) async -> String? {
@@ -71,7 +121,11 @@ actor DiscordService {
             try response.guardSuccess()
             return response
         } catch {
-            logger.error("Couldn't send a message", metadata: ["error": "\(error)"])
+            logger.error("Couldn't send a message", metadata: [
+                "error": "\(error)",
+                "channelId": "\(channelId)",
+                "payload": "\(payload)"
+            ])
             return nil
         }
     }

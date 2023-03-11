@@ -278,6 +278,8 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     - All texts are case-insensitive, diacritic-insensitive and also insensitive to the following characters: `.,:?!`
     
+    > Make sure Penny is able to DM you by enabling Vapor server members for direct messages, under your `Server Settings`.
+    
     **Removing Texts**
     
     You can remove multiple texts using the \(makeCommandLink("remove")) command, separating the texts using a comma (,).
