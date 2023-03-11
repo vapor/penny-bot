@@ -65,10 +65,7 @@ struct InteractionHandler {
         }
         guard await DiscordService.shared.memberHasAnyTechnicalRoles(member: member) else {
             logger.warning("Someone tried to use 'auto-pings' but they don't have any of the required roles")
-            let rolesString = Constants.TechnicalRoles.allCases.map {
-                DiscordUtils.roleMention(id: $0.rawValue)
-            }.joined(separator: " ")
-            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(rolesString)"
+            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(technicalRolesString)"
         }
         if options.isEmpty {
             logger.error("Discord did not send required interaction info")
@@ -81,68 +78,67 @@ struct InteractionHandler {
         let first = options[0]
         do {
             switch first.name {
+            case "help":
+                let allCommands = await DiscordService.shared.getSlashCommands()
+                return makeAutoPingsHelp(commands: allCommands)
             case "add":
                 guard let option = first.options?.first,
-                      let text = option.value?.asString else {
-                    logger.error("Discord did not send required info")
-                    return "No 'text' option recognized"
-                }
-                if text.unicodeScalars.count < 3 {
-                    return "The text is less than 3 letters. This is not acceptable"
-                }
-                let folded = text.foldForPingCommand()
-                let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
-                if await pingsService.exists(text: folded, forDiscordID: discordId) {
-                    return "Text '\(escaped)' already exists in your pings list"
-                } else {
-                    try await pingsService.insert([folded], forDiscordID: discordId)
-                    return "Successfully added '\(escaped)' to your pings list"
-                }
-            case "bulk-add":
-                guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
                     return "No 'texts' option recognized"
                 }
-                let texts = _text.split(separator: ",")
+                let (existingTexts, newTexts) = await _text
+                    .split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
-                if texts.contains(where: { $0.unicodeScalars.count < 3 }) {
-                    return "One of the texts is less than 3 letters. This is not acceptable"
+                    .divide { await pingsService.exists(text: $0, forDiscordID: discordId) }
+                if let first = newTexts.first(where: { $0.unicodeScalars.count < 3 }) {
+                    let escaped = escapeCharacters(first)
+                    return "A text is less than 3 letters: \(escaped)\n This is not acceptable"
                 }
-                try await pingsService.insert(texts, forDiscordID: discordId)
-                return """
+                try await pingsService.insert(newTexts, forDiscordID: discordId)
+                var response = """
                 Successfully added the followings to your pings-list:
-                \(texts.makeAutoPingsTextsList())
+                \(newTexts.makeAutoPingsTextsList())
                 """
+                
+                if !existingTexts.isEmpty {
+                    response += """
+                    
+                    Some texts were already available in your pings list:
+                    \(existingTexts.makeAutoPingsTextsList())
+                    """
+                }
+                
+                return response
             case "remove":
                 guard let option = first.options?.first,
-                      let text = option.value?.asString else {
-                    logger.error("Discord did not send required info")
-                    return "No 'text' option recognized"
-                }
-                let folded = text.foldForPingCommand()
-                let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
-                if await pingsService.exists(text: folded, forDiscordID: discordId) {
-                    try await pingsService.remove([folded], forDiscordID: discordId)
-                    return "Successfully removed '\(escaped)' from your pings list"
-                } else {
-                    return "Text '\(escaped)' doesn't exist in your pings list"
-                }
-            case "bulk-remove":
-                guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
                     return "No 'texts' option recognized"
                 }
-                let texts = _text.split(separator: ",")
+                let (existingTexts, newTexts) = await _text
+                    .split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
-                try await pingsService.remove(texts, forDiscordID: discordId)
-                return """
+                    .divide { await pingsService.exists(text: $0, forDiscordID: discordId) }
+                
+                try await pingsService.remove(existingTexts, forDiscordID: discordId)
+                
+                var response = """
                 Successfully removed the followings from your pings-list:
-                \(texts.makeAutoPingsTextsList())
+                \(existingTexts.makeAutoPingsTextsList())
                 """
+                
+                if !newTexts.isEmpty {
+                    response += """
+                    
+                    Some texts were not available in your pings list at all:
+                    \(newTexts.makeAutoPingsTextsList())
+                    """
+                }
+                
+                return response
             case "list":
                 let items = try await pingsService
                     .get(discordID: discordId)
@@ -223,14 +219,46 @@ private enum SlashCommandKind {
     }
 }
 
-private extension [String] {
-    func makeAutoPingsTextsList() -> String {
-        self.sorted().enumerated().map { idx, text -> String in
-            let escaped = DiscordUtils.escapingSpecialCharacters(
-                text,
-                forChannelType: .text
-            )
-            return "**\(idx + 1).** \(escaped)"
-        }.joined(separator: "\n")
-    }
+private func escapeCharacters(_ text: String) -> String {
+    DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
 }
+
+private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
+    func makeCommandLink(_ name: String) -> String {
+        guard let id = commands.first(where: { $0.name == "auto-pings" })?.id else {
+            return "`/auto-pings \(name)`"
+        }
+        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: name)
+    }
+    
+    return """
+    **- Auto-Pings Help Menu**
+    
+    You can add texts to be pinged for whenever they're used.
+    When someone uses those texts, Penny will DM you and let you know about the message.
+    
+    - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
+    
+    - The auto-ping commands are currently restricted to users with any of these roles: \(technicalRolesString)
+    
+    **Adding Texts**
+    
+    You can add multiple texts using the \(makeCommandLink("add")) command, separating the texts using a comma (,). This command is Slack-compatible so you can copy-paste your Slack texts-list to it.
+    
+    - All texts are case-insensitive, diacritic-insensitive and also insensitive to the following characters: `.,:?!`
+    
+    **Removing Texts**
+    
+    You can remove multiple texts using the \(makeCommandLink("remove")) command, separating the texts using a comma (,).
+    
+    **Your Pings List**
+    
+    You can use the \(makeCommandLink("list")) command to see your current ping texts.
+    """
+}
+
+private let technicalRolesString = Constants.TechnicalRoles
+    .allCases
+    .map(\.rawValue)
+    .map(DiscordUtils.roleMention)
+    .joined(separator: " ")

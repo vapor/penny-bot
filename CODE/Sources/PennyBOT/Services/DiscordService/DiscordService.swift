@@ -8,6 +8,7 @@ actor DiscordService {
     private var logger = Logger(label: "DiscordService")
     /// `[UserDiscordID: DMChannelID]`
     private var channels: [String: String] = [:]
+    var slashCommandsStorage: [ApplicationCommand] = []
     private var vaporGuild: Gateway.GuildCreate? {
         get async {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -195,6 +196,21 @@ actor DiscordService {
             ).guardSuccess()
         } catch {
             logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
+        }
+    }
+    
+    func getSlashCommands() async -> [ApplicationCommand] {
+        if self.slashCommandsStorage.isEmpty {
+            do {
+                let commands = try await discordClient.getApplicationGlobalCommands().decode()
+                self.slashCommandsStorage = commands
+                return commands
+            } catch {
+                logger.error("Couldn't get slash commands", metadata: ["error": "\(error)"])
+                return []
+            }
+        } else {
+            return self.slashCommandsStorage
         }
     }
     

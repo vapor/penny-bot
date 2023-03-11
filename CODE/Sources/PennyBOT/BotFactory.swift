@@ -9,9 +9,19 @@ enum BotFactory {
         guard let token = Constants.botToken, let appId = Constants.botId else {
             fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
         }
+        /// Disable caching of `getApplicationGlobalCommands` endpoint.
+        var clientConfiguration = ClientConfiguration(
+            cachingBehavior: .custom(endpoints: [
+                .getApplicationGlobalCommands: 0
+            ]),
+            requestTimeout: .seconds(30),
+            enableLoggingForRequests: false,
+            retryPolicy: .default
+        )
         return BotGatewayManager(
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
+            clientConfiguration: clientConfiguration,
             token: token,
             appId: appId,
             presence: .init(

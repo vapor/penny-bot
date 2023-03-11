@@ -66,18 +66,12 @@ private extension RequestBody.ApplicationCommandCreate {
         options: [
             .init(
                 type: .subCommand,
-                name: "add",
-                description: "Add a text to be pinged for",
-                options: [.init(
-                    type: .string,
-                    name: "text",
-                    description: "Text to be pinged for. Insensitive to cases, diacritics & these chars: .,:?!",
-                    required: true
-                )]
+                name: "help",
+                description: "Help about how auto-pings works"
             ),
             .init(
                 type: .subCommand,
-                name: "bulk-add",
+                name: "add",
                 description: "Add multiple texts to be pinged for (Slack compatible)",
                 options: [.init(
                     type: .string,
@@ -89,17 +83,6 @@ private extension RequestBody.ApplicationCommandCreate {
             .init(
                 type: .subCommand,
                 name: "remove",
-                description: "Remove ping texts",
-                options: [.init(
-                    type: .string,
-                    name: "text",
-                    description: "The text you don't want to be pinged for anymore",
-                    required: true
-                )]
-            ),
-            .init(
-                type: .subCommand,
-                name: "bulk-remove",
                 description: "Remove multiple ping texts",
                 options: [.init(
                     type: .string,
