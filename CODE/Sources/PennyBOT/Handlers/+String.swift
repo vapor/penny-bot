@@ -1,13 +1,21 @@
 
 extension StringProtocol {
     func foldForPingCommand() -> String {
-        var lowercased = Substring(self.lowercased())
-        while lowercased.first?.isWhitespace == true {
-            lowercased = lowercased.dropFirst()
+        var substring = Substring(self)
+        while substring.first?.isWhitespace == true {
+            substring = substring.dropFirst()
         }
-        while lowercased.last?.isWhitespace == true {
-            lowercased = lowercased.dropLast()
+        while substring.last?.isWhitespace == true {
+            substring = substring.dropLast()
         }
-        return String(lowercased.folding(options: .diacriticInsensitive, locale: nil))
+        let modified = substring
+            .replacingOccurrences(of: ".", with: "")
+            .replacingOccurrences(of: ",", with: "")
+            .replacingOccurrences(of: ":", with: "")
+            .replacingOccurrences(of: "?", with: "")
+            .replacingOccurrences(of: "!", with: "")
+            .lowercased()
+            .folding(options: .diacriticInsensitive, locale: nil)
+        return String(modified)
     }
 }

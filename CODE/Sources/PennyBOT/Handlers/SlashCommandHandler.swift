@@ -61,34 +61,34 @@ private extension RequestBody.ApplicationCommandCreate {
     
     static let ping = RequestBody.ApplicationCommandCreate(
         name: "auto-pings",
-        description: "Penny pings you when certain things happen in Vapor's server",
+        description: "Configure Penny to ping you when certain someone uses a word/text",
         options: [
             .init(
                 type: .subCommand,
                 name: "add",
-                description: "Ping when a message contains a text",
+                description: "Add a text to be pinged for",
                 options: [.init(
                     type: .string,
                     name: "text",
-                    description: "Text to be pinged for (case & diacritic insensitive)",
+                    description: "Text to be pinged for (insensitive to cases, diacritics & these characters: .,:?!)",
                     required: true
                 )]
             ),
             .init(
                 type: .subCommand,
                 name: "bulk-add",
-                description: "Ping when a message contains these texts",
+                description: "Add multiple texts to be pinged for (Slack compatible)",
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "Text to be pinged for, separated by a comma (,) (case & diacritic insensitive)",
+                    description: "Text to be pinged for, separated by a comma (,) (insensitive to cases, diacritics & these characters: .,:?!)",
                     required: true
                 )]
             ),
             .init(
                 type: .subCommand,
                 name: "remove",
-                description: "Remove pings for certain texts",
+                description: "Remove ping texts",
                 options: [.init(
                     type: .string,
                     name: "text",
@@ -98,8 +98,19 @@ private extension RequestBody.ApplicationCommandCreate {
             ),
             .init(
                 type: .subCommand,
+                name: "bulk-remove",
+                description: "Remove multiple ping texts",
+                options: [.init(
+                    type: .string,
+                    name: "texts",
+                    description: "The texts you don't want to be pinged for anymore, separated by a comma (,)",
+                    required: true
+                )]
+            ),
+            .init(
+                type: .subCommand,
                 name: "list",
-                description: "See what you're subscribed to"
+                description: "See what you'll get pinged for"
             )
         ],
         dm_permission: false

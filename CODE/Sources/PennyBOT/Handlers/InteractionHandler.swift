@@ -102,7 +102,7 @@ struct InteractionHandler {
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'text' option recognized"
+                    return "No 'texts' option recognized"
                 }
                 let texts = _text.split(separator: ",")
                     .map(String.init)
@@ -112,7 +112,7 @@ struct InteractionHandler {
                 }
                 try await pingsService.insert(texts, forDiscordID: discordId)
                 return """
-                Successfully added the followings to you pings-list:
+                Successfully added the followings to your pings-list:
                 \(texts.makeAutoPingsTextsList())
                 """
             case "remove":
@@ -129,6 +129,20 @@ struct InteractionHandler {
                 } else {
                     return "Text '\(escaped)' doesn't exist in your pings list"
                 }
+            case "bulk-remove":
+                guard let option = first.options?.first,
+                      let _text = option.value?.asString else {
+                    logger.error("Discord did not send required info")
+                    return "No 'texts' option recognized"
+                }
+                let texts = _text.split(separator: ",")
+                    .map(String.init)
+                    .map({ $0.foldForPingCommand() })
+                try await pingsService.remove(texts, forDiscordID: discordId)
+                return """
+                Successfully removed the followings from your pings-list:
+                \(texts.makeAutoPingsTextsList())
+                """
             case "list":
                 let items = try await pingsService
                     .get(discordID: discordId)
