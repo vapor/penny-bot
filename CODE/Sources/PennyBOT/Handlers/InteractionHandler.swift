@@ -63,22 +63,21 @@ struct InteractionHandler {
             logger.error("Discord did not send required info")
             return "Sorry something went wrong :("
         }
-        if options.isEmpty {
-            logger.error("Discord did not send required interaction info")
-            return "Please provide more options"
-        }
         guard let discordId = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
             return "Sorry something went wrong :("
         }
-        let first = options[0]
+        guard let first = options.first else {
+            logger.error("Discord did not send required interaction info")
+            return "Please provide more options"
+        }
         guard let subcommand = AutoPingsSubCommand(rawValue: first.name) else {
-            logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
+            logger.error("Unrecognized 'auto-pings' command", metadata: ["name": "\(first.name)"])
             return "Option not recognized: \(first.name)"
         }
         if subcommand.requiresTechnicalRoles,
            await !DiscordService.shared.memberHasAnyTechnicalRoles(member: member) {
-            logger.warning("Someone tried to use 'auto-pings' but they don't have any of the required roles")
+            logger.debug("Someone tried to use 'auto-pings' but they don't have any of the required roles")
             return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(technicalRolesString)"
         }
         do {
@@ -101,21 +100,30 @@ struct InteractionHandler {
                     let escaped = escapeCharacters(first)
                     return "A text is less than 3 letters: \(escaped)\n This is not acceptable"
                 }
-                try await pingsService.insert(newTexts, forDiscordID: discordId)
-                var response = """
-                Successfully added the followings to your pings-list:
-                \(newTexts.makeAutoPingsTextsList())
-                """
                 
-                if !existingTexts.isEmpty {
-                    response += """
-                    
-                    Some texts were already available in your pings list:
-                    \(existingTexts.makeAutoPingsTextsList())
-                    """
+                try await pingsService.insert(newTexts, forDiscordID: discordId)
+                
+                var components = [String]()
+                
+                if !newTexts.isEmpty {
+                    components.append(
+                        """
+                        Successfully added the followings to your pings-list:
+                        \(newTexts.makeAutoPingsTextsList())
+                        """
+                    )
                 }
                 
-                return response
+                if !existingTexts.isEmpty {
+                    components.append(
+                        """
+                        Some texts were already available in your pings list:
+                        \(existingTexts.makeAutoPingsTextsList())
+                        """
+                    )
+                }
+                
+                return components.joined(separator: "\n")
             case .remove:
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
@@ -130,20 +138,27 @@ struct InteractionHandler {
                 
                 try await pingsService.remove(existingTexts, forDiscordID: discordId)
                 
-                var response = """
-                Successfully removed the followings from your pings-list:
-                \(existingTexts.makeAutoPingsTextsList())
-                """
+                var components = [String]()
                 
-                if !newTexts.isEmpty {
-                    response += """
-                    
-                    Some texts were not available in your pings list at all:
-                    \(newTexts.makeAutoPingsTextsList())
-                    """
+                if !existingTexts.isEmpty {
+                    components.append(
+                        """
+                        Successfully removed the followings from your pings-list:
+                        \(existingTexts.makeAutoPingsTextsList())
+                        """
+                    )
                 }
                 
-                return response
+                if !newTexts.isEmpty {
+                    components.append(
+                        """
+                        Some texts were not available in your pings list at all:
+                        \(newTexts.makeAutoPingsTextsList())
+                        """
+                    )
+                }
+                
+                return components.joined(separator: "\n")
             case .list:
                 let items = try await pingsService
                     .get(discordID: discordId)
