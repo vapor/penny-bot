@@ -81,6 +81,7 @@ actor DiscordService {
     func sendThanksResponse(
         channelId: String,
         replyingToMessageId messageId: String,
+        isAFailureMessage: Bool,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         let hasPermissionToSend = await vaporGuild?.userHasPermissions(
@@ -105,6 +106,8 @@ actor DiscordService {
                 )
             )
         } else {
+            /// Don't report failures to users, in this case.
+            if isAFailureMessage { return nil }
             let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)\n"
             return await self.sendMessage(
                 channelId: Constants.thanksChannelId,

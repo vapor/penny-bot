@@ -4,6 +4,7 @@ import Foundation
 import SotoCore
 import PennyModels
 import PennyRepositories
+import PennyExtensions
 import NIOConcurrencyHelpers
 
 /// So the s3-file-updates happen in a sequential order?
@@ -17,7 +18,7 @@ struct AutoPingsHandler: LambdaHandler {
     let awsClient: AWSClient
     let pingsRepo: any AutoPingsRepository
     
-    init(context: LambdaInitializationContext) async throws {
+    init(context: LambdaInitializationContext) async {
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
@@ -44,7 +45,9 @@ struct AutoPingsHandler: LambdaHandler {
             } catch {
                 return APIGatewayV2Response(
                     status: .expectationFailed,
-                    content: Failure(reason: "Error when getting the full list: \(error)")
+                    content: GatewayFailure(
+                        reason: "Error when getting the full list: \(error)"
+                    )
                 )
             }
         } else if event.rawPath.hasSuffix("users") {
@@ -59,7 +62,9 @@ struct AutoPingsHandler: LambdaHandler {
                 } catch {
                     return APIGatewayV2Response(
                         status: .expectationFailed,
-                        content: Failure(reason: "Error when adding texts for user: \(error)")
+                        content: GatewayFailure(
+                            reason: "Error when adding texts for user: \(error)"
+                        )
                     )
                 }
             case .DELETE:
@@ -72,43 +77,28 @@ struct AutoPingsHandler: LambdaHandler {
                 } catch {
                     return APIGatewayV2Response(
                         status: .expectationFailed,
-                        content: Failure(reason: "Error when removing texts for user: \(error)")
+                        content: GatewayFailure(
+                            reason: "Error when removing texts for user: \(error)"
+                        )
                     )
                 }
             default:
                 return APIGatewayV2Response(
                     status: .badRequest,
-                    content: Failure(reason: "Unexpected method: \(event.context.http.method)")
+                    content: GatewayFailure(
+                        reason: "Unexpected method: \(event.context.http.method)"
+                    )
                 )
             }
         } else {
             return APIGatewayV2Response(
                 status: .badRequest,
-                content: Failure(reason: "Unexpected path parameter: \(event.context.http.path)")
+                content: GatewayFailure(
+                    reason: "Unexpected path parameter: \(event.context.http.path)"
+                )
             )
         }
         
         return APIGatewayV2Response(status: .ok, content: newItems)
     }
-}
-
-extension APIGatewayV2Response {
-    init(status: HTTPResponseStatus, content: some Encodable) {
-        do {
-            let data = try JSONEncoder().encode(content)
-            let string = String(data: data, encoding: .utf8)
-            self.init(statusCode: status, body: string)
-        } catch {
-            if let data = try? JSONEncoder().encode(content) {
-                let string = String(data: data, encoding: .utf8)
-                self.init(statusCode: .internalServerError, body: string)
-            } else {
-                self.init(statusCode: .internalServerError, body: "Plain Error: \(error)")
-            }
-        }
-    }
-}
-
-struct Failure: Encodable {
-    var reason: String
 }

@@ -69,7 +69,10 @@ struct MessageHandler {
         
         if successfulResponses.isEmpty {
             // Definitely there were some coin requests that failed.
-            await self.respondToThanks(with: "Oops. Something went wrong! Please try again later")
+            await self.respondToThanks(
+                with: "Oops. Something went wrong! Please try again later",
+                isAFailureMessage: true
+            )
         } else {
             // Stitch responses together instead of sending a lot of messages,
             // to consume less Discord rate-limit.
@@ -79,9 +82,12 @@ struct MessageHandler {
                 logger.warning("Can't send the full thanks-response", metadata: [
                     "full": .string(finalResponse)
                 ])
-                await self.respondToThanks(with: "Coins were granted to a lot of members!")
+                await self.respondToThanks(
+                    with: "Coins were granted to a lot of members!",
+                    isAFailureMessage: false
+                )
             } else {
-                await self.respondToThanks(with: finalResponse)
+                await self.respondToThanks(with: finalResponse, isAFailureMessage: false)
             }
         }
     }
@@ -147,10 +153,11 @@ struct MessageHandler {
         }
     }
     
-    private func respondToThanks(with response: String) async {
+    private func respondToThanks(with response: String, isAFailureMessage: Bool) async {
         await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.id,
+            isAFailureMessage: isAFailureMessage,
             response: response
         )
     }

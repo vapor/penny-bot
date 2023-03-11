@@ -4,6 +4,7 @@ import Foundation
 import SotoCore
 import PennyServices
 import PennyModels
+import PennyExtensions
 
 @main
 struct AddCoinHandler: LambdaHandler {
@@ -13,7 +14,7 @@ struct AddCoinHandler: LambdaHandler {
     let awsClient: AWSClient
     let userService: UserService
     
-    init(context: LambdaInitializationContext) async throws {
+    init(context: LambdaInitializationContext) async {
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
@@ -27,8 +28,7 @@ struct AddCoinHandler: LambdaHandler {
         })
     }
     
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
-        let response: APIGatewayV2Response
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
             let product: CoinRequest = try event.bodyObject()
             
@@ -63,41 +63,19 @@ struct AddCoinHandler: LambdaHandler {
                 to: user
             )
             
-            response = APIGatewayV2Response(status: .ok, content: coinResponse)
+            return APIGatewayV2Response(status: .ok, content: coinResponse)
         }
         catch UserService.ServiceError.failedToUpdate {
-            response = APIGatewayV2Response(
+            return APIGatewayV2Response(
                 status: .notFound,
-                content: Failure(reason: "Couldn't find the user")
+                content: GatewayFailure(reason: "Couldn't find the user")
             )
         }
         catch let error {
-            response = APIGatewayV2Response(
+            return APIGatewayV2Response(
                 status: .badRequest,
-                content: Failure(reason: "Error: \(error)")
+                content: GatewayFailure(reason: "Error: \(error)")
             )
         }
-        return response
     }
-}
-
-extension APIGatewayV2Response {
-    init(status: HTTPResponseStatus, content: some Encodable) {
-        do {
-            let data = try JSONEncoder().encode(content)
-            let string = String(data: data, encoding: .utf8)
-            self.init(statusCode: status, body: string)
-        } catch {
-            if let data = try? JSONEncoder().encode(content) {
-                let string = String(data: data, encoding: .utf8)
-                self.init(statusCode: .internalServerError, body: string)
-            } else {
-                self.init(statusCode: .internalServerError, body: "Plain Error: \(error)")
-            }
-        }
-    }
-}
-
-struct Failure: Encodable {
-    var reason: String
 }

@@ -58,7 +58,8 @@ struct ReactionHandler {
             logger.error("Error when posting coins", metadata: ["error": "\(error)"])
             await respond(
                 with: "Oops. Something went wrong! Please try again later",
-                senderName: nil
+                senderName: nil,
+                isAFailureMessage: true
             )
             return
         }
@@ -78,16 +79,22 @@ struct ReactionHandler {
         } else {
             await respond(
                 with: "\(senderName) gave a \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
-                senderName: senderName
+                senderName: senderName,
+                isAFailureMessage: false
             )
         }
     }
     
     /// `senderName` only should be included if its not a error-response.
-    private func respond(with response: String, senderName: String?) async {
+    private func respond(
+        with response: String,
+        senderName: String?,
+        isAFailureMessage: Bool
+    ) async {
         let apiResponse = await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.message_id,
+            isAFailureMessage: isAFailureMessage,
             response: response
         )
         do {
