@@ -76,7 +76,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "Texts to be pinged for, separated by ','. Insensitive to cases, diacritics & these chars: .,:?!",
+                    description: "Texts to be pinged for, separated by ','. Insensitive to cases, diacritics & punctuations"
                     required: true
                 )]
             ),

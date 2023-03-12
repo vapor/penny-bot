@@ -1,6 +1,9 @@
 import DiscordBM
+import Foundation
 
 extension StringProtocol {
+    /// Removes leading and trailing whitespaces and
+    /// Makes the string case, diacritic and punctuation insensitive.
     func foldForPingCommand() -> String {
         var substring = Substring(self)
         while substring.first?.isWhitespace == true {
@@ -10,11 +13,7 @@ extension StringProtocol {
             substring = substring.dropLast()
         }
         let modified = substring
-            .replacingOccurrences(of: ".", with: "")
-            .replacingOccurrences(of: ",", with: "")
-            .replacingOccurrences(of: ":", with: "")
-            .replacingOccurrences(of: "?", with: "")
-            .replacingOccurrences(of: "!", with: "")
+            .filter({ !$0.isPunctuation })
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
         return String(modified)
