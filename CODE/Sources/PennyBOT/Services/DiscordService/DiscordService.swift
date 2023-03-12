@@ -7,9 +7,8 @@ actor DiscordService {
     private var cache: DiscordCache!
     private var logger = Logger(label: "DiscordService")
     /// `[UserDiscordID: DMChannelID]`
-    private var channels: [String: String] = [:]
+    private var dmChannels: [String: String] = [:]
     private var usersAlreadyWarnedAboutClosedDMS: [String] = []
-    private var slashCommandsStorage: [ApplicationCommand] = []
     private var vaporGuild: Gateway.GuildCreate? {
         get async {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -48,59 +47,55 @@ actor DiscordService {
                 channelId: dmChannelId,
                 payload: payload
             )
+            
             switch response.guardDecodeError() {
-            case .none: break
-            case let .badStatusCode(response):
-                logger.report("Could not send DM", response: response, metadata: [
-                    "userId": .string(userId),
-                    "dmChannelId": .string(dmChannelId),
-                    "payload": "\(payload)"
-                ])
-            case let .jsonError(jsonError):
-                if case .cannotSendMessagesToThisUser = jsonError.code {
-                    if !usersAlreadyWarnedAboutClosedDMS.contains(userId) {
-                        logger.warning("Could not send DM, will try to let them know", metadata: [
-                            "userId": .string(userId),
-                            "dmChannelId": .string(dmChannelId),
-                            "payload": "\(payload)",
-                            "jsonError": "\(jsonError)"
-                        ])
-                        
-                        usersAlreadyWarnedAboutClosedDMS.append(userId)
-                        let userMention = DiscordUtils.userMention(id: userId)
-                        let message = "I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu."
-                        await self.sendMessage(
-                            channelId: Constants.thanksChannelId,
-                            payload: .init(
-                                content: userMention,
-                                embeds: [.init(description: message, color: .vaporPurple)])
-                        )
-                    }
-                } else {
-                    logger.error("Could not send DM", metadata: [
+            case let .jsonError(jsonError)
+                where jsonError.code == .cannotSendMessagesToThisUser:
+                /// Try to let them know Penny can't DM them.
+                if !usersAlreadyWarnedAboutClosedDMS.contains(userId) {
+                    logger.warning("Could not send DM, will try to let them know", metadata: [
                         "userId": .string(userId),
                         "dmChannelId": .string(dmChannelId),
                         "payload": "\(payload)",
                         "jsonError": "\(jsonError)"
                     ])
+                    
+                    usersAlreadyWarnedAboutClosedDMS.append(userId)
+                    let userMention = DiscordUtils.userMention(id: userId)
+                    let message = "I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu."
+                    await self.sendMessage(
+                        channelId: Constants.thanksChannelId,
+                        payload: .init(
+                            content: userMention,
+                            embeds: [.init(description: message, color: .vaporPurple)])
+                    )
                 }
+                
+                return /// So the log down here doesn't happen
+            default: break
             }
-        } catch {
-            logger.error("Couldn't send DM", metadata: [
+            
+            logger.report("Couldn't send DM", response: response, metadata: [
                 "userId": .string(userId),
                 "dmChannelId": .string(dmChannelId),
-                "payload": "\(payload)",
-                "error": "\(error)"
+                "payload": "\(payload)"
+            ])
+        } catch {
+            logger.report("Couldn't send DM", error: error, metadata: [
+                "userId": .string(userId),
+                "dmChannelId": .string(dmChannelId),
+                "payload": "\(payload)"
             ])
         }
     }
     
     private func getDMChannelId(userId: String) async -> String? {
-        if let existing = channels[userId] {
+        if let existing = dmChannels[userId] {
             return existing
         } else {
             do {
                 let dmChannel = try await discordClient.createDM(recipient_id: userId).decode()
+                dmChannels[userId] = dmChannel.id
                 return dmChannel.id
             } catch {
                 logger.error("Couldn't get DM channel for user", metadata: ["userId": "\(userId)"])
@@ -122,8 +117,7 @@ actor DiscordService {
             try response.guardSuccess()
             return response
         } catch {
-            logger.error("Couldn't send a message", metadata: [
-                "error": "\(error)",
+            logger.report("Couldn't send a message", error: error, metadata: [
                 "channelId": "\(channelId)",
                 "payload": "\(payload)"
             ])
@@ -192,7 +186,11 @@ actor DiscordService {
             try response.guardSuccess()
             return response
         } catch {
-            logger.error("Couldn't edit a message", metadata: ["error": "\(error)"])
+            logger.report("Couldn't edit a message", error: error, metadata: [
+                "messageId": .string(messageId),
+                "channelId": .string(channelId),
+                "payload": "\(payload)"
+            ])
             return nil
         }
     }
@@ -212,7 +210,11 @@ actor DiscordService {
             ).guardSuccess()
             return true
         } catch {
-            logger.error("Couldn't send interaction response", metadata: ["error": "\(error)"])
+            logger.report("Couldn't send interaction response", error: error, metadata: [
+                "id": .string(id),
+                "token": .string(token),
+                "payload": "\(payload)"
+            ])
             return false
         }
     }
@@ -227,7 +229,10 @@ actor DiscordService {
                 payload: payload
             ).guardSuccess()
         } catch {
-            logger.error("Couldn't send interaction edit", metadata: ["error": "\(error)"])
+            logger.report("Couldn't send interaction edit", error: error, metadata: [
+                "token": .string(token),
+                "payload": "\(payload)"
+            ])
         }
     }
     
@@ -240,7 +245,9 @@ actor DiscordService {
                     .guardSuccess()
             }
         } catch {
-            logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
+            logger.report("Couldn't create slash command", error: error, metadata: [
+                "excluding": .stringConvertible(excluding)
+            ])
         }
     }
     
@@ -250,22 +257,18 @@ actor DiscordService {
                 payload: payload
             ).guardSuccess()
         } catch {
-            logger.error("Couldn't create slash command", metadata: ["error": "\(error)"])
+            logger.report("Couldn't create slash command", error: error, metadata: [
+                "payload": "\(payload)"
+            ])
         }
     }
     
     func getSlashCommands() async -> [ApplicationCommand] {
-        if self.slashCommandsStorage.isEmpty {
-            do {
-                let commands = try await discordClient.getApplicationGlobalCommands().decode()
-                self.slashCommandsStorage = commands
-                return commands
-            } catch {
-                logger.error("Couldn't get slash commands", metadata: ["error": "\(error)"])
-                return []
-            }
-        } else {
-            return self.slashCommandsStorage
+        do {
+            return try await discordClient.getApplicationGlobalCommands().decode()
+        } catch {
+            logger.report("Couldn't get slash commands", error: error)
+            return []
         }
     }
     
@@ -279,7 +282,10 @@ actor DiscordService {
                 messageId: messageId
             ).decode()
         } catch {
-            logger.error("Couldn't get channel message", metadata: ["error": "\(error)"])
+            logger.report("Couldn't get channel message", error: error, metadata: [
+                "channelId": .string(channelId),
+                "messageId": .string(messageId)
+            ])
             return nil
         }
     }

@@ -178,7 +178,7 @@ struct InteractionHandler {
                 }
             }
         } catch {
-            logger.error("Pings command error", metadata: ["error": "\(error)"])
+            logger.report("Pings command error", error: error)
             return "Sorry, some errors happened :( Please try again"
         }
     }

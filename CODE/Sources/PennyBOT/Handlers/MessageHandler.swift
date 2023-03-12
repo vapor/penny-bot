@@ -60,9 +60,8 @@ struct MessageHandler {
                 let responseString = "\(response.receiver) now has \(response.coins) \(Constants.vaporCoinEmoji)!"
                 successfulResponses.append(responseString)
             } catch {
-                logger.error("CoinService failed", metadata: [
-                    "request": "\(coinRequest)",
-                    "error": "\(error)"
+                logger.report("CoinService failed", error: error, metadata: [
+                    "request": "\(coinRequest)"
                 ])
             }
         }
@@ -101,7 +100,7 @@ struct MessageHandler {
         do {
             wordUsersDict = try await pingsService.getAll().items
         } catch {
-            logger.error("Can't retrieve ping-words", metadata: ["error": "\(error)"])
+            logger.report("Can't retrieve ping-words", error: error)
             return
         }
         let folded = event.content

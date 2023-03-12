@@ -55,7 +55,7 @@ struct ReactionHandler {
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
-            logger.error("Error when posting coins", metadata: ["error": "\(error)"])
+            logger.report("Error when posting coins", error: error)
             await respond(
                 with: "Oops. Something went wrong! Please try again later",
                 senderName: nil,
