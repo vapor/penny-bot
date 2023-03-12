@@ -277,6 +277,8 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     - The auto-ping commands are currently restricted to users with any of these roles: \(technicalRolesString)
     
+    > All auto-pings commands are "private", meaning they are visible to you and you only, and won't even trigger the "is typing" indicator.
+    
     **Adding Texts**
     
     You can add multiple texts using \(makeCommandLink("add")), separating the texts using commas `,`. This command is Slack-compatible so you can copy-paste your Slack keywords to it.
