@@ -65,17 +65,31 @@ struct ReactionHandler {
         }
         
         let senderName = member.nick ?? user.username
-        if let (pennyResponseMessageId, lastUsers) = await cache.messageToEditIfAvailable(
+        if let toEdit = await cache.messageToEditIfAvailable(
             in: event.channel_id,
             receiverMessageId: event.message_id
         ) {
-            let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
-            let count = lastUsers.count + 1
-            await editResponse(
-                messageId: pennyResponseMessageId,
-                with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
-                senderName: senderName
-            )
+            switch toEdit {
+            case let .normal(pennyResponseMessageId, lastUsers):
+                let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
+                let count = lastUsers.count + 1
+                await editResponse(
+                    messageId: pennyResponseMessageId,
+                    with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                    forcedInThanksChannel: false,
+                    senderName: senderName
+                )
+            case let .forcedInThanksChannel(originalChannelId, pennyResponseMessageId, lastUsers):
+                let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(originalChannelId)/\(event.message_id)\n"
+                let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
+                let count = lastUsers.count + 1
+                await editResponse(
+                    messageId: pennyResponseMessageId,
+                    with: link + "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                    forcedInThanksChannel: true,
+                    senderName: senderName
+                )
+            }
         } else {
             await respond(
                 with: "\(senderName) gave a \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
@@ -100,10 +114,15 @@ struct ReactionHandler {
         do {
             if let senderName,
                let decoded = try apiResponse?.decode() {
+                /// If it's a thanks message that was sent to `#thanks` instead of the original
+                /// channel, then we need to inform the cache.
+                let sentToThanksChannelInstead = decoded.channel_id == Constants.thanksChannelId &&
+                decoded.channel_id != event.channel_id
                 await cache.didRespond(
-                    in: event.channel_id,
+                    originalChannelId: event.channel_id,
                     to: event.message_id,
                     with: decoded.id,
+                    sentToThanksChannelInstead: sentToThanksChannelInstead,
                     senderName: senderName
                 )
             }
@@ -120,6 +139,7 @@ struct ReactionHandler {
     private func editResponse(
         messageId: String,
         with response: String,
+        forcedInThanksChannel: Bool,
         senderName: String?
     ) async {
         let apiResponse = await DiscordService.shared.editMessage(
@@ -136,9 +156,10 @@ struct ReactionHandler {
             if let senderName,
                let decoded = try apiResponse?.decode() {
                 await cache.didRespond(
-                    in: event.channel_id,
+                    originalChannelId: event.channel_id,
                     to: event.message_id,
                     with: decoded.id,
+                    sentToThanksChannelInstead: forcedInThanksChannel,
                     senderName: senderName
                 )
             }
@@ -164,6 +185,8 @@ actor ReactionCache {
     /// `[ChannelID: (ReceiverMessageID, PennyResponseMessageID, [SenderUsers])]`.
     /// Channel's last message id if it is a thanks message to another message.
     var channelWithLastThanksMessage: [String: (String, String, [String])] = [:]
+    /// `[ReceiverMessageID: (OriginalChannelID, PennyResponseMessageID, [SenderUsers])]`
+    var thanksChannelForcedMessages: [String: (String, String, [String])] = [:]
     
     private init() { }
     
@@ -210,22 +233,43 @@ actor ReactionCache {
     }
     
     fileprivate func didRespond(
-        in channelId: String,
+        originalChannelId channelId: String,
         to receiverMessageId: String,
         with responseMessageId: String,
+        sentToThanksChannelInstead: Bool,
         senderName: String
     ) {
-        let names = (channelWithLastThanksMessage[channelId]?.2 ?? []) + [senderName]
-        channelWithLastThanksMessage[channelId] = (receiverMessageId, responseMessageId, names)
+        if sentToThanksChannelInstead {
+            let names = (thanksChannelForcedMessages[receiverMessageId]?.2 ?? []) + [senderName]
+            thanksChannelForcedMessages[receiverMessageId] = (channelId, responseMessageId, names)
+        } else {
+            let names = (channelWithLastThanksMessage[channelId]?.2 ?? []) + [senderName]
+            channelWithLastThanksMessage[channelId] = (receiverMessageId, responseMessageId, names)
+        }
+    }
+    
+    enum MessageToEditResponse {
+        case normal(pennyResponseMessageId: String, lastUsers: [String])
+        case forcedInThanksChannel(
+            originalChannelId: String,
+            pennyResponseMessageId: String,
+            lastUsers: [String]
+        )
     }
     
     fileprivate func messageToEditIfAvailable(
         in channelId: String,
         receiverMessageId: String
-    ) -> (pennyResponseMessageId: String, lastUsers: [String])? {
-        if let existing = channelWithLastThanksMessage[channelId] {
+    ) -> MessageToEditResponse? {
+        if let existing = thanksChannelForcedMessages[receiverMessageId] {
+            return .forcedInThanksChannel(
+                originalChannelId: existing.0,
+                pennyResponseMessageId: existing.1,
+                lastUsers: existing.2
+            )
+        } else if let existing = channelWithLastThanksMessage[channelId] {
             if existing.0 == receiverMessageId {
-                return (existing.1, existing.2)
+                return .normal(pennyResponseMessageId: existing.1, lastUsers: existing.2)
             } else {
                 channelWithLastThanksMessage[channelId] = nil
                 return nil
