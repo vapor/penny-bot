@@ -84,6 +84,8 @@ public enum EventKey: String {
     case linkInteraction
     case thanksReaction
     case thanksReaction2
+    case thanksReaction3
+    case thanksReaction4
     case stopRespondingToMessages
     case autoPingsTrigger
     
@@ -102,6 +104,13 @@ public enum EventKey: String {
             return [.editMessage(
                 channelId: "684159753189982218",
                 messageId: "1031112115928449022"
+            )]
+        case .thanksReaction3:
+            return [.createMessage(channelId: Constants.thanksChannelId)]
+        case .thanksReaction4:
+            return [.editMessage(
+                channelId: Constants.thanksChannelId,
+                messageId: "1031112115928111022"
             )]
         case .stopRespondingToMessages:
             return [.createMessage(channelId: "1067060193982156880")]

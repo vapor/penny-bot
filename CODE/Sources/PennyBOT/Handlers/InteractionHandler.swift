@@ -128,7 +128,7 @@ struct InteractionHandler {
                     )
                 }
                 
-                return components.joined(separator: "\n")
+                return components.joined(separator: "\n\n")
             case .remove:
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
@@ -163,7 +163,7 @@ struct InteractionHandler {
                     )
                 }
                 
-                return components.joined(separator: "\n")
+                return components.joined(separator: "\n\n")
             case .list:
                 let items = try await pingsService
                     .get(discordID: discordId)
@@ -260,11 +260,11 @@ private enum AutoPingsSubCommand: String, CaseIterable {
 }
 
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
-    func makeCommandLink(_ name: String) -> String {
+    func makeCommandLink(_ subcommand: String) -> String {
         guard let id = commands.first(where: { $0.name == "auto-pings" })?.id else {
-            return "`/auto-pings \(name)`"
+            return "`/auto-pings \(subcommand)`"
         }
-        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: name)
+        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
     }
     
     return """

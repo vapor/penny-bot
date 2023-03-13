@@ -144,7 +144,7 @@ struct ReactionHandler {
     ) async {
         let apiResponse = await DiscordService.shared.editMessage(
             messageId: messageId,
-            channelId: event.channel_id,
+            channelId: forcedInThanksChannel ? Constants.thanksChannelId : event.channel_id,
             payload: .init(
                 embeds: [.init(
                     description: response,

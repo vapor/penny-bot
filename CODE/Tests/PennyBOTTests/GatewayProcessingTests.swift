@@ -169,6 +169,44 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
     
+    func testReactionHandler3() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction3,
+                as: RequestBody.CreateMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix("""
+            https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
+            0xTim gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
+            """
+            ), description)
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+        
+        // We need to wait a little bit to make sure Discord's response
+        // is decoded and is used-in/added-to the `ReactionCache`.
+        // This would happen in a real-world situation too.
+        try await Task.sleep(for: .seconds(1))
+        
+        // The second thanks message should edit the last one.
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .thanksReaction4,
+                as: RequestBody.EditMessage.self
+            )
+            
+            let description = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(description.hasPrefix("""
+            https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
+            0xTim & Mahdi BM gave 2 \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
+            """
+            ), description)
+            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+        }
+    }
+    
     func testRespondsInThanksChannelWhenDoesNotHavePermission() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage2,

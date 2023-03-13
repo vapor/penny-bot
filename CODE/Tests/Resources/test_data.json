@@ -285,6 +285,87 @@
             "guild_id": "808638139785936919"
         }
     },
+    "thanksReaction3": {
+        "t": "MESSAGE_REACTION_ADD",
+        "s": 6,
+        "op": 0,
+        "d": {
+            "user_id": "290483761559240704",
+            "message_id": "1031112115928442034",
+            "member": {
+                "user": {
+                    "username": "0xTim",
+                    "public_flags": 0,
+                    "id": "432065887202181142",
+                    "discriminator": "1157",
+                    "avatar_decoration": null,
+                    "avatar": "800bfcd31ae4a77f61646226df46c204"
+                },
+                "roles": [
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "emoji": {
+                "name": "🪙",
+                "id": null
+            },
+            "channel_id": "431926479752921098",
+            "burst": false,
+            "guild_id": "808638139785936919"
+        }
+    },
+    "thanksReaction4": {
+        "t": "MESSAGE_REACTION_ADD",
+        "s": 9,
+        "op": 0,
+        "d": {
+            "user_id": "290483761559240704",
+            "message_id": "1031112115928442034",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 0,
+                    "id": "290483761559240704",
+                    "discriminator": "0517",
+                    "bot": false,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "emoji": {
+                "name": "🪙",
+                "id": null
+            },
+            "channel_id": "431926479752921098",
+            "burst": false,
+            "guild_id": "808638139785936919"
+        }
+    },
     "POST/channels/684159753189982218/messages": {
         "id": "1031112115928449022",
         "type": 0,
@@ -298,6 +379,58 @@
             "bot": true,
             "avatar_decoration": null,
             "avatar": null
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
+    },
+    "POST/channels/443074453719744522/messages": {
+        "id": "1031112115928111022",
+        "type": 0,
+        "content": "https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034\n0xTim gave gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
+        "channel_id": "443074453719744522",
+        "author": {
+            "username": "TestApp",
+            "public_flags": 0,
+            "id": "950695294906007573",
+            "discriminator": "7843",
+            "bot": true,
+            "avatar_decoration": null,
+            "avatar": null
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
+    },
+    "GET/channels/431926479752921098/messages/1031112115928442034": {
+        "id": "1031112115928442034",
+        "type": 0,
+        "content": "Testing! 684866",
+        "channel_id": "431926479752921098",
+        "author": {
+            "id": "1030118727418646629",
+            "username": "DisBMLibTestBot",
+            "avatar": null,
+            "avatar_decoration": null,
+            "discriminator": "0861",
+            "public_flags": 0,
+            "bot": true
         },
         "attachments": [],
         "embeds": [],
