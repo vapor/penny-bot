@@ -33,6 +33,7 @@ jobs:
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
         AWS_REGION: 'eu-west-1'
         SOURCE_DIR: './CODE/.build/lambda/'
+        LOG_LEVEL: trace
     - name: Update Lambda code
       run: |
         aws lambda update-function-code \

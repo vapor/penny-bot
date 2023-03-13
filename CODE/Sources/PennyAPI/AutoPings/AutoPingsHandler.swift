@@ -8,6 +8,7 @@ import PennyExtensions
 import NIOConcurrencyHelpers
 
 /// So the s3-file-updates happen in a sequential order?
+/// Not sure how it plays with async/await 🤔
 private let autoPingLock = NIOLock()
 
 @main
