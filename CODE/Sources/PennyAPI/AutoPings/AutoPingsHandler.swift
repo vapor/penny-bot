@@ -32,9 +32,6 @@ struct AutoPingsHandler: LambdaHandler {
         _ event: APIGatewayV2Request,
         context: LambdaContext
     ) async -> APIGatewayV2Response {
-        autoPingLock.lock()
-        defer { autoPingLock.unlock() }
-        
         let newItems: S3AutoPingItems
         if event.rawPath.hasSuffix("all") {
             do {
