@@ -14,12 +14,12 @@ class OtherTests: XCTestCase {
         XCTAssertTrue(array.containsSequence(["hi"]))
         XCTAssertTrue(array.containsSequence(["g", "hi"]))
         XCTAssertTrue(array.containsSequence([]))
+        XCTAssertTrue([String]().containsSequence([]))
         
         XCTAssertFalse(array.containsSequence(["g", "h"]))
         XCTAssertFalse(array.containsSequence(["s", "hi"]))
         XCTAssertFalse(array.containsSequence(["a", "def"]))
         
-        XCTAssertFalse([String]().containsSequence([]))
         XCTAssertFalse([].containsSequence(["j"]))
     }
 }

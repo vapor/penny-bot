@@ -48,11 +48,12 @@ extension [String] {
     }
 }
 
-extension Array where Element: Equatable {
+extension Array where Element: StringProtocol {
     func containsSequence(_ other: Self) -> Bool {
         
-        for idx in self.indices {
-            if idx + other.count > self.count { break }
+        if other.count > self.count { return false }
+        
+        for idx in 0..<(self.count - other.count + 1) {
             if self[idx..<idx + other.count].elementsEqual(other) {
                 return true
             }

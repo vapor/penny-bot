@@ -8,7 +8,7 @@ actor DiscordService {
     private var logger = Logger(label: "DiscordService")
     /// `[UserDiscordID: DMChannelID]`
     private var dmChannels: [String: String] = [:]
-    private var usersAlreadyWarnedAboutClosedDMS: [String] = []
+    private var usersAlreadyWarnedAboutClosedDMS: Set<String> = []
     private var vaporGuild: Gateway.GuildCreate? {
         get async {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -52,8 +52,7 @@ actor DiscordService {
             case let .jsonError(jsonError)
                 where jsonError.code == .cannotSendMessagesToThisUser:
                 /// Try to let them know Penny can't DM them.
-                if !usersAlreadyWarnedAboutClosedDMS.contains(userId) {
-                    usersAlreadyWarnedAboutClosedDMS.append(userId)
+                if usersAlreadyWarnedAboutClosedDMS.insert(userId).inserted {
                     
                     logger.warning("Could not send DM, will try to let them know", metadata: [
                         "userId": .string(userId),
