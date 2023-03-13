@@ -110,7 +110,7 @@ actor DefaultPingsService: AutoPingsService {
     private func setUpResetItemsTask() {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {
-            if (try? await Task.sleep(for: .seconds(60 * 60 * 3))) != nil {
+            if (try? await Task.sleep(for: .seconds(60 * 60 * 6))) != nil {
                 self.cachedItems = nil
                 self.setUpResetItemsTask()
             } else {

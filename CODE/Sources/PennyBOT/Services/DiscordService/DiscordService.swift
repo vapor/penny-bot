@@ -75,16 +75,14 @@ actor DiscordService {
                         )
                     }
                 }
-                
-                return /// So the log down here doesn't happen
-            default: break
+            case .jsonError, .badStatusCode:
+                logger.report("Couldn't send DM", response: response, metadata: [
+                    "userId": .string(userId),
+                    "dmChannelId": .string(dmChannelId),
+                    "payload": "\(payload)"
+                ])
+            case .none: break
             }
-            
-            logger.report("Couldn't send DM", response: response, metadata: [
-                "userId": .string(userId),
-                "dmChannelId": .string(dmChannelId),
-                "payload": "\(payload)"
-            ])
         } catch {
             logger.report("Couldn't send DM", error: error, metadata: [
                 "userId": .string(userId),
