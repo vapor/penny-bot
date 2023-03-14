@@ -103,15 +103,13 @@ struct MessageHandler {
             logger.report("Can't retrieve ping-words", error: error)
             return
         }
-        let folded = event.content
-            .foldForPingCommand()
-            .split(whereSeparator: \.isWhitespace)
+        let divided = event.content.divideForPingCommandChecking()
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
             let splitValue = innerValue.split(whereSeparator: \.isWhitespace)
-            if folded.containsSequence(splitValue),
+            if divided.contains { $0.containsSequence(splitValue) },
                let users = wordUsersDict[word] {
                 for userId in users {
                     /// Both checks if the user has the required roles,

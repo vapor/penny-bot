@@ -88,6 +88,7 @@ public enum EventKey: String {
     case thanksReaction4
     case stopRespondingToMessages
     case autoPingsTrigger
+    case autoPingsTrigger2
     
     /// The endpoints from which the bot will send a response, after receiving each event.
     public var responseEndpoints: [Endpoint] {
@@ -114,11 +115,9 @@ public enum EventKey: String {
             )]
         case .stopRespondingToMessages:
             return [.createMessage(channelId: "1067060193982156880")]
-        case .autoPingsTrigger:
+        case .autoPingsTrigger, .autoPingsTrigger2:
             return [
                 .createDM,
-                .createDM,
-                .createMessage(channelId: "1018169583619821619"),
                 .createMessage(channelId: "1018169583619821619")
             ]
         }

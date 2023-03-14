@@ -268,9 +268,9 @@ class GatewayProcessingTests: XCTestCase {
         await manager.send(key: event)
         let (createDM1, createDM2, sendDM1, sendDM2) = await (
             responseStorage.awaitResponse(at: event.responseEndpoints[0]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[1], expectFailure: true),
-            responseStorage.awaitResponse(at: event.responseEndpoints[2]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[3], expectFailure: true)
+            responseStorage.awaitResponse(at: event.responseEndpoints[0], expectFailure: true),
+            responseStorage.awaitResponse(at: event.responseEndpoints[1]),
+            responseStorage.awaitResponse(at: event.responseEndpoints[1], expectFailure: true)
         )
         
         let recipients = ["950695294906007573", "432065887202181142"]
@@ -284,6 +284,8 @@ class GatewayProcessingTests: XCTestCase {
             let dmMessage = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
             let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+            /// Check to make sure the expected ping-words are mentioned in the message
+            XCTAssertTrue(message.contains("mongodb driver"), message)
         }
         
         do {
@@ -292,6 +294,30 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertEqual(payload1, .none)
             let payload2: Never? = try XCTUnwrap(sendDM2 as? Optional<Never>)
             XCTAssertEqual(payload2, .none)
+        }
+        
+        let event2 = EventKey.autoPingsTrigger2
+        await manager.send(key: event2)
+        let (createDM, sendDM) = await (
+            responseStorage.awaitResponse(at: event2.responseEndpoints[0], expectFailure: true),
+            responseStorage.awaitResponse(at: event2.responseEndpoints[1])
+        )
+        
+        /// The DM channel has already been created for the last tests,
+        /// so should not be created again since it should have been cached.
+        do {
+            let payload: Never? = try XCTUnwrap(createDM as? Optional<Never>)
+            XCTAssertEqual(payload, .none)
+        }
+        
+        do {
+            let dmMessage = try XCTUnwrap(sendDM as? RequestBody.CreateMessage, "\(sendDM)")
+            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+            /// Check to make sure the expected ping-words are mentioned in the message
+            XCTAssertTrue(message.contains("blog"), message)
+            XCTAssertTrue(message.contains("discord"), message)
+            XCTAssertTrue(message.contains("discord-kit"), message)
         }
     }
 }

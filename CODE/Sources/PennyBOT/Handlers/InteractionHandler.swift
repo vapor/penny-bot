@@ -283,7 +283,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     You can add multiple texts using \(makeCommandLink("add")), separating the texts using commas `,`. This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
-    - Penny looks for **exact matches**, but all texts are **case-insensitive**, **diacritic-insensitive** and also **punctuation-insensitive**.
+    - Penny looks for **exact matches**, but all texts are **case-insensitive**, **diacritic-insensitive** and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`
     
     > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
     

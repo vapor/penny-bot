@@ -18,6 +18,25 @@ extension StringProtocol {
             .folding(options: .diacriticInsensitive, locale: nil)
         return String(modified)
     }
+    
+    func divideForPingCommandChecking() -> [[Substring]] {
+        var substring = Substring(self)
+        while substring.first?.isWhitespace == true {
+            substring = substring.dropFirst()
+        }
+        while substring.last?.isWhitespace == true {
+            substring = substring.dropLast()
+        }
+        let modified = substring
+            .lowercased()
+            .folding(options: .diacriticInsensitive, locale: nil)
+            .split(whereSeparator: \.isWhitespace)
+            .flatMap { $0.split(whereSeparator: \.isNewline) }
+        
+        let dividedByPuncs = modified.flatMap { $0.split(whereSeparator: \.isPunctuation) }
+        
+        return [modified, dividedByPuncs]
+    }
 }
 
 extension [String] {
