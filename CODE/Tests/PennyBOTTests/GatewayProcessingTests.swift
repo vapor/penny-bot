@@ -45,17 +45,13 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testSlashCommandsRegisterOnStartup() async throws {
-        let responses = await [
-            responseStorage.awaitResponse(at: .createGlobalApplicationCommand(appId: "11111111")),
-            responseStorage.awaitResponse(at: .createGlobalApplicationCommand(appId: "11111111"))
-        ]
+        let response = await responseStorage.awaitResponse(
+            at: .bulkOverwriteGlobalApplicationCommands(appId: "11111111")
+        )
         
         let commandNames = ["link", "auto-pings"]
-        
-        for response in responses {
-            let slashCommand = try XCTUnwrap(response as? RequestBody.ApplicationCommandCreate)
-            XCTAssertTrue(commandNames.contains(slashCommand.name), slashCommand.name)
-        }
+        let commands = try XCTUnwrap(response as? [RequestBody.ApplicationCommandCreate])
+        XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
     }
     
     func testMessageHandler() async throws {
