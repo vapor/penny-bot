@@ -281,7 +281,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     **Adding Texts**
     
-    You can add multiple texts using \(makeCommandLink("add")), separating the texts using commas `,`. This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+    You can add multiple texts using \(makeCommandLink("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
     - Penny looks for **exact matches**, but all texts are **case-insensitive**, **diacritic-insensitive** and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`
     
@@ -289,7 +289,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     **Removing Texts**
     
-    You can remove multiple texts using \(makeCommandLink("remove")), separating the texts using commas `,`.
+    You can remove multiple texts using \(makeCommandLink("remove")), separating the texts using commas (`,`).
     
     **Your Pings List**
     

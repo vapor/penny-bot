@@ -46,8 +46,8 @@ class GatewayProcessingTests: XCTestCase {
     
     func testSlashCommandsRegisterOnStartup() async throws {
         let responses = await [
-            responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111")),
-            responseStorage.awaitResponse(at: .createApplicationGlobalCommand(appId: "11111111"))
+            responseStorage.awaitResponse(at: .createGlobalApplicationCommand(appId: "11111111")),
+            responseStorage.awaitResponse(at: .createGlobalApplicationCommand(appId: "11111111"))
         ]
         
         let commandNames = ["link", "auto-pings"]

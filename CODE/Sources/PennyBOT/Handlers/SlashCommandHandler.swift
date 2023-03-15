@@ -3,18 +3,7 @@ import Logging
 
 struct SlashCommandHandler {
     func registerCommands() async {
-        /// Optimally we would register command only if not already registered,
-        /// because currently there is a 100 commands per day limit.
-        
-        /// Removes slash commands and registers them again.
-        
-        let commands: [RequestBody.ApplicationCommandCreate] = [.link, .ping]
-        
-        await DiscordService.shared.removeSlashCommands(excluding: commands.map(\.name))
-        
-        for command in commands {
-            await DiscordService.shared.createSlashCommand(payload: command)
-        }
+        await DiscordService.shared.overwriteSlashCommands(commands: [.link, .ping])
     }
 }
 

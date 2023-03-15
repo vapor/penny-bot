@@ -14,7 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "1557b7c44cd4c711b0200bb7b616fcb1729271ae"
+        "revision" : "87657d8a6d10009badbbeb939ad1abd7a7483c8f",
+        "version" : "1.0.0-beta.41"
       }
     },
     {
@@ -103,8 +104,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "80a6e3edc1fc3a4c6c7d4177c73fa3f74c72d3e1",
-        "version" : "2.3.0"
+        "revision" : "da0fe44138ab86e380f40a2acbd8a611b07d3f64",
+        "version" : "2.4.0"
       }
     },
     {

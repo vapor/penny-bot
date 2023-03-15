@@ -239,36 +239,21 @@ actor DiscordService {
         }
     }
     
-    func removeSlashCommands(excluding: [String]) async {
+    func overwriteSlashCommands(commands: [RequestBody.ApplicationCommandCreate]) async {
         do {
-            let commands = try await discordClient.getApplicationGlobalCommands().decode()
-            for command in commands where !excluding.contains(command.name) {
-                try await discordClient
-                    .deleteApplicationGlobalCommand(id: command.id)
-                    .guardSuccess()
-            }
+            try await discordClient
+                .bulkOverwriteGlobalApplicationCommands(payload: commands)
+                .guardSuccess()
         } catch {
-            logger.report("Couldn't create slash command", error: error, metadata: [
-                "excluding": .stringConvertible(excluding)
-            ])
-        }
-    }
-    
-    func createSlashCommand(payload: RequestBody.ApplicationCommandCreate) async {
-        do {
-            try await discordClient.createApplicationGlobalCommand(
-                payload: payload
-            ).guardSuccess()
-        } catch {
-            logger.report("Couldn't create slash command", error: error, metadata: [
-                "payload": "\(payload)"
+            logger.report("Couldn't overwrite slash commands", error: error, metadata: [
+                "commands": "\(commands)"
             ])
         }
     }
     
     func getSlashCommands() async -> [ApplicationCommand] {
         do {
-            return try await discordClient.getApplicationGlobalCommands().decode()
+            return try await discordClient.getGlobalApplicationCommands().decode()
         } catch {
             logger.report("Couldn't get slash commands", error: error)
             return []
