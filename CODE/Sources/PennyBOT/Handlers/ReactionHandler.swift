@@ -292,7 +292,7 @@ actor ReactionCache {
     }
     
 #if DEBUG
-    static func tests_reset() {
+    static func _tests_reset() {
         shared = .init()
     }
 #endif

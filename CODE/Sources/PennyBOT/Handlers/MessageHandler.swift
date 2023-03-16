@@ -109,7 +109,7 @@ struct MessageHandler {
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
             let splitValue = innerValue.split(whereSeparator: \.isWhitespace)
-            if divided.contains { $0.containsSequence(splitValue) },
+            if divided.contains(where: { $0.containsSequence(splitValue) }),
                let users = wordUsersDict[word] {
                 for userId in users {
                     /// Both checks if the user has the required roles,

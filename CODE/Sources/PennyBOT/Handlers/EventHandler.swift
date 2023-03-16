@@ -1,7 +1,7 @@
 import DiscordBM
 import Logging
 
-struct EventHandler {
+struct EventHandler: Sendable {
     let event: Gateway.Event
     let coinService: any CoinService
     let logger = Logger(label: "EventHandler")

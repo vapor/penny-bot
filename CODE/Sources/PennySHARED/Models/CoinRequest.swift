@@ -1,5 +1,5 @@
 
-public struct CoinRequest: Codable {
+public struct CoinRequest: Sendable, Codable {
     public let amount: Int
     public let from: String
     public let receiver: String
@@ -15,13 +15,13 @@ public struct CoinRequest: Codable {
     }
 }
 
-public enum CoinEntrySource: String, Codable {
+public enum CoinEntrySource: String, Sendable, Codable {
     case discord
     case github
     case penny
 }
 
-public enum CoinEntryReason: String, Codable {
+public enum CoinEntryReason: String, Sendable, Codable {
     case userProvided
     case prSubmittedAndClosed
     case startedSponsoring

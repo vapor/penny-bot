@@ -24,7 +24,7 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makeCoinService = { _ in FakeCoinService() }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
-        ReactionCache.tests_reset()
+        ReactionCache._tests_reset()
         self.manager = FakeManager()
         BotFactory.makeBot = { _, _ in self.manager! }
         BotFactory.makeCache = {
@@ -37,7 +37,7 @@ class GatewayProcessingTests: XCTestCase {
                 storage: storage
             )
         }
-        await stateManager.tests_reset()
+        await stateManager._tests_reset()
         // Due to how `Penny.main()` works, sometimes `Penny.main()` exits before
         // the fake manager is ready. That's why we need to use `waitUntilConnected()`.
         await Penny.main()
@@ -47,7 +47,7 @@ class GatewayProcessingTests: XCTestCase {
     func testSlashCommandsRegisterOnStartup() async throws {
         let response = await responseStorage.awaitResponse(
             at: .bulkOverwriteGlobalApplicationCommands(appId: "11111111")
-        )
+        ).value
         
         let commandNames = ["link", "auto-pings"]
         let commands = try XCTUnwrap(response as? [RequestBody.ApplicationCommandCreate])
@@ -226,14 +226,14 @@ class GatewayProcessingTests: XCTestCase {
         
         let response = await responseStorage.awaitResponse(
             at: .createMessage(channelId: Constants.logsChannelId)
-        )
+        ).value
         
         let message = try XCTUnwrap(response as? RequestBody.CreateMessage)
         XCTAssertGreaterThan(message.content?.count ?? -1, 20)
     }
     
     func testBotStateManagerReceivesSignal() async throws {
-        await stateManager.tests_setDisableDuration(to: .seconds(3))
+        await stateManager._tests_setDisableDuration(to: .seconds(3))
         
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
@@ -262,11 +262,13 @@ class GatewayProcessingTests: XCTestCase {
     func testAutoPings() async throws {
         let event = EventKey.autoPingsTrigger
         await manager.send(key: event)
+        let createDMEndpoint = event.responseEndpoints[0]
+        let responseEndpoint = event.responseEndpoints[1]
         let (createDM1, createDM2, sendDM1, sendDM2) = await (
-            responseStorage.awaitResponse(at: event.responseEndpoints[0]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[0], expectFailure: true),
-            responseStorage.awaitResponse(at: event.responseEndpoints[1]),
-            responseStorage.awaitResponse(at: event.responseEndpoints[1], expectFailure: true)
+            responseStorage.awaitResponse(at: createDMEndpoint).value,
+            responseStorage.awaitResponse(at: createDMEndpoint, expectFailure: true).value,
+            responseStorage.awaitResponse(at: responseEndpoint).value,
+            responseStorage.awaitResponse(at: responseEndpoint, expectFailure: true).value
         )
         
         let recipients = ["950695294906007573", "432065887202181142"]
@@ -293,10 +295,12 @@ class GatewayProcessingTests: XCTestCase {
         }
         
         let event2 = EventKey.autoPingsTrigger2
+        let createDMEndpoint2 = event2.responseEndpoints[0]
+        let responseEndpoint2 = event2.responseEndpoints[1]
         await manager.send(key: event2)
         let (createDM, sendDM) = await (
-            responseStorage.awaitResponse(at: event2.responseEndpoints[0], expectFailure: true),
-            responseStorage.awaitResponse(at: event2.responseEndpoints[1])
+            responseStorage.awaitResponse(at: createDMEndpoint2, expectFailure: true).value,
+            responseStorage.awaitResponse(at: responseEndpoint2).value
         )
         
         /// The DM channel has already been created for the last tests,

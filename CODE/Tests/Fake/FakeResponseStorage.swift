@@ -14,7 +14,7 @@ public actor FakeResponseStorage {
         expectFailure: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) async -> Any {
+    ) async -> AnyBox {
         await withCheckedContinuation { continuation in
             self.expect(
                 at: endpoint,
@@ -29,7 +29,7 @@ public actor FakeResponseStorage {
     nonisolated func expect(
         at endpoint: Endpoint,
         expectFailure: Bool = false,
-        continuation: CheckedContinuation<Any, Never>,
+        continuation: CheckedContinuation<AnyBox, Never>,
         file: StaticString,
         line: UInt
     ) {
@@ -47,7 +47,7 @@ public actor FakeResponseStorage {
     private func _expect(
         at endpoint: Endpoint,
         expectFailure: Bool = false,
-        continuation: CheckedContinuation<Any, Never>,
+        continuation: CheckedContinuation<AnyBox, Never>,
         file: StaticString,
         line: UInt
     ) {
@@ -70,7 +70,7 @@ public actor FakeResponseStorage {
                             line: line
                         )
                     }
-                    continuation.resume(with: .success(Optional<Never>.none as Any))
+                    continuation.resume(with: .success(AnyBox(Optional<Never>.none as Any)))
                     return
                 } else {
                     if expectFailure {
@@ -82,7 +82,7 @@ public actor FakeResponseStorage {
     }
     
     /// Used to notify this storage that a response have been received.
-    func respond(to endpoint: Endpoint, with payload: Any) {
+    func respond(to endpoint: Endpoint, with payload: AnyBox) {
         if let continuation = continuations.retrieve(endpoint: endpoint) {
             continuation.resume(returning: payload)
         } else {
@@ -92,7 +92,8 @@ public actor FakeResponseStorage {
 }
 
 private struct Continuations: CustomStringConvertible {
-    typealias Cont = CheckedContinuation<Any, Never>
+    typealias Cont = CheckedContinuation<AnyBox, Never>
+    
     private var storage: [(endpoint: Endpoint, id: UUID, continuation: Cont)] = []
     
     var description: String {
@@ -121,17 +122,17 @@ private struct Continuations: CustomStringConvertible {
 }
 
 private struct UnhandledResponses: CustomStringConvertible {
-    private var storage: [(endpoint: Endpoint, payload: Any)] = []
+    private var storage: [(endpoint: Endpoint, payload: AnyBox)] = []
     
     var description: String {
         "\(storage.map({ (endpoint: $0, id: type(of: $1)) }))"
     }
     
-    mutating func append(endpoint: Endpoint, payload: Any) {
+    mutating func append(endpoint: Endpoint, payload: AnyBox) {
         storage.append((endpoint, payload))
     }
     
-    mutating func retrieve(endpoint: Endpoint) -> Any? {
+    mutating func retrieve(endpoint: Endpoint) -> AnyBox? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             return storage.remove(at: idx).payload
         } else {

@@ -1,7 +1,6 @@
 import Foundation
 
-public struct CoinEntry: Codable {
-    
+public struct CoinEntry: Sendable, Codable {
     public let id: UUID
     public let createdAt: Date
     public let amount: Int

@@ -1,7 +1,7 @@
 
-public struct S3AutoPingItems: Codable {
+public struct S3AutoPingItems: Sendable, Codable {
     
-    public enum Expression: Codable, RawRepresentable, Hashable {
+    public enum Expression: Sendable, Codable, RawRepresentable, Hashable {
         case text(String)
         
         public var rawValue: String {

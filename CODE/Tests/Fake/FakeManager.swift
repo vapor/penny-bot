@@ -1,6 +1,6 @@
 import DiscordBM
 @testable import PennyBOT
-import Atomics
+@preconcurrency import Atomics
 import struct NIOCore.ByteBuffer
 import XCTest
 
@@ -24,10 +24,12 @@ public actor FakeManager: GatewayManager {
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func updatePresence(payload: Gateway.Identify.Presence) async { }
     public func updateVoiceState(payload: VoiceStateUpdate) async { }
-    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) async {
+    public func addEventHandler(_ handler: @Sendable @escaping (Gateway.Event) -> Void) async {
         eventHandlers.append(handler)
     }
-    public func addEventParseFailureHandler(_ handler: @escaping (Error, ByteBuffer) -> Void) { }
+    public func addEventParseFailureHandler(
+        _ handler: @Sendable @escaping (Error, ByteBuffer) -> Void
+    ) { }
     public func disconnect() { }
     
     var connectionWaiter: CheckedContinuation<(), Never>?
@@ -58,8 +60,8 @@ public actor FakeManager: GatewayManager {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws -> T {
-        let value = await withCheckedContinuation {
-            (continuation: CheckedContinuation<Any, Never>) in
+        let box = await withCheckedContinuation {
+            (continuation: CheckedContinuation<AnyBox, Never>) in
             FakeResponseStorage.shared.expect(
                 at: endpoint ?? key.responseEndpoints[0],
                 continuation: continuation,
@@ -69,8 +71,8 @@ public actor FakeManager: GatewayManager {
             self.send(key: key)
         }
         let unwrapped = try XCTUnwrap(
-            value as? T,
-            "Value '\(value)' can't be cast to '\(_typeName(T.self))'",
+            box.value as? T,
+            "Value '\(box.value)' can't be cast to '\(_typeName(T.self))'",
             file: file,
             line: line
         )
@@ -78,7 +80,7 @@ public actor FakeManager: GatewayManager {
     }
 }
 
-public enum EventKey: String {
+public enum EventKey: String, Sendable {
     case thanksMessage
     case thanksMessage2
     case linkInteraction

@@ -7,7 +7,7 @@ struct FakeDiscordClient: DiscordClient {
     func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(
             to: request.endpoint,
-            with: Optional<Never>.none as Any
+            with: AnyBox(Optional<Never>.none as Any)
         )
         
         return DiscordHTTPResponse(
@@ -27,7 +27,7 @@ struct FakeDiscordClient: DiscordClient {
         /// Useful for validating for example the slash commands.
         try payload.validate()
         
-        await FakeResponseStorage.shared.respond(to: request.endpoint, with: payload)
+        await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
         
         return DiscordHTTPResponse(
             host: "discord.com",
@@ -46,7 +46,7 @@ struct FakeDiscordClient: DiscordClient {
         /// Useful for validating for example the slash commands.
         try payload.validate()
         
-        await FakeResponseStorage.shared.respond(to: request.endpoint, with: payload)
+        await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
         
         return DiscordHTTPResponse(
             host: "discord.com",
