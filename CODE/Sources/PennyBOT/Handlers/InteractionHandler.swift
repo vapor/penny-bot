@@ -77,7 +77,7 @@ struct InteractionHandler {
         }
         if subcommand.requiresTechnicalRoles,
            await !DiscordService.shared.memberHasAnyTechnicalRoles(member: member) {
-            logger.debug("Someone tried to use 'auto-pings' but they don't have any of the required roles")
+            logger.trace("Someone tried to use 'auto-pings' but they don't have any of the required roles")
             return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(rolesString)"
         }
         do {
@@ -94,6 +94,12 @@ struct InteractionHandler {
                 let allTexts = _text.split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
+                    .filter({ !$0.isEmpty })
+                
+                if allTexts.isEmpty {
+                    return "The list you sent seems to be empty"
+                }
+                
                 let (existingTexts, newTexts) = try await allTexts.divide {
                     try await pingsService.exists(text: $0, forDiscordID: discordId)
                 }
@@ -113,11 +119,11 @@ struct InteractionHandler {
                 
                 var components = [String]()
                 
-                if !newTexts.isEmpty {
+                if !allTexts.isEmpty {
                     components.append(
                         """
                         Successfully added the followings to your pings-list:
-                        \(newTexts.makeAutoPingsTextsList())
+                        \(allTexts.makeAutoPingsTextsList())
                         """
                     )
                 }
@@ -125,7 +131,7 @@ struct InteractionHandler {
                 if !existingTexts.isEmpty {
                     components.append(
                         """
-                        Some texts were already available in your pings list:
+                        It seems like some texts were already available in your pings list:
                         \(existingTexts.makeAutoPingsTextsList())
                         """
                     )
@@ -141,7 +147,13 @@ struct InteractionHandler {
                 let allTexts = _text.split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
-                let (existingTexts, newTexts) = try await allTexts.divide {
+                    .filter({ !$0.isEmpty })
+                
+                if allTexts.isEmpty {
+                    return "The list you sent seems to be empty"
+                }
+                
+                let (_, newTexts) = try await allTexts.divide {
                     try await pingsService.exists(text: $0, forDiscordID: discordId)
                 }
                 
@@ -150,11 +162,11 @@ struct InteractionHandler {
                 
                 var components = [String]()
                 
-                if !existingTexts.isEmpty {
+                if !allTexts.isEmpty {
                     components.append(
                         """
                         Successfully removed the followings from your pings-list:
-                        \(existingTexts.makeAutoPingsTextsList())
+                        \(allTexts.makeAutoPingsTextsList())
                         """
                     )
                 }
@@ -162,7 +174,7 @@ struct InteractionHandler {
                 if !newTexts.isEmpty {
                     components.append(
                         """
-                        Some texts were not available in your pings list at all:
+                        It looks like some texts were not available in your pings list at all:
                         \(newTexts.makeAutoPingsTextsList())
                         """
                     )
