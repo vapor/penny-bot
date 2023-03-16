@@ -49,7 +49,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .bulkOverwriteGlobalApplicationCommands(appId: "11111111")
         ).value
         
-        let commandNames = ["link", "auto-pings", "how-many-coins"]
+        let commandNames = ["link", "auto-pings", "how-many-coins", "How Many Coins?"]
         let commands = try XCTUnwrap(response as? [RequestBody.ApplicationCommandCreate])
         XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
     }

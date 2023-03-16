@@ -3,7 +3,12 @@ import Logging
 
 struct SlashCommandHandler {
     func registerCommands() async {
-        await DiscordService.shared.overwriteSlashCommands(commands: [.link, .ping, .howManyCoins])
+        await DiscordService.shared.overwriteSlashCommands(commands: [
+            .link,
+            .ping,
+            .howManyCoins,
+            .howManyCoinsApp
+        ])
     }
 }
 
@@ -98,5 +103,11 @@ private extension RequestBody.ApplicationCommandCreate {
             description: "The member to check their coin count"
         )],
         dm_permission: false
+    )
+    
+    static let howManyCoinsApp = RequestBody.ApplicationCommandCreate(
+        name: "How Many Coins?",
+        dm_permission: false,
+        type: .user
     )
 }

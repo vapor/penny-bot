@@ -40,6 +40,7 @@ struct InteractionHandler {
             author: event.member?.user ?? event.user,
             options: options
         )
+        case .howManyCoinsApp: return await handleHowManyCoinsCommand()
         }
     }
     
@@ -191,6 +192,24 @@ struct InteractionHandler {
         }
     }
     
+    func handleHowManyCoinsCommand() async -> String {
+        guard case let .applicationCommand(data) = event.data,
+              let userId = data.target_id else {
+            logger.error("Coin-count command could not find appropriate data")
+            return oops
+        }
+        let user = "<@\(userId)>"
+        do {
+            let coinCount = try await coinService.getCoinCount(of: user)
+            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)"
+        } catch {
+            logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
+                "user": "\(user)"
+            ])
+            return oops
+        }
+    }
+    
     func handleHowManyCoinsCommand(
         author: DiscordUser?,
         options: [Interaction.ApplicationCommand.Option]
@@ -257,12 +276,13 @@ private enum SlashCommandKind {
     case link
     case autoPings
     case howManyCoins
+    case howManyCoinsApp
     
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
         case .link, .autoPings: return true
-        case .howManyCoins: return false
+        case .howManyCoins, .howManyCoinsApp: return false
         }
     }
     
@@ -271,6 +291,7 @@ private enum SlashCommandKind {
         case "link": self = .link
         case "auto-pings": self = .autoPings
         case "how-many-coins": self = .howManyCoins
+        case "How Many Coins?": self = .howManyCoinsApp
         default: return nil
         }
     }
