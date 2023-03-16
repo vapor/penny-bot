@@ -10,7 +10,8 @@ actor DefaultPingsService: AutoPingsService {
     var httpClient: HTTPClient!
     var logger = Logger(label: "DefaultPingsService")
     
-    var cachedItems: S3AutoPingItems?
+    /// Use `getAll()` to retrieve.
+    var _cachedItems: S3AutoPingItems?
     var resetItemsTask: Task<(), Never>?
     
     private init() { }
@@ -50,7 +51,7 @@ actor DefaultPingsService: AutoPingsService {
     }
     
     func getAll() async throws -> S3AutoPingItems {
-        if let cachedItems = cachedItems {
+        if let cachedItems = _cachedItems {
             return cachedItems
         } else {
             return try await self.send(
@@ -104,7 +105,7 @@ actor DefaultPingsService: AutoPingsService {
         logger.trace("Will refresh auto-pings cache", metadata: [
             "new": .stringConvertible(new.items)
         ])
-        self.cachedItems = new
+        self._cachedItems = new
         self.resetItemsTask?.cancel()
     }
     
@@ -112,7 +113,7 @@ actor DefaultPingsService: AutoPingsService {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {
             if (try? await Task.sleep(for: .seconds(60 * 60 * 6))) != nil {
-                self.cachedItems = nil
+                self._cachedItems = nil
                 self.setUpResetItemsTask()
             } else {
                 /// If canceled, set up the task again.

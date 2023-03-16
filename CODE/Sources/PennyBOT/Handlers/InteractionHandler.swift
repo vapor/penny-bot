@@ -119,11 +119,11 @@ struct InteractionHandler {
                 
                 var components = [String]()
                 
-                if !allTexts.isEmpty {
+                if !newTexts.isEmpty {
                     components.append(
                         """
                         Successfully added the followings to your pings-list:
-                        \(allTexts.makeAutoPingsTextsList())
+                        \(newTexts.makeAutoPingsTextsList())
                         """
                     )
                 }
@@ -131,7 +131,7 @@ struct InteractionHandler {
                 if !existingTexts.isEmpty {
                     components.append(
                         """
-                        It seems like some texts were already available in your pings list:
+                        Some texts were already available in your pings list:
                         \(existingTexts.makeAutoPingsTextsList())
                         """
                     )
@@ -153,7 +153,7 @@ struct InteractionHandler {
                     return "The list you sent seems to be empty"
                 }
                 
-                let (_, newTexts) = try await allTexts.divide {
+                let (existingTexts, newTexts) = try await allTexts.divide {
                     try await pingsService.exists(text: $0, forDiscordID: discordId)
                 }
                 
@@ -162,11 +162,11 @@ struct InteractionHandler {
                 
                 var components = [String]()
                 
-                if !allTexts.isEmpty {
+                if !existingTexts.isEmpty {
                     components.append(
                         """
                         Successfully removed the followings from your pings-list:
-                        \(allTexts.makeAutoPingsTextsList())
+                        \(existingTexts.makeAutoPingsTextsList())
                         """
                     )
                 }
@@ -174,7 +174,7 @@ struct InteractionHandler {
                 if !newTexts.isEmpty {
                     components.append(
                         """
-                        It looks like some texts were not available in your pings list at all:
+                        Some texts were not available in your pings list at all:
                         \(newTexts.makeAutoPingsTextsList())
                         """
                     )
