@@ -78,7 +78,7 @@ struct InteractionHandler {
         if subcommand.requiresTechnicalRoles,
            await !DiscordService.shared.memberHasAnyTechnicalRoles(member: member) {
             logger.debug("Someone tried to use 'auto-pings' but they don't have any of the required roles")
-            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(technicalRolesString)"
+            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(rolesString)"
         }
         do {
             switch subcommand {
@@ -275,7 +275,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
     
-    - The auto-ping commands are currently restricted to users with any of these roles: \(technicalRolesString)
+    - The auto-ping commands are currently restricted to users with any of these roles: \(rolesString)
     
     > All auto-pings commands are "private", meaning they are visible to you and you only, and won't even trigger the "is typing" indicator.
     
@@ -297,8 +297,8 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     """
 }
 
-private let technicalRolesString = Constants.TechnicalRoles
-    .allCases
+private let rolesString = Constants.Roles
+    .autoPingsAllowed
     .map(\.rawValue)
     .map(DiscordUtils.roleMention(id:))
     .joined(separator: " ")

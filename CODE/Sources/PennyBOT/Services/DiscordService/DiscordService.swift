@@ -304,7 +304,7 @@ actor DiscordService {
     }
     
     func memberHasAnyTechnicalRoles(member: Guild.Member) -> Bool {
-        Constants.TechnicalRoles.allCases.contains(where: {
+        Constants.Roles.autoPingsAllowed.contains(where: {
             member.roles.contains($0.rawValue)
         })
     }

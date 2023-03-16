@@ -16,10 +16,23 @@ enum Constants {
     /// Vapor's custom coin emoji in Discord's format.
     static let vaporCoinEmoji = DiscordUtils.customEmoji(name: "coin", id: "473588485962596352")
     
-    enum TechnicalRoles: String, CaseIterable {
+    enum Roles: String {
+        case nitroBooster = "621412660973535233"
+        case backer = "431921695524126722"
+        case sponsor = "444167329748746262"
         case contributor = "431920712505098240"
         case maintainer = "530113860129259521"
         case moderator = "431920836631592980"
         case core = "431919254372089857"
+        
+        static let autoPingsAllowed: [Roles] = [
+            .nitroBooster,
+            .backer,
+            .sponsor,
+            .contributor,
+            .maintainer,
+            .moderator,
+            .core,
+        ]
     }
 }
