@@ -119,13 +119,6 @@ public enum EventKey: String, Sendable {
             )]
         case .stopRespondingToMessages:
             return [.createMessage(channelId: "1067060193982156880")]
-        case .autoPingsTrigger:
-            return [
-                .createDM,
-                .createDM,
-                .createMessage(channelId: "1018169583619821619"),
-                .createMessage(channelId: "1018169583619821619")
-            ]
         case .autoPingsTrigger, .autoPingsTrigger2:
             return [
                 .createDM,

@@ -251,22 +251,6 @@ struct InteractionHandler {
             )])
         )
     }
-    
-    private func sendDM(_ response: String) async {
-        guard let userId = (event.member?.user ?? event.user)?.id else {
-            logger.error("Can't find user id. Event: \(event)")
-            return
-        }
-        await DiscordService.shared.sendDM(
-            userId: userId,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )]
-            )
-        )
-    }
 }
 
 private enum SlashCommandKind {
