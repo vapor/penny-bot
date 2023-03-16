@@ -11,7 +11,7 @@ import Logging
  */
 actor BotStateManager {
     
-    var logger: Logger!
+    var logger = Logger(label: "BotStateManager")
     var canRespond = true
     let id = Int(Date().timeIntervalSince1970)
     
@@ -22,9 +22,9 @@ actor BotStateManager {
     
     private init() { }
     
-    func initialize(logger: Logger) {
-        self.logger = logger
-        Task { await send(content: signal) }
+    func initialize() {
+        self.logger[metadataKey: "id"] = "\(self.id)"
+        Task { await sendSignal() }
     }
     
     func canRespond(to event: Gateway.Event) -> Bool {
@@ -34,7 +34,7 @@ actor BotStateManager {
     
     private func checkIfItsASlowdownSignal(event: Gateway.Event) {
         guard case let .messageCreate(message) = event.data,
-              message.channel_id == Constants.internalChannelId,
+              message.channel_id == Constants.logsChannelId,
               let author = message.author,
               author.id == Constants.botId,
               message.content.hasPrefix(signal)
@@ -50,26 +50,22 @@ actor BotStateManager {
             try await Task.sleep(for: disableDuration)
             self.canRespond = true
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
-            await send(content: "Wow! Why am I still alive?! I thought I should be retired by now!\nOn a real note though, **THIS IS AN ERROR. INVESTIGATE THE SITUATION**")
-        }
-        Task {
-            await send(content: "Ok the new Penny! I'll retire myself for a few minutes :)")
         }
     }
     
-    private func send(content: String) async {
+    private func sendSignal() async {
         await DiscordService.shared.sendMessage(
-            channelId: Constants.internalChannelId,
-            payload: .init(content: content + "\n\(self.id)")
+            channelId: Constants.logsChannelId,
+            payload: .init(content: signal + " \(self.id)")
         )
     }
     
 #if DEBUG
-    func tests_reset() {
+    func _tests_reset() {
         BotStateManager.shared = BotStateManager()
     }
     
-    func tests_setDisableDuration(to duration: Duration) {
+    func _tests_setDisableDuration(to duration: Duration) {
         self.disableDuration = duration
     }
 #endif

@@ -11,53 +11,78 @@ public actor FakeResponseStorage {
     
     public func awaitResponse(
         at endpoint: Endpoint,
+        expectFailure: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
-    ) async -> Any {
+    ) async -> AnyBox {
         await withCheckedContinuation { continuation in
-            self.expect(at: endpoint, continuation: continuation, file: file, line: line)
+            self.expect(
+                at: endpoint,
+                expectFailure: expectFailure,
+                continuation: continuation,
+                file: file,
+                line: line
+            )
         }
     }
     
     nonisolated func expect(
         at endpoint: Endpoint,
-        continuation: CheckedContinuation<Any, Never>,
+        expectFailure: Bool = false,
+        continuation: CheckedContinuation<AnyBox, Never>,
         file: StaticString,
         line: UInt
     ) {
         Task {
-            await _expect(at: endpoint, continuation: continuation, file: file, line: line)
+            await _expect(
+                at: endpoint,
+                expectFailure: expectFailure,
+                continuation: continuation,
+                file: file,
+                line: line
+            )
         }
     }
     
     private func _expect(
         at endpoint: Endpoint,
-        continuation: CheckedContinuation<Any, Never>,
+        expectFailure: Bool = false,
+        continuation: CheckedContinuation<AnyBox, Never>,
         file: StaticString,
         line: UInt
     ) {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
-            continuation.resume(returning: response)
+            if expectFailure {
+                XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)")
+            } else {
+                continuation.resume(returning: response)
+            }
         } else {
             let id = UUID()
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
                 if continuations.retrieve(id: id) != nil {
-                    XCTFail(
-                        "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
-                        file: file,
-                        line: line
-                    )
-                    continuation.resume(with: .success(Optional<Never>.none as Any))
+                    if !expectFailure {
+                        XCTFail(
+                            "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            file: file,
+                            line: line
+                        )
+                    }
+                    continuation.resume(with: .success(AnyBox(Optional<Never>.none as Any)))
                     return
+                } else {
+                    if expectFailure {
+                        XCTFail("Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)")
+                    }
                 }
             }
         }
     }
     
     /// Used to notify this storage that a response have been received.
-    func respond(to endpoint: Endpoint, with payload: Any) {
+    func respond(to endpoint: Endpoint, with payload: AnyBox) {
         if let continuation = continuations.retrieve(endpoint: endpoint) {
             continuation.resume(returning: payload)
         } else {
@@ -67,7 +92,8 @@ public actor FakeResponseStorage {
 }
 
 private struct Continuations: CustomStringConvertible {
-    typealias Cont = CheckedContinuation<Any, Never>
+    typealias Cont = CheckedContinuation<AnyBox, Never>
+    
     private var storage: [(endpoint: Endpoint, id: UUID, continuation: Cont)] = []
     
     var description: String {
@@ -96,17 +122,17 @@ private struct Continuations: CustomStringConvertible {
 }
 
 private struct UnhandledResponses: CustomStringConvertible {
-    private var storage: [(endpoint: Endpoint, payload: Any)] = []
+    private var storage: [(endpoint: Endpoint, payload: AnyBox)] = []
     
     var description: String {
         "\(storage.map({ (endpoint: $0, id: type(of: $1)) }))"
     }
     
-    mutating func append(endpoint: Endpoint, payload: Any) {
+    mutating func append(endpoint: Endpoint, payload: AnyBox) {
         storage.append((endpoint, payload))
     }
     
-    mutating func retrieve(endpoint: Endpoint) -> Any? {
+    mutating func retrieve(endpoint: Endpoint) -> AnyBox? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             return storage.remove(at: idx).payload
         } else {

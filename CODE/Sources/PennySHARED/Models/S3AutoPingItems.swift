@@ -1,13 +1,13 @@
 
-public struct S3AutoPingItems: Codable {
+public struct S3AutoPingItems: Sendable, Codable {
     
-    public enum Expression: Codable, RawRepresentable, Hashable {
+    public enum Expression: Sendable, Codable, RawRepresentable, Hashable {
         case text(String)
         
         public var rawValue: String {
             switch self {
             case let .text(text):
-                return "TEXT-\(text)"
+                return "T-\(text)"
             }
         }
         
@@ -19,8 +19,8 @@ public struct S3AutoPingItems: Codable {
         }
         
         public init? (rawValue: String) {
-            if rawValue.hasPrefix("TEXT-") {
-                self = .text(String(rawValue.dropFirst(5)))
+            if rawValue.hasPrefix("T-") {
+                self = .text(String(rawValue.dropFirst(2)))
             } else {
                 return nil
             }

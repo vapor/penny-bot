@@ -1,10 +1,10 @@
 import DiscordBM
 import Logging
 
-struct EventHandler {
+struct EventHandler: Sendable {
     let event: Gateway.Event
     let coinService: any CoinService
-    let logger: Logger
+    let logger = Logger(label: "EventHandler")
     
     func handle() {
         Task {
@@ -19,19 +19,16 @@ struct EventHandler {
                 await ReactionCache.shared.invalidateCachesIfNeeded(event: message)
                 await MessageHandler(
                     coinService: coinService,
-                    logger: logger,
                     event: message
                 ).handle()
             case .interactionCreate(let interaction):
                 await InteractionHandler(
-                    logger: logger,
                     event: interaction,
                     coinService: coinService
                 ).handle()
             case .messageReactionAdd(let reaction):
                 await ReactionHandler(
                     coinService: coinService,
-                    logger: logger,
                     event: reaction
                 ).handle()
             default: break

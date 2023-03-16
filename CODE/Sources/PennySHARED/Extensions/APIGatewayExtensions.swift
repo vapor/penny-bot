@@ -2,8 +2,10 @@ import AWSLambdaEvents
 import Crypto
 import Foundation
 
+private let jsonDecoder = JSONDecoder()
+private let jsonEncoder = JSONEncoder()
+
 extension APIGatewayV2Request {
-    static private let decoder = JSONDecoder()
     
     public func bodyObject<T: Codable>() throws -> T {
         guard let body = self.body,
@@ -11,9 +13,10 @@ extension APIGatewayV2Request {
         else {
             throw APIError.invalidRequest
         }
-        return try Self.decoder.decode(T.self, from: dataBody)
+        return try jsonDecoder.decode(T.self, from: dataBody)
     }
     
+    /// Unused
     public func verifyRequest() throws -> Bool {
         guard let publicKey = ProcessInfo.processInfo.environment["PUBLIC_KEY"]?.hexDecodedData() else {
             fatalError()
@@ -35,36 +38,28 @@ extension APIGatewayV2Request {
 }
 
 extension APIGatewayV2Response {
-    static private let encoder = JSONEncoder()
     
-    public static let defaultHeaders = [
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "OPTIONS,GET,POST,PUT,DELETE",
-        "Access-Control-Allow-Credentials": "true",
-    ]
-    
-    public init(with error: Error, statusCode: AWSLambdaEvents.HTTPResponseStatus) {
-        self.init(
-            statusCode: statusCode,
-            headers: APIGatewayV2Response.defaultHeaders,
-            body: "{\"message\":\"\(String(describing: error))\"}",
-            isBase64Encoded: false
-        )
-    }
-    
-    public init<Out: Encodable>(with object: Out, statusCode: AWSLambdaEvents.HTTPResponseStatus) {
-        var body: String = "{}"
-        if let data = try? Self.encoder.encode(object) {
-            body = String(data: data, encoding: .utf8) ?? body
+    public init(status: HTTPResponseStatus, content: some Encodable) {
+        do {
+            let data = try jsonEncoder.encode(content)
+            let string = String(data: data, encoding: .utf8)
+            self.init(statusCode: status, body: string)
+        } catch {
+            if let data = try? JSONEncoder().encode(content) {
+                let string = String(data: data, encoding: .utf8)
+                self.init(statusCode: .failedDependency, body: string)
+            } else {
+                self.init(statusCode: .failedDependency, body: "Plain Error: \(error)")
+            }
         }
-        
-        self.init(
-            statusCode: statusCode,
-            headers: APIGatewayV2Response.defaultHeaders,
-            body: body,
-            isBase64Encoded: false
-        )
+    }
+}
+
+public struct GatewayFailure: Encodable {
+    var reason: String
+    
+    public init(reason: String) {
+        self.reason = reason
     }
 }
 

@@ -7,8 +7,8 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     
     let s3: S3
     let logger: Logger
-    let bucket = ProcessInfo.processInfo.environment["BUCKET"]!
-    let key = "autoPingsRepo.json"
+    let bucket = "penny-auto-pings-lambda"
+    let key = "auto-pings-repo.json"
     
     init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
@@ -44,11 +44,32 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     
     func getAll() async throws -> S3AutoPingItems {
         let getObjectRequest = S3.GetObjectRequest(bucket: bucket, key: key)
-        let response = try await s3.getObject(getObjectRequest, logger: logger)
+        
+        let response: S3.GetObjectOutput
+        
+        do {
+            response = try await s3.getObject(getObjectRequest, logger: logger)
+        } catch {
+            logger.error("Cannot retrieve the file from the bucket. If this is the first time, manually create a file named '\(self.key)' in bucket '\(self.bucket)' and set its content to empty json ('{}'). This has not been automated to reduce the chance of data loss", metadata: ["error": "\(error)"])
+            throw error
+        }
+        
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
-            return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
+            do {
+                return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
+            } catch {
+                let body = response.body?.asString() ?? "nil"
+                logger.error("Cannot find any data in the bucket", metadata: [
+                    "response-body": .string(body),
+                    "error": "\(error)"
+                ])
+                return S3AutoPingItems()
+            }
         } else {
-            logger.warning("Cannot find any data in the bucket. Response: \(response)")
+            let body = response.body?.asString() ?? "nil"
+            logger.error("Cannot find any data in the bucket", metadata: [
+                "response-body": .string(body)
+            ])
             return S3AutoPingItems()
         }
     }

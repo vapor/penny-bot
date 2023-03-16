@@ -26,13 +26,13 @@ public enum CoinRequest: Codable {
     }
 }
 
-public enum CoinEntrySource: String, Codable {
+public enum CoinEntrySource: String, Sendable, Codable {
     case discord
     case github
     case penny
 }
 
-public enum CoinEntryReason: String, Codable {
+public enum CoinEntryReason: String, Sendable, Codable {
     case userProvided
     case prSubmittedAndClosed
     case startedSponsoring

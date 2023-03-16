@@ -1,29 +1,33 @@
-import DiscordBM
+import DiscordModels
 import Logging
 import PennyModels
 
 struct MessageHandler {
     
     let coinService: any CoinService
-    let logger: Logger
+    var logger = Logger(label: "MessageHandler")
     let event: Gateway.MessageCreate
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
     
+    init(coinService: any CoinService, event: Gateway.MessageCreate) {
+        self.coinService = coinService
+        self.event = event
+        self.logger[metadataKey: "event"] = "\(event)"
+    }
+    
     func handle() async {
+        /// Stop the bot from responding to other bots and itself
+        if event.author?.bot == true { return }
+        
         await checkForNewCoins()
         await checkForPings()
     }
     
     func checkForNewCoins() async {
         guard let author = event.author else {
-            logger.error("Cannot find author of the message. Event: \(event)")
-            return
-        }
-        
-        // Stop the bot from responding to other bots and itself
-        if author.bot == true {
+            logger.error("Cannot find author of the message")
             return
         }
         
@@ -56,86 +60,100 @@ struct MessageHandler {
                 let responseString = "\(response.receiver) now has \(response.coins) \(Constants.vaporCoinEmoji)!"
                 successfulResponses.append(responseString)
             } catch {
-                logger.error("CoinService failed. Request: \(coinRequest), Error: \(error)")
+                logger.report("CoinService failed", error: error, metadata: [
+                    "request": "\(coinRequest)"
+                ])
             }
         }
         
         if successfulResponses.isEmpty {
             // Definitely there were some coin requests that failed.
-            await self.respond(with: "Oops. Something went wrong! Please try again later")
+            await self.respondToThanks(
+                with: "Oops. Something went wrong! Please try again later",
+                isAFailureMessage: true
+            )
         } else {
             // Stitch responses together instead of sending a lot of messages,
             // to consume less Discord rate-limit.
             let finalResponse = successfulResponses.joined(separator: "\n")
             // Discord doesn't like embed-descriptions with more than 4_000 content length.
             if finalResponse.unicodeScalars.count > 4_000 {
-                await self.respond(with: "Coins were granted to a lot of members!")
+                logger.warning("Can't send the full thanks-response", metadata: [
+                    "full": .string(finalResponse)
+                ])
+                await self.respondToThanks(
+                    with: "Coins were granted to a lot of members!",
+                    isAFailureMessage: false
+                )
             } else {
-                await self.respond(with: finalResponse)
+                await self.respondToThanks(with: finalResponse, isAFailureMessage: false)
             }
         }
     }
     
     func checkForPings() async {
         if event.content.isEmpty { return }
-        guard let guildId = event.guild_id else { return }
+        guard let guildId = event.guild_id,
+              let authorId = event.author?.id
+        else { return }
         let wordUsersDict: [S3AutoPingItems.Expression: Set<String>]
         do {
             wordUsersDict = try await pingsService.getAll().items
         } catch {
-            logger.error("Can't retrieve ping-words. Error: \(error)")
+            logger.report("Can't retrieve ping-words", error: error)
             return
         }
-        let folded = event.content.foldForPingCommand()
+        let divided = event.content.divideForPingCommandChecking()
         /// `[UserID: [PingTrigger]]`
         var usersToPing: [String: Set<String>] = [:]
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
-            if folded.contains(innerValue),
+            let splitValue = innerValue.split(whereSeparator: \.isWhitespace)
+            if divided.contains(where: { $0.containsSequence(splitValue) }),
                let users = wordUsersDict[word] {
-                for user in users {
-                    usersToPing[user, default: []].insert(innerValue)
+                for userId in users {
+                    /// Both checks if the user has the required roles,
+                    /// + if the user is in the guild at all,
+                    /// + if the user has read access in the channel at all.
+                    if await DiscordService.shared.userHasAnyTechnicalRolesAndReadAccessOfChannel(
+                        userId: userId,
+                        channelId: event.channel_id
+                    ) {
+                        usersToPing[userId, default: []].insert(innerValue)
+                    }
                 }
             }
         }
-        let _usersToPing = usersToPing
+        
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
-        Task {
-            for (user, words) in _usersToPing {
-                try await Task.sleep(for: .milliseconds(250))
-                let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
-                await DiscordService.shared.sendDM(
-                    userId: user,
-                    payload: .init(
-                        embeds: [.init(
-                            description: """
-                            There is a new message that might be of interest to you.
-                            Triggered by: \(words)
-                            Message: \(messageLink)
-                            """,
-                            color: .vaporPurple
-                        )]
-                    )
+        /// Don't need any throttling for now, `DiscordBM` will
+        /// do enough and won't exceed rate-limits.
+        for (userId, words) in usersToPing {
+            let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
+            /// Don't `@` someone for their own message.
+            if userId == authorId { continue }
+            await DiscordService.shared.sendDM(
+                userId: userId,
+                payload: .init(
+                    embeds: [.init(
+                        description: """
+                        There is a new message that might be of interest to you.
+                        Triggered by: \(words)
+                        Message: \(messageLink)
+                        """,
+                        color: .vaporPurple
+                    )]
                 )
-            }
+            )
         }
     }
     
-    private func respond(with response: String) async {
-        await DiscordService.shared.sendMessage(
+    private func respondToThanks(with response: String, isAFailureMessage: Bool) async {
+        await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )],
-                message_reference: .init(
-                    message_id: event.id,
-                    channel_id: event.channel_id,
-                    guild_id: event.guild_id,
-                    fail_if_not_exists: false
-                )
-            )
+            replyingToMessageId: event.id,
+            isAFailureMessage: isAFailureMessage,
+            response: response
         )
     }
 }

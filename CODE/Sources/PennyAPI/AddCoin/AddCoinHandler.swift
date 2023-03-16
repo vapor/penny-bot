@@ -4,10 +4,7 @@ import Foundation
 import SotoCore
 import PennyServices
 import PennyModels
-
-struct FailedToShutdownAWSError: Error {
-    let message = "Failed to shutdown the AWS Client"
-}
+import PennyExtensions
 
 @main
 struct AddCoinHandler: LambdaHandler {
@@ -17,19 +14,16 @@ struct AddCoinHandler: LambdaHandler {
     let awsClient: AWSClient
     let userService: UserService
     
-    init(context: LambdaInitializationContext) async throws {
+    init(context: LambdaInitializationContext) async {
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
         self.userService = UserService(awsClient, context.logger)
-        context.terminator.register(name: "Shutdown AWS", handler: { eventloop in
-            do {
-                try awsClient.syncShutdown()
-                return eventloop.makeSucceededVoidFuture()
-            } catch {
-                return eventloop.makeFailedFuture(FailedToShutdownAWSError())
+        context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
+            eventLoop.makeFutureWithTask {
+                try await awsClient.shutdown()
             }
         })
     }
@@ -81,13 +75,20 @@ struct AddCoinHandler: LambdaHandler {
                 fromDiscordID: request.from,
                 to: user
             )
-            let data = try JSONEncoder().encode(coinResponse)
-            let string = String(data: data, encoding: .utf8)
-            return APIGatewayV2Response(statusCode: .ok, body: string)
-        } catch UserService.ServiceError.failedToUpdate {
-            return APIGatewayV2Response(statusCode: .notFound, body: "ERROR- The user in particular wasn't found.")
-        } catch {
-            return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
+            
+            return APIGatewayV2Response(status: .ok, content: coinResponse)
+        }
+        catch UserService.ServiceError.failedToUpdate {
+            return APIGatewayV2Response(
+                status: .notFound,
+                content: GatewayFailure(reason: "Couldn't find the user")
+            )
+        }
+        catch let error {
+            return APIGatewayV2Response(
+                status: .badRequest,
+                content: GatewayFailure(reason: "Error: \(error)")
+            )
         }
     }
     
@@ -100,4 +101,3 @@ struct AddCoinHandler: LambdaHandler {
         }
     }
 }
-

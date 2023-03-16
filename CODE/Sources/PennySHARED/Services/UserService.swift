@@ -43,7 +43,7 @@ public struct UserService {
             }
         }
         catch let error {
-            logger.error("\(error.localizedDescription)")
+            logger.error("Can't add coins", metadata: ["error": "\(error)"])
             throw ServiceError.failedToUpdate
         }
         

@@ -53,7 +53,7 @@ jobs:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           wait-for-service-stability: true
       - name: Deploy to AWS cloudformation
-        uses: aws-actions/aws-cloudformation-github-deploy@v1.0.3
+        uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: penny-discord-bot-stack
           template: ./CODE/Stack.yml

@@ -58,7 +58,79 @@
             "edited_timestamp": null,
             "content": "<@950695294906007573> thank you :\\) nice job penny!",
             "components": [],
-            "channel_id": "1016614538398937098",
+            "channel_id": "519613337638797315",
+            "author": {
+                "username": "Mahdi BM",
+                "public_flags": 0,
+                "id": "290483761559240704",
+                "discriminator": "0517",
+                "avatar_decoration": null,
+                "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+            },
+            "attachments": [],
+            "guild_id": "431917998102675485"
+        }
+    },
+    "thanksMessage2": {
+        "t": "MESSAGE_CREATE",
+        "s": 54,
+        "op": 0,
+        "d": {
+            "type": 0,
+            "tts": false,
+            "timestamp": "2022-10-12T06:12:54.114000+00:00",
+            "referenced_message": null,
+            "pinned": false,
+            "nonce": "1029637767555973120",
+            "mentions": [
+                {
+                    "username": "Penny",
+                    "public_flags": 0,
+                    "member": {
+                        "roles": [
+                            "950719637044207689",
+                            "441346871651336193"
+                        ],
+                        "premium_since": null,
+                        "pending": false,
+                        "nick": null,
+                        "mute": false,
+                        "joined_at": "2022-03-08T11:40:25.028000+00:00",
+                        "flags": 0,
+                        "deaf": false,
+                        "communication_disabled_until": null,
+                        "avatar": null
+                    },
+                    "id": "950695294906007573",
+                    "discriminator": "9194",
+                    "bot": true,
+                    "avatar_decoration": null,
+                    "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
+                }
+            ],
+            "mention_roles": [],
+            "mention_everyone": false,
+            "member": {
+                "roles": [
+                    "431920712505098240"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2020-04-07T20:49:57.563000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "id": "1029637770005717042",
+            "flags": 0,
+            "embeds": [],
+            "edited_timestamp": null,
+            "content": "<@950695294906007573> thank you :\\) nice job penny!",
+            "components": [],
+            "channel_id": "431917998102675487",
             "author": {
                 "username": "Mahdi BM",
                 "public_flags": 0,
@@ -128,7 +200,7 @@
                 "id": "1018162735864872971"
             },
             "channel_id": "966722151359057950",
-            "application_id": "1016612301262041098",
+            "application_id": "950695294906007573",
             "app_permissions": "1071698665025"
         }
     },
@@ -167,7 +239,7 @@
                 "name": "🪙",
                 "id": null
             },
-            "channel_id": "966722151359057911",
+            "channel_id": "684159753189982218",
             "burst": false,
             "guild_id": "808638139785936919"
         }
@@ -208,20 +280,101 @@
                 "name": "🪙",
                 "id": null
             },
-            "channel_id": "966722151359057911",
+            "channel_id": "684159753189982218",
             "burst": false,
             "guild_id": "808638139785936919"
         }
     },
-    "POST/channels/966722151359057911/messages": {
+    "thanksReaction3": {
+        "t": "MESSAGE_REACTION_ADD",
+        "s": 6,
+        "op": 0,
+        "d": {
+            "user_id": "290483761559240704",
+            "message_id": "1031112115928442034",
+            "member": {
+                "user": {
+                    "username": "0xTim",
+                    "public_flags": 0,
+                    "id": "432065887202181142",
+                    "discriminator": "1157",
+                    "avatar_decoration": null,
+                    "avatar": "800bfcd31ae4a77f61646226df46c204"
+                },
+                "roles": [
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "emoji": {
+                "name": "🪙",
+                "id": null
+            },
+            "channel_id": "431926479752921098",
+            "burst": false,
+            "guild_id": "808638139785936919"
+        }
+    },
+    "thanksReaction4": {
+        "t": "MESSAGE_REACTION_ADD",
+        "s": 9,
+        "op": 0,
+        "d": {
+            "user_id": "290483761559240704",
+            "message_id": "1031112115928442034",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 0,
+                    "id": "290483761559240704",
+                    "discriminator": "0517",
+                    "bot": false,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "emoji": {
+                "name": "🪙",
+                "id": null
+            },
+            "channel_id": "431926479752921098",
+            "burst": false,
+            "guild_id": "808638139785936919"
+        }
+    },
+    "POST/channels/684159753189982218/messages": {
         "id": "1031112115928449022",
         "type": 0,
         "content": "Mahdi BM gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
-        "channel_id": "966722151359057911",
+        "channel_id": "684159753189982218",
         "author": {
             "username": "TestApp",
             "public_flags": 0,
-            "id": "1016612301262041098",
+            "id": "950695294906007573",
             "discriminator": "7843",
             "bot": true,
             "avatar_decoration": null,
@@ -239,11 +392,63 @@
         "flags": 0,
         "components": []
     },
-    "GET/channels/966722151359057911/messages/1031112115928449034": {
+    "POST/channels/443074453719744522/messages": {
+        "id": "1031112115928111022",
+        "type": 0,
+        "content": "https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034\n0xTim gave gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
+        "channel_id": "443074453719744522",
+        "author": {
+            "username": "TestApp",
+            "public_flags": 0,
+            "id": "950695294906007573",
+            "discriminator": "7843",
+            "bot": true,
+            "avatar_decoration": null,
+            "avatar": null
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
+    },
+    "GET/channels/431926479752921098/messages/1031112115928442034": {
+        "id": "1031112115928442034",
+        "type": 0,
+        "content": "Testing! 684866",
+        "channel_id": "431926479752921098",
+        "author": {
+            "id": "1030118727418646629",
+            "username": "DisBMLibTestBot",
+            "avatar": null,
+            "avatar_decoration": null,
+            "discriminator": "0861",
+            "public_flags": 0,
+            "bot": true
+        },
+        "attachments": [],
+        "embeds": [],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2022-10-14T08:35:48.061000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": []
+    },
+    "GET/channels/684159753189982218/messages/1031112115928449034": {
         "id": "1031112115928449034",
         "type": 0,
         "content": "Testing! 684866",
-        "channel_id": "966722151359057911",
+        "channel_id": "684159753189982218",
         "author": {
             "id": "1030118727418646629",
             "username": "DisBMLibTestBot",
@@ -296,11 +501,11 @@
             "edited_timestamp": null,
             "content": "Hello the other Pennys 👋 you can retire now :) 1667554166",
             "components": [],
-            "channel_id": "441327731486097429",
+            "channel_id": "1067060193982156880",
             "author": {
                 "username": "TestApp",
                 "public_flags": 0,
-                "id": "1016612301262041098",
+                "id": "950695294906007573",
                 "discriminator": "7843",
                 "bot": true,
                 "avatar_decoration": null,
@@ -351,13 +556,17 @@
             "mention_everyone": false,
             "member": {
                 "roles": [
-                    "431920712505098240"
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521"
                 ],
                 "premium_since": null,
                 "pending": false,
                 "nick": null,
                 "mute": false,
-                "joined_at": "2020-04-07T20:49:57.563000+00:00",
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "is_pending": false,
                 "flags": 0,
                 "deaf": false,
                 "communication_disabled_until": null,
@@ -367,9 +576,85 @@
             "flags": 0,
             "embeds": [],
             "edited_timestamp": null,
-            "content": "need help with some MongoDB stuff :)",
+            "content": "need help with some MongoDB Driver",
             "components": [],
-            "channel_id": "1016614538398937098",
+            "channel_id": "519613337638797315",
+            "author": {
+                "username": "Mahdi BM",
+                "public_flags": 0,
+                "id": "290483761559240704",
+                "discriminator": "0517",
+                "avatar_decoration": null,
+                "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+            },
+            "attachments": [],
+            "guild_id": "431917998102675485"
+        }
+    },
+    "autoPingsTrigger2": {
+        "t": "MESSAGE_CREATE",
+        "s": 54,
+        "op": 0,
+        "d": {
+            "type": 0,
+            "tts": false,
+            "timestamp": "2022-10-12T06:12:54.114000+00:00",
+            "referenced_message": null,
+            "pinned": false,
+            "nonce": "1029637767555973120",
+            "mentions": [
+                {
+                    "username": "Penny",
+                    "public_flags": 0,
+                    "member": {
+                        "roles": [
+                            "950719637044207689",
+                            "441346871651336193"
+                        ],
+                        "premium_since": null,
+                        "pending": false,
+                        "nick": null,
+                        "mute": false,
+                        "joined_at": "2022-03-08T11:40:25.028000+00:00",
+                        "flags": 0,
+                        "deaf": false,
+                        "communication_disabled_until": null,
+                        "avatar": null
+                    },
+                    "id": "950695294906007573",
+                    "discriminator": "9194",
+                    "bot": true,
+                    "avatar_decoration": null,
+                    "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
+                }
+            ],
+            "mention_roles": [],
+            "mention_everyone": false,
+            "member": {
+                "roles": [
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "id": "1029637770005717042",
+            "flags": 0,
+            "embeds": [],
+            "edited_timestamp": null,
+            "content": "I want to use the discord-kit library\nhttps://www.swift.org/blog/swift-certificates-and-asn1/",
+            "components": [],
+            "channel_id": "519613337638797315",
             "author": {
                 "username": "Mahdi BM",
                 "public_flags": 0,
@@ -387,16 +672,15 @@
         "type": 1,
         "last_message_id": "1040523601310392370",
         "flags": 0,
-        "recipients": [
-            {
-                "id": "290483761559240704",
-                "username": "Mahdi BM",
-                "avatar": "2df0a0198e00ba23bf2dc728c4db94d9",
-                "avatar_decoration": null,
-                "discriminator": "0517",
-                "public_flags": 4194304
-            }
-        ]
+        "recipients": [{
+            "username": "0xTim",
+            "public_flags": 0,
+            "id": "432065887202181142",
+            "display_name": null,
+            "discriminator": "1157",
+            "avatar_decoration": null,
+            "avatar": "800bfcd31ae4a77f61646226df46c204"
+        }]
     },
     "howManyCoins1": {
         "t": "INTERACTION_CREATE",

@@ -15,9 +15,15 @@ private let coinSignEmojis = [
 
 struct ReactionHandler {
     let coinService: any CoinService
-    let logger: Logger
+    var logger = Logger(label: "ReactionHandler")
     let event: Gateway.MessageReactionAdd
     private var cache: ReactionCache { .shared }
+    
+    init(coinService: any CoinService, event: Gateway.MessageReactionAdd) {
+        self.coinService = coinService
+        self.event = event
+        self.logger[metadataKey: "event"] = "\(event)"
+    }
     
     func handle() async {
         guard let member = event.member,
@@ -49,63 +55,83 @@ struct ReactionHandler {
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
-            logger.error("Error when posting coins: \(error)")
+            logger.report("Error when posting coins", error: error)
             await respond(
                 with: "Oops. Something went wrong! Please try again later",
-                senderName: nil
+                senderName: nil,
+                isAFailureMessage: true
             )
             return
         }
         
         let senderName = member.nick ?? user.username
-        if let (pennyResponseMessageId, lastUsers) = await cache.messageToEditIfAvailable(
+        if let toEdit = await cache.messageToEditIfAvailable(
             in: event.channel_id,
             receiverMessageId: event.message_id
         ) {
-            let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
-            let count = lastUsers.count + 1
-            await editResponse(
-                messageId: pennyResponseMessageId,
-                with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
-                senderName: senderName
-            )
+            switch toEdit {
+            case let .normal(pennyResponseMessageId, lastUsers):
+                let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
+                let count = lastUsers.count + 1
+                await editResponse(
+                    messageId: pennyResponseMessageId,
+                    with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                    forcedInThanksChannel: false,
+                    senderName: senderName
+                )
+            case let .forcedInThanksChannel(originalChannelId, pennyResponseMessageId, lastUsers):
+                let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(originalChannelId)/\(event.message_id)\n"
+                let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
+                let count = lastUsers.count + 1
+                await editResponse(
+                    messageId: pennyResponseMessageId,
+                    with: link + "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                    forcedInThanksChannel: true,
+                    senderName: senderName
+                )
+            }
         } else {
             await respond(
                 with: "\(senderName) gave a \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
-                senderName: senderName
+                senderName: senderName,
+                isAFailureMessage: false
             )
         }
     }
     
     /// `senderName` only should be included if its not a error-response.
-    private func respond(with response: String, senderName: String?) async {
-        let apiResponse = await DiscordService.shared.sendMessage(
+    private func respond(
+        with response: String,
+        senderName: String?,
+        isAFailureMessage: Bool
+    ) async {
+        let apiResponse = await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
-            payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .vaporPurple
-                )],
-                message_reference: .init(
-                    message_id: event.message_id,
-                    channel_id: event.channel_id,
-                    guild_id: event.guild_id,
-                    fail_if_not_exists: false
-                )
-            )
+            replyingToMessageId: event.message_id,
+            isAFailureMessage: isAFailureMessage,
+            response: response
         )
         do {
             if let senderName,
                let decoded = try apiResponse?.decode() {
+                /// If it's a thanks message that was sent to `#thanks` instead of the original
+                /// channel, then we need to inform the cache.
+                let sentToThanksChannelInstead = decoded.channel_id == Constants.thanksChannelId &&
+                decoded.channel_id != event.channel_id
                 await cache.didRespond(
-                    in: event.channel_id,
+                    originalChannelId: event.channel_id,
                     to: event.message_id,
                     with: decoded.id,
+                    sentToThanksChannelInstead: sentToThanksChannelInstead,
                     senderName: senderName
                 )
             }
         } catch {
-            self.logger.error("ReactionHandler could not decode message. Error: \(error). Response: \(apiResponse?.httpResponse.description ?? "null")")
+            self.logger.report(
+                "ReactionHandler could not decode message after send",
+                response: apiResponse,
+                metadata: ["error": "\(error)"]
+            )
         }
     }
     
@@ -113,11 +139,12 @@ struct ReactionHandler {
     private func editResponse(
         messageId: String,
         with response: String,
+        forcedInThanksChannel: Bool,
         senderName: String?
     ) async {
         let apiResponse = await DiscordService.shared.editMessage(
             messageId: messageId,
-            channelId: event.channel_id,
+            channelId: forcedInThanksChannel ? Constants.thanksChannelId : event.channel_id,
             payload: .init(
                 embeds: [.init(
                     description: response,
@@ -129,14 +156,19 @@ struct ReactionHandler {
             if let senderName,
                let decoded = try apiResponse?.decode() {
                 await cache.didRespond(
-                    in: event.channel_id,
+                    originalChannelId: event.channel_id,
                     to: event.message_id,
                     with: decoded.id,
+                    sentToThanksChannelInstead: forcedInThanksChannel,
                     senderName: senderName
                 )
             }
         } catch {
-            self.logger.error("ReactionHandler could not decode message. Error: \(error). Response: \(apiResponse?.httpResponse.description ?? "null")")
+            self.logger.report(
+                "ReactionHandler could not decode message after edit",
+                response: apiResponse,
+                metadata: ["error": "\(error)"]
+            )
         }
     }
 }
@@ -153,6 +185,8 @@ actor ReactionCache {
     /// `[ChannelID: (ReceiverMessageID, PennyResponseMessageID, [SenderUsers])]`.
     /// Channel's last message id if it is a thanks message to another message.
     var channelWithLastThanksMessage: [String: (String, String, [String])] = [:]
+    /// `[ReceiverMessageID: (OriginalChannelID, PennyResponseMessageID, [SenderUsers])]`
+    var thanksChannelForcedMessages: [String: (String, String, [String])] = [:]
     
     private init() { }
     
@@ -171,14 +205,19 @@ actor ReactionCache {
                 channelId: channelId,
                 messageId: messageId
             ) else {
-                logger.error("ReactionCache could not find a message's author id. channelId: \(channelId), messageId: \(messageId)")
+                logger.error("ReactionCache could not find a message's author id", metadata: [
+                    "channelId": .string(channelId),
+                    "messageId": .string(messageId),
+                ])
                 return nil
             }
             if let authorId = message.author?.id {
                 cachedAuthorIds[messageId] = authorId
                 return authorId
             } else {
-                logger.error("ReactionCache could not find a message's author id. message: \(message)")
+                logger.error("ReactionCache could not find a message's author id", metadata: [
+                    "message": "\(message)"
+                ])
                 return nil
             }
         }
@@ -194,22 +233,43 @@ actor ReactionCache {
     }
     
     fileprivate func didRespond(
-        in channelId: String,
+        originalChannelId channelId: String,
         to receiverMessageId: String,
         with responseMessageId: String,
+        sentToThanksChannelInstead: Bool,
         senderName: String
     ) {
-        let names = (channelWithLastThanksMessage[channelId]?.2 ?? []) + [senderName]
-        channelWithLastThanksMessage[channelId] = (receiverMessageId, responseMessageId, names)
+        if sentToThanksChannelInstead {
+            let names = (thanksChannelForcedMessages[receiverMessageId]?.2 ?? []) + [senderName]
+            thanksChannelForcedMessages[receiverMessageId] = (channelId, responseMessageId, names)
+        } else {
+            let names = (channelWithLastThanksMessage[channelId]?.2 ?? []) + [senderName]
+            channelWithLastThanksMessage[channelId] = (receiverMessageId, responseMessageId, names)
+        }
+    }
+    
+    enum MessageToEditResponse {
+        case normal(pennyResponseMessageId: String, lastUsers: [String])
+        case forcedInThanksChannel(
+            originalChannelId: String,
+            pennyResponseMessageId: String,
+            lastUsers: [String]
+        )
     }
     
     fileprivate func messageToEditIfAvailable(
         in channelId: String,
         receiverMessageId: String
-    ) -> (pennyResponseMessageId: String, lastUsers: [String])? {
-        if let existing = channelWithLastThanksMessage[channelId] {
+    ) -> MessageToEditResponse? {
+        if let existing = thanksChannelForcedMessages[receiverMessageId] {
+            return .forcedInThanksChannel(
+                originalChannelId: existing.0,
+                pennyResponseMessageId: existing.1,
+                lastUsers: existing.2
+            )
+        } else if let existing = channelWithLastThanksMessage[channelId] {
             if existing.0 == receiverMessageId {
-                return (existing.1, existing.2)
+                return .normal(pennyResponseMessageId: existing.1, lastUsers: existing.2)
             } else {
                 channelWithLastThanksMessage[channelId] = nil
                 return nil
@@ -232,7 +292,7 @@ actor ReactionCache {
     }
     
 #if DEBUG
-    static func tests_reset() {
+    static func _tests_reset() {
         shared = .init()
     }
 #endif

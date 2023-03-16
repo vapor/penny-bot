@@ -1,5 +1,7 @@
 import DiscordBM
-import Atomics
+@testable import PennyBOT
+@preconcurrency import Atomics
+import struct NIOCore.ByteBuffer
 import XCTest
 
 public actor FakeManager: GatewayManager {
@@ -18,11 +20,16 @@ public actor FakeManager: GatewayManager {
         self._state.store(.connected, ordering: .relaxed)
         connectionWaiter?.resume()
     }
-    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) { }
-    public func addEventHandler(_ handler: @escaping (Gateway.Event) -> Void) {
+
+    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
+    public func updatePresence(payload: Gateway.Identify.Presence) async { }
+    public func updateVoiceState(payload: VoiceStateUpdate) async { }
+    public func addEventHandler(_ handler: @Sendable @escaping (Gateway.Event) -> Void) async {
         eventHandlers.append(handler)
     }
-    public func addEventParseFailureHandler(_ handler: @escaping (Error, String) -> Void) { }
+    public func addEventParseFailureHandler(
+        _ handler: @Sendable @escaping (Error, ByteBuffer) -> Void
+    ) { }
     public func disconnect() { }
     
     var connectionWaiter: CheckedContinuation<(), Never>?
@@ -53,8 +60,8 @@ public actor FakeManager: GatewayManager {
         file: StaticString = #filePath,
         line: UInt = #line
     ) async throws -> T {
-        let value = await withCheckedContinuation {
-            (continuation: CheckedContinuation<Any, Never>) in
+        let box = await withCheckedContinuation {
+            (continuation: CheckedContinuation<AnyBox, Never>) in
             FakeResponseStorage.shared.expect(
                 at: endpoint ?? key.responseEndpoints[0],
                 continuation: continuation,
@@ -64,8 +71,8 @@ public actor FakeManager: GatewayManager {
             self.send(key: key)
         }
         let unwrapped = try XCTUnwrap(
-            value as? T,
-            "Value '\(value)' can't be cast to '\(_typeName(T.self))'",
+            box.value as? T,
+            "Value '\(box.value)' can't be cast to '\(_typeName(T.self))'",
             file: file,
             line: line
         )
@@ -73,13 +80,17 @@ public actor FakeManager: GatewayManager {
     }
 }
 
-public enum EventKey: String {
+public enum EventKey: String, Sendable {
     case thanksMessage
+    case thanksMessage2
     case linkInteraction
     case thanksReaction
     case thanksReaction2
+    case thanksReaction3
+    case thanksReaction4
     case stopRespondingToMessages
     case autoPingsTrigger
+    case autoPingsTrigger2
     case howManyCoins1
     case howManyCoins2
     
@@ -87,23 +98,37 @@ public enum EventKey: String {
     public var responseEndpoints: [Endpoint] {
         switch self {
         case .thanksMessage:
-            return [.createMessage(channelId: "1016614538398937098")]
+            return [.createMessage(channelId: "519613337638797315")]
+        case .thanksMessage2:
+            return [.createMessage(channelId: Constants.thanksChannelId)]
         case .linkInteraction:
             return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(id: "1031112113978089502", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
-            return [.createMessage(channelId: "966722151359057911")]
+            return [.createMessage(channelId: "684159753189982218")]
         case .thanksReaction2:
             return [.editMessage(
-                channelId: "966722151359057911",
+                channelId: "684159753189982218",
                 messageId: "1031112115928449022"
             )]
+        case .thanksReaction3:
+            return [.createMessage(channelId: Constants.thanksChannelId)]
+        case .thanksReaction4:
+            return [.editMessage(
+                channelId: Constants.thanksChannelId,
+                messageId: "1031112115928111022"
+            )]
         case .stopRespondingToMessages:
-            return [.createMessage(channelId: "441327731486097429")]
+            return [.createMessage(channelId: "1067060193982156880")]
         case .autoPingsTrigger:
             return [
                 .createDM,
                 .createDM,
                 .createMessage(channelId: "1018169583619821619"),
+                .createMessage(channelId: "1018169583619821619")
+            ]
+        case .autoPingsTrigger, .autoPingsTrigger2:
+            return [
+                .createDM,
                 .createMessage(channelId: "1018169583619821619")
             ]
         case .howManyCoins1:

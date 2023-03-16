@@ -8,7 +8,7 @@ import NIOHTTP1
 actor DefaultPingsService: AutoPingsService {
     
     var httpClient: HTTPClient!
-    var logger: Logger!
+    var logger = Logger(label: "DefaultPingsService")
     
     var cachedItems: S3AutoPingItems?
     var resetItemsTask: Task<(), Never>?
@@ -17,25 +17,28 @@ actor DefaultPingsService: AutoPingsService {
     
     static let shared = DefaultPingsService()
     
-    func initialize(httpClient: HTTPClient, logger: Logger) {
+    func initialize(httpClient: HTTPClient) {
         self.httpClient = httpClient
-        self.logger = logger
         self.setUpResetItemsTask()
+    }
+    
+    func exists(text: String, forDiscordID id: String) -> Bool {
+        self.cachedItems?.items[.text(text)]?.contains(id) ?? false
     }
     
     func insert(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
-            pathParameter: id,
+            pathParameter: "users",
             method: .PUT,
-            pingRequest: .init(texts: texts)
+            pingRequest: .init(discordID: id, texts: texts)
         )
     }
     
     func remove(_ texts: [String], forDiscordID id: String) async throws {
         try await self.send(
-            pathParameter: id,
+            pathParameter: "users",
             method: .DELETE,
-            pingRequest: .init(texts: texts)
+            pingRequest: .init(discordID: id, texts: texts)
         )
     }
     
@@ -66,7 +69,7 @@ actor DefaultPingsService: AutoPingsService {
         method: HTTPMethod,
         pingRequest: AutoPingRequest?
     ) async throws -> S3AutoPingItems {
-        let url = Constants.pingsServiceBaseUrl + "/" + pathParameter
+        let url = Constants.apiBaseUrl + "/auto-pings/" + pathParameter
         var request = HTTPClientRequest(url: url)
         request.method = method
         if let pingRequest {
@@ -76,17 +79,23 @@ actor DefaultPingsService: AutoPingsService {
         }
         let response = try await httpClient.execute(
             request,
-            timeout: .seconds(30),
+            timeout: .seconds(60),
             logger: self.logger
         )
-        logger.trace("HTTP head \(response)")
+        logger.trace("HTTP head", metadata: ["response": "\(response)"])
         
         guard (200..<300).contains(response.status.code) else {
-            logger.error("PingsService failed. Response: \(response)")
-            throw ServiceError.badStatus
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let body = collected.map { String(buffer: $0) } ?? "nil"
+            logger.error( "Pings-service failed", metadata: [
+                "status": "\(response.status)",
+                "headers": "\(response.headers)",
+                "body": "\(body)",
+            ])
+            throw ServiceError.badStatus(response.status)
         }
         
-        let body = try await response.body.collect(upTo: 1024 * 1024 * 64)
+        let body = try await response.body.collect(upTo: 1 << 32)
         let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
@@ -101,13 +110,13 @@ actor DefaultPingsService: AutoPingsService {
     private func setUpResetItemsTask() {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {
-            if (try? await Task.sleep(for: .seconds(60 * 30))) != nil {
+            if (try? await Task.sleep(for: .seconds(60 * 60 * 6))) != nil {
                 self.cachedItems = nil
                 self.setUpResetItemsTask()
             } else {
                 /// If canceled, set up the task again.
                 /// This way, the functions above can cancel this when they've got fresh items
-                /// and this will just reschedule itself for another later time.
+                /// and this will just reschedule itself for a later time.
                 self.setUpResetItemsTask()
             }
         }

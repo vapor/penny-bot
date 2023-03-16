@@ -83,7 +83,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx ++ \(user1)
+                xxxx ++++++++++++++++++++++++++++++ \(user1)
                 """,
                 mentionedUsers: [user1]
             )
@@ -131,7 +131,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx thank you! \(user1) xxx
+                xxxx thank you. \(user1) xxx
                 """,
                 mentionedUsers: [user1]
             )
@@ -153,12 +153,38 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx ++\(user1)  \(user2) xxx
+                xxxx thanks for the help\(user1)  \(user2) xxx
                 """,
                 mentionedUsers: [user1, user2]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [user1, user2])
+        }
+    }
+    
+    func testNotReallyACoinSign() throws {
+        do {
+            /// `+` is not a coin sign, unlike `++`/`+++`/`++++`... .
+            let coinHandler = CoinHandler(
+                text: """
+                \(user1) +
+                """,
+                mentionedUsers: [user1]
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, [])
+        }
+        
+        do {
+            /// `++` is too far.
+            let coinHandler = CoinHandler(
+                text: """
+                \(user1) xxxx ++ xxxx
+                """,
+                mentionedUsers: [user1]
+            )
+            let users = coinHandler.findUsers()
+            XCTAssertEqual(users, [])
         }
     }
     
@@ -174,7 +200,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx \(user1)  thanks, xxxx xxxx \(user2) \(Constants.vaporCoinEmoji) xxxx
+                xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.vaporCoinEmoji) xxxx
                 """,
                 mentionedUsers: [user1, user2]
             )
@@ -375,7 +401,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                \(user1) thank you! \(user1) ++
+                \(user1) thank you! \(user1) +++
                 """,
                 mentionedUsers: [user1]
             )
@@ -386,7 +412,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                \(user1) \(user1) xxxx ++
+                \(user1) \(user1) xxxx +++++
                 """,
                 mentionedUsers: [user1]
             )

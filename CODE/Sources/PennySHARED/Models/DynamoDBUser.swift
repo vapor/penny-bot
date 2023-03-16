@@ -1,6 +1,6 @@
 import Foundation
 
-public struct DynamoDBUser: Codable {
+public struct DynamoDBUser: Sendable, Codable {
     public let pk: String
     public let sk: String
     public let data1: String?

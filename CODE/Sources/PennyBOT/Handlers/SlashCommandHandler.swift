@@ -2,22 +2,13 @@ import DiscordBM
 import Logging
 
 struct SlashCommandHandler {
-    let logger: Logger
-    let guildId = "431917998102675485"
-    
     func registerCommands() async {
-        /// Optimally we would register command only if not already registered,
-        /// because currently there is a 100 commands per day limit. For now it
-        /// should not be a problem, if the command is available, it'll just be overridden.
-        let commands: [ApplicationCommand] = [.link, .ping, .howManyCoins]
-        for command in commands {
-            await DiscordService.shared.createSlashCommand(payload: command)
-        }
+        await DiscordService.shared.overwriteSlashCommands(commands: [.link, .ping, .howManyCoins])
     }
 }
 
-private extension ApplicationCommand {
-    static let link = ApplicationCommand(
+private extension RequestBody.ApplicationCommandCreate {
+    static let link = RequestBody.ApplicationCommandCreate(
         name: "link",
         description: "Links your accounts in Penny",
         options: [
@@ -54,59 +45,58 @@ private extension ApplicationCommand {
                     required: true
                 )]
             )
-        ]
+        ],
+        dm_permission: false
     )
     
-    static let ping = ApplicationCommand(
-        name: "automated-pings",
-        description: "Penny pings you when certain things happen in Vapor's server",
+    static let ping = RequestBody.ApplicationCommandCreate(
+        name: "auto-pings",
+        description: "Configure Penny to ping you when certain someone uses a word/text",
         options: [
             .init(
                 type: .subCommand,
-                name: "add",
-                description: "Ping when a message case-insensitively contains a text",
-                options: [.init(
-                    type: .string,
-                    name: "text",
-                    description: "The text you want to be pinged for",
-                    required: true
-                )]
+                name: "help",
+                description: "Help about how auto-pings works"
             ),
             .init(
                 type: .subCommand,
-                name: "bulk-add",
-                description: "Ping when a message case-insensitively contains these texts",
+                name: "add",
+                description: "Add multiple texts to be pinged for (Slack compatible)",
                 options: [.init(
                     type: .string,
                     name: "texts",
-                    description: "The texts you want to be pinged for, separated by a comma (`,`)",
+                    description: "Exact texts to be pinged for, separated by ','. Insensitive to cases, diacritics & punctuations",
                     required: true
                 )]
             ),
             .init(
                 type: .subCommand,
                 name: "remove",
-                description: "Remove pings for certain texts",
+                description: "Remove multiple ping texts",
                 options: [.init(
                     type: .string,
-                    name: "text",
-                    description: "The text you don't want to be notified for, anymore",
+                    name: "texts",
+                    description: "Texts you don't want to be pinged for anymore, separated by ','",
                     required: true
                 )]
             ),
             .init(
                 type: .subCommand,
                 name: "list",
-                description: "See what you're subscribed to"
+                description: "See what you'll get pinged for"
             )
-        ]
+        ],
+        dm_permission: false
     )
     
-    static let howManyCoins = ApplicationCommand(
+    static let howManyCoins = RequestBody.ApplicationCommandCreate(
         name: "how-many-coins",
         description: "See how many coins members have",
-        options: [
-            .init(type: .user, name: "member", description: "The member to check their coin count")
-        ]
+        options: [.init(
+            type: .user,
+            name: "member",
+            description: "The member to check their coin count"
+        )],
+        dm_permission: false
     )
 }

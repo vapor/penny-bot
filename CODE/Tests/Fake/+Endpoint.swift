@@ -1,4 +1,4 @@
-@testable import DiscordBM
+@testable import DiscordHTTP
 
 extension Endpoint {
     var testingKey: String {

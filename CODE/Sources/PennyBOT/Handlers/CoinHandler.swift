@@ -1,7 +1,6 @@
 
-// All coin signs must be lowercased.
-private let validSigns = [
-    "++",
+/// All coin signs must be lowercased.
+private let coinSigns = [
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
     "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
@@ -10,9 +9,13 @@ private let validSigns = [
     "thx", "thanks", "thank you",
     "thanks a lot", "thanks a bunch", "thanks so much",
     "thank you a lot", "thank you a bunch", "thank you so much",
+    "thanks for the help",
     "+= 1", "+ 1",
     "advance(by: 1)", "successor()",
 ]
+
+/// Two or more of these characters, like `++` or `++++++++++++`.
+private let twoOrMore_coinSigns: [Character] = ["+"]
 
 struct CoinHandler {
     /// The content of the message.
@@ -38,10 +41,11 @@ struct CoinHandler {
         // Lowercased for case-insensitive coin-sign checking.
         var text = text
             .lowercased()
-        // `,` or `!` can be problematic if someone sticks it to the end of a coin sign, like
-        // "@Penny thanks, ..." or  "@Penny thanks!"
+        /// `,` / `!` / `.` can be problematic if someone sticks it to the end of a coin sign, like
+        /// "@Penny thanks, ..." or  "@Penny thanks!"
             .replacingOccurrences(of: ",", with: "")
             .replacingOccurrences(of: "!", with: "")
+            .replacingOccurrences(of: ".", with: "")
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -158,39 +162,48 @@ struct CoinHandler {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
-        // `.hasPrefix()` is for a better performance.
-        // Removes a lot of no-match strings, much faster than the containment check.
+        /// `.hasPrefix()` is for a better performance.
+        /// Removes a lot of no-match strings, much faster than the containment check.
         string.hasPrefix("<@") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }
 
-private let splitSigns = validSigns.map { $0.split(whereSeparator: \.isWhitespace) }
+private let splitSigns = coinSigns.map { $0.split(whereSeparator: \.isWhitespace) }
 private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
 private extension Sequence where Element == Substring {
     var isPrefixedWithCoinSign: Bool {
         return splitSigns.contains {
             self.starts(with: $0)
-        }
+        } || self.isPrefixedWithOtherCoinSigns
     }
     
     var isSuffixedWithCoinSign: Bool {
         let reversedElements = self.reversed()
         return reversedSplitSigns.contains {
             reversedElements.starts(with: $0)
-        }
+        } || reversedElements.isPrefixedWithOtherCoinSigns
+    }
+    
+    /// Coins signs that accept two or more of the same character.
+    private var isPrefixedWithOtherCoinSigns: Bool {
+        self.first(where: { _ in true }).map { element in
+            twoOrMore_coinSigns.contains { sign in
+                element.underestimatedCount > 1 &&
+                element.allSatisfy({ sign == $0 })
+            }
+        } == true
     }
 }
 
 private extension Substring {
-    /// "and", "&", ",", and empty strings are considered neutral,
-    /// and in the logic above we can ignore them.
+    /// These strings are considered neutral, and in the logic above we can ignore them.
     ///
     /// NOTE: The logic in `CoinHandler`, intentionally adds spaces after and before each
     /// user-mention. That means we _need_ to remove empty strings to neutralize those
     /// intentional spaces.
     var isIgnorable: Bool {
-        ["", "and", "&", ","].contains(self.lowercased())
+        ["", ".", "and", "&", ","].contains(self.lowercased())
     }
 }

@@ -1,0 +1,3087 @@
+{
+    "system_channel_id": "435925514906238976",
+    "rules_channel_id": "437050958061764608",
+    "splash": null,
+    "lazy": true,
+    "vanity_url_code": "vapor",
+    "afk_channel_id": "437692417739587595",
+    "premium_subscription_count": 5,
+    "channels": [
+        {
+            "version": 1673364929163,
+            "type": 0,
+            "topic": "Discuss things related to iOS / client-side Swift. ",
+            "rate_limit_per_user": 0,
+            "position": 67,
+            "permission_overwrites": [],
+            "parent_id": "456482993012473880",
+            "nsfw": false,
+            "name": "ios",
+            "last_message_id": "1069121999705735208",
+            "id": "443204563374178324",
+            "flags": 0
+        },
+        {
+            "version": 1666242373477,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 29,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431920836631592980",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "moderators",
+            "last_pin_timestamp": "2018-05-08T20:45:08.448000+00:00",
+            "last_message_id": "1066065380864446508",
+            "id": "443512396900859904",
+            "flags": 0
+        },
+        {
+            "version": 1666242373446,
+            "type": 0,
+            "topic": "To discuss the various books that have been written for Vapor!",
+            "rate_limit_per_user": 0,
+            "position": 27,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "books",
+            "last_pin_timestamp": "2020-05-28T18:31:43.121000+00:00",
+            "last_message_id": "1065386918185009172",
+            "id": "686569307710423121",
+            "flags": 0
+        },
+        {
+            "version": 1673364929050,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 62,
+            "permission_overwrites": [],
+            "parent_id": "568055720533295124",
+            "nsfw": false,
+            "name": "elasticsearch",
+            "last_message_id": "1065386674290430062",
+            "id": "459887385535315969",
+            "flags": 0
+        },
+        {
+            "version": 1666242373615,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 39,
+            "permission_overwrites": [
+                {
+                    "type": 1,
+                    "id": "326107393924661249",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "twitter",
+            "last_pin_timestamp": "2019-03-15T00:13:45.124000+00:00",
+            "last_message_id": "770555445450113035",
+            "id": "555906216187002914",
+            "flags": 0
+        },
+        {
+            "version": 1673364928777,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 53,
+            "permission_overwrites": [],
+            "parent_id": "666384169760456734",
+            "nsfw": false,
+            "name": "scotland",
+            "last_message_id": "1065386875667370056",
+            "id": "671296087167860736",
+            "flags": 0
+        },
+        {
+            "version": 1673364928612,
+            "type": 0,
+            "topic": "Discussions on the SwiftPM Library index and its evolution: https://swiftpackageindex.com/",
+            "rate_limit_per_user": 0,
+            "position": 47,
+            "permission_overwrites": [],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "package-index",
+            "last_message_id": "1068698994710167663",
+            "id": "672925817117999105",
+            "flags": 0
+        },
+        {
+            "version": 1673364929710,
+            "type": 0,
+            "topic": "Ask questions about Vapor 2. See #vapor-3 to ask questions about the latest, async version.",
+            "rate_limit_per_user": 0,
+            "position": 89,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "vapor-2",
+            "last_message_id": "1065386364616589364",
+            "id": "431924678760726528",
+            "flags": 0
+        },
+        {
+            "version": 1673364929319,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 74,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "русский",
+            "last_message_id": "1065386577230057592",
+            "id": "448578107666989086",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "user_limit": 0,
+            "type": 2,
+            "rtc_region": null,
+            "rate_limit_per_user": 0,
+            "position": 0,
+            "permission_overwrites": [],
+            "parent_id": "443284640178896907",
+            "name": "voice",
+            "last_message_id": null,
+            "id": "431917998102675490",
+            "flags": 0,
+            "bitrate": 64000
+        },
+        {
+            "version": 1666242373432,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 26,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "stackoverflow",
+            "last_message_id": "1065386699414319227",
+            "id": "473249028142923787",
+            "flags": 0
+        },
+        {
+            "version": 1673364929527,
+            "type": 0,
+            "topic": "Ask questions about Vapor 3. Use #vapor for the latest version. Use #vapor-2 for Vapor 2.",
+            "rate_limit_per_user": 0,
+            "position": 83,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "vapor-3",
+            "last_pin_timestamp": "2021-09-11T15:14:05+00:00",
+            "last_message_id": "1065386373365899264",
+            "id": "431924902501810177",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 4,
+            "permission_overwrites": [],
+            "name": "Community (Local)",
+            "id": "666384169760456734",
+            "flags": 0
+        },
+        {
+            "version": 1666242373228,
+            "type": 0,
+            "topic": "Ask questions about Fluent 4. Use #fluent-3 and #fluent-2 for older versions.",
+            "rate_limit_per_user": 0,
+            "position": 9,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "fluent",
+            "last_pin_timestamp": "2020-03-04T08:48:32.211000+00:00",
+            "last_message_id": "1069946507618439269",
+            "id": "684159753189982218",
+            "flags": 0
+        },
+        {
+            "version": 1666242374402,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 96,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 1,
+                    "id": "810634881679097868",
+                    "deny": "0",
+                    "allow": "1024"
+                }
+            ],
+            "parent_id": "596357583229419560",
+            "name": "omrd",
+            "last_message_id": "1052977594305359972",
+            "id": "824276135797063730",
+            "flags": 0
+        },
+        {
+            "version": 1673364929751,
+            "type": 0,
+            "topic": "Ask questions about using MongoDB with Swift (MongoKitten, MongoProvider, etc.)",
+            "rate_limit_per_user": 0,
+            "position": 90,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "mongo-2",
+            "last_message_id": "1065386484842119220",
+            "id": "442958409680289794",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 8,
+            "permission_overwrites": [],
+            "name": "Community (i18n)",
+            "id": "448577853987225630",
+            "flags": 0
+        },
+        {
+            "version": 1666242373590,
+            "type": 0,
+            "topic": "Discussion about development for Fluent 5",
+            "rate_limit_per_user": 0,
+            "position": 37,
+            "permission_overwrites": [],
+            "parent_id": "438857769354002439",
+            "name": "fluent-5",
+            "last_pin_timestamp": "2021-12-13T12:28:44+00:00",
+            "last_message_id": "1065386960232914987",
+            "id": "919927555405000704",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 1,
+            "permission_overwrites": [],
+            "name": "Community",
+            "id": "431926195123126283",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 0,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "16384",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "377957304320",
+                    "allow": "0"
+                }
+            ],
+            "name": "welcome",
+            "last_message_id": "913101955277156462",
+            "id": "437050958061764608",
+            "flags": 0
+        },
+        {
+            "version": 1666242373290,
+            "type": 0,
+            "topic": "A channel for discussing security-related topics as well as best practices for securing web apps and APIs.",
+            "rate_limit_per_user": 0,
+            "position": 14,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "security",
+            "last_message_id": "1065386567142748340",
+            "id": "448121345792802826",
+            "flags": 0
+        },
+        {
+            "version": 1673364928474,
+            "type": 0,
+            "topic": "For chatter about the Swift language.\nSwift Evolution: https://apple.github.io/swift-evolution/\nSwift: https://swift.org/",
+            "rate_limit_per_user": 0,
+            "position": 42,
+            "permission_overwrites": [],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "swift",
+            "last_message_id": "1069991147910471730",
+            "id": "499822537027616768",
+            "flags": 0
+        },
+        {
+            "version": 1666242373486,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 30,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "530113860129259521",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431920836631592980",
+                    "deny": "0",
+                    "allow": "1024"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "maintainers",
+            "last_pin_timestamp": "2019-03-13T18:23:42.609000+00:00",
+            "last_message_id": "1050965666766798879",
+            "id": "530113758820040705",
+            "flags": 0
+        },
+        {
+            "version": 1666242373149,
+            "type": 15,
+            "topic": null,
+            "template": "",
+            "rate_limit_per_user": 0,
+            "position": 3,
+            "permission_overwrites": [],
+            "name": "knowledge-base",
+            "last_message_id": "1065679936989450371",
+            "id": "1032214303652204554",
+            "flags": 0,
+            "available_tags": []
+        },
+        {
+            "version": 0,
+            "user_limit": 0,
+            "type": 2,
+            "rtc_region": null,
+            "rate_limit_per_user": 0,
+            "position": 1,
+            "permission_overwrites": [],
+            "parent_id": "443284640178896907",
+            "name": "voice-afk",
+            "last_message_id": null,
+            "id": "437692417739587595",
+            "flags": 0,
+            "bitrate": 64000
+        },
+        {
+            "version": 1666242374431,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 97,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "117824"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "871890001",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "431925050749353986",
+            "name": "core",
+            "last_pin_timestamp": "2021-09-05T10:25:41+00:00",
+            "last_message_id": "1058015062947811428",
+            "id": "764151568848519219",
+            "flags": 0
+        },
+        {
+            "version": 1666242373523,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 33,
+            "permission_overwrites": [],
+            "parent_id": "438857769354002439",
+            "name": "documentation",
+            "last_message_id": "1067462508790677634",
+            "id": "484454139506458634",
+            "flags": 0
+        },
+        {
+            "version": 1673364928752,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 52,
+            "permission_overwrites": [],
+            "parent_id": "666384169760456734",
+            "nsfw": false,
+            "name": "berlin",
+            "last_message_id": "1065386867517833309",
+            "id": "666387242264166433",
+            "flags": 0
+        },
+        {
+            "version": 1673364928488,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 43,
+            "permission_overwrites": [],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "swiftui",
+            "last_message_id": "1068698916415090758",
+            "id": "585851055695462411",
+            "flags": 0
+        },
+        {
+            "version": 1673364929587,
+            "type": 0,
+            "topic": "Ask questions about deploying to Vapor Cloud 2.0 (currently in alpha.1). See #cloud-1 to ask questions about the current version.",
+            "rate_limit_per_user": 0,
+            "position": 86,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "cloud-2",
+            "last_pin_timestamp": "2018-10-23T13:48:22.036000+00:00",
+            "last_message_id": "1065386414298103940",
+            "id": "435923887721807883",
+            "flags": 0
+        },
+        {
+            "version": 1666242373579,
+            "type": 0,
+            "topic": "Discussion about development for Vapor 5",
+            "rate_limit_per_user": 0,
+            "position": 36,
+            "permission_overwrites": [],
+            "parent_id": "438857769354002439",
+            "name": "vapor-5",
+            "last_message_id": "1065386951009644545",
+            "id": "919300856208306196",
+            "flags": 0
+        },
+        {
+            "version": 1673364929020,
+            "type": 0,
+            "topic": "Discus implementations or problems of vapor community or third-party Vapor libraries",
+            "rate_limit_per_user": 0,
+            "position": 61,
+            "permission_overwrites": [],
+            "parent_id": "568055720533295124",
+            "nsfw": false,
+            "name": "community-code",
+            "last_message_id": "1065386783388483674",
+            "id": "560219156574896139",
+            "flags": 0
+        },
+        {
+            "version": 1673364928935,
+            "type": 0,
+            "topic": "Ask questions about deploying Vapor on DigitalOcean",
+            "rate_limit_per_user": 0,
+            "position": 59,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "digitalocean",
+            "last_pin_timestamp": "2020-11-11T21:05:23.192000+00:00",
+            "last_message_id": "1068699342816411740",
+            "id": "772817642071130135",
+            "flags": 0
+        },
+        {
+            "version": 1666242373361,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 20,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "showcase",
+            "last_message_id": "1069768336453419119",
+            "id": "447893851374616576",
+            "flags": 0
+        },
+        {
+            "version": 1673364928698,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 50,
+            "permission_overwrites": [],
+            "parent_id": "666384169760456734",
+            "nsfw": false,
+            "name": "bay-area",
+            "last_message_id": "1065386843178291320",
+            "id": "666384481657028618",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "user_limit": 0,
+            "type": 2,
+            "rtc_region": null,
+            "rate_limit_per_user": 0,
+            "position": 2,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1048576",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431920712505098240",
+                    "deny": "0",
+                    "allow": "1048576"
+                }
+            ],
+            "parent_id": "443284640178896907",
+            "name": "virtual-meetup",
+            "last_message_id": null,
+            "id": "692645317358649365",
+            "flags": 0,
+            "bitrate": 64000
+        },
+        {
+            "version": 1666242373566,
+            "type": 0,
+            "topic": "Chat about design of logos, website, docs, etc.",
+            "rate_limit_per_user": 0,
+            "position": 35,
+            "permission_overwrites": [],
+            "parent_id": "438857769354002439",
+            "name": "design",
+            "last_pin_timestamp": "2018-05-23T21:44:12.398000+00:00",
+            "last_message_id": "1066042567675883641",
+            "id": "435932365165035530",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 11,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1049600"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1049600",
+                    "allow": "0"
+                }
+            ],
+            "name": "consulting",
+            "id": "596357583229419560",
+            "flags": 0
+        },
+        {
+            "version": 1666242373255,
+            "type": 0,
+            "topic": "Ask questions about authentication (auth/c) and authorization (auth/z).",
+            "rate_limit_per_user": 0,
+            "position": 11,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "auth",
+            "last_message_id": "1069225649627222138",
+            "id": "443878065227956226",
+            "flags": 0
+        },
+        {
+            "version": 1673364928630,
+            "type": 0,
+            "topic": "Distributed actors and more!",
+            "rate_limit_per_user": 0,
+            "position": 48,
+            "permission_overwrites": [
+                {
+                    "type": 1,
+                    "id": "392061527563304960",
+                    "deny": "0",
+                    "allow": "8192"
+                }
+            ],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "distributed",
+            "last_pin_timestamp": "2021-12-08T07:24:36+00:00",
+            "last_message_id": "1070004493237887078",
+            "id": "882920608437002271",
+            "flags": 0
+        },
+        {
+            "version": 1666242373351,
+            "type": 0,
+            "topic": "Want a channel for your city? Take the location survey!\nhttps://docs.google.com/forms/d/e/1FAIpQLSd-K9MofH4L_QxhWeH9CVtsa8VUQSWWgtVGPk4hz_G8TGGM_Q/viewform?usp=sf_link\n\nA local channel for a city will be created once there are 5 or more community members from that city.",
+            "rate_limit_per_user": 0,
+            "position": 19,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "meetups",
+            "last_message_id": "1069768317595832410",
+            "id": "446291350095134760",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 12,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "116800"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "871890001",
+                    "allow": "0"
+                }
+            ],
+            "name": "Internal",
+            "id": "431925050749353986",
+            "flags": 0
+        },
+        {
+            "version": 1673364929491,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 82,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "українська",
+            "last_message_id": "1065386766971961384",
+            "id": "548647020332843018",
+            "flags": 0
+        },
+        {
+            "version": 1673364929116,
+            "type": 0,
+            "topic": "https://github.com/givip/Telegrammer",
+            "rate_limit_per_user": 0,
+            "position": 65,
+            "permission_overwrites": [],
+            "parent_id": "568055720533295124",
+            "nsfw": false,
+            "name": "telegrammer",
+            "last_message_id": "1069768538308481114",
+            "id": "456483294427742208",
+            "flags": 0
+        },
+        {
+            "version": 1673364929415,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 78,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "한국어",
+            "last_message_id": "1068699547829817434",
+            "id": "450664593971347477",
+            "flags": 0
+        },
+        {
+            "version": 1666242374366,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 93,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 1,
+                    "id": "448863539684311040",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "432247131189936161",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "437123147490263040",
+                    "deny": "0",
+                    "allow": "3072"
+                }
+            ],
+            "parent_id": "596357583229419560",
+            "name": "monstarlab",
+            "last_pin_timestamp": "2020-08-17T19:28:33.784000+00:00",
+            "last_message_id": "772789348437458944",
+            "id": "596357629765222437",
+            "flags": 0
+        },
+        {
+            "version": 1666242373603,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 38,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "1031520606434381824",
+                    "deny": "0",
+                    "allow": "274877910016"
+                },
+                {
+                    "type": 0,
+                    "id": "444167329748746262",
+                    "deny": "0",
+                    "allow": "1024"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "sponsors",
+            "last_message_id": "824290625360756767",
+            "id": "633345798490292229",
+            "flags": 0
+        },
+        {
+            "version": 1673364928520,
+            "type": 0,
+            "topic": "Discus topics related to Swift Server Working Group. https://swift.org/server/ Forums: https://forums.swift.org/c/server Charter: https://github.com/swift-server/sswg",
+            "rate_limit_per_user": 0,
+            "position": 45,
+            "permission_overwrites": [],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "sswg",
+            "last_message_id": "1068698953786327131",
+            "id": "560531170073378827",
+            "flags": 0
+        },
+        {
+            "version": 1666242373500,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 31,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431920712505098240",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "contributors",
+            "last_pin_timestamp": "2020-03-25T15:53:36.695000+00:00",
+            "last_message_id": "1069235586520592394",
+            "id": "443513077003059200",
+            "flags": 0
+        },
+        {
+            "version": 1673364928914,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 58,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "ci-cd",
+            "last_message_id": "1068699316891418756",
+            "id": "613453561338134581",
+            "flags": 0
+        },
+        {
+            "version": 1666242373342,
+            "type": 0,
+            "topic": "Chat about anything. You should probably mute notifications on this one.",
+            "rate_limit_per_user": 0,
+            "position": 18,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "random",
+            "last_message_id": "1069948591025684530",
+            "id": "431917998102675488",
+            "flags": 0
+        },
+        {
+            "version": 1673364928666,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 49,
+            "permission_overwrites": [],
+            "parent_id": "666384169760456734",
+            "nsfw": false,
+            "name": "nyc",
+            "last_message_id": "1065386847494217778",
+            "id": "666384838869254157",
+            "flags": 0
+        },
+        {
+            "version": 1666242373407,
+            "type": 0,
+            "topic": "Where everyone chats while watching livestreams for Apple special events and keynotes.",
+            "rate_limit_per_user": 0,
+            "position": 24,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "apple-events",
+            "last_message_id": "1065386774739816508",
+            "id": "559779695940337674",
+            "flags": 0
+        },
+        {
+            "version": 1673364929096,
+            "type": 0,
+            "topic": "https://github.com/OpenKitten/MongoKitten",
+            "rate_limit_per_user": 0,
+            "position": 64,
+            "permission_overwrites": [],
+            "parent_id": "568055720533295124",
+            "nsfw": false,
+            "name": "mongokitten",
+            "last_message_id": "1069956729489592370",
+            "id": "448584302263795712",
+            "flags": 0
+        },
+        {
+            "version": 1666242373188,
+            "type": 5,
+            "topic": "Server-side Swift related job listings. Contact a moderator to post.",
+            "rate_limit_per_user": 0,
+            "position": 6,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431920836631592980",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "309237696512",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "530113860129259521",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431920712505098240",
+                    "deny": "0",
+                    "allow": "2048"
+                }
+            ],
+            "name": "jobs",
+            "last_message_id": "1048789075236241518",
+            "id": "442420282292961282",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 10,
+            "permission_overwrites": [],
+            "name": "Voice",
+            "id": "443284640178896907",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "user_limit": 0,
+            "type": 2,
+            "rtc_region": null,
+            "rate_limit_per_user": 0,
+            "position": 3,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1048576"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1048576",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "431925050749353986",
+            "name": "core-voice",
+            "last_message_id": null,
+            "id": "436533909082079233",
+            "flags": 0,
+            "bitrate": 64000
+        },
+        {
+            "version": 1673364929334,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 75,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "deutsch",
+            "last_message_id": "1065386590567936065",
+            "id": "448582942059397130",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 3,
+            "permission_overwrites": [],
+            "name": "Swift",
+            "id": "568054751720112138",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 6,
+            "permission_overwrites": [],
+            "name": "Related Projects",
+            "id": "568055720533295124",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 0,
+            "permission_overwrites": [],
+            "name": "Help",
+            "id": "431924811946786827",
+            "flags": 0
+        },
+        {
+            "version": 1673364929372,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 76,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "中文频道",
+            "last_message_id": "1065386624235602002",
+            "id": "448729759698911233",
+            "flags": 0
+        },
+        {
+            "version": 1666242373395,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 23,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "today-i-learned",
+            "last_message_id": "1065386716204105769",
+            "id": "477945457667211265",
+            "flags": 0
+        },
+        {
+            "version": 1673364929568,
+            "type": 0,
+            "topic": "Get help upgrading from Vapor 3 to 4 https://docs.vapor.codes/4.0/upgrading/",
+            "rate_limit_per_user": 0,
+            "position": 85,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "upgrading-to-4",
+            "last_message_id": "1065386909355999333",
+            "id": "685512849908432989",
+            "flags": 0
+        },
+        {
+            "version": 1673364928735,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 51,
+            "permission_overwrites": [],
+            "parent_id": "666384169760456734",
+            "nsfw": false,
+            "name": "london",
+            "last_message_id": "1065386859347320912",
+            "id": "666384853515894798",
+            "flags": 0
+        },
+        {
+            "version": 1666242373198,
+            "type": 0,
+            "topic": "What the core team is working on.",
+            "rate_limit_per_user": 0,
+            "position": 7,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "377957173312",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "2048"
+                }
+            ],
+            "name": "status",
+            "last_message_id": "1031955541133635736",
+            "id": "459521920241500220",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 9,
+            "permission_overwrites": [],
+            "name": "Legacy",
+            "id": "448578774808920085",
+            "flags": 0
+        },
+        {
+            "version": 1666242373458,
+            "type": 0,
+            "topic": "Organising Vapor London",
+            "rate_limit_per_user": 0,
+            "position": 28,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431920836631592980",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                }
+            ],
+            "parent_id": "431926195123126283",
+            "name": "london-meetup-org",
+            "last_message_id": "641210361277841409",
+            "id": "443513361380933642",
+            "flags": 0
+        },
+        {
+            "version": 1673364929211,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 69,
+            "permission_overwrites": [],
+            "parent_id": "456482993012473880",
+            "nsfw": false,
+            "name": "ios-release",
+            "last_message_id": "1065386657680998450",
+            "id": "450974977408237568",
+            "flags": 0
+        },
+        {
+            "version": 1673364929072,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 63,
+            "permission_overwrites": [],
+            "parent_id": "568055720533295124",
+            "nsfw": false,
+            "name": "graphql",
+            "last_message_id": "1065386733086179349",
+            "id": "493884426896277504",
+            "flags": 0
+        },
+        {
+            "version": 1666242373278,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 13,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "async",
+            "last_message_id": "1069559215363981312",
+            "id": "444249946808647699",
+            "flags": 0
+        },
+        {
+            "version": 1673364929255,
+            "type": 0,
+            "topic": "Vapor on Windows discussion",
+            "rate_limit_per_user": 0,
+            "position": 71,
+            "permission_overwrites": [],
+            "parent_id": "456482993012473880",
+            "nsfw": false,
+            "name": "windows",
+            "last_pin_timestamp": "2020-09-22T20:04:59.282000+00:00",
+            "last_message_id": "1065386926523285595",
+            "id": "758055713720238170",
+            "flags": 0
+        },
+        {
+            "version": 1673364929431,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 79,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "français",
+            "last_message_id": "1068699497938554970",
+            "id": "505133310956142592",
+            "flags": 0
+        },
+        {
+            "version": 1666242373214,
+            "type": 0,
+            "topic": "Ask questions about Vapor 4. Use #vapor-3 and #vapor-2 for older versions.",
+            "rate_limit_per_user": 0,
+            "position": 8,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "vapor",
+            "last_pin_timestamp": "2022-11-28T08:40:18+00:00",
+            "last_message_id": "1070008963350933545",
+            "id": "519613337638797315",
+            "flags": 0
+        },
+        {
+            "version": 1666242373648,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 41,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 1,
+                    "id": "295270630721585152",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "435873763024961546",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "432065887202181142",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "styleguide",
+            "last_message_id": "484146269002924042",
+            "id": "471840593048371210",
+            "flags": 0
+        },
+        {
+            "version": 1673364929452,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 80,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "日本語",
+            "last_message_id": "1065386615972823141",
+            "id": "448722823452819467",
+            "flags": 0
+        },
+        {
+            "version": 1666242373313,
+            "type": 0,
+            "topic": "Any of Apple's M-anything chips!",
+            "rate_limit_per_user": 0,
+            "position": 16,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "apple-silicon",
+            "last_message_id": "1068698637766500354",
+            "id": "808362950984859648",
+            "flags": 0
+        },
+        {
+            "version": 1673364929766,
+            "type": 0,
+            "topic": "Get help upgrading your existing project from Vapor 2 to 3. ",
+            "rate_limit_per_user": 0,
+            "position": 91,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "upgrading-to-3",
+            "last_pin_timestamp": "2018-04-30T19:59:03.671000+00:00",
+            "last_message_id": "1065386482963062884",
+            "id": "440601184189808661",
+            "flags": 0
+        },
+        {
+            "version": 1673364929652,
+            "type": 0,
+            "topic": "Ask questions about using and deploying to Vapor Cloud 1.0 (current version). See #cloud-2 to discuss the next version!",
+            "rate_limit_per_user": 0,
+            "position": 87,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "cloud-1",
+            "last_message_id": "1065386381305716746",
+            "id": "431926419548012544",
+            "flags": 0
+        },
+        {
+            "version": 1673364929234,
+            "type": 0,
+            "topic": "macOS specific development",
+            "rate_limit_per_user": 0,
+            "position": 70,
+            "permission_overwrites": [],
+            "parent_id": "456482993012473880",
+            "nsfw": false,
+            "name": "macos",
+            "last_message_id": "1065386682733576202",
+            "id": "462264811498242048",
+            "flags": 0
+        },
+        {
+            "version": 1673364928504,
+            "type": 0,
+            "topic": "Discuss and ask questions about SwiftNIO: https://github.com/apple/swift-nio\nDocumentation: https://apple.github.io/swift-nio/docs/current/NIO/index.html",
+            "rate_limit_per_user": 0,
+            "position": 44,
+            "permission_overwrites": [],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "nio",
+            "last_pin_timestamp": "2019-02-01T15:22:58.478000+00:00",
+            "last_message_id": "1068698933938897016",
+            "id": "448584561845338139",
+            "flags": 0
+        },
+        {
+            "version": 1674582806042,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 100,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "950719637044207689",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 1,
+                    "id": "290483761559240704",
+                    "deny": "0",
+                    "allow": "536871936"
+                },
+                {
+                    "type": 0,
+                    "id": "441346871651336193",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 0,
+                    "id": "1031520606434381824",
+                    "deny": "0",
+                    "allow": "1024"
+                }
+            ],
+            "parent_id": "431925050749353986",
+            "nsfw": false,
+            "name": "bot-logs",
+            "last_message_id": "1070011881974153257",
+            "id": "1067060193982156880",
+            "flags": 0
+        },
+        {
+            "version": 1666242373634,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 40,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431921695524126722",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "444167329748746262",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "3072",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "1031520606434381824",
+                    "deny": "0",
+                    "allow": "3072"
+                }
+            ],
+            "parent_id": "438857769354002439",
+            "name": "backers",
+            "last_message_id": "1058136902970126488",
+            "id": "633345683012976640",
+            "flags": 0
+        },
+        {
+            "version": 1666242373264,
+            "type": 0,
+            "topic": "Ask questions about things you can't find a more appropriate channel for.",
+            "rate_limit_per_user": 0,
+            "position": 12,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "misc",
+            "last_message_id": "1070010468946690118",
+            "id": "435928766812913664",
+            "flags": 0
+        },
+        {
+            "version": 1666242373512,
+            "type": 0,
+            "topic": "Discussing development of Vapor itself and related Vapor frameworks",
+            "rate_limit_per_user": 0,
+            "position": 32,
+            "permission_overwrites": [],
+            "parent_id": "438857769354002439",
+            "name": "development",
+            "last_pin_timestamp": "2020-07-11T19:23:31.950000+00:00",
+            "last_message_id": "1069614400593465445",
+            "id": "438857881970933780",
+            "flags": 0
+        },
+        {
+            "version": 1664376083048,
+            "type": 5,
+            "topic": "Important news about Vapor will be posted here. Only admins can post. Turn notifications on for this one!",
+            "rate_limit_per_user": 0,
+            "position": 2,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "309237680128",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431920836631592980",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "2048"
+                }
+            ],
+            "name": "news",
+            "last_message_id": "1047944929873252363",
+            "id": "431917998102675487",
+            "flags": 0
+        },
+        {
+            "version": 1673364928851,
+            "type": 0,
+            "topic": "Ask questions about using Docker to develop and deploy Vapor.",
+            "rate_limit_per_user": 0,
+            "position": 55,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "docker",
+            "last_pin_timestamp": "2020-09-18T13:53:16.399000+00:00",
+            "last_message_id": "1069768463456931941",
+            "id": "435923868503506954",
+            "flags": 0
+        },
+        {
+            "version": 1673364929671,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 88,
+            "permission_overwrites": [
+                {
+                    "type": 1,
+                    "id": "466592265410838536",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "326107393924661249",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "432065887202181142",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "435916587191762947",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "435873763024961546",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "188918216008007680",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "448863539684311040",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                }
+            ],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "red",
+            "last_pin_timestamp": "2019-06-12T14:53:00.901000+00:00",
+            "last_message_id": "1024631088305418280",
+            "id": "538087710703878144",
+            "flags": 0
+        },
+        {
+            "version": 1666242373302,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 15,
+            "permission_overwrites": [],
+            "parent_id": "431924811946786827",
+            "name": "testing",
+            "last_message_id": "1069990805235838976",
+            "id": "444937269808332801",
+            "flags": 0
+        },
+        {
+            "version": 1673364928980,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 60,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "aws",
+            "last_message_id": "1068699362856800376",
+            "id": "472522745067077632",
+            "flags": 0
+        },
+        {
+            "version": 1673364929133,
+            "type": 0,
+            "topic": "Please feel free to ask any questions regarding using SwifQL lib with Vapor\nhttps://github.com/SwifQL",
+            "rate_limit_per_user": 0,
+            "position": 66,
+            "permission_overwrites": [],
+            "parent_id": "568055720533295124",
+            "nsfw": false,
+            "name": "swifql",
+            "last_message_id": "1065386825440563292",
+            "id": "602601128944861195",
+            "flags": 0
+        },
+        {
+            "version": 1673364928585,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 46,
+            "permission_overwrites": [
+                {
+                    "type": 1,
+                    "id": "479967319695687681",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 1,
+                    "id": "188918216008007680",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "441346871651336193",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "568054751720112138",
+            "nsfw": false,
+            "name": "helper-bot-lab",
+            "last_message_id": "500386855099957258",
+            "id": "479987080806531082",
+            "flags": 0
+        },
+        {
+            "version": 1666242374443,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 98,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "871890001",
+                    "allow": "0"
+                },
+                {
+                    "type": 1,
+                    "id": "257634942727618561",
+                    "deny": "0",
+                    "allow": "380104723520"
+                },
+                {
+                    "type": 1,
+                    "id": "409376125995974666",
+                    "deny": "0",
+                    "allow": "517543939136"
+                },
+                {
+                    "type": 1,
+                    "id": "290483761559240704",
+                    "deny": "0",
+                    "allow": "380104723520"
+                },
+                {
+                    "type": 1,
+                    "id": "950695294906007573",
+                    "deny": "0",
+                    "allow": "515396455504"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "116800"
+                }
+            ],
+            "parent_id": "431925050749353986",
+            "name": "bot-lab",
+            "last_message_id": "1069994302698168464",
+            "id": "441327731486097429",
+            "flags": 0
+        },
+        {
+            "version": 1673364929397,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 77,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "nederlands",
+            "last_message_id": "1068699522101944441",
+            "id": "450661146626883584",
+            "flags": 0
+        },
+        {
+            "version": 1666242373555,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 34,
+            "permission_overwrites": [],
+            "parent_id": "438857769354002439",
+            "name": "ideas",
+            "last_message_id": "1065386472963838093",
+            "id": "438857928649342978",
+            "flags": 0
+        },
+        {
+            "version": 1666242373380,
+            "type": 0,
+            "topic": "Say thanks to someone in general or for something they did in a restricted channel or different platform. ",
+            "rate_limit_per_user": 0,
+            "position": 22,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "thanks",
+            "last_message_id": "1069972384251117638",
+            "id": "443074453719744522",
+            "flags": 0
+        },
+        {
+            "version": 1666242373173,
+            "type": 5,
+            "topic": "Links to new GitHub releases are posted here. Contact a contributor or moderator to post so we keep the channel on topic. Maintainers of Vapor related packages are eligible to get the contributor role!",
+            "rate_limit_per_user": 0,
+            "position": 5,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "309237696512",
+                    "allow": "0"
+                },
+                {
+                    "type": 0,
+                    "id": "431920712505098240",
+                    "deny": "0",
+                    "allow": "2048"
+                }
+            ],
+            "name": "release",
+            "last_message_id": "1069726566411681812",
+            "id": "431926479752921098",
+            "flags": 0
+        },
+        {
+            "version": 1673364929191,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 68,
+            "permission_overwrites": [],
+            "parent_id": "456482993012473880",
+            "nsfw": false,
+            "name": "linux",
+            "last_pin_timestamp": "2021-11-10T12:00:09+00:00",
+            "last_message_id": "1068699463692062742",
+            "id": "476025073585881104",
+            "flags": 0
+        },
+        {
+            "version": 1673364929301,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 73,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "español",
+            "last_message_id": "1065386575250325575",
+            "id": "448577952020561931",
+            "flags": 0
+        },
+        {
+            "version": 1673364929469,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 81,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "italiano",
+            "last_message_id": "1065386808680124508",
+            "id": "572854137746620416",
+            "flags": 0
+        },
+        {
+            "version": 1674156534466,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 99,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "flyio",
+            "last_message_id": "1066004904797278268",
+            "id": "1065714490110398484",
+            "flags": 0
+        },
+        {
+            "version": 1673364929281,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 72,
+            "permission_overwrites": [],
+            "parent_id": "448577853987225630",
+            "nsfw": false,
+            "name": "čeština",
+            "last_message_id": "1069768755988660274",
+            "id": "450664302362361886",
+            "flags": 0
+        },
+        {
+            "version": 1673364928892,
+            "type": 0,
+            "topic": "Ask questions about deployment, addons or other Heroku-related issues here.",
+            "rate_limit_per_user": 0,
+            "position": 57,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "heroku",
+            "last_pin_timestamp": "2022-08-29T15:08:32+00:00",
+            "last_message_id": "1068699268187160666",
+            "id": "436186239763218433",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 5,
+            "permission_overwrites": [],
+            "name": "Deployment",
+            "id": "568054044220981279",
+            "flags": 0
+        },
+        {
+            "version": 1666242373419,
+            "type": 0,
+            "topic": "For those attending WWDC! There will be a Vapor meetup!",
+            "rate_limit_per_user": 0,
+            "position": 25,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "wwdc",
+            "last_message_id": "1065386535253450883",
+            "id": "444808801959411712",
+            "flags": 0
+        },
+        {
+            "version": 1666242374390,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 95,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "1024"
+                },
+                {
+                    "type": 1,
+                    "id": "435916587191762947",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "430727028308836354",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                },
+                {
+                    "type": 1,
+                    "id": "684888401719459858",
+                    "deny": "0",
+                    "allow": "3072"
+                }
+            ],
+            "parent_id": "596357583229419560",
+            "name": "skelpo",
+            "last_message_id": "728621160060944437",
+            "id": "629327886851113002",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 7,
+            "permission_overwrites": [],
+            "name": "Platforms",
+            "id": "456482993012473880",
+            "flags": 0
+        },
+        {
+            "version": 1665405490463,
+            "type": 15,
+            "topic": "Use the forums for more long-form questions, community announcements or things that don't really fit into the chat!\n\nPlease remember to stick to the [code of conduct](https://github.com/vapor/.github/blob/main/code_of_conduct.md)",
+            "template": "",
+            "rate_limit_per_user": 60,
+            "position": 1,
+            "permission_overwrites": [],
+            "name": "vapor-discussion",
+            "last_message_id": "1050127163711561738",
+            "id": "1023868604749455451",
+            "flags": 0,
+            "default_thread_rate_limit_per_user": 5,
+            "default_reaction_emoji": {
+                "emoji_name": null,
+                "emoji_id": "582992955519008778"
+            },
+            "available_tags": [
+                {
+                    "name": "Fluent",
+                    "moderated": false,
+                    "id": "1029009375114821642",
+                    "emoji_name": null,
+                    "emoji_id": null
+                },
+                {
+                    "name": "Vapor",
+                    "moderated": false,
+                    "id": "1029009392772841584",
+                    "emoji_name": null,
+                    "emoji_id": null
+                },
+                {
+                    "name": "News",
+                    "moderated": false,
+                    "id": "1029009412242800730",
+                    "emoji_name": null,
+                    "emoji_id": null
+                },
+                {
+                    "name": "Development",
+                    "moderated": false,
+                    "id": "1029009440936050748",
+                    "emoji_name": null,
+                    "emoji_id": null
+                },
+                {
+                    "name": "Misc",
+                    "moderated": false,
+                    "id": "1029009466395480105",
+                    "emoji_name": null,
+                    "emoji_id": null
+                }
+            ]
+        },
+        {
+            "version": 1666242373244,
+            "type": 0,
+            "topic": "Ask questions about Leaf.",
+            "rate_limit_per_user": 0,
+            "position": 10,
+            "permission_overwrites": [
+                {
+                    "type": 1,
+                    "id": "594241222323732493",
+                    "deny": "0",
+                    "allow": "537381953"
+                }
+            ],
+            "parent_id": "431924811946786827",
+            "name": "leaf",
+            "last_message_id": "1068698610012799077",
+            "id": "435907349845377024",
+            "flags": 0
+        },
+        {
+            "version": 1673364928809,
+            "type": 0,
+            "topic": null,
+            "rate_limit_per_user": 0,
+            "position": 54,
+            "permission_overwrites": [],
+            "parent_id": "666384169760456734",
+            "nsfw": false,
+            "name": "denmark",
+            "last_message_id": "1069768439582957578",
+            "id": "681257230065991694",
+            "flags": 0
+        },
+        {
+            "version": 1666242373332,
+            "type": 0,
+            "topic": "Welcome to Vapor's team chat! Chat with us in Community channels or ask questions in Help channels. ",
+            "rate_limit_per_user": 0,
+            "position": 17,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "introductions",
+            "last_message_id": "1070003963098845225",
+            "id": "435925514906238976",
+            "flags": 0
+        },
+        {
+            "version": 1666242373162,
+            "type": 5,
+            "topic": "Share any Vapor-related tutorials, articles, videos, or newsletters! Ask a contributor or higher to post for you. (https://github.com/syky27/awesome-vapor)",
+            "rate_limit_per_user": 0,
+            "position": 4,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "530113860129259521",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431920712505098240",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431920836631592980",
+                    "deny": "0",
+                    "allow": "2048"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "309237680128",
+                    "allow": "0"
+                }
+            ],
+            "name": "publications",
+            "last_pin_timestamp": "2020-03-27T18:07:22.201000+00:00",
+            "last_message_id": "1067409833038446593",
+            "id": "435934451046809600",
+            "flags": 0
+        },
+        {
+            "version": 1666242374379,
+            "type": 0,
+            "topic": "https://gotranseo.com",
+            "rate_limit_per_user": 0,
+            "position": 94,
+            "permission_overwrites": [
+                {
+                    "type": 0,
+                    "id": "431919254372089857",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 1,
+                    "id": "435873763024961546",
+                    "deny": "0",
+                    "allow": "3072"
+                },
+                {
+                    "type": 0,
+                    "id": "431917998102675485",
+                    "deny": "1024",
+                    "allow": "0"
+                }
+            ],
+            "parent_id": "596357583229419560",
+            "name": "transeo",
+            "last_pin_timestamp": "2020-06-29T20:56:28.509000+00:00",
+            "last_message_id": "973573671723601920",
+            "id": "718144895503564871",
+            "flags": 0
+        },
+        {
+            "version": 1673364929552,
+            "type": 0,
+            "topic": "Ask questions about Fluent 3. Use #fluent for the latest version. Use #fluent-2 for Fluent 2.",
+            "rate_limit_per_user": 0,
+            "position": 84,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "fluent-3",
+            "last_pin_timestamp": "2018-04-29T20:20:42.844000+00:00",
+            "last_message_id": "1065386389081952337",
+            "id": "431926916279304202",
+            "flags": 0
+        },
+        {
+            "version": 1666242373371,
+            "type": 0,
+            "topic": "Discuss job opportunities related to server side Swift or work in general. ",
+            "rate_limit_per_user": 0,
+            "position": 21,
+            "permission_overwrites": [],
+            "parent_id": "431926195123126283",
+            "name": "work",
+            "last_message_id": "1068698869006872636",
+            "id": "438635983760785408",
+            "flags": 0
+        },
+        {
+            "version": 0,
+            "type": 4,
+            "position": 2,
+            "permission_overwrites": [],
+            "name": "Contribute",
+            "id": "438857769354002439",
+            "flags": 0
+        },
+        {
+            "version": 1673364929782,
+            "type": 0,
+            "topic": "Ask questions about Fluent 2. See #fluent-3 to ask questions about the latest, async version.",
+            "rate_limit_per_user": 0,
+            "position": 92,
+            "permission_overwrites": [],
+            "parent_id": "448578774808920085",
+            "nsfw": false,
+            "name": "fluent-2",
+            "last_message_id": "1068699596877987930",
+            "id": "431926944230146060",
+            "flags": 0
+        },
+        {
+            "version": 1673364928872,
+            "type": 0,
+            "topic": "Google Cloud Platform",
+            "rate_limit_per_user": 0,
+            "position": 56,
+            "permission_overwrites": [],
+            "parent_id": "568054044220981279",
+            "nsfw": false,
+            "name": "google-cloud",
+            "last_pin_timestamp": "2022-05-08T22:33:06+00:00",
+            "last_message_id": "1068699243478528000",
+            "id": "568032624161849344",
+            "flags": 0
+        }
+    ],
+    "guild_scheduled_events": [],
+    "unavailable": false,
+    "embedded_activities": [],
+    "verification_level": 2,
+    "member_count": 13604,
+    "roles": [
+        {
+            "version": 0,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 0,
+            "permissions": "1071698529857",
+            "name": "@everyone",
+            "mentionable": false,
+            "managed": false,
+            "id": "431917998102675485",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 0
+        },
+        {
+            "version": 1666004118810,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 12,
+            "permissions": "8589410047",
+            "name": "core",
+            "mentionable": true,
+            "managed": false,
+            "id": "431919254372089857",
+            "icon": null,
+            "hoist": true,
+            "flags": 0,
+            "color": 15105570
+        },
+        {
+            "version": 1666004118796,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 9,
+            "permissions": "7620382273",
+            "name": "contributor",
+            "mentionable": true,
+            "managed": false,
+            "id": "431920712505098240",
+            "icon": null,
+            "hoist": true,
+            "flags": 0,
+            "color": 3447003
+        },
+        {
+            "version": 1666004118806,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 11,
+            "permissions": "1503229636311",
+            "name": "moderator",
+            "mentionable": true,
+            "managed": false,
+            "id": "431920836631592980",
+            "icon": null,
+            "hoist": true,
+            "flags": 0,
+            "color": 15158332
+        },
+        {
+            "version": 1666004118790,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 7,
+            "permissions": "6546640449",
+            "name": "backer",
+            "mentionable": false,
+            "managed": false,
+            "id": "431921695524126722",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 3066993
+        },
+        {
+            "version": 1666004118783,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 6,
+            "permissions": "6442831424",
+            "name": "bot",
+            "mentionable": false,
+            "managed": false,
+            "id": "441346871651336193",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 1146986
+        },
+        {
+            "version": 1666004118780,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 5,
+            "permissions": "6546640449",
+            "name": "business",
+            "mentionable": false,
+            "managed": false,
+            "id": "443139140683300864",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 9807270
+        },
+        {
+            "version": 1666004118793,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 8,
+            "permissions": "6546640449",
+            "name": "sponsor",
+            "mentionable": false,
+            "managed": false,
+            "id": "444167329748746262",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 15844367
+        },
+        {
+            "version": 1666004118775,
+            "unicode_emoji": null,
+            "tags": {
+                "bot_id": "479967319695687681"
+            },
+            "position": 4,
+            "permissions": "6442798656",
+            "name": "Vapor Helper",
+            "mentionable": false,
+            "managed": true,
+            "id": "500358727392821258",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 0
+        },
+        {
+            "version": 1666004118803,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 10,
+            "permissions": "6546640449",
+            "name": "maintainer",
+            "mentionable": true,
+            "managed": false,
+            "id": "530113860129259521",
+            "icon": null,
+            "hoist": true,
+            "flags": 0,
+            "color": 10181046
+        },
+        {
+            "version": 1666004118765,
+            "unicode_emoji": null,
+            "tags": {
+                "premium_subscriber": null
+            },
+            "position": 3,
+            "permissions": "6546640449",
+            "name": "Nitro Booster",
+            "mentionable": false,
+            "managed": true,
+            "id": "621412660973535233",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 1752220
+        },
+        {
+            "version": 1666004118759,
+            "unicode_emoji": null,
+            "tags": {
+                "bot_id": "950695294906007573"
+            },
+            "position": 2,
+            "permissions": "2147576912",
+            "name": "Penny",
+            "mentionable": false,
+            "managed": true,
+            "id": "950719637044207689",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 0
+        },
+        {
+            "version": 1666004118990,
+            "unicode_emoji": null,
+            "tags": {},
+            "position": 1,
+            "permissions": "1071698529857",
+            "name": "automation-devs",
+            "mentionable": false,
+            "managed": false,
+            "id": "1031520606434381824",
+            "icon": null,
+            "hoist": false,
+            "flags": 0,
+            "color": 0
+        }
+    ],
+    "preferred_locale": "en-US",
+    "icon": "0edb8ba69b775cf0baf9def65e9379e9",
+    "id": "431917998102675485",
+    "explicit_content_filter": 2,
+    "joined_at": "2022-03-08T11:40:25.028000+00:00",
+    "safety_alerts_channel_id": null,
+    "discovery_splash": null,
+    "system_channel_flags": 8,
+    "default_message_notifications": 1,
+    "public_updates_channel_id": "443512396900859904",
+    "application_command_counts": {
+        "1": 1
+    },
+    "premium_tier": 1,
+    "threads": [
+        {
+            "type": 11,
+            "total_message_sent": 5,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-20T22:39:55.957697+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-20T22:39:55.957697+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "435928766812913664",
+            "owner_id": "392061527563304960",
+            "name": "Logger noise",
+            "message_count": 5,
+            "member_count": 3,
+            "last_message_id": "1067012062854795264",
+            "id": "1066043881478705212",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 2,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-13T15:53:50.545000+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-13T16:00:11.089660+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "443878065227956226",
+            "owner_id": "466780360152317953",
+            "name": "I think I found the problem It was",
+            "message_count": 2,
+            "member_count": 2,
+            "last_message_id": "1063487636188184599",
+            "id": "1061565863603482694",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 45,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-06T12:50:43.010000+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-06T12:50:43.010000+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "444249946808647699",
+            "owner_id": "504015045840076801",
+            "name": "Async Leaf context - code help",
+            "message_count": 45,
+            "member_count": 3,
+            "member": {
+                "muted": false,
+                "mute_config": null,
+                "join_timestamp": "2023-01-06T13:03:24.662170+00:00",
+                "flags": 1
+            },
+            "last_message_id": "1060935933643460620",
+            "id": "1060902783081000960",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 64,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-19T15:38:18.368568+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-19T15:38:18.368568+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "519613337638797315",
+            "owner_id": "804425100576817154",
+            "name": "Is this the right way to write some",
+            "message_count": 64,
+            "member_count": 3,
+            "last_message_id": "1065687659676172379",
+            "id": "1065656436002148392",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 3,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-19T20:42:17.969224+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-19T20:42:17.969224+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "519613337638797315",
+            "owner_id": "804425100576817154",
+            "name": "If I need to convert from my model type",
+            "message_count": 3,
+            "member_count": 2,
+            "last_message_id": "1065747968147329184",
+            "id": "1065732810352099328",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 2,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-20T05:49:04.434707+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-20T05:49:04.434707+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "519613337638797315",
+            "owner_id": "539788383694749696",
+            "name": "One of my requests is used by the client",
+            "message_count": 2,
+            "member_count": 2,
+            "last_message_id": "1065892206914830376",
+            "id": "1065841992506024096",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 16,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-28T08:42:11.263590+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-28T08:42:11.263590+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "519613337638797315",
+            "owner_id": "144664603618574336",
+            "name": "CLGeocoder issue",
+            "message_count": 16,
+            "member_count": 5,
+            "member": {
+                "muted": false,
+                "mute_config": null,
+                "join_timestamp": "2023-01-28T11:17:28.543732+00:00",
+                "flags": 1
+            },
+            "last_message_id": "1068852341979230269",
+            "id": "1068812768536432650",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 20,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-07T14:48:02.109582+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-07T14:48:02.109582+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "684159753189982218",
+            "owner_id": "668506747144765481",
+            "name": "Hi everyone Is someone solid with Fluent",
+            "message_count": 20,
+            "member_count": 3,
+            "last_message_id": "1061323097959051386",
+            "id": "1061292453006692443",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 7,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-18T19:22:21.570421+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-18T19:22:21.570421+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "684159753189982218",
+            "owner_id": "804425100576817154",
+            "name": "I m sure this is a simple problem but I",
+            "message_count": 7,
+            "member_count": 2,
+            "last_message_id": "1065371453765193808",
+            "id": "1065350388326334485",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        },
+        {
+            "type": 11,
+            "total_message_sent": 4,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2022-10-10T12:39:51.865000+00:00",
+                "auto_archive_duration": 1440,
+                "archived": false,
+                "archive_timestamp": "2023-01-30T07:44:48.375583+00:00"
+            },
+            "rate_limit_per_user": 5,
+            "parent_id": "1023868604749455451",
+            "owner_id": "432065887202181142",
+            "name": "Welcome to the forums!",
+            "message_count": 4,
+            "member_count": 2,
+            "member": {
+                "muted": false,
+                "mute_config": null,
+                "join_timestamp": "2022-10-28T10:22:42.366000+00:00",
+                "flags": 1
+            },
+            "last_message_id": "1041754875886837772",
+            "id": "1029010376580415548",
+            "guild_id": "431917998102675485",
+            "flags": 0,
+            "applied_tags": [
+                "1029009412242800730"
+            ]
+        },
+        {
+            "type": 11,
+            "total_message_sent": 10,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2022-10-10T13:03:45.237000+00:00",
+                "auto_archive_duration": 1440,
+                "archived": false,
+                "archive_timestamp": "2023-01-12T03:00:52.542593+00:00"
+            },
+            "rate_limit_per_user": 5,
+            "parent_id": "1023868604749455451",
+            "owner_id": "290483761559240704",
+            "name": "Penny 🪙",
+            "message_count": 10,
+            "member_count": 7,
+            "member": {
+                "muted": false,
+                "mute_config": null,
+                "join_timestamp": "2022-10-10T13:03:45.271000+00:00",
+                "flags": 1
+            },
+            "last_message_id": "1035498636903186442",
+            "id": "1029016388578332672",
+            "guild_id": "431917998102675485",
+            "flags": 0,
+            "applied_tags": []
+        },
+        {
+            "type": 11,
+            "total_message_sent": 4,
+            "thread_metadata": {
+                "locked": false,
+                "create_timestamp": "2023-01-19T17:11:36.354000+00:00",
+                "auto_archive_duration": 4320,
+                "archived": false,
+                "archive_timestamp": "2023-01-19T17:11:36.354000+00:00"
+            },
+            "rate_limit_per_user": 0,
+            "parent_id": "1032214303652204554",
+            "owner_id": "790188028441919488",
+            "name": "Can I run a web server on iOS using Vapor?",
+            "message_count": 1,
+            "member_count": 7,
+            "member": {
+                "muted": false,
+                "mute_config": null,
+                "join_timestamp": "2023-01-28T17:50:39.238519+00:00",
+                "flags": 1
+            },
+            "last_message_id": "1068951254983782400",
+            "id": "1065679936989450371",
+            "guild_id": "431917998102675485",
+            "flags": 0
+        }
+    ],
+    "banner": null,
+    "hub_type": null,
+    "max_members": 500000,
+    "members": [
+        {
+            "user": {
+                "username": "Penny",
+                "public_flags": 0,
+                "id": "950695294906007573",
+                "display_name": null,
+                "discriminator": "9194",
+                "bot": true,
+                "avatar_decoration": null,
+                "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
+            },
+            "roles": [
+                "950719637044207689",
+                "441346871651336193"
+            ],
+            "premium_since": null,
+            "pending": false,
+            "nick": null,
+            "mute": false,
+            "joined_at": "2022-03-08T11:40:25.028000+00:00",
+            "flags": 0,
+            "deaf": false,
+            "communication_disabled_until": null,
+            "avatar": null
+        },
+        {
+            "user": {
+                "username": "0xTim",
+                "public_flags": 0,
+                "id": "432065887202181142",
+                "display_name": null,
+                "discriminator": "1157",
+                "avatar_decoration": null,
+                "avatar": "800bfcd31ae4a77f61646226df46c204"
+            },
+            "roles": [
+                "431920712505098240",
+                "431919254372089857",
+                "431920836631592980",
+                "530113860129259521"
+            ],
+            "premium_since": null,
+            "pending": false,
+            "nick": null,
+            "mute": false,
+            "joined_at": "2018-04-07T06:37:33.724000+00:00",
+            "is_pending": false,
+            "flags": 0,
+            "deaf": false,
+            "communication_disabled_until": null,
+            "avatar": null
+        }
+    ],
+    "stickers": [],
+    "premium_progress_bar_enabled": false,
+    "guild_hashes": {
+        "version": 1,
+        "roles": {
+            "omitted": false,
+            "hash": "A5yCKw"
+        },
+        "metadata": {
+            "omitted": false,
+            "hash": "JT2xJQ"
+        },
+        "channels": {
+            "omitted": false,
+            "hash": "0zay4g"
+        }
+    },
+    "application_id": null,
+    "max_stage_video_channel_users": 0,
+    "owner_id": "431910805274099724",
+    "mfa_level": 1,
+    "nsfw": false,
+    "emojis": [
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vapor",
+            "managed": false,
+            "id": "431934596121362453",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vapor1",
+            "managed": false,
+            "id": "431934875596095508",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vapor2",
+            "managed": false,
+            "id": "431935154580357130",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vapor3",
+            "managed": false,
+            "id": "431935245474856960",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "partyparrot",
+            "managed": false,
+            "id": "436208770868314113",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "congaparrot",
+            "managed": false,
+            "id": "436208782075232256",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "parrot",
+            "managed": false,
+            "id": "436208797812391946",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "troll",
+            "managed": false,
+            "id": "460388407185768459",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "doge",
+            "managed": false,
+            "id": "460388864046137355",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "swift",
+            "managed": false,
+            "id": "469194198415835146",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "blank",
+            "managed": false,
+            "id": "472048721018748938",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "coin",
+            "managed": false,
+            "id": "473588485962596352",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vaypurh",
+            "managed": false,
+            "id": "479071483369619467",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "thunk",
+            "managed": false,
+            "id": "506844019838681095",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "surprised_squinting_lying_face_w",
+            "managed": false,
+            "id": "511561098672078859",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "merge",
+            "managed": false,
+            "id": "540873078050390038",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "sweatalot",
+            "managed": false,
+            "id": "550608684301156372",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "aussieconga",
+            "managed": false,
+            "id": "550610947106930688",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vapor4",
+            "managed": false,
+            "id": "582992955519008778",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "apple",
+            "managed": false,
+            "id": "642409677862469663",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "vaporlove",
+            "managed": false,
+            "id": "656303356280832062",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "nyancat",
+            "managed": false,
+            "id": "726890738981273601",
+            "available": true,
+            "animated": true
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "rubberduck",
+            "managed": false,
+            "id": "766258962492162048",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "kannasip",
+            "managed": false,
+            "id": "922058282783367168",
+            "available": true,
+            "animated": false
+        },
+        {
+            "version": 0,
+            "roles": [],
+            "require_colons": true,
+            "name": "salute",
+            "managed": false,
+            "id": "927863497897951282",
+            "available": true,
+            "animated": false
+        }
+    ],
+    "stage_instances": [],
+    "voice_states": [],
+    "region": "deprecated",
+    "large": true,
+    "home_header": null,
+    "nsfw_level": 0,
+    "name": "Vapor",
+    "features": [
+        "INVITE_SPLASH",
+        "PREVIEW_ENABLED",
+        "VERIFIED",
+        "ENABLED_DISCOVERABLE_BEFORE",
+        "APPLICATION_COMMAND_PERMISSIONS_V2",
+        "THREADS_ENABLED",
+        "DISCOVERABLE",
+        "ANIMATED_ICON",
+        "NEWS",
+        "VANITY_URL",
+        "WELCOME_SCREEN_ENABLED",
+        "COMMUNITY_EXP_LARGE_UNGATED",
+        "THREE_DAY_THREAD_ARCHIVE",
+        "AUTO_MODERATION",
+        "COMMUNITY",
+        "NEW_THREAD_PERMISSIONS"
+    ],
+    "description": "Creating modular server side software with Swift.",
+    "max_video_channel_users": 25,
+    "afk_timeout": 900,
+    "presences": []
+}
