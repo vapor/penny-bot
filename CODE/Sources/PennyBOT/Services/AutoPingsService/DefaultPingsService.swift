@@ -22,8 +22,8 @@ actor DefaultPingsService: AutoPingsService {
         self.setUpResetItemsTask()
     }
     
-    func exists(text: String, forDiscordID id: String) -> Bool {
-        self.cachedItems?.items[.text(text)]?.contains(id) ?? false
+    func exists(text: String, forDiscordID id: String) async throws -> Bool {
+        try await self.getAll().items[.text(text)]?.contains(id) ?? false
     }
     
     func insert(_ texts: [String], forDiscordID id: String) async throws {
@@ -46,9 +46,7 @@ actor DefaultPingsService: AutoPingsService {
         try await self.getAll()
             .items
             .filter { $0.value.contains(id) }
-            .compactMap { $0.key }
-            .sorted { $0.innerValue > $1.innerValue }
-            .sorted { $0.innerValue.count < $1.innerValue.count }
+            .map(\.key)
     }
     
     func getAll() async throws -> S3AutoPingItems {
@@ -103,6 +101,9 @@ actor DefaultPingsService: AutoPingsService {
     }
     
     private func freshenCache(_ new: S3AutoPingItems) {
+        logger.trace("Will refresh auto-pings cache", metadata: [
+            "new": .stringConvertible(new.items)
+        ])
         self.cachedItems = new
         self.resetItemsTask?.cancel()
     }

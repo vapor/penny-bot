@@ -5,7 +5,7 @@ public struct FakePingsService: AutoPingsService {
     
     public init() { }
     
-    public func exists(text: String, forDiscordID id: String) async -> Bool {
+    public func exists(text: String, forDiscordID id: String) async throws -> Bool {
         false
     }
     
@@ -29,7 +29,6 @@ public struct FakePingsService: AutoPingsService {
             .items
             .filter { $0.value.contains(id) }
             .map(\.key)
-            .sorted(by: { $0.innerValue.count < $1.innerValue.count })
     }
     
     public func getAll() async throws -> S3AutoPingItems {

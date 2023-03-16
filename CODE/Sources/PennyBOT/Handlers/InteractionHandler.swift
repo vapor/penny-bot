@@ -91,11 +91,13 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return "No 'texts' option recognized"
                 }
-                let (existingTexts, newTexts) = await _text
-                    .split(separator: ",")
+                let allTexts = _text.split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
-                    .divide { await pingsService.exists(text: $0, forDiscordID: discordId) }
+                let (existingTexts, newTexts) = try await allTexts.divide {
+                    try await pingsService.exists(text: $0, forDiscordID: discordId)
+                }
+                
                 if let first = newTexts.first(where: { $0.unicodeScalars.count < 3 }) {
                     let escaped = escapeCharacters(first)
                     return "A text is less than 3 letters: \(escaped)\n This is not acceptable"
@@ -106,7 +108,8 @@ struct InteractionHandler {
                     return "You can't have more than 50 ping texts"
                 }
                 
-                try await pingsService.insert(newTexts, forDiscordID: discordId)
+                /// Still try to insert `allTexts` just incase our data is out of sync
+                try await pingsService.insert(allTexts, forDiscordID: discordId)
                 
                 var components = [String]()
                 
@@ -135,13 +138,15 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return "No 'texts' option recognized"
                 }
-                let (existingTexts, newTexts) = await _text
-                    .split(separator: ",")
+                let allTexts = _text.split(separator: ",")
                     .map(String.init)
                     .map({ $0.foldForPingCommand() })
-                    .divide { await pingsService.exists(text: $0, forDiscordID: discordId) }
+                let (existingTexts, newTexts) = try await allTexts.divide {
+                    try await pingsService.exists(text: $0, forDiscordID: discordId)
+                }
                 
-                try await pingsService.remove(existingTexts, forDiscordID: discordId)
+                /// Still try to remove `allTexts` incase out data is out of sync
+                try await pingsService.remove(allTexts, forDiscordID: discordId)
                 
                 var components = [String]()
                 
