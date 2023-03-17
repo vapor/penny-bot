@@ -33,17 +33,25 @@ struct AddCoinHandler: LambdaHandler {
             let request: CoinRequest = try event.bodyObject()
             switch request {
             case .addCoin(let addCoin):
-                return await handleAddCoinRequest(request: addCoin)
+                return await handleAddCoinRequest(request: addCoin, logger: context.logger)
             case .getCoinCount(let user):
-                return await handleGetCoinCountRequest(id: user)
+                return await handleGetCoinCountRequest(id: user, logger: context.logger)
             }
         } catch {
-            context.logger.error("Received a bad request. Event: \(event)")
-            return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
+            context.logger.error("Received a bad request", metadata: [
+                "event": "\(event)"
+            ])
+            return APIGatewayV2Response(
+                status: .badRequest,
+                content: GatewayFailure(reason: "Error: \(error)")
+            )
         }
     }
     
-    func handleAddCoinRequest(request: CoinRequest.AddCoin) async -> APIGatewayV2Response {
+    func handleAddCoinRequest(
+        request: CoinRequest.AddCoin,
+        logger: Logger
+    ) async -> APIGatewayV2Response {
         let from = User(
             id: UUID(),
             discordID: request.from,
@@ -77,27 +85,34 @@ struct AddCoinHandler: LambdaHandler {
             )
             
             return APIGatewayV2Response(status: .ok, content: coinResponse)
-        }
-        catch UserService.ServiceError.failedToUpdate {
+        } catch UserService.ServiceError.failedToUpdate {
             return APIGatewayV2Response(
                 status: .notFound,
                 content: GatewayFailure(reason: "Couldn't find the user")
             )
-        }
-        catch let error {
+        } catch {
+            logger.error("Can't add coin", metadata: [
+                "request": "\(request)"
+            ])
             return APIGatewayV2Response(
-                status: .badRequest,
+                status: .expectationFailed,
                 content: GatewayFailure(reason: "Error: \(error)")
             )
         }
     }
     
-    func handleGetCoinCountRequest(id: String) async -> APIGatewayV2Response {
+    func handleGetCoinCountRequest(id: String, logger: Logger) async -> APIGatewayV2Response {
         do {
             let coinCount = try await userService.getUserWith(discordID: id)?.numberOfCoins ?? 0
             return APIGatewayV2Response(statusCode: .ok, body: "\(coinCount)")
         } catch {
-            return APIGatewayV2Response(statusCode: .badRequest, body: "ERROR- \(error.localizedDescription)")
+            logger.error("Can't retrieve coin-count", metadata: [
+                "id": .string(id)
+            ])
+            return APIGatewayV2Response(
+                status: .expectationFailed,
+                content: GatewayFailure(reason: "Error: \(error)")
+            )
         }
     }
 }
