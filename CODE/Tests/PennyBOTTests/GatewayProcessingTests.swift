@@ -49,7 +49,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .bulkOverwriteGlobalApplicationCommands(appId: "11111111")
         ).value
         
-        let commandNames = ["link", "auto-pings"]
+        let commandNames = ["link", "auto-pings", "how-many-coins", "How Many Coins?"]
         let commands = try XCTUnwrap(response as? [RequestBody.ApplicationCommandCreate])
         XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
     }
@@ -177,7 +177,7 @@ class GatewayProcessingTests: XCTestCase {
             https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
             0xTim gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
             """
-            ), description)
+                                               ), description)
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
         
@@ -198,7 +198,7 @@ class GatewayProcessingTests: XCTestCase {
             https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
             0xTim & Mahdi BM gave 2 \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
             """
-            ), description)
+                                               ), description)
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
     }
@@ -318,6 +318,26 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.contains("blog"), message)
             XCTAssertTrue(message.contains("discord"), message)
             XCTAssertTrue(message.contains("discord-kit"), message)
+        }
+    }
+    
+    func testHowManyCoins() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .howManyCoins1,
+                as: RequestBody.InteractionResponse.CallbackData.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.vaporCoinEmoji)")
+        }
+        
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .howManyCoins2,
+                as: RequestBody.InteractionResponse.CallbackData.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)")
         }
     }
 }

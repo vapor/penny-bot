@@ -43,7 +43,7 @@ struct ReactionHandler {
         let sender = "<@\(user.id)>"
         let receiver = "<@\(receiverId)>"
         
-        let coinRequest = CoinRequest(
+        let coinRequest = CoinRequest.AddCoin(
             amount: 1,
             from: sender,
             receiver: receiver,

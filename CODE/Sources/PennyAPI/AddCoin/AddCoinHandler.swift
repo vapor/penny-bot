@@ -30,50 +30,87 @@ struct AddCoinHandler: LambdaHandler {
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
-            let product: CoinRequest = try event.bodyObject()
-            
-            let from = User(
-                id: UUID(),
-                discordID: product.from,
-                githubID: product.from,
-                numberOfCoins: 0,
-                coinEntries: [],
-                createdAt: Date())
-            
-            let user = User(
-                id: UUID(),
-                discordID: product.receiver,
-                githubID: product.receiver,
-                numberOfCoins: 0,
-                coinEntries: [],
-                createdAt: Date())
-            
-            let userUUID = try await userService.getUserUUID(from: from, with: product.source)
+            let request: CoinRequest = try event.bodyObject()
+            switch request {
+            case .addCoin(let addCoin):
+                return await handleAddCoinRequest(request: addCoin, logger: context.logger)
+            case .getCoinCount(let user):
+                return await handleGetCoinCountRequest(id: user, logger: context.logger)
+            }
+        } catch {
+            context.logger.error("Received a bad request", metadata: [
+                "event": "\(event)"
+            ])
+            return APIGatewayV2Response(
+                status: .badRequest,
+                content: GatewayFailure(reason: "Error: \(error)")
+            )
+        }
+    }
+    
+    func handleAddCoinRequest(
+        request: CoinRequest.AddCoin,
+        logger: Logger
+    ) async -> APIGatewayV2Response {
+        let from = User(
+            id: UUID(),
+            discordID: request.from,
+            githubID: request.from,
+            numberOfCoins: 0,
+            coinEntries: [],
+            createdAt: Date())
+        
+        let user = User(
+            id: UUID(),
+            discordID: request.receiver,
+            githubID: request.receiver,
+            numberOfCoins: 0,
+            coinEntries: [],
+            createdAt: Date())
+        
+        do {
+            let userUUID = try await userService.getUserUUID(from: from, with: request.source)
             let coinEntry = CoinEntry(
                 id: UUID(),
                 createdAt: Date(),
-                amount: product.amount,
+                amount: request.amount,
                 from: userUUID,
-                source: product.source,
-                reason: product.reason)
+                source: request.source,
+                reason: request.reason)
             
             let coinResponse = try await userService.addCoins(
                 with: coinEntry,
-                fromDiscordID: product.from,
+                fromDiscordID: request.from,
                 to: user
             )
             
             return APIGatewayV2Response(status: .ok, content: coinResponse)
-        }
-        catch UserService.ServiceError.failedToUpdate {
+        } catch UserService.ServiceError.failedToUpdate {
             return APIGatewayV2Response(
                 status: .notFound,
                 content: GatewayFailure(reason: "Couldn't find the user")
             )
-        }
-        catch let error {
+        } catch {
+            logger.error("Can't add coin", metadata: [
+                "request": "\(request)"
+            ])
             return APIGatewayV2Response(
-                status: .badRequest,
+                status: .expectationFailed,
+                content: GatewayFailure(reason: "Error: \(error)")
+            )
+        }
+    }
+    
+    func handleGetCoinCountRequest(id: String, logger: Logger) async -> APIGatewayV2Response {
+        do {
+            let coinCount = try await userService.getUserWith(discordID: id)?.numberOfCoins ?? 0
+            return APIGatewayV2Response(statusCode: .ok, body: "\(coinCount)")
+        } catch {
+            logger.error("Can't retrieve coin-count", metadata: [
+                "id": .string(id)
+            ])
+            return APIGatewayV2Response(
+                status: .expectationFailed,
                 content: GatewayFailure(reason: "Error: \(error)")
             )
         }

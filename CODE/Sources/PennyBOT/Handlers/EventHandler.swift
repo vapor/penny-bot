@@ -22,7 +22,10 @@ struct EventHandler: Sendable {
                     event: message
                 ).handle()
             case .interactionCreate(let interaction):
-                await InteractionHandler(event: interaction).handle()
+                await InteractionHandler(
+                    event: interaction,
+                    coinService: coinService
+                ).handle()
             case .messageReactionAdd(let reaction):
                 await ReactionHandler(
                     coinService: coinService,

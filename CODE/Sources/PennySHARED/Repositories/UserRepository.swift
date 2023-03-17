@@ -7,8 +7,11 @@ public protocol UserRepository {
     func updateUser(_ user: DynamoDBUser) async throws
     
     // MARK: - Retrieve
-    func getUser(discord id: String) async throws -> User
-    func getUser(github id: String) async throws -> User
+    
+    /// Returns nil if user does not exist.
+    func getUser(discord id: String) async throws -> User?
+    /// Returns nil if user does not exist.
+    func getUser(github id: String) async throws -> User?
     
     // MARK: - Link users
     func linkGithub(with discordId: String, _ githubId: String) async throws -> String

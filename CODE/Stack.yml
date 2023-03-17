@@ -284,6 +284,7 @@ Resources:
   autoPingsS3Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       BucketName: penny-auto-pings-lambda
 

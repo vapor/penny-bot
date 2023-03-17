@@ -681,5 +681,139 @@
             "avatar_decoration": null,
             "avatar": "800bfcd31ae4a77f61646226df46c204"
         }]
+    },
+    "howManyCoins1": {
+        "t": "INTERACTION_CREATE",
+        "s": 2,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 2,
+            "token": "aW50ZXJhY3Rpb246MTA1OTM0NTUzNjM2NjQyMDExODowbHZldWtVOUVvMVFCMEhnSjR2RmJrMncyOXNuV3J6OVR5Qk9mZ2h6YzhMSDVTdEZ3NWNIMXA1VzJlZ2RteXdHbzFGdGl0dVFMa2dBNVZUUndmVVFqZzJhUDJlTERuNDRjYXBuSWRHZzRwSFZnNjJLR3hZM1hKNjRuaWtCUzZpeg",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 4194304,
+                    "id": "290483761559240704",
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "permissions": "4398046511103",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1059345536366420118",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "entitlement_sku_ids": [],
+            "data": {
+                "type": 1,
+                "name": "how-many-coins",
+                "id": "1059345467961511956"
+            },
+            "channel_id": "1016614538398937098",
+            "application_id": "1016612301262041098",
+            "app_permissions": "1071698665025"
+        }
+    },
+    "howManyCoins2": {
+        "t": "INTERACTION_CREATE",
+        "s": 5,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 2,
+            "token": "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 4194304,
+                    "id": "290483761559240704",
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "permissions": "4398046511103",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1059345641651830855",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "entitlement_sku_ids": [],
+            "data": {
+                "type": 1,
+                "resolved": {
+                    "users": {
+                        "961607141037326386": {
+                            "username": "Royale Alchemist",
+                            "public_flags": 0,
+                            "id": "961607141037326386",
+                            "discriminator": "5658",
+                            "bot": true,
+                            "avatar_decoration": null,
+                            "avatar": "c1c960fd53ae185d0741a9d1294539bb"
+                        }
+                    },
+                    "members": {
+                        "961607141037326386": {
+                            "roles": [
+                                "892920753756975144"
+                            ],
+                            "premium_since": null,
+                            "permissions": "4398046511103",
+                            "pending": false,
+                            "nick": null,
+                            "joined_at": "2022-04-17T03:04:52.022000+00:00",
+                            "is_pending": false,
+                            "flags": 0,
+                            "communication_disabled_until": null,
+                            "avatar": null
+                        }
+                    }
+                },
+                "options": [
+                    {
+                        "value": "961607141037326386",
+                        "type": 6,
+                        "name": "member"
+                    }
+                ],
+                "name": "how-many-coins",
+                "id": "1059345467961511956"
+            },
+            "channel_id": "1016614538398937098",
+            "application_id": "1016612301262041098",
+            "app_permissions": "1071698665025"
+        }
     }
 }

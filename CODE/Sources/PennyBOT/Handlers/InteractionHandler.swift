@@ -4,13 +4,17 @@ import Logging
 struct InteractionHandler {
     var logger = Logger(label: "InteractionHandler")
     let event: Interaction
-    var pingsService: AutoPingsService {
+    let coinService: any CoinService
+    var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
     
-    init(event: Interaction) {
+    let oops = "Oopsie Woopsie... Something went wrong :("
+    
+    init(event: Interaction, coinService: any CoinService) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
+        self.coinService = coinService
     }
     
     func handle() async {
@@ -32,6 +36,11 @@ struct InteractionHandler {
         switch kind {
         case .link: return handleLinkCommand(options: options)
         case .autoPings: return await handlePingsCommand(options: options)
+        case .howManyCoins: return await handleHowManyCoinsCommand(
+            author: event.member?.user ?? event.user,
+            options: options
+        )
+        case .howManyCoinsApp: return await handleHowManyCoinsCommand()
         }
     }
     
@@ -200,6 +209,49 @@ struct InteractionHandler {
         }
     }
     
+    func handleHowManyCoinsCommand() async -> String {
+        guard case let .applicationCommand(data) = event.data,
+              let userId = data.target_id else {
+            logger.error("Coin-count command could not find appropriate data")
+            return oops
+        }
+        let user = "<@\(userId)>"
+        do {
+            let coinCount = try await coinService.getCoinCount(of: user)
+            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)"
+        } catch {
+            logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
+                "user": "\(user)"
+            ])
+            return oops
+        }
+    }
+    
+    func handleHowManyCoinsCommand(
+        author: DiscordUser?,
+        options: [Interaction.ApplicationCommand.Option]
+    ) async -> String {
+        let user: String
+        if let userOption = options.first?.value?.asString {
+            user = "<@\(userOption)>"
+        } else {
+            guard let id = author?.id else {
+                logger.error("Coin-count command could not find a user")
+                return oops
+            }
+            user = "<@\(id)>"
+        }
+        do {
+            let coinCount = try await coinService.getCoinCount(of: user)
+            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)"
+        } catch {
+            logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
+                "user": "\(user)"
+            ])
+            return oops
+        }
+    }
+    
     /// Returns `true` if the acknowledgement was successfully sent
     private func sendInteractionAcknowledgement(isEphemeral: Bool) async -> Bool {
         await DiscordService.shared.respondToInteraction(
@@ -240,12 +292,14 @@ struct InteractionHandler {
 private enum SlashCommandKind {
     case link
     case autoPings
+    case howManyCoins
+    case howManyCoinsApp
     
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
-        case .link: return true
-        case .autoPings: return true
+        case .link, .autoPings: return true
+        case .howManyCoins, .howManyCoinsApp: return false
         }
     }
     
@@ -253,6 +307,8 @@ private enum SlashCommandKind {
         switch name {
         case "link": self = .link
         case "auto-pings": self = .autoPings
+        case "how-many-coins": self = .howManyCoins
+        case "How Many Coins?": self = .howManyCoinsApp
         default: return nil
         }
     }
