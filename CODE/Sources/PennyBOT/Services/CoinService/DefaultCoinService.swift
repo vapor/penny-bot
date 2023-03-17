@@ -11,7 +11,7 @@ struct DefaultCoinService: CoinService {
         var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/coin")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try JSONEncoder().encode(coinRequest)
+        let data = try JSONEncoder().encode(CoinRequest.addCoin(coinRequest))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
         logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
