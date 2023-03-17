@@ -119,8 +119,8 @@ struct InteractionHandler {
                 }
                 
                 let current = try await pingsService.get(discordID: discordId)
-                if newTexts.count + current.count > 50 {
-                    return "You can't have more than 50 ping texts"
+                if newTexts.count + current.count > 100 {
+                    return "You currently have \(current.count) texts and you want to add \(newTexts.count) more texts, but you can't have more than 100 texts"
                 }
                 
                 /// Still try to insert `allTexts` just incase our data is out of sync
@@ -216,15 +216,7 @@ struct InteractionHandler {
             return oops
         }
         let user = "<@\(userId)>"
-        do {
-            let coinCount = try await coinService.getCoinCount(of: user)
-            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)"
-        } catch {
-            logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
-                "user": "\(user)"
-            ])
-            return oops
-        }
+        return await getCoinCount(of: user)
     }
     
     func handleHowManyCoinsCommand(
@@ -241,9 +233,13 @@ struct InteractionHandler {
             }
             user = "<@\(id)>"
         }
+        return await getCoinCount(of: user)
+    }
+    
+    func getCoinCount(of user: String) async -> String {
         do {
             let coinCount = try await coinService.getCoinCount(of: user)
-            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)"
+            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)!"
         } catch {
             logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
                 "user": "\(user)"
