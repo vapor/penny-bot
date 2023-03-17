@@ -328,7 +328,7 @@ class GatewayProcessingTests: XCTestCase {
                 as: RequestBody.InteractionResponse.CallbackData.self
             )
             let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.vaporCoinEmoji)")
+            XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.vaporCoinEmoji)!")
         }
         
         do {
@@ -337,7 +337,7 @@ class GatewayProcessingTests: XCTestCase {
                 as: RequestBody.InteractionResponse.CallbackData.self
             )
             let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)")
+            XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)!")
         }
     }
 }
