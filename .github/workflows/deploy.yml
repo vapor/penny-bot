@@ -39,7 +39,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1.1.1
         with:
-          task-definition: CODE/task-def.json
+          task-definition: task-def.json
           container-name: penny-bot
           image: ${{ steps.build-image.outputs.image }}
       - name: Print output aws task definition
@@ -56,7 +56,7 @@ jobs:
         uses: aws-actions/aws-cloudformation-github-deploy@v1.2.0
         with:
           name: penny-discord-bot-stack
-          template: ./CODE/Stack.yml
+          template: ./Stack.yml
           no-fail-on-empty-changeset: "1"
           parameter-overrides: >-
             TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}

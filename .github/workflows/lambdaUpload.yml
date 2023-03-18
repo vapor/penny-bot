@@ -16,11 +16,10 @@ jobs:
       uses: actions/checkout@v3.0.0
     - name: Build and zip
       run: |
-        cd ./CODE 
         ./scripts/build-and-package.sh PennyLambdaAddCoins
     - name: Remove build file
       run: |
-        cd './CODE/.build/lambda/'
+        cd './.build/lambda/'
         sudo rm -rf PennyLambdaAddCoins
     - name: Deploy to S3
       id: s3deploy
@@ -32,7 +31,7 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
         AWS_REGION: 'eu-west-1'
-        SOURCE_DIR: './CODE/.build/lambda/'
+        SOURCE_DIR: './.build/lambda/'
     - name: Update Lambda code
       run: |
         aws lambda update-function-code \
