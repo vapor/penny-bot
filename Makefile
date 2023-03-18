@@ -1,4 +1,4 @@
-DEPLOY_PACKAGES := PennyLambdaAddCoins
+DEPLOY_PACKAGES := AddCoinsLambda
 
 DOCKER_IMAGE := swift-lambda-builder
 DOCKER_IMAGE_INFO := .build/${DOCKER_IMAGE}.json

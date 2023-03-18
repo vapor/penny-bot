@@ -52,7 +52,7 @@ let package = Package(
                 "SharedServices",
                 "Models",
             ],
-            path: "./Lambdas/AddCoin",
+            path: "./Lambdas/AddCoins",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -126,7 +126,7 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
         .testTarget(
-            name: "BotTests",
+            name: "PennyTests",
             dependencies: [
                 "Penny",
                 "Repositories",

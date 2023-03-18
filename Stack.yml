@@ -7,7 +7,7 @@ Parameters:
   FileNameAddCoins:
     Type: String
     Description: Filename of the code function for the adding of coins uploaded to S3
-    Default: PennyLambdaAddCoins
+    Default: AddCoinsLambda
   SponsorsFilename:
     Type: String
     Description: Filename containing the code to be executed when a new sponsor joins
