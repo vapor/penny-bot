@@ -7,10 +7,8 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 
 WORKDIR /build
 
-COPY ./CODE/Package.* ./
+COPY ./Package.* ./
 RUN swift package resolve
-
-COPY ./CODE .
 
 RUN swift build -c release --static-swift-stdlib --product PennyBOT
 
