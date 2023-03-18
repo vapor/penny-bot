@@ -1,7 +1,6 @@
 import Models
 
 public protocol AutoPingsRepository {
-    
     func insert(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: String

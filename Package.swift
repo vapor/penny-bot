@@ -21,7 +21,10 @@ let package = Package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             from: "1.0.0-alpha.1"
         ),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
+        .package(
+            url: "https://github.com/swift-server/swift-aws-lambda-events.git",
+            from: "0.1.0"
+        ),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.41"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
@@ -107,20 +110,20 @@ let package = Package(
         .target(
             name: "SharedServices",
             dependencies: [
+                .product(name: "SotoDynamoDB", package: "soto"),
                 "Repositories",
                 "Models",
-                .product(name: "SotoDynamoDB", package: "soto"),
             ],
             swiftSettings: swiftSettings
         ),
         .target(
             name: "Fake",
             dependencies: [
+                .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
                 "Penny",
                 "Repositories",
                 "AddCoinsLambda",
-                .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
             ],
             path: "./Tests/Fake",
             swiftSettings: swiftSettings
@@ -128,11 +131,11 @@ let package = Package(
         .testTarget(
             name: "PennyTests",
             dependencies: [
+                .product(name: "SotoDynamoDB", package: "soto"),
                 "Penny",
                 "Repositories",
                 "AddCoinsLambda",
                 "Fake",
-                .product(name: "SotoDynamoDB", package: "soto"),
             ],
             swiftSettings: swiftSettings
         ),

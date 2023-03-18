@@ -1,4 +1,6 @@
 
+/// The type containing all the auto-pings info of users.
+/// Changes must be Codable-compatible or it'll corrupt the S3 file.
 public struct S3AutoPingItems: Sendable, Codable {
     
     public enum Expression: Sendable, Codable, RawRepresentable, Hashable {
@@ -27,9 +29,12 @@ public struct S3AutoPingItems: Sendable, Codable {
         }
     }
     
-    /// `[Expression: Set<UserID>]`
+    /// `[Expression: Set<PlainUserID>]`
+    /// `PlainUserID` means something like `123456789938129`, and NOT `<@123456789938129>`.
     public var items: [Expression: Set<String>] = [:]
     
+    /// `[Expression: Set<PlainUserID>]`
+    /// `PlainUserID` means something like `123456789938129`, and NOT `<@123456789938129>`.
     public init(items: [Expression: Set<String>] = [:]) {
         self.items = items
     }

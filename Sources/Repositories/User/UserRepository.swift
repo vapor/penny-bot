@@ -9,9 +9,9 @@ public protocol UserRepository {
     // MARK: - Retrieve
     
     /// Returns nil if user does not exist.
-    func getUser(discord id: String) async throws -> User?
+    func getUser(discord id: String) async throws -> LambdaUser?
     /// Returns nil if user does not exist.
-    func getUser(github id: String) async throws -> User?
+    func getUser(github id: String) async throws -> LambdaUser?
     
     // MARK: - Link users
     func linkGithub(with discordId: String, _ githubId: String) async throws -> String

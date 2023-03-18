@@ -1,6 +1,7 @@
 import Foundation
 
-public struct User: Codable {
+/// Used to transport coin-related user info.
+public struct LambdaUser: Codable {
     public let id: UUID
     public let discordID: String?
     public let githubID: String?
@@ -8,8 +9,14 @@ public struct User: Codable {
     public var coinEntries: [CoinEntry]
     public let createdAt: Date
     
-    public init(id: UUID, discordID: String?, githubID: String?, numberOfCoins: Int, coinEntries: [CoinEntry], createdAt: Date)
-    {
+    public init(
+        id: UUID,
+        discordID: String?,
+        githubID: String?,
+        numberOfCoins: Int,
+        coinEntries: [CoinEntry],
+        createdAt: Date
+    ) {
         self.id = id
         self.discordID = discordID
         self.githubID = githubID

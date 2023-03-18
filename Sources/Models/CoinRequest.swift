@@ -1,4 +1,5 @@
 
+/// Request that is sent to the AddCoins lambda.
 public enum CoinRequest: Codable {
     case addCoin(AddCoin)
     case getCoinCount(user: String)

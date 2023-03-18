@@ -6,39 +6,17 @@ private let jsonDecoder = JSONDecoder()
 private let jsonEncoder = JSONEncoder()
 
 extension APIGatewayV2Request {
-    
-    public func bodyObject<T: Codable>() throws -> T {
+    public func decode<D: Decodable>(as _: D.Type = D.self) throws -> D {
         guard let body = self.body,
               let dataBody = body.data(using: .utf8)
         else {
             throw APIError.invalidRequest
         }
-        return try jsonDecoder.decode(T.self, from: dataBody)
-    }
-    
-    /// Unused
-    public func verifyRequest() throws -> Bool {
-        guard let publicKey = ProcessInfo.processInfo.environment["PUBLIC_KEY"]?.hexDecodedData() else {
-            fatalError()
-        }
-        let key = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
-        
-        guard let signature = self.headers["x-signature-ed25519"], let timestamp = self.headers["x-signature-timestamp"], let body = self.body else {
-            // Throw error to return a 401
-            fatalError()
-        }
-        
-        //possibly convert from hex
-        let signatureBytes: [UInt8] = .init(signature.hexDecodedData())
-
-        let bodyBytes: [UInt8] = .init("\(timestamp)\(body)".utf8)
-        
-        return key.isValidSignature(signatureBytes, for: bodyBytes)
+        return try jsonDecoder.decode(D.self, from: dataBody)
     }
 }
 
 extension APIGatewayV2Response {
-    
     public init(status: HTTPResponseStatus, content: some Encodable) {
         do {
             let data = try jsonEncoder.encode(content)
@@ -63,9 +41,6 @@ public struct GatewayFailure: Encodable {
     }
 }
 
-public enum APIError: Error{
-    case invalidItem
-    case tableNameNotFound
+public enum APIError: Error {
     case invalidRequest
-    case invalidHandler
 }

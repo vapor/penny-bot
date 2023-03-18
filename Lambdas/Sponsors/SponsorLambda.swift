@@ -109,7 +109,7 @@ struct AddSponsorHandler: LambdaHandler {
             
             // Decode GitHub Webhook Response
             context.logger.debug("Decoding GitHub Payload")
-            let payload: GithubWebhookPayload = try event.bodyObject()
+            let payload = try event.decode(as: GithubWebhookPayload.self)
             
             // Look for the user in the DB
             context.logger.debug("Looking for user in the DB")

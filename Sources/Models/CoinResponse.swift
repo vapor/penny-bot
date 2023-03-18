@@ -1,4 +1,5 @@
 
+/// A response type that the AddCoins lambda sends.
 public struct CoinResponse: Codable {
     public let sender: String
     public let receiver: String

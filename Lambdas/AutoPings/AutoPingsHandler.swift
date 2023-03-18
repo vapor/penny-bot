@@ -48,7 +48,7 @@ struct AutoPingsHandler: LambdaHandler {
             switch event.context.http.method {
             case .PUT:
                 do {
-                    let request: AutoPingRequest = try event.bodyObject()
+                    let request = try event.decode(as: AutoPingRequest.self)
                     newItems = try await pingsRepo.insert(
                         expressions: request.texts.map { .text($0) },
                         forDiscordID: request.discordID
@@ -63,7 +63,7 @@ struct AutoPingsHandler: LambdaHandler {
                 }
             case .DELETE:
                 do {
-                    let request: AutoPingRequest = try event.bodyObject()
+                    let request = try event.decode(as: AutoPingRequest.self)
                     newItems = try await pingsRepo.remove(
                         expressions: request.texts.map { .text($0) },
                         forDiscordID: request.discordID
