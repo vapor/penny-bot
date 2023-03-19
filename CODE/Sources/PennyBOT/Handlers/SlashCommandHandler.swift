@@ -97,14 +97,14 @@ private extension RequestBody.ApplicationCommandCreate {
                 options: [
                     .init(
                         type: .string,
-                        name: "texts",
-                        description: "The texts to be test-triggered"
-                    ),
-                    .init(
-                        type: .string,
                         name: "message",
                         description: "The message that is supposed to trigger the texts",
                         required: true
+                    ),
+                    .init(
+                        type: .string,
+                        name: "texts",
+                        description: "The texts to be test-triggered"
                     )
                 ]
             )
