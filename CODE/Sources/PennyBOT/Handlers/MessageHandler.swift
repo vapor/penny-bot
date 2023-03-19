@@ -128,7 +128,6 @@ struct MessageHandler {
         /// Don't need any throttling for now, `DiscordBM` will
         /// do enough and won't exceed rate-limits.
         for (userId, words) in usersToPing {
-            let words = words.sorted().map { "`\($0)`" }.joined(separator: ", ")
             /// Don't `@` someone for their own message.
             if userId == authorId { continue }
             await DiscordService.shared.sendDM(
@@ -137,7 +136,10 @@ struct MessageHandler {
                     embeds: [.init(
                         description: """
                         There is a new message that might be of interest to you.
-                        Triggered by: \(words)
+                        
+                        Triggered by:
+                        \(words.makeAutoPingsTextsList())
+                        
                         Message: \(messageLink)
                         """,
                         color: .vaporPurple

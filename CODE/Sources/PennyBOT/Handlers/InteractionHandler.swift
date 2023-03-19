@@ -98,12 +98,12 @@ struct InteractionHandler {
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'texts' option recognized"
+                    return "No 'texts' option recognized."
                 }
                 let allTexts = _text.divideIntoAutoPingsTexts()
                 
                 if allTexts.isEmpty {
-                    return "The list you sent seems to be empty"
+                    return "The list you sent seems to be empty."
                 }
                 
                 let (existingTexts, newTexts) = try await allTexts.divide {
@@ -148,12 +148,12 @@ struct InteractionHandler {
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'texts' option recognized"
+                    return "No 'texts' option recognized."
                 }
                 let allTexts = _text.divideIntoAutoPingsTexts()
                 
                 if allTexts.isEmpty {
-                    return "The list you sent seems to be empty"
+                    return "The list you sent seems to be empty."
                 }
                 
                 let (existingTexts, newTexts) = try await allTexts.divide {
@@ -189,7 +189,7 @@ struct InteractionHandler {
                     .get(discordID: discordId)
                     .map(\.innerValue)
                 if items.isEmpty {
-                    return "You have not set any texts to be pinged for"
+                    return "You have not set any texts to be pinged for."
                 } else {
                     return """
                     Your ping texts:
@@ -202,7 +202,7 @@ struct InteractionHandler {
                       let _message = options.first(where: { $0.name == "message" }),
                       let message = _message.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'message' option recognized"
+                    return "No 'message' option recognized."
                 }
                 
                 if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
@@ -217,7 +217,7 @@ struct InteractionHandler {
                     
                     > \(message)
                     
-                    And the texts are:
+                    And the entered texts are:
                     
                     > \(_text)
                     
@@ -225,7 +225,7 @@ struct InteractionHandler {
                     """
                     
                     if dividedTexts.isEmpty {
-                        response += "The texts you entered seems like an empty list to me"
+                        response += "The texts you entered seems like an empty list to me."
                     } else {
                         response += """
                         The identified texts are:
@@ -234,7 +234,7 @@ struct InteractionHandler {
                         
                         """
                         if triggeredTexts.isEmpty {
-                            response += "The message won't trigger any of the texts above"
+                            response += "The message won't trigger any of the texts above."
                         } else {
                             response += """
                             The message will trigger these texts:
@@ -269,7 +269,7 @@ struct InteractionHandler {
                         """
                         
                         if triggeredTexts.isEmpty {
-                            response += "The message won't trigger any of your ping-texts"
+                            response += "The message won't trigger any of your ping-texts."
                         } else {
                             response += """
                             The message will trigger these ping-texts:

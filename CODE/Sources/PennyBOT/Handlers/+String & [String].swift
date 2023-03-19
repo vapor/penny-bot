@@ -39,14 +39,16 @@ extension StringProtocol {
     }
 }
 
-extension [String] {
+extension Sequence<String> {
     func makeAutoPingsTextsList() -> String {
         self.sorted().enumerated().map { idx, text -> String in
             let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
             return "**\(idx + 1).** \(escaped)"
         }.joined(separator: "\n")
     }
-    
+}
+
+extension [String] {
     func divide(
         _ isInLhs: (Element) async throws -> Bool
     ) async rethrows -> (lhs: Self, rhs: Self) {
