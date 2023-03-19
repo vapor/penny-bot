@@ -10,3 +10,5 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 * [ ] Thank members when they contribute to Vapor repositories.
 * [ ] Respond to certain command-texts with predefined answers.
 * [ ] Automatically respond to commonly asked questions.
+* [ ] React-to-role. Get roles by reacting to specific messages.
+* [ ] Execute Swift code and show the result.
