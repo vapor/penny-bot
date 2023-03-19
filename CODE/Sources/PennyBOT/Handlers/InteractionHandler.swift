@@ -198,11 +198,11 @@ struct InteractionHandler {
                 }
             case .test:
                 guard let options = first.options,
-                      options.count > 1,
+                      options.count > 0,
                       let _message = options.first(where: { $0.name == "message" }),
                       let message = _message.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'texts' option recognized"
+                    return "No 'message' option recognized"
                 }
                 
                 if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
@@ -229,7 +229,6 @@ struct InteractionHandler {
                     } else {
                         response += """
                         The identified texts are:
-                        
                         \(dividedTexts.makeAutoPingsTextsList())
                         
                         
@@ -239,7 +238,6 @@ struct InteractionHandler {
                         } else {
                             response += """
                             The message will trigger these texts:
-                            
                             \(triggeredTexts.makeAutoPingsTextsList())
                             """
                         }
@@ -275,7 +273,6 @@ struct InteractionHandler {
                         } else {
                             response += """
                             The message will trigger these ping-texts:
-                            
                             \(triggeredTexts.makeAutoPingsTextsList())
                             """
                         }
