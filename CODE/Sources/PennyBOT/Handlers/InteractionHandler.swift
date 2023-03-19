@@ -100,10 +100,7 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return "No 'texts' option recognized"
                 }
-                let allTexts = _text.split(separator: ",")
-                    .map(String.init)
-                    .map({ $0.foldForPingCommand() })
-                    .filter({ !$0.isEmpty })
+                let allTexts = _text.divideIntoAutoPingsTexts()
                 
                 if allTexts.isEmpty {
                     return "The list you sent seems to be empty"
@@ -153,10 +150,7 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return "No 'texts' option recognized"
                 }
-                let allTexts = _text.split(separator: ",")
-                    .map(String.init)
-                    .map({ $0.foldForPingCommand() })
-                    .filter({ !$0.isEmpty })
+                let allTexts = _text.divideIntoAutoPingsTexts()
                 
                 if allTexts.isEmpty {
                     return "The list you sent seems to be empty"
@@ -201,6 +195,93 @@ struct InteractionHandler {
                     Your ping texts:
                     \(items.makeAutoPingsTextsList())
                     """
+                }
+            case .test:
+                guard let options = first.options,
+                      options.count > 1,
+                      let _message = options.first(where: { $0.name == "message" }),
+                      let message = _message.value?.asString else {
+                    logger.error("Discord did not send required info")
+                    return "No 'texts' option recognized"
+                }
+                
+                if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
+                    let divided = message.divideForPingCommandChecking()
+                    let dividedTexts = _text.divideIntoAutoPingsTexts()
+                    let triggeredTexts = dividedTexts.filter {
+                        MessageHandler.textTriggersPing(dividedForPingCommand: divided, pingText: $0)
+                    }
+                    
+                    var response = """
+                    The message is:
+                    
+                    > \(message)
+                    
+                    And the texts are:
+                    
+                    > \(_text)
+                    
+                    
+                    """
+                    
+                    if dividedTexts.isEmpty {
+                        response += "The texts you entered seems like an empty list to me"
+                    } else {
+                        response += """
+                        The identified texts are:
+                        
+                        \(dividedTexts.makeAutoPingsTextsList())
+                        
+                        
+                        """
+                        if triggeredTexts.isEmpty {
+                            response += "The message won't trigger any of the texts above"
+                        } else {
+                            response += """
+                            The message will trigger these texts:
+                            
+                            \(triggeredTexts.makeAutoPingsTextsList())
+                            """
+                        }
+                    }
+                    
+                    return response
+                } else {
+                    let currentTexts = try await pingsService
+                        .get(discordID: discordId)
+                        .map(\.innerValue)
+                    
+                    let divided = message.divideForPingCommandChecking()
+                    let triggeredTexts = currentTexts.filter {
+                        MessageHandler.textTriggersPing(dividedForPingCommand: divided, pingText: $0)
+                    }
+                    
+                    if currentTexts.isEmpty {
+                        return """
+                        You pings-list is empty.
+                        Either use the `texts` field, or add some ping-texts.
+                        """
+                    } else {
+                        var response = """
+                        The message is:
+                        
+                        > \(message)
+                        
+                        
+                        """
+                        
+                        if triggeredTexts.isEmpty {
+                            response += "The message won't trigger any of your ping-texts"
+                        } else {
+                            response += """
+                            The message will trigger these ping-texts:
+                            
+                            \(triggeredTexts.makeAutoPingsTextsList())
+                            """
+                        }
+                        
+                        return response
+                    }
                 }
             }
         } catch {
@@ -319,11 +400,12 @@ private enum AutoPingsSubCommand: String, CaseIterable {
     case add
     case remove
     case list
+    case test
     
     var requiresTechnicalRoles: Bool {
         switch self {
         case .help: return false
-        case .add, .remove, .list: return true
+        case .add, .remove, .list, .test: return true
         }
     }
 }
@@ -363,6 +445,10 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     **Your Pings List**
     
     You can use \(makeCommandLink("list")) to see your current ping texts.
+    
+    **Testing Ping-Texts**
+    
+    You can use \(makeCommandLink("test")) to test if a message triggers some ping texts.
     """
 }
 
@@ -371,3 +457,12 @@ private let rolesString = Constants.Roles
     .map(\.rawValue)
     .map(DiscordUtils.roleMention(id:))
     .joined(separator: " ")
+
+private extension String {
+    func divideIntoAutoPingsTexts() -> [String] {
+        self.split(separator: ",")
+            .map(String.init)
+            .map({ $0.foldForPingCommand() })
+            .filter({ !$0.isEmpty })
+    }
+}

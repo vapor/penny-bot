@@ -108,11 +108,10 @@ struct MessageHandler {
         var usersToPing: [String: Set<String>] = [:]
         for word in wordUsersDict.keys {
             let innerValue = word.innerValue
-            let splitValue = innerValue.split(whereSeparator: \.isWhitespace)
-            if divided.contains(where: { $0.containsSequence(splitValue) }),
+            if Self.textTriggersPing(dividedForPingCommand: divided, pingText: innerValue),
                let users = wordUsersDict[word] {
                 for userId in users {
-                    /// Both checks if the user has the required roles,
+                    /// Checks if the user has the required roles,
                     /// + if the user is in the guild at all,
                     /// + if the user has read access in the channel at all.
                     if await DiscordService.shared.userHasAnyTechnicalRolesAndReadAccessOfChannel(
@@ -146,6 +145,14 @@ struct MessageHandler {
                 )
             )
         }
+    }
+    
+    static func textTriggersPing(
+        dividedForPingCommand divided: [[Substring]],
+        pingText: String
+    ) -> Bool {
+        let splitValue = pingText.split(whereSeparator: \.isWhitespace)
+        return divided.contains(where: { $0.containsSequence(splitValue) })
     }
     
     private func respondToThanks(with response: String, isAFailureMessage: Bool) async {

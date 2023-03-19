@@ -89,6 +89,24 @@ private extension RequestBody.ApplicationCommandCreate {
                 type: .subCommand,
                 name: "list",
                 description: "See what you'll get pinged for"
+            ),
+            .init(
+                type: .subCommand,
+                name: "test",
+                description: "Test if a message triggers a auto-ping text",
+                options: [
+                    .init(
+                        type: .string,
+                        name: "texts",
+                        description: "The texts to be test-triggered"
+                    ),
+                    .init(
+                        type: .string,
+                        name: "message",
+                        description: "The message that is supposed to trigger the texts",
+                        required: true
+                    )
+                ]
             )
         ],
         dm_permission: false

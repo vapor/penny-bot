@@ -16,7 +16,7 @@ extension StringProtocol {
             .filter({ !$0.isPunctuation })
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
-        return String(modified)
+        return modified
     }
     
     func divideForPingCommandChecking() -> [[Substring]] {
