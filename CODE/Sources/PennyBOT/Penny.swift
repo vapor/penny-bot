@@ -33,7 +33,6 @@ struct Penny {
         await bootstrapLoggingSystem(httpClient: client)
         
         let bot = BotFactory.makeBot(eventLoopGroup, client)
-        
         let cache = await BotFactory.makeCache(bot)
         
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
@@ -49,7 +48,7 @@ struct Penny {
         
         await bot.connect()
         
-        await CommandsHandler().registerCommands()
+        await CommandsManager().registerCommands()
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) async {

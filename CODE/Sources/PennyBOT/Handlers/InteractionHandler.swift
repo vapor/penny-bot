@@ -3,7 +3,7 @@ import Logging
 
 private enum Configuration {
     static let autoPingsMaxLimit = 100
-    static let autoPingsLowLimit = 10
+    static let autoPingsLowLimit = 20
 }
 
 struct InteractionHandler {
@@ -408,12 +408,20 @@ private enum AutoPingsSubCommand: String, CaseIterable {
 }
 
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
-    func makeCommandLink(_ subcommand: String) -> String {
-        guard let id = commands.first(where: { $0.name == "auto-pings" })?.id else {
+    
+    let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
+    
+    func command(_ subcommand: String) -> String {
+        guard let id = commandId else {
             return "`/auto-pings \(subcommand)`"
         }
         return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
     }
+    
+    let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
+        name: "is_typing",
+        id: "1087429908466253984"
+    )
     
     return """
     **- Auto-Pings Help**
@@ -423,37 +431,29 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
     
-    - The command has a limit of \(Configuration.autoPingsLowLimit) ping-texts for members that have none of the following roles: \(rolesString)
-    
-    > All auto-pings commands are "private", meaning they are visible to you and you only, and won't even trigger the "is typing" indicator.
+    > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
     
     **Adding Texts**
     
-    You can add multiple texts using \(makeCommandLink("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+    You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
-    - Penny looks for **exact matches**, but all texts are **case-insensitive**, **diacritic-insensitive** and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`
+    - Penny looks for **exact matches**, but all texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`
     
     > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
     
     **Removing Texts**
     
-    You can remove multiple texts using \(makeCommandLink("remove")), separating the texts using commas (`,`).
+    You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
     
     **Your Pings List**
     
-    You can use \(makeCommandLink("list")) to see your current ping texts.
+    You can use \(command("list")) to see your current ping texts.
     
     **Testing Ping-Texts**
     
-    You can use \(makeCommandLink("test")) to test if a message triggers some ping texts.
+    You can use \(command("test")) to test if a message triggers some ping texts.
     """
 }
-
-private let rolesString = Constants.Roles
-    .elevatedPublicCommandsAccess
-    .map(\.rawValue)
-    .map(DiscordUtils.roleMention(id:))
-    .joined(separator: " ")
 
 private extension String {
     func divideIntoAutoPingsTexts() -> [String] {

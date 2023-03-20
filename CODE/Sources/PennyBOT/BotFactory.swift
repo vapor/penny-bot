@@ -13,10 +13,7 @@ enum BotFactory {
         var clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(endpoints: [
                 .getGlobalApplicationCommands: 60 * 60 /// 1 hour
-            ]),
-            requestTimeout: .seconds(30),
-            enableLoggingForRequests: false,
-            retryPolicy: .default
+            ])
         )
         return BotGatewayManager(
             eventLoopGroup: eventLoopGroup,

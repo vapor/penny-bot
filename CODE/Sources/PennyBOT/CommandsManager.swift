@@ -1,7 +1,7 @@
 import DiscordBM
 import Logging
 
-struct CommandsHandler {
+struct CommandsManager {
     func registerCommands() async {
         await DiscordService.shared.overwriteCommands([
             .link,
@@ -93,7 +93,7 @@ private extension RequestBody.ApplicationCommandCreate {
             .init(
                 type: .subCommand,
                 name: "test",
-                description: "Test if a message triggers a auto-ping text",
+                description: "Test if a message triggers an auto-ping text",
                 options: [
                     .init(
                         type: .string,
