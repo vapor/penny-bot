@@ -239,23 +239,23 @@ actor DiscordService {
         }
     }
     
-    func overwriteSlashCommands(commands: [RequestBody.ApplicationCommandCreate]) async {
+    func overwriteCommands(_ commands: [RequestBody.ApplicationCommandCreate]) async {
         do {
             try await discordClient
                 .bulkOverwriteGlobalApplicationCommands(payload: commands)
                 .guardSuccess()
         } catch {
-            logger.report("Couldn't overwrite slash commands", error: error, metadata: [
+            logger.report("Couldn't overwrite application commands", error: error, metadata: [
                 "commands": "\(commands)"
             ])
         }
     }
     
-    func getSlashCommands() async -> [ApplicationCommand] {
+    func getCommands() async -> [ApplicationCommand] {
         do {
             return try await discordClient.getGlobalApplicationCommands().decode()
         } catch {
-            logger.report("Couldn't get slash commands", error: error)
+            logger.report("Couldn't get application commands", error: error)
             return []
         }
     }

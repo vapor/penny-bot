@@ -24,7 +24,7 @@ struct FakeDiscordClient: DiscordClient {
         payload: E
     ) async throws -> DiscordHTTPResponse {
         /// Catches invalid payloads in tests, instead of in production.
-        /// Useful for validating for example the slash commands.
+        /// Useful for validating for example the application/slash commands.
         try payload.validate()
         
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
@@ -43,7 +43,7 @@ struct FakeDiscordClient: DiscordClient {
         payload: E
     ) async throws -> DiscordHTTPResponse {
         /// Catches invalid payloads in tests, instead of in production.
-        /// Useful for validating for example the slash commands.
+        /// Useful for validating for example the application/slash commands.
         try payload.validate()
         
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))

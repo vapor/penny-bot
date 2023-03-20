@@ -40,8 +40,12 @@ extension StringProtocol {
 }
 
 extension Sequence<String> {
-    func makeAutoPingsTextsList() -> String {
-        self.sorted().enumerated().map { idx, text -> String in
+    func makeSortedEnumeratedListForDiscord() -> String {
+        self.sorted().makeEnumeratedListForDiscord()
+    }
+    
+    func makeEnumeratedListForDiscord() -> String {
+        self.enumerated().map { idx, text -> String in
             let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
             return "**\(idx + 1).** \(escaped)"
         }.joined(separator: "\n")

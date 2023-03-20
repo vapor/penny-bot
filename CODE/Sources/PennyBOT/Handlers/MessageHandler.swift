@@ -139,7 +139,7 @@ struct MessageHandler {
                         There is a new message that might be of interest to you.
                         
                         Triggered by:
-                        \(words.makeAutoPingsTextsList())
+                        \(words.makeSortedEnumeratedListForDiscord())
                         
                         Message: \(messageLink)
                         """,

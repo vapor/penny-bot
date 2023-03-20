@@ -49,7 +49,7 @@ struct Penny {
         
         await bot.connect()
         
-        await SlashCommandHandler().registerCommands()
+        await CommandsHandler().registerCommands()
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) async {

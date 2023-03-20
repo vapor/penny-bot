@@ -44,7 +44,7 @@ class GatewayProcessingTests: XCTestCase {
         await manager.waitUntilConnected()
     }
     
-    func testSlashCommandsRegisterOnStartup() async throws {
+    func testCommandsRegisterOnStartup() async throws {
         let response = await responseStorage.awaitResponse(
             at: .bulkOverwriteGlobalApplicationCommands(appId: "11111111")
         ).value

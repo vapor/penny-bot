@@ -1,9 +1,9 @@
 import DiscordBM
 import Logging
 
-struct SlashCommandHandler {
+struct CommandsHandler {
     func registerCommands() async {
-        await DiscordService.shared.overwriteSlashCommands(commands: [
+        await DiscordService.shared.overwriteCommands([
             .link,
             .ping,
             .howManyCoins,

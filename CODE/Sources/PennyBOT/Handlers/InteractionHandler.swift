@@ -25,7 +25,7 @@ struct InteractionHandler {
     
     func handle() async {
         guard case let .applicationCommand(data) = event.data,
-              let kind = SlashCommandKind(name: data.name) else {
+              let kind = CommandKind(name: data.name) else {
             logger.error("Unrecognized command")
             return await sendInteractionNameResolveFailure()
         }
@@ -35,7 +35,7 @@ struct InteractionHandler {
     }
     
     private func processAndMakeResponse(
-        kind: SlashCommandKind,
+        kind: CommandKind,
         data: Interaction.ApplicationCommand
     ) async -> String {
         let options = data.options ?? []
@@ -93,7 +93,7 @@ struct InteractionHandler {
         do {
             switch subcommand {
             case .help:
-                let allCommands = await discordService.getSlashCommands()
+                let allCommands = await discordService.getCommands()
                 return makeAutoPingsHelp(commands: allCommands)
             case .add:
                 guard let option = first.options?.first,
@@ -111,9 +111,12 @@ struct InteractionHandler {
                     try await pingsService.exists(text: $0, forDiscordID: discordId)
                 }
                 
-                if let first = newTexts.first(where: { $0.unicodeScalars.count < 3 }) {
-                    let escaped = escapeCharacters(first)
-                    return "A text is less than 3 letters: \(escaped)\n This is not acceptable"
+                let tooShorts = newTexts.filter({ $0.unicodeScalars.count < 3 })
+                if !tooShorts.isEmpty {
+                    return """
+                    Some texts are less than 3 letters, which is not acceptable:
+                    \(tooShorts.makeEnumeratedListForDiscord())
+                    """
                 }
                 
                 let current = try await pingsService.get(discordID: discordId)
@@ -121,7 +124,7 @@ struct InteractionHandler {
                     member: member
                 ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
                 if newTexts.count + current.count > limit {
-                    return "You currently have \(current.count) texts and you want to add \(newTexts.count) more which will be a total of \(newTexts.count + current.count) texts, but you have a limit of \(limit) texts."
+                    return "You currently have \(current.count) texts and you want to add \(newTexts.count) more, but you have a limit of \(limit) texts."
                 }
                 
                 /// Still try to insert `allTexts` just incase our data is out of sync
@@ -133,7 +136,7 @@ struct InteractionHandler {
                     components.append(
                         """
                         Successfully added the followings to your pings-list:
-                        \(newTexts.makeAutoPingsTextsList())
+                        \(newTexts.makeSortedEnumeratedListForDiscord())
                         """
                     )
                 }
@@ -142,7 +145,7 @@ struct InteractionHandler {
                     components.append(
                         """
                         Some texts were already available in your pings list:
-                        \(existingTexts.makeAutoPingsTextsList())
+                        \(existingTexts.makeSortedEnumeratedListForDiscord())
                         """
                     )
                 }
@@ -173,7 +176,7 @@ struct InteractionHandler {
                     components.append(
                         """
                         Successfully removed the followings from your pings-list:
-                        \(existingTexts.makeAutoPingsTextsList())
+                        \(existingTexts.makeSortedEnumeratedListForDiscord())
                         """
                     )
                 }
@@ -182,7 +185,7 @@ struct InteractionHandler {
                     components.append(
                         """
                         Some texts were not available in your pings list at all:
-                        \(newTexts.makeAutoPingsTextsList())
+                        \(newTexts.makeSortedEnumeratedListForDiscord())
                         """
                     )
                 }
@@ -197,7 +200,7 @@ struct InteractionHandler {
                 } else {
                     return """
                     Your ping texts:
-                    \(items.makeAutoPingsTextsList())
+                    \(items.makeSortedEnumeratedListForDiscord())
                     """
                 }
             case .test:
@@ -233,7 +236,7 @@ struct InteractionHandler {
                     } else {
                         response += """
                         The identified texts are:
-                        \(dividedTexts.makeAutoPingsTextsList())
+                        \(dividedTexts.makeSortedEnumeratedListForDiscord())
                         
                         
                         """
@@ -242,7 +245,7 @@ struct InteractionHandler {
                         } else {
                             response += """
                             The message will trigger these texts:
-                            \(triggeredTexts.makeAutoPingsTextsList())
+                            \(triggeredTexts.makeSortedEnumeratedListForDiscord())
                             """
                         }
                     }
@@ -277,7 +280,7 @@ struct InteractionHandler {
                         } else {
                             response += """
                             The message will trigger these ping-texts:
-                            \(triggeredTexts.makeAutoPingsTextsList())
+                            \(triggeredTexts.makeSortedEnumeratedListForDiscord())
                             """
                         }
                         
@@ -367,7 +370,7 @@ struct InteractionHandler {
     }
 }
 
-private enum SlashCommandKind {
+private enum CommandKind {
     case link
     case autoPings
     case howManyCoins
