@@ -25,7 +25,7 @@ enum Constants {
         case moderator = "431920836631592980"
         case core = "431919254372089857"
         
-        static let autoPingsAllowed: [Roles] = [
+        static let elevatedPublicCommandsAccess: [Roles] = [
             .nitroBooster,
             .backer,
             .sponsor,

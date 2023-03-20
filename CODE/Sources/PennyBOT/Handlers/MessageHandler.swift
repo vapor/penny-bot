@@ -111,10 +111,9 @@ struct MessageHandler {
             if Self.textTriggersPing(dividedForPingCommand: divided, pingText: innerValue),
                let users = wordUsersDict[word] {
                 for userId in users {
-                    /// Checks if the user has the required roles,
-                    /// + if the user is in the guild at all,
+                    /// Checks if the user is in the guild at all,
                     /// + if the user has read access in the channel at all.
-                    if await DiscordService.shared.userHasAnyTechnicalRolesAndReadAccessOfChannel(
+                    if await DiscordService.shared.userHasReadAccess(
                         userId: userId,
                         channelId: event.channel_id
                     ) {
@@ -125,8 +124,10 @@ struct MessageHandler {
         }
         
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
-        /// Don't need any throttling for now, `DiscordBM` will
-        /// do enough and won't exceed rate-limits.
+        /// For now don't need to worry about rate-limits, `DiscordBM` will
+        /// do enough and will try to not exceed them.
+        /// If at some point this start to be hitting rate-limits,
+        /// we can just wait 1-2s before sending each message.
         for (userId, words) in usersToPing {
             /// Don't `@` someone for their own message.
             if userId == authorId { continue }

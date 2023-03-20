@@ -94,7 +94,7 @@ actor DefaultPingsService: AutoPingsService {
             throw ServiceError.badStatus(response.status)
         }
         
-        let body = try await response.body.collect(upTo: 1 << 32)
+        let body = try await response.body.collect(upTo: 1 << 24)
         let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()

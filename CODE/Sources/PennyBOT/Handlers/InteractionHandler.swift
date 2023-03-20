@@ -1,6 +1,11 @@
 import DiscordBM
 import Logging
 
+private enum Configuration {
+    static let autoPingsMaxLimit = 100
+    static let autoPingsLowLimit = 10
+}
+
 struct InteractionHandler {
     var logger = Logger(label: "InteractionHandler")
     let event: Interaction
@@ -8,6 +13,7 @@ struct InteractionHandler {
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
+    var discordService: DiscordService { .shared }
     
     let oops = "Oopsie Woopsie... Something went wrong :("
     
@@ -47,12 +53,12 @@ struct InteractionHandler {
     func handleLinkCommand(options: [Interaction.ApplicationCommand.Option]) -> String {
         if options.isEmpty {
             logger.error("Discord did not send required info")
-            return "Please provide more options"
+            return oops
         }
         let first = options[0]
         guard let id = first.options?.first?.value?.asString else {
             logger.error("Discord did not send required info")
-            return "No ID option recognized"
+            return oops
         }
         switch first.name {
         case "discord":
@@ -63,42 +69,37 @@ struct InteractionHandler {
             return "This command is still a WIP. Linking Discord with Slack ID \(id)"
         default:
             logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
-            return "Option not recognized: \(first.name)"
+            return oops
         }
     }
     
     func handlePingsCommand(options: [Interaction.ApplicationCommand.Option]) async -> String {
         guard let member = event.member else {
             logger.error("Discord did not send required info")
-            return "Sorry something went wrong :("
+            return oops
         }
         guard let discordId = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
-            return "Sorry something went wrong :("
+            return oops
         }
         guard let first = options.first else {
             logger.error("Discord did not send required interaction info")
-            return "Please provide more options"
+            return oops
         }
         guard let subcommand = AutoPingsSubCommand(rawValue: first.name) else {
             logger.error("Unrecognized 'auto-pings' command", metadata: ["name": "\(first.name)"])
-            return "Option not recognized: \(first.name)"
-        }
-        if subcommand.requiresTechnicalRoles,
-           await !DiscordService.shared.memberHasAnyTechnicalRoles(member: member) {
-            logger.trace("Someone tried to use 'auto-pings' but they don't have any of the required roles")
-            return "Sorry, to make sure Penny can handle the load, this functionality is currently restricted to members with any of these roles: \(rolesString)"
+            return oops
         }
         do {
             switch subcommand {
             case .help:
-                let allCommands = await DiscordService.shared.getSlashCommands()
+                let allCommands = await discordService.getSlashCommands()
                 return makeAutoPingsHelp(commands: allCommands)
             case .add:
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'texts' option recognized."
+                    return oops
                 }
                 let allTexts = _text.divideIntoAutoPingsTexts()
                 
@@ -116,8 +117,11 @@ struct InteractionHandler {
                 }
                 
                 let current = try await pingsService.get(discordID: discordId)
-                if newTexts.count + current.count > 100 {
-                    return "You currently have \(current.count) texts and you want to add \(newTexts.count) more texts, but you can't have more than 100 texts"
+                let limit = await discordService.memberHasRolesForElevatedPublicCommandsAccess(
+                    member: member
+                ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
+                if newTexts.count + current.count > limit {
+                    return "You currently have \(current.count) texts and you want to add \(newTexts.count) more which will be a total of \(newTexts.count + current.count) texts, but you have a limit of \(limit) texts."
                 }
                 
                 /// Still try to insert `allTexts` just incase our data is out of sync
@@ -148,7 +152,7 @@ struct InteractionHandler {
                 guard let option = first.options?.first,
                       let _text = option.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'texts' option recognized."
+                    return oops
                 }
                 let allTexts = _text.divideIntoAutoPingsTexts()
                 
@@ -202,7 +206,7 @@ struct InteractionHandler {
                       let _message = options.first(where: { $0.name == "message" }),
                       let message = _message.value?.asString else {
                     logger.error("Discord did not send required info")
-                    return "No 'message' option recognized."
+                    return oops
                 }
                 
                 if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
@@ -283,7 +287,7 @@ struct InteractionHandler {
             }
         } catch {
             logger.report("Pings command error", error: error)
-            return "Sorry, some errors happened :( Please try again"
+            return oops
         }
     }
     
@@ -328,7 +332,7 @@ struct InteractionHandler {
     
     /// Returns `true` if the acknowledgement was successfully sent
     private func sendInteractionAcknowledgement(isEphemeral: Bool) async -> Bool {
-        await DiscordService.shared.respondToInteraction(
+        await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
             payload: .init(
@@ -339,7 +343,7 @@ struct InteractionHandler {
     }
     
     private func sendInteractionNameResolveFailure() async {
-        await DiscordService.shared.respondToInteraction(
+        await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
             payload: .init(
@@ -353,7 +357,7 @@ struct InteractionHandler {
     }
     
     private func respond(with response: String) async {
-        await DiscordService.shared.editInteraction(
+        await discordService.editInteraction(
             token: event.token,
             payload: .init(embeds: [.init(
                 description: response,
@@ -398,13 +402,6 @@ private enum AutoPingsSubCommand: String, CaseIterable {
     case remove
     case list
     case test
-    
-    var requiresTechnicalRoles: Bool {
-        switch self {
-        case .help: return false
-        case .add, .remove, .list, .test: return true
-        }
-    }
 }
 
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
@@ -423,7 +420,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
     
-    - The auto-ping commands are currently restricted to users with any of these roles: \(rolesString)
+    - The command has a limit of \(Configuration.autoPingsLowLimit) ping-texts for members that have none of the following roles: \(rolesString)
     
     > All auto-pings commands are "private", meaning they are visible to you and you only, and won't even trigger the "is typing" indicator.
     
@@ -450,7 +447,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
 }
 
 private let rolesString = Constants.Roles
-    .autoPingsAllowed
+    .elevatedPublicCommandsAccess
     .map(\.rawValue)
     .map(DiscordUtils.roleMention(id:))
     .joined(separator: " ")

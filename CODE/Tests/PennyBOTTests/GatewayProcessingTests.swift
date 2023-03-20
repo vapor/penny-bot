@@ -266,9 +266,9 @@ class GatewayProcessingTests: XCTestCase {
         let responseEndpoint = event.responseEndpoints[1]
         let (createDM1, createDM2, sendDM1, sendDM2) = await (
             responseStorage.awaitResponse(at: createDMEndpoint).value,
-            responseStorage.awaitResponse(at: createDMEndpoint, expectFailure: true).value,
+            responseStorage.awaitResponse(at: createDMEndpoint).value,
             responseStorage.awaitResponse(at: responseEndpoint).value,
-            responseStorage.awaitResponse(at: responseEndpoint, expectFailure: true).value
+            responseStorage.awaitResponse(at: responseEndpoint).value
         )
         
         let recipients = ["950695294906007573", "432065887202181142"]
@@ -287,11 +287,19 @@ class GatewayProcessingTests: XCTestCase {
         }
         
         do {
-            /// These two must fail because user does not have enough permissions to receive pings
-            let payload1: Never? = try XCTUnwrap(createDM2 as? Optional<Never>)
-            XCTAssertEqual(payload1, .none)
-            let payload2: Never? = try XCTUnwrap(sendDM2 as? Optional<Never>)
-            XCTAssertEqual(payload2, .none)
+            /// These two must not fail. The user does not have any
+            /// significant roles but they still should receive the pings.
+            let dmPayload = try XCTUnwrap(createDM2 as? RequestBody.CreateDM, "\(createDM1)")
+            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
+        }
+        
+        do {
+            let dmMessage = try XCTUnwrap(sendDM2 as? RequestBody.CreateMessage, "\(sendDM1)")
+            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+            /// Check to make sure the expected ping-words are mentioned in the message
+            XCTAssertTrue(message.contains("mongodb driver"), message)
+            print(message)
         }
         
         let event2 = EventKey.autoPingsTrigger2

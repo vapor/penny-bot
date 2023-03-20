@@ -278,33 +278,17 @@ actor DiscordService {
         }
     }
     
-    func userHasAnyTechnicalRolesAndReadAccessOfChannel(
-        userId: String,
-        channelId: String
-    ) async -> Bool {
-        guard let guild = await vaporGuild,
-            let member = guild.members.first(where: { $0.user?.id == userId }) else {
-            return false
-        }
-        
-        if !self.memberHasAnyTechnicalRoles(member: member) {
-            return false
-        }
-        
-        if !guild.memberHasPermissions(
-            member: member,
+    func userHasReadAccess(userId: String, channelId: String) async -> Bool {
+        guard let guild = await self.vaporGuild else { return false }
+        return guild.userHasPermissions(
             userId: userId,
             channelId: channelId,
             permissions: [.readMessageHistory]
-        ) {
-            return false
-        }
-        
-        return true
+        )
     }
     
-    func memberHasAnyTechnicalRoles(member: Guild.Member) -> Bool {
-        Constants.Roles.autoPingsAllowed.contains(where: {
+    func memberHasRolesForElevatedPublicCommandsAccess(member: Guild.Member) -> Bool {
+        Constants.Roles.elevatedPublicCommandsAccess.contains(where: {
             member.roles.contains($0.rawValue)
         })
     }

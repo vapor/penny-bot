@@ -53,7 +53,7 @@ public actor FakeResponseStorage {
     ) {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
-                XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)")
+                XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
             } else {
                 continuation.resume(returning: response)
             }
@@ -74,7 +74,7 @@ public actor FakeResponseStorage {
                     return
                 } else {
                     if expectFailure {
-                        XCTFail("Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)")
+                        XCTFail("Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
                     }
                 }
             }

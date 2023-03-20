@@ -27,7 +27,7 @@ struct DefaultCoinService: CoinService {
             throw ServiceError.badStatus(response.status)
         }
         
-        let body = try await response.body.collect(upTo: 1 << 32)
+        let body = try await response.body.collect(upTo: 1 << 24)
         
         return try JSONDecoder().decode(CoinResponse.self, from: body)
     }
@@ -52,7 +52,7 @@ struct DefaultCoinService: CoinService {
             throw ServiceError.badStatus(response.status)
         }
         
-        let body = try await response.body.collect(upTo: 1 << 32)
+        let body = try await response.body.collect(upTo: 1 << 24)
         
         return try JSONDecoder().decode(Int.self, from: body)
     }
