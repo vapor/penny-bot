@@ -3,14 +3,17 @@
 Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 
 <p>
+    <a href="https://discord.gg/vapor">
+        <img src="https://img.shields.io/discord/431917998102675485.svg" alt="Team Chat">
+    </a>
     <a href="https://github.com/vapor/vapor/actions">
-        <img src="https://github.com/vapor/penny-bot/workflows/test/badge.svg?branch=main" alt="Continuous Integration">
+        <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deployement CI">
+    </a>
+    <a href="https://github.com/vapor/vapor/actions">
+        <img src="https://github.com/vapor/penny-bot/actions/workflows/test.yml/badge.svg?branch=main" alt="Tests CI">
     </a>
     <a href="https://swift.org">
         <img src="https://img.shields.io/badge/swift-5.7-brightgreen.svg" alt="Swift 5.2">
-    </a>
-    <a href="https://discord.gg/vapor">
-        <img src="https://img.shields.io/discord/431917998102675485.svg" alt="Team Chat">
     </a>
 </p>
 
