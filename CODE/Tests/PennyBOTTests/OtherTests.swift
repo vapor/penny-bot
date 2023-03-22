@@ -59,6 +59,11 @@ class OtherTests: XCTestCase {
             "as , .?/! {d } d".removingOccurrences(of: CharacterSet.whitespaces),
             "as,.?/!{d}d"
         )
+        
+        XCTAssertEqual(
+            "a’b, ".removingOccurrences(of: CharacterSet.punctuationCharacters),
+            "ab "
+        )
     }
     
     /// The `Codable` logic of `S3AutoPingItems.Expression` is manual, so we

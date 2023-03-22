@@ -1,9 +1,9 @@
 import DiscordBM
 import Foundation
 
+/// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
-    /// Removes leading and trailing whitespaces and
-    /// Makes the string case, diacritic and punctuation insensitive.
+    /// trims whitespaces and makes the string case, diacritic and punctuation insensitive.
     func foldForPingCommand() -> String {
         self.trimmingCharacters(in: .whitespaces)
             .removingOccurrences(of: .punctuationCharacters)
@@ -24,24 +24,26 @@ extension StringProtocol {
 }
 
 extension String {
-    /// Remove any occurrences of the characters in the character-set.
+    /// Removes any occurrences of the characters in the character-set.
     func removingOccurrences(of target: CharacterSet) -> String {
-        var scalars = self.unicodeScalars
+        /// Couldn't make it properly work without copy-ing the string
+        /// into an array and by only using `String.Index`
+        var copy = Array(self)
         
-        var remove = ContiguousArray<String.Index>()
+        var remove = ContiguousArray<Int>()
         
-        for idx in scalars.indices {
-            if target.contains(scalars[idx]) {
-                let removeAt = scalars.index(idx, offsetBy: -remove.count)
+        for idx in copy.indices {
+            if  copy[idx].unicodeScalars.contains(where: { target.contains($0) }) {
+                let removeAt = copy.index(idx, offsetBy: -remove.count)
                 remove.append(removeAt)
             }
         }
         
         for idx in remove {
-            scalars.remove(at: idx)
+            copy.remove(at: idx)
         }
         
-        return String(scalars)
+        return String(copy)
     }
 }
 
