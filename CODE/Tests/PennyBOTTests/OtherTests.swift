@@ -24,6 +24,43 @@ class OtherTests: XCTestCase {
         XCTAssertFalse([].containsSequence(["j"]))
     }
     
+    func testRemovingOccurrencesCharacterSetInString() throws {
+        XCTAssertEqual(
+            "".removingOccurrences(of: CharacterSet.punctuationCharacters),
+            ""
+        )
+        
+        XCTAssertEqual(
+            "a".removingOccurrences(of: CharacterSet.punctuationCharacters),
+            "a"
+        )
+        
+        XCTAssertEqual(
+            "a,".removingOccurrences(of: CharacterSet.punctuationCharacters),
+            "a"
+        )
+        
+        XCTAssertEqual(
+            ",".removingOccurrences(of: CharacterSet.punctuationCharacters),
+            ""
+        )
+        
+        XCTAssertEqual(
+            ",.?/!{}".removingOccurrences(of: CharacterSet.punctuationCharacters),
+            ""
+        )
+        
+        XCTAssertEqual(
+            "asad,.?/!{d}d".removingOccurrences(of: CharacterSet.whitespaces),
+            "asad,.?/!{d}d"
+        )
+        
+        XCTAssertEqual(
+            "as , .?/! {d } d".removingOccurrences(of: CharacterSet.whitespaces),
+            "as,.?/!{d}d"
+        )
+    }
+    
     /// The `Codable` logic of `S3AutoPingItems.Expression` is manual, so we
     /// need to make sure it actually works or it might corrupt the repository file.
     func testAutoPingItemExpressionCodable() throws {

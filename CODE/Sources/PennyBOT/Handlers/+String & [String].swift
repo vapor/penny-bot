@@ -5,37 +5,43 @@ extension StringProtocol {
     /// Removes leading and trailing whitespaces and
     /// Makes the string case, diacritic and punctuation insensitive.
     func foldForPingCommand() -> String {
-        var substring = Substring(self)
-        while substring.first?.isWhitespace == true {
-            substring = substring.dropFirst()
-        }
-        while substring.last?.isWhitespace == true {
-            substring = substring.dropLast()
-        }
-        let modified = substring
-            .filter({ !$0.isPunctuation })
+        self.trimmingCharacters(in: .whitespaces)
+            .removingOccurrences(of: .punctuationCharacters)
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
-        return modified
     }
     
     func divideForPingCommandChecking() -> [[Substring]] {
-        var substring = Substring(self)
-        while substring.first?.isWhitespace == true {
-            substring = substring.dropFirst()
-        }
-        while substring.last?.isWhitespace == true {
-            substring = substring.dropLast()
-        }
-        let modified = substring
+        let modified = self.trimmingCharacters(in: .whitespaces)
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
-            .split(whereSeparator: \.isWhitespace)
-            .flatMap { $0.split(whereSeparator: \.isNewline) }
+            .split(whereSeparator: \.isWhitespaceOrNewline)
         
         let dividedByPuncs = modified.flatMap { $0.split(whereSeparator: \.isPunctuation) }
         
         return [modified, dividedByPuncs]
+    }
+}
+
+extension String {
+    /// Remove any occurrences of the characters in the character-set.
+    func removingOccurrences(of target: CharacterSet) -> String {
+        var scalars = self.unicodeScalars
+        
+        var remove = ContiguousArray<String.Index>()
+        
+        for idx in scalars.indices {
+            if target.contains(scalars[idx]) {
+                let removeAt = scalars.index(idx, offsetBy: -remove.count)
+                remove.append(removeAt)
+            }
+        }
+        
+        for idx in remove {
+            scalars.remove(at: idx)
+        }
+        
+        return String(scalars)
     }
 }
 
@@ -85,5 +91,11 @@ extension Array where Element: StringProtocol {
         }
         
         return false
+    }
+}
+
+private extension Character {
+    var isWhitespaceOrNewline: Bool {
+        self.isWhitespace || self.isNewline
     }
 }

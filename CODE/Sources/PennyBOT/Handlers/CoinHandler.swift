@@ -1,5 +1,7 @@
+import Foundation
 
 /// All coin signs must be lowercased.
+/// Add a test when you add a coin sign.
 private let coinSigns = [
     "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
     "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
@@ -9,9 +11,8 @@ private let coinSigns = [
     "thx", "thanks", "thank you",
     "thanks a lot", "thanks a bunch", "thanks so much",
     "thank you a lot", "thank you a bunch", "thank you so much",
-    "thanks for the help",
-    "+= 1", "+ 1",
-    "advance(by: 1)", "successor()",
+    "thanks for the help", "thanks for your help",
+    "+= 1", "+ 1"
 ]
 
 /// Two or more of these characters, like `++` or `++++++++++++`.
@@ -41,11 +42,9 @@ struct CoinHandler {
         // Lowercased for case-insensitive coin-sign checking.
         var text = text
             .lowercased()
-        /// `,` / `!` / `.` can be problematic if someone sticks it to the end of a coin sign, like
+        /// Punctuations can be problematic if someone sticks it to the end of a coin sign, like
         /// "@Penny thanks, ..." or  "@Penny thanks!"
-            .replacingOccurrences(of: ",", with: "")
-            .replacingOccurrences(of: "!", with: "")
-            .replacingOccurrences(of: ".", with: "")
+            .removingOccurrences(of: undesiredCharacterSet)
         
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -169,6 +168,7 @@ struct CoinHandler {
     }
 }
 
+private let undesiredCharacterSet = CharacterSet.punctuationCharacters.subtracting(["@", ":"])
 private let splitSigns = coinSigns.map { $0.split(whereSeparator: \.isWhitespace) }
 private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
@@ -204,6 +204,6 @@ private extension Substring {
     /// user-mention. That means we _need_ to remove empty strings to neutralize those
     /// intentional spaces.
     var isIgnorable: Bool {
-        ["", ".", "and", "&", ","].contains(self.lowercased())
+        ["", "and", "&"].contains(self.lowercased())
     }
 }

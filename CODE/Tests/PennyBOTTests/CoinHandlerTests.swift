@@ -94,7 +94,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx advance(by: 1) \(user1) \(user2)
+                xxxx Thanks for your help \(user1) \(user2)
                 """,
                 mentionedUsers: [user1, user2]
             )
@@ -236,7 +236,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinHandler(
                 text: """
-                xxxx xxxx \(user1) thanks xxxx xxxx \(user2)  successor()
+                xxxx xxxx \(user1) thanks xxxx xxxx \(user2)  thanks for the help!
                 """,
                 mentionedUsers: [user1, user2]
             )
