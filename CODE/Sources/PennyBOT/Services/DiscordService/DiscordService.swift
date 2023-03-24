@@ -170,7 +170,7 @@ actor DiscordService {
             ) else { return nil }
             /// Message have been created within last week,
             /// or we don't send a thanks response for it so it's less spammy.
-            guard message.timestamp.date > Date().addingTimeInterval(7 * 24 * 60 * 60) else {
+            guard message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60) else {
                 return nil
             }
             let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)\n"
