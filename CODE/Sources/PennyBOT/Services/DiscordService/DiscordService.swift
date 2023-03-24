@@ -1,14 +1,18 @@
 import DiscordBM
 import Logging
+import Foundation
 
 actor DiscordService {
     
     private var discordClient: (any DiscordClient)!
     private var cache: DiscordCache!
     private var logger = Logger(label: "DiscordService")
-    /// `[UserDiscordID: DMChannelID]`
+    /// `[UserID: DMChannelID]`
     private var dmChannels: [String: String] = [:]
+    /// `Set<UserID>`
     private var usersAlreadyWarnedAboutClosedDMS: Set<String> = []
+    /// `[[ChannelID, MessageID]: MessageCreate]`
+    private var cachedMessages: [[String]: Gateway.MessageCreate] = [:]
     private var vaporGuild: Gateway.GuildCreate? {
         get async {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -19,9 +23,8 @@ actor DiscordService {
             
             /// This could cause problems so we need to somehow keep an eye on it.
             /// `Array.count` is O(1) so this is fine.
-            let memberCount = guild.members.count
-            if memberCount < 1_000 {
-                logger.error("Vapor guild only has \(memberCount) members?!", metadata: [
+            if guild.members.count < 1_000 {
+                logger.critical("Vapor guild only has \(guild.members.count) members?!", metadata: [
                     "guild": "\(guild)"
                 ])
             }
@@ -161,6 +164,15 @@ actor DiscordService {
         } else {
             /// Don't report failures to users, in this case.
             if isAFailureMessage { return nil }
+            guard let message = await self.getPossiblyCachedChannelMessage(
+                channelId: channelId,
+                messageId: messageId
+            ) else { return nil }
+            /// Message have been created within last week,
+            /// or we don't send a thanks response for it so it's less spammy.
+            guard message.timestamp.date > Date().addingTimeInterval(7 * 24 * 60 * 60) else {
+                return nil
+            }
             let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)\n"
             return await self.sendMessage(
                 channelId: Constants.thanksChannelId,
@@ -260,6 +272,22 @@ actor DiscordService {
         }
     }
     
+    func getPossiblyCachedChannelMessage(
+        channelId: String,
+        messageId: String
+    ) async -> Gateway.MessageCreate? {
+        if let cached = self.cachedMessages[[channelId, messageId]] {
+            return cached
+        } else {
+            if let message = await getChannelMessage(channelId: channelId, messageId: messageId) {
+                self.cachedMessages[[channelId, messageId]] = message
+                return message
+            } else {
+                return nil
+            }
+        }
+    }
+    
     func getChannelMessage(
         channelId: String,
         messageId: String
@@ -292,4 +320,14 @@ actor DiscordService {
             member.roles.contains($0.rawValue)
         })
     }
+    
+#if DEBUG
+    func _tests_addToMessageCache(
+        channelId: String,
+        messageId: String,
+        message: Gateway.MessageCreate
+    ) {
+        self.cachedMessages[[channelId, messageId]] = message
+    }
+#endif
 }

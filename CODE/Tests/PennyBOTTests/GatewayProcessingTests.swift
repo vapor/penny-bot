@@ -167,6 +167,27 @@ class GatewayProcessingTests: XCTestCase {
     
     func testReactionHandler3() async throws {
         do {
+            await DiscordService.shared._tests_addToMessageCache(
+                channelId: "431926479752921098",
+                messageId: "1031112115928442034",
+                message: .init(
+                    id: "",
+                    channel_id: "",
+                    content: "",
+                    /// Only this timestamp is important so `DiscordService`
+                    /// thinks the message related to the reaction is not old
+                    timestamp: DiscordTimestamp.inFutureFake,
+                    tts: false,
+                    mention_everyone: false,
+                    mention_roles: [],
+                    attachments: [],
+                    embeds: [],
+                    pinned: false,
+                    type: .default,
+                    mentions: []
+                )
+            )
+            
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction3,
                 as: RequestBody.CreateMessage.self
@@ -176,8 +197,7 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(description.hasPrefix("""
             https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
             0xTim gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
-            """
-                                               ), description)
+            """), description)
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
         
@@ -197,13 +217,34 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(description.hasPrefix("""
             https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
             0xTim & Mahdi BM gave 2 \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
-            """
-                                               ), description)
+            """), description)
             XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
         }
     }
     
     func testRespondsInThanksChannelWhenDoesNotHavePermission() async throws {
+        
+        await DiscordService.shared._tests_addToMessageCache(
+            channelId: "431917998102675487",
+            messageId: "1029637770005717042",
+            message: .init(
+                id: "",
+                channel_id: "",
+                content: "",
+                /// Only this timestamp is important so `DiscordService`
+                /// thinks the message related to the reaction is not old
+                timestamp: DiscordTimestamp.inFutureFake,
+                tts: false,
+                mention_everyone: false,
+                mention_roles: [],
+                attachments: [],
+                embeds: [],
+                pinned: false,
+                type: .default,
+                mentions: []
+            )
+        )
+        
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage2,
             as: RequestBody.CreateMessage.self
@@ -353,6 +394,12 @@ class GatewayProcessingTests: XCTestCase {
 private extension DiscordTimestamp {
     static let fake: DiscordTimestamp = {
         let string = #""2022-11-23T09:59:04.037259+00:00""#
+        let data = Data(string.utf8)
+        return try! JSONDecoder().decode(DiscordTimestamp.self, from: data)
+    }()
+    
+    static let inFutureFake: DiscordTimestamp = {
+        let string = #""2100-11-23T09:59:04.037259+00:00""#
         let data = Data(string.utf8)
         return try! JSONDecoder().decode(DiscordTimestamp.self, from: data)
     }()
