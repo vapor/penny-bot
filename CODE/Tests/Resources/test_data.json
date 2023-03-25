@@ -209,6 +209,7 @@
         "s": 5,
         "op": 0,
         "d": {
+            "type": 0,
             "user_id": "290483761559240704",
             "message_id": "1031112115928449034",
             "member": {
@@ -249,6 +250,7 @@
         "s": 6,
         "op": 0,
         "d": {
+            "type": 0,
             "user_id": "290483761559240704",
             "message_id": "1031112115928449034",
             "member": {
@@ -290,6 +292,7 @@
         "s": 6,
         "op": 0,
         "d": {
+            "type": 0,
             "user_id": "290483761559240704",
             "message_id": "1031112115928442034",
             "member": {
@@ -331,6 +334,7 @@
         "s": 9,
         "op": 0,
         "d": {
+            "type": 0,
             "user_id": "290483761559240704",
             "message_id": "1031112115928442034",
             "member": {
@@ -366,7 +370,7 @@
             "guild_id": "808638139785936919"
         }
     },
-    "POST/channels/684159753189982218/messages": {
+    "POST-https://discord.com/api/v10/channels/684159753189982218/messages": {
         "id": "1031112115928449022",
         "type": 0,
         "content": "Mahdi BM gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
@@ -392,7 +396,7 @@
         "flags": 0,
         "components": []
     },
-    "POST/channels/443074453719744522/messages": {
+    "POST-https://discord.com/api/v10/channels/443074453719744522/messages": {
         "id": "1031112115928111022",
         "type": 0,
         "content": "https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034\n0xTim gave gave a coin to <@1030118727418646629>, who now has 29 <:coin:473588485962596352>!",
@@ -418,7 +422,7 @@
         "flags": 0,
         "components": []
     },
-    "GET/channels/431926479752921098/messages/1031112115928442034": {
+    "GET-https://discord.com/api/v10/channels/431926479752921098/messages/1031112115928442034": {
         "id": "1031112115928442034",
         "type": 0,
         "content": "Testing! 684866",
@@ -444,7 +448,7 @@
         "flags": 0,
         "components": []
     },
-    "GET/channels/684159753189982218/messages/1031112115928449034": {
+    "GET-https://discord.com/api/v10/channels/684159753189982218/messages/1031112115928449034": {
         "id": "1031112115928449034",
         "type": 0,
         "content": "Testing! 684866",
@@ -667,7 +671,7 @@
             "guild_id": "431917998102675485"
         }
     },
-    "POST/users/@me/channels": {
+    "POST-https://discord.com/api/v10/users/@me/channels": {
         "id": "1018169583619821619",
         "type": 1,
         "last_message_id": "1040523601310392370",

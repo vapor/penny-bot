@@ -2,6 +2,6 @@
 
 extension Endpoint {
     var testingKey: String {
-        self.httpMethod.rawValue + "/" + self.urlSuffix
+        self.httpMethod.rawValue + "-" + self.url
     }
 }

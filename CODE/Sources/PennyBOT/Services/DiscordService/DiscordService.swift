@@ -100,7 +100,7 @@ actor DiscordService {
             return existing
         } else {
             do {
-                let dmChannel = try await discordClient.createDM(recipient_id: userId).decode()
+                let dmChannel = try await discordClient.createDm(recipient_id: userId).decode()
                 dmChannels[userId] = dmChannel.id
                 return dmChannel.id
             } catch {
@@ -193,7 +193,7 @@ actor DiscordService {
         payload: RequestBody.EditMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
-            let response = try await discordClient.editMessage(
+            let response = try await discordClient.updateMessage(
                 channelId: channelId,
                 messageId: messageId,
                 payload: payload
@@ -239,7 +239,7 @@ actor DiscordService {
         payload: RequestBody.InteractionResponse.CallbackData
     ) async {
         do {
-            try await discordClient.editInteractionResponse(
+            try await discordClient.updateOriginalInteractionResponse(
                 token: token,
                 payload: payload
             ).guardSuccess()
@@ -254,7 +254,7 @@ actor DiscordService {
     func overwriteCommands(_ commands: [RequestBody.ApplicationCommandCreate]) async {
         do {
             try await discordClient
-                .bulkOverwriteGlobalApplicationCommands(payload: commands)
+                .bulkSetApplicationCommands(payload: commands)
                 .guardSuccess()
         } catch {
             logger.report("Couldn't overwrite application commands", error: error, metadata: [
@@ -265,7 +265,7 @@ actor DiscordService {
     
     func getCommands() async -> [ApplicationCommand] {
         do {
-            return try await discordClient.getGlobalApplicationCommands().decode()
+            return try await discordClient.listApplicationCommands().decode()
         } catch {
             logger.report("Couldn't get application commands", error: error)
             return []
@@ -293,7 +293,7 @@ actor DiscordService {
         messageId: String
     ) async -> Gateway.MessageCreate? {
         do {
-            return try await discordClient.getChannelMessage(
+            return try await discordClient.getMessage(
                 channelId: channelId,
                 messageId: messageId
             ).decode()

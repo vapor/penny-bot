@@ -53,9 +53,26 @@ public actor FakeManager: GatewayManager {
         }
     }
     
+    @_disfavoredOverload
     public func sendAndAwaitResponse<T>(
         key: EventKey,
-        endpoint: Endpoint? = nil,
+        endpoint: APIEndpoint? = nil,
+        as type: T.Type = T.self,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async throws -> T {
+        try await self.sendAndAwaitResponse(
+            key: key,
+            endpoint: endpoint.map { .api($0) },
+            as: T.self,
+            file: file,
+            line: line
+        )
+    }
+    
+    public func sendAndAwaitResponse<T>(
+        key: EventKey,
+        endpoint: AnyEndpoint? = nil,
         as type: T.Type = T.self,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -63,7 +80,7 @@ public actor FakeManager: GatewayManager {
         let box = await withCheckedContinuation {
             (continuation: CheckedContinuation<AnyBox, Never>) in
             FakeResponseStorage.shared.expect(
-                at: endpoint ?? key.responseEndpoints[0],
+                at: endpoint ?? .api(key.responseEndpoints[0]),
                 continuation: continuation,
                 file: file,
                 line: line
@@ -95,25 +112,25 @@ public enum EventKey: String, Sendable {
     case howManyCoins2
     
     /// The endpoints from which the bot will send a response, after receiving each event.
-    public var responseEndpoints: [Endpoint] {
+    public var responseEndpoints: [APIEndpoint] {
         switch self {
         case .thanksMessage:
             return [.createMessage(channelId: "519613337638797315")]
         case .thanksMessage2:
             return [.createMessage(channelId: Constants.thanksChannelId)]
         case .linkInteraction:
-            return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(id: "1031112113978089502", token: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
+            return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(interactionId: "1031112113978089502", interactionToken: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
             return [.createMessage(channelId: "684159753189982218")]
         case .thanksReaction2:
-            return [.editMessage(
+            return [.updateMessage(
                 channelId: "684159753189982218",
                 messageId: "1031112115928449022"
             )]
         case .thanksReaction3:
             return [.createMessage(channelId: Constants.thanksChannelId)]
         case .thanksReaction4:
-            return [.editMessage(
+            return [.updateMessage(
                 channelId: Constants.thanksChannelId,
                 messageId: "1031112115928111022"
             )]
@@ -121,13 +138,13 @@ public enum EventKey: String, Sendable {
             return [.createMessage(channelId: "1067060193982156880")]
         case .autoPingsTrigger, .autoPingsTrigger2:
             return [
-                .createDM,
+                .createDm,
                 .createMessage(channelId: "1018169583619821619")
             ]
         case .howManyCoins1:
-            return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTA1OTM0NTUzNjM2NjQyMDExODowbHZldWtVOUVvMVFCMEhnSjR2RmJrMncyOXNuV3J6OVR5Qk9mZ2h6YzhMSDVTdEZ3NWNIMXA1VzJlZ2RteXdHbzFGdGl0dVFMa2dBNVZUUndmVVFqZzJhUDJlTERuNDRjYXBuSWRHZzRwSFZnNjJLR3hZM1hKNjRuaWtCUzZpeg"), .createInteractionResponse(id: "1059345536366420118", token: "aW50ZXJhY3Rpb246MTA1OTM0NTUzNjM2NjQyMDExODowbHZldWtVOUVvMVFCMEhnSjR2RmJrMncyOXNuV3J6OVR5Qk9mZ2h6YzhMSDVTdEZ3NWNIMXA1VzJlZ2RteXdHbzFGdGl0dVFMa2dBNVZUUndmVVFqZzJhUDJlTERuNDRjYXBuSWRHZzRwSFZnNjJLR3hZM1hKNjRuaWtCUzZpeg")]
+            return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA1OTM0NTUzNjM2NjQyMDExODowbHZldWtVOUVvMVFCMEhnSjR2RmJrMncyOXNuV3J6OVR5Qk9mZ2h6YzhMSDVTdEZ3NWNIMXA1VzJlZ2RteXdHbzFGdGl0dVFMa2dBNVZUUndmVVFqZzJhUDJlTERuNDRjYXBuSWRHZzRwSFZnNjJLR3hZM1hKNjRuaWtCUzZpeg"), .createInteractionResponse(interactionId: "1059345536366420118", interactionToken: "aW50ZXJhY3Rpb246MTA1OTM0NTUzNjM2NjQyMDExODowbHZldWtVOUVvMVFCMEhnSjR2RmJrMncyOXNuV3J6OVR5Qk9mZ2h6YzhMSDVTdEZ3NWNIMXA1VzJlZ2RteXdHbzFGdGl0dVFMa2dBNVZUUndmVVFqZzJhUDJlTERuNDRjYXBuSWRHZzRwSFZnNjJLR3hZM1hKNjRuaWtCUzZpeg")]
         case .howManyCoins2:
-            return [.editInteractionResponse(appId: "11111111", token: "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag"), .createInteractionResponse(id: "1059345641651830855", token: "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag")]
+            return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag"), .createInteractionResponse(interactionId: "1059345641651830855", interactionToken: "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag")]
         }
     }
 }

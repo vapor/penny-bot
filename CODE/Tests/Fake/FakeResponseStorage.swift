@@ -10,7 +10,24 @@ public actor FakeResponseStorage {
     public static var shared = FakeResponseStorage()
     
     public func awaitResponse(
-        at endpoint: Endpoint,
+        at endpoint: APIEndpoint,
+        expectFailure: Bool = false,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) async -> AnyBox {
+        await withCheckedContinuation { continuation in
+            self.expect(
+                at: .api(endpoint),
+                expectFailure: expectFailure,
+                continuation: continuation,
+                file: file,
+                line: line
+            )
+        }
+    }
+    
+    public func awaitResponse(
+        at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
         file: StaticString = #filePath,
         line: UInt = #line
@@ -27,7 +44,7 @@ public actor FakeResponseStorage {
     }
     
     nonisolated func expect(
-        at endpoint: Endpoint,
+        at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
         continuation: CheckedContinuation<AnyBox, Never>,
         file: StaticString,

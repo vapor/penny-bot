@@ -12,7 +12,7 @@ enum BotFactory {
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         var clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(endpoints: [
-                .getGlobalApplicationCommands: 60 * 60 /// 1 hour
+                .api(.listApplicationCommands): 60 * 60 /// 1 hour
             ])
         )
         return BotGatewayManager(

@@ -46,7 +46,7 @@ class GatewayProcessingTests: XCTestCase {
     
     func testCommandsRegisterOnStartup() async throws {
         let response = await responseStorage.awaitResponse(
-            at: .bulkOverwriteGlobalApplicationCommands(appId: "11111111")
+            at: .bulkSetApplicationCommands(applicationId: "11111111")
         ).value
         
         let commandNames = ["link", "auto-pings", "how-many-coins", "How Many Coins?"]
