@@ -1,6 +1,5 @@
 import DiscordBM
 import Logging
-import Foundation
 
 actor DiscordService {
     
@@ -164,15 +163,6 @@ actor DiscordService {
         } else {
             /// Don't report failures to users, in this case.
             if isAFailureMessage { return nil }
-            guard let message = await self.getPossiblyCachedChannelMessage(
-                channelId: channelId,
-                messageId: messageId
-            ) else { return nil }
-            /// Message have been created within last week,
-            /// or we don't send a thanks response for it so it's less spammy.
-            guard message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60) else {
-                return nil
-            }
             let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)\n"
             return await self.sendMessage(
                 channelId: Constants.thanksChannelId,

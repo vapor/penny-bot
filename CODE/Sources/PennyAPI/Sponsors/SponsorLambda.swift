@@ -74,6 +74,9 @@ struct AddSponsorHandler: LambdaHandler {
         
         // Request the appID secret from the secrets manager
         context.logger.debug("Retrieving secrets...")
+        // FIXME By Mahdi: APP ID is quite public. The aws console values are also not right.
+        // 1- In aws console, swap these 2 env var's values.
+        // 2- swap their places in this code below too.
         let appIDSecretRequest = SecretsManager.GetSecretValueRequest(secretId: appIDArn)
         let appIDResponse = try await secretsManager.getSecretValue(appIDSecretRequest)
         guard let appID = appIDResponse.secretString else {
@@ -200,6 +203,7 @@ struct AddSponsorHandler: LambdaHandler {
         let removeRoleResponse = try await discordClient.deleteGuildMemberRole(
             guildId: Constants.guildID,
             userId: userDiscordID,
+            // FIXME By Mahdi: change to `role.roleID`
             roleId: SponsorType.backer.roleID
         )
         

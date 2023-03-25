@@ -1,6 +1,7 @@
 import DiscordBM
 import Logging
 import PennyModels
+import Foundation
 
 private let coinSignEmojis = [
     "vaporlove",
@@ -36,8 +37,7 @@ struct ReactionHandler {
                 toAuthorOfMessage: event.message_id
               ), let receiverId = await cache.getAuthorId(
                 channelId: event.channel_id,
-                messageId: event.message_id,
-                logger: logger
+                messageId: event.message_id
               ), user.id != receiverId
         else { return }
         let sender = "<@\(user.id)>"
@@ -51,17 +51,26 @@ struct ReactionHandler {
             reason: .userProvided
         )
         
-        let response: CoinResponse
+        var response: CoinResponse?
         do {
             response = try await self.coinService.postCoin(with: coinRequest)
         } catch {
             logger.report("Error when posting coins", error: error)
+            response = nil
+        }
+        
+        guard await cache.messageAgeAllowsResponding(
+            channelId: event.channel_id,
+            messageId: event.message_id
+        ) else { return }
+        
+        guard let response = response else {
             await respond(
                 with: "Oops. Something went wrong! Please try again later",
                 senderName: nil,
                 isAFailureMessage: true
             )
-            return
+            return 
         }
         
         let senderName = member.nick ?? user.username
@@ -187,21 +196,18 @@ actor ReactionCache {
     var channelWithLastThanksMessage: [String: (String, String, [String])] = [:]
     /// `[ReceiverMessageID: (OriginalChannelID, PennyResponseMessageID, [SenderUsers])]`
     var thanksChannelForcedMessages: [String: (String, String, [String])] = [:]
+    let logger = Logger(label: "ReactionCache")
     
     private init() { }
     
     static var shared = ReactionCache()
     
     /// Returns author of the message.
-    fileprivate func getAuthorId(
-        channelId: String,
-        messageId: String,
-        logger: Logger
-    ) async -> String? {
+    fileprivate func getAuthorId(channelId: String, messageId: String) async -> String? {
         if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
-            guard let message = await DiscordService.shared.getChannelMessage(
+            guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
                 channelId: channelId,
                 messageId: messageId
             ) else {
@@ -230,6 +236,22 @@ actor ReactionCache {
         toAuthorOfMessage messageId: String
     ) -> Bool {
         givenCoins.insert([senderId, messageId]).inserted
+    }
+    
+    /// Message have been created within last week,
+    /// or we don't send a thanks response for it so it's less spammy.
+    func messageAgeAllowsResponding(channelId: String, messageId: String) async -> Bool {
+        guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
+            channelId: channelId,
+            messageId: messageId
+        ) else {
+            logger.error("ReactionCache could not find a message's author id", metadata: [
+                "channelId": .string(channelId),
+                "messageId": .string(messageId),
+            ])
+            return false
+        }
+        return message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60)
     }
     
     fileprivate func didRespond(
