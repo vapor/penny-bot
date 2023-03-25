@@ -195,8 +195,9 @@ struct AddSponsorHandler: LambdaHandler {
         role: SponsorType,
         context: LambdaContext
     ) async throws {
+        let userDiscordID = userDiscordID.makePlainID()
         // Try removing role from user
-        let removeRoleResponse = try await discordClient.removeGuildMemberRole(
+        let removeRoleResponse = try await discordClient.deleteGuildMemberRole(
             guildId: Constants.guildID,
             userId: userDiscordID,
             roleId: SponsorType.backer.roleID
@@ -321,5 +322,16 @@ extension ByteBuffer? {
             return "empty"
         }
         return String(buffer: self)
+    }
+}
+
+extension String {
+    /// Turns IDs like `<@231391239>` to `231391239` like Discord expects.
+    func makePlainID() -> String {
+        if self.hasPrefix("<") && self.hasSuffix(">") {
+            return String(self.dropFirst(2).dropLast())
+        } else {
+            return self
+        }
     }
 }
