@@ -70,7 +70,7 @@ struct ReactionHandler {
                 senderName: nil,
                 isAFailureMessage: true
             )
-            return 
+            return
         }
         
         let senderName = member.nick ?? user.username
@@ -207,14 +207,10 @@ actor ReactionCache {
         if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
-            guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
+            guard let message = await self.getMessage(
                 channelId: channelId,
                 messageId: messageId
             ) else {
-                logger.error("ReactionCache could not find a message's author id", metadata: [
-                    "channelId": .string(channelId),
-                    "messageId": .string(messageId),
-                ])
                 return nil
             }
             if let authorId = message.author?.id {
@@ -241,6 +237,13 @@ actor ReactionCache {
     /// Message have been created within last week,
     /// or we don't send a thanks response for it so it's less spammy.
     func messageAgeAllowsResponding(channelId: String, messageId: String) async -> Bool {
+        guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
+            return false
+        }
+        return message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60)
+    }
+    
+    func getMessage(channelId: String, messageId: String) async -> Gateway.MessageCreate? {
         guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
             channelId: channelId,
             messageId: messageId
@@ -249,9 +252,9 @@ actor ReactionCache {
                 "channelId": .string(channelId),
                 "messageId": .string(messageId),
             ])
-            return false
+            return nil
         }
-        return message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60)
+        return message
     }
     
     fileprivate func didRespond(

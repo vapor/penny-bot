@@ -22,6 +22,7 @@ struct MessageHandler {
         if event.author?.bot == true { return }
         
         await checkForNewCoins()
+        await checkForGuildSubscriptionCoins()
         await checkForPings()
     }
     
@@ -88,6 +89,43 @@ struct MessageHandler {
             } else {
                 await self.respondToThanks(with: finalResponse, isAFailureMessage: false)
             }
+        }
+    }
+    
+    /// Like server boosts.
+    func checkForGuildSubscriptionCoins() async {
+        guard event.type == .userPremiumGuildSubscription else { return }
+        
+        guard let author = event.author else {
+            logger.error("Cannot find author of the message")
+            return
+        }
+        
+        let authorId = "<@\(author.id)>"
+        let amount = 10
+        let coinRequest = CoinRequest.AddCoin(
+            // Possible to make this a variable later to include in the thanks message
+            amount: amount,
+            /// From Guild-ID because it's not an actual user who gave the coins.
+            from: "<@\(Constants.vaporGuildId)>",
+            receiver: authorId,
+            source: .discord,
+            reason: .userProvided
+        )
+        do {
+            let response = try await self.coinService.postCoin(with: coinRequest)
+            await self.respondToThanks(
+                with: """
+                \(authorId) Thanks for the Server Boost \(Constants.vaporLoveEmoji)!
+                You now have \(amount) more \(Constants.vaporCoinEmoji) for a total of \(response.coins) \(Constants.vaporCoinEmoji)!
+                """,
+                isAFailureMessage: false
+            )
+        } catch {
+            logger.report("CoinService failed", error: error, metadata: [
+                "request": "\(coinRequest)"
+            ])
+            /// Don't send a message at all in case of failure
         }
     }
     

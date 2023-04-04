@@ -15,6 +15,7 @@ enum Constants {
     static var apiBaseUrl: String! = env("API_BASE_URL")
     /// Vapor's custom coin emoji in Discord's format.
     static let vaporCoinEmoji = DiscordUtils.customEmoji(name: "coin", id: "473588485962596352")
+    static let vaporLoveEmoji = DiscordUtils.customEmoji(name: "vaporlove", id: "656303356280832062")
     
     enum Roles: String {
         case nitroBooster = "621412660973535233"

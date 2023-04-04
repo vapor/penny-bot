@@ -871,5 +871,62 @@
             "application_id": "1016612301262041098",
             "app_permissions": "1071698665025"
         }
+    },
+    "serverBoost": {
+        "t": "MESSAGE_CREATE",
+        "s": 2379,
+        "op": 0,
+        "d": {
+            "type": 8,
+            "tts": false,
+            "timestamp": "2023-04-03T17:25:41.251000+00:00",
+            "pinned": false,
+            "mentions": [],
+            "mention_roles": [],
+            "mention_everyone": false,
+            "member": {
+                "user": {
+                    "username": "0xTim",
+                    "public_flags": 0,
+                    "id": "432065887202181142",
+                    "discriminator": "1157",
+                    "avatar_decoration": null,
+                    "avatar": "800bfcd31ae4a77f61646226df46c204"
+                },
+                "roles": [
+                    "431920712505098240",
+                    "431919254372089857",
+                    "431920836631592980",
+                    "530113860129259521",
+                    "621412660973535233"
+                ],
+                "premium_since": null,
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2018-04-07T06:37:33.724000+00:00",
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "id": "1092500182798708847",
+            "flags": 0,
+            "embeds": [],
+            "edited_timestamp": null,
+            "content": "",
+            "components": [],
+            "channel_id": "435925514906238976",
+            "author": {
+                "username": "0xTim",
+                "public_flags": 0,
+                "id": "432065887202181142",
+                "discriminator": "1157",
+                "avatar_decoration": null,
+                "avatar": "800bfcd31ae4a77f61646226df46c204"
+            },
+            "attachments": [],
+            "guild_id": "431917998102675485"
+        }
     }
 }

@@ -346,6 +346,23 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)!")
         }
     }
+    
+    func testServerBoostCoins() async throws {
+        let response = try await manager.sendAndAwaitResponse(
+            key: .serverBoost,
+            as: RequestBody.CreateMessage.self
+        )
+        let message = try XCTUnwrap(response.embeds?.first?.description)
+        XCTAssertTrue(
+            message.hasPrefix(
+                """
+                <@432065887202181142> Thanks for the Server Boost \(Constants.vaporLoveEmoji)!
+                You now have 10 more \(Constants.vaporCoinEmoji) for a total of
+                """
+            )
+        )
+        XCTAssertTrue(message.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+    }
 }
 
 private extension DiscordTimestamp {
