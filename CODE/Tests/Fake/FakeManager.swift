@@ -1,6 +1,6 @@
 import DiscordBM
 @testable import PennyBOT
-@preconcurrency import Atomics
+import Atomics
 import struct NIOCore.ByteBuffer
 import XCTest
 
