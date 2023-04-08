@@ -25,7 +25,12 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
-        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.44"),
+        /// Pinning DiscordBM to the latest release/commit since it's in beta.
+        /// You can pin it to the newest version if you want.
+        .package(
+            url: "https://github.com/mahdibm/DiscordBM.git",
+            revision: "5226d0eadad6ae82eca260d42cfae5cb91f09008"
+        ),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
