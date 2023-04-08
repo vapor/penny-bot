@@ -57,9 +57,9 @@ private extension RequestBody.ApplicationCommandCreate {
     static let expressionModeOption: ApplicationCommand.Option = .init(
         type: .string,
         name: "mode",
-        description: "The expression mode for the entered texts. Defaults to '\(ExpressionMode.default.rawValue.capitalized)'",
+        description: "The expression mode. Defaults to '\(ExpressionMode.default.rawValue)'",
         choices: ExpressionMode.allCases.map(\.rawValue).map {
-            .init(name: $0.capitalized, value: .string($0))
+            .init(name: $0, value: .string($0))
         }
     )
     

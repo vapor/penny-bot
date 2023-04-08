@@ -105,7 +105,7 @@ struct InteractionHandler {
                     return oops
                 }
                 
-                guard let mode = self.getExpressionModeOrReport(options: options) else {
+                guard let mode = self.getExpressionModeOrReport(options: first.options) else {
                     return oops
                 }
                 
@@ -166,7 +166,7 @@ struct InteractionHandler {
                     return oops
                 }
                 
-                guard let mode = self.getExpressionModeOrReport(options: options) else {
+                guard let mode = self.getExpressionModeOrReport(options: first.options) else {
                     return oops
                 }
                 
@@ -216,13 +216,13 @@ struct InteractionHandler {
                 }
             case .test:
                 guard let options = first.options,
-                      options.count > 1,
+                      !options.isEmpty,
                       let message = options.first(where: { $0.name == "message" })?.value?.asString
                 else {
                     logger.error("Discord did not send required info")
                     return oops
                 }
-                guard let mode = self.getExpressionModeOrReport(options: options) else {
+                guard let mode = self.getExpressionModeOrReport(options: first.options) else {
                     return oops
                 }
                 
@@ -317,8 +317,8 @@ struct InteractionHandler {
         }
     }
     
-    func getExpressionModeOrReport(options: [InteractionOption]) -> ExpressionMode? {
-        if let _mode = options.first(where: { $0.name == "mode" })?.value?.asString {
+    func getExpressionModeOrReport(options: [InteractionOption]?) -> ExpressionMode? {
+        if let _mode = options?.first(where: { $0.name == "mode" })?.value?.asString {
             if let mode = ExpressionMode(rawValue: _mode) {
                 return mode
             } else {
@@ -480,11 +480,11 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
-    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(ExpressionMode.default.rawValue.capitalized)'.
+    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(ExpressionMode.default.rawValue)'.
     
     - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
     
-    - All texts are ***space-sensitive*.
+    - All texts are **space-sensitive**.
     
     > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
     
