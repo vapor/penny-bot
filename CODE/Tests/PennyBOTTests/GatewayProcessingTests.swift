@@ -285,7 +285,7 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
             /// Check to make sure the expected ping-words are mentioned in the message
             XCTAssertTrue(message.contains("mongodb driver"), message)
-            containedGodbDr = message.contains("\"godb dr\"")
+            containedGodbDr = message.contains(#""godb dr""#)
         }
         
         do {
@@ -301,7 +301,7 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
             /// Check to make sure the expected ping-words are mentioned in the message
             XCTAssertTrue(message.contains("mongodb driver"), message)
-            containedGodbDr = message.contains("\"godb dr\"")
+            containedGodbDr = message.contains(#""godb dr""#)
         }
         
         XCTAssertTrue(
