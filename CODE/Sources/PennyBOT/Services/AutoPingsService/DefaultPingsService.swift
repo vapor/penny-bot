@@ -23,27 +23,27 @@ actor DefaultPingsService: AutoPingsService {
         self.setUpResetItemsTask()
     }
     
-    func exists(text: String, forDiscordID id: String) async throws -> Bool {
-        try await self.getAll().items[.text(text)]?.contains(id) ?? false
+    func exists(expression: Expression, forDiscordID id: String) async throws -> Bool {
+        try await self.getAll().items[expression]?.contains(id) ?? false
     }
     
-    func insert(_ texts: [String], forDiscordID id: String) async throws {
+    func insert(_ expressions: [Expression], forDiscordID id: String) async throws {
         try await self.send(
             pathParameter: "users",
             method: .PUT,
-            pingRequest: .init(discordID: id, texts: texts)
+            pingRequest: .init(discordID: id, expressions: expressions)
         )
     }
     
-    func remove(_ texts: [String], forDiscordID id: String) async throws {
+    func remove(_ expressions: [Expression], forDiscordID id: String) async throws {
         try await self.send(
             pathParameter: "users",
             method: .DELETE,
-            pingRequest: .init(discordID: id, texts: texts)
+            pingRequest: .init(discordID: id, expressions: expressions)
         )
     }
     
-    func get(discordID id: String) async throws -> [S3AutoPingItems.Expression] {
+    func get(discordID id: String) async throws -> [Expression] {
         try await self.getAll()
             .items
             .filter { $0.value.contains(id) }

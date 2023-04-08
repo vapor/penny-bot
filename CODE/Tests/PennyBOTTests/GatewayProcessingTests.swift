@@ -276,12 +276,16 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
         }
         
+        /// Contains `godb dr` in `mongodb driver`
+        var containedGodbDr = false
+        
         do {
             let dmMessage = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
             let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
             /// Check to make sure the expected ping-words are mentioned in the message
             XCTAssertTrue(message.contains("mongodb driver"), message)
+            containedGodbDr = message.contains("\"godb dr\"")
         }
         
         do {
@@ -297,8 +301,13 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
             /// Check to make sure the expected ping-words are mentioned in the message
             XCTAssertTrue(message.contains("mongodb driver"), message)
-            print(message)
+            containedGodbDr = message.contains("\"godb dr\"")
         }
+        
+        XCTAssertTrue(
+            containedGodbDr,
+            #"None of the 2 payloads contained "godb dr". payloads: \#([sendDM1, sendDM2])"#
+        )
         
         let event2 = EventKey.autoPingsTrigger2
         let createDMEndpoint2 = event2.responseEndpoints[0]
@@ -324,6 +333,7 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.contains("blog"), message)
             XCTAssertTrue(message.contains("discord"), message)
             XCTAssertTrue(message.contains("discord-kit"), message)
+            XCTAssertTrue(message.contains(#""cord""#), message)
         }
     }
     

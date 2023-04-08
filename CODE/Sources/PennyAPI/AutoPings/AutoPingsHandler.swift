@@ -50,7 +50,7 @@ struct AutoPingsHandler: LambdaHandler {
                 do {
                     let request: AutoPingRequest = try event.bodyObject()
                     newItems = try await pingsRepo.insert(
-                        expressions: request.texts.map { .text($0) },
+                        expressions: request.expressions,
                         forDiscordID: request.discordID
                     )
                 } catch {
@@ -65,7 +65,7 @@ struct AutoPingsHandler: LambdaHandler {
                 do {
                     let request: AutoPingRequest = try event.bodyObject()
                     newItems = try await pingsRepo.remove(
-                        expressions: request.texts.map { .text($0) },
+                        expressions: request.expressions,
                         forDiscordID: request.discordID
                     )
                 } catch {

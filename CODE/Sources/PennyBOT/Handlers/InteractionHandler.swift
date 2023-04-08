@@ -1,5 +1,6 @@
 import DiscordBM
 import Logging
+import PennyModels
 
 private enum Configuration {
     static let autoPingsMaxLimit = 100
@@ -16,6 +17,8 @@ struct InteractionHandler {
     var discordService: DiscordService { .shared }
     
     let oops = "Oopsie Woopsie... Something went wrong :("
+    
+    typealias InteractionOption = Interaction.ApplicationCommand.Option
     
     init(event: Interaction, coinService: any CoinService) {
         self.event = event
@@ -50,7 +53,7 @@ struct InteractionHandler {
         }
     }
     
-    func handleLinkCommand(options: [Interaction.ApplicationCommand.Option]) -> String {
+    func handleLinkCommand(options: [InteractionOption]) -> String {
         if options.isEmpty {
             logger.error("Discord did not send required info")
             return oops
@@ -73,7 +76,7 @@ struct InteractionHandler {
         }
     }
     
-    func handlePingsCommand(options: [Interaction.ApplicationCommand.Option]) async -> String {
+    func handlePingsCommand(options: [InteractionOption]) async -> String {
         guard let member = event.member else {
             logger.error("Discord did not send required info")
             return oops
@@ -101,21 +104,26 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return oops
                 }
-                let allTexts = _text.divideIntoAutoPingsTexts()
                 
-                if allTexts.isEmpty {
+                guard let mode = self.getExpressionModeOrReport(options: options) else {
+                    return oops
+                }
+                
+                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+                
+                if allExpressions.isEmpty {
                     return "The list you sent seems to be empty."
                 }
                 
-                let (existingTexts, newTexts) = try await allTexts.divide {
-                    try await pingsService.exists(text: $0, forDiscordID: discordId)
+                let (existingExpressions, newExpressions) = try await allExpressions.divide {
+                    try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
                 
-                let tooShorts = newTexts.filter({ $0.unicodeScalars.count < 3 })
+                let tooShorts = newExpressions.filter({ $0.innerValue.unicodeScalars.count < 3 })
                 if !tooShorts.isEmpty {
                     return """
                     Some texts are less than 3 letters, which is not acceptable:
-                    \(tooShorts.makeEnumeratedListForDiscord())
+                    \(tooShorts.makeExpressionListForDiscord())
                     """
                 }
                 
@@ -123,29 +131,29 @@ struct InteractionHandler {
                 let limit = await discordService.memberHasRolesForElevatedPublicCommandsAccess(
                     member: member
                 ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
-                if newTexts.count + current.count > limit {
-                    return "You currently have \(current.count) texts and you want to add \(newTexts.count) more, but you have a limit of \(limit) texts."
+                if newExpressions.count + current.count > limit {
+                    return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
                 }
                 
-                /// Still try to insert `allTexts` just incase our data is out of sync
-                try await pingsService.insert(allTexts, forDiscordID: discordId)
+                /// Still try to insert `allExpressions` just incase our data is out of sync
+                try await pingsService.insert(allExpressions, forDiscordID: discordId)
                 
                 var components = [String]()
                 
-                if !newTexts.isEmpty {
+                if !newExpressions.isEmpty {
                     components.append(
                         """
                         Successfully added the followings to your pings-list:
-                        \(newTexts.makeSortedEnumeratedListForDiscord())
+                        \(newExpressions.makeExpressionListForDiscord())
                         """
                     )
                 }
                 
-                if !existingTexts.isEmpty {
+                if !existingExpressions.isEmpty {
                     components.append(
                         """
-                        Some texts were already available in your pings list:
-                        \(existingTexts.makeSortedEnumeratedListForDiscord())
+                        Some expressions were already available in your pings list:
+                        \(existingExpressions.makeExpressionListForDiscord())
                         """
                     )
                 }
@@ -157,66 +165,78 @@ struct InteractionHandler {
                     logger.error("Discord did not send required info")
                     return oops
                 }
-                let allTexts = _text.divideIntoAutoPingsTexts()
                 
-                if allTexts.isEmpty {
+                guard let mode = self.getExpressionModeOrReport(options: options) else {
+                    return oops
+                }
+                
+                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+                
+                if allExpressions.isEmpty {
                     return "The list you sent seems to be empty."
                 }
                 
-                let (existingTexts, newTexts) = try await allTexts.divide {
-                    try await pingsService.exists(text: $0, forDiscordID: discordId)
+                let (existingExpressions, newExpressions) = try await allExpressions.divide {
+                    try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
                 
-                /// Still try to remove `allTexts` incase out data is out of sync
-                try await pingsService.remove(allTexts, forDiscordID: discordId)
+                /// Still try to remove `allExpressions` incase out data is out of sync
+                try await pingsService.remove(allExpressions, forDiscordID: discordId)
                 
                 var components = [String]()
                 
-                if !existingTexts.isEmpty {
+                if !existingExpressions.isEmpty {
                     components.append(
                         """
                         Successfully removed the followings from your pings-list:
-                        \(existingTexts.makeSortedEnumeratedListForDiscord())
+                        \(existingExpressions.makeExpressionListForDiscord())
                         """
                     )
                 }
                 
-                if !newTexts.isEmpty {
+                if !newExpressions.isEmpty {
                     components.append(
                         """
-                        Some texts were not available in your pings list at all:
-                        \(newTexts.makeSortedEnumeratedListForDiscord())
+                        Some expressions were not available in your pings list at all:
+                        \(newExpressions.makeExpressionListForDiscord())
                         """
                     )
                 }
                 
                 return components.joined(separator: "\n\n")
             case .list:
-                let items = try await pingsService
-                    .get(discordID: discordId)
-                    .map(\.innerValue)
+                let items = try await pingsService.get(discordID: discordId)
                 if items.isEmpty {
-                    return "You have not set any texts to be pinged for."
+                    return "You have not set any expressions to be pinged for."
                 } else {
                     return """
-                    Your ping texts:
-                    \(items.makeSortedEnumeratedListForDiscord())
+                    Your expressions:
+                    \(items.makeExpressionListForDiscord())
                     """
                 }
             case .test:
                 guard let options = first.options,
-                      options.count > 0,
-                      let _message = options.first(where: { $0.name == "message" }),
-                      let message = _message.value?.asString else {
+                      options.count > 1,
+                      let message = options.first(where: { $0.name == "message" })?.value?.asString
+                else {
                     logger.error("Discord did not send required info")
+                    return oops
+                }
+                guard let mode = self.getExpressionModeOrReport(options: options) else {
                     return oops
                 }
                 
                 if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
-                    let divided = message.divideForPingCommandChecking()
-                    let dividedTexts = _text.divideIntoAutoPingsTexts()
-                    let triggeredTexts = dividedTexts.filter {
-                        MessageHandler.textTriggersPing(dividedForPingCommand: divided, pingText: $0)
+                    let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+                    
+                    let divided = message.divideForPingCommandExactMatchChecking()
+                    let folded = message.foldedForPingCommandContainmentChecking()
+                    let triggeredExpressions = dividedExpressions.filter { exp in
+                        MessageHandler.triggersPing(
+                            dividedForExactMatchChecking: divided,
+                            foldedForContainmentChecking: folded,
+                            expression: exp
+                        )
                     }
                     
                     var response = """
@@ -231,40 +251,43 @@ struct InteractionHandler {
                     
                     """
                     
-                    if dividedTexts.isEmpty {
+                    if dividedExpressions.isEmpty {
                         response += "The texts you entered seems like an empty list to me."
                     } else {
                         response += """
-                        The identified texts are:
-                        \(dividedTexts.makeSortedEnumeratedListForDiscord())
+                        The identified expressions are:
+                        \(dividedExpressions.makeExpressionListForDiscord())
                         
                         
                         """
-                        if triggeredTexts.isEmpty {
-                            response += "The message won't trigger any of the texts above."
+                        if triggeredExpressions.isEmpty {
+                            response += "The message won't trigger any of the expressions above."
                         } else {
                             response += """
-                            The message will trigger these texts:
-                            \(triggeredTexts.makeSortedEnumeratedListForDiscord())
+                            The message will trigger these expressions:
+                            \(triggeredExpressions.makeExpressionListForDiscord())
                             """
                         }
                     }
                     
                     return response
                 } else {
-                    let currentTexts = try await pingsService
-                        .get(discordID: discordId)
-                        .map(\.innerValue)
+                    let currentExpressions = try await pingsService.get(discordID: discordId)
                     
-                    let divided = message.divideForPingCommandChecking()
-                    let triggeredTexts = currentTexts.filter {
-                        MessageHandler.textTriggersPing(dividedForPingCommand: divided, pingText: $0)
+                    let divided = message.divideForPingCommandExactMatchChecking()
+                    let folded = message.foldedForPingCommandContainmentChecking()
+                    let triggeredExpressions = currentExpressions.filter { exp in
+                        MessageHandler.triggersPing(
+                            dividedForExactMatchChecking: divided,
+                            foldedForContainmentChecking: folded,
+                            expression: exp
+                        )
                     }
                     
-                    if currentTexts.isEmpty {
+                    if currentExpressions.isEmpty {
                         return """
                         You pings-list is empty.
-                        Either use the `texts` field, or add some ping-texts.
+                        Either use the `texts` field, or add some expressions.
                         """
                     } else {
                         var response = """
@@ -275,12 +298,12 @@ struct InteractionHandler {
                         
                         """
                         
-                        if triggeredTexts.isEmpty {
-                            response += "The message won't trigger any of your ping-texts."
+                        if triggeredExpressions.isEmpty {
+                            response += "The message won't trigger any of your expressions."
                         } else {
                             response += """
-                            The message will trigger these ping-texts:
-                            \(triggeredTexts.makeSortedEnumeratedListForDiscord())
+                            The message will trigger these ping expressions:
+                            \(triggeredExpressions.makeExpressionListForDiscord())
                             """
                         }
                         
@@ -291,6 +314,19 @@ struct InteractionHandler {
         } catch {
             logger.report("Pings command error", error: error)
             return oops
+        }
+    }
+    
+    func getExpressionModeOrReport(options: [InteractionOption]) -> ExpressionMode? {
+        if let _mode = options.first(where: { $0.name == "mode" })?.value?.asString {
+            if let mode = ExpressionMode(rawValue: _mode) {
+                return mode
+            } else {
+                logger.error("Discord sent invalid ExpressionMode: \(_mode.debugDescription)")
+                return nil
+            }
+        } else {
+            return .default
         }
     }
     
@@ -306,7 +342,7 @@ struct InteractionHandler {
     
     func handleHowManyCoinsCommand(
         author: DiscordUser?,
-        options: [Interaction.ApplicationCommand.Option]
+        options: [InteractionOption]
     ) async -> String {
         let user: String
         if let userOption = options.first?.value?.asString {
@@ -399,6 +435,13 @@ private func escapeCharacters(_ text: String) -> String {
     DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
 }
 
+enum ExpressionMode: String, CaseIterable {
+    case match
+    case contain
+    
+    static let `default`: ExpressionMode = .match
+}
+
 private enum AutoPingsSubCommand: String, CaseIterable {
     case help
     case add
@@ -433,33 +476,44 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
     
-    **Adding Texts**
+    **Adding Expressions**
     
     You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
-    - Penny looks for **exact matches**, but all texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`
+    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(ExpressionMode.default.rawValue.capitalized)'.
+    
+    - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
+    
+    - All texts are ***space-sensitive*.
     
     > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
     
-    **Removing Texts**
+    **Removing Expressions**
     
     You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
     
     **Your Pings List**
     
-    You can use \(command("list")) to see your current ping texts.
+    You can use \(command("list")) to see your current expressions.
     
-    **Testing Ping-Texts**
+    **Testing Expressions**
     
-    You can use \(command("test")) to test if a message triggers some ping texts.
+    You can use \(command("test")) to test if a message triggers some expressions.
     """
 }
 
 private extension String {
-    func divideIntoAutoPingsTexts() -> [String] {
+    func divideIntoAutoPingsExpressions(mode: ExpressionMode) -> [S3AutoPingItems.Expression] {
         self.split(separator: ",")
             .map(String.init)
             .map({ $0.foldForPingCommand() })
-            .filter({ !$0.isEmpty })
+            .filter({ !$0.isEmpty }).map {
+                switch mode {
+                case .match:
+                    return S3AutoPingItems.Expression.match($0)
+                case .contain:
+                    return S3AutoPingItems.Expression.contain($0)
+                }
+            }
     }
 }

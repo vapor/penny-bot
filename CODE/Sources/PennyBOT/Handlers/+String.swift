@@ -1,5 +1,6 @@
 import DiscordBM
 import Foundation
+import PennyModels
 
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
@@ -11,7 +12,7 @@ extension StringProtocol {
             .folding(options: .diacriticInsensitive, locale: nil)
     }
     
-    func divideForPingCommandChecking() -> [[Substring]] {
+    func divideForPingCommandExactMatchChecking() -> [[Substring]] {
         let modified = self.trimmingCharacters(in: .whitespaces)
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
@@ -20,6 +21,12 @@ extension StringProtocol {
         let dividedByPuncs = modified.flatMap { $0.split(whereSeparator: \.isPunctuation) }
         
         return [modified, dividedByPuncs]
+    }
+    
+    func foldedForPingCommandContainmentChecking() -> String {
+        self.trimmingCharacters(in: .whitespaces)
+            .lowercased()
+            .folding(options: .diacriticInsensitive, locale: nil)
     }
 }
 
@@ -57,27 +64,6 @@ extension Sequence<String> {
             let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
             return "**\(idx + 1).** \(escaped)"
         }.joined(separator: "\n")
-    }
-}
-
-extension [String] {
-    func divide(
-        _ isInLhs: (Element) async throws -> Bool
-    ) async rethrows -> (lhs: Self, rhs: Self) {
-        var lhs = ContiguousArray<Element>()
-        var rhs = ContiguousArray<Element>()
-        
-        var iterator = self.makeIterator()
-        
-        while let element = iterator.next() {
-            if try await isInLhs(element) {
-                lhs.append(element)
-            } else {
-                rhs.append(element)
-            }
-        }
-        
-        return (Array(lhs), Array(rhs))
     }
 }
 

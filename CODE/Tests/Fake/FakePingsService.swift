@@ -5,25 +5,25 @@ public struct FakePingsService: AutoPingsService {
     
     public init() { }
     
-    public func exists(text: String, forDiscordID id: String) async throws -> Bool {
+    public func exists(expression: Expression, forDiscordID id: String) async throws -> Bool {
         false
     }
     
-    public func insert(_ texts: [String], forDiscordID id: String) async throws {
+    public func insert(_ expressions: [Expression], forDiscordID id: String) async throws {
         _ = try await FakePingsRepository().insert(
-            expressions: texts.map { .text($0) },
+            expressions: expressions,
             forDiscordID: id
         )
     }
     
-    public func remove(_ texts: [String], forDiscordID id: String) async throws {
+    public func remove(_ expressions: [Expression], forDiscordID id: String) async throws {
         _ = try await FakePingsRepository().remove(
-            expressions: texts.map { .text($0) },
+            expressions: expressions,
             forDiscordID: id
         )
     }
     
-    public func get(discordID id: String) async throws -> [S3AutoPingItems.Expression] {
+    public func get(discordID id: String) async throws -> [Expression] {
         try await FakePingsRepository()
             .getAll()
             .items

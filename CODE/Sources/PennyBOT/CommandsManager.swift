@@ -54,6 +54,15 @@ private extension RequestBody.ApplicationCommandCreate {
         dm_permission: false
     )
     
+    static let expressionModeOption: ApplicationCommand.Option = .init(
+        type: .string,
+        name: "mode",
+        description: "The expression mode for the entered texts. Defaults to '\(ExpressionMode.default.rawValue.capitalized)'",
+        choices: ExpressionMode.allCases.map(\.rawValue).map {
+            .init(name: $0.capitalized, value: .string($0))
+        }
+    )
+    
     static let ping = RequestBody.ApplicationCommandCreate(
         name: "auto-pings",
         description: "Configure Penny to ping you when certain someone uses a word/text",
@@ -67,23 +76,29 @@ private extension RequestBody.ApplicationCommandCreate {
                 type: .subCommand,
                 name: "add",
                 description: "Add multiple texts to be pinged for (Slack compatible)",
-                options: [.init(
-                    type: .string,
-                    name: "texts",
-                    description: "Exact texts to be pinged for, separated by ','. Insensitive to cases, diacritics & punctuations",
-                    required: true
-                )]
+                options: [
+                    .init(
+                        type: .string,
+                        name: "texts",
+                        description: "Exact texts to be pinged for, separated by ','. Insensitive to cases, diacritics & punctuations",
+                        required: true
+                    ),
+                    expressionModeOption
+                ]
             ),
             .init(
                 type: .subCommand,
                 name: "remove",
                 description: "Remove multiple ping texts",
-                options: [.init(
-                    type: .string,
-                    name: "texts",
-                    description: "Texts you don't want to be pinged for anymore, separated by ','",
-                    required: true
-                )]
+                options: [
+                    .init(
+                        type: .string,
+                        name: "texts",
+                        description: "Texts you don't want to be pinged for anymore, separated by ','",
+                        required: true
+                    ),
+                    expressionModeOption
+                ]
             ),
             .init(
                 type: .subCommand,
@@ -105,7 +120,8 @@ private extension RequestBody.ApplicationCommandCreate {
                         type: .string,
                         name: "texts",
                         description: "The texts to be test-triggered"
-                    )
+                    ),
+                    expressionModeOption
                 ]
             )
         ],

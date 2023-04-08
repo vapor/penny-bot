@@ -134,20 +134,23 @@ struct MessageHandler {
         guard let guildId = event.guild_id,
               let authorId = event.author?.id
         else { return }
-        let wordUsersDict: [S3AutoPingItems.Expression: Set<String>]
+        let expUsersDict: [S3AutoPingItems.Expression: Set<String>]
         do {
-            wordUsersDict = try await pingsService.getAll().items
+            expUsersDict = try await pingsService.getAll().items
         } catch {
             logger.report("Can't retrieve ping-words", error: error)
             return
         }
-        let divided = event.content.divideForPingCommandChecking()
+        let divided = event.content.divideForPingCommandExactMatchChecking()
+        let folded = event.content.foldedForPingCommandContainmentChecking()
         /// `[UserID: [PingTrigger]]`
-        var usersToPing: [String: Set<String>] = [:]
-        for word in wordUsersDict.keys {
-            let innerValue = word.innerValue
-            if Self.textTriggersPing(dividedForPingCommand: divided, pingText: innerValue),
-               let users = wordUsersDict[word] {
+        var usersToPing: [String: Set<S3AutoPingItems.Expression>] = [:]
+        for exp in expUsersDict.keys {
+            if Self.triggersPing(
+                dividedForExactMatchChecking: divided,
+                foldedForContainmentChecking: folded,
+                expression: exp
+            ), let users = expUsersDict[exp] {
                 for userId in users {
                     /// Checks if the user is in the guild at all,
                     /// + if the user has read access in the channel at all.
@@ -155,7 +158,7 @@ struct MessageHandler {
                         userId: userId,
                         channelId: event.channel_id
                     ) {
-                        usersToPing[userId, default: []].insert(innerValue)
+                        usersToPing[userId, default: []].insert(exp)
                     }
                 }
             }
@@ -177,7 +180,7 @@ struct MessageHandler {
                         There is a new message that might be of interest to you.
                         
                         Triggered by:
-                        \(words.makeSortedEnumeratedListForDiscord())
+                        \(words.makeExpressionListForDiscord())
                         
                         Message: \(messageLink)
                         """,
@@ -188,12 +191,18 @@ struct MessageHandler {
         }
     }
     
-    static func textTriggersPing(
-        dividedForPingCommand divided: [[Substring]],
-        pingText: String
+    static func triggersPing(
+        dividedForExactMatchChecking: [[Substring]],
+        foldedForContainmentChecking: String,
+        expression: S3AutoPingItems.Expression
     ) -> Bool {
-        let splitValue = pingText.split(whereSeparator: \.isWhitespace)
-        return divided.contains(where: { $0.containsSequence(splitValue) })
+        switch expression {
+        case .match(let match):
+            let splitValue = match.split(whereSeparator: \.isWhitespace)
+            return dividedForExactMatchChecking.contains(where: { $0.containsSequence(splitValue) })
+        case .contain(let contain):
+            return foldedForContainmentChecking.contains(contain)
+        }
     }
     
     private func respondToThanks(with response: String, isAFailureMessage: Bool) async {

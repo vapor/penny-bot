@@ -71,20 +71,40 @@ class OtherTests: XCTestCase {
     func testAutoPingItemExpressionCodable() throws {
         typealias Expression = S3AutoPingItems.Expression
         
-        let exp = Expression.text("Hello-world")
-        let encoder = JSONEncoder()
-        let encoded = try encoder.encode(exp)
-        let string = try XCTUnwrap(String(data: encoded, encoding: .utf8))
+        do { /// Expression.text
+            let exp = Expression.match("Hello-world")
+            let encoder = JSONEncoder()
+            let encoded = try encoder.encode(exp)
+            let string = try XCTUnwrap(String(data: encoded, encoding: .utf8))
+            
+            XCTAssertEqual(string, #""T-Hello-world""#)
+            
+            let decoder = JSONDecoder()
+            let decoded = try decoder.decode(Expression.self, from: encoded)
+            
+            switch decoded {
+            case .match("Hello-world"): break
+            default:
+                XCTFail("\(Expression.self) decoded wrong value: \(decoded)")
+            }
+        }
         
-        XCTAssertEqual(string, #""T-Hello-world""#)
-        
-        let decoder = JSONDecoder()
-        let decoded = try decoder.decode(Expression.self, from: encoded)
-        
-        switch decoded {
-        case .text("Hello-world"): break
-        default:
-            XCTFail("\(Expression.self) decoded wrong value: \(decoded)")
+        do { /// Expression.contain
+            let exp = Expression.contain("Hello-world")
+            let encoder = JSONEncoder()
+            let encoded = try encoder.encode(exp)
+            let string = try XCTUnwrap(String(data: encoded, encoding: .utf8))
+            
+            XCTAssertEqual(string, #""C-Hello-world""#)
+            
+            let decoder = JSONDecoder()
+            let decoded = try decoder.decode(Expression.self, from: encoded)
+            
+            switch decoded {
+            case .contain("Hello-world"): break
+            default:
+                XCTFail("\(Expression.self) decoded wrong value: \(decoded)")
+            }
         }
     }
 }
