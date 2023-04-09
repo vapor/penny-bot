@@ -122,7 +122,7 @@ struct MessageHandler {
                 isAFailureMessage: false
             )
         } catch {
-            logger.report("CoinService failed", error: error, metadata: [
+            logger.report("CoinService failed for server boost thanks", error: error, metadata: [
                 "request": "\(coinRequest)"
             ])
             /// Don't send a message at all in case of failure
@@ -170,8 +170,14 @@ struct MessageHandler {
         /// If at some point this start to be hitting rate-limits,
         /// we can just wait 1-2s before sending each message.
         for (userId, words) in usersToPing {
-            /// Don't `@` someone for their own message.
-            if userId == authorId { continue }
+            /// Identify if this could be a test message.
+            let mightBeATestMessage = userId == Constants.botDevUserId
+            && event.channel_id == Constants.logsChannelId
+            
+            if !mightBeATestMessage {
+                /// Don't `@` someone for their own message.
+                if userId == authorId && userId != Constants.botDevUserId { continue }
+            }
             await DiscordService.shared.sendDM(
                 userId: userId,
                 payload: .init(
