@@ -276,17 +276,11 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
         }
         
-        /// Contains `godb dr` in `mongodb driver`
-        var containedGodbDr = false
-        
-        do {
-            let dmMessage = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
-            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
-            /// Check to make sure the expected ping-words are mentioned in the message
-            XCTAssertTrue(message.contains("mongodb driver"), message)
-            containedGodbDr = message.contains(#""godb dr""#)
-        }
+        let dmMessage1 = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
+        let message1 = try XCTUnwrap(dmMessage1.embeds?.first?.description)
+        XCTAssertTrue(message1.hasPrefix("There is a new message"), message1)
+        /// Check to make sure the expected ping-words are mentioned in the message
+        XCTAssertTrue(message1.contains("mongodb driver"), message1)
         
         do {
             /// These two must not fail. The user does not have any
@@ -295,18 +289,16 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
         }
         
-        do {
-            let dmMessage = try XCTUnwrap(sendDM2 as? RequestBody.CreateMessage, "\(sendDM1)")
-            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
-            /// Check to make sure the expected ping-words are mentioned in the message
-            XCTAssertTrue(message.contains("mongodb driver"), message)
-            containedGodbDr = message.contains(#""godb dr""#)
-        }
+        let dmMessage2 = try XCTUnwrap(sendDM2 as? RequestBody.CreateMessage, "\(sendDM1)")
+        let message2 = try XCTUnwrap(dmMessage2.embeds?.first?.description)
+        XCTAssertTrue(message2.hasPrefix("There is a new message"), message2)
+        /// Check to make sure the expected ping-words are mentioned in the message
+        XCTAssertTrue(message2.contains("mongodb driver"), message2)
         
+        /// Contains `godb dr` in `mongodb driver`
         XCTAssertTrue(
-            containedGodbDr,
-            #"None of the 2 payloads contained "godb dr". payloads: \#([sendDM1, sendDM2])"#
+            [message1, message2].contains(where: { $0.contains(#""godb dr""#) }),
+            #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
         )
         
         let event2 = EventKey.autoPingsTrigger2

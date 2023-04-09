@@ -165,18 +165,18 @@ struct MessageHandler {
         }
         
         let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
-        /// For now don't need to worry about rate-limits, `DiscordBM` will
-        /// do enough and will try to not exceed them.
-        /// If at some point this start to be hitting rate-limits,
+        /// For now we don't need to worry about Discord rate-limits,
+        /// `DiscordBM` will do enough and will try to not exceed them.
+        /// If at some point this starts to hit rate-limits,
         /// we can just wait 1-2s before sending each message.
         for (userId, words) in usersToPing {
-            /// Identify if this could be a test message.
+            /// Identify if this could be a test message by the bot-dev.
             let mightBeATestMessage = userId == Constants.botDevUserId
             && event.channel_id == Constants.logsChannelId
             
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.
-                if userId == authorId && userId != Constants.botDevUserId { continue }
+                if userId == authorId { continue }
             }
             await DiscordService.shared.sendDM(
                 userId: userId,
