@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.8
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -27,10 +27,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         /// Pinning DiscordBM to the latest release/commit since it's in beta.
         /// You can pin it to the newest version if you want.
-        .package(
-            url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "5226d0eadad6ae82eca260d42cfae5cb91f09008"
-        ),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.45"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")

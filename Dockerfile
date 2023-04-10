@@ -1,4 +1,4 @@
-FROM swift:5.7-jammy as build
+FROM swift:5.8-jammy as build
 
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \

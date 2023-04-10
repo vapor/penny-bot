@@ -295,7 +295,8 @@ class GatewayProcessingTests: XCTestCase {
         /// Check to make sure the expected ping-words are mentioned in the message
         XCTAssertTrue(message2.contains("mongodb driver"), message2)
         
-        /// Contains `godb dr` in `mongodb driver`
+        /// Contains `godb dr` (part of `mongodb driver`).
+        /// Tests `Expression.contain("godb dr")`.
         XCTAssertTrue(
             [message1, message2].contains(where: { $0.contains(#""godb dr""#) }),
             #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
