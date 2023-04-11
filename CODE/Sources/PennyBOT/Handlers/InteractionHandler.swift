@@ -374,9 +374,8 @@ struct InteractionHandler {
         await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .init(
-                type: .deferredChannelMessageWithSource,
-                data: isEphemeral ? .init(flags: [.ephemeral]) : nil
+            payload: .deferredChannelMessageWithSource(
+                isEphemeral ? .init(flags: [.ephemeral]) : nil
             )
         )
     }
@@ -385,13 +384,13 @@ struct InteractionHandler {
         await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .init(
-                type: .channelMessageWithSource,
-                data: .init(embeds: [.init(
+            payload: .channelMessageWithSource(.init(
+                embeds: [.init(
                     description: "Failed to resolve the interaction name :(",
                     color: .vaporPurple
-                )], flags: [.ephemeral])
-            )
+                )],
+                flags: [.ephemeral]
+            ))
         )
     }
     

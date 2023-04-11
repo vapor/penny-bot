@@ -70,8 +70,10 @@ class GatewayProcessingTests: XCTestCase {
             key: .linkInteraction,
             as: RequestBody.InteractionResponse.CallbackData.self
         )
-        
-        let description = try XCTUnwrap(response.embeds?.first?.description)
+        guard case let .message(_message) = response else {
+            return XCTFail("\(response) was not a '.message()'")
+        }
+        let description = try XCTUnwrap(_message.embeds?.first?.description)
         XCTAssertEqual(description, "This command is still a WIP. Linking Discord with Discord ID 9123813923")
     }
     
@@ -336,7 +338,10 @@ class GatewayProcessingTests: XCTestCase {
                 key: .howManyCoins1,
                 as: RequestBody.InteractionResponse.CallbackData.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
+            guard case let .message(_message) = response else {
+                return XCTFail("\(response) was not a '.message()'")
+            }
+            let message = try XCTUnwrap(_message.embeds?.first?.description)
             XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.vaporCoinEmoji)!")
         }
         
@@ -345,7 +350,10 @@ class GatewayProcessingTests: XCTestCase {
                 key: .howManyCoins2,
                 as: RequestBody.InteractionResponse.CallbackData.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
+            guard case let .message(_message) = response else {
+                return XCTFail("\(response) was not a '.message()'")
+            }
+            let message = try XCTUnwrap(_message.embeds?.first?.description)
             XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)!")
         }
     }
