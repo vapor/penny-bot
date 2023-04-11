@@ -55,10 +55,6 @@ extension String {
 }
 
 extension Sequence<String> {
-    func makeSortedEnumeratedListForDiscord() -> String {
-        self.sorted().makeEnumeratedListForDiscord()
-    }
-    
     func makeEnumeratedListForDiscord() -> String {
         self.enumerated().map { idx, text -> String in
             let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
