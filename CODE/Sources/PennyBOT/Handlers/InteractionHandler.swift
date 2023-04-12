@@ -191,7 +191,8 @@ private extension InteractionHandler {
                     return oops
                 }
 
-                if let _text = textInput.value {
+                if let _text = textInput.value,
+                    !_text.trimmingCharacters(in: .whitespaces).isEmpty {
                     let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
                     let divided = message.divideForPingCommandExactMatchChecking()
