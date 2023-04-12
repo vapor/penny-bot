@@ -68,12 +68,9 @@ class GatewayProcessingTests: XCTestCase {
     func testLinkCommand() async throws {
         let response = try await self.manager.sendAndAwaitResponse(
             key: .linkInteraction,
-            as: Payloads.InteractionResponse.CallbackData.self
+            as: Payloads.EditWebhookMessage.self
         )
-        guard case let .message(_message) = response else {
-            return XCTFail("\(response) was not a '.message()'")
-        }
-        let description = try XCTUnwrap(_message.embeds?.first?.description)
+        let description = try XCTUnwrap(response.embeds?.first?.description)
         XCTAssertEqual(description, "This command is still a WIP. Linking Discord with Discord ID '9123813923'")
     }
     
@@ -336,24 +333,18 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .howManyCoins1,
-                as: Payloads.InteractionResponse.CallbackData.self
+                as: Payloads.EditWebhookMessage.self
             )
-            guard case let .message(_message) = response else {
-                return XCTFail("\(response) was not a '.message()'")
-            }
-            let message = try XCTUnwrap(_message.embeds?.first?.description)
+            let message = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.vaporCoinEmoji)!")
         }
         
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .howManyCoins2,
-                as: Payloads.InteractionResponse.CallbackData.self
+                as: Payloads.EditWebhookMessage.self
             )
-            guard case let .message(_message) = response else {
-                return XCTFail("\(response) was not a '.message()'")
-            }
-            let message = try XCTUnwrap(_message.embeds?.first?.description)
+            let message = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.vaporCoinEmoji)!")
         }
     }
