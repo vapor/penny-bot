@@ -420,7 +420,7 @@ private extension InteractionHandler {
         await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .deferredUpdateMessage(
+            payload: .deferredChannelMessageWithSource(
                 isEphemeral ? .init(flags: [.ephemeral]) : nil
             )
         )
