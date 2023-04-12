@@ -43,7 +43,6 @@ struct InteractionHandler {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
             }
-            guard await sendAcknowledgement(isEphemeral: true) else { return }
             let response: any Response
             do {
                 response = try await makeResponseForModal(modal: modal, modalId: modalId)
@@ -51,7 +50,7 @@ struct InteractionHandler {
                 logger.report("Failed to generate modal response", error: error)
                 response = oops
             }
-            await respond(with: response, shouldEdit: true)
+            await respond(with: response, shouldEdit: false, forceEphemeral: true)
         default:
             logger.error("Unrecognized command")
             return await sendInteractionResolveFailure()
@@ -441,9 +440,14 @@ private extension InteractionHandler {
         )
     }
     
-    private func respond(with response: any Response, shouldEdit: Bool) async {
+    private func respond(
+        with response: any Response,
+        shouldEdit: Bool,
+        forceEphemeral: Bool = false
+    ) async {
         if shouldEdit {
-            guard let data = response.makeResponse().data else {
+            /// Edits can't change the 'ephemeral' status of a message
+            guard let data = response.makeResponse(isEphemeral: false).data else {
                 logger.error("Can't edit a response with empty data", metadata: [
                     "response": "\(response)"
                 ])
@@ -454,7 +458,7 @@ private extension InteractionHandler {
             await discordService.respondToInteraction(
                 id: event.id,
                 token: event.token,
-                payload: response.makeResponse()
+                payload: response.makeResponse(isEphemeral: forceEphemeral)
             )
         }
     }
@@ -640,20 +644,20 @@ private extension String {
 
 /// MARK: - Response
 private protocol Response {
-    func makeResponse() -> RequestBody.InteractionResponse
+    func makeResponse(isEphemeral: Bool) -> RequestBody.InteractionResponse
 }
 
 extension String: Response {
-    func makeResponse() -> RequestBody.InteractionResponse {
+    func makeResponse(isEphemeral: Bool) -> RequestBody.InteractionResponse {
         .channelMessageWithSource(.init(embeds: [.init(
             description: self,
             color: .vaporPurple
-        )]))
+        )], flags: isEphemeral ? [.ephemeral] : nil))
     }
 }
 
 extension RequestBody.InteractionResponse.Modal: Response {
-    func makeResponse() -> RequestBody.InteractionResponse {
+    func makeResponse(isEphemeral _: Bool) -> RequestBody.InteractionResponse {
         .modal(self)
     }
 }
