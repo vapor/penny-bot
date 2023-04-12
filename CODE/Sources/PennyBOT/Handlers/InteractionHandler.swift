@@ -36,8 +36,6 @@ struct InteractionHandler {
             if kind.shouldSendAcknowledgment {
                 guard await sendAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
             }
-            /// if `kind.shouldSendAcknowledgment` is false, the commands
-            /// themselves are supposed to send the acknowledgement.
             if let response = await makeResponseForApplicationCommand(kind: kind, data: data) {
                 await respond(with: response, shouldEdit: true)
             }
@@ -460,7 +458,7 @@ private extension InteractionHandler {
         shouldEdit: Bool,
         forceEphemeral: Bool = false
     ) async {
-        if shouldEdit {
+        if shouldEdit, response.isEditable {
             /// Edits can't change the 'ephemeral' status of a message
             guard let data = response.makeResponse(isEphemeral: false).data else {
                 logger.error("Can't edit a response with empty data", metadata: [
@@ -660,6 +658,7 @@ private extension String {
 /// MARK: - Response
 private protocol Response {
     func makeResponse(isEphemeral: Bool) -> RequestBody.InteractionResponse
+    var isEditable: Bool { get }
 }
 
 extension String: Response {
@@ -669,10 +668,15 @@ extension String: Response {
             color: .vaporPurple
         )], flags: isEphemeral ? [.ephemeral] : nil))
     }
+
+    var isEditable: Bool { true }
 }
 
 extension RequestBody.InteractionResponse.Modal: Response {
     func makeResponse(isEphemeral _: Bool) -> RequestBody.InteractionResponse {
         .modal(self)
     }
+
+    /// Responses containing a modal can't be an edit to another message.
+    var isEditable: Bool { false }
 }

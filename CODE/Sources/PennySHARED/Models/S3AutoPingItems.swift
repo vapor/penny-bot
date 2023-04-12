@@ -28,9 +28,9 @@ public struct S3AutoPingItems: Sendable, Codable {
         public var UIDescription: String {
             switch self {
             case let .match(match):
-                return #"match("\#(match)")"#
+                return #"matches("\#(match)")"#
             case let .contain(contain):
-                return #"contain("\#(contain)")"#
+                return #"contains("\#(contain)")"#
             }
         }
         
