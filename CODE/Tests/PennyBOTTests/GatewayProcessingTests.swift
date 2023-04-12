@@ -65,7 +65,7 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
     }
     
-    func testInteractionHandler() async throws {
+    func testLinkCommand() async throws {
         let response = try await self.manager.sendAndAwaitResponse(
             key: .linkInteraction,
             as: RequestBody.InteractionResponse.CallbackData.self
@@ -74,7 +74,7 @@ class GatewayProcessingTests: XCTestCase {
             return XCTFail("\(response) was not a '.message()'")
         }
         let description = try XCTUnwrap(_message.embeds?.first?.description)
-        XCTAssertEqual(description, "This command is still a WIP. Linking Discord with Discord ID 9123813923")
+        XCTAssertEqual(description, "This command is still a WIP. Linking Discord with Discord ID '9123813923'")
     }
     
     func testReactionHandler() async throws {

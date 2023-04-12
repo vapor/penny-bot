@@ -57,7 +57,8 @@ private extension RequestBody.ApplicationCommandCreate {
     static let expressionModeOption: ApplicationCommand.Option = .init(
         type: .string,
         name: "mode",
-        description: "The expression mode. Defaults to '\(ExpressionMode.default.rawValue)'",
+        description: "The expression mode. Use '\(ExpressionMode.default.rawValue)' by default",
+        required: true,
         choices: ExpressionMode.allCases.map(\.rawValue).map {
             .init(name: $0, value: .string($0))
         }
@@ -76,29 +77,13 @@ private extension RequestBody.ApplicationCommandCreate {
                 type: .subCommand,
                 name: "add",
                 description: "Add multiple texts to be pinged for (Slack compatible)",
-                options: [
-                    .init(
-                        type: .string,
-                        name: "texts",
-                        description: "Exact texts to be pinged for, separated by ','. Insensitive to cases, diacritics & punctuations",
-                        required: true
-                    ),
-                    expressionModeOption
-                ]
+                options: [expressionModeOption]
             ),
             .init(
                 type: .subCommand,
                 name: "remove",
                 description: "Remove multiple ping texts",
-                options: [
-                    .init(
-                        type: .string,
-                        name: "texts",
-                        description: "Texts you don't want to be pinged for anymore, separated by ','",
-                        required: true
-                    ),
-                    expressionModeOption
-                ]
+                options: [expressionModeOption]
             ),
             .init(
                 type: .subCommand,
@@ -116,12 +101,12 @@ private extension RequestBody.ApplicationCommandCreate {
                         description: "The message that is supposed to trigger the texts",
                         required: true
                     ),
+                    expressionModeOption,
                     .init(
                         type: .string,
                         name: "texts",
                         description: "The texts to be test-triggered"
-                    ),
-                    expressionModeOption
+                    )
                 ]
             )
         ],

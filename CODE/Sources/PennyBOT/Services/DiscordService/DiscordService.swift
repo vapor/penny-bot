@@ -226,12 +226,12 @@ actor DiscordService {
     
     func editInteraction(
         token: String,
-        payload: RequestBody.InteractionResponse.Message
+        payload: RequestBody.InteractionResponse.CallbackData
     ) async {
         do {
             try await discordClient.updateOriginalInteractionResponse(
                 token: token,
-                payload: .message(payload)
+                payload: payload
             ).guardSuccess()
         } catch {
             logger.report("Couldn't send interaction edit", error: error, metadata: [

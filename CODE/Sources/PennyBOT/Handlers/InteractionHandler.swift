@@ -16,7 +16,7 @@ struct InteractionHandler {
     }
     var discordService: DiscordService { .shared }
     
-    let oops = "Oopsie Woopsie... Something went wrong :("
+    private let oops = "Oopsie Woopsie... Something went wrong :("
     
     typealias InteractionOption = Interaction.ApplicationCommand.Option
     
@@ -27,29 +27,176 @@ struct InteractionHandler {
     }
     
     func handle() async {
-        guard case let .applicationCommand(data) = event.data,
-              let kind = CommandKind(name: data.name) else {
+        switch event.data {
+        case let .applicationCommand(data):
+            guard let kind = CommandKind(name: data.name) else {
+                logger.error("Unrecognized command")
+                return await sendInteractionResolveFailure()
+            }
+            if kind.shouldSendAcknowledgment {
+                guard await sendAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
+            }
+            let response = await makeResponseForApplicationCommand(kind: kind, data: data)
+            await respond(with: response, shouldEdit: kind.shouldSendAcknowledgment)
+        case let .modalSubmit(modal):
+            guard let modalId = ModalID(rawValue: modal.custom_id) else {
+                logger.error("Unrecognized command")
+                return await sendInteractionResolveFailure()
+            }
+            guard await sendAcknowledgement(isEphemeral: true) else { return }
+            let response: any Response
+            do {
+                response = try await makeResponseForModal(modal: modal, modalId: modalId)
+            } catch {
+                logger.report("Failed to generate modal response", error: error)
+                response = oops
+            }
+            await respond(with: response, shouldEdit: true)
+        default:
             logger.error("Unrecognized command")
-            return await sendInteractionNameResolveFailure()
+            return await sendInteractionResolveFailure()
         }
-        guard await sendInteractionAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
-        let response = await processAndMakeResponse(kind: kind, data: data)
-        await respond(with: response)
     }
-    
-    private func processAndMakeResponse(
+}
+
+/// MARK: - makeResponseForModal
+private extension InteractionHandler {
+    func makeResponseForModal(
+        modal: Interaction.ModalSubmit,
+        modalId: ModalID
+    ) async throws -> any Response {
+        guard let member = event.member else {
+            logger.error("Discord did not send required info")
+            return oops
+        }
+        guard let discordId = (event.member?.user ?? event.user)?.id else {
+            logger.error("Can't find a user's id")
+            return oops
+        }
+        switch modalId {
+        case let .autoPings(autoPingsMode, mode):
+            guard let component = modal.components.first?.components.first,
+                  case let .textInput(textInput) = component,
+                  let _text = textInput.value else {
+                logger.error("Can't find the texts value")
+                return oops
+            }
+            switch autoPingsMode {
+            case .add:
+                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+
+                if allExpressions.isEmpty {
+                    return "The list you sent seems to be empty."
+                }
+
+                let (existingExpressions, newExpressions) = try await allExpressions.divide {
+                    try await pingsService.exists(expression: $0, forDiscordID: discordId)
+                }
+
+                let tooShorts = newExpressions.filter({ $0.innerValue.unicodeScalars.count < 3 })
+                if !tooShorts.isEmpty {
+                    return """
+                    Some texts are less than 3 letters, which is not acceptable:
+                    \(tooShorts.makeExpressionListForDiscord())
+                    """
+                }
+
+                let current = try await pingsService.get(discordID: discordId)
+                let limit = await discordService.memberHasRolesForElevatedPublicCommandsAccess(
+                    member: member
+                ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
+                if newExpressions.count + current.count > limit {
+                    return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
+                }
+
+                /// Still try to insert `allExpressions` just incase our data is out of sync
+                try await pingsService.insert(allExpressions, forDiscordID: discordId)
+
+                var components = [String]()
+
+                if !newExpressions.isEmpty {
+                    components.append(
+                    """
+                    Successfully added the followings to your pings-list:
+                    \(newExpressions.makeExpressionListForDiscord())
+                    """
+                    )
+                }
+
+                if !existingExpressions.isEmpty {
+                    components.append(
+                        """
+                        Some expressions were already available in your pings list:
+                        \(existingExpressions.makeExpressionListForDiscord())
+                        """
+                    )
+                }
+
+                return components.joined(separator: "\n\n")
+            case .remove:
+                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+
+                if allExpressions.isEmpty {
+                    return "The list you sent seems to be empty."
+                }
+
+                let (existingExpressions, newExpressions) = try await allExpressions.divide {
+                    try await pingsService.exists(expression: $0, forDiscordID: discordId)
+                }
+
+                /// Still try to remove `allExpressions` just incase our data is out of sync
+                try await pingsService.remove(allExpressions, forDiscordID: discordId)
+
+                var components = [String]()
+
+                if !existingExpressions.isEmpty {
+                    components.append(
+                        """
+                        Successfully removed the followings from your pings-list:
+                        \(existingExpressions.makeExpressionListForDiscord())
+                        """
+                    )
+                }
+
+                if !newExpressions.isEmpty {
+                    components.append(
+                        """
+                        Some expressions were not available in your pings list at all:
+                        \(newExpressions.makeExpressionListForDiscord())
+                        """
+                    )
+                }
+
+                return components.joined(separator: "\n\n")
+            }
+        }
+    }
+}
+
+/// MARK: - makeResponseForApplicationCommand
+private extension InteractionHandler {
+    func makeResponseForApplicationCommand(
         kind: CommandKind,
         data: Interaction.ApplicationCommand
-    ) async -> String {
+    ) async -> any Response {
         let options = data.options ?? []
         switch kind {
-        case .link: return handleLinkCommand(options: options)
-        case .autoPings: return await handlePingsCommand(options: options)
-        case .howManyCoins: return await handleHowManyCoinsCommand(
-            author: event.member?.user ?? event.user,
-            options: options
-        )
-        case .howManyCoinsApp: return await handleHowManyCoinsCommand()
+        case .link:
+            return handleLinkCommand(options: options)
+        case .autoPings:
+            do {
+                return try await handlePingsCommand(options: options)
+            } catch {
+                logger.report("Pings command error", error: error)
+                return oops
+            }
+        case .howManyCoins:
+            return await handleHowManyCoinsCommand(
+                author: event.member?.user ?? event.user,
+                options: options
+            )
+        case .howManyCoinsApp:
+            return await handleHowManyCoinsAppCommand()
         }
     }
     
@@ -65,22 +212,18 @@ struct InteractionHandler {
         }
         switch first.name {
         case "discord":
-            return "This command is still a WIP. Linking Discord with Discord ID \(id)"
+            return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
         case "github":
-            return "This command is still a WIP. Linking Discord with Github ID \(id)"
+            return "This command is still a WIP. Linking Discord with Github ID '\(id)'"
         case "slack":
-            return "This command is still a WIP. Linking Discord with Slack ID \(id)"
+            return "This command is still a WIP. Linking Discord with Slack ID '\(id)'"
         default:
             logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
             return oops
         }
     }
     
-    func handlePingsCommand(options: [InteractionOption]) async -> String {
-        guard let member = event.member else {
-            logger.error("Discord did not send required info")
-            return oops
-        }
+    func handlePingsCommand(options: [InteractionOption]) async throws -> any Response {
         guard let discordId = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
             return oops
@@ -93,244 +236,148 @@ struct InteractionHandler {
             logger.error("Unrecognized 'auto-pings' command", metadata: ["name": "\(first.name)"])
             return oops
         }
-        do {
-            switch subcommand {
-            case .help:
-                let allCommands = await discordService.getCommands()
-                return makeAutoPingsHelp(commands: allCommands)
-            case .add:
-                guard let option = first.options?.first,
-                      let _text = option.value?.asString else {
-                    logger.error("Discord did not send required info")
-                    return oops
-                }
-                
-                guard let mode = self.getExpressionModeOrReport(options: first.options) else {
-                    return oops
-                }
-                
-                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
-                
-                if allExpressions.isEmpty {
-                    return "The list you sent seems to be empty."
-                }
-                
-                let (existingExpressions, newExpressions) = try await allExpressions.divide {
-                    try await pingsService.exists(expression: $0, forDiscordID: discordId)
-                }
-                
-                let tooShorts = newExpressions.filter({ $0.innerValue.unicodeScalars.count < 3 })
-                if !tooShorts.isEmpty {
-                    return """
-                    Some texts are less than 3 letters, which is not acceptable:
-                    \(tooShorts.makeExpressionListForDiscord())
-                    """
-                }
-                
-                let current = try await pingsService.get(discordID: discordId)
-                let limit = await discordService.memberHasRolesForElevatedPublicCommandsAccess(
-                    member: member
-                ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
-                if newExpressions.count + current.count > limit {
-                    return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
-                }
-                
-                /// Still try to insert `allExpressions` just incase our data is out of sync
-                try await pingsService.insert(allExpressions, forDiscordID: discordId)
-                
-                var components = [String]()
-                
-                if !newExpressions.isEmpty {
-                    components.append(
-                        """
-                        Successfully added the followings to your pings-list:
-                        \(newExpressions.makeExpressionListForDiscord())
-                        """
+        switch subcommand {
+        case .help:
+            let allCommands = await discordService.getCommands()
+            return makeAutoPingsHelp(commands: allCommands)
+        case .add:
+            guard let mode = self.requireExpressionModeOrReport(first.options) else {
+                return oops
+            }
+            let modalId = ModalID.autoPings(.add, mode)
+            return modalId.makeModal()
+        case .remove:
+            guard let mode = self.requireExpressionModeOrReport(first.options) else {
+                return oops
+            }
+            let modalId = ModalID.autoPings(.remove, mode)
+            return modalId.makeModal()
+        case .list:
+            let items = try await pingsService.get(discordID: discordId)
+            if items.isEmpty {
+                return "You have not set any expressions to be pinged for."
+            } else {
+                return """
+                Your expressions:
+                \(items.makeExpressionListForDiscord())
+                """
+            }
+        case .test:
+            guard let options = first.options,
+                  !options.isEmpty,
+                  let message = options.first(where: { $0.name == "message" })?.value?.asString
+            else {
+                logger.error("Discord did not send required info")
+                return oops
+            }
+            guard let mode = self.requireExpressionModeOrReport(first.options) else {
+                return oops
+            }
+
+            if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
+                let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+
+                let divided = message.divideForPingCommandExactMatchChecking()
+                let folded = message.foldedForPingCommandContainmentChecking()
+                let triggeredExpressions = dividedExpressions.filter { exp in
+                    MessageHandler.triggersPing(
+                        dividedForExactMatchChecking: divided,
+                        foldedForContainmentChecking: folded,
+                        expression: exp
                     )
                 }
-                
-                if !existingExpressions.isEmpty {
-                    components.append(
-                        """
-                        Some expressions were already available in your pings list:
-                        \(existingExpressions.makeExpressionListForDiscord())
-                        """
-                    )
-                }
-                
-                return components.joined(separator: "\n\n")
-            case .remove:
-                guard let option = first.options?.first,
-                      let _text = option.value?.asString else {
-                    logger.error("Discord did not send required info")
-                    return oops
-                }
-                
-                guard let mode = self.getExpressionModeOrReport(options: first.options) else {
-                    return oops
-                }
-                
-                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
-                
-                if allExpressions.isEmpty {
-                    return "The list you sent seems to be empty."
-                }
-                
-                let (existingExpressions, newExpressions) = try await allExpressions.divide {
-                    try await pingsService.exists(expression: $0, forDiscordID: discordId)
-                }
-                
-                /// Still try to remove `allExpressions` incase out data is out of sync
-                try await pingsService.remove(allExpressions, forDiscordID: discordId)
-                
-                var components = [String]()
-                
-                if !existingExpressions.isEmpty {
-                    components.append(
-                        """
-                        Successfully removed the followings from your pings-list:
-                        \(existingExpressions.makeExpressionListForDiscord())
-                        """
-                    )
-                }
-                
-                if !newExpressions.isEmpty {
-                    components.append(
-                        """
-                        Some expressions were not available in your pings list at all:
-                        \(newExpressions.makeExpressionListForDiscord())
-                        """
-                    )
-                }
-                
-                return components.joined(separator: "\n\n")
-            case .list:
-                let items = try await pingsService.get(discordID: discordId)
-                if items.isEmpty {
-                    return "You have not set any expressions to be pinged for."
+
+                var response = """
+                The message is:
+
+                > \(message)
+
+                And the entered texts are:
+
+                > \(_text)
+
+
+                """
+
+                if dividedExpressions.isEmpty {
+                    response += "The texts you entered seems like an empty list to me."
                 } else {
-                    return """
-                    Your expressions:
-                    \(items.makeExpressionListForDiscord())
+                    response += """
+                    The identified expressions are:
+                    \(dividedExpressions.makeExpressionListForDiscord())
+
+
                     """
-                }
-            case .test:
-                guard let options = first.options,
-                      !options.isEmpty,
-                      let message = options.first(where: { $0.name == "message" })?.value?.asString
-                else {
-                    logger.error("Discord did not send required info")
-                    return oops
-                }
-                guard let mode = self.getExpressionModeOrReport(options: first.options) else {
-                    return oops
-                }
-                
-                if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
-                    let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
-                    
-                    let divided = message.divideForPingCommandExactMatchChecking()
-                    let folded = message.foldedForPingCommandContainmentChecking()
-                    let triggeredExpressions = dividedExpressions.filter { exp in
-                        MessageHandler.triggersPing(
-                            dividedForExactMatchChecking: divided,
-                            foldedForContainmentChecking: folded,
-                            expression: exp
-                        )
-                    }
-                    
-                    var response = """
-                    The message is:
-                    
-                    > \(message)
-                    
-                    And the entered texts are:
-                    
-                    > \(_text)
-                    
-                    
-                    """
-                    
-                    if dividedExpressions.isEmpty {
-                        response += "The texts you entered seems like an empty list to me."
+                    if triggeredExpressions.isEmpty {
+                        response += "The message won't trigger any of the expressions above."
                     } else {
                         response += """
-                        The identified expressions are:
-                        \(dividedExpressions.makeExpressionListForDiscord())
-                        
-                        
+                        The message will trigger these expressions:
+                        \(triggeredExpressions.makeExpressionListForDiscord())
                         """
-                        if triggeredExpressions.isEmpty {
-                            response += "The message won't trigger any of the expressions above."
-                        } else {
-                            response += """
-                            The message will trigger these expressions:
-                            \(triggeredExpressions.makeExpressionListForDiscord())
-                            """
-                        }
-                    }
-                    
-                    return response
-                } else {
-                    let currentExpressions = try await pingsService.get(discordID: discordId)
-                    
-                    let divided = message.divideForPingCommandExactMatchChecking()
-                    let folded = message.foldedForPingCommandContainmentChecking()
-                    let triggeredExpressions = currentExpressions.filter { exp in
-                        MessageHandler.triggersPing(
-                            dividedForExactMatchChecking: divided,
-                            foldedForContainmentChecking: folded,
-                            expression: exp
-                        )
-                    }
-                    
-                    if currentExpressions.isEmpty {
-                        return """
-                        You pings-list is empty.
-                        Either use the `texts` field, or add some expressions.
-                        """
-                    } else {
-                        var response = """
-                        The message is:
-                        
-                        > \(message)
-                        
-                        
-                        """
-                        
-                        if triggeredExpressions.isEmpty {
-                            response += "The message won't trigger any of your expressions."
-                        } else {
-                            response += """
-                            The message will trigger these ping expressions:
-                            \(triggeredExpressions.makeExpressionListForDiscord())
-                            """
-                        }
-                        
-                        return response
                     }
                 }
+
+                return response
+            } else {
+                let currentExpressions = try await pingsService.get(discordID: discordId)
+
+                let divided = message.divideForPingCommandExactMatchChecking()
+                let folded = message.foldedForPingCommandContainmentChecking()
+                let triggeredExpressions = currentExpressions.filter { exp in
+                    MessageHandler.triggersPing(
+                        dividedForExactMatchChecking: divided,
+                        foldedForContainmentChecking: folded,
+                        expression: exp
+                    )
+                }
+
+                if currentExpressions.isEmpty {
+                    return """
+                    You pings-list is empty.
+                    Either use the `texts` field, or add some expressions.
+                    """
+                } else {
+                    var response = """
+                    The message is:
+
+                    > \(message)
+
+
+                    """
+
+                    if triggeredExpressions.isEmpty {
+                        response += "The message won't trigger any of your expressions."
+                    } else {
+                        response += """
+                        The message will trigger these ping expressions:
+                        \(triggeredExpressions.makeExpressionListForDiscord())
+                        """
+                    }
+
+                    return response
+                }
             }
-        } catch {
-            logger.report("Pings command error", error: error)
-            return oops
         }
     }
     
-    func getExpressionModeOrReport(options: [InteractionOption]?) -> ExpressionMode? {
+    func requireExpressionModeOrReport(_ options: [InteractionOption]?) -> ExpressionMode? {
         if let _mode = options?.first(where: { $0.name == "mode" })?.value?.asString {
             if let mode = ExpressionMode(rawValue: _mode) {
                 return mode
             } else {
-                logger.error("Discord sent invalid ExpressionMode: \(_mode.debugDescription)")
+                logger.error("Discord sent invalid ExpressionMode", metadata: [
+                    "invalid-mode": .string(_mode.debugDescription)
+                ])
                 return nil
             }
         } else {
-            return .default
+            logger.error("Discord didn't send ExpressionMode")
+            return nil
         }
     }
     
-    func handleHowManyCoinsCommand() async -> String {
+    func handleHowManyCoinsAppCommand() async -> String {
         guard case let .applicationCommand(data) = event.data,
               let userId = data.target_id else {
             logger.error("Coin-count command could not find appropriate data")
@@ -370,23 +417,23 @@ struct InteractionHandler {
     }
     
     /// Returns `true` if the acknowledgement was successfully sent
-    private func sendInteractionAcknowledgement(isEphemeral: Bool) async -> Bool {
+    private func sendAcknowledgement(isEphemeral: Bool) async -> Bool {
         await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .deferredChannelMessageWithSource(
+            payload: .deferredUpdateMessage(
                 isEphemeral ? .init(flags: [.ephemeral]) : nil
             )
         )
     }
     
-    private func sendInteractionNameResolveFailure() async {
+    private func sendInteractionResolveFailure() async {
         await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
             payload: .channelMessageWithSource(.init(
                 embeds: [.init(
-                    description: "Failed to resolve the interaction name :(",
+                    description: "Failed to resolve the interaction :(",
                     color: .vaporPurple
                 )],
                 flags: [.ephemeral]
@@ -394,14 +441,22 @@ struct InteractionHandler {
         )
     }
     
-    private func respond(with response: String) async {
-        await discordService.editInteraction(
-            token: event.token,
-            payload: .init(embeds: [.init(
-                description: response,
-                color: .vaporPurple
-            )])
-        )
+    private func respond(with response: any Response, shouldEdit: Bool) async {
+        if shouldEdit {
+            guard let data = response.makeResponse().data else {
+                logger.error("Can't edit a response with empty data", metadata: [
+                    "response": "\(response)"
+                ])
+                return
+            }
+            await discordService.editInteraction(token: event.token, payload: data)
+        } else {
+            await discordService.respondToInteraction(
+                id: event.id,
+                token: event.token,
+                payload: response.makeResponse()
+            )
+        }
     }
 }
 
@@ -418,6 +473,13 @@ private enum CommandKind {
         case .howManyCoins, .howManyCoinsApp: return false
         }
     }
+
+    var shouldSendAcknowledgment: Bool {
+        switch self {
+        case .autoPings: return false
+        case .link, .howManyCoins, .howManyCoinsApp: return true
+        }
+    }
     
     init? (name: String) {
         switch name {
@@ -430,8 +492,67 @@ private enum CommandKind {
     }
 }
 
-private func escapeCharacters(_ text: String) -> String {
-    DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
+private enum ModalID: RawRepresentable {
+
+    enum AutoPingsMode: String {
+        case add, remove
+    }
+
+    case autoPings(AutoPingsMode, ExpressionMode)
+
+    func makeModal() -> RequestBody.InteractionResponse.Modal {
+        .init(
+            custom_id: self.rawValue,
+            title: self.title,
+            components: [self.component]
+        )
+    }
+
+    private var title: String {
+        switch self {
+        case let .autoPings(autoPingsMode, expressionMode):
+            let autoPingsMode = autoPingsMode.rawValue.capitalized
+            let expressionMode = expressionMode.rawValue
+            return "\(autoPingsMode) with mode '\(expressionMode)'"
+        }
+    }
+
+    private var component: Interaction.ActionRow {
+        switch self {
+        case let .autoPings(autoPingsMode, expressionMode):
+            let autoPingsMode = autoPingsMode.rawValue.capitalized
+            let expressionMode = expressionMode.rawValue
+            return .init(components: [
+                .textInput(.init(
+                    custom_id: "texts",
+                    style: .paragraph,
+                    label: "\(autoPingsMode) Ping Texts with mode '\(expressionMode)'",
+                    min_length: 3,
+                    required: true,
+                    placeholder: "Example: vapor, fluent, swift, websocket kit, your-name"
+                ))
+            ])
+        }
+    }
+
+    var rawValue: String {
+        switch self {
+        case let .autoPings(autoPingsMode, expressionMode):
+            return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
+        }
+    }
+
+    init? (rawValue: String) {
+        let split = rawValue.split(separator: ";")
+        if split.count == 3,
+           split[0] == "auto-pings",
+           let autoPingsMode = AutoPingsMode(rawValue: String(split[1])),
+           let expressionMode = ExpressionMode(rawValue: String(split[2])) {
+            self = .autoPings(autoPingsMode, expressionMode)
+        } else {
+            return nil
+        }
+    }
 }
 
 enum ExpressionMode: String, CaseIterable {
@@ -503,7 +624,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
 
 private extension String {
     func divideIntoAutoPingsExpressions(mode: ExpressionMode) -> [S3AutoPingItems.Expression] {
-        self.split(separator: ",")
+        self.split(whereSeparator: { $0 == "," || $0.isNewline })
             .map(String.init)
             .map({ $0.foldForPingCommand() })
             .filter({ !$0.isEmpty }).map {
@@ -514,5 +635,25 @@ private extension String {
                     return S3AutoPingItems.Expression.contain($0)
                 }
             }
+    }
+}
+
+/// MARK: - Response
+private protocol Response {
+    func makeResponse() -> RequestBody.InteractionResponse
+}
+
+extension String: Response {
+    func makeResponse() -> RequestBody.InteractionResponse {
+        .channelMessageWithSource(.init(embeds: [.init(
+            description: self,
+            color: .vaporPurple
+        )]))
+    }
+}
+
+extension RequestBody.InteractionResponse.Modal: Response {
+    func makeResponse() -> RequestBody.InteractionResponse {
+        .modal(self)
     }
 }
