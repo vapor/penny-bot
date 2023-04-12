@@ -41,7 +41,7 @@ actor DiscordService {
         self.cache = cache
     }
     
-    func sendDM(userId: String, payload: RequestBody.CreateMessage) async {
+    func sendDM(userId: String, payload: Payloads.CreateMessage) async {
         guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
         
         do {
@@ -112,7 +112,7 @@ actor DiscordService {
     @discardableResult
     func sendMessage(
         channelId: String,
-        payload: RequestBody.CreateMessage
+        payload: Payloads.CreateMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
             let response = try await discordClient.createMessage(
@@ -180,7 +180,7 @@ actor DiscordService {
     func editMessage(
         messageId: String,
         channelId: String,
-        payload: RequestBody.EditMessage
+        payload: Payloads.EditMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
             let response = try await discordClient.updateMessage(
@@ -205,7 +205,7 @@ actor DiscordService {
     func respondToInteraction(
         id: String,
         token: String,
-        payload: RequestBody.InteractionResponse
+        payload: Payloads.InteractionResponse
     ) async -> Bool {
         do {
             try await discordClient.createInteractionResponse(
@@ -226,7 +226,7 @@ actor DiscordService {
     
     func editInteraction(
         token: String,
-        payload: RequestBody.InteractionResponse.CallbackData
+        payload: Payloads.EditWebhookMessage
     ) async {
         do {
             try await discordClient.updateOriginalInteractionResponse(
@@ -241,7 +241,7 @@ actor DiscordService {
         }
     }
     
-    func overwriteCommands(_ commands: [RequestBody.ApplicationCommandCreate]) async {
+    func overwriteCommands(_ commands: [Payloads.ApplicationCommandCreate]) async {
         do {
             try await discordClient
                 .bulkSetApplicationCommands(payload: commands)

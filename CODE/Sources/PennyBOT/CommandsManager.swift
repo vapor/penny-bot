@@ -12,8 +12,8 @@ struct CommandsManager {
     }
 }
 
-private extension RequestBody.ApplicationCommandCreate {
-    static let link = RequestBody.ApplicationCommandCreate(
+private extension Payloads.ApplicationCommandCreate {
+    static let link = Payloads.ApplicationCommandCreate(
         name: "link",
         description: "Links your accounts in Penny",
         options: [
@@ -64,7 +64,7 @@ private extension RequestBody.ApplicationCommandCreate {
         }
     )
     
-    static let ping = RequestBody.ApplicationCommandCreate(
+    static let ping = Payloads.ApplicationCommandCreate(
         name: "auto-pings",
         description: "Configure Penny to ping you when certain someone uses a word/text",
         options: [
@@ -100,7 +100,7 @@ private extension RequestBody.ApplicationCommandCreate {
         dm_permission: false
     )
     
-    static let howManyCoins = RequestBody.ApplicationCommandCreate(
+    static let howManyCoins = Payloads.ApplicationCommandCreate(
         name: "how-many-coins",
         description: "See how many coins members have",
         options: [.init(
@@ -111,7 +111,7 @@ private extension RequestBody.ApplicationCommandCreate {
         dm_permission: false
     )
     
-    static let howManyCoinsApp = RequestBody.ApplicationCommandCreate(
+    static let howManyCoinsApp = Payloads.ApplicationCommandCreate(
         name: "How Many Coins?",
         dm_permission: false,
         type: .user

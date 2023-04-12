@@ -191,8 +191,8 @@ private extension InteractionHandler {
                     return oops
                 }
 
-                if let _text = textInput.value,
-                    !_text.trimmingCharacters(in: .whitespaces).isEmpty {
+                if let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
+                    !_text.isEmpty {
                     let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
                     let divided = message.divideForPingCommandExactMatchChecking()
@@ -477,14 +477,10 @@ private extension InteractionHandler {
         forceEphemeral: Bool = false
     ) async {
         if shouldEdit, response.isEditable {
-            /// Edits can't change the 'ephemeral' status of a message
-            guard let data = response.makeResponse(isEphemeral: false).data else {
-                logger.error("Can't edit a response with empty data", metadata: [
-                    "response": "\(response)"
-                ])
-                return
-            }
-            await discordService.editInteraction(token: event.token, payload: data)
+            await discordService.editInteraction(
+                token: event.token,
+                payload: response.makeEditPayload()
+            )
         } else {
             await discordService.respondToInteraction(
                 id: event.id,
@@ -535,7 +531,7 @@ private enum ModalID: RawRepresentable {
 
     case autoPings(AutoPingsMode, ExpressionMode)
 
-    func makeModal() -> RequestBody.InteractionResponse.Modal {
+    func makeModal() -> Payloads.InteractionResponse.Modal {
         .init(
             custom_id: self.rawValue,
             title: self.title,
@@ -611,7 +607,7 @@ private enum ModalID: RawRepresentable {
 
 enum ExpressionMode: String, CaseIterable {
     case match
-    case contain
+    case containment
     
     static let `default`: ExpressionMode = .match
 }
@@ -684,9 +680,9 @@ private extension String {
             .filter({ !$0.isEmpty }).map {
                 switch mode {
                 case .match:
-                    return S3AutoPingItems.Expression.matches($0)
-                case .contain:
-                    return S3AutoPingItems.Expression.contains($0)
+                    return .matches($0)
+                case .containment:
+                    return .contains($0)
                 }
             }
     }
@@ -694,24 +690,39 @@ private extension String {
 
 /// MARK: - Response
 private protocol Response {
-    func makeResponse(isEphemeral: Bool) -> RequestBody.InteractionResponse
+    func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse
+    func makeEditPayload() -> Payloads.EditWebhookMessage
     var isEditable: Bool { get }
 }
 
 extension String: Response {
-    func makeResponse(isEphemeral: Bool) -> RequestBody.InteractionResponse {
+    func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
         .channelMessageWithSource(.init(embeds: [.init(
             description: self,
             color: .vaporPurple
         )], flags: isEphemeral ? [.ephemeral] : nil))
     }
 
+    func makeEditPayload() -> Payloads.EditWebhookMessage {
+        .init(embeds: [.init(
+            description: self,
+            color: .vaporPurple
+        )])
+    }
+
     var isEditable: Bool { true }
 }
 
-extension RequestBody.InteractionResponse.Modal: Response {
-    func makeResponse(isEphemeral _: Bool) -> RequestBody.InteractionResponse {
+extension Payloads.InteractionResponse.Modal: Response {
+    func makeResponse(isEphemeral _: Bool) -> Payloads.InteractionResponse {
         .modal(self)
+    }
+
+    func makeEditPayload() -> Payloads.EditWebhookMessage {
+        Logger(label: "Payloads.InteractionResponse.Modal.makeEditPayload").error(
+            "This method must not be called"
+        )
+        return .init(content: "Oops, something went wrong")
     }
 
     /// Responses containing a modal can't be an edit to another message.

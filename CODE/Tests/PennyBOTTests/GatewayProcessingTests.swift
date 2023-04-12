@@ -50,14 +50,14 @@ class GatewayProcessingTests: XCTestCase {
         ).value
         
         let commandNames = ["link", "auto-pings", "how-many-coins", "How Many Coins?"]
-        let commands = try XCTUnwrap(response as? [RequestBody.ApplicationCommandCreate])
+        let commands = try XCTUnwrap(response as? [Payloads.ApplicationCommandCreate])
         XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
     }
     
     func testMessageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
-            as: RequestBody.CreateMessage.self
+            as: Payloads.CreateMessage.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -68,7 +68,7 @@ class GatewayProcessingTests: XCTestCase {
     func testLinkCommand() async throws {
         let response = try await self.manager.sendAndAwaitResponse(
             key: .linkInteraction,
-            as: RequestBody.InteractionResponse.CallbackData.self
+            as: Payloads.InteractionResponse.CallbackData.self
         )
         guard case let .message(_message) = response else {
             return XCTFail("\(response) was not a '.message()'")
@@ -81,7 +81,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
-                as: RequestBody.CreateMessage.self
+                as: Payloads.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -99,7 +99,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction2,
-                as: RequestBody.EditMessage.self
+                as: Payloads.EditMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -114,7 +114,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
-                as: RequestBody.CreateMessage.self
+                as: Payloads.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -156,7 +156,7 @@ class GatewayProcessingTests: XCTestCase {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction2,
                 endpoint: EventKey.thanksReaction.responseEndpoints[0],
-                as: RequestBody.CreateMessage.self
+                as: Payloads.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -171,7 +171,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction3,
-                as: RequestBody.CreateMessage.self
+                as: Payloads.CreateMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -191,7 +191,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction4,
-                as: RequestBody.EditMessage.self
+                as: Payloads.EditMessage.self
             )
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -206,7 +206,7 @@ class GatewayProcessingTests: XCTestCase {
     func testRespondsInThanksChannelWhenDoesNotHavePermission() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage2,
-            as: RequestBody.CreateMessage.self
+            as: Payloads.CreateMessage.self
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
@@ -228,7 +228,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .createMessage(channelId: Constants.logsChannelId)
         ).value
         
-        let message = try XCTUnwrap(response as? RequestBody.CreateMessage)
+        let message = try XCTUnwrap(response as? Payloads.CreateMessage)
         XCTAssertGreaterThan(message.content?.count ?? -1, 20)
     }
     
@@ -237,7 +237,7 @@ class GatewayProcessingTests: XCTestCase {
         
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
-            as: RequestBody.CreateMessage.self
+            as: Payloads.CreateMessage.self
         )
         
         XCTAssertGreaterThan(response.content?.count ?? -1, 20)
@@ -274,11 +274,11 @@ class GatewayProcessingTests: XCTestCase {
         let recipients = ["950695294906007573", "432065887202181142"]
         
         do {
-            let dmPayload = try XCTUnwrap(createDM1 as? RequestBody.CreateDM, "\(createDM1)")
+            let dmPayload = try XCTUnwrap(createDM1 as? Payloads.CreateDM, "\(createDM1)")
             XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
         }
         
-        let dmMessage1 = try XCTUnwrap(sendDM1 as? RequestBody.CreateMessage, "\(sendDM1)")
+        let dmMessage1 = try XCTUnwrap(sendDM1 as? Payloads.CreateMessage, "\(sendDM1)")
         let message1 = try XCTUnwrap(dmMessage1.embeds?.first?.description)
         XCTAssertTrue(message1.hasPrefix("There is a new message"), message1)
         /// Check to make sure the expected ping-words are mentioned in the message
@@ -287,11 +287,11 @@ class GatewayProcessingTests: XCTestCase {
         do {
             /// These two must not fail. The user does not have any
             /// significant roles but they still should receive the pings.
-            let dmPayload = try XCTUnwrap(createDM2 as? RequestBody.CreateDM, "\(createDM1)")
+            let dmPayload = try XCTUnwrap(createDM2 as? Payloads.CreateDM, "\(createDM1)")
             XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
         }
         
-        let dmMessage2 = try XCTUnwrap(sendDM2 as? RequestBody.CreateMessage, "\(sendDM1)")
+        let dmMessage2 = try XCTUnwrap(sendDM2 as? Payloads.CreateMessage, "\(sendDM1)")
         let message2 = try XCTUnwrap(dmMessage2.embeds?.first?.description)
         XCTAssertTrue(message2.hasPrefix("There is a new message"), message2)
         /// Check to make sure the expected ping-words are mentioned in the message
@@ -321,7 +321,7 @@ class GatewayProcessingTests: XCTestCase {
         }
         
         do {
-            let dmMessage = try XCTUnwrap(sendDM as? RequestBody.CreateMessage, "\(sendDM)")
+            let dmMessage = try XCTUnwrap(sendDM as? Payloads.CreateMessage, "\(sendDM)")
             let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
             /// Check to make sure the expected ping-words are mentioned in the message
@@ -336,7 +336,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .howManyCoins1,
-                as: RequestBody.InteractionResponse.CallbackData.self
+                as: Payloads.InteractionResponse.CallbackData.self
             )
             guard case let .message(_message) = response else {
                 return XCTFail("\(response) was not a '.message()'")
@@ -348,7 +348,7 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .howManyCoins2,
-                as: RequestBody.InteractionResponse.CallbackData.self
+                as: Payloads.InteractionResponse.CallbackData.self
             )
             guard case let .message(_message) = response else {
                 return XCTFail("\(response) was not a '.message()'")
@@ -361,7 +361,7 @@ class GatewayProcessingTests: XCTestCase {
     func testServerBoostCoins() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .serverBoost,
-            as: RequestBody.CreateMessage.self
+            as: Payloads.CreateMessage.self
         )
         let message = try XCTUnwrap(response.embeds?.first?.description)
         XCTAssertTrue(
