@@ -36,8 +36,11 @@ struct InteractionHandler {
             if kind.shouldSendAcknowledgment {
                 guard await sendAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
             }
-            let response = await makeResponseForApplicationCommand(kind: kind, data: data)
-            await respond(with: response, shouldEdit: kind.shouldSendAcknowledgment)
+            /// if `kind.shouldSendAcknowledgment` is false, the commands
+            /// themselves are supposed to send the acknowledgement.
+            if let response = await makeResponseForApplicationCommand(kind: kind, data: data) {
+                await respond(with: response, shouldEdit: true)
+            }
         case let .modalSubmit(modal):
             guard let modalId = ModalID(rawValue: modal.custom_id) else {
                 logger.error("Unrecognized command")
@@ -174,10 +177,11 @@ private extension InteractionHandler {
 
 /// MARK: - makeResponseForApplicationCommand
 private extension InteractionHandler {
+    /// Returns `nil` if no response is supposed to be sent to user.
     func makeResponseForApplicationCommand(
         kind: CommandKind,
         data: Interaction.ApplicationCommand
-    ) async -> any Response {
+    ) async -> (any Response)? {
         let options = data.options ?? []
         switch kind {
         case .link:
@@ -222,7 +226,7 @@ private extension InteractionHandler {
         }
     }
     
-    func handlePingsCommand(options: [InteractionOption]) async throws -> any Response {
+    func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
         guard let discordId = (event.member?.user ?? event.user)?.id else {
             logger.error("Can't find a user's id")
             return oops
@@ -235,6 +239,17 @@ private extension InteractionHandler {
             logger.error("Unrecognized 'auto-pings' command", metadata: ["name": "\(first.name)"])
             return oops
         }
+
+        switch subcommand {
+        case .help, .list, .test:
+            guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+        case .add, .remove:
+            /// Response of these commands are modals.
+            /// For modals you can't send an acknowledgement first, then send the modal.
+            /// You have to just right-away send the modal.
+            break
+        }
+
         switch subcommand {
         case .help:
             let allCommands = await discordService.getCommands()
