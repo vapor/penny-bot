@@ -75,14 +75,16 @@ private extension InteractionHandler {
         }
         switch modalId {
         case let .autoPings(autoPingsMode, mode):
-            guard let component = modal.components.first?.components.first,
-                  case let .textInput(textInput) = component,
-                  let _text = textInput.value else {
-                logger.error("Can't find the texts value")
-                return oops
-            }
+            let allComponents = modal.components.flatMap(\.components)
             switch autoPingsMode {
             case .add:
+                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
+                      case let .textInput(textInput) = textComponent,
+                      let _text = textInput.value else {
+                    logger.error("Can't find the texts value")
+                    return oops
+                }
+
                 let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
                 if allExpressions.isEmpty {
@@ -134,6 +136,13 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .remove:
+                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
+                      case let .textInput(textInput) = textComponent,
+                      let _text = textInput.value else {
+                    logger.error("Can't find the texts value")
+                    return oops
+                }
+
                 let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
                 if allExpressions.isEmpty {
@@ -168,6 +177,104 @@ private extension InteractionHandler {
                 }
 
                 return components.joined(separator: "\n\n")
+            case .test:
+                guard let messageComponent = (allComponents.first { $0.customId == "message" }),
+                      case let .textInput(messageInput) = messageComponent,
+                      let message = messageInput.value else {
+                    logger.error("Can't find the texts value")
+                    return oops
+                }
+
+                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
+                      case let .textInput(textInput) = textComponent else {
+                    logger.error("Can't find the texts value")
+                    return oops
+                }
+
+                if let _text = textInput.value {
+                    let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+
+                    let divided = message.divideForPingCommandExactMatchChecking()
+                    let folded = message.foldedForPingCommandContainmentChecking()
+                    let triggeredExpressions = dividedExpressions.filter { exp in
+                        MessageHandler.triggersPing(
+                            dividedForExactMatchChecking: divided,
+                            foldedForContainmentChecking: folded,
+                            expression: exp
+                        )
+                    }
+
+                    var response = """
+                    The message is:
+
+                    > \(message)
+
+                    And the entered texts are:
+
+                    > \(_text)
+
+
+                    """
+
+                    if dividedExpressions.isEmpty {
+                        response += "The texts you entered seems like an empty list to me."
+                    } else {
+                        response += """
+                        The identified expressions are:
+                        \(dividedExpressions.makeExpressionListForDiscord())
+
+
+                        """
+                        if triggeredExpressions.isEmpty {
+                            response += "The message won't trigger any of the expressions above."
+                        } else {
+                            response += """
+                            The message will trigger these expressions:
+                            \(triggeredExpressions.makeExpressionListForDiscord())
+                            """
+                        }
+                    }
+
+                    return response
+                } else {
+                    let currentExpressions = try await pingsService.get(discordID: discordId)
+
+                    let divided = message.divideForPingCommandExactMatchChecking()
+                    let folded = message.foldedForPingCommandContainmentChecking()
+                    let triggeredExpressions = currentExpressions.filter { exp in
+                        MessageHandler.triggersPing(
+                            dividedForExactMatchChecking: divided,
+                            foldedForContainmentChecking: folded,
+                            expression: exp
+                        )
+                    }
+
+                    if currentExpressions.isEmpty {
+                        return """
+                        You pings-list is empty.
+                        Either use the `texts` field, or add some expressions.
+                        """
+                    } else {
+                        var response = """
+                        The message is:
+
+                        > \(message)
+
+
+                        """
+
+                        if triggeredExpressions.isEmpty {
+                            response += "The message won't trigger any of your expressions."
+                        } else {
+                            response += """
+                            The message will trigger these ping expressions:
+                            \(triggeredExpressions.makeExpressionListForDiscord())
+                            """
+                        }
+
+                        return response
+                    }
+                }
             }
         }
     }
@@ -239,9 +346,9 @@ private extension InteractionHandler {
         }
 
         switch subcommand {
-        case .help, .list, .test:
+        case .help, .list:
             guard await sendAcknowledgement(isEphemeral: true) else { return nil }
-        case .add, .remove:
+        case .add, .remove, .test:
             /// Response of these commands are modals.
             /// For modals you can't send an acknowledgement first, then send the modal.
             /// You have to just right-away send the modal.
@@ -252,6 +359,16 @@ private extension InteractionHandler {
         case .help:
             let allCommands = await discordService.getCommands()
             return makeAutoPingsHelp(commands: allCommands)
+        case .list:
+            let items = try await pingsService.get(discordID: discordId)
+            if items.isEmpty {
+                return "You have not set any expressions to be pinged for."
+            } else {
+                return """
+                Your expressions:
+                \(items.makeExpressionListForDiscord())
+                """
+            }
         case .add:
             guard let mode = self.requireExpressionModeOrReport(first.options) else {
                 return oops
@@ -264,112 +381,12 @@ private extension InteractionHandler {
             }
             let modalId = ModalID.autoPings(.remove, mode)
             return modalId.makeModal()
-        case .list:
-            let items = try await pingsService.get(discordID: discordId)
-            if items.isEmpty {
-                return "You have not set any expressions to be pinged for."
-            } else {
-                return """
-                Your expressions:
-                \(items.makeExpressionListForDiscord())
-                """
-            }
         case .test:
-            guard let options = first.options,
-                  !options.isEmpty,
-                  let message = options.first(where: { $0.name == "message" })?.value?.asString
-            else {
-                logger.error("Discord did not send required info")
-                return oops
-            }
             guard let mode = self.requireExpressionModeOrReport(first.options) else {
                 return oops
             }
-
-            if let _text = options.first(where: { $0.name == "texts" })?.value?.asString {
-                let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
-
-                let divided = message.divideForPingCommandExactMatchChecking()
-                let folded = message.foldedForPingCommandContainmentChecking()
-                let triggeredExpressions = dividedExpressions.filter { exp in
-                    MessageHandler.triggersPing(
-                        dividedForExactMatchChecking: divided,
-                        foldedForContainmentChecking: folded,
-                        expression: exp
-                    )
-                }
-
-                var response = """
-                The message is:
-
-                > \(message)
-
-                And the entered texts are:
-
-                > \(_text)
-
-
-                """
-
-                if dividedExpressions.isEmpty {
-                    response += "The texts you entered seems like an empty list to me."
-                } else {
-                    response += """
-                    The identified expressions are:
-                    \(dividedExpressions.makeExpressionListForDiscord())
-
-
-                    """
-                    if triggeredExpressions.isEmpty {
-                        response += "The message won't trigger any of the expressions above."
-                    } else {
-                        response += """
-                        The message will trigger these expressions:
-                        \(triggeredExpressions.makeExpressionListForDiscord())
-                        """
-                    }
-                }
-
-                return response
-            } else {
-                let currentExpressions = try await pingsService.get(discordID: discordId)
-
-                let divided = message.divideForPingCommandExactMatchChecking()
-                let folded = message.foldedForPingCommandContainmentChecking()
-                let triggeredExpressions = currentExpressions.filter { exp in
-                    MessageHandler.triggersPing(
-                        dividedForExactMatchChecking: divided,
-                        foldedForContainmentChecking: folded,
-                        expression: exp
-                    )
-                }
-
-                if currentExpressions.isEmpty {
-                    return """
-                    You pings-list is empty.
-                    Either use the `texts` field, or add some expressions.
-                    """
-                } else {
-                    var response = """
-                    The message is:
-
-                    > \(message)
-
-
-                    """
-
-                    if triggeredExpressions.isEmpty {
-                        response += "The message won't trigger any of your expressions."
-                    } else {
-                        response += """
-                        The message will trigger these ping expressions:
-                        \(triggeredExpressions.makeExpressionListForDiscord())
-                        """
-                    }
-
-                    return response
-                }
-            }
+            let modalId = ModalID.autoPings(.test, mode)
+            return modalId.makeModal()
         }
     }
     
@@ -512,7 +529,7 @@ private enum CommandKind {
 private enum ModalID: RawRepresentable {
 
     enum AutoPingsMode: String {
-        case add, remove
+        case add, remove, test
     }
 
     case autoPings(AutoPingsMode, ExpressionMode)
@@ -521,7 +538,7 @@ private enum ModalID: RawRepresentable {
         .init(
             custom_id: self.rawValue,
             title: self.title,
-            components: [self.component]
+            components: self.components
         )
     }
 
@@ -534,21 +551,40 @@ private enum ModalID: RawRepresentable {
         }
     }
 
-    private var component: Interaction.ActionRow {
+    private var components: [Interaction.ActionRow] {
         switch self {
-        case let .autoPings(autoPingsMode, expressionMode):
-            let autoPingsMode = autoPingsMode.rawValue.capitalized
-            let expressionMode = expressionMode.rawValue
-            return .init(components: [
-                .textInput(.init(
-                    custom_id: "texts",
-                    style: .paragraph,
-                    label: "\(autoPingsMode) Ping Texts with mode '\(expressionMode)'",
-                    min_length: 3,
-                    required: true,
-                    placeholder: "Example: vapor, fluent, swift, websocket kit, your-name"
-                ))
-            ])
+        case let .autoPings(mode, _):
+            switch mode {
+            case .add, .remove:
+                return [.init(components: [
+                    .textInput(.init(
+                        custom_id: "texts",
+                        style: .paragraph,
+                        label: "Enter the ping-expressions",
+                        min_length: 3,
+                        required: true,
+                        placeholder: "Example: vapor, fluent, swift, websocket kit, your-name"
+                    ))
+                ])]
+            case .test:
+                return [
+                    .init(components: [.textInput(.init(
+                        custom_id: "message",
+                        style: .paragraph,
+                        label: "The text to test against",
+                        min_length: 3,
+                        required: true,
+                        placeholder: "Example: Lorem ipsum dolor sit amet"
+                    ))]),
+                    .init(components: [.textInput(.init(
+                        custom_id: "texts",
+                        style: .paragraph,
+                        label: "Ping Expressions",
+                        required: false,
+                        placeholder: "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
+                    ))])
+                ]
+            }
         }
     }
 
@@ -647,9 +683,9 @@ private extension String {
             .filter({ !$0.isEmpty }).map {
                 switch mode {
                 case .match:
-                    return S3AutoPingItems.Expression.match($0)
+                    return S3AutoPingItems.Expression.matches($0)
                 case .contain:
-                    return S3AutoPingItems.Expression.contain($0)
+                    return S3AutoPingItems.Expression.contains($0)
                 }
             }
     }

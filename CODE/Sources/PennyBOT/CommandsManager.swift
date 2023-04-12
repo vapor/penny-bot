@@ -94,20 +94,7 @@ private extension RequestBody.ApplicationCommandCreate {
                 type: .subCommand,
                 name: "test",
                 description: "Test if a message triggers an auto-ping text",
-                options: [
-                    .init(
-                        type: .string,
-                        name: "message",
-                        description: "The message that is supposed to trigger the texts",
-                        required: true
-                    ),
-                    expressionModeOption,
-                    .init(
-                        type: .string,
-                        name: "texts",
-                        description: "The texts to be test-triggered"
-                    )
-                ]
+                options: [expressionModeOption]
             )
         ],
         dm_permission: false

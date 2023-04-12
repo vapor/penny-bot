@@ -72,7 +72,7 @@ class OtherTests: XCTestCase {
         typealias Expression = S3AutoPingItems.Expression
         
         do { /// Expression.text
-            let exp = Expression.match("Hello-world")
+            let exp = Expression.matches("Hello-world")
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(exp)
             let string = try XCTUnwrap(String(data: encoded, encoding: .utf8))
@@ -83,14 +83,14 @@ class OtherTests: XCTestCase {
             let decoded = try decoder.decode(Expression.self, from: encoded)
             
             switch decoded {
-            case .match("Hello-world"): break
+            case .matches("Hello-world"): break
             default:
                 XCTFail("\(Expression.self) decoded wrong value: \(decoded)")
             }
         }
         
         do { /// Expression.contain
-            let exp = Expression.contain("Hello-world")
+            let exp = Expression.contains("Hello-world")
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(exp)
             let string = try XCTUnwrap(String(data: encoded, encoding: .utf8))
@@ -101,7 +101,7 @@ class OtherTests: XCTestCase {
             let decoded = try decoder.decode(Expression.self, from: encoded)
             
             switch decoded {
-            case .contain("Hello-world"): break
+            case .contains("Hello-world"): break
             default:
                 XCTFail("\(Expression.self) decoded wrong value: \(decoded)")
             }

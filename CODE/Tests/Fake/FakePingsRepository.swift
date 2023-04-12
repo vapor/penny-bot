@@ -33,14 +33,14 @@ public struct FakePingsRepository: AutoPingsRepository {
     
     public func getAll() async throws -> S3AutoPingItems {
         S3AutoPingItems(items: [
-            .match("mongodb driver"): ["432065887202181142", "950695294906007573"],
-            .match("vapor"): ["432065887202181142"],
-            .match("penny"): ["950695294906007573"],
-            .match("discord"): ["432065887202181142"],
-            .match("discord-kit"): ["432065887202181142"],
-            .match("blog"): ["432065887202181142"],
-            .contain("godb dr"): ["950695294906007573"],
-            .contain("cord"): ["432065887202181142"],
+            .matches("mongodb driver"): ["432065887202181142", "950695294906007573"],
+            .matches("vapor"): ["432065887202181142"],
+            .matches("penny"): ["950695294906007573"],
+            .matches("discord"): ["432065887202181142"],
+            .matches("discord-kit"): ["432065887202181142"],
+            .matches("blog"): ["432065887202181142"],
+            .contains("godb dr"): ["950695294906007573"],
+            .contains("cord"): ["432065887202181142"],
         ])
     }
 }

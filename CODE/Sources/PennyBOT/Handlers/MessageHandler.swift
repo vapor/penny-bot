@@ -203,10 +203,10 @@ struct MessageHandler {
         expression: S3AutoPingItems.Expression
     ) -> Bool {
         switch expression {
-        case .match(let match):
+        case .matches(let match):
             let splitValue = match.split(whereSeparator: \.isWhitespace)
             return dividedForExactMatchChecking.contains(where: { $0.containsSequence(splitValue) })
-        case .contain(let contain):
+        case .contains(let contain):
             return foldedForContainmentChecking.contains(contain)
         }
     }
