@@ -119,6 +119,7 @@ struct MessageHandler {
                 \(authorId) Thanks for the Server Boost \(Constants.vaporLoveEmoji)!
                 You now have \(amount) more \(Constants.vaporCoinEmoji) for a total of \(response.coins) \(Constants.vaporCoinEmoji)!
                 """,
+                overrideChannelId: Constants.thanksChannelId,
                 isAFailureMessage: false
             )
         } catch {
@@ -211,9 +212,13 @@ struct MessageHandler {
         }
     }
     
-    private func respondToThanks(with response: String, isAFailureMessage: Bool) async {
+    private func respondToThanks(
+        with response: String,
+        overrideChannelId channelId: String? = nil,
+        isAFailureMessage: Bool
+    ) async {
         await DiscordService.shared.sendThanksResponse(
-            channelId: event.channel_id,
+            channelId: channelId ?? event.channel_id,
             replyingToMessageId: event.id,
             isAFailureMessage: isAFailureMessage,
             response: response
