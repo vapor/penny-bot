@@ -29,9 +29,9 @@ extension Collection<S3AutoPingItems.Expression> {
             let list = elements
                 .sorted(by: { $0.innerValue > $1.innerValue })
                 .map(\.innerValue)
-                .makeEnumeratedListForDiscord()
+                .makeEnumeratedListForDiscord(leadingSpacesLength: 2)
             return """
-            - \(kind.rawValue.capitalized):
+            - \(kind.UIDescription):
             \(list)
             """
         }

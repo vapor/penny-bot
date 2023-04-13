@@ -5,7 +5,7 @@ import PackageDescription
 
 let swiftSettings: [SwiftSetting] = [
     /// `minimal` / `targeted` / `complete`
-    .unsafeFlags(["-Xfrontend", "-strict-concurrency=minimal"])
+    .unsafeFlags(["-Xfrontend", "-strict-concurrency=targeted"])
 ]
 
 let package = Package(

@@ -55,10 +55,11 @@ extension String {
 }
 
 extension Sequence<String> {
-    func makeEnumeratedListForDiscord() -> String {
-        self.enumerated().map { idx, text -> String in
+    func makeEnumeratedListForDiscord(leadingSpacesLength: Int = 0) -> String {
+        let spaces = String(repeating: " ", count: leadingSpacesLength)
+        return self.enumerated().map { idx, text -> String in
             let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
-            return "**\(idx + 1).** \(escaped)"
+            return "\(spaces)**\(idx + 1).** \(escaped)"
         }.joined(separator: "\n")
     }
 }

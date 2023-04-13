@@ -545,8 +545,8 @@ private enum ModalID: RawRepresentable {
         switch self {
         case let .autoPings(autoPingsMode, expressionMode):
             let autoPingsMode = autoPingsMode.rawValue.capitalized
-            let expressionMode = expressionMode.rawValue
-            return "\(autoPingsMode) with mode '\(expressionMode)'"
+            let expressionMode = expressionMode.UIDescription
+            return "\(autoPingsMode) \(expressionMode) auto-pings expressions"
         }
     }
 
