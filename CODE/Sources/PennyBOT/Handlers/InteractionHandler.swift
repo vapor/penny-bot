@@ -7,6 +7,8 @@ private enum Configuration {
     static let autoPingsLowLimit = 20
 }
 
+private typealias Expression = S3AutoPingItems.Expression
+
 struct InteractionHandler {
     var logger = Logger(label: "InteractionHandler")
     let event: Interaction
@@ -91,7 +93,7 @@ private extension InteractionHandler {
                     return "The list you sent seems to be empty."
                 }
 
-                let (existingExpressions, newExpressions) = try await allExpressions.divide {
+                let (existingExpressions, newExpressions) = try await allExpressions.divided {
                     try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
 
@@ -149,7 +151,7 @@ private extension InteractionHandler {
                     return "The list you sent seems to be empty."
                 }
 
-                let (existingExpressions, newExpressions) = try await allExpressions.divide {
+                let (existingExpressions, newExpressions) = try await allExpressions.divided {
                     try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
 
@@ -391,9 +393,9 @@ private extension InteractionHandler {
         }
     }
     
-    func requireExpressionModeOrReport(_ options: [InteractionOption]?) -> ExpressionMode? {
+    func requireExpressionModeOrReport(_ options: [InteractionOption]?) -> Expression.Kind? {
         if let _mode = options?.first(where: { $0.name == "mode" })?.value?.asString {
-            if let mode = ExpressionMode(rawValue: _mode) {
+            if let mode = Expression.Kind(rawValue: _mode) {
                 return mode
             } else {
                 logger.error("Discord sent invalid ExpressionMode", metadata: [
@@ -529,7 +531,7 @@ private enum ModalID: RawRepresentable {
         case add, remove, test
     }
 
-    case autoPings(AutoPingsMode, ExpressionMode)
+    case autoPings(AutoPingsMode, Expression.Kind)
 
     func makeModal() -> Payloads.InteractionResponse.Modal {
         .init(
@@ -597,19 +599,12 @@ private enum ModalID: RawRepresentable {
         if split.count == 3,
            split[0] == "auto-pings",
            let autoPingsMode = AutoPingsMode(rawValue: String(split[1])),
-           let expressionMode = ExpressionMode(rawValue: String(split[2])) {
+           let expressionMode = Expression.Kind(rawValue: String(split[2])) {
             self = .autoPings(autoPingsMode, expressionMode)
         } else {
             return nil
         }
     }
-}
-
-enum ExpressionMode: String, CaseIterable {
-    case match
-    case containment
-    
-    static let `default`: ExpressionMode = .match
 }
 
 private enum AutoPingsSubCommand: String, CaseIterable {
@@ -650,7 +645,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
     
     You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
     
-    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(ExpressionMode.default.rawValue)'.
+    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(Expression.Kind.default.UIDescription)'.
     
     - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
     
@@ -673,13 +668,13 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
 }
 
 private extension String {
-    func divideIntoAutoPingsExpressions(mode: ExpressionMode) -> [S3AutoPingItems.Expression] {
+    func divideIntoAutoPingsExpressions(mode: Expression.Kind) -> [Expression] {
         self.split(whereSeparator: { $0 == "," || $0.isNewline })
             .map(String.init)
             .map({ $0.foldForPingCommand() })
             .filter({ !$0.isEmpty }).map {
                 switch mode {
-                case .match:
+                case .exactMatch:
                     return .matches($0)
                 case .containment:
                     return .contains($0)

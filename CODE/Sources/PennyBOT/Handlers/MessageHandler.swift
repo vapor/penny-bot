@@ -106,7 +106,7 @@ struct MessageHandler {
         let coinRequest = CoinRequest.AddCoin(
             // Possible to make this a variable later to include in the thanks message
             amount: amount,
-            /// From Guild-ID because it's not an actual user who gave the coins.
+            /// `from: GuildID` because it's not an actual user who gave the coins.
             from: "<@\(Constants.vaporGuildId)>",
             receiver: authorId,
             source: .discord,
@@ -133,8 +133,11 @@ struct MessageHandler {
     func checkForPings() async {
         if event.content.isEmpty { return }
         guard let guildId = event.guild_id,
-              let authorId = event.author?.id
+              let author = event.author,
+              let member = event.member
         else { return }
+        let authorId = author.id
+
         let expUsersDict: [S3AutoPingItems.Expression: Set<String>]
         do {
             expUsersDict = try await pingsService.getAll().items
@@ -179,22 +182,41 @@ struct MessageHandler {
                 /// Don't `@` someone for their own message.
                 if userId == authorId { continue }
             }
+            let authorName = makeAuthorName(
+                nick: member.nick,
+                username: author.username,
+                id: author.id
+            )
             await DiscordService.shared.sendDM(
                 userId: userId,
                 payload: .init(
                     embeds: [.init(
                         description: """
                         There is a new message that might be of interest to you.
-                        
+
+                        Authored by: \(authorName)
+
                         Triggered by:
                         \(words.makeExpressionListForDiscord())
-                        
+
                         Message: \(messageLink)
                         """,
                         color: .vaporPurple
                     )]
                 )
             )
+        }
+    }
+
+    func makeAuthorName(nick: String?, username: String?, id: String) -> String {
+        if let nick {
+            if let username {
+                return "\(username) (aka \(nick))"
+            } else {
+                return nick
+            }
+        } else {
+            return username ?? "<unnamed-member:@\(id)>"
         }
     }
     

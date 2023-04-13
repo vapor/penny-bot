@@ -1,18 +1,47 @@
 import PennyModels
 
-extension Sequence<S3AutoPingItems.Expression> {
+extension Collection<S3AutoPingItems.Expression> {
+    /// Make sure the list in not empty before using this function.
     func makeExpressionListForDiscord() -> String {
-        self.sorted(by: { $0.innerValue > $1.innerValue })
-            .sorted(by: { $0.kindPriority > $1.kindPriority })
-            .map(\.UIDescription)
-            .makeEnumeratedListForDiscord()
+        var matches = ContiguousArray<Element>()
+        var contains = ContiguousArray<Element>()
+
+        var iterator = self.makeIterator()
+
+        while let element = iterator.next() {
+            if element.kind == .exactMatch {
+                matches.append(element)
+            } else {
+                contains.append(element)
+            }
+        }
+
+        return [
+            makeList(with: matches, kind: .exactMatch),
+            makeList(with: contains, kind: .containment)
+        ].joined(separator: "\n")
+    }
+
+    private func makeList(with elements: ContiguousArray<Element>, kind: Element.Kind) -> String {
+        if elements.isEmpty {
+            return ""
+        } else {
+            let list = elements
+                .sorted(by: { $0.innerValue > $1.innerValue })
+                .map(\.innerValue)
+                .makeEnumeratedListForDiscord()
+            return """
+            "\(kind.rawValue.capitalized):"
+            \(list)
+            """
+        }
     }
 }
 
 extension [S3AutoPingItems.Expression] {
-    func divide(
+    func divided(
         _ isInLhs: (Element) async throws -> Bool
-    ) async rethrows -> (lhs: Self, rhs: Self) {
+    ) async rethrows -> (lhs: Array<Element>, rhs: Array<Element>) {
         var lhs = ContiguousArray<Element>()
         var rhs = ContiguousArray<Element>()
         

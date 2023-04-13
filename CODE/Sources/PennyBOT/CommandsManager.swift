@@ -1,4 +1,5 @@
 import DiscordBM
+import PennyModels
 import Logging
 
 struct CommandsManager {
@@ -57,10 +58,10 @@ private extension Payloads.ApplicationCommandCreate {
     static let expressionModeOption: ApplicationCommand.Option = .init(
         type: .string,
         name: "mode",
-        description: "The expression mode. Use '\(ExpressionMode.default.rawValue)' by default",
+        description: "The expression mode. Use '\(S3AutoPingItems.Expression.Kind.default.UIDescription)' by default",
         required: true,
-        choices: ExpressionMode.allCases.map(\.rawValue).map {
-            .init(name: $0, value: .string($0))
+        choices: S3AutoPingItems.Expression.Kind.allCases.map {
+            .init(name: $0.UIDescription, value: .string($0.rawValue))
         }
     )
     

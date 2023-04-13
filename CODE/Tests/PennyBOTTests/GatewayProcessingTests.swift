@@ -297,7 +297,7 @@ class GatewayProcessingTests: XCTestCase {
         /// Contains `godb dr` (part of `mongodb driver`).
         /// Tests `Expression.contain("godb dr")`.
         XCTAssertTrue(
-            [message1, message2].contains(where: { $0.contains(#""godb dr""#) }),
+            [message1, message2].contains(where: { $0.contains("**1.** godb dr") }),
             #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
         )
         
@@ -325,7 +325,7 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.contains("blog"), message)
             XCTAssertTrue(message.contains("discord"), message)
             XCTAssertTrue(message.contains("discord-kit"), message)
-            XCTAssertTrue(message.contains(#""cord""#), message)
+            XCTAssertTrue(message.contains("**1.** cord"), message)
         }
     }
     
