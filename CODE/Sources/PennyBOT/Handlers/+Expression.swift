@@ -31,7 +31,7 @@ extension Collection<S3AutoPingItems.Expression> {
                 .map(\.innerValue)
                 .makeEnumeratedListForDiscord()
             return """
-            "\(kind.rawValue.capitalized):"
+            - \(kind.rawValue.capitalized):
             \(list)
             """
         }
