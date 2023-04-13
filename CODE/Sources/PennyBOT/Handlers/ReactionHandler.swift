@@ -59,7 +59,7 @@ struct ReactionHandler {
             response = nil
         }
         
-        guard await cache.messageAgeAllowsResponding(
+        guard await cache.messageCanBeRespondedTo(
             channelId: event.channel_id,
             messageId: event.message_id
         ) else { return }
@@ -236,11 +236,14 @@ actor ReactionCache {
     
     /// Message have been created within last week,
     /// or we don't send a thanks response for it so it's less spammy.
-    func messageAgeAllowsResponding(channelId: String, messageId: String) async -> Bool {
+    /// Also message author must not be a bot.
+    func messageCanBeRespondedTo(channelId: String, messageId: String) async -> Bool {
         guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
             return false
         }
-        return message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60)
+        let inPastWeek = message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60)
+        let isNotBot = message.author?.bot != true
+        return inPastWeek && isNotBot
     }
     
     func getMessage(channelId: String, messageId: String) async -> Gateway.MessageCreate? {
