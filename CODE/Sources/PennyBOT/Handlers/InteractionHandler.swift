@@ -555,33 +555,33 @@ private enum ModalID: RawRepresentable {
         case let .autoPings(mode, _):
             switch mode {
             case .add, .remove:
-                return [.init(components: [
-                    .textInput(.init(
-                        custom_id: "texts",
-                        style: .paragraph,
-                        label: "Enter the ping-expressions",
-                        min_length: 3,
-                        required: true,
-                        placeholder: "Example: vapor, fluent, swift, websocket kit, your-name"
-                    ))
-                ])]
+                let texts = Interaction.ActionRow.TextInput(
+                    custom_id: "texts",
+                    style: .paragraph,
+                    label: "Enter the ping-expressions",
+                    required: true,
+                    placeholder: "Example: vapor, fluent, swift, websocket kit, your-name"
+                )
+                return [[.textInput(texts)]]
             case .test:
+                let message = Interaction.ActionRow.TextInput(
+                    custom_id: "message",
+                    style: .paragraph,
+                    label: "The text to test against",
+                    min_length: 3,
+                    required: true,
+                    placeholder: "Example: Lorem ipsum dolor sit amet"
+                )
+                let texts = Interaction.ActionRow.TextInput(
+                    custom_id: "texts",
+                    style: .paragraph,
+                    label: "Enter the ping-expressions",
+                    required: false,
+                    placeholder: "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
+                )
                 return [
-                    .init(components: [.textInput(.init(
-                        custom_id: "message",
-                        style: .paragraph,
-                        label: "The text to test against",
-                        min_length: 3,
-                        required: true,
-                        placeholder: "Example: Lorem ipsum dolor sit amet"
-                    ))]),
-                    .init(components: [.textInput(.init(
-                        custom_id: "texts",
-                        style: .paragraph,
-                        label: "Ping Expressions",
-                        required: false,
-                        placeholder: "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
-                    ))])
+                    [.textInput(message)],
+                    [.textInput(texts)],
                 ]
             }
         }
