@@ -31,14 +31,17 @@ struct InteractionHandler {
     func handle() async {
         switch event.data {
         case let .applicationCommand(data):
-            guard let kind = CommandKind(name: data.name) else {
+            guard let command = SlashCommand(rawValue: data.name) else {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
             }
-            if kind.shouldSendAcknowledgment {
-                guard await sendAcknowledgement(isEphemeral: kind.isEphemeral) else { return }
+            if command.shouldSendAcknowledgment {
+                guard await sendAcknowledgement(isEphemeral: command.isEphemeral) else { return }
             }
-            if let response = await makeResponseForApplicationCommand(kind: kind, data: data) {
+            if let response = await makeResponseForApplicationCommand(
+                command: command,
+                data: data
+            ) {
                 await respond(with: response, shouldEdit: true)
             }
         case let .modalSubmit(modal):
@@ -287,11 +290,11 @@ private extension InteractionHandler {
 private extension InteractionHandler {
     /// Returns `nil` if no response is supposed to be sent to user.
     func makeResponseForApplicationCommand(
-        kind: CommandKind,
+        command: SlashCommand,
         data: Interaction.ApplicationCommand
     ) async -> (any Response)? {
         let options = data.options ?? []
-        switch kind {
+        switch command {
         case .link:
             return handleLinkCommand(options: options)
         case .autoPings:
@@ -312,25 +315,25 @@ private extension InteractionHandler {
     }
     
     func handleLinkCommand(options: [InteractionOption]) -> String {
-        if options.isEmpty {
+        guard let first = options.first else {
             logger.error("Discord did not send required info")
             return oops
         }
-        let first = options[0]
+        guard let subCommand = LinkSubCommand(rawValue: first.name) else {
+            logger.error("Unrecognized link subCommand", metadata: ["name": "\(first.name)"])
+            return oops
+        }
         guard let id = first.options?.first?.value?.asString else {
-            logger.error("Discord did not send required info")
+            logger.error("Discord did not send the account id")
             return oops
         }
-        switch first.name {
-        case "discord":
+        switch subCommand {
+        case .discord:
             return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
-        case "github":
+        case .github:
             return "This command is still a WIP. Linking Discord with Github ID '\(id)'"
-        case "slack":
+        case .slack:
             return "This command is still a WIP. Linking Discord with Slack ID '\(id)'"
-        default:
-            logger.error("Unrecognized link option", metadata: ["name": "\(first.name)"])
-            return oops
         }
     }
     
@@ -493,12 +496,7 @@ private extension InteractionHandler {
     }
 }
 
-private enum CommandKind {
-    case link
-    case autoPings
-    case howManyCoins
-    case howManyCoinsApp
-    
+extension SlashCommand {
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
@@ -511,16 +509,6 @@ private enum CommandKind {
         switch self {
         case .autoPings: return false
         case .link, .howManyCoins, .howManyCoinsApp: return true
-        }
-    }
-    
-    init? (name: String) {
-        switch name {
-        case "link": self = .link
-        case "auto-pings": self = .autoPings
-        case "how-many-coins": self = .howManyCoins
-        case "How Many Coins?": self = .howManyCoinsApp
-        default: return nil
         }
     }
 }
@@ -605,14 +593,6 @@ private enum ModalID: RawRepresentable {
             return nil
         }
     }
-}
-
-private enum AutoPingsSubCommand: String, CaseIterable {
-    case help
-    case add
-    case remove
-    case list
-    case test
 }
 
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {

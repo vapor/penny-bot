@@ -4,58 +4,153 @@ import Logging
 
 struct CommandsManager {
     func registerCommands() async {
-        await DiscordService.shared.overwriteCommands([
-            .link,
-            .ping,
-            .howManyCoins,
-            .howManyCoinsApp
-        ])
+        let commands = makeCommands()
+        await DiscordService.shared.overwriteCommands(commands)
+    }
+
+    private func makeCommands() -> [Payloads.ApplicationCommandCreate] {
+        SlashCommand.allCases.map { command in
+            return .init(
+                name: command.rawValue,
+                description: command.description,
+                options: command.options,
+                dm_permission: command.dmPermission,
+                type: command.type
+            )
+        }
     }
 }
 
-private extension Payloads.ApplicationCommandCreate {
-    static let link = Payloads.ApplicationCommandCreate(
-        name: "link",
-        description: "Links your accounts in Penny",
-        options: [
-            .init(
-                type: .subCommand,
-                name: "discord",
-                description: "Link your Discord account",
-                options: [.init(
-                    type: .string,
-                    name: "id",
-                    description: "Your Discord account ID",
-                    required: true
-                )]
-            ),
-            .init(
-                type: .subCommand,
-                name: "github",
-                description: "Link your Github account",
-                options: [.init(
-                    type: .string,
-                    name: "id",
-                    description: "Your Github account ID",
-                    required: true
-                )]
-            ),
-            .init(
-                type: .subCommand,
-                name: "slack",
-                description: "Link your Slack account",
-                options: [.init(
-                    type: .string,
-                    name: "id",
-                    description: "Your Slack account ID",
-                    required: true
-                )]
-            )
-        ],
-        dm_permission: false
-    )
-    
-    static let expressionModeOption: ApplicationCommand.Option = .init(
+enum SlashCommand: String, CaseIterable {
+    case link
+    case autoPings = "auto-pings"
+    case howManyCoins = "how-many-coins"
+    case howManyCoinsApp = "How Many Coins?"
+
+    var description: String? {
+        switch self {
+        case .link:
+            return "Links your accounts in Penny"
+        case .autoPings:
+            return "Configure Penny to ping you when certain someone uses a word/text"
+        case .howManyCoins:
+            return "See how many coins members have"
+        case .howManyCoinsApp:
+            return nil
+        }
+    }
+
+    var options: [ApplicationCommand.Option]? {
+        switch self {
+        case .link:
+            return LinkSubCommand.allCases.map { subCommand in
+                return .init(
+                    type: .subCommand,
+                    name: subCommand.rawValue,
+                    description: subCommand.description,
+                    options: subCommand.options
+                )
+            }
+        case .autoPings:
+            return AutoPingsSubCommand.allCases.map { subCommand in
+                return .init(
+                    type: .subCommand,
+                    name: subCommand.rawValue,
+                    description: subCommand.description,
+                    options: subCommand.options
+                )
+            }
+        case .howManyCoins:
+            return [.init(
+                type: .user,
+                name: "member",
+                description: "The member to check their coin count"
+            )]
+        case .howManyCoinsApp:
+            return nil
+        }
+    }
+
+    var dmPermission: Bool {
+        return false
+    }
+
+    var type: ApplicationCommand.Kind? {
+        switch self {
+        case .howManyCoinsApp:
+            return .user
+        case .link, .autoPings, .howManyCoins:
+            return nil
+        }
+    }
+}
+
+enum LinkSubCommand: String, CaseIterable {
+    case discord, github, slack
+
+    var description: String {
+        switch self {
+        case .discord:
+            return "Link your Discord account"
+        case .github:
+            return "Link your Github account"
+        case .slack:
+            return "Link your Slack account"
+        }
+    }
+
+    var options: [ApplicationCommand.Option] {
+        switch self {
+        case .discord: return [.init(
+            type: .string,
+            name: "id",
+            description: "Your Discord account ID",
+            required: true
+        )]
+        case .github: return [.init(
+            type: .string,
+            name: "id",
+            description: "Your Github account ID",
+            required: true
+        )]
+        case .slack: return [.init(
+            type: .string,
+            name: "id",
+            description: "Your Slack account ID",
+            required: true
+        )]
+        }
+    }
+}
+
+enum AutoPingsSubCommand: String, CaseIterable {
+    case help, add, remove, list, test
+
+    var description: String {
+        switch self {
+        case .help:
+            return "Help about how auto-pings works"
+        case .add:
+            return "Add multiple texts to be pinged for (Slack compatible)"
+        case .remove:
+            return "Remove multiple ping texts"
+        case .list:
+            return "See what you'll get pinged for"
+        case .test:
+            return "Test if a message triggers an auto-ping text"
+        }
+    }
+
+    var options: [ApplicationCommand.Option] {
+        switch self {
+        case .add, .remove, .test:
+            return [Self.expressionModeOption]
+        case .help, .list:
+            return []
+        }
+    }
+
+    private static let expressionModeOption = ApplicationCommand.Option(
         type: .string,
         name: "mode",
         description: "The expression mode. Use '\(S3AutoPingItems.Expression.Kind.default.UIDescription)' by default",
@@ -63,58 +158,5 @@ private extension Payloads.ApplicationCommandCreate {
         choices: S3AutoPingItems.Expression.Kind.allCases.map {
             .init(name: $0.UIDescription, value: .string($0.rawValue))
         }
-    )
-    
-    static let ping = Payloads.ApplicationCommandCreate(
-        name: "auto-pings",
-        description: "Configure Penny to ping you when certain someone uses a word/text",
-        options: [
-            .init(
-                type: .subCommand,
-                name: "help",
-                description: "Help about how auto-pings works"
-            ),
-            .init(
-                type: .subCommand,
-                name: "add",
-                description: "Add multiple texts to be pinged for (Slack compatible)",
-                options: [expressionModeOption]
-            ),
-            .init(
-                type: .subCommand,
-                name: "remove",
-                description: "Remove multiple ping texts",
-                options: [expressionModeOption]
-            ),
-            .init(
-                type: .subCommand,
-                name: "list",
-                description: "See what you'll get pinged for"
-            ),
-            .init(
-                type: .subCommand,
-                name: "test",
-                description: "Test if a message triggers an auto-ping text",
-                options: [expressionModeOption]
-            )
-        ],
-        dm_permission: false
-    )
-    
-    static let howManyCoins = Payloads.ApplicationCommandCreate(
-        name: "how-many-coins",
-        description: "See how many coins members have",
-        options: [.init(
-            type: .user,
-            name: "member",
-            description: "The member to check their coin count"
-        )],
-        dm_permission: false
-    )
-    
-    static let howManyCoinsApp = Payloads.ApplicationCommandCreate(
-        name: "How Many Coins?",
-        dm_permission: false,
-        type: .user
     )
 }
