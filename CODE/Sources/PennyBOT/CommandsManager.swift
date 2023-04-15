@@ -10,7 +10,7 @@ struct CommandsManager {
 
     private func makeCommands() -> [Payloads.ApplicationCommandCreate] {
         SlashCommand.allCases.map { command in
-            return .init(
+            Payloads.ApplicationCommandCreate(
                 name: command.rawValue,
                 description: command.description,
                 options: command.options,
@@ -24,6 +24,7 @@ struct CommandsManager {
 enum SlashCommand: String, CaseIterable {
     case link
     case autoPings = "auto-pings"
+    case help
     case howManyCoins = "how-many-coins"
     case howManyCoinsApp = "How Many Coins?"
 
@@ -33,6 +34,8 @@ enum SlashCommand: String, CaseIterable {
             return "Links your accounts in Penny"
         case .autoPings:
             return "Configure Penny to ping you when certain someone uses a word/text"
+        case .help:
+            return "Ask Penny to send a predefined help message"
         case .howManyCoins:
             return "See how many coins members have"
         case .howManyCoinsApp:
@@ -44,7 +47,7 @@ enum SlashCommand: String, CaseIterable {
         switch self {
         case .link:
             return LinkSubCommand.allCases.map { subCommand in
-                return .init(
+                ApplicationCommand.Option(
                     type: .subCommand,
                     name: subCommand.rawValue,
                     description: subCommand.description,
@@ -53,7 +56,16 @@ enum SlashCommand: String, CaseIterable {
             }
         case .autoPings:
             return AutoPingsSubCommand.allCases.map { subCommand in
-                return .init(
+                ApplicationCommand.Option(
+                    type: .subCommand,
+                    name: subCommand.rawValue,
+                    description: subCommand.description,
+                    options: subCommand.options
+                )
+            }
+        case .help:
+            return HelpSubCommand.allCases.map { subCommand in
+                ApplicationCommand.Option(
                     type: .subCommand,
                     name: subCommand.rawValue,
                     description: subCommand.description,
@@ -79,7 +91,7 @@ enum SlashCommand: String, CaseIterable {
         switch self {
         case .howManyCoinsApp:
             return .user
-        case .link, .autoPings, .howManyCoins:
+        case .link, .autoPings, .help, .howManyCoins:
             return nil
         }
     }
@@ -159,4 +171,34 @@ enum AutoPingsSubCommand: String, CaseIterable {
             .init(name: $0.UIDescription, value: .string($0.rawValue))
         }
     )
+}
+
+enum HelpSubCommand: String, CaseIterable {
+    case get, add, remove
+
+    var description: String {
+        switch self {
+        case .get:
+            return "Get a help command"
+        case .add:
+            return "Add a new help command"
+        case .remove:
+            return "Remove a help command"
+        }
+    }
+
+    var options: [ApplicationCommand.Option] {
+        switch self {
+        case .get:
+            return [.init(
+                type: .string,
+                name: "name",
+                description: "The name of the command",
+                required: true,
+                autocomplete: true
+            )]
+        case .add, .remove:
+            return []
+        }
+    }
 }

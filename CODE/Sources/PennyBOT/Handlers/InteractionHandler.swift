@@ -30,7 +30,7 @@ struct InteractionHandler {
     
     func handle() async {
         switch event.data {
-        case let .applicationCommand(data):
+        case let .applicationCommand(data) where event.type == .applicationCommand:
             guard let command = SlashCommand(rawValue: data.name) else {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
@@ -44,6 +44,24 @@ struct InteractionHandler {
             ) {
                 await respond(with: response, shouldEdit: true)
             }
+        case let .applicationCommand(data) where event.type == .applicationCommandAutocomplete:
+            guard let command = SlashCommand(rawValue: data.name) else {
+                logger.error("Unrecognized command")
+                return await sendInteractionResolveFailure()
+            }
+            guard command == .help else {
+                logger.error("Unrecognized autocomplete command")
+                return await sendInteractionResolveFailure()
+            }
+            let options = data.options ?? []
+            let response: any Response
+            do {
+                response = try await handleHelpCommandAutocomplete(options: options)
+            } catch {
+                logger.report("Help command error", error: error)
+                response =  oops
+            }
+            await respond(with: response, shouldEdit: false)
         case let .modalSubmit(modal):
             guard let modalId = ModalID(rawValue: modal.custom_id) else {
                 logger.error("Unrecognized command")
@@ -304,6 +322,13 @@ private extension InteractionHandler {
                 logger.report("Pings command error", error: error)
                 return oops
             }
+        case .help:
+            do {
+                return try await handleHelpCommand(options: options)
+            } catch {
+                logger.report("Help command error", error: error)
+                return oops
+            }
         case .howManyCoins:
             return await handleHowManyCoinsCommand(
                 author: event.member?.user ?? event.user,
@@ -394,6 +419,45 @@ private extension InteractionHandler {
             let modalId = ModalID.autoPings(.test, mode)
             return modalId.makeModal()
         }
+    }
+
+    func handleHelpCommand(options: [InteractionOption]) async throws -> (any Response)? {
+        guard let first = options.first else {
+            logger.error("Discord did not send required interaction info")
+            return oops
+        }
+        guard let subcommand = HelpSubCommand(rawValue: first.name) else {
+            logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
+            return oops
+        }
+        guard await sendAcknowledgement(isEphemeral: false) else { return nil }
+        return "HELP!!"
+    }
+
+    func handleHelpCommandAutocomplete(options: [InteractionOption]) async throws -> any Response {
+        guard let first = options.first else {
+            logger.error("Discord did not send required interaction info")
+            return oops
+        }
+        guard let subcommand = HelpSubCommand(rawValue: first.name) else {
+            logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
+            return oops
+        }
+        guard subcommand == .get else {
+            logger.error(
+                "Unrecognized 'help' command for autocomplete",
+                metadata: ["name": "\(subcommand)"]
+            )
+            return oops
+        }
+        return Payloads.InteractionResponse.Autocomplete(choices:
+            (0...(1...24).randomElement()!).map { _ in
+                .init(
+                    name: "\(Int.random(in: 1...100_000))",
+                    value: .string("\(Int.random(in: 1...100_000))")
+                )
+            }
+        )
     }
     
     func requireExpressionModeOrReport(_ options: [InteractionOption]?) -> Expression.Kind? {
@@ -501,13 +565,13 @@ extension SlashCommand {
     var isEphemeral: Bool {
         switch self {
         case .link, .autoPings: return true
-        case .howManyCoins, .howManyCoinsApp: return false
+        case .help, .howManyCoins, .howManyCoinsApp: return false
         }
     }
 
     var shouldSendAcknowledgment: Bool {
         switch self {
-        case .autoPings: return false
+        case .autoPings, .help: return false
         case .link, .howManyCoins, .howManyCoinsApp: return true
         }
     }
@@ -695,6 +759,22 @@ extension Payloads.InteractionResponse.Modal: Response {
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
         Logger(label: "Payloads.InteractionResponse.Modal.makeEditPayload").error(
+            "This method must not be called"
+        )
+        return .init(content: "Oops, something went wrong")
+    }
+
+    /// Responses containing a modal can't be an edit to another message.
+    var isEditable: Bool { false }
+}
+
+extension Payloads.InteractionResponse.Autocomplete: Response {
+    func makeResponse(isEphemeral _: Bool) -> Payloads.InteractionResponse {
+        .autocompleteResult(self)
+    }
+
+    func makeEditPayload() -> Payloads.EditWebhookMessage {
+        Logger(label: "Payloads.InteractionResponse.Autocomplete.makeEditPayload").error(
             "This method must not be called"
         )
         return .init(content: "Oops, something went wrong")
