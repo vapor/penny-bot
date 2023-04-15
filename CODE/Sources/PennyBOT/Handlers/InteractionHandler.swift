@@ -96,9 +96,9 @@ private extension InteractionHandler {
             logger.error("Can't find a user's id")
             return oops
         }
+        let allComponents = modal.components.flatMap(\.components)
         switch modalId {
         case let .autoPings(autoPingsMode, mode):
-            let allComponents = modal.components.flatMap(\.components)
             switch autoPingsMode {
             case .add:
                 guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
@@ -300,6 +300,30 @@ private extension InteractionHandler {
                     }
                 }
             }
+        case let .help(helpMode):
+            switch helpMode {
+            case .add:
+                guard let nameComponent = allComponents.first(where: { $0.customId == "name" }),
+                      case let .textInput(textInput) = nameComponent,
+                      let _name = textInput.value else {
+                    logger.error("Can't find the 'name' value")
+                    return oops
+                }
+                let name = _name.trimmingCharacters(in: .whitespaces)
+                    .replacingOccurrences(of: "\n", with: " ")
+                guard let valueComponent = allComponents.first(where: { $0.customId == "value" }),
+                      case let .textInput(textInput) = valueComponent,
+                      let value = textInput.value?.trimmingCharacters(in: .whitespaces) else {
+                    logger.error("Can't find the 'value' value")
+                    return oops
+                }
+                if name.isEmpty || value.isEmpty {
+                    return "'name' or 'value' seems empty to me :("
+                }
+#warning("ADD")
+#warning("Check For Permissions")
+                fatalError()
+            }
         }
     }
 }
@@ -430,7 +454,25 @@ private extension InteractionHandler {
             logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
             return oops
         }
-        guard await sendAcknowledgement(isEphemeral: false) else { return nil }
+        switch subcommand {
+        case .get, .remove:
+            guard await sendAcknowledgement(isEphemeral: false) else { return nil }
+        case .add:
+            /// Uses modals so can't send an acknowledgment first.
+            break
+        }
+        switch subcommand {
+        case .get:
+#warning("GET")
+            fatalError()
+        case .remove:
+#warning("REMOVE")
+#warning("Check For Permissions")
+            fatalError()
+        case .add:
+            let modalId = ModalID.help(.add)
+            return modalId.makeModal()
+        }
         return "HELP!!"
     }
 
@@ -583,7 +625,12 @@ private enum ModalID: RawRepresentable {
         case add, remove, test
     }
 
+    enum HelpMode: String {
+        case add
+    }
+
     case autoPings(AutoPingsMode, Expression.Kind)
+    case help(HelpMode)
 
     func makeModal() -> Payloads.InteractionResponse.Modal {
         .init(
@@ -599,6 +646,9 @@ private enum ModalID: RawRepresentable {
             let autoPingsMode = autoPingsMode.rawValue.capitalized
             let expressionMode = expressionMode.UIDescription
             return "\(autoPingsMode) \(expressionMode) Auto-Pings"
+        case let .help(helpMode):
+            let helpMode = helpMode.rawValue.capitalized
+            return "\(helpMode) Help Text"
         }
     }
 
@@ -622,7 +672,7 @@ private enum ModalID: RawRepresentable {
                     label: "The text to test against",
                     min_length: 3,
                     required: true,
-                    placeholder: "Example: Lorem ipsum dolor sit amet"
+                    placeholder: "Example: Lorem ipsum dolor sit amet."
                 )
                 let texts = Interaction.ActionRow.TextInput(
                     custom_id: "texts",
@@ -636,6 +686,32 @@ private enum ModalID: RawRepresentable {
                     [.textInput(texts)],
                 ]
             }
+        case let .help(helpMode):
+            switch helpMode {
+            case .add:
+                let name = Interaction.ActionRow.TextInput(
+                    custom_id: "name",
+                    style: .paragraph,
+                    label: "Enter the ping-expressions",
+                    required: true,
+                    placeholder: "Example: Setting working directory in Xcode"
+                )
+                let value = Interaction.ActionRow.TextInput(
+                    custom_id: "value",
+                    style: .paragraph,
+                    label: "Enter the ping-expressions",
+                    required: true,
+                    placeholder: """
+                    Example:
+                    See this link to figure out how to set your working directory:
+                    https://docs.vapor.codes/getting-started/xcode/#custom-working-directory
+                    """
+                )
+                return [
+                    [.textInput(name)],
+                    [.textInput(value)]
+                ]
+            }
         }
     }
 
@@ -643,6 +719,8 @@ private enum ModalID: RawRepresentable {
         switch self {
         case let .autoPings(autoPingsMode, expressionMode):
             return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
+        case let .help(helpMode):
+            return "help;\(helpMode.rawValue)"
         }
     }
 
@@ -653,6 +731,10 @@ private enum ModalID: RawRepresentable {
            let autoPingsMode = AutoPingsMode(rawValue: String(split[1])),
            let expressionMode = Expression.Kind(rawValue: String(split[2])) {
             self = .autoPings(autoPingsMode, expressionMode)
+        } else if split.count == 2,
+                  split[0] == "help",
+                  let helpMode = HelpMode(rawValue: String(split[1])) {
+            self = .help(helpMode)
         } else {
             return nil
         }

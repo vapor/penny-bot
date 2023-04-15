@@ -17,9 +17,15 @@ public enum RepositoryFactory {
         )
     }
     
-    public typealias AutoPingRepoParams = (awsClient: AWSClient, logger: Logger)
+    public typealias AutoPingsRepoParams = (awsClient: AWSClient, logger: Logger)
     
-    public static var makeAutoPingsRepository: (AutoPingRepoParams) -> any AutoPingsRepository = {
+    public static var makeAutoPingsRepository: (AutoPingsRepoParams) -> any AutoPingsRepository = {
         S3AutoPingsRepository(awsClient: $0.awsClient, logger: $0.logger)
+    }
+
+    public typealias HelpsRepoParams = (awsClient: AWSClient, logger: Logger)
+
+    public static var makeHelpsRepository: (HelpsRepoParams) -> any HelpsRepository = {
+        S3HelpsRepository(awsClient: $0.awsClient, logger: $0.logger)
     }
 }

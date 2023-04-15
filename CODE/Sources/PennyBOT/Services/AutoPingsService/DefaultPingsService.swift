@@ -66,7 +66,7 @@ actor DefaultPingsService: AutoPingsService {
     func send(
         pathParameter: String,
         method: HTTPMethod,
-        pingRequest: AutoPingRequest?
+        pingRequest: AutoPingsRequest?
     ) async throws -> S3AutoPingItems {
         let url = Constants.apiBaseUrl + "/auto-pings/" + pathParameter
         var request = HTTPClientRequest(url: url)

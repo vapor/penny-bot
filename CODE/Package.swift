@@ -14,12 +14,7 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "PennyLambdaAddCoins", targets: ["PennyLambdaAddCoins"]),
-        .executable(name: "PennyBOT", targets: ["PennyBOT"]),
-        .library(name: "PennyExtensions", targets: ["PennyExtensions"]),
-        .library(name: "PennyRepositories", targets: ["PennyRepositories"]),
-        .library(name: "PennyModels", targets: ["PennyModels"]),
-        .library(name: "PennyServices", targets: ["PennyServices"]),
+        .executable(name: "PennyBOT", targets: ["PennyBOT"])
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
@@ -27,10 +22,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         /// Pinning DiscordBM to the latest release/commit since it's in beta.
         /// You can pin it to the newest version if you're not afraid of fixing breaking changes.
-        .package(
-            url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "778d8f6a9e3aa479f8de8daaa822d8dc191b8e77"
-        ),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.49"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
@@ -86,6 +78,18 @@ let package = Package(
                 "PennyModels",
             ],
             path: "./Sources/PennyAPI/AutoPings",
+            swiftSettings: swiftSettings
+        ),
+        .executableTarget(
+            name: "HelpsLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                "PennyExtensions",
+                "PennyServices",
+                "PennyModels",
+            ],
+            path: "./Sources/PennyAPI/Helps",
             swiftSettings: swiftSettings
         ),
         .target(
