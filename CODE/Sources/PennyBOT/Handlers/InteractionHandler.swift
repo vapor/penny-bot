@@ -16,6 +16,9 @@ struct InteractionHandler {
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
+    var helpsService: any HelpsService {
+        ServiceFactory.makeHelpsService()
+    }
     var discordService: DiscordService { .shared }
     
     private let oops = "Oopsie Woopsie... Something went wrong :("
@@ -303,6 +306,16 @@ private extension InteractionHandler {
         case let .help(helpMode):
             switch helpMode {
             case .add:
+                guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                    member: member
+                ) else {
+                    let rolesString = Constants.Roles
+                        .elevatedRestrictedCommandsAccess
+                        .map(\.rawValue)
+                        .map(DiscordUtils.roleMention(id:))
+                        .joined(separator: " ")
+                    return "You don't have access level for this command. This command is only available to \(rolesString)"
+                }
                 guard let nameComponent = allComponents.first(where: { $0.customId == "name" }),
                       case let .textInput(textInput) = nameComponent,
                       let _name = textInput.value else {
@@ -311,6 +324,15 @@ private extension InteractionHandler {
                 }
                 let name = _name.trimmingCharacters(in: .whitespaces)
                     .replacingOccurrences(of: "\n", with: " ")
+
+                if let value = try await helpsService.get(name: name) {
+                    return """
+                    A help-text with name '\(name)' already exists. Please remove it first:
+
+                    > \(value)
+                    """
+                }
+
                 guard let valueComponent = allComponents.first(where: { $0.customId == "value" }),
                       case let .textInput(textInput) = valueComponent,
                       let value = textInput.value?.trimmingCharacters(in: .whitespaces) else {
@@ -320,9 +342,12 @@ private extension InteractionHandler {
                 if name.isEmpty || value.isEmpty {
                     return "'name' or 'value' seems empty to me :("
                 }
-#warning("ADD")
-#warning("Check For Permissions")
-                fatalError()
+                try await helpsService.insert(name: name, value: value)
+                return """
+                Added a new help-text with name '\(name)':
+
+                > \(value)
+                """
             }
         }
     }
@@ -461,19 +486,42 @@ private extension InteractionHandler {
             /// Uses modals so can't send an acknowledgment first.
             break
         }
+        guard let name = first.options?
+            .first(where: { $0.name == "name" })?.value?.asString else {
+            logger.error("Discord did not send required interaction info")
+            return oops
+        }
         switch subcommand {
         case .get:
-#warning("GET")
-            fatalError()
+            if let value = try await helpsService.get(name: name) {
+                return value
+            } else {
+                return "No help-text with name '\(name)' exists at all"
+            }
         case .remove:
-#warning("REMOVE")
-#warning("Check For Permissions")
-            fatalError()
+            guard let member = event.member else {
+                logger.error("Discord did not send required info")
+                return oops
+            }
+            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: member
+            ) else {
+                let rolesString = Constants.Roles
+                    .elevatedRestrictedCommandsAccess
+                    .map(\.rawValue)
+                    .map(DiscordUtils.roleMention(id:))
+                    .joined(separator: " ")
+                return "You don't have access level for this command. This command is only available to \(rolesString)"
+            }
+            if try await !helpsService.exists(name: name) {
+                return "No help-text with name '\(name)' exists at all"
+            }
+            try await helpsService.remove(name: name)
+            return "Removed a help-text with name '\(name)'."
         case .add:
             let modalId = ModalID.help(.add)
             return modalId.makeModal()
         }
-        return "HELP!!"
     }
 
     func handleHelpCommandAutocomplete(options: [InteractionOption]) async throws -> any Response {
@@ -485,20 +533,29 @@ private extension InteractionHandler {
             logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
             return oops
         }
-        guard subcommand == .get else {
+        guard subcommand == .get || subcommand == .remove else {
             logger.error(
-                "Unrecognized 'help' command for autocomplete",
-                metadata: ["name": "\(subcommand)"]
+                "Unrecognized 'help' subcommand for autocomplete",
+                metadata: ["subcommand": "\(subcommand)"]
             )
             return oops
         }
-        return Payloads.InteractionResponse.Autocomplete(choices:
-            (0...(1...24).randomElement()!).map { _ in
-                .init(
-                    name: "\(Int.random(in: 1...100_000))",
-                    value: .string("\(Int.random(in: 1...100_000))")
-                )
-            }
+        guard let name = first.options?
+            .first(where: { $0.name == "name" })?.value?.asString else {
+            logger.error("Discord did not send required interaction info")
+            return oops
+        }
+        let foldedName = name.heavyFolded()
+        var choices = try await helpsService
+            .getAll()
+            .filter({ $0.key.heavyFolded().contains(foldedName) })
+            .sorted(by: { $0.key < $1.key })
+        /// Discord only allows sending a max of 25 choices
+        if choices.count > 25 {
+            choices = Array(choices.dropLast(choices.count - 25))
+        }
+        return Payloads.InteractionResponse.Autocomplete(
+            choices: choices.map { .init(name: $0.key, value: .string($0.value)) }
         )
     }
     
@@ -692,14 +749,14 @@ private enum ModalID: RawRepresentable {
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
                     style: .paragraph,
-                    label: "Enter the ping-expressions",
+                    label: "The name of the help-text",
                     required: true,
                     placeholder: "Example: Setting working directory in Xcode"
                 )
                 let value = Interaction.ActionRow.TextInput(
                     custom_id: "value",
                     style: .paragraph,
-                    label: "Enter the ping-expressions",
+                    label: "The value of the help-text",
                     required: true,
                     placeholder: """
                     Example:
@@ -741,63 +798,11 @@ private enum ModalID: RawRepresentable {
     }
 }
 
-private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
-    
-    let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
-    
-    func command(_ subcommand: String) -> String {
-        guard let id = commandId else {
-            return "`/auto-pings \(subcommand)`"
-        }
-        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
-    }
-    
-    let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
-        name: "is_typing",
-        id: "1087429908466253984"
-    )
-    
-    return """
-    **- Auto-Pings Help**
-    
-    You can add texts to be pinged for.
-    When someone uses those texts, Penny will DM you about the message.
-    
-    - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
-    
-    > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
-    
-    **Adding Expressions**
-    
-    You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
-    
-    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(Expression.Kind.default.UIDescription)'.
-    
-    - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
-    
-    - All texts are **space-sensitive**.
-    
-    > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
-    
-    **Removing Expressions**
-    
-    You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
-    
-    **Your Pings List**
-    
-    You can use \(command("list")) to see your current expressions.
-    
-    **Testing Expressions**
-    
-    You can use \(command("test")) to test if a message triggers some expressions.
-    """
-}
-
 private extension String {
     func divideIntoAutoPingsExpressions(mode: Expression.Kind) -> [Expression] {
         self.split(whereSeparator: { $0 == "," || $0.isNewline })
             .map(String.init)
-            .map({ $0.foldForPingCommand() })
+            .map({ $0.heavyFolded() })
             .filter({ !$0.isEmpty }).map {
                 switch mode {
                 case .exactMatch:
@@ -864,4 +869,56 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
 
     /// Responses containing a modal can't be an edit to another message.
     var isEditable: Bool { false }
+}
+
+private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
+
+    let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
+
+    func command(_ subcommand: String) -> String {
+        guard let id = commandId else {
+            return "`/auto-pings \(subcommand)`"
+        }
+        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
+    }
+
+    let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
+        name: "is_typing",
+        id: "1087429908466253984"
+    )
+
+    return """
+    **- Auto-Pings Help**
+
+    You can add texts to be pinged for.
+    When someone uses those texts, Penny will DM you about the message.
+
+    - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
+
+    > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
+
+    **Adding Expressions**
+
+    You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+
+    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(Expression.Kind.default.UIDescription)'.
+
+    - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
+
+    - All texts are **space-sensitive**.
+
+    > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
+
+    **Removing Expressions**
+
+    You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
+
+    **Your Pings List**
+
+    You can use \(command("list")) to see your current expressions.
+
+    **Testing Expressions**
+
+    You can use \(command("test")) to test if a message triggers some expressions.
+    """
 }

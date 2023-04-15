@@ -9,4 +9,8 @@ enum ServiceFactory {
     static var makePingsService: () -> any AutoPingsService = {
         DefaultPingsService.shared
     }
+
+    static var makeHelpsService: () -> any HelpsService = {
+        DefaultHelpsService.shared
+    }
 }

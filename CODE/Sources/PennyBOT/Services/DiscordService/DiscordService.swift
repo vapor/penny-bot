@@ -310,6 +310,12 @@ actor DiscordService {
             member.roles.contains($0.rawValue)
         })
     }
+
+    func memberHasRolesForElevatedRestrictedCommandsAccess(member: Guild.Member) -> Bool {
+        Constants.Roles.elevatedRestrictedCommandsAccess.contains(where: {
+            member.roles.contains($0.rawValue)
+        })
+    }
     
 #if DEBUG
     func _tests_addToMessageCache(

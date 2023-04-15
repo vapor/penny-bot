@@ -5,110 +5,88 @@ import Foundation
 import Logging
 import NIOHTTP1
 
-actor DefaultPingsService: AutoPingsService {
-    
+actor DefaultHelpsService: HelpsService {
+
     var httpClient: HTTPClient!
     var logger = Logger(label: "DefaultPingsService")
-    
+
     /// Use `getAll()` to retrieve.
-    var _cachedItems: S3AutoPingItems?
+    var _cachedItems: [String: String]?
     var resetItemsTask: Task<(), Never>?
-    
+
     private init() { }
-    
-    static let shared = DefaultPingsService()
-    
+
+    static let shared = DefaultHelpsService()
+
     func initialize(httpClient: HTTPClient) {
         self.httpClient = httpClient
         self.setUpResetItemsTask()
     }
-    
-    func exists(expression: Expression, forDiscordID id: String) async throws -> Bool {
-        try await self.getAll().items[expression]?.contains(id) ?? false
+
+    func exists(name: String) async throws -> Bool {
+        try await self.getAll().keys.contains(name)
     }
-    
-    func insert(_ expressions: [Expression], forDiscordID id: String) async throws {
-        try await self.send(
-            pathParameter: "users",
-            method: .PUT,
-            pingRequest: .init(discordID: id, expressions: expressions)
-        )
+
+    func insert(name: String, value: String) async throws {
+        try await self.send(request: .add(name: name, value: value))
     }
-    
-    func remove(_ expressions: [Expression], forDiscordID id: String) async throws {
-        try await self.send(
-            pathParameter: "users",
-            method: .DELETE,
-            pingRequest: .init(discordID: id, expressions: expressions)
-        )
+
+    func remove(name: String) async throws {
+        try await self.send(request: .remove(name: name))
     }
-    
-    func get(discordID id: String) async throws -> [Expression] {
-        try await self.getAll()
-            .items
-            .filter { $0.value.contains(id) }
-            .map(\.key)
+
+    func get(name: String) async throws -> String? {
+        try await self.getAll()[name]
     }
-    
-    func getAll() async throws -> S3AutoPingItems {
+
+    func getAll() async throws -> [String: String] {
         if let cachedItems = _cachedItems {
             return cachedItems
         } else {
-            return try await self.send(
-                pathParameter: "all",
-                method: .GET,
-                pingRequest: nil
-            )
+            return try await self.send(request: .all)
         }
     }
-    
+
     @discardableResult
-    func send(
-        pathParameter: String,
-        method: HTTPMethod,
-        pingRequest: AutoPingsRequest?
-    ) async throws -> S3AutoPingItems {
-        let url = Constants.apiBaseUrl + "/auto-pings/" + pathParameter
+    func send(request helpsRequest: HelpsRequest) async throws -> [String: String] {
+        let url = Constants.apiBaseUrl + "/helps/"
         var request = HTTPClientRequest(url: url)
-        request.method = method
-        if let pingRequest {
-            request.headers.add(name: "Content-Type", value: "application/json")
-            let data = try JSONEncoder().encode(pingRequest)
-            request.body = .bytes(data)
-        }
+        request.headers.add(name: "Content-Type", value: "application/json")
+        let data = try JSONEncoder().encode(helpsRequest)
+        request.body = .bytes(data)
         let response = try await httpClient.execute(
             request,
             timeout: .seconds(60),
             logger: self.logger
         )
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
-        
+
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error( "Pings-service failed", metadata: [
+            logger.error("Helps-service failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
                 "body": "\(body)",
             ])
             throw ServiceError.badStatus(response.status)
         }
-        
+
         let body = try await response.body.collect(upTo: 1 << 24)
-        let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
+        let items = try JSONDecoder().decode([String: String].self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
         return items
     }
-    
-    private func freshenCache(_ new: S3AutoPingItems) {
-        logger.trace("Will refresh auto-pings cache", metadata: [
-            "new": .stringConvertible(new.items)
+
+    private func freshenCache(_ new: [String: String]) {
+        logger.trace("Will refresh helps cache", metadata: [
+            "new": .stringConvertible(new)
         ])
         self._cachedItems = new
         self.resetItemsTask?.cancel()
     }
-    
+
     private func setUpResetItemsTask() {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {

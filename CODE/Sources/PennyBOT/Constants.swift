@@ -35,5 +35,12 @@ enum Constants {
             .moderator,
             .core,
         ]
+
+        static let elevatedRestrictedCommandsAccess: [Roles] = [
+            .contributor,
+            .maintainer,
+            .moderator,
+            .core,
+        ]
     }
 }
