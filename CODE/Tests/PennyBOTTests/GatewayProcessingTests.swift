@@ -49,7 +49,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .bulkSetApplicationCommands(applicationId: "11111111")
         ).value
         
-        let commandNames = ["link", "auto-pings", "how-many-coins", "How Many Coins?"]
+        let commandNames = SlashCommand.allCases.map(\.rawValue)
         let commands = try XCTUnwrap(response as? [Payloads.ApplicationCommandCreate])
         XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
     }
