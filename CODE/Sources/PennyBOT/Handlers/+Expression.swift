@@ -19,12 +19,12 @@ extension Collection<S3AutoPingItems.Expression> {
         return [
             makeList(with: matches, kind: .exactMatch),
             makeList(with: contains, kind: .containment)
-        ].joined(separator: "\n")
+        ].compactMap { $0 }.joined(separator: "\n")
     }
 
-    private func makeList(with elements: ContiguousArray<Element>, kind: Element.Kind) -> String {
+    private func makeList(with elements: ContiguousArray<Element>, kind: Element.Kind) -> String? {
         if elements.isEmpty {
-            return ""
+            return nil
         } else {
             let list = elements
                 .sorted(by: { $0.innerValue > $1.innerValue })
