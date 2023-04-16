@@ -19,9 +19,11 @@ class GatewayProcessingTests: XCTestCase {
         Constants.botId = "950695294906007573"
         RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
         RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
+        RepositoryFactory.makeHelpsRepository = { _ in FakeHelpsRepository() }
         Constants.apiBaseUrl = "https://fake.com"
-        ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeCoinService = { _ in FakeCoinService() }
+        ServiceFactory.makePingsService = { FakePingsService() }
+        ServiceFactory.makeHelpsService = { FakeHelpsService() }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
@@ -364,6 +366,41 @@ class GatewayProcessingTests: XCTestCase {
             )
         )
         XCTAssertTrue(message.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+    }
+
+    func testHelpsCommand() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsAdd,
+                as: Payloads.InteractionResponse.self
+            )
+            switch response.data {
+            case .modal: break
+            default:
+                XCTFail("Wrong response data type for `/help add`")
+            }
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsGet,
+                as: Payloads.EditWebhookMessage.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "Test working directory help")
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsGetAutocomplete,
+                as: Payloads.InteractionResponse.self
+            )
+            switch response.data {
+            case .autocomplete: break
+            default:
+                XCTFail("Wrong response data type for `/help get`")
+            }
+        }
     }
 }
 

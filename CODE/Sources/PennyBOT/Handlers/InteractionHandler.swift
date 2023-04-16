@@ -486,19 +486,24 @@ private extension InteractionHandler {
             /// Uses modals so can't send an acknowledgment first.
             break
         }
-        guard let name = first.options?
-            .first(where: { $0.name == "name" })?.value?.asString else {
-            logger.error("Discord did not send required interaction info")
-            return oops
-        }
         switch subcommand {
         case .get:
+            guard let name = first.options?
+                .first(where: { $0.name == "name" })?.value?.asString else {
+                logger.error("Discord did not send required interaction info")
+                return oops
+            }
             if let value = try await helpsService.get(name: name) {
                 return value
             } else {
                 return "No help-text with name '\(name)' exists at all"
             }
         case .remove:
+            guard let name = first.options?
+                .first(where: { $0.name == "name" })?.value?.asString else {
+                logger.error("Discord did not send required interaction info")
+                return oops
+            }
             guard let member = event.member else {
                 logger.error("Discord did not send required info")
                 return oops
@@ -750,6 +755,7 @@ private enum ModalID: RawRepresentable {
                     custom_id: "name",
                     style: .paragraph,
                     label: "The name of the help-text",
+                    min_length: 3,
                     required: true,
                     placeholder: "Example: Setting working directory in Xcode"
                 )
@@ -757,11 +763,11 @@ private enum ModalID: RawRepresentable {
                     custom_id: "value",
                     style: .paragraph,
                     label: "The value of the help-text",
+                    min_length: 3,
                     required: true,
                     placeholder: """
                     Example:
-                    See this link to figure out how to set your working directory:
-                    https://docs.vapor.codes/getting-started/xcode/#custom-working-directory
+                    How to set your working directory: <link>
                     """
                 )
                 return [
