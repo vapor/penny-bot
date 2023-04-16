@@ -22,7 +22,10 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         /// Pinning DiscordBM to the latest release/commit since it's in beta.
         /// You can pin it to the newest version if you're not afraid of fixing breaking changes.
-        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.49"),
+        .package(
+            url: "https://github.com/mahdibm/DiscordBM.git",
+            revision: "add0926cfb67b58041c9995116ec9a461d82017c"
+        ),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")

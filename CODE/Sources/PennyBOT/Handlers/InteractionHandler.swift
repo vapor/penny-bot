@@ -624,9 +624,7 @@ private extension InteractionHandler {
         await discordService.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .deferredChannelMessageWithSource(
-                isEphemeral ? .init(flags: [.ephemeral]) : nil
-            )
+            payload: .deferredChannelMessageWithSource(isEphemeral: isEphemeral)
         )
     }
     
@@ -698,7 +696,7 @@ private enum ModalID: RawRepresentable {
         .init(
             custom_id: self.rawValue,
             title: self.title,
-            components: self.components
+            textInputs: self.textInputs
         )
     }
 
@@ -714,7 +712,7 @@ private enum ModalID: RawRepresentable {
         }
     }
 
-    private var components: [Interaction.ActionRow] {
+    private var textInputs: [Interaction.ActionRow.TextInput] {
         switch self {
         case let .autoPings(mode, _):
             switch mode {
@@ -726,7 +724,7 @@ private enum ModalID: RawRepresentable {
                     required: true,
                     placeholder: "Example: vapor, fluent, swift, websocket kit, your-name"
                 )
-                return [[.textInput(texts)]]
+                return [texts]
             case .test:
                 let message = Interaction.ActionRow.TextInput(
                     custom_id: "message",
@@ -743,10 +741,7 @@ private enum ModalID: RawRepresentable {
                     required: false,
                     placeholder: "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
                 )
-                return [
-                    [.textInput(message)],
-                    [.textInput(texts)],
-                ]
+                return [message, texts]
             }
         case let .help(helpMode):
             switch helpMode {
@@ -770,10 +765,7 @@ private enum ModalID: RawRepresentable {
                     How to set your working directory: <link>
                     """
                 )
-                return [
-                    [.textInput(name)],
-                    [.textInput(value)]
-                ]
+                return [name, value]
             }
         }
     }
