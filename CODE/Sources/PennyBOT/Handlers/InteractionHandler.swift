@@ -113,6 +113,11 @@ private extension InteractionHandler {
                     member: member
                 ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
                 if newExpressions.count + current.count > limit {
+                    logger.error("Someone hit their expressions count limit", metadata: [
+                        "limit": .stringConvertible(limit),
+                        "current": .stringConvertible(current),
+                        "new": .stringConvertible(newExpressions),
+                    ])
                     return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
                 }
 
@@ -511,7 +516,7 @@ extension SlashCommand {
     }
 }
 
-private enum ModalID: RawRepresentable {
+private enum ModalID {
 
     enum AutoPingsMode: String {
         case add, remove, test
@@ -569,7 +574,10 @@ private enum ModalID: RawRepresentable {
             }
         }
     }
+}
 
+/// Used to encode/decode interaction's `custom_id`.
+extension ModalID: RawRepresentable {
     var rawValue: String {
         switch self {
         case let .autoPings(autoPingsMode, expressionMode):
