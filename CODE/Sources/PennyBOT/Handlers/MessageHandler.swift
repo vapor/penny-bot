@@ -209,14 +209,14 @@ struct MessageHandler {
     }
 
     func makeAuthorName(nick: String?, username: String?, id: String) -> String {
-        if let nick {
-            if let username {
-                return "\(username) (aka \(nick))"
-            } else {
-                return nick
-            }
-        } else {
-            return username ?? "<unnamed-member:@\(id)>"
+        switch (nick, username) {
+        case let (.some(nick), .some(username)) where nick != username:
+            return "\(username) (aka \(nick))"
+        case let (_, .some(username)):
+            return username
+        default:
+            logger.warning("How could someone not have a username?!")
+            return "<unnamed-member:@\(id)>"
         }
     }
     
