@@ -99,7 +99,7 @@ actor DiscordService {
             return existing
         } else {
             do {
-                let dmChannel = try await discordClient.createDm(recipient_id: userId).decode()
+                let dmChannel = try await discordClient.createDm(recipientId: userId).decode()
                 dmChannels[userId] = dmChannel.id
                 return dmChannel.id
             } catch {
