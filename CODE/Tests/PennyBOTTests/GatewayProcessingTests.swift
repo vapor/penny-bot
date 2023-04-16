@@ -148,7 +148,7 @@ class GatewayProcessingTests: XCTestCase {
         
         // The second thanks message should NOT edit the last one, because although the
         // receiver is the same person and the channel is the same channel, Penny's message
-        // is not the last message anymore.
+        // is not the last message in the channel anymore.
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction2,
