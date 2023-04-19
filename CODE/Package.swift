@@ -29,7 +29,7 @@ let package = Package(
         /// You can pin it to the newest version if you're not afraid of fixing breaking changes.
         .package(
             url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "8d70f5bbef25403259581283e1c99701feaa81a6"
+            revision: "427938b3ce2afee10d34862727ce735cfd5e9f6b"
         ),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
