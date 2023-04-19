@@ -377,8 +377,17 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .modal: break
             default:
-                XCTFail("Wrong response data type for `/help add`")
+                XCTFail("Wrong response data type for `/help add`: \(response.data as Any)")
             }
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsAddFailure,
+                as: Payloads.EditWebhookMessage.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("You don't have access level for this command. This command is only available to"), message)
         }
 
         do {
@@ -398,7 +407,7 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .autocomplete: break
             default:
-                XCTFail("Wrong response data type for `/help get`")
+                XCTFail("Wrong response data type for `/help get`: \(response.data as Any)")
             }
         }
     }

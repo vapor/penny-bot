@@ -16,6 +16,7 @@ public enum EventKey: String, Sendable {
     case howManyCoins2
     case serverBoost
     case helpsAdd
+    case helpsAddFailure
     case helpsGet
     case helpsGetAutocomplete
 
@@ -57,6 +58,8 @@ public enum EventKey: String, Sendable {
             return [.createMessage(channelId: "443074453719744522")]
         case .helpsAdd:
             return [.createInteractionResponse(interactionId: "1097057830038667314", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw")]
+        case .helpsAddFailure:
+            return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw"),.createInteractionResponse(interactionId: "1097057830038667314", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw")]
         case .helpsGet:
             return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA2MjQ3NDExODg2NDkwNjpJMXhuZEVPeXViZFVteXV0UUpNZjAzZFBNMTNvVndnSkpLZ0xlbFprbnFLbmNLSlpFQmc3bUc3bVF6YzdJVklZemRqNlIzcFhsZlBEM3FoZmtPeXQwZHRkY2psNlExeTRRcDB4dWhmcGwyOW1EWGtuajhVWjdidU1VQ2dUQk5JcA"), .createInteractionResponse(interactionId: "1097062474118864906", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA2MjQ3NDExODg2NDkwNjpJMXhuZEVPeXViZFVteXV0UUpNZjAzZFBNMTNvVndnSkpLZ0xlbFprbnFLbmNLSlpFQmc3bUc3bVF6YzdJVklZemRqNlIzcFhsZlBEM3FoZmtPeXQwZHRkY2psNlExeTRRcDB4dWhmcGwyOW1EWGtuajhVWjdidU1VQ2dUQk5JcA")]
         case .helpsGetAutocomplete:

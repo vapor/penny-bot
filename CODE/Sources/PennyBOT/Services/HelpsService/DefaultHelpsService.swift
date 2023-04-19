@@ -22,11 +22,7 @@ actor DefaultHelpsService: HelpsService {
         self.httpClient = httpClient
         self.setUpResetItemsTask()
     }
-
-    func exists(name: String) async throws -> Bool {
-        try await self.getAll().keys.contains(name)
-    }
-
+    
     func insert(name: String, value: String) async throws {
         try await self.send(request: .add(name: name, value: value))
     }

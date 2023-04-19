@@ -311,16 +311,6 @@ private extension InteractionHandler {
         case let .help(helpMode):
             switch helpMode {
             case .add:
-                guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-                    member: member
-                ) else {
-                    let rolesString = Constants.Roles
-                        .elevatedRestrictedCommandsAccess
-                        .map(\.rawValue)
-                        .map(DiscordUtils.roleMention(id:))
-                        .joined(separator: " ")
-                    return "You don't have access level for this command. This command is only available to \(rolesString)"
-                }
                 guard let nameComponent = allComponents.first(where: { $0.customId == "name" }),
                       case let .textInput(textInput) = nameComponent,
                       let _name = textInput.value else {
@@ -347,6 +337,12 @@ private extension InteractionHandler {
                 if name.isEmpty || value.isEmpty {
                     return "'name' or 'value' seems empty to me :("
                 }
+                /// The response of this command is ephemeral so members feel free to add help-texts.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.warning("Will add a help-text", metadata: [
+                    "name": .string(name),
+                    "value": .string(value),
+                ])
                 try await helpsService.insert(name: name, value: value)
                 return """
                 Added a new help-text with name '\(name)':
@@ -485,8 +481,12 @@ private extension InteractionHandler {
             return oops
         }
         switch subcommand {
-        case .get, .remove:
+        case .get:
             guard await sendAcknowledgement(isEphemeral: false) else { return nil }
+        case .remove:
+            /// This is ephemeral so members feel free to remove stuff,
+            /// but we will log this action so we can know if something malicious is happening.
+            guard await sendAcknowledgement(isEphemeral: true) else { return nil }
         case .add:
             /// Uses modals so can't send an acknowledgment first.
             break
@@ -523,12 +523,33 @@ private extension InteractionHandler {
                     .joined(separator: " ")
                 return "You don't have access level for this command. This command is only available to \(rolesString)"
             }
-            if try await !helpsService.exists(name: name) {
+            guard let value = try await helpsService.get(name: name) else {
                 return "No help-text with name '\(name)' exists at all"
             }
+            logger.warning("Will remove a help-text", metadata: [
+                "name": .string(name),
+                "value": .string(value),
+            ])
             try await helpsService.remove(name: name)
-            return "Removed a help-text with name '\(name)'."
+            return "Removed a help-text with name '\(name)'"
         case .add:
+            guard let member = event.member else {
+                logger.error("Discord did not send required info")
+                return oops
+            }
+            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: member
+            ) else {
+                /// To not make things too complicated for now, send an acknowledgment,
+                /// so the String we return can be sent as an "edit".
+                guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+                let rolesString = Constants.Roles
+                    .elevatedRestrictedCommandsAccess
+                    .map(\.rawValue)
+                    .map(DiscordUtils.roleMention(id:))
+                    .joined(separator: " ")
+                return "You don't have access level for this command. This command is only available to \(rolesString)"
+            }
             let modalId = ModalID.help(.add)
             return modalId.makeModal()
         }
@@ -877,6 +898,7 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
     var isEditable: Bool { false }
 }
 
+//MARK: - Auto-pings help
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
 
     let commandId = commands.first(where: { $0.name == "auto-pings" })?.id

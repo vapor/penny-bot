@@ -5,10 +5,6 @@ public struct FakeHelpsService: HelpsService {
 
     public init() { }
 
-    public func exists(name: String) async throws -> Bool {
-        try await self.getAll()[name] != nil
-    }
-
     public func insert(name: String, value: String) async throws {
         _ = try await FakeHelpsRepository().insert(name: name, value: value)
     }
