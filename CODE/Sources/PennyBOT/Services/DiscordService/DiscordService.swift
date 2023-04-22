@@ -163,12 +163,12 @@ actor DiscordService {
         } else {
             /// Don't report failures to users, in this case.
             if isAFailureMessage { return nil }
-            let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)\n"
+            let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)"
             return await self.sendMessage(
                 channelId: Constants.thanksChannelId,
                 payload: .init(
                     embeds: [.init(
-                        description: link + response,
+                        description: "\(response) (\(link))",
                         color: .vaporPurple
                     )]
                 )

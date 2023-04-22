@@ -132,7 +132,8 @@ struct MessageHandler {
     
     func checkForPings() async {
         if event.content.isEmpty { return }
-        guard let guildId = event.guild_id,
+        /// Check guild-id too, just to make sure / future-proofing.
+        guard event.guild_id == Constants.vaporGuildId,
               let author = event.author,
               let member = event.member
         else { return }
@@ -168,7 +169,7 @@ struct MessageHandler {
             }
         }
         
-        let messageLink = "https://discord.com/channels/\(guildId)/\(event.channel_id)/\(event.id)"
+        let messageLink = "https://discord.com/channels/\(Constants.vaporGuildId)/\(event.channel_id)/\(event.id)"
         /// For now we don't need to worry about Discord rate-limits,
         /// `DiscordBM` will do enough and will try to not exceed them.
         /// If at some point this starts to hit rate-limits,

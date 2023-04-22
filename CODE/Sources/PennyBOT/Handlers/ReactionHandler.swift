@@ -89,12 +89,12 @@ struct ReactionHandler {
                     senderName: senderName
                 )
             case let .forcedInThanksChannel(originalChannelId, pennyResponseMessageId, lastUsers):
-                let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(originalChannelId)/\(event.message_id)\n"
+                let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(originalChannelId)/\(event.message_id)"
                 let names = lastUsers.joined(separator: ", ") + " & \(senderName)"
                 let count = lastUsers.count + 1
                 await editResponse(
                     messageId: pennyResponseMessageId,
-                    with: link + "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                    with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)! (\(link))",
                     forcedInThanksChannel: true,
                     senderName: senderName
                 )
