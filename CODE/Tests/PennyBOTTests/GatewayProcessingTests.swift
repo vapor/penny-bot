@@ -175,10 +175,11 @@ class GatewayProcessingTests: XCTestCase {
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertTrue(description.hasPrefix("""
-            https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
             0xTim gave a \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
             """), description)
-            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+            XCTAssertTrue(description.hasSuffix("""
+            \(Constants.vaporCoinEmoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
+            """))
         }
         
         // We need to wait a little bit to make sure Discord's response
@@ -195,10 +196,11 @@ class GatewayProcessingTests: XCTestCase {
             
             let description = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertTrue(description.hasPrefix("""
-            https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034
             0xTim & Mahdi BM gave 2 \(Constants.vaporCoinEmoji) to <@1030118727418646629>, who now has
             """), description)
-            XCTAssertTrue(description.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+            XCTAssertTrue(description.hasSuffix("""
+            \(Constants.vaporCoinEmoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
+            """))
         }
     }
     
@@ -209,14 +211,11 @@ class GatewayProcessingTests: XCTestCase {
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
-        let lines = description.split(whereSeparator: \.isNewline)
-        
-        let line1 = try XCTUnwrap(lines.first)
-        XCTAssertEqual(line1, "https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042")
-        
-        let line2 = try XCTUnwrap(lines.last)
-        XCTAssertTrue(line2.hasPrefix("<@950695294906007573> now has "))
-        XCTAssertTrue(line2.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+
+        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
+        XCTAssertTrue(description.hasSuffix("""
+        \(Constants.vaporCoinEmoji)! (https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042)
+        """))
     }
     
     func testBotStateManagerSendsSignalOnStartUp() async throws {
