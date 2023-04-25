@@ -1,4 +1,5 @@
 import PennyModels
+import DiscordBM
 
 extension Collection<S3AutoPingItems.Expression> {
     /// Make sure the list in not empty before using this function.
@@ -29,12 +30,21 @@ extension Collection<S3AutoPingItems.Expression> {
             let list = elements
                 .sorted(by: { $0.innerValue > $1.innerValue })
                 .map(\.innerValue)
-                .makeEnumeratedListForDiscord()
+                .makeExpressionListForDiscord()
             return """
-            **- \(kind.UIDescription)**
+            - **\(kind.UIDescription)**
             \(list)
             """
         }
+    }
+}
+
+private extension [String] {
+    func makeExpressionListForDiscord() -> String {
+        self.enumerated().map { idx, text -> String in
+            let escaped = DiscordUtils.escapingSpecialCharacters(text)
+            return "- \(escaped)"
+        }.joined(separator: "\n")
     }
 }
 

@@ -280,7 +280,7 @@ class GatewayProcessingTests: XCTestCase {
         let message1 = try XCTUnwrap(dmMessage1.embeds?.first?.description)
         XCTAssertTrue(message1.hasPrefix("There is a new message"), message1)
         /// Check to make sure the expected ping-words are mentioned in the message
-        XCTAssertTrue(message1.contains("mongodb driver"), message1)
+        XCTAssertTrue(message1.contains("- mongodb driver"), message1)
         
         do {
             /// These two must not fail. The user does not have any
@@ -293,12 +293,12 @@ class GatewayProcessingTests: XCTestCase {
         let message2 = try XCTUnwrap(dmMessage2.embeds?.first?.description)
         XCTAssertTrue(message2.hasPrefix("There is a new message"), message2)
         /// Check to make sure the expected ping-words are mentioned in the message
-        XCTAssertTrue(message2.contains("mongodb driver"), message2)
+        XCTAssertTrue(message2.contains("- mongodb driver"), message2)
         
         /// Contains `godb dr` (part of `mongodb driver`).
         /// Tests `Expression.contain("godb dr")`.
         XCTAssertTrue(
-            [message1, message2].contains(where: { $0.contains("**1.** godb dr") }),
+            [message1, message2].contains(where: { $0.contains("- godb dr") }),
             #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
         )
         
@@ -323,10 +323,10 @@ class GatewayProcessingTests: XCTestCase {
             let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
             XCTAssertTrue(message.hasPrefix("There is a new message"), message)
             /// Check to make sure the expected ping-words are mentioned in the message
-            XCTAssertTrue(message.contains("blog"), message)
-            XCTAssertTrue(message.contains("discord"), message)
-            XCTAssertTrue(message.contains("discord-kit"), message)
-            XCTAssertTrue(message.contains("**1.** cord"), message)
+            XCTAssertTrue(message.contains("- blog"), message)
+            XCTAssertTrue(message.contains("- discord"), message)
+            XCTAssertTrue(message.contains("- discord-kit"), message)
+            XCTAssertTrue(message.contains("- cord"), message)
         }
     }
     
