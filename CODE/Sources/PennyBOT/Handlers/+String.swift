@@ -1,4 +1,3 @@
-import DiscordBM
 import Foundation
 import PennyModels
 
@@ -51,15 +50,6 @@ extension String {
         }
         
         return String(copy)
-    }
-}
-
-extension Sequence<String> {
-    func makeEnumeratedListForDiscord() -> String {
-        self.enumerated().map { idx, text -> String in
-            let escaped = DiscordUtils.escapingSpecialCharacters(text, forChannelType: .text)
-            return "**\(idx + 1).** \(escaped)"
-        }.joined(separator: "\n")
     }
 }
 
