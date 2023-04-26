@@ -446,7 +446,7 @@ private extension InteractionHandler {
                 return "You have not set any expressions to be pinged for."
             } else {
                 return """
-                Your expressions:
+                Your expressions
                 \(items.makeExpressionListForDiscord())
                 """
             }

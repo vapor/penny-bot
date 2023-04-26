@@ -2,6 +2,11 @@ import DiscordBM
 import Logging
 
 actor DiscordService {
+
+    enum Error: Swift.Error {
+        case cantGetGuild
+        case cantFindChannel
+    }
     
     private var discordClient: (any DiscordClient)!
     private var cache: DiscordCache!
@@ -12,12 +17,12 @@ actor DiscordService {
     private var usersAlreadyWarnedAboutClosedDMS: Set<String> = []
     /// `[[ChannelID, MessageID]: MessageCreate]`
     private var cachedMessages: [[String]: Gateway.MessageCreate] = [:]
-    private var vaporGuild: Gateway.GuildCreate? {
-        get async {
+    private var vaporGuild: Gateway.GuildCreate {
+        get async throws {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
                 let guilds = await cache.guilds
                 logger.error("Cannot get cached vapor guild", metadata: ["guilds": "\(guilds)"])
-                return nil
+                throw Error.cantGetGuild
             }
             
             /// This could cause problems so we need to somehow keep an eye on it.
@@ -139,11 +144,17 @@ actor DiscordService {
         isAFailureMessage: Bool,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
-        let hasPermissionToSend = await vaporGuild?.userHasPermissions(
-            userId: Constants.botId,
-            channelId: channelId,
-            permissions: [.sendMessages]
-        ) == true
+        let hasPermissionToSend: Bool
+        do {
+            hasPermissionToSend = try await vaporGuild.userHasPermissions(
+                userId: Constants.botId,
+                channelId: channelId,
+                permissions: [.sendMessages]
+            )
+        } catch {
+            logger.report("Can't resolve user permissions", error: error)
+            return nil
+        }
         if hasPermissionToSend {
             return await self.sendMessage(
                 channelId: channelId,
@@ -296,12 +307,11 @@ actor DiscordService {
         }
     }
     
-    func userHasReadAccess(userId: String, channelId: String) async -> Bool {
-        guard let guild = await self.vaporGuild else { return false }
-        return guild.userHasPermissions(
+    func userHasReadAccess(userId: String, channelId: String) async throws -> Bool {
+        try await self.vaporGuild.userHasPermissions(
             userId: userId,
             channelId: channelId,
-            permissions: [.readMessageHistory]
+            permissions: [.viewChannel, .readMessageHistory]
         )
     }
     
@@ -316,7 +326,7 @@ actor DiscordService {
             member.roles.contains($0.rawValue)
         })
     }
-    
+
 #if DEBUG
     func _tests_addToMessageCache(
         channelId: String,

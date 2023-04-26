@@ -17,7 +17,7 @@ extension Collection<S3AutoPingItems.Expression> {
             }
         }
 
-        return "\n" + [
+        return [
             makeList(with: matches, kind: .exactMatch),
             makeList(with: contains, kind: .containment)
         ].compactMap { $0 }.joined(separator: "\n")
@@ -30,7 +30,7 @@ extension Collection<S3AutoPingItems.Expression> {
             let list = elements
                 .sorted(by: { $0.innerValue > $1.innerValue })
                 .map(\.innerValue)
-                .makeExpressionListForDiscord()
+                .makeExpressionListItems()
             return """
             - **\(kind.UIDescription)**
             \(list)
@@ -40,7 +40,7 @@ extension Collection<S3AutoPingItems.Expression> {
 }
 
 private extension [String] {
-    func makeExpressionListForDiscord() -> String {
+    func makeExpressionListItems() -> String {
         self.enumerated().map { idx, text -> String in
             let escaped = DiscordUtils.escapingSpecialCharacters(text)
             return "  - \(escaped)"
