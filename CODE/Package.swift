@@ -31,9 +31,12 @@ let package = Package(
             url: "https://github.com/mahdibm/DiscordBM.git",
             revision: "c15831ce18e925a977ccf80edc15c8509fa2cd6b"
         ),
+        .package(
+            url: "https://github.com/swift-server/swift-service-lifecycle.git",
+            exact: "1.0.0-alpha.11"
+        ),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
-        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
-        .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1")
+        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -55,10 +58,10 @@ let package = Package(
             name: "PennyBOT",
             dependencies: [
                 .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Lifecycle", package: "swift-service-lifecycle"),
                 "PennyModels",
-                "PennyRepositories"
+                "PennyRepositories",
             ],
             swiftSettings: swiftSettings
         ),

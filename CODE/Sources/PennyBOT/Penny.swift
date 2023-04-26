@@ -4,51 +4,52 @@ import Logging
 import NIOPosix
 import NIOCore
 import AsyncHTTPClient
-import Backtrace
+@preconcurrency import Lifecycle
 
 @main
 struct Penny {
-    
-    static func main() {
-        Backtrace.install()
-        
-        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
-        let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        
-        defer {
-            try! client.syncShutdown()
-            try! eventLoopGroup.syncShutdownGracefully()
-        }
-        
-        /// Can't use `RunLoop.main.run()` if we mark `static func main()` with `async`.
-        /// This is to work around that.
-        try! eventLoopGroup.next().makeFutureWithTask {
-            await start(eventLoopGroup: eventLoopGroup, client: client)
-        }.wait()
-        
-        RunLoop.main.run()
+
+    static func main() async {
+        await start().wait()
     }
-    
-    static func start(eventLoopGroup: EventLoopGroup, client: HTTPClient) async {
+
+    /// Tests only need to call this, not `main()`
+    @discardableResult
+    static func start() async -> ServiceLifecycle {
+        let lifecycle = ServiceLifecycle()
+
+        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
+        lifecycle.registerShutdown(
+            label: "eventLoopGroup",
+            .sync(eventLoopGroup.syncShutdownGracefully)
+        )
+
+        let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+        lifecycle.registerShutdown(
+            label: "httpClient",
+            .sync(client.syncShutdown)
+        )
+
         await bootstrapLoggingSystem(httpClient: client)
-        
+
         let bot = BotFactory.makeBot(eventLoopGroup, client)
         let cache = await BotFactory.makeCache(bot)
-        
+
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await DefaultPingsService.shared.initialize(httpClient: client)
+        await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
-        
+
         await bot.addEventHandler { event in
             EventHandler(
                 event: event,
                 coinService: ServiceFactory.makeCoinService(client)
             ).handle()
         }
-        
+
         await bot.connect()
-        
-        await CommandsManager().registerCommands()
+
+        return lifecycle
     }
     
     static func bootstrapLoggingSystem(httpClient: HTTPClient) async {
