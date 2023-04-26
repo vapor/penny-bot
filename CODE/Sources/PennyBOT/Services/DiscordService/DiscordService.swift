@@ -311,7 +311,7 @@ actor DiscordService {
         try await self.vaporGuild.userHasPermissions(
             userId: userId,
             channelId: channelId,
-            permissions: [.readMessageHistory]
+            permissions: [.viewChannel, .readMessageHistory]
         )
     }
     

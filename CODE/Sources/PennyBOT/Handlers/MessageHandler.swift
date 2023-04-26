@@ -158,7 +158,7 @@ struct MessageHandler {
             ), let users = expUsersDict[exp] {
                 for userId in users {
                     /// Checks if the user is in the guild at all,
-                    /// + if the user has read access in the channel at all.
+                    /// + if the user has read access of the channel.
                     if (try? await DiscordService.shared.userHasReadAccess(
                         userId: userId,
                         channelId: event.channel_id
@@ -169,7 +169,8 @@ struct MessageHandler {
             }
         }
 
-        let channelLink = "https://discord.com/channels/\(Constants.vaporGuildId)/\(event.channel_id)"
+        let domain = "https://discord.com"
+        let channelLink = "\(domain)/channels/\(Constants.vaporGuildId)/\(event.channel_id)"
         let messageLink = "\(channelLink)/\(event.id)"
         /// For now we don't need to worry about Discord rate-limits,
         /// `DiscordBM` will do enough and will try to not exceed them.
