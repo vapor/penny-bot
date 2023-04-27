@@ -77,7 +77,7 @@ struct AddCoinHandler: LambdaHandler {
                 from: userUUID,
                 source: request.source,
                 reason: request.reason)
-            
+
             let coinResponse = try await userService.addCoins(
                 with: coinEntry,
                 fromDiscordID: request.from,
