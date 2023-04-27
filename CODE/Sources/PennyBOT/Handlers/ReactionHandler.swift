@@ -107,8 +107,11 @@ struct ReactionHandler {
                 )
             }
         } else {
+            let coinCountDescription = amount == 1 ?
+            "a \(Constants.vaporCoinEmoji)" :
+            "\(amount) \(Constants.vaporCoinEmoji)"
             await respond(
-                with: "\(senderName) gave a \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                with: "\(senderName) gave \(coinCountDescription) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
                 amount: amount,
                 senderName: senderName,
                 isAFailureMessage: false
