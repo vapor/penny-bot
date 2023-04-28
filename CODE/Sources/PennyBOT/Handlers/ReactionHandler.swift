@@ -261,7 +261,7 @@ actor ReactionCache {
         return inPastWeek && isNotBot
     }
     
-    func getMessage(channelId: String, messageId: String) async -> Gateway.MessageCreate? {
+    func getMessage(channelId: String, messageId: String) async -> DiscordChannel.Message? {
         guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
             channelId: channelId,
             messageId: messageId
