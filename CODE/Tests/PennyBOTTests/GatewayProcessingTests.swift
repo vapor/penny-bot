@@ -3,11 +3,12 @@
 import DiscordGateway
 import PennyLambdaAddCoins
 import PennyRepositories
+import ServiceLifecycle
 import Fake
 import XCTest
 
 class GatewayProcessingTests: XCTestCase {
-    
+
     var stateManager: BotStateManager { .shared }
     var responseStorage: FakeResponseStorage { .shared }
     var manager: FakeManager!
@@ -38,9 +39,7 @@ class GatewayProcessingTests: XCTestCase {
             )
         }
         await stateManager._tests_reset()
-        // Due to how `Penny.start()` works, sometimes `Penny.start()` exits before
-        // the fake manager is ready. That's why we need to use `waitUntilConnected()`.
-        await Penny.start()
+        Task { try await Penny.main() }
         await manager.waitUntilConnected()
     }
     
