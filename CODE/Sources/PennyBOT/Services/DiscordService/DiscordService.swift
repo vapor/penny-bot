@@ -15,8 +15,8 @@ actor DiscordService {
     private var dmChannels: [String: String] = [:]
     /// `Set<UserID>`
     private var usersAlreadyWarnedAboutClosedDMS: Set<String> = []
-    /// `[[ChannelID, MessageID]: MessageCreate]`
-    private var cachedMessages: [[String]: Gateway.MessageCreate] = [:]
+    /// `[[ChannelID, MessageID]: Message]`
+    private var cachedMessages: [[String]: DiscordChannel.Message] = [:]
     private var vaporGuild: Gateway.GuildCreate {
         get async throws {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -276,7 +276,7 @@ actor DiscordService {
     func getPossiblyCachedChannelMessage(
         channelId: String,
         messageId: String
-    ) async -> Gateway.MessageCreate? {
+    ) async -> DiscordChannel.Message? {
         if let cached = self.cachedMessages[[channelId, messageId]] {
             return cached
         } else {
@@ -292,7 +292,7 @@ actor DiscordService {
     func getChannelMessage(
         channelId: String,
         messageId: String
-    ) async -> Gateway.MessageCreate? {
+    ) async -> DiscordChannel.Message? {
         do {
             return try await discordClient.getMessage(
                 channelId: channelId,
@@ -331,7 +331,7 @@ actor DiscordService {
     func _tests_addToMessageCache(
         channelId: String,
         messageId: String,
-        message: Gateway.MessageCreate
+        message: DiscordChannel.Message
     ) {
         self.cachedMessages[[channelId, messageId]] = message
     }

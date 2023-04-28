@@ -17,21 +17,21 @@ let package = Package(
         .executable(name: "PennyBOT", targets: ["PennyBOT"])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
-        /// Pinning DiscordBM to the latest release/commit since it's in beta.
-        /// You can pin it to the newest version if you're not afraid of fixing breaking changes.
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
+        .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
+        /// Pinning these to the latest release/commit since they're not released.
+        /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
         .package(
             url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "c15831ce18e925a977ccf80edc15c8509fa2cd6b"
+            exact: "1.0.0-beta.51"
         ),
         .package(
-            url: "https://github.com/swift-server/swift-service-lifecycle.git",
-            exact: "1.0.0-alpha.11"
+            url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
+            exact: "1.0.0-alpha.1"
         ),
-        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
-        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -52,9 +52,9 @@ let package = Package(
         .executableTarget(
             name: "PennyBOT",
             dependencies: [
+                .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "Lifecycle", package: "swift-service-lifecycle"),
                 "PennyModels",
                 "PennyRepositories",
             ],

@@ -4,31 +4,15 @@ import Logging
 import NIOPosix
 import NIOCore
 import AsyncHTTPClient
-@preconcurrency import Lifecycle
+import Backtrace
 
 @main
 struct Penny {
-
-    static func main() async {
-        await start().wait()
-    }
-
-    /// Tests only need to call this, not `main()`
-    @discardableResult
-    static func start() async -> ServiceLifecycle {
-        let lifecycle = ServiceLifecycle()
+    static func main() async throws {
+        Backtrace.install()
 
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
-        lifecycle.registerShutdown(
-            label: "eventLoopGroup",
-            .sync(eventLoopGroup.syncShutdownGracefully)
-        )
-
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        lifecycle.registerShutdown(
-            label: "httpClient",
-            .sync(client.syncShutdown)
-        )
 
         await bootstrapLoggingSystem(httpClient: client)
 
@@ -40,19 +24,17 @@ struct Penny {
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
-        await bot.addEventHandler { event in
+        await bot.connect()
+
+        for await event in await bot.makeEventStream() {
             EventHandler(
                 event: event,
                 coinService: ServiceFactory.makeCoinService(client)
             ).handle()
         }
-
-        await bot.connect()
-
-        return lifecycle
     }
-    
-    static func bootstrapLoggingSystem(httpClient: HTTPClient) async {
+
+    private static func bootstrapLoggingSystem(httpClient: HTTPClient) async {
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use a fake url.
@@ -84,7 +66,9 @@ struct Penny {
         await LoggingSystem.bootstrapWithDiscordLogger(
             address: try! .url(webhookUrl),
             level: .trace,
-            makeMainLogHandler: StreamLogHandler.standardOutput(label:metadataProvider:)
+            makeMainLogHandler: { label, metadataProvider in
+                StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)
+            }
         )
     }
 }
