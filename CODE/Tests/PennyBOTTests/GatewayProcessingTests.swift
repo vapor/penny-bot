@@ -3,7 +3,6 @@
 import DiscordGateway
 import PennyLambdaAddCoins
 import PennyRepositories
-import ServiceLifecycle
 import Fake
 import XCTest
 
