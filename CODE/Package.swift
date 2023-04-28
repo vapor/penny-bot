@@ -34,10 +34,6 @@ let package = Package(
             revision: "8b2c71110786c148a884b594e7b32691fd5dfc3d"
         ),
         .package(
-            url: "https://github.com/swift-server/swift-service-lifecycle.git",
-            exact: "2.0.0-alpha.1"
-        ),
-        .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
         ),
@@ -64,7 +60,6 @@ let package = Package(
                 .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
                 "PennyModels",
                 "PennyRepositories",
             ],
