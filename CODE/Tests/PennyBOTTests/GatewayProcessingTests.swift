@@ -39,9 +39,7 @@ class GatewayProcessingTests: XCTestCase {
             )
         }
         await stateManager._tests_reset()
-        // Due to how `Penny.start()` works, sometimes `Penny.start()` exits before
-        // the fake manager is ready. That's why we need to use `waitUntilConnected()`.
-        try await Penny.main()
+        Task { try await Penny.main() }
         await manager.waitUntilConnected()
     }
     

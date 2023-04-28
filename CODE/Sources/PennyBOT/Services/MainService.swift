@@ -22,14 +22,14 @@ actor MainService: Service {
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
-        await bot.addEventHandler { event in
+        await bot.connect()
+
+        for await event in await bot.makeEventStream() {
             EventHandler(
                 event: event,
                 coinService: ServiceFactory.makeCoinService(client)
             ).handle()
         }
-
-        await bot.connect()
     }
 
     private func bootstrapLoggingSystem(httpClient: HTTPClient) async {
@@ -68,5 +68,13 @@ actor MainService: Service {
                 StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)
             }
         )
+    }
+}
+
+private class UnsafeBox<Value>: @unchecked Sendable {
+    var value: Value
+
+    init(value: Value) {
+        self.value = value
     }
 }
