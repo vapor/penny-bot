@@ -9,7 +9,7 @@ class CoinHandlerTests: XCTestCase {
     /// Pattern `@mahdi thanks!`
     func testUserAndCoinSignTheWholeMessage() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) thanks!
                 """,
@@ -20,7 +20,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) thank you!
                 """,
@@ -33,7 +33,7 @@ class CoinHandlerTests: XCTestCase {
     
     /// Pattern `@mahdi xxxx thanks!`
     func testUserAtTheBeginningAndCoinSignAtTheEnd() throws {
-        let coinHandler = CoinHandler(
+        let coinHandler = CoinFinder(
             text: """
             \(user1) xxxx xxxx \(user2) xxxx thank you so MUCH!
             """,
@@ -45,7 +45,7 @@ class CoinHandlerTests: XCTestCase {
     
     /// Pattern `thank you xxxx @mahdi!`
     func testUserAtTheEndAndCoinSignAtTheBeginning() throws {
-        let coinHandler = CoinHandler(
+        let coinHandler = CoinFinder(
             text: """
             thaNk you xxxx xxxx \(user2) xxxx xxxx \(user1)!
             """,
@@ -59,7 +59,7 @@ class CoinHandlerTests: XCTestCase {
     /// `xxxx thanks! @mahdi`
     func testUserAndCoinSignAtTheEnd() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx \(user1) 🪙
                 """,
@@ -70,7 +70,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx \(user1) \(user2) 🚀
                 """,
@@ -81,7 +81,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx ++++++++++++++++++++++++++++++ \(user1)
                 """,
@@ -92,7 +92,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx Thanks for your help \(user1) \(user2)
                 """,
@@ -107,7 +107,7 @@ class CoinHandlerTests: XCTestCase {
     /// `xxxx thanks! @mahdi xxxx`
     func testUserAndCoinSignInTheMiddle() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx \(user1) thanks a bunch! xxx
                 """,
@@ -118,7 +118,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx \(user1) \(user2) thank you A bunch! xxx
                 """,
@@ -129,7 +129,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx thank you. \(user1) xxx
                 """,
@@ -140,7 +140,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx thank you!\(user1)  \(user2)   xxx
                 """,
@@ -151,7 +151,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx thanks for the help\(user1)  \(user2) xxx
                 """,
@@ -165,7 +165,7 @@ class CoinHandlerTests: XCTestCase {
     func testNotReallyACoinSign() throws {
         do {
             /// `+` is not a coin sign, unlike `++`/`+++`/`++++`... .
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) +
                 """,
@@ -177,7 +177,7 @@ class CoinHandlerTests: XCTestCase {
         
         do {
             /// `++` is too far.
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) xxxx ++ xxxx
                 """,
@@ -198,7 +198,7 @@ class CoinHandlerTests: XCTestCase {
     func testMultipleUsersWithCoinSign() throws {
         /// `xxxx @mahdi thanks! xxxx @benny thanks! xxxx`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.vaporCoinEmoji) xxxx
                 """,
@@ -210,7 +210,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// `@mahdi thanks! xxxx @benny thanks! xxxx`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) thanks xxxx \(user2) & 🙌🏽 xxxx xxxx
                 """,
@@ -222,7 +222,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// `thanks! @mahdi xxxx thanks! @benny xxxx`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 thanks a bunch!  \(user1) xxxx thanks a LOT  \(user2)   xxxx xxxx
                 """,
@@ -234,7 +234,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// `xxxx @mahdi thanks! xxxx @benny thanks!`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx xxxx \(user1) thanks xxxx xxxx \(user2)  thanks for the help!
                 """,
@@ -246,7 +246,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// `@mahdi thanks! xxxx @benny thanks!`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx \(user1)thanks xxxx \(user2) += 1 xxxx
                 """,
@@ -258,7 +258,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// `@mahdi thanks! @benny thanks!`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1)THANK YOU!  \(user2) and 👍🏼
                 """,
@@ -270,7 +270,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// `thanks! @mahdi thanks! @benny`
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 thanks!  \(user1) ++ , \(user2)
                 """,
@@ -284,7 +284,7 @@ class CoinHandlerTests: XCTestCase {
     func testRepliedUser() throws {
         /// thanks!
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 thanks!
                 """,
@@ -296,7 +296,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// thanks! @tim xxxx xxxx
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 Thanks \(user1) xxxx xxxx
                 """,
@@ -309,7 +309,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// xxxx xxxx thanks!
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx xxxx ++
                 """,
@@ -321,7 +321,7 @@ class CoinHandlerTests: XCTestCase {
         
         /// xxxx xxxx \n xxxx xxxx thanks!
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx xxxx
                 xxxx xxxx 🪙
@@ -335,7 +335,7 @@ class CoinHandlerTests: XCTestCase {
         /// thanks!
         /// But replied user is in excluded users.
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 thanks!
                 """,
@@ -351,7 +351,7 @@ class CoinHandlerTests: XCTestCase {
     /// because Discord has not verified the mention.
     func testMentionedUsers() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) thanks!
                 """,
@@ -362,7 +362,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 🙌🏼
                 """,
@@ -375,7 +375,7 @@ class CoinHandlerTests: XCTestCase {
     
     func testExcludedUsers() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) thANKs!
                 """,
@@ -386,7 +386,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 👍🏼
                 """,
@@ -399,7 +399,7 @@ class CoinHandlerTests: XCTestCase {
     
     func testUniqueUsers() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) thank you! \(user1) +++
                 """,
@@ -410,7 +410,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) \(user1) xxxx +++++
                 """,
@@ -421,7 +421,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 xxxx xxxx \(user1) thanks xxxx \(user1) 👌🏻 xxxx
                 """,
@@ -434,7 +434,7 @@ class CoinHandlerTests: XCTestCase {
     
     func testMultipleLines() throws {
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) ThAnK yOu!
                 \(user2) ++
@@ -446,7 +446,7 @@ class CoinHandlerTests: XCTestCase {
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: """
                 \(user1) xxxx xxxx thanks!
                 xxxx \(user2) thanks xxxx
@@ -465,48 +465,48 @@ class CoinHandlerTests: XCTestCase {
         }
         let coinStrings = coinedUsers.map { "\($0) ++" }
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: coinStrings.joined(separator: "\n"),
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinHandler.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.maxUsers)
         }
         
         do {
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: coinStrings.joined(separator: " "),
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinHandler.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.maxUsers)
         }
         
         do {
             let part1 = coinStrings[0..<5]
             let part2 = coinStrings[5..<count]
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: part1.joined(separator: " ") + "\n" + part2.joined(separator: "\n"),
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinHandler.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.maxUsers)
         }
         
         do {
             let part1 = coinStrings[0..<15]
             let part2 = coinStrings[15..<count]
-            let coinHandler = CoinHandler(
+            let coinHandler = CoinFinder(
                 text: part1.joined(separator: " ") + "\n" + part2.joined(separator: "\n"),
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinHandler.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.maxUsers)
         }
     }
 }
 
-private extension CoinHandler {
+private extension CoinFinder {
     init(
         text: String,
         replied repliedUser: String? = nil,

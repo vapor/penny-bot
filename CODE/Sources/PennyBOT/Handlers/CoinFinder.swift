@@ -18,7 +18,7 @@ private let coinSigns = [
 /// Two or more of these characters, like `++` or `++++++++++++`.
 private let twoOrMore_coinSigns: [Character] = ["+"]
 
-struct CoinHandler {
+struct CoinFinder {
     /// The content of the message.
     let text: String
     /// User that was replied to, if any.
@@ -162,8 +162,8 @@ struct CoinHandler {
     
     private func isUserMention(_ string: Substring) -> Bool {
         /// `.hasPrefix()` is for a better performance.
-        /// Removes a lot of no-match strings, much faster than the containment check.
-        string.hasPrefix("<@") &&
+        /// Should remove a lot of no-match strings, much faster than the containment check.
+        string.hasPrefix("<") &&
         mentionedUsers.contains(where: { $0.elementsEqual(string) })
     }
 }
@@ -172,7 +172,7 @@ private let undesiredCharacterSet = CharacterSet.punctuationCharacters.subtracti
 private let splitSigns = coinSigns.map { $0.split(whereSeparator: \.isWhitespace) }
 private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
-private extension Sequence where Element == Substring {
+private extension Sequence<Substring> {
     var isPrefixedWithCoinSign: Bool {
         return splitSigns.contains {
             self.starts(with: $0)

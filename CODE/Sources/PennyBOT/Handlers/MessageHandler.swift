@@ -34,7 +34,7 @@ struct MessageHandler {
         
         let sender = "<@\(author.id)>"
         let repliedUser = event.referenced_message?.value.author.map({ "<@\($0.id)>" })
-        let coinHandler = CoinHandler(
+        let coinHandler = CoinFinder(
             text: event.content,
             repliedUser: repliedUser,
             mentionedUsers: event.mentions.map(\.id).map({ "<@\($0)>" }),
@@ -148,7 +148,7 @@ struct MessageHandler {
         }
         let divided = event.content.divideForPingCommandExactMatchChecking()
         let folded = event.content.foldedForPingCommandContainmentChecking()
-        /// `[UserID: [PingTrigger]]`
+        /// `[UserID: [Expression]]`
         var usersToPing: [String: Set<S3AutoPingItems.Expression>] = [:]
         for exp in expUsersDict.keys {
             if Self.triggersPing(
@@ -198,15 +198,20 @@ struct MessageHandler {
                         description: """
                         There is a new message that might be of interest to you.
 
-                        Message: \(messageLink)
-                        Authored by: \(authorName)
-                        Channel: \(channelLink)
+                        Authored by **\(authorName)** in \(channelLink)
 
                         Triggered by:
                         \(words.makeExpressionListForDiscord())
                         """,
                         color: .vaporPurple
-                    )]
+                    )],
+                    components: [[
+                        .button(.init(
+                            style: .link,
+                            label: "Open Message",
+                            url: messageLink
+                        ))
+                    ]]
                 )
             )
         }
