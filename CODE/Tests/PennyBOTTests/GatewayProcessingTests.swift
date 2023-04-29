@@ -28,8 +28,8 @@ class GatewayProcessingTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
         self.manager = FakeManager()
-        BotFactory.makeBot = { _, _ in self.manager! }
-        BotFactory.makeCache = {
+        DiscordFactory.makeBot = { _, _ in self.manager! }
+        DiscordFactory.makeCache = {
             var storage = DiscordCache.Storage()
             storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
             return await DiscordCache(

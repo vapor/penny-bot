@@ -14,10 +14,17 @@ struct Penny {
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 
+        /// These shutdown calls are only useful for tests were we call `Penny.main()` repeatedly
+        defer {
+            /// Shutdown in reverse order (client first, then the ELG)
+            try! client.syncShutdown()
+            try! eventLoopGroup.syncShutdownGracefully()
+        }
+
         await bootstrapLoggingSystem(httpClient: client)
 
-        let bot = BotFactory.makeBot(eventLoopGroup, client)
-        let cache = await BotFactory.makeCache(bot)
+        let bot = DiscordFactory.makeBot(eventLoopGroup, client)
+        let cache = await DiscordFactory.makeCache(bot)
 
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await DefaultPingsService.shared.initialize(httpClient: client)
@@ -25,8 +32,9 @@ struct Penny {
         await BotStateManager.shared.initialize()
 
         await bot.connect()
-
-        for await event in await bot.makeEventStream() {
+        
+        let stream = await bot.makeEventStream()
+        for await event in stream {
             EventHandler(
                 event: event,
                 coinService: ServiceFactory.makeCoinService(client)

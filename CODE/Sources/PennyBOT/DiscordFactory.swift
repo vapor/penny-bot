@@ -3,7 +3,7 @@ import AsyncHTTPClient
 import NIOCore
 import Foundation
 
-enum BotFactory {
+enum DiscordFactory {
     static var makeBot: (any EventLoopGroup, HTTPClient) -> any GatewayManager = {
         eventLoopGroup, client in
         guard let token = Constants.botToken, let appId = Constants.botId else {
