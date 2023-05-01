@@ -33,7 +33,7 @@ struct Penny {
 
         await bot.connect()
         
-        let stream = await bot.makeEventStream()
+        let stream = await bot.makeEventsStream()
         for await event in stream {
             EventHandler(
                 event: event,

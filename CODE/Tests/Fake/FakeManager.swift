@@ -12,7 +12,7 @@ public actor FakeManager: GatewayManager {
     public nonisolated var state: GatewayState {
         self._state.load(ordering: .relaxed)
     }
-    var eventHandlers = [(Gateway.Event) -> Void]()
+    var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
     
     public init() { }
     
@@ -24,12 +24,14 @@ public actor FakeManager: GatewayManager {
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func updatePresence(payload: Gateway.Identify.Presence) async { }
     public func updateVoiceState(payload: VoiceStateUpdate) async { }
-    public func addEventHandler(_ handler: @Sendable @escaping (Gateway.Event) -> Void) async {
-        eventHandlers.append(handler)
+    public func makeEventsStream() async -> AsyncStream<Gateway.Event> {
+        AsyncStream { continuation in
+            eventContinuations.append(continuation)
+        }
     }
-    public func addEventParseFailureHandler(
-        _ handler: @Sendable @escaping (Error, ByteBuffer) -> Void
-    ) { }
+    public func makeEventsParseFailureStream() async -> AsyncStream<(Error, ByteBuffer)> {
+        AsyncStream { _ in }
+    }
     public func disconnect() { }
     
     var connectionWaiter: CheckedContinuation<(), Never>?
@@ -48,8 +50,8 @@ public actor FakeManager: GatewayManager {
         let data = TestData.for(key: key.rawValue)!
         let decoder = JSONDecoder()
         let event = try! decoder.decode(Gateway.Event.self, from: data)
-        for handler in eventHandlers {
-            handler(event)
+        for continuation in eventContinuations {
+            continuation.yield(event)
         }
     }
     
