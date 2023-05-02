@@ -32,12 +32,12 @@ struct MessageHandler {
             return
         }
         
-        let sender = "<@\(author.id)>"
-        let repliedUser = event.referenced_message?.value.author.map({ "<@\($0.id)>" })
+        let sender = "<@\(author.id.value)>"
+        let repliedUser = event.referenced_message?.value.author.map({ "<@\($0.id.value)>" })
         let coinHandler = CoinFinder(
             text: event.content,
             repliedUser: repliedUser,
-            mentionedUsers: event.mentions.map(\.id).map({ "<@\($0)>" }),
+            mentionedUsers: event.mentions.map(\.id).map({ "<@\($0.value)>" }),
             excludedUsers: [sender] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
@@ -101,16 +101,16 @@ struct MessageHandler {
             return
         }
         
-        let authorId = "<@\(author.id)>"
+        let authorId = "<@\(author.id.value)>"
         let amount = 10
         let coinRequest = CoinRequest.AddCoin(
             // Possible to make this a variable later to include in the thanks message
             amount: amount,
             /// `from: GuildID` because it's not an actual user who gave the coins.
-            from: "<@\(Constants.vaporGuildId)>",
+            from: "<@\(Constants.vaporGuildId.value)>",
             receiver: authorId,
             source: .discord,
-            reason: .userProvided
+            reason: .automationProvided
         )
         do {
             let response = try await self.coinService.postCoin(with: coinRequest)
@@ -170,8 +170,8 @@ struct MessageHandler {
         }
 
         let domain = "https://discord.com"
-        let channelLink = "\(domain)/channels/\(Constants.vaporGuildId)/\(event.channel_id)"
-        let messageLink = "\(channelLink)/\(event.id)"
+        let channelLink = "\(domain)/channels/\(Constants.vaporGuildId.value)/\(event.channel_id.value)"
+        let messageLink = "\(channelLink)/\(event.id.value)"
         /// For now we don't need to worry about Discord rate-limits,
         /// `DiscordBM` will do enough and will try to not exceed them.
         /// If at some point this starts to hit rate-limits,

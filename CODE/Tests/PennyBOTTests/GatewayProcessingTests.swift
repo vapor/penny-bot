@@ -175,7 +175,7 @@ class GatewayProcessingTests: XCTestCase {
             """), description)
             XCTAssertTrue(description.hasSuffix("""
             \(Constants.vaporCoinEmoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
-            """))
+            """), description)
         }
         
         // We need to wait a little bit to make sure Discord's response

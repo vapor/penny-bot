@@ -41,8 +41,8 @@ struct ReactionHandler {
                 messageId: event.message_id
               ), user.id != receiverId
         else { return }
-        let sender = "<@\(user.id)>"
-        let receiver = "<@\(receiverId)>"
+        let sender = "<@\(user.id.value)>"
+        let receiver = "<@\(receiverId.value)>"
 
         /// Super reactions give more coins, otherwise only 1 coin
         let amount = event.type == .super ? 3 : 1
@@ -95,7 +95,7 @@ struct ReactionHandler {
                     senderName: senderName
                 )
             case let .forcedInThanksChannel(info):
-                let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(info.originalChannelId)/\(event.message_id)"
+                let link = "https://discord.com/channels/\(Constants.vaporGuildId.value)/\(info.originalChannelId.value)/\(event.message_id.value)"
                 let names = info.senderUsers.joined(separator: ", ") + " & \(senderName)"
                 let count = info.totalCoinCount + amount
                 await editResponse(
