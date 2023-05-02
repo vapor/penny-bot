@@ -159,7 +159,7 @@ struct ReactionHandler {
     
     /// `senderName` only should be included if its not a error-response.
     private func editResponse(
-        messageId: Snowflake<DiscordChannel.Message>,
+        messageId: MessageSnowflake,
         with response: String,
         forcedInThanksChannel: Bool,
         amount: Int,
@@ -203,15 +203,15 @@ struct ReactionHandler {
 /// and disk-persistence for us, but this actor is more than enough at our scale.
 actor ReactionCache {
     /// `[MessageID: AuthorID]`
-    private var cachedAuthorIds: [Snowflake<DiscordChannel.Message>: Snowflake<DiscordUser>] = [:]
+    private var cachedAuthorIds: [MessageSnowflake: UserSnowflake] = [:]
     /// `Set<[SenderID, MessageID]>`
     private var givenCoins: Set<[AnySnowflake]> = []
     /// Channel's last message id if it is a thanks message to another message.
     private var channelWithLastThanksMessage: [
-        Snowflake<DiscordChannel>: ChannelLastThanksMessage] = [:]
+        ChannelSnowflake: ChannelLastThanksMessage] = [:]
     /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
     private var thanksChannelForcedMessages: [
-        Snowflake<DiscordChannel.Message>: ChannelForcedThanksMessage] = [:]
+        MessageSnowflake: ChannelForcedThanksMessage] = [:]
     let logger = Logger(label: "ReactionCache")
     
     private init() { }
@@ -220,9 +220,9 @@ actor ReactionCache {
     
     /// Returns author of the message.
     fileprivate func getAuthorId(
-        channelId: Snowflake<DiscordChannel>,
-        messageId: Snowflake<DiscordChannel.Message>
-    ) async -> Snowflake<DiscordUser>? {
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
+    ) async -> UserSnowflake? {
         if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
@@ -247,8 +247,8 @@ actor ReactionCache {
     /// This is to prevent spams. In case someone removes their reaction and
     /// reacts again, we should not give coins to message's author anymore.
     func canGiveCoin(
-        fromSender senderId: Snowflake<DiscordUser>,
-        toAuthorOfMessage messageId: Snowflake<DiscordChannel.Message>
+        fromSender senderId: UserSnowflake,
+        toAuthorOfMessage messageId: MessageSnowflake
     ) -> Bool {
         givenCoins.insert([AnySnowflake(senderId), AnySnowflake(messageId)]).inserted
     }
@@ -257,8 +257,8 @@ actor ReactionCache {
     /// or we don't send a thanks response for it so it's less spammy.
     /// Also message author must not be a bot.
     func messageCanBeRespondedTo(
-        channelId: Snowflake<DiscordChannel>,
-        messageId: Snowflake<DiscordChannel.Message>
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
     ) async -> Bool {
         guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
             return false
@@ -269,8 +269,8 @@ actor ReactionCache {
     }
     
     func getMessage(
-        channelId: Snowflake<DiscordChannel>,
-        messageId: Snowflake<DiscordChannel.Message>
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
     ) async -> DiscordChannel.Message? {
         guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
             channelId: channelId,
@@ -286,9 +286,9 @@ actor ReactionCache {
     }
     
     fileprivate func didRespond(
-        originalChannelId channelId: Snowflake<DiscordChannel>,
-        to receiverMessageId: Snowflake<DiscordChannel.Message>,
-        with responseMessageId: Snowflake<DiscordChannel.Message>,
+        originalChannelId channelId: ChannelSnowflake,
+        to receiverMessageId: MessageSnowflake,
+        with responseMessageId: MessageSnowflake,
         sentToThanksChannelInstead: Bool,
         amount: Int,
         senderName: String
@@ -322,8 +322,8 @@ actor ReactionCache {
     }
     
     fileprivate func messageToEditIfAvailable(
-        in channelId: Snowflake<DiscordChannel>,
-        receiverMessageId: Snowflake<DiscordChannel.Message>
+        in channelId: ChannelSnowflake,
+        receiverMessageId: MessageSnowflake
     ) -> MessageToEditResponse? {
         if let existing = thanksChannelForcedMessages[receiverMessageId] {
             return .forcedInThanksChannel(existing)
@@ -359,15 +359,15 @@ actor ReactionCache {
 }
 
 private struct ChannelLastThanksMessage {
-    var receiverMessageId: Snowflake<DiscordChannel.Message>
-    var pennyResponseMessageId: Snowflake<DiscordChannel.Message>
+    var receiverMessageId: MessageSnowflake
+    var pennyResponseMessageId: MessageSnowflake
     var senderUsers: [String]
     var totalCoinCount: Int
 }
 
 private struct ChannelForcedThanksMessage {
-    var originalChannelId: Snowflake<DiscordChannel>
-    var pennyResponseMessageId: Snowflake<DiscordChannel.Message>
+    var originalChannelId: ChannelSnowflake
+    var pennyResponseMessageId: MessageSnowflake
     var senderUsers: [String]
     var totalCoinCount: Int
 }

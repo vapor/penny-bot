@@ -245,7 +245,7 @@ struct MessageHandler {
     
     private func respondToThanks(
         with response: String,
-        overrideChannelId channelId: Snowflake<DiscordChannel>? = nil,
+        overrideChannelId channelId: ChannelSnowflake? = nil,
         isAFailureMessage: Bool
     ) async {
         await DiscordService.shared.sendThanksResponse(

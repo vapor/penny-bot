@@ -46,7 +46,7 @@ struct AddSponsorHandler: LambdaHandler {
     let secretsManager: SecretsManager
     
     struct Constants {
-        static let guildID: Snowflake<Guild> = "431917998102675485"
+        static let guildID: GuildSnowflake = "431917998102675485"
     }
 
     init(context: LambdaInitializationContext) async throws {
@@ -233,7 +233,7 @@ struct AddSponsorHandler: LambdaHandler {
             userId: Snowflake(userDiscordID),
             roleId: role.roleID
         )
-        
+
         // Throw if adding new role response is invalid
         guard 200...299 ~= addRoleResponse.status.code else {
             context.logger.error("Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(addRoleResponse.status.description) and body: \(addRoleResponse.body.string)")

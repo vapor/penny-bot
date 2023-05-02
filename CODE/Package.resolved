@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "branch" : "tagged-snowflake",
-        "revision" : "4c46743bf47cde6fab474fabe2dd165242ed79ed"
+        "revision" : "99fa5629dceed7c5dd234a0d346aa2aaea1a7dd3",
+        "version" : "1.0.0-beta.53"
       }
     },
     {
@@ -131,8 +131,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "f7c46552983b06b0958a1a4c8bc5199406ae4c8a",
-        "version" : "2.51.0"
+        "revision" : "d1690f85419fdac8d54e350fb6d2ab9fd95afd75",
+        "version" : "2.51.1"
       }
     },
     {

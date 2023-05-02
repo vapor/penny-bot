@@ -265,7 +265,7 @@ class GatewayProcessingTests: XCTestCase {
             responseStorage.awaitResponse(at: responseEndpoint).value
         )
         
-        let recipients: [Snowflake<DiscordUser>] = ["950695294906007573", "432065887202181142"]
+        let recipients: [UserSnowflake] = ["950695294906007573", "432065887202181142"]
         
         do {
             let dmPayload = try XCTUnwrap(createDM1 as? Payloads.CreateDM, "\(createDM1)")

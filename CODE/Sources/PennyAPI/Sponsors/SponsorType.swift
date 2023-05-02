@@ -4,7 +4,7 @@ enum SponsorType: String {
     case sponsor = "sponsor"
     case backer = "backer"
     
-    var roleID: Snowflake<Role> {
+    var roleID: RoleSnowflake {
         switch self {
         case .sponsor:
             return "444167329748746262"
@@ -13,7 +13,7 @@ enum SponsorType: String {
         }
     }
     
-    var channelID: Snowflake<DiscordChannel> {
+    var channelID: ChannelSnowflake {
         switch self {
         case .sponsor:
             return "633345798490292229"

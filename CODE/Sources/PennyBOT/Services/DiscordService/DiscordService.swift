@@ -11,8 +11,8 @@ actor DiscordService {
     private var discordClient: (any DiscordClient)!
     private var cache: DiscordCache!
     private var logger = Logger(label: "DiscordService")
-    private var dmChannels: [Snowflake<DiscordUser>: Snowflake<DiscordChannel>] = [:]
-    private var usersAlreadyWarnedAboutClosedDMS: Set<Snowflake<DiscordUser>> = []
+    private var dmChannels: [UserSnowflake: ChannelSnowflake] = [:]
+    private var usersAlreadyWarnedAboutClosedDMS: Set<UserSnowflake> = []
     /// `[[ChannelID, MessageID]: Message]`
     private var cachedMessages: [[AnySnowflake]: DiscordChannel.Message] = [:]
     private var vaporGuild: Gateway.GuildCreate {
@@ -44,7 +44,7 @@ actor DiscordService {
         self.cache = cache
     }
     
-    func sendDM(userId: Snowflake<DiscordUser>, payload: Payloads.CreateMessage) async {
+    func sendDM(userId: UserSnowflake, payload: Payloads.CreateMessage) async {
         guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
         
         do {
@@ -97,7 +97,7 @@ actor DiscordService {
         }
     }
     
-    private func getDMChannelId(userId: Snowflake<DiscordUser>) async -> Snowflake<DiscordChannel>? {
+    private func getDMChannelId(userId: UserSnowflake) async -> ChannelSnowflake? {
         if let existing = dmChannels[userId] {
             return existing
         } else {
@@ -114,7 +114,7 @@ actor DiscordService {
     
     @discardableResult
     func sendMessage(
-        channelId: Snowflake<DiscordChannel>,
+        channelId: ChannelSnowflake,
         payload: Payloads.CreateMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
@@ -137,8 +137,8 @@ actor DiscordService {
     /// otherwise sends to the `#thanks` channel.
     @discardableResult
     func sendThanksResponse(
-        channelId: Snowflake<DiscordChannel>,
-        replyingToMessageId messageId: Snowflake<DiscordChannel.Message>,
+        channelId: ChannelSnowflake,
+        replyingToMessageId messageId: MessageSnowflake,
         isAFailureMessage: Bool,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
@@ -187,8 +187,8 @@ actor DiscordService {
     
     @discardableResult
     func editMessage(
-        messageId: Snowflake<DiscordChannel.Message>,
-        channelId: Snowflake<DiscordChannel>,
+        messageId: MessageSnowflake,
+        channelId: ChannelSnowflake,
         payload: Payloads.EditMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
@@ -212,7 +212,7 @@ actor DiscordService {
     /// Returns whether or not the response has been successfully sent.
     @discardableResult
     func respondToInteraction(
-        id: Snowflake<Interaction>,
+        id: InteractionSnowflake,
         token: String,
         payload: Payloads.InteractionResponse
     ) async -> Bool {
@@ -272,8 +272,8 @@ actor DiscordService {
     }
     
     func getPossiblyCachedChannelMessage(
-        channelId: Snowflake<DiscordChannel>,
-        messageId: Snowflake<DiscordChannel.Message>
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
     ) async -> DiscordChannel.Message? {
         if let cached = self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] {
             return cached
@@ -288,8 +288,8 @@ actor DiscordService {
     }
     
     func getChannelMessage(
-        channelId: Snowflake<DiscordChannel>,
-        messageId: Snowflake<DiscordChannel.Message>
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
     ) async -> DiscordChannel.Message? {
         do {
             return try await discordClient.getMessage(
@@ -306,8 +306,8 @@ actor DiscordService {
     }
     
     func userHasReadAccess(
-        userId: Snowflake<DiscordUser>,
-        channelId: Snowflake<DiscordChannel>
+        userId: UserSnowflake,
+        channelId: ChannelSnowflake
     ) async throws -> Bool {
         try await self.vaporGuild.userHasPermissions(
             userId: userId,
@@ -324,8 +324,8 @@ actor DiscordService {
 
 #if DEBUG
     func _tests_addToMessageCache(
-        channelId: Snowflake<DiscordChannel>,
-        messageId: Snowflake<DiscordChannel.Message>,
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake,
         message: DiscordChannel.Message
     ) {
         self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] = message

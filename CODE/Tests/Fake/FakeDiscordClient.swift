@@ -2,7 +2,7 @@
 import NIOHTTP1
 
 struct FakeDiscordClient: DiscordClient {
-    var appId: Snowflake<DiscordModels.PartialApplication>? = "11111111"
+    var appId: ApplicationSnowflake? = "11111111"
     
     func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(

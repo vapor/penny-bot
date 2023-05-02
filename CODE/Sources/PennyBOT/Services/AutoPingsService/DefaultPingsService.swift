@@ -26,14 +26,14 @@ actor DefaultPingsService: AutoPingsService {
     
     func exists(
         expression: Expression,
-        forDiscordID id: Snowflake<DiscordUser>
+        forDiscordID id: UserSnowflake
     ) async throws -> Bool {
         try await self.getAll().items[expression]?.contains(id.value) ?? false
     }
     
     func insert(
         _ expressions: [Expression],
-        forDiscordID id: Snowflake<DiscordUser>
+        forDiscordID id: UserSnowflake
     ) async throws {
         try await self.send(
             pathParameter: "users",
@@ -44,7 +44,7 @@ actor DefaultPingsService: AutoPingsService {
     
     func remove(
         _ expressions: [Expression],
-        forDiscordID id: Snowflake<DiscordUser>
+        forDiscordID id: UserSnowflake
     ) async throws {
         try await self.send(
             pathParameter: "users",
@@ -53,7 +53,7 @@ actor DefaultPingsService: AutoPingsService {
         )
     }
     
-    func get(discordID id: Snowflake<DiscordUser>) async throws -> [Expression] {
+    func get(discordID id: UserSnowflake) async throws -> [Expression] {
         try await self.getAll()
             .items
             .filter { $0.value.contains(id.value) }
