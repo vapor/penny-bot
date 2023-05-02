@@ -34,6 +34,7 @@ public enum CoinEntrySource: String, Sendable, Codable {
 
 public enum CoinEntryReason: String, Sendable, Codable {
     case userProvided
+    case automationProvided
     case prSubmittedAndClosed
     case startedSponsoring
     case transferred

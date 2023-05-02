@@ -11,12 +11,10 @@ actor DiscordService {
     private var discordClient: (any DiscordClient)!
     private var cache: DiscordCache!
     private var logger = Logger(label: "DiscordService")
-    /// `[UserID: DMChannelID]`
-    private var dmChannels: [String: String] = [:]
-    /// `Set<UserID>`
-    private var usersAlreadyWarnedAboutClosedDMS: Set<String> = []
+    private var dmChannels: [UserSnowflake: ChannelSnowflake] = [:]
+    private var usersAlreadyWarnedAboutClosedDMS: Set<UserSnowflake> = []
     /// `[[ChannelID, MessageID]: Message]`
-    private var cachedMessages: [[String]: DiscordChannel.Message] = [:]
+    private var cachedMessages: [[AnySnowflake]: DiscordChannel.Message] = [:]
     private var vaporGuild: Gateway.GuildCreate {
         get async throws {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -46,7 +44,7 @@ actor DiscordService {
         self.cache = cache
     }
     
-    func sendDM(userId: String, payload: Payloads.CreateMessage) async {
+    func sendDM(userId: UserSnowflake, payload: Payloads.CreateMessage) async {
         guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
         
         do {
@@ -62,14 +60,14 @@ actor DiscordService {
                 if usersAlreadyWarnedAboutClosedDMS.insert(userId).inserted {
                     
                     logger.warning("Could not send DM, will try to let them know", metadata: [
-                        "userId": .string(userId),
-                        "dmChannelId": .string(dmChannelId),
+                        "userId": .stringConvertible(userId),
+                        "dmChannelId": .stringConvertible(dmChannelId),
                         "payload": "\(payload)",
                         "jsonError": "\(jsonError)"
                     ])
                     
                     Task {
-                        let userMention = DiscordUtils.userMention(id: userId)
+                        let userMention = DiscordUtils.userMention(id: userId.value)
                         let message = "I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu."
                         /// Make it wait 1 to 10 minutes so it's not too
                         /// obvious what message the user was DMed about.
@@ -84,22 +82,22 @@ actor DiscordService {
                 }
             case .jsonError, .badStatusCode:
                 logger.report("Couldn't send DM", response: response, metadata: [
-                    "userId": .string(userId),
-                    "dmChannelId": .string(dmChannelId),
+                    "userId": .stringConvertible(userId),
+                    "dmChannelId": .stringConvertible(dmChannelId),
                     "payload": "\(payload)"
                 ])
             case .none: break
             }
         } catch {
             logger.report("Couldn't send DM", error: error, metadata: [
-                "userId": .string(userId),
-                "dmChannelId": .string(dmChannelId),
+                "userId": .stringConvertible(userId),
+                "dmChannelId": .stringConvertible(dmChannelId),
                 "payload": "\(payload)"
             ])
         }
     }
     
-    private func getDMChannelId(userId: String) async -> String? {
+    private func getDMChannelId(userId: UserSnowflake) async -> ChannelSnowflake? {
         if let existing = dmChannels[userId] {
             return existing
         } else {
@@ -116,7 +114,7 @@ actor DiscordService {
     
     @discardableResult
     func sendMessage(
-        channelId: String,
+        channelId: ChannelSnowflake,
         payload: Payloads.CreateMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
@@ -139,15 +137,15 @@ actor DiscordService {
     /// otherwise sends to the `#thanks` channel.
     @discardableResult
     func sendThanksResponse(
-        channelId: String,
-        replyingToMessageId messageId: String,
+        channelId: ChannelSnowflake,
+        replyingToMessageId messageId: MessageSnowflake,
         isAFailureMessage: Bool,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         let hasPermissionToSend: Bool
         do {
             hasPermissionToSend = try await vaporGuild.userHasPermissions(
-                userId: Constants.botId,
+                userId: Snowflake(Constants.botId),
                 channelId: channelId,
                 permissions: [.sendMessages]
             )
@@ -174,7 +172,7 @@ actor DiscordService {
         } else {
             /// Don't report failures to users, in this case.
             if isAFailureMessage { return nil }
-            let link = "https://discord.com/channels/\(Constants.vaporGuildId)/\(channelId)/\(messageId)"
+            let link = "https://discord.com/channels/\(Constants.vaporGuildId.value)/\(channelId.value)/\(messageId.value)"
             return await self.sendMessage(
                 channelId: Constants.thanksChannelId,
                 payload: .init(
@@ -189,8 +187,8 @@ actor DiscordService {
     
     @discardableResult
     func editMessage(
-        messageId: String,
-        channelId: String,
+        messageId: MessageSnowflake,
+        channelId: ChannelSnowflake,
         payload: Payloads.EditMessage
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         do {
@@ -203,8 +201,8 @@ actor DiscordService {
             return response
         } catch {
             logger.report("Couldn't edit a message", error: error, metadata: [
-                "messageId": .string(messageId),
-                "channelId": .string(channelId),
+                "messageId": .stringConvertible(messageId),
+                "channelId": .stringConvertible(channelId),
                 "payload": "\(payload)"
             ])
             return nil
@@ -214,7 +212,7 @@ actor DiscordService {
     /// Returns whether or not the response has been successfully sent.
     @discardableResult
     func respondToInteraction(
-        id: String,
+        id: InteractionSnowflake,
         token: String,
         payload: Payloads.InteractionResponse
     ) async -> Bool {
@@ -227,7 +225,7 @@ actor DiscordService {
             return true
         } catch {
             logger.report("Couldn't send interaction response", error: error, metadata: [
-                "id": .string(id),
+                "id": .stringConvertible(id),
                 "token": .string(token),
                 "payload": "\(payload)"
             ])
@@ -274,14 +272,14 @@ actor DiscordService {
     }
     
     func getPossiblyCachedChannelMessage(
-        channelId: String,
-        messageId: String
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
     ) async -> DiscordChannel.Message? {
-        if let cached = self.cachedMessages[[channelId, messageId]] {
+        if let cached = self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] {
             return cached
         } else {
             if let message = await getChannelMessage(channelId: channelId, messageId: messageId) {
-                self.cachedMessages[[channelId, messageId]] = message
+                self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] = message
                 return message
             } else {
                 return nil
@@ -290,8 +288,8 @@ actor DiscordService {
     }
     
     func getChannelMessage(
-        channelId: String,
-        messageId: String
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
     ) async -> DiscordChannel.Message? {
         do {
             return try await discordClient.getMessage(
@@ -300,14 +298,17 @@ actor DiscordService {
             ).decode()
         } catch {
             logger.report("Couldn't get channel message", error: error, metadata: [
-                "channelId": .string(channelId),
-                "messageId": .string(messageId)
+                "channelId": .stringConvertible(channelId),
+                "messageId": .stringConvertible(messageId)
             ])
             return nil
         }
     }
     
-    func userHasReadAccess(userId: String, channelId: String) async throws -> Bool {
+    func userHasReadAccess(
+        userId: UserSnowflake,
+        channelId: ChannelSnowflake
+    ) async throws -> Bool {
         try await self.vaporGuild.userHasPermissions(
             userId: userId,
             channelId: channelId,
@@ -323,11 +324,11 @@ actor DiscordService {
 
 #if DEBUG
     func _tests_addToMessageCache(
-        channelId: String,
-        messageId: String,
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake,
         message: DiscordChannel.Message
     ) {
-        self.cachedMessages[[channelId, messageId]] = message
+        self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] = message
     }
 #endif
 }

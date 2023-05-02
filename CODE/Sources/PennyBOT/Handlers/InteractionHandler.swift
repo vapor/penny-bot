@@ -423,7 +423,7 @@ private extension InteractionHandler {
             logger.error("Coin-count command could not find appropriate data")
             return oops
         }
-        let user = "<@\(userId)>"
+        let user = "<@\(userId.value)>"
         return await getCoinCount(of: user)
     }
     
@@ -439,7 +439,7 @@ private extension InteractionHandler {
                 logger.error("Coin-count command could not find a user")
                 return oops
             }
-            user = "<@\(id)>"
+            user = "<@\(id.value)>"
         }
         return await getCoinCount(of: user)
     }
@@ -606,7 +606,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
         guard let id = commandId else {
             return "`/auto-pings \(subcommand)`"
         }
-        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
+        return DiscordUtils.slashCommand(name: "auto-pings", id: id.value, subcommand: subcommand)
     }
     
     let isTypingEmoji = DiscordUtils.customAnimatedEmoji(

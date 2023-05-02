@@ -20,7 +20,7 @@ enum DiscordFactory {
             httpClient: client,
             clientConfiguration: clientConfiguration,
             token: token,
-            appId: appId,
+            appId: Snowflake(appId),
             presence: .init(
                 activities: [.init(name: "Showing Appreciation", type: .game)],
                 status: .online,
