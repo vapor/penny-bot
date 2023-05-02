@@ -159,7 +159,7 @@ struct ReactionHandler {
     
     /// `senderName` only should be included if its not a error-response.
     private func editResponse(
-        messageId: String,
+        messageId: Snowflake<DiscordChannel.Message>,
         with response: String,
         forcedInThanksChannel: Bool,
         amount: Int,
@@ -203,14 +203,15 @@ struct ReactionHandler {
 /// and disk-persistence for us, but this actor is more than enough at our scale.
 actor ReactionCache {
     /// `[MessageID: AuthorID]`
-    private var cachedAuthorIds: [String: String] = [:]
+    private var cachedAuthorIds: [Snowflake<DiscordChannel.Message>: Snowflake<DiscordUser>] = [:]
     /// `Set<[SenderID, MessageID]>`
-    private var givenCoins: Set<[String]> = []
-    /// `[ChannelID: ChannelLastThanksMessage)]`.
+    private var givenCoins: Set<[AnySnowflake]> = []
     /// Channel's last message id if it is a thanks message to another message.
-    private var channelWithLastThanksMessage: [String: ChannelLastThanksMessage] = [:]
-    /// `[ReceiverMessageID: (OriginalChannelID, PennyResponseMessageID, [SenderUsers], TotalCoinCount)]`
-    private var thanksChannelForcedMessages: [String: ChannelForcedThanksMessage] = [:]
+    private var channelWithLastThanksMessage: [
+        Snowflake<DiscordChannel>: ChannelLastThanksMessage] = [:]
+    /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
+    private var thanksChannelForcedMessages: [
+        Snowflake<DiscordChannel.Message>: ChannelForcedThanksMessage] = [:]
     let logger = Logger(label: "ReactionCache")
     
     private init() { }
@@ -218,7 +219,10 @@ actor ReactionCache {
     static var shared = ReactionCache()
     
     /// Returns author of the message.
-    fileprivate func getAuthorId(channelId: String, messageId: String) async -> String? {
+    fileprivate func getAuthorId(
+        channelId: Snowflake<DiscordChannel>,
+        messageId: Snowflake<DiscordChannel.Message>
+    ) async -> Snowflake<DiscordUser>? {
         if let authorId = cachedAuthorIds[messageId] {
             return authorId
         } else {
@@ -243,16 +247,19 @@ actor ReactionCache {
     /// This is to prevent spams. In case someone removes their reaction and
     /// reacts again, we should not give coins to message's author anymore.
     func canGiveCoin(
-        fromSender senderId: String,
-        toAuthorOfMessage messageId: String
+        fromSender senderId: Snowflake<DiscordUser>,
+        toAuthorOfMessage messageId: Snowflake<DiscordChannel.Message>
     ) -> Bool {
-        givenCoins.insert([senderId, messageId]).inserted
+        givenCoins.insert([AnySnowflake(senderId), AnySnowflake(messageId)]).inserted
     }
     
     /// Message have been created within last week,
     /// or we don't send a thanks response for it so it's less spammy.
     /// Also message author must not be a bot.
-    func messageCanBeRespondedTo(channelId: String, messageId: String) async -> Bool {
+    func messageCanBeRespondedTo(
+        channelId: Snowflake<DiscordChannel>,
+        messageId: Snowflake<DiscordChannel.Message>
+    ) async -> Bool {
         guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
             return false
         }
@@ -261,14 +268,17 @@ actor ReactionCache {
         return inPastWeek && isNotBot
     }
     
-    func getMessage(channelId: String, messageId: String) async -> DiscordChannel.Message? {
+    func getMessage(
+        channelId: Snowflake<DiscordChannel>,
+        messageId: Snowflake<DiscordChannel.Message>
+    ) async -> DiscordChannel.Message? {
         guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
             channelId: channelId,
             messageId: messageId
         ) else {
             logger.error("ReactionCache could not find a message's author id", metadata: [
-                "channelId": .string(channelId),
-                "messageId": .string(messageId),
+                "channelId": .stringConvertible(channelId),
+                "messageId": .stringConvertible(messageId),
             ])
             return nil
         }
@@ -276,9 +286,9 @@ actor ReactionCache {
     }
     
     fileprivate func didRespond(
-        originalChannelId channelId: String,
-        to receiverMessageId: String,
-        with responseMessageId: String,
+        originalChannelId channelId: Snowflake<DiscordChannel>,
+        to receiverMessageId: Snowflake<DiscordChannel.Message>,
+        with responseMessageId: Snowflake<DiscordChannel.Message>,
         sentToThanksChannelInstead: Bool,
         amount: Int,
         senderName: String
@@ -312,8 +322,8 @@ actor ReactionCache {
     }
     
     fileprivate func messageToEditIfAvailable(
-        in channelId: String,
-        receiverMessageId: String
+        in channelId: Snowflake<DiscordChannel>,
+        receiverMessageId: Snowflake<DiscordChannel.Message>
     ) -> MessageToEditResponse? {
         if let existing = thanksChannelForcedMessages[receiverMessageId] {
             return .forcedInThanksChannel(existing)
@@ -334,7 +344,7 @@ actor ReactionCache {
     /// edit its own last message.
     func invalidateCachesIfNeeded(event: Gateway.MessageCreate) {
         if let id = event.member?.user?.id ?? event.author?.id,
-           id == Constants.botId {
+           id.value == Constants.botId {
             return
         } else {
             channelWithLastThanksMessage[event.channel_id] = nil
@@ -349,15 +359,15 @@ actor ReactionCache {
 }
 
 private struct ChannelLastThanksMessage {
-    var receiverMessageId: String
-    var pennyResponseMessageId: String
+    var receiverMessageId: Snowflake<DiscordChannel.Message>
+    var pennyResponseMessageId: Snowflake<DiscordChannel.Message>
     var senderUsers: [String]
     var totalCoinCount: Int
 }
 
 private struct ChannelForcedThanksMessage {
-    var originalChannelId: String
-    var pennyResponseMessageId: String
+    var originalChannelId: Snowflake<DiscordChannel>
+    var pennyResponseMessageId: Snowflake<DiscordChannel.Message>
     var senderUsers: [String]
     var totalCoinCount: Int
 }

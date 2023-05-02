@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/DiscordBM.git",
       "state" : {
-        "revision" : "7e22f61d06385078644cfdf619e11578db6e85bb",
-        "version" : "1.0.0-beta.52"
+        "branch" : "tagged-snowflake",
+        "revision" : "4c46743bf47cde6fab474fabe2dd165242ed79ed"
       }
     },
     {

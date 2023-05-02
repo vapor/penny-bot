@@ -46,7 +46,7 @@ struct AddSponsorHandler: LambdaHandler {
     let secretsManager: SecretsManager
     
     struct Constants {
-        static let guildID = "431917998102675485"
+        static let guildID: Snowflake<Guild> = "431917998102675485"
     }
 
     init(context: LambdaInitializationContext) async throws {
@@ -89,7 +89,7 @@ struct AddSponsorHandler: LambdaHandler {
         return DefaultDiscordClient(
             httpClient: httpClient,
             token: token,
-            appId: appID
+            appId: Snowflake(appID)
         )
     }
 
@@ -202,7 +202,7 @@ struct AddSponsorHandler: LambdaHandler {
         // Try removing role from user
         let removeRoleResponse = try await discordClient.deleteGuildMemberRole(
             guildId: Constants.guildID,
-            userId: userDiscordID,
+            userId: Snowflake(userDiscordID),
             // FIXME By Mahdi: change to `role.roleID`
             roleId: SponsorType.backer.roleID
         )
@@ -230,7 +230,7 @@ struct AddSponsorHandler: LambdaHandler {
         // Try adding role to new sponsor
         let addRoleResponse = try await discordClient.addGuildMemberRole(
             guildId: Constants.guildID,
-            userId: userDiscordID,
+            userId: Snowflake(userDiscordID),
             roleId: role.roleID
         )
         

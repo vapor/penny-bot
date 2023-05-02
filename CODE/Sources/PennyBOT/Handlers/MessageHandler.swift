@@ -160,7 +160,7 @@ struct MessageHandler {
                     /// Checks if the user is in the guild at all,
                     /// + if the user has read access of the channel.
                     if (try? await DiscordService.shared.userHasReadAccess(
-                        userId: userId,
+                        userId: Snowflake(userId),
                         channelId: event.channel_id
                     )) == true {
                         usersToPing[userId, default: []].insert(exp)
@@ -178,21 +178,21 @@ struct MessageHandler {
         /// we can just wait 1-2s before sending each message.
         for (userId, words) in usersToPing {
             /// Identify if this could be a test message by the bot-dev.
-            let mightBeATestMessage = userId == Constants.botDevUserId
+            let mightBeATestMessage = userId == Constants.botDevUserId.value
             && event.channel_id == Constants.logsChannelId
             
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.
-                if userId == authorId { continue }
+                if userId == authorId.value { continue }
             }
             let authorName = makeAuthorName(
                 nick: member.nick,
                 username: author.username,
-                id: author.id
+                id: author.id.value
             )
 
             await DiscordService.shared.sendDM(
-                userId: userId,
+                userId: Snowflake(userId),
                 payload: .init(
                     embeds: [.init(
                         description: """
@@ -245,7 +245,7 @@ struct MessageHandler {
     
     private func respondToThanks(
         with response: String,
-        overrideChannelId channelId: String? = nil,
+        overrideChannelId channelId: Snowflake<DiscordChannel>? = nil,
         isAFailureMessage: Bool
     ) async {
         await DiscordService.shared.sendThanksResponse(

@@ -606,7 +606,7 @@ private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
         guard let id = commandId else {
             return "`/auto-pings \(subcommand)`"
         }
-        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
+        return DiscordUtils.slashCommand(name: "auto-pings", id: id.value, subcommand: subcommand)
     }
     
     let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
