@@ -198,7 +198,7 @@ struct MessageHandler {
                         description: """
                         There is a new message that might be of interest to you.
 
-                        Authored by **\(authorName)** in \(channelLink)
+                        By **\(authorName)** in \(channelLink)
 
                         Triggered by:
                         \(words.makeExpressionListForDiscord())
