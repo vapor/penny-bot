@@ -67,7 +67,7 @@ actor DiscordService {
                     ])
                     
                     Task {
-                        let userMention = DiscordUtils.userMention(id: userId.value)
+                        let userMention = DiscordUtils.mention(id: userId)
                         let message = "I tried to DM you but couldn't. Please open your DMs to me. You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`. On Desktop, this option is under the `Privacy Settings` menu."
                         /// Make it wait 1 to 10 minutes so it's not too
                         /// obvious what message the user was DMed about.
