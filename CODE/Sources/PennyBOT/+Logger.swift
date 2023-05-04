@@ -18,7 +18,7 @@ extension DiscordClientResponse: LoggableHTTPResponse {
 
 extension Logger {
     func report(_ message: @autoclosure () -> Logger.Message,
-                response: LoggableHTTPResponse?,
+                response: (any LoggableHTTPResponse)?,
                 metadata: @autoclosure () -> Logger.Metadata? = nil,
                 source: @autoclosure () -> String? = nil,
                 file: String = #fileID, function: String = #function, line: UInt = #line) {
