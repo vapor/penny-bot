@@ -5,10 +5,10 @@ enum Constants {
     static func env(_ key: String) -> String? {
         ProcessInfo.processInfo.environment[key]
     }
-    static let vaporGuildId = "431917998102675485"
-    static let logsChannelId = "1067060193982156880"
-    static let thanksChannelId = "443074453719744522"
-    static let botDevUserId = "290483761559240704"
+    static let vaporGuildId: GuildSnowflake = "431917998102675485"
+    static let logsChannelId: ChannelSnowflake = "1067060193982156880"
+    static let thanksChannelId: ChannelSnowflake = "443074453719744522"
+    static let botDevUserId: UserSnowflake = "290483761559240704"
     static var botToken: String! = env("BOT_TOKEN")
     static var botId: String! = env("BOT_APP_ID")
     static var loggingWebhookUrl: String! = env("LOGGING_WEBHOOK_URL")
@@ -17,7 +17,7 @@ enum Constants {
     static let vaporCoinEmoji = DiscordUtils.customEmoji(name: "coin", id: "473588485962596352")
     static let vaporLoveEmoji = DiscordUtils.customEmoji(name: "vaporlove", id: "656303356280832062")
     
-    enum Roles: String {
+    enum Roles: RoleSnowflake {
         case nitroBooster = "621412660973535233"
         case backer = "431921695524126722"
         case sponsor = "444167329748746262"

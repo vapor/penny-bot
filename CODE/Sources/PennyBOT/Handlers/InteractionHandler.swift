@@ -519,7 +519,7 @@ private extension InteractionHandler {
                 let rolesString = Constants.Roles
                     .elevatedRestrictedCommandsAccess
                     .map(\.rawValue)
-                    .map(DiscordUtils.roleMention(id:))
+                    .map(DiscordUtils.mention(id:))
                     .joined(separator: " ")
                 return "You don't have access level for this command. This command is only available to \(rolesString)"
             }
@@ -546,7 +546,7 @@ private extension InteractionHandler {
                 let rolesString = Constants.Roles
                     .elevatedRestrictedCommandsAccess
                     .map(\.rawValue)
-                    .map(DiscordUtils.roleMention(id:))
+                    .map(DiscordUtils.mention(id:))
                     .joined(separator: " ")
                 return "You don't have access level for this command. This command is only available to \(rolesString)"
             }
@@ -564,7 +564,7 @@ private extension InteractionHandler {
             logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
             return oops
         }
-        guard subcommand == .get || subcommand == .remove else {
+        guard [.get, .remove].contains(subcommand) else {
             logger.error(
                 "Unrecognized 'help' subcommand for autocomplete",
                 metadata: ["subcommand": "\(subcommand)"]
@@ -612,7 +612,7 @@ private extension InteractionHandler {
             logger.error("Coin-count command could not find appropriate data")
             return oops
         }
-        let user = "<@\(userId)>"
+        let user = "<@\(userId.value)>"
         return await getCoinCount(of: user)
     }
     
@@ -628,7 +628,7 @@ private extension InteractionHandler {
                 logger.error("Coin-count command could not find a user")
                 return oops
             }
-            user = "<@\(id)>"
+            user = "<@\(id.value)>"
         }
         return await getCoinCount(of: user)
     }

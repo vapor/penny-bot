@@ -177,7 +177,7 @@ class GatewayProcessingTests: XCTestCase {
             """), description)
             XCTAssertTrue(description.hasSuffix("""
             \(Constants.vaporCoinEmoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
-            """))
+            """), description)
         }
         
         // We need to wait a little bit to make sure Discord's response
@@ -267,11 +267,11 @@ class GatewayProcessingTests: XCTestCase {
             responseStorage.awaitResponse(at: responseEndpoint).value
         )
         
-        let recipients = ["950695294906007573", "432065887202181142"]
+        let recipients: [UserSnowflake] = ["950695294906007573", "432065887202181142"]
         
         do {
             let dmPayload = try XCTUnwrap(createDM1 as? Payloads.CreateDM, "\(createDM1)")
-            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
+            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), "\(dmPayload.recipient_id)")
         }
         
         let dmMessage1 = try XCTUnwrap(sendDM1 as? Payloads.CreateMessage, "\(sendDM1)")
@@ -284,7 +284,7 @@ class GatewayProcessingTests: XCTestCase {
             /// These two must not fail. The user does not have any
             /// significant roles but they still should receive the pings.
             let dmPayload = try XCTUnwrap(createDM2 as? Payloads.CreateDM, "\(createDM1)")
-            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), dmPayload.recipient_id)
+            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), "\(dmPayload.recipient_id)")
         }
         
         let dmMessage2 = try XCTUnwrap(sendDM2 as? Payloads.CreateMessage, "\(sendDM1)")

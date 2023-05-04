@@ -30,7 +30,7 @@
                         "avatar": null
                     },
                     "id": "950695294906007573",
-                    "discriminator": "9194",
+                    "discriminator": "0",
                     "bot": false,
                     "avatar_decoration": null,
                     "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
@@ -63,7 +63,7 @@
                 "username": "Mahdi BM",
                 "public_flags": 0,
                 "id": "290483761559240704",
-                "discriminator": "0517",
+                "discriminator": "0",
                 "avatar_decoration": null,
                 "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
             },
@@ -102,7 +102,7 @@
                         "avatar": null
                     },
                     "id": "950695294906007573",
-                    "discriminator": "9194",
+                    "discriminator": "0",
                     "bot": false,
                     "avatar_decoration": null,
                     "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
@@ -135,7 +135,7 @@
                 "username": "Mahdi BM",
                 "public_flags": 0,
                 "id": "290483761559240704",
-                "discriminator": "0517",
+                "discriminator": "0",
                 "avatar_decoration": null,
                 "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
             },
@@ -156,7 +156,7 @@
                     "username": "Mahdi BM",
                     "public_flags": 0,
                     "id": "290483761559240704",
-                    "discriminator": "0517",
+                    "discriminator": "0",
                     "avatar_decoration": null,
                     "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
                 },
@@ -217,7 +217,7 @@
                     "username": "Mahdi BM",
                     "public_flags": 0,
                     "id": "290483761559240704",
-                    "discriminator": "0517",
+                    "discriminator": "0",
                     "bot": false,
                     "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
                 },
@@ -258,7 +258,7 @@
                     "username": "0xTim",
                     "public_flags": 0,
                     "id": "432065887202181142",
-                    "discriminator": "1157",
+                    "discriminator": "0",
                     "avatar_decoration": null,
                     "avatar": "800bfcd31ae4a77f61646226df46c204"
                 },
@@ -300,7 +300,7 @@
                     "username": "0xTim",
                     "public_flags": 0,
                     "id": "432065887202181142",
-                    "discriminator": "1157",
+                    "discriminator": "0",
                     "avatar_decoration": null,
                     "avatar": "800bfcd31ae4a77f61646226df46c204"
                 },
@@ -342,7 +342,7 @@
                     "username": "Mahdi BM",
                     "public_flags": 0,
                     "id": "290483761559240704",
-                    "discriminator": "0517",
+                    "discriminator": "0",
                     "bot": false,
                     "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
                 },
@@ -379,7 +379,7 @@
             "username": "TestApp",
             "public_flags": 0,
             "id": "950695294906007573",
-            "discriminator": "7843",
+            "discriminator": "0",
             "bot": false,
             "avatar_decoration": null,
             "avatar": null
@@ -405,7 +405,7 @@
             "username": "TestApp",
             "public_flags": 0,
             "id": "950695294906007573",
-            "discriminator": "7843",
+            "discriminator": "0",
             "bot": false,
             "avatar_decoration": null,
             "avatar": null
@@ -432,7 +432,7 @@
             "username": "DisBMLibTestBot",
             "avatar": null,
             "avatar_decoration": null,
-            "discriminator": "0861",
+            "discriminator": "0",
             "public_flags": 0,
             "bot": false
         },
@@ -458,7 +458,7 @@
             "username": "DisBMLibTestBot",
             "avatar": null,
             "avatar_decoration": null,
-            "discriminator": "0861",
+            "discriminator": "0",
             "public_flags": 0,
             "bot": false
         },
@@ -484,7 +484,7 @@
             "username": "DisBMLibTestBot",
             "avatar": null,
             "avatar_decoration": null,
-            "discriminator": "0861",
+            "discriminator": "0",
             "public_flags": 0,
             "bot": false
         },
@@ -510,7 +510,7 @@
             "username": "DisBMLibTestBot",
             "avatar": null,
             "avatar_decoration": null,
-            "discriminator": "0861",
+            "discriminator": "0",
             "public_flags": 0,
             "bot": false
         },
@@ -562,7 +562,7 @@
                 "username": "TestApp",
                 "public_flags": 0,
                 "id": "950695294906007573",
-                "discriminator": "7843",
+                "discriminator": "0",
                 "bot": false,
                 "avatar_decoration": null,
                 "avatar": null
@@ -602,7 +602,7 @@
                         "avatar": null
                     },
                     "id": "950695294906007573",
-                    "discriminator": "9194",
+                    "discriminator": "0",
                     "bot": false,
                     "avatar_decoration": null,
                     "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
@@ -639,7 +639,7 @@
                 "username": "Mahdi BM",
                 "public_flags": 0,
                 "id": "290483761559240704",
-                "discriminator": "0517",
+                "discriminator": "0",
                 "avatar_decoration": null,
                 "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
             },
@@ -678,7 +678,7 @@
                         "avatar": null
                     },
                     "id": "950695294906007573",
-                    "discriminator": "9194",
+                    "discriminator": "0",
                     "bot": false,
                     "avatar_decoration": null,
                     "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
@@ -715,7 +715,7 @@
                 "username": "Mahdi BM",
                 "public_flags": 0,
                 "id": "290483761559240704",
-                "discriminator": "0517",
+                "discriminator": "0",
                 "avatar_decoration": null,
                 "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
             },
@@ -728,17 +728,15 @@
         "type": 1,
         "last_message_id": "1040523601310392370",
         "flags": 0,
-        "recipients": [
-            {
-                "username": "0xTim",
-                "public_flags": 0,
-                "id": "432065887202181142",
-                "display_name": null,
-                "discriminator": "1157",
-                "avatar_decoration": null,
-                "avatar": "800bfcd31ae4a77f61646226df46c204"
-            }
-        ]
+        "recipients": [{
+            "username": "0xTim",
+            "public_flags": 0,
+            "id": "432065887202181142",
+            "display_name": null,
+            "discriminator": "0",
+            "avatar_decoration": null,
+            "avatar": "800bfcd31ae4a77f61646226df46c204"
+        }]
     },
     "howManyCoins1": {
         "t": "INTERACTION_CREATE",
@@ -753,7 +751,7 @@
                     "username": "Mahdi BM",
                     "public_flags": 4194304,
                     "id": "290483761559240704",
-                    "discriminator": "0517",
+                    "discriminator": "0",
                     "avatar_decoration": null,
                     "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
                 },
@@ -802,7 +800,7 @@
                     "username": "Mahdi BM",
                     "public_flags": 4194304,
                     "id": "290483761559240704",
-                    "discriminator": "0517",
+                    "discriminator": "0",
                     "avatar_decoration": null,
                     "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
                 },
@@ -836,7 +834,7 @@
                             "username": "Royale Alchemist",
                             "public_flags": 0,
                             "id": "961607141037326386",
-                            "discriminator": "5658",
+                            "discriminator": "0",
                             "bot": false,
                             "avatar_decoration": null,
                             "avatar": "c1c960fd53ae185d0741a9d1294539bb"
@@ -891,7 +889,7 @@
                     "username": "0xTim",
                     "public_flags": 0,
                     "id": "432065887202181142",
-                    "discriminator": "1157",
+                    "discriminator": "0",
                     "avatar_decoration": null,
                     "avatar": "800bfcd31ae4a77f61646226df46c204"
                 },
@@ -923,7 +921,7 @@
                 "username": "0xTim",
                 "public_flags": 0,
                 "id": "432065887202181142",
-                "discriminator": "1157",
+                "discriminator": "0",
                 "avatar_decoration": null,
                 "avatar": "800bfcd31ae4a77f61646226df46c204"
             },

@@ -49,7 +49,12 @@ public actor FakeManager: GatewayManager {
     public func send(key: EventKey) {
         let data = TestData.for(key: key.rawValue)!
         let decoder = JSONDecoder()
-        let event = try! decoder.decode(Gateway.Event.self, from: data)
+        let event: Gateway.Event
+        do {
+            event = try decoder.decode(Gateway.Event.self, from: data)
+        } catch {
+            fatalError("Failed to get event: '\(key)'. Error: \(error)")
+        }
         for continuation in eventContinuations {
             continuation.yield(event)
         }

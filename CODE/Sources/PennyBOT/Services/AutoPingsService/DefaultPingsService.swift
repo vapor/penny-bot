@@ -3,6 +3,7 @@ import PennyModels
 import AsyncHTTPClient
 import Foundation
 import Logging
+import DiscordBM
 import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
@@ -23,30 +24,39 @@ actor DefaultPingsService: AutoPingsService {
         self.setUpResetItemsTask()
     }
     
-    func exists(expression: Expression, forDiscordID id: String) async throws -> Bool {
-        try await self.getAll().items[expression]?.contains(id) ?? false
+    func exists(
+        expression: Expression,
+        forDiscordID id: UserSnowflake
+    ) async throws -> Bool {
+        try await self.getAll().items[expression]?.contains(id.value) ?? false
     }
     
-    func insert(_ expressions: [Expression], forDiscordID id: String) async throws {
+    func insert(
+        _ expressions: [Expression],
+        forDiscordID id: UserSnowflake
+    ) async throws {
         try await self.send(
             pathParameter: "users",
             method: .PUT,
-            pingRequest: .init(discordID: id, expressions: expressions)
+            pingRequest: .init(discordID: id.value, expressions: expressions)
         )
     }
     
-    func remove(_ expressions: [Expression], forDiscordID id: String) async throws {
+    func remove(
+        _ expressions: [Expression],
+        forDiscordID id: UserSnowflake
+    ) async throws {
         try await self.send(
             pathParameter: "users",
             method: .DELETE,
-            pingRequest: .init(discordID: id, expressions: expressions)
+            pingRequest: .init(discordID: id.value, expressions: expressions)
         )
     }
     
-    func get(discordID id: String) async throws -> [Expression] {
+    func get(discordID id: UserSnowflake) async throws -> [Expression] {
         try await self.getAll()
             .items
-            .filter { $0.value.contains(id) }
+            .filter { $0.value.contains(id.value) }
             .map(\.key)
     }
     
