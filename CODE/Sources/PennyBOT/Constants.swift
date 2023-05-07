@@ -6,8 +6,6 @@ enum Constants {
         ProcessInfo.processInfo.environment[key]
     }
     static let vaporGuildId: GuildSnowflake = "431917998102675485"
-    static let logsChannelId: ChannelSnowflake = "1067060193982156880"
-    static let thanksChannelId: ChannelSnowflake = "443074453719744522"
     static let botDevUserId: UserSnowflake = "290483761559240704"
     static var botToken: String! = env("BOT_TOKEN")
     static var botId: String! = env("BOT_APP_ID")
@@ -16,6 +14,16 @@ enum Constants {
     /// Vapor's custom coin emoji in Discord's format.
     static let vaporCoinEmoji = DiscordUtils.customEmoji(name: "coin", id: "473588485962596352")
     static let vaporLoveEmoji = DiscordUtils.customEmoji(name: "vaporlove", id: "656303356280832062")
+
+    enum Channels: ChannelSnowflake {
+        case logs = "1067060193982156880"
+        case proposals = "1104650517549953094"
+        case thanks = "443074453719744522"
+
+        var id: ChannelSnowflake {
+            self.rawValue
+        }
+    }
     
     enum Roles: RoleSnowflake {
         case nitroBooster = "621412660973535233"

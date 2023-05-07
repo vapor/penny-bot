@@ -26,7 +26,7 @@ public enum EventKey: String, Sendable {
         case .thanksMessage:
             return [.createMessage(channelId: "519613337638797315")]
         case .thanksMessage2:
-            return [.createMessage(channelId: Constants.thanksChannelId)]
+            return [.createMessage(channelId: Constants.Channels.thanks.id)]
         case .linkInteraction:
             return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw"), .createInteractionResponse(interactionId: "1031112113978089502", interactionToken: "aW50ZXJhY3Rpb246MTAzMTExMjExMzk3ODA4OTUwMjpRVGVBVXU3Vk1XZ1R0QXpiYmhXbkpLcnFqN01MOXQ4T2pkcGRXYzRjUFNMZE9TQ3g4R3NyM1d3OGszalZGV2c3a0JJb2ZTZnluS3VlbUNBRDh5N2U3Rm00QzQ2SWRDMGJrelJtTFlveFI3S0RGbHBrZnpoWXJSNU1BV1RqYk5Xaw")]
         case .thanksReaction:
@@ -37,10 +37,10 @@ public enum EventKey: String, Sendable {
                 messageId: "1031112115928449022"
             )]
         case .thanksReaction3:
-            return [.createMessage(channelId: Constants.thanksChannelId)]
+            return [.createMessage(channelId: Constants.Channels.thanks.id)]
         case .thanksReaction4:
             return [.updateMessage(
-                channelId: Constants.thanksChannelId,
+                channelId: Constants.Channels.thanks.id,
                 messageId: "1031112115928111022"
             )]
         case .stopRespondingToMessages:
