@@ -14,7 +14,7 @@ struct Penny {
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 
-        /// These shutdown calls are only useful for tests were we call `Penny.main()` repeatedly
+        /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         defer {
             /// Shutdown in reverse order (client first, then the ELG)
             try! client.syncShutdown()
@@ -29,6 +29,10 @@ struct Penny {
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await DefaultPingsService.shared.initialize(httpClient: client)
         await DefaultCoinService.shared.initialize(httpClient: client)
+        await ProposalsChecker.shared.initialize(
+            proposalsService: ServiceFactory.makeProposalsService(client)
+        )
+        ProposalsChecker.shared.run()
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
