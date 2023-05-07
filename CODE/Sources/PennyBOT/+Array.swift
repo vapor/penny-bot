@@ -20,20 +20,9 @@ extension Array {
 
     func divided(
         _ isInLhs: (Element) throws -> Bool
-    ) rethrows -> (lhs: Array<Element>, rhs: Array<Element>) {
-        var lhs = ContiguousArray<Element>()
-        var rhs = ContiguousArray<Element>()
-
-        var iterator = self.makeIterator()
-
-        while let element = iterator.next() {
-            if try isInLhs(element) {
-                lhs.append(element)
-            } else {
-                rhs.append(element)
-            }
-        }
-
-        return (Array(lhs), Array(rhs))
+    ) rethrows -> (lhs: ArraySlice<Element>, rhs: ArraySlice<Element>) {
+        var copy = self
+        let firstOfRhs = try copy.partition(by: isInLhs)
+        return (copy[copy.startIndex ..< firstOfRhs], copy[firstOfRhs ..< copy.endIndex])
     }
 }
