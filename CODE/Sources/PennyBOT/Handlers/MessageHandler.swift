@@ -119,7 +119,7 @@ struct MessageHandler {
                 \(authorId) Thanks for the Server Boost \(Constants.vaporLoveEmoji)!
                 You now have \(amount) more \(Constants.vaporCoinEmoji) for a total of \(response.coins) \(Constants.vaporCoinEmoji)!
                 """,
-                overrideChannelId: Constants.thanksChannelId,
+                overrideChannelId: Constants.Channels.thanks.id,
                 isAFailureMessage: false
             )
         } catch {
@@ -179,7 +179,7 @@ struct MessageHandler {
         for (userId, words) in usersToPing {
             /// Identify if this could be a test message by the bot-dev.
             let mightBeATestMessage = userId == Constants.botDevUserId.value
-            && event.channel_id == Constants.logsChannelId
+            && event.channel_id == Constants.Channels.logs.id
             
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.

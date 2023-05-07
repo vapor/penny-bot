@@ -138,7 +138,7 @@ struct ReactionHandler {
                let decoded = try apiResponse?.decode() {
                 /// If it's a thanks message that was sent to `#thanks` instead of the original
                 /// channel, then we need to inform the cache.
-                let sentToThanksChannelInstead = decoded.channel_id == Constants.thanksChannelId &&
+                let sentToThanksChannelInstead = decoded.channel_id == Constants.Channels.thanks.id &&
                 decoded.channel_id != event.channel_id
                 await cache.didRespond(
                     originalChannelId: event.channel_id,
@@ -168,7 +168,7 @@ struct ReactionHandler {
     ) async {
         let apiResponse = await DiscordService.shared.editMessage(
             messageId: messageId,
-            channelId: forcedInThanksChannel ? Constants.thanksChannelId : event.channel_id,
+            channelId: forcedInThanksChannel ? Constants.Channels.thanks.id : event.channel_id,
             payload: .init(
                 embeds: [.init(
                     description: response,

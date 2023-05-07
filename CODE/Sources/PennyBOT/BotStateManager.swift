@@ -34,7 +34,7 @@ actor BotStateManager {
     
     private func checkIfItsASlowdownSignal(event: Gateway.Event) {
         guard case let .messageCreate(message) = event.data,
-              message.channel_id == Constants.logsChannelId,
+              message.channel_id == Constants.Channels.logs.id,
               let author = message.author,
               author.id.value == Constants.botId,
               message.content.hasPrefix(signal)
@@ -55,7 +55,7 @@ actor BotStateManager {
     
     private func sendSignal() async {
         await DiscordService.shared.sendMessage(
-            channelId: Constants.logsChannelId,
+            channelId: Constants.Channels.logs.id,
             payload: .init(content: signal + " \(self.id)")
         )
     }

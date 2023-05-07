@@ -73,7 +73,7 @@ actor DiscordService {
                         /// obvious what message the user was DMed about.
                         try await Task.sleep(for: .seconds(.random(in: 60...600)))
                         await self.sendMessage(
-                            channelId: Constants.thanksChannelId,
+                            channelId: Constants.Channels.thanks.id,
                             payload: .init(
                                 content: userMention,
                                 embeds: [.init(description: message, color: .vaporPurple)])
@@ -174,7 +174,7 @@ actor DiscordService {
             if isAFailureMessage { return nil }
             let link = "https://discord.com/channels/\(Constants.vaporGuildId.value)/\(channelId.value)/\(messageId.value)"
             return await self.sendMessage(
-                channelId: Constants.thanksChannelId,
+                channelId: Constants.Channels.thanks.id,
                 payload: .init(
                     embeds: [.init(
                         description: "\(response) (\(link))",

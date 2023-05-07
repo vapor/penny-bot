@@ -1,20 +1,25 @@
-import AsyncHTTPClient
 import Logging
-import NIOCore
 import DiscordModels
+import PennyModels
 import Foundation
 
 actor ProposalsChecker {
-    let httpClient: HTTPClient
+    var previousProposals = [Proposal]()
+    var isFirstRound = true
+
     let logger = Logger(label: "ProposalsChecker")
+
+    var proposalsService: (any ProposalsService)!
     var discordService: DiscordService {
         DiscordService.shared
     }
-    var isFirstRound = true
-    private var previousProposals = [Proposal]()
 
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
+    static let shared = ProposalsChecker()
+
+    private init() { }
+
+    func initialize(proposalsService: any ProposalsService) {
+        self.proposalsService = proposalsService
     }
 
     nonisolated func run() {
@@ -30,7 +35,8 @@ actor ProposalsChecker {
     }
 
     func check() async throws {
-        let proposals = try await self.getProposals()
+        let proposals = try await self.proposalsService.get()
+
         /// If it's the first round, we have nothing to compare to
         if isFirstRound {
             self.previousProposals = proposals
@@ -38,19 +44,19 @@ actor ProposalsChecker {
             return
         }
 
-        /// Newly-added proposals
+        /// Report newly-added proposals
         let currentIds = Set(self.previousProposals.map(\.id))
         let (olds, news) = proposals.divided({ currentIds.contains($0.id) })
 
         for new in news {
             await discordService.sendMessage(
                 /// For testing purposes
-                channelId: Constants.logsChannelId,
+                channelId: Constants.Channels.proposals.id,
                 payload: makePayloadForNewProposal(new)
             )
         }
 
-        /// Proposals with change of status
+        /// Report proposals with change of status
         let stateDict = Dictionary(
             self.previousProposals.map({ ($0.id, $0.status.state) }),
             uniquingKeysWith: { l, _ in l }
@@ -62,7 +68,7 @@ actor ProposalsChecker {
         for updated in updatedProposals {
             await discordService.sendMessage(
                 /// For testing purposes
-                channelId: Constants.logsChannelId,
+                channelId: Constants.Channels.proposals.id,
                 payload: makePayloadForUpdatedProposal(
                     updated,
                     previousState: stateDict[updated.id]! /// Guaranteed to exist
@@ -72,17 +78,6 @@ actor ProposalsChecker {
 
         /// Update the saved proposals
         self.previousProposals = proposals
-    }
-
-    private func getProposals() async throws -> [Proposal] {
-        let response = try await httpClient.execute(
-            .init(url: "https://download.swift.org/swift-evolution/proposals.json"),
-            deadline: .now() + .seconds(5)
-        )
-        let buffer = try await response.body.collect(upTo: 1 << 23) /// 8 MB
-        let decoder = JSONDecoder()
-        let proposals = try decoder.decode([Proposal].self, from: buffer)
-        return proposals
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
@@ -102,7 +97,7 @@ actor ProposalsChecker {
             description: """
             > \(proposal.summary.sanitized())
 
-            Status: \(proposal.status.state.UIDescription)
+            Status: **\(proposal.status.state.UIDescription)**
             \(authorsString)
             \(reviewManagerString)
             """,
@@ -130,142 +125,67 @@ actor ProposalsChecker {
             description: """
             > \(proposal.summary.sanitized())
 
-            Status: \(previousState.UIDescription) -> \(proposal.status.state.UIDescription)
+            Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
             \(authorsString)
             \(reviewManagerString)
             """,
             color: proposal.status.state.color
         )])
     }
+
+#if DEBUG
+    func _tests_setPreviousProposals(to proposals: [Proposal]) {
+        self.previousProposals = proposals
+        self.isFirstRound = false
+    }
+#endif
 }
 
 private extension String {
     func sanitized() -> String {
-        self.unescaped().trimmed()
-    }
-
-    private func trimmed() -> String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
-    }
-
-    private func unescaped() -> String {
-        self.replacingOccurrences(of: #"\/"#, with: "/")
+            .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
     }
 }
 
-private struct Proposal: Codable {
+extension Proposal.User {
+    var isRealPerson: Bool {
+        !["", "TBD", "N/A"].contains(self.name.sanitized())
+    }
 
-    struct User: Codable {
-        let link: String
-        let name: String
-
-        var isRealPerson: Bool {
-            !["", "TBD", "N/A"].contains(self.name.sanitized())
+    func makeStringForDiscord() -> String {
+        let link = link.sanitized()
+        let name = name.sanitized()
+        if link.isEmpty {
+            return name
+        } else {
+            return "[\(name)](\(link))"
         }
+    }
+}
 
-        func makeStringForDiscord() -> String {
-            if self.link.isEmpty {
-                return self.name.sanitized()
-            } else {
-                let name = self.name.sanitized()
-                let link = self.link.sanitized()
-                return "[\(name)](\(link))"
-            }
+extension Proposal.Status.State {
+    var color: DiscordColor {
+        switch self {
+        case .accepted: return .green
+        case .activeReview: return .orange
+        case .implemented: return .blue
+        case .previewing: return .lightGreen
+        case .rejected: return .red
+        case .returnedForRevision: return .purple
+        case .withdrawn: return .brown
         }
     }
 
-    struct Status: Codable {
-
-        enum State: String, Codable {
-            case accepted = ".accepted"
-            case activeReview = ".activeReview"
-            case implemented = ".implemented"
-            case previewing = ".previewing"
-            case rejected = ".rejected"
-            case returnedForRevision = ".returnedForRevision"
-            case withdrawn = ".withdrawn"
-
-            var color: DiscordColor {
-                switch self {
-                case .accepted: return .green
-                case .activeReview: return .orange
-                case .implemented: return .blue
-                case .previewing: return .init(hex: "#29AB87")!
-                case .rejected: return .red
-                case .returnedForRevision: return .purple
-                case .withdrawn: return .brown
-                }
-            }
-
-            var UIDescription: String {
-                switch self {
-                case .accepted: return "Accepted"
-                case .activeReview: return "Active Review"
-                case .implemented: return "Implemented"
-                case .previewing: return "Previewing"
-                case .rejected: return "Rejected"
-                case .returnedForRevision: return "Returned For Revision"
-                case .withdrawn: return "Withdrawn"
-                }
-            }
+    var UIDescription: String {
+        switch self {
+        case .accepted: return "Accepted"
+        case .activeReview: return "Active Review"
+        case .implemented: return "Implemented"
+        case .previewing: return "Previewing"
+        case .rejected: return "Rejected"
+        case .returnedForRevision: return "Returned For Revision"
+        case .withdrawn: return "Withdrawn"
         }
-
-        let state: State
-        let version: String?
-        let end: String?
-        let start: String?
     }
-
-    struct TrackingBug: Codable {
-        let assignee: String
-        let id: String
-        let link: String
-        let radar: String
-        let resolution: String
-        let status: String
-        let title: String
-        let updated: String
-    }
-
-    struct Warning: Codable {
-        let kind: String
-        let message: String
-        let stage: String
-    }
-
-    struct Implementation: Codable {
-
-        enum Account: String, Codable {
-            case apple = "apple"
-        }
-
-        enum Repository: String, Codable {
-            case swift = "swift"
-            case swiftCorelibsFoundation = "swift-corelibs-foundation"
-            case swiftPackageManager = "swift-package-manager"
-            case swiftXcodePlaygroundSupport = "swift-xcode-playground-support"
-        }
-
-        enum Kind: String, Codable {
-            case commit = "commit"
-            case pull = "pull"
-        }
-
-        let account: Account
-        let id: String
-        let repository: Repository
-        let type: Kind
-    }
-
-    let authors: [User]
-    let id: String
-    let link: String
-    let reviewManager: User
-    let sha: String
-    let status: Status
-    let summary: String
-    let title: String
-    let trackingBugs: [TrackingBug]?
-    let warnings: [Warning]?
-    let implementation: [Implementation]?
 }

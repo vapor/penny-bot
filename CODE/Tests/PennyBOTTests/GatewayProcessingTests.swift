@@ -4,6 +4,7 @@ import DiscordGateway
 import PennyLambdaAddCoins
 import PennyRepositories
 import Fake
+import PennyModels
 import XCTest
 
 class GatewayProcessingTests: XCTestCase {
@@ -22,6 +23,8 @@ class GatewayProcessingTests: XCTestCase {
         Constants.apiBaseUrl = "https://fake.com"
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeCoinService = { FakeCoinService() }
+        ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
+        await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
@@ -219,7 +222,7 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertEqual(canRespond, true)
         
         let response = await responseStorage.awaitResponse(
-            at: .createMessage(channelId: Constants.logsChannelId)
+            at: .createMessage(channelId: Constants.Channels.logs.id)
         ).value
         
         let message = try XCTUnwrap(response as? Payloads.CreateMessage)
@@ -361,6 +364,32 @@ class GatewayProcessingTests: XCTestCase {
             )
         )
         XCTAssertTrue(message.hasSuffix(" \(Constants.vaporCoinEmoji)!"))
+    }
+
+    func testProposalsChecker() async throws {
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
+        let (message1, message2) = await (
+            responseStorage.awaitResponse(at: endpoint).value,
+            responseStorage.awaitResponse(at: endpoint).value
+        )
+
+        /// New proposal message
+        do {
+            let message = try XCTUnwrap(message1 as? Payloads.CreateMessage, "\(message1)")
+            let embed = try XCTUnwrap(message.embeds?.first)
+            XCTAssertEqual(embed.title, "New Proposal: Conventionalizing stride semantics")
+            XCTAssertEqual(embed.description, "> \n\nStatus: **Withdrawn**\n\nAuthors: [Erica Sadun](http://github.com/erica)\n")
+            XCTAssertEqual(embed.color, .brown)
+        }
+
+        /// Updated proposal message
+        do {
+            let message = try XCTUnwrap(message2 as? Payloads.CreateMessage, "\(message2)")
+            let embed = try XCTUnwrap(message.embeds?.first)
+            XCTAssertEqual(embed.title, "Proposal Updated: Allow (most) keywords as argument labels")
+            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function,\ndescribing what particular arguments to the function do and improving\nreadability. Sometimes, the most natural label for an argument coincides with a\nlanguage keyword, such as `in`, `repeat`, or `defer`. Such keywords should be\nallowed as argument labels, allowing better expression of these interfaces.\n\nStatus: **Implemented** -> **Active Review**\n\nAuthors: [Doug Gregor](https://github.com/DougGregor)\n")
+            XCTAssertEqual(embed.color, .orange)
+        }
     }
 }
 
