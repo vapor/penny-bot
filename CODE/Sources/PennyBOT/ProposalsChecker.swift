@@ -87,17 +87,21 @@ actor ProposalsChecker {
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
         let title = "New Proposal: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
-        return .init(embeds: [.init(
-            title: title.truncate(ifLongerThan: 256),
-            description: """
-            > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
-            Status: **\(proposal.status.state.UIDescription)**
-            \(authorsString)
-            \(reviewManagerString)
-            """,
-            color: proposal.status.state.color
-        )])
+        return .init(
+            embeds: [.init(
+                title: title.truncate(ifLongerThan: 256),
+                description: """
+                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
+
+                Status: **\(proposal.status.state.UIDescription)**
+                \(authorsString)
+                \(reviewManagerString)
+                """,
+                color: proposal.status.state.color
+            )],
+            components: makeComponents(link: proposal.link)
+        )
     }
 
     private func makePayloadForUpdatedProposal(
@@ -116,17 +120,34 @@ actor ProposalsChecker {
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
         let title = "Proposal Updated: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
-        return .init(embeds: [.init(
-            title: title.truncate(ifLongerThan: 256),
-            description: """
-            > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
-            Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
-            \(authorsString)
-            \(reviewManagerString)
-            """,
-            color: proposal.status.state.color
-        )])
+        return .init(
+            embeds: [.init(
+                title: title.truncate(ifLongerThan: 256),
+                description: """
+                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
+
+                Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
+                \(authorsString)
+                \(reviewManagerString)
+                """,
+                color: proposal.status.state.color
+            )],
+            components: makeComponents(link: proposal.link)
+        )
+    }
+
+    private func makeComponents(link: String) -> [Interaction.ActionRow] {
+        let link = link.sanitized()
+        if link.isEmpty {
+            return []
+        } else {
+            return [[.button(.init(
+                style: .link,
+                label: "Open on Github",
+                url: link
+            ))]]
+        }
     }
 
 #if DEBUG
