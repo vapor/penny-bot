@@ -53,22 +53,21 @@ actor ProposalsChecker {
         }
 
         /// Report proposals with change of status
-        let stateDict = Dictionary(
+        let previousStates = Dictionary(
             self.previousProposals.map({ ($0.id, $0.status.state) }),
             uniquingKeysWith: { l, _ in l }
         )
         let updatedProposals = olds.filter {
-            stateDict[$0.id] != $0.status.state
+            previousStates[$0.id] != $0.status.state
         }
 
         for updated in updatedProposals {
-            await discordService.sendMessage(
-                channelId: Constants.Channels.proposals.id,
-                payload: makePayloadForUpdatedProposal(
-                    updated,
-                    previousState: stateDict[updated.id]! /// Guaranteed to exist
+            if let previousState = previousStates[updated.id] {
+                await discordService.sendMessage(
+                    channelId: Constants.Channels.proposals.id,
+                    payload: makePayloadForUpdatedProposal(updated, previousState: previousState)
                 )
-            )
+            }
         }
 
         /// Update the saved proposals
