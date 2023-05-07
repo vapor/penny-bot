@@ -25,10 +25,12 @@ struct Penny {
 
         let bot = DiscordFactory.makeBot(eventLoopGroup, client)
         let cache = await DiscordFactory.makeCache(bot)
+        let proposalsChecker = ProposalsChecker(httpClient: client)
 
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await DefaultPingsService.shared.initialize(httpClient: client)
         await DefaultCoinService.shared.initialize(httpClient: client)
+        proposalsChecker.run()
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
