@@ -21,7 +21,7 @@ class GatewayProcessingTests: XCTestCase {
         RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
         Constants.apiBaseUrl = "https://fake.com"
         ServiceFactory.makePingsService = { FakePingsService() }
-        ServiceFactory.makeCoinService = { _ in FakeCoinService() }
+        ServiceFactory.makeCoinService = { FakeCoinService() }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
