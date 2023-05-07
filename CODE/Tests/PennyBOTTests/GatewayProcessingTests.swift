@@ -21,7 +21,7 @@ class GatewayProcessingTests: XCTestCase {
         RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
         RepositoryFactory.makeHelpsRepository = { _ in FakeHelpsRepository() }
         Constants.apiBaseUrl = "https://fake.com"
-        ServiceFactory.makeCoinService = { _ in FakeCoinService() }
+        ServiceFactory.makeCoinService = { FakeCoinService() }
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeHelpsService = { FakeHelpsService() }
         // reset the storage

@@ -28,6 +28,7 @@ struct Penny {
 
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await DefaultPingsService.shared.initialize(httpClient: client)
+        await DefaultCoinService.shared.initialize(httpClient: client)
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
@@ -35,10 +36,7 @@ struct Penny {
         
         let stream = await bot.makeEventsStream()
         for await event in stream {
-            EventHandler(
-                event: event,
-                coinService: ServiceFactory.makeCoinService(client)
-            ).handle()
+            EventHandler(event: event).handle()
         }
     }
 

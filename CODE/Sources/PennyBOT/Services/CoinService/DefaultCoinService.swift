@@ -3,9 +3,17 @@ import AsyncHTTPClient
 import Logging
 import PennyModels
 
-struct DefaultCoinService: CoinService {
-    let httpClient: HTTPClient
+actor DefaultCoinService: CoinService {
+    var httpClient: HTTPClient!
     let logger = Logger(label: "DefaultCoinService")
+
+    static let shared = DefaultCoinService()
+
+    private init() { }
+
+    func initialize(httpClient: HTTPClient) {
+        self.httpClient = httpClient
+    }
     
     func postCoin(with coinRequest: CoinRequest.AddCoin) async throws -> CoinResponse {
         var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/coin")

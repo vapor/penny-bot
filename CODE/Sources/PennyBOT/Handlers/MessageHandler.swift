@@ -3,16 +3,16 @@ import Logging
 import PennyModels
 
 struct MessageHandler {
-    
-    let coinService: any CoinService
-    var logger = Logger(label: "MessageHandler")
     let event: Gateway.MessageCreate
+    var logger = Logger(label: "MessageHandler")
+    var coinService: any CoinService {
+        ServiceFactory.makeCoinService()
+    }
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
     
-    init(coinService: any CoinService, event: Gateway.MessageCreate) {
-        self.coinService = coinService
+    init(event: Gateway.MessageCreate) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
     }

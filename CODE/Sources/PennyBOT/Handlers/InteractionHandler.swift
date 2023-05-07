@@ -10,9 +10,11 @@ private enum Configuration {
 private typealias Expression = S3AutoPingItems.Expression
 
 struct InteractionHandler {
-    var logger = Logger(label: "InteractionHandler")
     let event: Interaction
-    let coinService: any CoinService
+    var logger = Logger(label: "InteractionHandler")
+    var coinService: any CoinService {
+        ServiceFactory.makeCoinService()
+    }
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
@@ -25,10 +27,9 @@ struct InteractionHandler {
     
     typealias InteractionOption = Interaction.ApplicationCommand.Option
     
-    init(event: Interaction, coinService: any CoinService) {
+    init(event: Interaction) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
-        self.coinService = coinService
     }
     
     func handle() async {
