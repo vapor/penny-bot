@@ -26,7 +26,7 @@ let package = Package(
         /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
         .package(
             url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "d97244a529f828a2781b8cbfcdbe8675c62f220d"
+            revision: "2ef02ece1ec1c4cf792d60de23a9dca72902130a"
         ),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
