@@ -5,7 +5,6 @@ import Foundation
 
 actor ProposalsChecker {
     var previousProposals = [Proposal]()
-    var isFirstRound = true
 
     let logger = Logger(label: "ProposalsChecker")
 
@@ -37,10 +36,8 @@ actor ProposalsChecker {
     func check() async throws {
         let proposals = try await self.proposalsService.get()
 
-        /// If it's the first round, we have nothing to compare to
-        if isFirstRound {
+        if self.previousProposals.isEmpty {
             self.previousProposals = proposals
-            isFirstRound = false
             return
         }
 
@@ -50,7 +47,6 @@ actor ProposalsChecker {
 
         for new in news {
             await discordService.sendMessage(
-                /// For testing purposes
                 channelId: Constants.Channels.proposals.id,
                 payload: makePayloadForNewProposal(new)
             )
@@ -67,7 +63,6 @@ actor ProposalsChecker {
 
         for updated in updatedProposals {
             await discordService.sendMessage(
-                /// For testing purposes
                 channelId: Constants.Channels.proposals.id,
                 payload: makePayloadForUpdatedProposal(
                     updated,
@@ -92,10 +87,11 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
+        let title = "New Proposal: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
         return .init(embeds: [.init(
-            title: "New Proposal: \(proposal.title.sanitized())",
+            title: title.truncate(ifLongerThan: 256),
             description: """
-            > \(proposal.summary.sanitized())
+            > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
             Status: **\(proposal.status.state.UIDescription)**
             \(authorsString)
@@ -120,10 +116,11 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
+        let title = "Proposal Updated: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
         return .init(embeds: [.init(
-            title: "Proposal Updated: \(proposal.title.sanitized())",
+            title: title.truncate(ifLongerThan: 256),
             description: """
-            > \(proposal.summary.sanitized())
+            > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
             Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
             \(authorsString)
@@ -136,7 +133,6 @@ actor ProposalsChecker {
 #if DEBUG
     func _tests_setPreviousProposals(to proposals: [Proposal]) {
         self.previousProposals = proposals
-        self.isFirstRound = false
     }
 #endif
 }
@@ -145,6 +141,15 @@ private extension String {
     func sanitized() -> String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
+    }
+
+    func truncate(ifLongerThan max: Int) -> String {
+        let scalars = self.unicodeScalars
+        if scalars.count > max {
+            return String(scalars.dropLast(scalars.count - max).dropLast(4)) + " ..."
+        } else {
+            return self
+        }
     }
 }
 
