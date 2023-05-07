@@ -74,6 +74,28 @@ actor ProposalsChecker {
         self.previousProposals = proposals
     }
 
+    private func send(proposal: Proposal, payload: Payloads.CreateMessage) async {
+        /// Send the message, make sure it is successfully sent
+        let response = await discordService.sendMessage(
+            channelId: Constants.Channels.proposals.id,
+            payload: payload
+        )
+        guard let message = try? response?.decode() else { return }
+        /// Create a thread on top of the message
+        let name = "\(proposal.id) \(proposal.title.sanitized())".truncate(ifLongerThan: 100)
+        await discordService.createThreadFromMessage(
+            channelId: message.channel_id,
+            messageId: message.id,
+            payload: .init(
+                name: name,
+                auto_archive_duration: .sevenDays
+            )
+        )
+        /// FIXME: Cross-posting the message not implemented.
+        /// DiscordBM doesn't have the endpoint yet
+        /// The proposals channel also needs to be made into an announcement channel
+    }
+
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -125,7 +147,7 @@ actor ProposalsChecker {
             embeds: [.init(
                 title: title.truncate(ifLongerThan: 256),
                 description: """
-                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
+                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
 
                 Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
                 \(authorsString)

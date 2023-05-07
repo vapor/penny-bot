@@ -304,6 +304,26 @@ actor DiscordService {
             return nil
         }
     }
+
+    func createThreadFromMessage(
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake,
+        payload: Payloads.CreateThreadFromMessage
+    ) async {
+        do {
+            try await discordClient.createThreadFromMessage(
+                channelId: channelId,
+                messageId: messageId,
+                payload: payload
+            ).guardSuccess()
+        } catch {
+            logger.report("Couldn't create thread from message", error: error, metadata: [
+                "channelId": .stringConvertible(channelId),
+                "messageId": .stringConvertible(messageId),
+                "payload": .string("\(payload)")
+            ])
+        }
+    }
     
     func userHasReadAccess(
         userId: UserSnowflake,
