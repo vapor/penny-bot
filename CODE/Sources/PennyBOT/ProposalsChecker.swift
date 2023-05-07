@@ -46,33 +46,54 @@ actor ProposalsChecker {
         let (olds, news) = proposals.divided({ currentIds.contains($0.id) })
 
         for new in news {
-            await discordService.sendMessage(
-                channelId: Constants.Channels.proposals.id,
+            await self.send(
+                proposal: new,
                 payload: makePayloadForNewProposal(new)
             )
         }
 
         /// Report proposals with change of status
-        let stateDict = Dictionary(
+        let previousStates = Dictionary(
             self.previousProposals.map({ ($0.id, $0.status.state) }),
             uniquingKeysWith: { l, _ in l }
         )
         let updatedProposals = olds.filter {
-            stateDict[$0.id] != $0.status.state
+            previousStates[$0.id] != $0.status.state
         }
 
         for updated in updatedProposals {
-            await discordService.sendMessage(
-                channelId: Constants.Channels.proposals.id,
-                payload: makePayloadForUpdatedProposal(
-                    updated,
-                    previousState: stateDict[updated.id]! /// Guaranteed to exist
+            if let previousState = previousStates[updated.id] {
+                await self.send(
+                    proposal: updated,
+                    payload: makePayloadForUpdatedProposal(updated, previousState: previousState)
                 )
-            )
+            }
         }
 
         /// Update the saved proposals
         self.previousProposals = proposals
+    }
+
+    private func send(proposal: Proposal, payload: Payloads.CreateMessage) async {
+        /// Send the message, make sure it is successfully sent
+        let response = await discordService.sendMessage(
+            channelId: Constants.Channels.proposals.id,
+            payload: payload
+        )
+        guard let message = try? response?.decode() else { return }
+        /// Create a thread on top of the message
+        let name = "\(proposal.id) \(proposal.title.sanitized())".truncate(ifLongerThan: 100)
+        await discordService.createThreadFromMessage(
+            channelId: message.channel_id,
+            messageId: message.id,
+            payload: .init(
+                name: name,
+                auto_archive_duration: .sevenDays
+            )
+        )
+        /// FIXME: Cross-posting the message not implemented.
+        /// DiscordBM doesn't have the endpoint yet
+        /// The proposals channel also needs to be made into an announcement channel
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
@@ -88,17 +109,21 @@ actor ProposalsChecker {
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
         let title = "New Proposal: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
-        return .init(embeds: [.init(
-            title: title.truncate(ifLongerThan: 256),
-            description: """
-            > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
-            Status: **\(proposal.status.state.UIDescription)**
-            \(authorsString)
-            \(reviewManagerString)
-            """,
-            color: proposal.status.state.color
-        )])
+        return .init(
+            embeds: [.init(
+                title: title.truncate(ifLongerThan: 256),
+                description: """
+                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
+
+                Status: **\(proposal.status.state.UIDescription)**
+                \(authorsString)
+                \(reviewManagerString)
+                """,
+                color: proposal.status.state.color
+            )],
+            components: makeComponents(link: proposal.link)
+        )
     }
 
     private func makePayloadForUpdatedProposal(
@@ -117,17 +142,34 @@ actor ProposalsChecker {
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
         let title = "Proposal Updated: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
-        return .init(embeds: [.init(
-            title: title.truncate(ifLongerThan: 256),
-            description: """
-            > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
-            Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
-            \(authorsString)
-            \(reviewManagerString)
-            """,
-            color: proposal.status.state.color
-        )])
+        return .init(
+            embeds: [.init(
+                title: title.truncate(ifLongerThan: 256),
+                description: """
+                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
+
+                Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
+                \(authorsString)
+                \(reviewManagerString)
+                """,
+                color: proposal.status.state.color
+            )],
+            components: makeComponents(link: proposal.link)
+        )
+    }
+
+    private func makeComponents(link: String) -> [Interaction.ActionRow] {
+        let link = link.sanitized()
+        if link.isEmpty {
+            return []
+        } else {
+            return [[.button(.init(
+                style: .link,
+                label: "Open on Github",
+                url: link
+            ))]]
+        }
     }
 
 #if DEBUG
@@ -153,7 +195,7 @@ private extension String {
     }
 }
 
-extension Proposal.User {
+private extension Proposal.User {
     var isRealPerson: Bool {
         !["", "TBD", "N/A"].contains(self.name.sanitized())
     }
@@ -169,7 +211,7 @@ extension Proposal.User {
     }
 }
 
-extension Proposal.Status.State {
+private extension Proposal.Status.State {
     var color: DiscordColor {
         switch self {
         case .accepted: return .green
