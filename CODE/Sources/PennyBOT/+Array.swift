@@ -2,21 +2,20 @@
 extension Array {
     func divided(
         _ isInLhs: (Element) async throws -> Bool
-    ) async rethrows -> (lhs: Array<Element>, rhs: Array<Element>) {
-        var lhs = ContiguousArray<Element>()
-        var rhs = ContiguousArray<Element>()
+    ) async rethrows -> (lhs: [Element], rhs: [Element]) {
+        var lhs = [Element]()
+        var rhs = [Element]()
+        lhs.reserveCapacity(self.count)
+        rhs.reserveCapacity(self.count)
 
-        var iterator = self.makeIterator()
-
-        while let element = iterator.next() {
+        for element in self {
             if try await isInLhs(element) {
                 lhs.append(element)
             } else {
                 rhs.append(element)
             }
         }
-
-        return (Array(lhs), Array(rhs))
+        return (lhs, rhs)
     }
 
     func divided(
