@@ -23,6 +23,6 @@ extension Array {
     ) rethrows -> (lhs: ArraySlice<Element>, rhs: ArraySlice<Element>) {
         var copy = self
         let firstOfRhs = try copy.partition(by: isInLhs)
-        return (copy[copy.startIndex ..< firstOfRhs], copy[firstOfRhs ..< copy.endIndex])
+        return (copy[firstOfRhs ..< copy.endIndex], copy[copy.startIndex ..< firstOfRhs])
     }
 }
