@@ -378,6 +378,15 @@ class GatewayProcessingTests: XCTestCase {
         /// New proposal message
         do {
             let message = try XCTUnwrap(message1 as? Payloads.CreateMessage, "\(message1)")
+
+            let components = try XCTUnwrap(message.components)
+            let buttonComponent = try XCTUnwrap(components.first?.components.first)
+            if case let .button(button) = buttonComponent {
+                XCTAssertEqual(button.url, "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md")
+            } else {
+                XCTFail("\(buttonComponent) was not a button")
+            }
+
             let embed = try XCTUnwrap(message.embeds?.first)
             XCTAssertEqual(embed.title, "New Proposal: **SE-0051** Conventionalizing stride semantics")
             XCTAssertEqual(embed.description, "> \n\nStatus: **Withdrawn**\n\nAuthors: [Erica Sadun](http://github.com/erica)\n")
@@ -387,6 +396,15 @@ class GatewayProcessingTests: XCTestCase {
         /// Updated proposal message
         do {
             let message = try XCTUnwrap(message2 as? Payloads.CreateMessage, "\(message2)")
+
+            let components = try XCTUnwrap(message.components)
+            let buttonComponent = try XCTUnwrap(components.first?.components.first)
+            if case let .button(button) = buttonComponent {
+                XCTAssertEqual(button.url, "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md")
+            } else {
+                XCTFail("\(buttonComponent) was not a button")
+            }
+
             let embed = try XCTUnwrap(message.embeds?.first)
             XCTAssertEqual(embed.title, "Proposal Updated: **SE-0001** Allow (most) keywords as argument labels")
             XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function,\ndescribing what particular arguments to the function do and improving\nreadability. Sometimes, the most natural label for an argument coincides with a\nlanguage keyword, such as `in`, `repeat`, or `defer`. Such keywords should be\nallowed as argument labels, allowing better expression of these interfaces.\n\nStatus: **Implemented** -> **Active Review**\n\nAuthors: [Doug Gregor](https://github.com/DougGregor)\n")
