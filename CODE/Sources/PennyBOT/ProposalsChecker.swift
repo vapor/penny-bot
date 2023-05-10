@@ -164,10 +164,11 @@ actor ProposalsChecker {
         if link.isEmpty {
             return []
         } else {
+            let prefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
             return [[.button(.init(
                 style: .link,
-                label: "Open on Github",
-                url: link
+                label: "Open Proposal",
+                url: prefix + link
             ))]]
         }
     }
