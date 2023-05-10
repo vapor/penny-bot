@@ -86,7 +86,7 @@ struct AddSponsorHandler: LambdaHandler {
             fatalError("Missing 'BOT_TOKEN' env var")
         }
         context.logger.debug("Secrets retrieved")
-        return DefaultDiscordClient(
+        return await DefaultDiscordClient(
             httpClient: httpClient,
             token: token,
             appId: Snowflake(appID)
