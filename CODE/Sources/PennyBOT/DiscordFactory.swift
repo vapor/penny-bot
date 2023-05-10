@@ -4,7 +4,7 @@ import NIOCore
 import Foundation
 
 enum DiscordFactory {
-    static var makeBot: (any EventLoopGroup, HTTPClient) -> any GatewayManager = {
+    static var makeBot: (any EventLoopGroup, HTTPClient) async -> any GatewayManager = {
         eventLoopGroup, client in
         guard let token = Constants.botToken, let appId = Constants.botId else {
             fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
@@ -15,7 +15,7 @@ enum DiscordFactory {
                 .listApplicationCommands: 60 * 60 /// 1 hour
             ])
         )
-        return BotGatewayManager(
+        return await BotGatewayManager(
             eventLoopGroup: eventLoopGroup,
             httpClient: client,
             clientConfiguration: clientConfiguration,
