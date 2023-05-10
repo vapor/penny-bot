@@ -108,7 +108,8 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
-        let title = "New Proposal: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
+        let status = "**\(proposal.status.state.UIDescription)**"
+        let title = "\(status): **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
 
         return .init(
             embeds: [.init(
@@ -141,7 +142,8 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
 
-        let title = "Proposal Updated: **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
+        let newStatus = "**\(proposal.status.state.UIDescription)**"
+        let title = "\(newStatus): **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
 
         return .init(
             embeds: [.init(
@@ -149,7 +151,7 @@ actor ProposalsChecker {
                 description: """
                 > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
 
-                Status: **\(previousState.UIDescription)** -> **\(proposal.status.state.UIDescription)**
+                Status: **\(previousState.UIDescription)** -> \(newStatus)
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -228,7 +230,7 @@ private extension Proposal.Status.State {
     var UIDescription: String {
         switch self {
         case .accepted: return "Accepted"
-        case .activeReview: return "Active Review"
+        case .activeReview: return "In Active Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
