@@ -82,7 +82,8 @@ actor ProposalsChecker {
         )
         guard let message = try? response?.decode() else { return }
         /// Create a thread on top of the message
-        let name = "\(proposal.id) \(proposal.title.sanitized())".truncate(ifLongerThan: 100)
+        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())"
+            .truncate(ifLongerThan: 100)
         await discordService.createThreadFromMessage(
             channelId: message.channel_id,
             messageId: message.id,

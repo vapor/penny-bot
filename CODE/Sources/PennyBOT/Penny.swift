@@ -23,7 +23,7 @@ struct Penny {
 
         await bootstrapLoggingSystem(httpClient: client)
 
-        let bot = DiscordFactory.makeBot(eventLoopGroup, client)
+        let bot = await DiscordFactory.makeBot(eventLoopGroup, client)
         let cache = await DiscordFactory.makeCache(bot)
 
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
@@ -54,7 +54,7 @@ struct Penny {
             fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
         }
 #endif
-        DiscordGlobalConfiguration.logManager = DiscordLogManager(
+        DiscordGlobalConfiguration.logManager = await DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
                 aliveNotice: .init(
