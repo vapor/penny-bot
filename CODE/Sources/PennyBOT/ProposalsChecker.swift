@@ -99,6 +99,15 @@ actor ProposalsChecker {
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
+
+        let status = "\(proposal.status.state.UIDescription)"
+        let title = "[\(proposal.id.sanitized())] \(status): \(proposal.title.sanitized())"
+
+        let summary = proposal.summary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .truncate(ifLongerThan: 2_048)
+
         let authors = proposal.authors
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
@@ -110,14 +119,11 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
-        let status = "\(proposal.status.state.UIDescription)"
-        let title = "\(status): \(proposal.id.sanitized()) \(proposal.title.sanitized())"
-
         return .init(
             embeds: [.init(
                 title: title.truncate(ifLongerThan: 256),
                 description: """
-                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
+                > \(summary)
 
                 **Status: \(proposal.status.state.UIDescription)**
                 \(authorsString)
@@ -133,6 +139,15 @@ actor ProposalsChecker {
         _ proposal: Proposal,
         previousState: Proposal.Status.State
     ) -> Payloads.CreateMessage {
+
+        let newStatus = "\(proposal.status.state.UIDescription)"
+        let title = "[\(proposal.id.sanitized())] \(newStatus): \(proposal.title.sanitized())"
+
+        let summary = proposal.summary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .truncate(ifLongerThan: 2_048)
+
         let authors = proposal.authors
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
@@ -144,14 +159,11 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
-        let newStatus = "\(proposal.status.state.UIDescription)"
-        let title = "\(newStatus): \(proposal.id.sanitized()) \(proposal.title.sanitized())"
-
         return .init(
             embeds: [.init(
                 title: title.truncate(ifLongerThan: 256),
                 description: """
-                \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
+                > \(summary)
 
                 **Status: \(previousState.UIDescription) -> \(newStatus)**
                 \(authorsString)
