@@ -102,7 +102,9 @@ actor DiscordService {
             return existing
         } else {
             do {
-                let dmChannel = try await discordClient.createDm(recipientId: userId).decode()
+                let dmChannel = try await discordClient.createDm(
+                    payload: .init(recipient_id: userId)
+                ).decode()
                 dmChannels[userId] = dmChannel.id
                 return dmChannel.id
             } catch {
@@ -321,6 +323,23 @@ actor DiscordService {
                 "channelId": .stringConvertible(channelId),
                 "messageId": .stringConvertible(messageId),
                 "payload": .string("\(payload)")
+            ])
+        }
+    }
+
+    func crosspostMessage(
+        channelId: ChannelSnowflake,
+        messageId: MessageSnowflake
+    ) async {
+        do {
+            try await discordClient.crosspostMessage(
+                channelId: channelId,
+                messageId: messageId
+            ).guardSuccess()
+        } catch {
+            logger.report("Couldn't crosspost message", error: error, metadata: [
+                "channelId": .stringConvertible(channelId),
+                "messageId": .stringConvertible(messageId),
             ])
         }
     }

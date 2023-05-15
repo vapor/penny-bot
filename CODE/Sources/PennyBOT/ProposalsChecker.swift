@@ -92,9 +92,10 @@ actor ProposalsChecker {
                 auto_archive_duration: .sevenDays
             )
         )
-        /// FIXME: Cross-posting the message not implemented.
-        /// DiscordBM doesn't have the endpoint yet
-        /// The proposals channel also needs to be made into an announcement channel
+        await discordService.crosspostMessage(
+            channelId: message.channel_id,
+            messageId: message.id
+        )
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
@@ -102,15 +103,15 @@ actor ProposalsChecker {
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\nAuthors: \(authors)"
+        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
 
         let reviewManager = proposal.reviewManager.isRealPerson
         ? proposal.reviewManager.makeStringForDiscord()
         : nil
-        let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
+        let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
-        let status = "**\(proposal.status.state.UIDescription)**"
-        let title = "\(status): **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
+        let status = "\(proposal.status.state.UIDescription)"
+        let title = "\(status): \(proposal.id.sanitized()) \(proposal.title.sanitized())"
 
         return .init(
             embeds: [.init(
@@ -118,7 +119,7 @@ actor ProposalsChecker {
                 description: """
                 > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
 
-                Status: **\(proposal.status.state.UIDescription)**
+                **Status: \(proposal.status.state.UIDescription)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -136,23 +137,23 @@ actor ProposalsChecker {
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\nAuthors: \(authors)"
+        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
 
         let reviewManager = proposal.reviewManager.isRealPerson
         ? proposal.reviewManager.makeStringForDiscord()
         : nil
-        let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
+        let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
-        let newStatus = "**\(proposal.status.state.UIDescription)**"
-        let title = "\(newStatus): **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
+        let newStatus = "\(proposal.status.state.UIDescription)"
+        let title = "\(newStatus): \(proposal.id.sanitized()) \(proposal.title.sanitized())"
 
         return .init(
             embeds: [.init(
                 title: title.truncate(ifLongerThan: 256),
                 description: """
-                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
+                \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
 
-                Status: **\(previousState.UIDescription)** -> \(newStatus)
+                **Status: \(previousState.UIDescription) -> \(newStatus)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
