@@ -25,6 +25,8 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makeCoinService = { FakeCoinService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
         await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
+        /// So the proposals are send as soon as they're queued, in tests.
+        await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
