@@ -236,7 +236,7 @@ actor ProposalsChecker {
         } else {
             return [[.button(.init(
                 style: .link,
-                label: "Proposal",
+                label: "Open Proposal",
                 url: linkPrefix + link
             ))]]
         }
