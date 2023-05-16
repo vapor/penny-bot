@@ -6,7 +6,12 @@ import Foundation
 actor ProposalsChecker {
     var previousProposals = [Proposal]()
 
+    var queuedProposals = [QueuedProposal]()
+    /// The minimum time to wait before sending a queued-proposal
+    var queuedProposalsWaitTime: Double = 44 * 60
+
     let logger = Logger(label: "ProposalsChecker")
+    let linkPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
 
     var proposalsService: (any ProposalsService)!
     var discordService: DiscordService {
@@ -46,10 +51,20 @@ actor ProposalsChecker {
         let (olds, news) = proposals.divided({ currentIds.contains($0.id) })
 
         for new in news {
-            await self.send(
-                proposal: new,
-                payload: makePayloadForNewProposal(new)
-            )
+            if let existingIdx = self.queuedProposals.firstIndex(
+                where: { $0.proposal.id == new.id }
+            ) {
+                self.queuedProposals[existingIdx].updatedAt = Date()
+                self.queuedProposals[existingIdx].proposal = new
+                logger.warning("A new proposal will be delayed", metadata: ["id": .string(new.id)])
+            } else {
+                self.queuedProposals.append(.init(
+                    firstKnownStateBeforeQueue: nil,
+                    updatedAt: Date(),
+                    proposal: new
+                ))
+                logger.warning("A new proposal was queued", metadata: ["id": .string(new.id)])
+            }
         }
 
         /// Report proposals with change of status
@@ -62,12 +77,51 @@ actor ProposalsChecker {
         }
 
         for updated in updatedProposals {
-            if let previousState = previousStates[updated.id] {
-                await self.send(
-                    proposal: updated,
-                    payload: makePayloadForUpdatedProposal(updated, previousState: previousState)
-                )
+            guard let previousState = previousStates[updated.id] else { continue }
+
+            if let existingIdx = self.queuedProposals.firstIndex(
+                where: { $0.proposal.id == updated.id }
+            ) {
+                self.queuedProposals[existingIdx].updatedAt = Date()
+                self.queuedProposals[existingIdx].proposal = updated
+                logger.warning("An updated proposal will be delayed", metadata: [
+                    "id": .string(updated.id)
+                ])
+            } else {
+                self.queuedProposals.append(.init(
+                    firstKnownStateBeforeQueue: previousState,
+                    updatedAt: Date(),
+                    proposal: updated
+                ))
+                logger.warning("An updated proposal was queued", metadata: [
+                    "id": .string(updated.id)
+                ])
             }
+        }
+
+        /// Send the queued-proposals that are ready
+        var sentProposalIndices = [Int]()
+        for (idx, queuedProposal) in self.queuedProposals.enumerated() {
+            /// `queuedProposalsWaitTime` seconds old == ready to send
+            let oldDate = Date().addingTimeInterval(-self.queuedProposalsWaitTime)
+            guard queuedProposal.updatedAt < oldDate else { continue }
+
+            let proposal = queuedProposal.proposal
+
+            let payload: Payloads.CreateMessage
+            if let previousState = queuedProposal.firstKnownStateBeforeQueue {
+                payload = makePayloadForUpdatedProposal(proposal, previousState: previousState)
+            } else {
+                payload = makePayloadForNewProposal(proposal)
+            }
+
+            await self.send(proposal: proposal, payload: payload)
+            sentProposalIndices.append(idx)
+        }
+
+        /// Remove the sent queued-proposals
+        for (idx, proposalIdx) in sentProposalIndices.enumerated() {
+            self.queuedProposals.remove(at: proposalIdx - idx)
         }
 
         /// Update the saved proposals
@@ -92,33 +146,40 @@ actor ProposalsChecker {
                 auto_archive_duration: .sevenDays
             )
         )
-        /// FIXME: Cross-posting the message not implemented.
-        /// DiscordBM doesn't have the endpoint yet
-        /// The proposals channel also needs to be made into an announcement channel
+        await discordService.crosspostMessage(
+            channelId: message.channel_id,
+            messageId: message.id
+        )
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
+
+        let status = "\(proposal.status.state.UIDescription)"
+        let title = "[\(proposal.id.sanitized())] \(status): \(proposal.title.sanitized())"
+
+        let summary = proposal.summary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .truncate(ifLongerThan: 2_048)
+
         let authors = proposal.authors
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\nAuthors: \(authors)"
+        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
 
         let reviewManager = proposal.reviewManager.isRealPerson
         ? proposal.reviewManager.makeStringForDiscord()
         : nil
-        let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
-
-        let status = "**\(proposal.status.state.UIDescription)**"
-        let title = "\(status): **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
+        let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
         return .init(
             embeds: [.init(
                 title: title.truncate(ifLongerThan: 256),
                 description: """
-                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_500))
+                > \(summary)
 
-                Status: **\(proposal.status.state.UIDescription)**
+                **Status: \(proposal.status.state.UIDescription)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -132,27 +193,33 @@ actor ProposalsChecker {
         _ proposal: Proposal,
         previousState: Proposal.Status.State
     ) -> Payloads.CreateMessage {
+
+        let newStatus = "\(proposal.status.state.UIDescription)"
+        let title = "[\(proposal.id.sanitized())] \(newStatus): \(proposal.title.sanitized())"
+
+        let summary = proposal.summary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .truncate(ifLongerThan: 2_048)
+
         let authors = proposal.authors
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\nAuthors: \(authors)"
+        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
 
         let reviewManager = proposal.reviewManager.isRealPerson
         ? proposal.reviewManager.makeStringForDiscord()
         : nil
-        let reviewManagerString = reviewManager.map({ "\nReview Manager: \($0)" }) ?? ""
-
-        let newStatus = "**\(proposal.status.state.UIDescription)**"
-        let title = "\(newStatus): **\(proposal.id.sanitized())** \(proposal.title.sanitized())"
+        let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
         return .init(
             embeds: [.init(
                 title: title.truncate(ifLongerThan: 256),
                 description: """
-                > \(proposal.summary.sanitized().truncate(ifLongerThan: 2_048))
+                > \(summary)
 
-                Status: **\(previousState.UIDescription)** -> \(newStatus)
+                **Status: \(previousState.UIDescription) -> \(newStatus)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -167,11 +234,10 @@ actor ProposalsChecker {
         if link.isEmpty {
             return []
         } else {
-            let prefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
             return [[.button(.init(
                 style: .link,
-                label: "Open Proposal",
-                url: prefix + link
+                label: "Proposal",
+                url: linkPrefix + link
             ))]]
         }
     }
@@ -179,6 +245,10 @@ actor ProposalsChecker {
 #if DEBUG
     func _tests_setPreviousProposals(to proposals: [Proposal]) {
         self.previousProposals = proposals
+    }
+
+    func _tests_setQueuedProposalsWaitTime(to amount: Double) {
+        self.queuedProposalsWaitTime = amount
     }
 #endif
 }
@@ -213,6 +283,12 @@ private extension Proposal.User {
             return "[\(name)](\(link))"
         }
     }
+}
+
+struct QueuedProposal {
+    let firstKnownStateBeforeQueue: Proposal.Status.State?
+    var updatedAt: Date
+    var proposal: Proposal
 }
 
 private extension Proposal.Status.State {

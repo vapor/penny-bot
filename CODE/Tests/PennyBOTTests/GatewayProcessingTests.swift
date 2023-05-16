@@ -27,6 +27,8 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makeHelpsService = { FakeHelpsService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
         await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
+        /// So the proposals are send as soon as they're queued, in tests.
+        await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
@@ -388,8 +390,8 @@ class GatewayProcessingTests: XCTestCase {
             }
 
             let embed = try XCTUnwrap(message.embeds?.first)
-            XCTAssertEqual(embed.title, "**Withdrawn**: **SE-0051** Conventionalizing stride semantics")
-            XCTAssertEqual(embed.description, "> \n\nStatus: **Withdrawn**\n\nAuthors: [Erica Sadun](http://github.com/erica)\n")
+            XCTAssertEqual(embed.title, "[SE-0051] Withdrawn: Conventionalizing stride semantics")
+            XCTAssertEqual(embed.description, "> \n\n**Status: Withdrawn**\n\n**Authors:** [Erica Sadun](http://github.com/erica)\n")
             XCTAssertEqual(embed.color, .brown)
         }
 
@@ -406,8 +408,8 @@ class GatewayProcessingTests: XCTestCase {
             }
 
             let embed = try XCTUnwrap(message.embeds?.first)
-            XCTAssertEqual(embed.title, "**In Active Review**: **SE-0001** Allow (most) keywords as argument labels")
-            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function,\ndescribing what particular arguments to the function do and improving\nreadability. Sometimes, the most natural label for an argument coincides with a\nlanguage keyword, such as `in`, `repeat`, or `defer`. Such keywords should be\nallowed as argument labels, allowing better expression of these interfaces.\n\nStatus: **Implemented** -> **In Active Review**\n\nAuthors: [Doug Gregor](https://github.com/DougGregor)\n")
+            XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
+            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status: Implemented -> In Active Review**\n\n**Authors:** [Doug Gregor](https://github.com/DougGregor)\n")
             XCTAssertEqual(embed.color, .orange)
         }
     }

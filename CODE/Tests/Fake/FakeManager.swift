@@ -7,6 +7,7 @@ import XCTest
 public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id: UInt = 0
+    public nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
     let _state = ManagedAtomic<GatewayState>(.noConnection)
     /// This `nonisolated var state` is just for protocol conformance
     public nonisolated var state: GatewayState {
