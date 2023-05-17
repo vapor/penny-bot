@@ -219,7 +219,7 @@ actor ProposalsChecker {
                 description: """
                 > \(summary)
 
-                **Status: \(previousState.UIDescription) -> \(newStatus)**
+                **Status:** \(previousState.UIDescription) -> **\(newStatus)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -307,7 +307,7 @@ private extension Proposal.Status.State {
     var UIDescription: String {
         switch self {
         case .accepted: return "Accepted"
-        case .activeReview: return "In Active Review"
+        case .activeReview: return "Active Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
