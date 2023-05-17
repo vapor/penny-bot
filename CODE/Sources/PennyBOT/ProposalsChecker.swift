@@ -154,8 +154,9 @@ actor ProposalsChecker {
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
 
-        let status = "\(proposal.status.state.titleDescription)"
-        let title = "[\(proposal.id.sanitized())] \(status): \(proposal.title.sanitized())"
+        let titleState = proposal.status.state.titleDescription
+        let descriptionState = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
         let summary = proposal.summary
             .replacingOccurrences(of: "\n", with: " ")
@@ -179,7 +180,7 @@ actor ProposalsChecker {
                 description: """
                 > \(summary)
 
-                **Status: \(proposal.status.state.UIDescription)**
+                **Status: \(descriptionState)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -194,8 +195,9 @@ actor ProposalsChecker {
         previousState: Proposal.Status.State
     ) -> Payloads.CreateMessage {
 
-        let newStatus = "\(proposal.status.state.titleDescription)"
-        let title = "[\(proposal.id.sanitized())] \(newStatus): \(proposal.title.sanitized())"
+        let titleState = proposal.status.state.titleDescription
+        let descriptionState = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
         let summary = proposal.summary
             .replacingOccurrences(of: "\n", with: " ")
@@ -219,7 +221,7 @@ actor ProposalsChecker {
                 description: """
                 > \(summary)
 
-                **Status:** \(previousState.UIDescription) -> **\(newStatus)**
+                **Status:** \(previousState.UIDescription) -> **\(descriptionState)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
