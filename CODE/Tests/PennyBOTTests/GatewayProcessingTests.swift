@@ -406,8 +406,8 @@ class GatewayProcessingTests: XCTestCase {
             }
 
             let embed = try XCTUnwrap(message.embeds?.first)
-            XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
-            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status: Implemented -> In Active Review**\n\n**Authors:** [Doug Gregor](https://github.com/DougGregor)\n")
+            XCTAssertEqual(embed.title, "[SE-0001] Active Review: Allow (most) keywords as argument labels")
+            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n**Authors:** [Doug Gregor](https://github.com/DougGregor)\n")
             XCTAssertEqual(embed.color, .orange)
         }
     }

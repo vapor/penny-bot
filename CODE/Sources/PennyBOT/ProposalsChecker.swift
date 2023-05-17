@@ -154,7 +154,7 @@ actor ProposalsChecker {
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
 
-        let status = "\(proposal.status.state.UIDescription)"
+        let status = "\(proposal.status.state.titleDescription)"
         let title = "[\(proposal.id.sanitized())] \(status): \(proposal.title.sanitized())"
 
         let summary = proposal.summary
@@ -194,7 +194,7 @@ actor ProposalsChecker {
         previousState: Proposal.Status.State
     ) -> Payloads.CreateMessage {
 
-        let newStatus = "\(proposal.status.state.UIDescription)"
+        let newStatus = "\(proposal.status.state.titleDescription)"
         let title = "[\(proposal.id.sanitized())] \(newStatus): \(proposal.title.sanitized())"
 
         let summary = proposal.summary
@@ -313,6 +313,13 @@ private extension Proposal.Status.State {
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
+        }
+    }
+
+    var titleDescription: String {
+        switch self {
+        case .activeReview: return "In Active Review"
+        default: return self.UIDescription
         }
     }
 }
