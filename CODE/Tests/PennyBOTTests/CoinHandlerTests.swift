@@ -200,7 +200,7 @@ class CoinHandlerTests: XCTestCase {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.vaporCoinEmoji) xxxx
+                xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.ServerEmojis.coin.emoji) xxxx
                 """,
                 mentionedUsers: [user1, user2]
             )

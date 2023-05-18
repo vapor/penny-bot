@@ -58,7 +58,7 @@ struct MessageHandler {
             )
             do {
                 let response = try await self.coinService.postCoin(with: coinRequest)
-                let responseString = "\(response.receiver) now has \(response.coins) \(Constants.vaporCoinEmoji)!"
+                let responseString = "\(response.receiver) now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!"
                 successfulResponses.append(responseString)
             } catch {
                 logger.report("CoinService failed", error: error, metadata: [
@@ -116,8 +116,8 @@ struct MessageHandler {
             let response = try await self.coinService.postCoin(with: coinRequest)
             await self.respondToThanks(
                 with: """
-                \(authorId) Thanks for the Server Boost \(Constants.vaporLoveEmoji)!
-                You now have \(amount) more \(Constants.vaporCoinEmoji) for a total of \(response.coins) \(Constants.vaporCoinEmoji)!
+                \(authorId) Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
+                You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.coins) \(Constants.ServerEmojis.coin.emoji)!
                 """,
                 overrideChannelId: Constants.Channels.thanks.id,
                 isAFailureMessage: false

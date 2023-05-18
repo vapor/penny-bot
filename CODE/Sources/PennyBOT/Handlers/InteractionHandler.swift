@@ -448,7 +448,7 @@ private extension InteractionHandler {
     func getCoinCount(of user: String) async -> String {
         do {
             let coinCount = try await coinService.getCoinCount(of: user)
-            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)!"
+            return "\(user) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
         } catch {
             logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
                 "user": "\(user)"

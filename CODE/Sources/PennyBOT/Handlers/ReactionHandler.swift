@@ -4,8 +4,10 @@ import PennyModels
 import Foundation
 
 private let coinSignEmojis = [
-    "vaporlove",
-    "🪙", "coin", // 'coin' is also Vapor server's coin
+    Constants.ServerEmojis.love.name,
+    Constants.ServerEmojis.vapor.name,
+    Constants.ServerEmojis.coin.name,
+    "🪙",
     "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
     "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",
     "😍", "😻",
@@ -90,7 +92,7 @@ struct ReactionHandler {
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
-                    with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!",
                     forcedInThanksChannel: false,
                     amount: amount,
                     senderName: senderName
@@ -101,7 +103,7 @@ struct ReactionHandler {
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
-                    with: "\(names) gave \(count) \(Constants.vaporCoinEmoji) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)! (\(link))",
+                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)! (\(link))",
                     forcedInThanksChannel: true,
                     amount: amount,
                     senderName: senderName
@@ -109,10 +111,10 @@ struct ReactionHandler {
             }
         } else {
             let coinCountDescription = amount == 1 ?
-            "a \(Constants.vaporCoinEmoji)" :
-            "\(amount) \(Constants.vaporCoinEmoji)"
+            "a \(Constants.ServerEmojis.coin.emoji)" :
+            "\(amount) \(Constants.ServerEmojis.coin.emoji)"
             await respond(
-                with: "\(senderName) gave \(coinCountDescription) to \(response.receiver), who now has \(response.coins) \(Constants.vaporCoinEmoji)!",
+                with: "\(senderName) gave \(coinCountDescription) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!",
                 amount: amount,
                 senderName: senderName,
                 isAFailureMessage: false

@@ -11,9 +11,32 @@ enum Constants {
     static var botId: String! = env("BOT_APP_ID")
     static var loggingWebhookUrl: String! = env("LOGGING_WEBHOOK_URL")
     static var apiBaseUrl: String! = env("API_BASE_URL")
-    /// Vapor's custom coin emoji in Discord's format.
-    static let vaporCoinEmoji = DiscordUtils.customEmoji(name: "coin", id: "473588485962596352")
-    static let vaporLoveEmoji = DiscordUtils.customEmoji(name: "vaporlove", id: "656303356280832062")
+
+    enum ServerEmojis {
+        case coin
+        case vapor
+        case love
+
+        var id: EmojiSnowflake {
+            switch self {
+            case .coin: return "473588485962596352"
+            case .vapor: return "431934596121362453"
+            case .love: return "656303356280832062"
+            }
+        }
+
+        var name: String {
+            switch self {
+            case .coin: return "coin"
+            case .vapor: return "vapor"
+            case .love: return "vaporlove"
+            }
+        }
+
+        var emoji: String {
+            DiscordUtils.customEmoji(name: self.name, id: self.id)
+        }
+    }
 
     enum Channels: ChannelSnowflake {
         case logs = "1067060193982156880"
