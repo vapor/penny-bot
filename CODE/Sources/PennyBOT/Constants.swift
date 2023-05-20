@@ -8,7 +8,7 @@ enum Constants {
     static let vaporGuildId: GuildSnowflake = "431917998102675485"
     static let botDevUserId: UserSnowflake = "290483761559240704"
     static var botToken: String! = env("BOT_TOKEN")
-    static var botId: String = env("BOT_APP_ID")!
+    static var botId: String! = env("BOT_APP_ID")
     static var loggingWebhookUrl: String! = env("LOGGING_WEBHOOK_URL")
     static var apiBaseUrl: String! = env("API_BASE_URL")
 
