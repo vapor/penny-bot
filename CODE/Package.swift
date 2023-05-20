@@ -24,10 +24,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         /// Pinning these to the latest release/commit since they're not released.
         /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
-        .package(
-            url: "https://github.com/mahdibm/DiscordBM.git",
-            revision: "fd52979fd6b03eeb032b7620d53298195cd9de2f"
-        ),
+        .package(url: "https://github.com/mahdibm/DiscordBM.git", exact: "1.0.0-beta.58"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
