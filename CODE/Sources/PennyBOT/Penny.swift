@@ -11,6 +11,8 @@ struct Penny {
     static func main() async throws {
         Backtrace.install()
 
+        /// Use `1` instead of `System.coreCount`.
+        /// This is preferred for apps that primarily use structured concurrency.
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 

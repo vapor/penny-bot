@@ -46,7 +46,7 @@ actor ProposalsChecker {
             return
         }
 
-        /// Report newly-added proposals
+        /// Queue newly-added proposals
         let currentIds = Set(self.previousProposals.map(\.id))
         let (olds, news) = proposals.divided({ currentIds.contains($0.id) })
 
@@ -56,18 +56,18 @@ actor ProposalsChecker {
             ) {
                 self.queuedProposals[existingIdx].updatedAt = Date()
                 self.queuedProposals[existingIdx].proposal = new
-                logger.warning("A new proposal will be delayed", metadata: ["id": .string(new.id)])
+                logger.notice("A new proposal will be delayed", metadata: ["id": .string(new.id)])
             } else {
                 self.queuedProposals.append(.init(
                     firstKnownStateBeforeQueue: nil,
                     updatedAt: Date(),
                     proposal: new
                 ))
-                logger.warning("A new proposal was queued", metadata: ["id": .string(new.id)])
+                logger.notice("A new proposal was queued", metadata: ["id": .string(new.id)])
             }
         }
 
-        /// Report proposals with change of status
+        /// Queue proposals with change of status
         let previousStates = Dictionary(
             self.previousProposals.map({ ($0.id, $0.status.state) }),
             uniquingKeysWith: { l, _ in l }
@@ -84,7 +84,7 @@ actor ProposalsChecker {
             ) {
                 self.queuedProposals[existingIdx].updatedAt = Date()
                 self.queuedProposals[existingIdx].proposal = updated
-                logger.warning("An updated proposal will be delayed", metadata: [
+                logger.notice("An updated proposal will be delayed", metadata: [
                     "id": .string(updated.id)
                 ])
             } else {
@@ -93,7 +93,7 @@ actor ProposalsChecker {
                     updatedAt: Date(),
                     proposal: updated
                 ))
-                logger.warning("An updated proposal was queued", metadata: [
+                logger.notice("An updated proposal was queued", metadata: [
                     "id": .string(updated.id)
                 ])
             }
@@ -154,8 +154,9 @@ actor ProposalsChecker {
 
     private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
 
-        let status = "\(proposal.status.state.UIDescription)"
-        let title = "[\(proposal.id.sanitized())] \(status): \(proposal.title.sanitized())"
+        let titleState = proposal.status.state.titleDescription
+        let descriptionState = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
         let summary = proposal.summary
             .replacingOccurrences(of: "\n", with: " ")
@@ -179,7 +180,7 @@ actor ProposalsChecker {
                 description: """
                 > \(summary)
 
-                **Status: \(proposal.status.state.UIDescription)**
+                **Status: \(descriptionState)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -194,8 +195,9 @@ actor ProposalsChecker {
         previousState: Proposal.Status.State
     ) -> Payloads.CreateMessage {
 
-        let newStatus = "\(proposal.status.state.UIDescription)"
-        let title = "[\(proposal.id.sanitized())] \(newStatus): \(proposal.title.sanitized())"
+        let titleState = proposal.status.state.titleDescription
+        let descriptionState = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
         let summary = proposal.summary
             .replacingOccurrences(of: "\n", with: " ")
@@ -219,7 +221,7 @@ actor ProposalsChecker {
                 description: """
                 > \(summary)
 
-                **Status: \(previousState.UIDescription) -> \(newStatus)**
+                **Status:** \(previousState.UIDescription) -> **\(descriptionState)**
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -234,11 +236,7 @@ actor ProposalsChecker {
         if link.isEmpty {
             return []
         } else {
-            return [[.button(.init(
-                style: .link,
-                label: "Proposal",
-                url: linkPrefix + link
-            ))]]
+            return [[.button(.init(label: "Open Proposal", url: linkPrefix + link))]]
         }
     }
 
@@ -307,12 +305,19 @@ private extension Proposal.Status.State {
     var UIDescription: String {
         switch self {
         case .accepted: return "Accepted"
-        case .activeReview: return "In Active Review"
+        case .activeReview: return "Active Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
+        }
+    }
+
+    var titleDescription: String {
+        switch self {
+        case .activeReview: return "In Active Review"
+        default: return self.UIDescription
         }
     }
 }

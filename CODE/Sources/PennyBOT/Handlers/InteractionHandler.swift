@@ -637,7 +637,7 @@ private extension InteractionHandler {
     func getCoinCount(of user: String) async -> String {
         do {
             let coinCount = try await coinService.getCoinCount(of: user)
-            return "\(user) has \(coinCount) \(Constants.vaporCoinEmoji)!"
+            return "\(user) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
         } catch {
             logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
                 "user": "\(user)"
@@ -843,6 +843,11 @@ private extension String {
 }
 
 /// MARK: - Response
+///
+/// This `Response` thing didn't turn out as good as I was hoping for.
+/// The approach of abstracting the response using a protocol like this is good imo, still.
+/// Just I didn't go full-in on it. Probably need to create a new type for each response type.
+/// I'll clean these up sometime soon.
 private protocol Response {
     func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse
     func makeEditPayload() -> Payloads.EditWebhookMessage
@@ -874,7 +879,7 @@ extension Payloads.InteractionResponse.Modal: Response {
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
         Logger(label: "Payloads.InteractionResponse.Modal.makeEditPayload").error(
-            "This method must not be called"
+            "This method is unimplemented and must not be called"
         )
         return .init(content: "Oops, something went wrong")
     }

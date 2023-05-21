@@ -6,8 +6,8 @@ import Foundation
 enum DiscordFactory {
     static var makeBot: (any EventLoopGroup, HTTPClient) async -> any GatewayManager = {
         eventLoopGroup, client in
-        guard let token = Constants.botToken, let appId = Constants.botId else {
-            fatalError("Missing 'BOT_TOKEN' or 'BOT_APP_ID' env vars")
+        guard let token = Constants.botToken else {
+            fatalError("Missing 'BOT_TOKEN' env var")
         }
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         var clientConfiguration = ClientConfiguration(
@@ -20,7 +20,6 @@ enum DiscordFactory {
             httpClient: client,
             clientConfiguration: clientConfiguration,
             token: token,
-            appId: Snowflake(appId),
             presence: .init(
                 activities: [.init(name: "Showing Appreciation", type: .game)],
                 status: .online,

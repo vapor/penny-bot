@@ -1,5 +1,5 @@
 
-public struct CoinResponse: Codable {
+public struct CoinResponse: Sendable, Codable {
     public let sender: String
     public let receiver: String
     public let coins: Int

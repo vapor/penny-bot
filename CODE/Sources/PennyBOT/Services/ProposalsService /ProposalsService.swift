@@ -1,5 +1,5 @@
 import PennyModels
 
-protocol ProposalsService {
+protocol ProposalsService: Sendable {
     func get() async throws -> [Proposal]
 }
