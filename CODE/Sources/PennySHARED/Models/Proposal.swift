@@ -1,14 +1,14 @@
 
-public struct Proposal: Codable {
+public struct Proposal: Sendable, Codable {
 
-    public struct User: Codable {
+    public struct User: Sendable, Codable {
         public let link: String
         public let name: String
     }
 
-    public struct Status: Codable {
+    public struct Status: Sendable, Codable {
 
-        public enum State: String, Codable {
+        public enum State: String, Sendable, Codable {
             case accepted = ".accepted"
             case activeReview = ".activeReview"
             case implemented = ".implemented"
@@ -24,7 +24,7 @@ public struct Proposal: Codable {
         public let start: String?
     }
 
-    public struct TrackingBug: Codable {
+    public struct TrackingBug: Sendable, Codable {
         public let assignee: String
         public let id: String
         public let link: String
@@ -35,26 +35,26 @@ public struct Proposal: Codable {
         public let updated: String
     }
 
-    public struct Warning: Codable {
+    public struct Warning: Sendable, Codable {
         public let kind: String
         public let message: String
         public let stage: String
     }
 
-    public struct Implementation: Codable {
+    public struct Implementation: Sendable, Codable {
 
-        public enum Account: String, Codable {
+        public enum Account: String, Sendable, Codable {
             case apple = "apple"
         }
 
-        public enum Repository: String, Codable {
+        public enum Repository: String, Sendable, Codable {
             case swift = "swift"
             case swiftCorelibsFoundation = "swift-corelibs-foundation"
             case swiftPackageManager = "swift-package-manager"
             case swiftXcodePlaygroundSupport = "swift-xcode-playground-support"
         }
 
-        public enum Kind: String, Codable {
+        public enum Kind: String, Sendable, Codable {
             case commit = "commit"
             case pull = "pull"
         }

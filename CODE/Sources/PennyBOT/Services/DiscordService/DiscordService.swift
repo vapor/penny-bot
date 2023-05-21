@@ -42,9 +42,6 @@ actor DiscordService {
     func initialize(discordClient: any DiscordClient, cache: DiscordCache) {
         self.discordClient = discordClient
         self.cache = cache
-        if discordClient.appId == nil {
-            self.logger.error("DiscordClient is missing the app-id")
-        }
     }
     
     func sendDM(userId: UserSnowflake, payload: Payloads.CreateMessage) async {

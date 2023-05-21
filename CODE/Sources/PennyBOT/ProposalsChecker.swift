@@ -46,7 +46,7 @@ actor ProposalsChecker {
             return
         }
 
-        /// Report newly-added proposals
+        /// Queue newly-added proposals
         let currentIds = Set(self.previousProposals.map(\.id))
         let (olds, news) = proposals.divided({ currentIds.contains($0.id) })
 
@@ -67,7 +67,7 @@ actor ProposalsChecker {
             }
         }
 
-        /// Report proposals with change of status
+        /// Queue proposals with change of status
         let previousStates = Dictionary(
             self.previousProposals.map({ ($0.id, $0.status.state) }),
             uniquingKeysWith: { l, _ in l }
@@ -236,11 +236,7 @@ actor ProposalsChecker {
         if link.isEmpty {
             return []
         } else {
-            return [[.button(.init(
-                style: .link,
-                label: "Open Proposal",
-                url: linkPrefix + link
-            ))]]
+            return [[.button(.init(label: "Open Proposal", url: linkPrefix + link))]]
         }
     }
 

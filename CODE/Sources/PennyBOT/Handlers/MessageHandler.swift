@@ -205,13 +205,7 @@ struct MessageHandler {
                         """,
                         color: .vaporPurple
                     )],
-                    components: [[
-                        .button(.init(
-                            style: .link,
-                            label: "Open Message",
-                            url: messageLink
-                        ))
-                    ]]
+                    components: [[.button(.init(label: "Open Message", url: messageLink))]]
                 )
             )
         }
