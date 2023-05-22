@@ -30,7 +30,7 @@ public actor FakeManager: GatewayManager {
             eventContinuations.append(continuation)
         }
     }
-    public func makeEventsParseFailureStream() async -> AsyncStream<(Error, ByteBuffer)> {
+    public func makeEventsParseFailureStream() async -> AsyncStream<(any Error, ByteBuffer)> {
         AsyncStream { _ in }
     }
     public func disconnect() { }
