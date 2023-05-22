@@ -62,7 +62,7 @@ public actor FakeResponseStorage {
     }
     
     private func _expect(
-        at endpoint: Endpoint,
+        at endpoint: any Endpoint,
         expectFailure: Bool = false,
         continuation: CheckedContinuation<AnyBox, Never>,
         file: StaticString,
@@ -99,7 +99,7 @@ public actor FakeResponseStorage {
     }
     
     /// Used to notify this storage that a response have been received.
-    func respond(to endpoint: Endpoint, with payload: AnyBox) {
+    func respond(to endpoint: any Endpoint, with payload: AnyBox) {
         if let continuation = continuations.retrieve(endpoint: endpoint) {
             continuation.resume(returning: payload)
         } else {
@@ -111,17 +111,17 @@ public actor FakeResponseStorage {
 private struct Continuations: CustomStringConvertible {
     typealias Cont = CheckedContinuation<AnyBox, Never>
     
-    private var storage: [(endpoint: Endpoint, id: UUID, continuation: Cont)] = []
+    private var storage: [(endpoint: any Endpoint, id: UUID, continuation: Cont)] = []
     
     var description: String {
         "\(storage.map({ (endpoint: $0.endpoint, id: $0.id) }))"
     }
     
-    mutating func append(endpoint: Endpoint, id: UUID, continuation: Cont) {
+    mutating func append(endpoint: any Endpoint, id: UUID, continuation: Cont) {
         storage.append((endpoint, id, continuation))
     }
     
-    mutating func retrieve(endpoint: Endpoint) -> Cont? {
+    mutating func retrieve(endpoint: any Endpoint) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             return storage.remove(at: idx).continuation
         } else {
@@ -139,17 +139,17 @@ private struct Continuations: CustomStringConvertible {
 }
 
 private struct UnhandledResponses: CustomStringConvertible {
-    private var storage: [(endpoint: Endpoint, payload: AnyBox)] = []
+    private var storage: [(endpoint: any Endpoint, payload: AnyBox)] = []
     
     var description: String {
         "\(storage.map({ (endpoint: $0, id: type(of: $1)) }))"
     }
     
-    mutating func append(endpoint: Endpoint, payload: AnyBox) {
+    mutating func append(endpoint: any Endpoint, payload: AnyBox) {
         storage.append((endpoint, payload))
     }
     
-    mutating func retrieve(endpoint: Endpoint) -> AnyBox? {
+    mutating func retrieve(endpoint: any Endpoint) -> AnyBox? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             return storage.remove(at: idx).payload
         } else {
