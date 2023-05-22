@@ -66,7 +66,7 @@ struct AddSponsorHandler: LambdaHandler {
         self.secretsManager = SecretsManager(client: awsClient)
     }
     
-    private func setupDiscordClient(context: LambdaContext) async throws -> DefaultDiscordClient {
+    private func setupDiscordClient(context: LambdaContext) async throws -> any DiscordClient {
         // Get the ARN to retrieve the appID stored inside of the secrets manager
         guard let appIDArn = ProcessInfo.processInfo.environment["APP_ID_ARN"] else {
             fatalError("Couldn't retrieve APP_ID_ARN env var")
@@ -194,7 +194,7 @@ struct AddSponsorHandler: LambdaHandler {
     private func removeRole(
         from userDiscordID: String,
         using githubPayload: GithubWebhookPayload,
-        discordClient: DiscordClient,
+        discordClient: any DiscordClient,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
@@ -223,7 +223,7 @@ struct AddSponsorHandler: LambdaHandler {
     private func addRole(
         to userDiscordID: String,
         from githubPayload: GithubWebhookPayload,
-        discordClient: DiscordClient,
+        discordClient: any DiscordClient,
         role: SponsorType,
         context: LambdaContext
     ) async throws {
@@ -250,7 +250,7 @@ struct AddSponsorHandler: LambdaHandler {
     private func sendMessage(
         to userDiscordID: String,
         from githubPayload: GithubWebhookPayload,
-        discordClient: DiscordClient,
+        discordClient: any DiscordClient,
         role: SponsorType,
         context: LambdaContext
     ) async throws {

@@ -43,7 +43,7 @@ extension Logger {
     }
     
     func report(_ message: @autoclosure () -> Logger.Message,
-                error: Error,
+                error: any Error,
                 metadata: @autoclosure () -> Logger.Metadata? = nil,
                 source: @autoclosure () -> String? = nil,
                 file: String = #fileID, function: String = #function, line: UInt = #line) {
