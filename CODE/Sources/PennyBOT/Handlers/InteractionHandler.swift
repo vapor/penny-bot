@@ -504,8 +504,7 @@ extension SlashCommand {
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
-        case .link, .autoPings: return true
-        case .howManyCoins, .howManyCoinsApp: return false
+        case .link, .autoPings, .howManyCoins, .howManyCoinsApp: return true
         }
     }
 

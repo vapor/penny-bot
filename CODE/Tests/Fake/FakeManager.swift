@@ -20,6 +20,7 @@ public actor FakeManager: GatewayManager {
     public func connect() {
         self._state.store(.connected, ordering: .relaxed)
         connectionWaiter?.resume()
+        connectionWaiter = nil
     }
 
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
