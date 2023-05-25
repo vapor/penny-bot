@@ -8,7 +8,7 @@ actor ProposalsChecker {
 
     var queuedProposals = [QueuedProposal]()
     /// The minimum time to wait before sending a queued-proposal
-    var queuedProposalsWaitTime: Double = 44 * 60
+    var queuedProposalsWaitTime: Double = 29 * 60
 
     let logger = Logger(label: "ProposalsChecker")
     let linkPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
