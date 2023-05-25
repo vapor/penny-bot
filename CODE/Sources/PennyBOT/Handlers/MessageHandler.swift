@@ -71,7 +71,7 @@ struct MessageHandler {
             // Definitely there were some coin requests that failed.
             await self.respondToThanks(
                 with: "Oops. Something went wrong! Please try again later",
-                isAFailureMessage: true
+                isFailureMessage: true
             )
         } else {
             // Stitch responses together instead of sending a lot of messages,
@@ -84,10 +84,10 @@ struct MessageHandler {
                 ])
                 await self.respondToThanks(
                     with: "Coins were granted to a lot of members!",
-                    isAFailureMessage: false
+                    isFailureMessage: false
                 )
             } else {
-                await self.respondToThanks(with: finalResponse, isAFailureMessage: false)
+                await self.respondToThanks(with: finalResponse, isFailureMessage: false)
             }
         }
     }
@@ -120,7 +120,8 @@ struct MessageHandler {
                 You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.coins) \(Constants.ServerEmojis.coin.emoji)!
                 """,
                 overrideChannelId: Constants.Channels.thanks.id,
-                isAFailureMessage: false
+                isFailureMessage: false,
+                userToExplicitlyMention: author.id
             )
         } catch {
             logger.report("CoinService failed for server boost thanks", error: error, metadata: [
@@ -240,12 +241,14 @@ struct MessageHandler {
     private func respondToThanks(
         with response: String,
         overrideChannelId channelId: ChannelSnowflake? = nil,
-        isAFailureMessage: Bool
+        isFailureMessage: Bool,
+        userToExplicitlyMention: UserSnowflake? = nil
     ) async {
         await DiscordService.shared.sendThanksResponse(
             channelId: channelId ?? event.channel_id,
             replyingToMessageId: event.id,
-            isAFailureMessage: isAFailureMessage,
+            isFailureMessage: isFailureMessage,
+            userToExplicitlyMention: userToExplicitlyMention,
             response: response
         )
     }

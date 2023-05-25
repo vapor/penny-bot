@@ -76,7 +76,7 @@ struct ReactionHandler {
                 with: "Oops. Something went wrong! Please try again later",
                 amount: amount,
                 senderName: nil,
-                isAFailureMessage: true
+                isFailureMessage: true
             )
             return
         }
@@ -117,7 +117,7 @@ struct ReactionHandler {
                 with: "\(senderName) gave \(coinCountDescription) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!",
                 amount: amount,
                 senderName: senderName,
-                isAFailureMessage: false
+                isFailureMessage: false
             )
         }
     }
@@ -127,12 +127,13 @@ struct ReactionHandler {
         with response: String,
         amount: Int,
         senderName: String?,
-        isAFailureMessage: Bool
+        isFailureMessage: Bool
     ) async {
         let apiResponse = await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.message_id,
-            isAFailureMessage: isAFailureMessage,
+            isFailureMessage: isFailureMessage,
+            userToExplicitlyMention: nil,
             response: response
         )
         do {
