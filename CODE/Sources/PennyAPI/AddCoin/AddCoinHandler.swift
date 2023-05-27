@@ -21,11 +21,6 @@ struct AddCoinHandler: LambdaHandler {
         // setup your resources that you want to reuse for every invocation here.
         self.awsClient = awsClient
         self.userService = UserService(awsClient, context.logger)
-        context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
-            eventLoop.makeFutureWithTask {
-                try await awsClient.shutdown()
-            }
-        })
     }
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {

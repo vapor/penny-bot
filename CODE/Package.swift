@@ -49,7 +49,7 @@ let package = Package(
         /// Pinning these to the latest release/commit since they're not released.
         /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
         .package(
-            url: "https://github.com/mahdibm/DiscordBM.git",
+            url: "https://github.com/DiscordBM/DiscordBM.git",
             revision: "c15acc798959ab30531f170ccef9209db57510b0"
         ),
         .package(
