@@ -21,6 +21,17 @@ enum SponsorType: String {
             return "633345683012976640"
         }
     }
+
+    var discordColor: DiscordColor {
+        switch self {
+        case .sponsor:
+            /// Light yellow
+            return .init(red: 255, green: 235, blue: 59)!
+        case .backer:
+            /// Light green
+            return .init(red: 76, green: 175, blue: 80)!
+        }
+    }
     
     public static func `for`(sponsorshipAmount: Int) throws -> SponsorType {
         switch sponsorshipAmount {

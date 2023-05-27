@@ -21,11 +21,6 @@ struct AutoPingsHandler: LambdaHandler {
         )
         self.awsClient = awsClient
         self.pingsRepo = RepositoryFactory.makeAutoPingsRepository((awsClient, context.logger))
-        context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
-            eventLoop.makeFutureWithTask {
-                try await awsClient.shutdown()
-            }
-        })
     }
     
     func handle(
