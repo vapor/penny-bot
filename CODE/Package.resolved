@@ -12,7 +12,7 @@
     {
       "identity" : "discordbm",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mahdibm/DiscordBM.git",
+      "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "revision" : "c15acc798959ab30531f170ccef9209db57510b0"
       }
