@@ -38,7 +38,7 @@ struct Penny {
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
-        await bot.connect()
+        bot.connect()
         
         let stream = await bot.makeEventsStream()
         for await event in stream {

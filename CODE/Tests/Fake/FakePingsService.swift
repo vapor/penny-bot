@@ -19,7 +19,7 @@ public struct FakePingsService: AutoPingsService {
     ) async throws {
         _ = try await FakePingsRepository().insert(
             expressions: expressions,
-            forDiscordID: id.value
+            forDiscordID: id.rawValue
         )
     }
     
@@ -29,7 +29,7 @@ public struct FakePingsService: AutoPingsService {
     ) async throws {
         _ = try await FakePingsRepository().remove(
             expressions: expressions,
-            forDiscordID: id.value
+            forDiscordID: id.rawValue
         )
     }
     
@@ -37,7 +37,7 @@ public struct FakePingsService: AutoPingsService {
         try await FakePingsRepository()
             .getAll()
             .items
-            .filter { $0.value.contains(id.value) }
+            .filter { $0.value.contains(id.rawValue) }
             .map(\.key)
     }
     

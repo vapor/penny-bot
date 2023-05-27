@@ -36,7 +36,7 @@ actor BotStateManager {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.logs.id,
               let author = message.author,
-              author.id.value == Constants.botId,
+              author.id.rawValue == Constants.botId,
               message.content.hasPrefix(signal)
         else { return }
         guard let otherId = message.content.split(whereSeparator: \.isWhitespace).last else {

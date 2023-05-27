@@ -17,9 +17,14 @@ public actor FakeManager: GatewayManager {
     
     public init() { }
     
-    public func connect() {
+    public nonisolated func connect() {
+        Task { await self._connect() }
+    }
+
+    func _connect() {
         self._state.store(.connected, ordering: .relaxed)
-        connectionWaiter?.resume()
+        self.connectionWaiter?.resume()
+        self.connectionWaiter = nil
     }
 
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }

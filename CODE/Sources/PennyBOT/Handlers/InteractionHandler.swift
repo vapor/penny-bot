@@ -613,7 +613,7 @@ private extension InteractionHandler {
             logger.error("Coin-count command could not find appropriate data")
             return oops
         }
-        let user = "<@\(userId.value)>"
+        let user = "<@\(userId.rawValue)>"
         return await getCoinCount(of: user)
     }
     
@@ -629,7 +629,7 @@ private extension InteractionHandler {
                 logger.error("Coin-count command could not find a user")
                 return oops
             }
-            user = "<@\(id.value)>"
+            user = "<@\(id.rawValue)>"
         }
         return await getCoinCount(of: user)
     }
@@ -693,8 +693,8 @@ extension SlashCommand {
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
-        case .link, .autoPings: return true
-        case .help, .howManyCoins, .howManyCoinsApp: return false
+        case .link, .autoPings, .howManyCoins, .howManyCoinsApp: return true
+        case .help: return false
         }
     }
 

@@ -137,11 +137,17 @@ actor DiscordService {
     
     /// Sends thanks response to the specified channel if Penny has the required permissions,
     /// otherwise sends to the `#thanks` channel.
+    /// - Parameters:
+    ///   - isFailureMessage: If this message is informing users of a failure
+    ///   while performing the main action.
+    ///   - userToExplicitlyMention: Mentions the user and makes sure they receive a notification.
+    ///   By default, embeds don't send a notification.
     @discardableResult
     func sendThanksResponse(
         channelId: ChannelSnowflake,
         replyingToMessageId messageId: MessageSnowflake,
-        isAFailureMessage: Bool,
+        isFailureMessage: Bool,
+        userToExplicitlyMention: UserSnowflake?,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         let hasPermissionToSend: Bool
@@ -155,6 +161,10 @@ actor DiscordService {
             logger.report("Can't resolve user permissions", error: error)
             return nil
         }
+        var allowedMentions: Payloads.AllowedMentions?
+        if let userToExplicitlyMention {
+            allowedMentions = .init(users: [userToExplicitlyMention])
+        }
         if hasPermissionToSend {
             return await self.sendMessage(
                 channelId: channelId,
@@ -163,6 +173,7 @@ actor DiscordService {
                         description: response,
                         color: .vaporPurple
                     )],
+                    allowed_mentions: allowedMentions,
                     message_reference: .init(
                         message_id: messageId,
                         channel_id: channelId,
@@ -173,15 +184,19 @@ actor DiscordService {
             )
         } else {
             /// Don't report failures to users, in this case.
-            if isAFailureMessage { return nil }
-            let link = "https://discord.com/channels/\(Constants.vaporGuildId.value)/\(channelId.value)/\(messageId.value)"
+            if isFailureMessage {
+                logger.debug("Won't report a failure to users")
+                return nil
+            }
+            let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(channelId.rawValue)/\(messageId.rawValue)"
             return await self.sendMessage(
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
                     embeds: [.init(
                         description: "\(response) (\(link))",
                         color: .vaporPurple
-                    )]
+                    )],
+                    allowed_mentions: allowedMentions
                 )
             )
         }

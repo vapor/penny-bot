@@ -44,8 +44,8 @@ struct ReactionHandler {
                 messageId: event.message_id
               ), user.id != receiverId
         else { return }
-        let sender = "<@\(user.id.value)>"
-        let receiver = "<@\(receiverId.value)>"
+        let sender = "<@\(user.id.rawValue)>"
+        let receiver = "<@\(receiverId.rawValue)>"
 
         /// Super reactions give more coins, otherwise only 1 coin
         let amount = event.type == .super ? 3 : 1
@@ -76,7 +76,7 @@ struct ReactionHandler {
                 with: "Oops. Something went wrong! Please try again later",
                 amount: amount,
                 senderName: nil,
-                isAFailureMessage: true
+                isFailureMessage: true
             )
             return
         }
@@ -98,7 +98,7 @@ struct ReactionHandler {
                     senderName: senderName
                 )
             case let .forcedInThanksChannel(info):
-                let link = "https://discord.com/channels/\(Constants.vaporGuildId.value)/\(info.originalChannelId.value)/\(event.message_id.value)"
+                let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(info.originalChannelId.rawValue)/\(event.message_id.rawValue)"
                 let names = info.senderUsers.joined(separator: ", ") + " & \(senderName)"
                 let count = info.totalCoinCount + amount
                 await editResponse(
@@ -117,7 +117,7 @@ struct ReactionHandler {
                 with: "\(senderName) gave \(coinCountDescription) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!",
                 amount: amount,
                 senderName: senderName,
-                isAFailureMessage: false
+                isFailureMessage: false
             )
         }
     }
@@ -127,12 +127,13 @@ struct ReactionHandler {
         with response: String,
         amount: Int,
         senderName: String?,
-        isAFailureMessage: Bool
+        isFailureMessage: Bool
     ) async {
         let apiResponse = await DiscordService.shared.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.message_id,
-            isAFailureMessage: isAFailureMessage,
+            isFailureMessage: isFailureMessage,
+            userToExplicitlyMention: nil,
             response: response
         )
         do {
@@ -347,7 +348,7 @@ actor ReactionCache {
     /// edit its own last message.
     func invalidateCachesIfNeeded(event: Gateway.MessageCreate) {
         if let id = event.member?.user?.id ?? event.author?.id,
-           id.value == Constants.botId {
+           id.rawValue == Constants.botId {
             return
         } else {
             channelWithLastThanksMessage[event.channel_id] = nil
