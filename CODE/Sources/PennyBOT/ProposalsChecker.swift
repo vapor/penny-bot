@@ -260,7 +260,9 @@ private extension String {
     func truncate(ifLongerThan max: Int) -> String {
         let scalars = self.unicodeScalars
         if scalars.count > max {
-            return String(scalars.dropLast(scalars.count - max).dropLast(4)) + " ..."
+            /// `scalars.count - max` makes the text as long as the limit.
+            /// `+ 3` is for the extra `...` that is added.
+            return String(scalars.dropLast(scalars.count - max + 3)) + "..."
         } else {
             return self
         }

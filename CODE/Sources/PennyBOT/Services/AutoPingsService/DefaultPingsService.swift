@@ -28,7 +28,7 @@ actor DefaultPingsService: AutoPingsService {
         expression: Expression,
         forDiscordID id: UserSnowflake
     ) async throws -> Bool {
-        try await self.getAll().items[expression]?.contains(id.value) ?? false
+        try await self.getAll().items[expression]?.contains(id.rawValue) ?? false
     }
     
     func insert(
@@ -38,7 +38,7 @@ actor DefaultPingsService: AutoPingsService {
         try await self.send(
             pathParameter: "users",
             method: .PUT,
-            pingRequest: .init(discordID: id.value, expressions: expressions)
+            pingRequest: .init(discordID: id.rawValue, expressions: expressions)
         )
     }
     
@@ -49,14 +49,14 @@ actor DefaultPingsService: AutoPingsService {
         try await self.send(
             pathParameter: "users",
             method: .DELETE,
-            pingRequest: .init(discordID: id.value, expressions: expressions)
+            pingRequest: .init(discordID: id.rawValue, expressions: expressions)
         )
     }
     
     func get(discordID id: UserSnowflake) async throws -> [Expression] {
         try await self.getAll()
             .items
-            .filter { $0.value.contains(id.value) }
+            .filter { $0.value.contains(id.rawValue) }
             .map(\.key)
     }
     

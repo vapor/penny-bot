@@ -188,7 +188,7 @@ actor DiscordService {
                 logger.debug("Won't report a failure to users")
                 return nil
             }
-            let link = "https://discord.com/channels/\(Constants.vaporGuildId.value)/\(channelId.value)/\(messageId.value)"
+            let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(channelId.rawValue)/\(messageId.rawValue)"
             return await self.sendMessage(
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
