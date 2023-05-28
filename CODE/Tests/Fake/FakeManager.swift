@@ -17,11 +17,7 @@ public actor FakeManager: GatewayManager {
     
     public init() { }
     
-    public nonisolated func connect() {
-        Task { await self._connect() }
-    }
-
-    func _connect() {
+    public func connect() async {
         self._state.store(.connected, ordering: .relaxed)
         self.connectionWaiter?.resume()
         self.connectionWaiter = nil
