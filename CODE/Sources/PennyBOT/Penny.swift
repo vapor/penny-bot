@@ -1,4 +1,5 @@
 import DiscordBM
+import DiscordLogger
 import Foundation
 import Logging
 import NIOPosix
@@ -38,7 +39,7 @@ struct Penny {
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
-        bot.connect()
+        await bot.connect()
         
         let stream = await bot.makeEventsStream()
         for await event in stream {

@@ -53,10 +53,8 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         /// Pinning these to the latest release/commit since they're not released.
         /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
-        .package(
-            url: "https://github.com/DiscordBM/DiscordBM.git",
-            revision: "c15acc798959ab30531f170ccef9209db57510b0"
-        ),
+        .package(url: "https://github.com/DiscordBM/DiscordBM.git", exact: "1.0.0-beta.62"),
+        .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-beta.2"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
@@ -83,6 +81,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 "PennyModels",
                 "PennyRepositories",

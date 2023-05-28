@@ -9,7 +9,7 @@ public enum TestData {
         let currentDirectory = fileManager.currentDirectoryPath
         let path = currentDirectory + "/Tests/Resources/" + name
         guard let data = fileManager.contents(atPath: path) else {
-            fatalError("Make sure you've set the custom working directory for the current scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory")
+            fatalError("Make sure you've set the custom working directory for the current scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory. Current working directory: \(currentDirectory)")
         }
         return data
     }

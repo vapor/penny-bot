@@ -14,7 +14,17 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
-        "revision" : "c15acc798959ab30531f170ccef9209db57510b0"
+        "revision" : "4887c0dab159432aef84e7136120a09482a274e1",
+        "version" : "1.0.0-beta.62"
+      }
+    },
+    {
+      "identity" : "discordlogger",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/DiscordBM/DiscordLogger.git",
+      "state" : {
+        "revision" : "bd05f5f8777900186ba94756d108b92c3b2c576f",
+        "version" : "1.0.0-beta.2"
       }
     },
     {
