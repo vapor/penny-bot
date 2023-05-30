@@ -53,7 +53,7 @@ actor DiscordService {
                 payload: payload
             )
             
-            switch response.decodeError() {
+            switch response.asError() {
             case let .jsonError(jsonError)
                 where jsonError.code == .cannotSendMessagesToThisUser:
                 /// Try to let them know Penny can't DM them.
