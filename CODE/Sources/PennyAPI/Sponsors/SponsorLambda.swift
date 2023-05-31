@@ -175,7 +175,7 @@ struct AddSponsorHandler: LambdaHandler {
             )
         }
     }
-    
+
     /**
      Removes a role from the selected Discord user.
      */
