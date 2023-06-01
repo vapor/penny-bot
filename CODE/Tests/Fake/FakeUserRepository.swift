@@ -6,17 +6,15 @@ public struct FakeUserRepository: UserRepository {
     
     public init() { }
     
-    public func insertUser(_ user: DynamoDBUser) async throws -> Void { }
+    public func insertUser(_ user: DynamoDBUser, coinEntry: CoinEntry) async throws -> Void { }
     
-    public func updateUser(_ user: DynamoDBUser) async throws -> Void { }
+    public func updateUser(_ user: DynamoDBUser, coinEntry: CoinEntry) async throws -> Void { }
     
     public func getUser(discord id: String) async throws -> User? {
         User(
             id: UUID(),
-            discordID: id,
-            githubID: nil,
+            userID: id,
             numberOfCoins: .random(in: 0..<10_000),
-            coinEntries: [],
             createdAt: Date().addingTimeInterval(-.random(in: 0..<Double(1 << 30)))
         )
     }
@@ -24,10 +22,8 @@ public struct FakeUserRepository: UserRepository {
     public func getUser(github id: String) async throws -> User? {
         User(
             id: UUID(),
-            discordID: nil,
-            githubID: id,
+            userID: id,
             numberOfCoins: .random(in: 0..<10_000),
-            coinEntries: [],
             createdAt: Date().addingTimeInterval(-.random(in: 0..<Double(1 << 30)))
         )
     }

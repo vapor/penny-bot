@@ -22,18 +22,60 @@ struct DynamoUserRepository: UserRepository {
     }
     
     // MARK: - Insert & Update
-    func insertUser(_ user: DynamoDBUser) async throws -> Void {
-        let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
+
+    /// Inserts a user with their first coin entry
+    func insertUser(_ user: DynamoDBUser, coinEntry: CoinEntry) async throws -> Void {
+        let user = DynamoDBUserWithEntries(dynamoDBUser: user, coinEntry: coinEntry)
+        let input = DynamoDB.PutItemCodableInput(
+            item: user,
+            tableName: self.tableName
+        )
         
         _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
     }
-    
-    func updateUser(_ user: DynamoDBUser) async throws -> Void {
-        let input = DynamoDB.UpdateItemCodableInput(key: ["pk", "sk"], tableName: self.tableName, updateItem: user)
+
+    /// Updates the user and adds a coin for them
+    func updateUser(_ user: DynamoDBUser, coinEntry: CoinEntry) async throws -> Void {
+        DynamoDB.UpdateItemInput(
+            attributeUpdates: <#T##[String : DynamoDB.AttributeValueUpdate]?#>,
+            conditionalOperator: <#T##DynamoDB.ConditionalOperator?#>,
+            conditionExpression: <#T##String?#>,
+            expected: <#T##[String : DynamoDB.ExpectedAttributeValue]?#>,
+            expressionAttributeNames: <#T##[String : String]?#>,
+            expressionAttributeValues: <#T##[String : DynamoDB.AttributeValue]?#>,
+            key: <#T##[String : DynamoDB.AttributeValue]#>,
+            returnConsumedCapacity: <#T##DynamoDB.ReturnConsumedCapacity?#>,
+            returnItemCollectionMetrics: <#T##DynamoDB.ReturnItemCollectionMetrics?#>,
+            returnValues: <#T##DynamoDB.ReturnValue?#>,
+            tableName: <#T##String#>,
+            updateExpression: <#T##String?#>
+        )
+//        DynamoDB.UpdateItemCodableInput.init(
+//            conditionExpression: <#T##String?#>,
+//            expressionAttributeNames: <#T##[String : String]?#>,
+//            key: <#T##[String]#>,
+//            returnConsumedCapacity: <#T##DynamoDB.ReturnConsumedCapacity?#>,
+//            returnItemCollectionMetrics: <#T##DynamoDB.ReturnItemCollectionMetrics?#>,
+//            returnValues: <#T##DynamoDB.ReturnValue?#>,
+//            tableName: <#T##String#>,
+//            updateExpression: <#T##String?#>,
+//            updateItem: <#T##_#>
+//        )
+
+        let input = DynamoDB.UpdateItemCodableInput(
+            key: ["pk", "sk"],
+            tableName: self.tableName,
+            updateExpression: "ADD coinEntries :coinEntries",
+            updateItem: user
+        )
         
         _ = try await db.updateItem(input, logger: self.logger, on: self.eventLoop)
     }
-    
+
+    let userAttributes = [PennyTableAttributes]([.pk, .sk, .amountOfCoins, .data1])
+        .map(\.rawValue)
+        .joined(separator: ",")
+
     // MARK: - Retrieve
     func getUser(discord id: String) async throws -> User? {
         let query = DynamoDB.QueryInput(
@@ -41,6 +83,7 @@ struct DynamoUserRepository: UserRepository {
             indexName: discordIndex,
             keyConditionExpression: "data1 = :v1",
             limit: 1,
+            projectionExpression: userAttributes,
             tableName: self.tableName
         )
         
@@ -53,6 +96,7 @@ struct DynamoUserRepository: UserRepository {
             indexName: githubIndex,
             keyConditionExpression: "data2 = :v1",
             limit: 1,
+            projectionExpression: userAttributes,
             tableName: self.tableName
         )
         
@@ -67,16 +111,16 @@ struct DynamoUserRepository: UserRepository {
             logger: self.logger,
             on: self.eventLoop
         )
-        guard let user = results.items?.first else {
+        guard let user = results.items?.first else { return nil }
+
+        guard let userID = user.data1?.deletePrefix("DISCORD-")
+                ?? user.data2?.deletePrefix("GITHUB-") else {
             return nil
         }
-        
         let localUser = User(
             id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
-            discordID: user.data1?.deletePrefix("DISCORD-"),
-            githubID: user.data2?.deletePrefix("GITHUB-"),
+            userID: userID,
             numberOfCoins: user.amountOfCoins ?? 0,
-            coinEntries: user.coinEntries ?? [],
             createdAt: user.createdAt
         )
         
@@ -119,4 +163,14 @@ struct DynamoUserRepository: UserRepository {
         // Return true if the deletion was successful
         abort()
     }
+}
+
+private enum PennyTableAttributes: String {
+    case pk
+    case sk
+    case amountOfCoins
+    case coinEntries
+    case createdAt
+    case data1
+    case data2
 }

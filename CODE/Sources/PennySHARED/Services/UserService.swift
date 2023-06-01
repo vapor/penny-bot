@@ -35,9 +35,9 @@ public struct UserService {
         do {
             switch coinEntry.source {
             case .discord:
-                localUser = try await userRepo.getUser(discord: user.discordID!)
+                localUser = try await userRepo.getUser(discord: user.userID)
             case .github:
-                localUser = try await userRepo.getUser(github: user.githubID!)
+                localUser = try await userRepo.getUser(github: user.userID)
             case .penny:
                 throw ServiceError.unimplemented()
             }
@@ -48,20 +48,19 @@ public struct UserService {
         }
         
         if var localUser {
-            localUser.addCoinEntry(coinEntry)
-            let dbUser = DynamoDBUser(user: localUser)
+            let dbUser = DynamoDBUser(user: localUser, type: .discord)
             
-            try await userRepo.updateUser(dbUser)
+            try await userRepo.updateUser(dbUser, coinEntry: coinEntry)
             return CoinResponse(
                 sender: fromDiscordID,
-                receiver: localUser.discordID!,
+                receiver: localUser.userID,
                 coins: localUser.numberOfCoins
             )
         } else {
             let localUser = try await insertIntoDB(user: user, with: coinEntry)
             return CoinResponse(
                 sender: fromDiscordID,
-                receiver: localUser.discordID!,
+                receiver: localUser.userID,
                 coins: localUser.numberOfCoins
             )
         }
@@ -73,9 +72,9 @@ public struct UserService {
         do {
             switch source {
             case .discord:
-                localUser = try await userRepo.getUser(discord: user.discordID!)
+                localUser = try await userRepo.getUser(discord: user.userID)
             case .github:
-                localUser = try await userRepo.getUser(github: user.githubID!)
+                localUser = try await userRepo.getUser(github: user.userID)
             case .penny:
                 throw ServiceError.unimplemented()
             }
@@ -97,14 +96,11 @@ public struct UserService {
         try await userRepo.getUser(github: id)
     }
     
-    private func insertIntoDB(user account: User, with coinEntry: CoinEntry) async throws -> User {
-        var localUser = account
-        
-        localUser.addCoinEntry(coinEntry)
-        
-        let dbUser = DynamoDBUser(user: localUser)
-        try await userRepo.insertUser(dbUser)
-        
-        return localUser
+    private func insertIntoDB(user: User, with coinEntry: CoinEntry) async throws -> User {
+        let dbUser = DynamoDBUser(user: user, type: .discord)
+        try await userRepo.insertUser(dbUser, coinEntry: coinEntry)
+        var user = user
+        user.numberOfCoins += coinEntry.amount
+        return user
     }
 }

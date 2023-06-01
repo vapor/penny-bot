@@ -49,19 +49,17 @@ struct AddCoinHandler: LambdaHandler {
     ) async -> APIGatewayV2Response {
         let from = User(
             id: UUID(),
-            discordID: request.from,
-            githubID: request.from,
+            userID: request.from,
             numberOfCoins: 0,
-            coinEntries: [],
-            createdAt: Date())
+            createdAt: Date()
+        )
         
         let user = User(
             id: UUID(),
-            discordID: request.receiver,
-            githubID: request.receiver,
+            userID: request.receiver,
             numberOfCoins: 0,
-            coinEntries: [],
-            createdAt: Date())
+            createdAt: Date()
+        )
         
         do {
             let userUUID = try await userService.getUserUUID(from: from, with: request.source)
@@ -71,7 +69,8 @@ struct AddCoinHandler: LambdaHandler {
                 amount: request.amount,
                 from: userUUID,
                 source: request.source,
-                reason: request.reason)
+                reason: request.reason
+            )
 
             let coinResponse = try await userService.addCoins(
                 with: coinEntry,
