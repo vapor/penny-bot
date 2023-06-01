@@ -143,7 +143,7 @@ actor ProposalsChecker {
             messageId: message.id,
             payload: .init(
                 name: name,
-                auto_archive_duration: .sevenDays
+                auto_archive_duration: .threeDays
             )
         )
         await discordService.crosspostMessage(
