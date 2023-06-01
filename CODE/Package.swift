@@ -51,13 +51,9 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
+        .package(url: "https://github.com/DiscordBM/DiscordBM.git", from: "1.0.0-rc.1"),
+        .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Pinning these to the latest release/commit since they're not released.
-        /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
-        .package(
-            url: "https://github.com/DiscordBM/DiscordBM.git",
-            revision: "c9410a0c446177785296ab893bac8e0030f534d9"
-        ),
-        .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-beta.2"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"

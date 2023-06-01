@@ -14,7 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
-        "revision" : "c9410a0c446177785296ab893bac8e0030f534d9"
+        "revision" : "08d418ee0f8542dd8fe88d8ef5032a828fd4ad5d",
+        "version" : "1.0.0-rc.1"
       }
     },
     {
@@ -22,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordLogger.git",
       "state" : {
-        "revision" : "bd05f5f8777900186ba94756d108b92c3b2c576f",
-        "version" : "1.0.0-beta.2"
+        "revision" : "8ee82aa023ad3348b0d1ef9fc1bc2d3144ef142d",
+        "version" : "1.0.0-rc.1"
       }
     },
     {
@@ -139,8 +140,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "2d8e6ca36fe3e8ed74b0883f593757a45463c34d",
-        "version" : "2.53.0"
+        "revision" : "6213ba7a06febe8fef60563a4a7d26a4085783cf",
+        "version" : "2.54.0"
       }
     },
     {
@@ -157,8 +158,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-http2.git",
       "state" : {
-        "revision" : "6d021a48483dbb273a9be43f65234bdc9185b364",
-        "version" : "1.26.0"
+        "revision" : "a8ccf13fa62775277a5d56844878c828bbb3be1a",
+        "version" : "1.27.0"
       }
     },
     {
