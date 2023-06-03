@@ -51,7 +51,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
-        .package(url: "https://github.com/DiscordBM/DiscordBM.git", from: "1.0.0-rc.1"),
+        .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Pinning these to the latest release/commit since they're not released.
         .package(
