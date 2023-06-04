@@ -206,8 +206,7 @@ struct MessageHandler {
                         """,
                         color: .vaporPurple
                     )],
-                    /// Guaranteed no fail in the `try`.
-                    components: [[try! .button(.init(label: "Open Message", url: messageLink))]]
+                    components: [[.button(.init(label: "Open Message", url: messageLink))]]
                 )
             )
         }

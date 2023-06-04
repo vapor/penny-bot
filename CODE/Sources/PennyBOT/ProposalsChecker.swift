@@ -236,8 +236,7 @@ actor ProposalsChecker {
         if link.isEmpty {
             return []
         } else {
-            /// Guaranteed no fail in the `try`.
-            return [[try! .button(.init(label: "Open Proposal", url: linkPrefix + link))]]
+            return [[.button(.init(label: "Open Proposal", url: linkPrefix + link))]]
         }
     }
 
