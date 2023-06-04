@@ -71,19 +71,17 @@ private extension InteractionHandler {
         modal: Interaction.ModalSubmit,
         modalId: ModalID
     ) async throws -> any Response {
-        let member = try event.member.require()
-        let discordId = try (event.member?.user ?? event.user).require().id
+        let member = try event.member.requireValue()
+        let discordId = try (event.member?.user ?? event.user).requireValue().id
         switch modalId {
         case let .autoPings(autoPingsMode, mode):
-            let allComponents = modal.components.flatMap(\.components)
+
             switch autoPingsMode {
             case .add:
-                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
-                      case let .textInput(textInput) = textComponent,
-                      let _text = textInput.value else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
+                let _text = try modal.components
+                    .requireComponent(customId: "texts")
+                    .requireTextInput()
+                    .value.requireValue()
 
                 let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
@@ -141,12 +139,10 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .remove:
-                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
-                      case let .textInput(textInput) = textComponent,
-                      let _text = textInput.value else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
+                let _text = try modal.components
+                    .requireComponent(customId: "texts")
+                    .requireTextInput()
+                    .value.requireValue()
 
                 let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
@@ -183,18 +179,13 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .test:
-                guard let messageComponent = (allComponents.first { $0.customId == "message" }),
-                      case let .textInput(messageInput) = messageComponent,
-                      let message = messageInput.value else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
-
-                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
-                      case let .textInput(textInput) = textComponent else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
+                let message = try modal.components
+                    .requireComponent(customId: "message")
+                    .requireTextInput()
+                    .value.requireValue()
+                let textInput = try modal.components
+                    .requireComponent(customId: "texts")
+                    .requireTextInput()
 
                 if let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
                     !_text.isEmpty {
@@ -315,9 +306,9 @@ private extension InteractionHandler {
     }
     
     func handleLinkCommand(options: [InteractionOption]) throws -> String {
-        let first = try options.first.require()
-        let subCommand = try LinkSubCommand(rawValue: first.name).require()
-        let id = try (first.options?.first).require().requireString()
+        let first = try options.first.requireValue()
+        let subCommand = try LinkSubCommand(rawValue: first.name).requireValue()
+        let id = try (first.options?.first).requireValue().requireString()
         switch subCommand {
         case .discord:
             return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
@@ -329,9 +320,9 @@ private extension InteractionHandler {
     }
     
     func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
-        let discordId = try (event.member?.user ?? event.user).require().id
-        let first = try options.first.require()
-        let subcommand = try AutoPingsSubCommand(rawValue: first.name).require()
+        let discordId = try (event.member?.user ?? event.user).requireValue().id
+        let first = try options.first.requireValue()
+        let subcommand = try AutoPingsSubCommand(rawValue: first.name).requireValue()
 
         switch subcommand {
         case .help, .list:
@@ -373,8 +364,8 @@ private extension InteractionHandler {
     }
     
     func requireExpressionMode(_ options: [InteractionOption]?) throws -> Expression.Kind {
-        let optionValue = try options.requireOption(named: "mode").requireString()
-        return try Expression.Kind(rawValue: optionValue).require()
+        let optionValue = try options.requireValue().requireOption(named: "mode").requireString()
+        return try Expression.Kind(rawValue: optionValue).requireValue()
     }
     
     func handleHowManyCoinsAppCommand() async throws -> String {

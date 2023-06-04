@@ -53,7 +53,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
-        /// Pinning these to the latest release/commit since they're not released.
+        /// Pinning this to the latest release/commit since they're not released.
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
