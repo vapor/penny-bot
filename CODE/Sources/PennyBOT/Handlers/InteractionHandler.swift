@@ -214,7 +214,7 @@ private extension InteractionHandler {
                     """
 
                     if dividedExpressions.isEmpty {
-                        response += "The texts you entered seems like an empty list to me."
+                        response += "The texts you entered seem like an empty list to me."
                     } else {
                         response += """
                         The identified expressions are:
