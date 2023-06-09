@@ -110,63 +110,6 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
     
-    func testReactionHandler2() async throws {
-        do {
-            let response = try await manager.sendAndAwaitResponse(
-                key: .thanksReaction,
-                as: Payloads.CreateMessage.self
-            )
-            
-            let description = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(description.hasPrefix(
-                "Mahdi BM gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has "
-            ))
-            XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
-        }
-        
-        // We need to wait a little bit to make sure Discord's response
-        // is decoded and is used-in/added-to the `ReactionCache`.
-        // This would happen in a real-world situation too.
-        try await Task.sleep(for: .seconds(1))
-        
-        // Tell `ReactionCache` that someone sent a new message
-        // in the same channel that the reaction happened.
-        await ReactionCache.shared.invalidateCachesIfNeeded(
-            event: .init(
-                id: "1313",
-                /// Based on how the function works right now, only `channel_id` matters
-                channel_id: "684159753189982218",
-                content: "",
-                timestamp: .fake,
-                tts: false,
-                mention_everyone: false,
-                mention_roles: [],
-                attachments: [],
-                embeds: [],
-                pinned: false,
-                type: .default,
-                mentions: []
-            )
-        )
-        
-        // The second thanks message should NOT edit the last one, because although the
-        // receiver is the same person and the channel is the same channel, Penny's message
-        // is not the last message anymore.
-        do {
-            let response = try await manager.sendAndAwaitResponse(
-                key: .thanksReaction2,
-                endpoint: EventKey.thanksReaction.responseEndpoints[0],
-                as: Payloads.CreateMessage.self
-            )
-            
-            let description = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(description.hasPrefix(
-                "0xTim gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has "
-            ))
-            XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
-        }
-    }
-    
     func testReactionHandler3() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(

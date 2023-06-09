@@ -343,18 +343,6 @@ actor ReactionCache {
         }
     }
     
-    /// If there is a new message in a channel, we need to invalidate the cache.
-    /// Existence of a cached value for a channel implies that penny should
-    /// edit its own last message.
-    func invalidateCachesIfNeeded(event: Gateway.MessageCreate) {
-        if let id = event.member?.user?.id ?? event.author?.id,
-           id.rawValue == Constants.botId {
-            return
-        } else {
-            channelWithLastThanksMessage[event.channel_id] = nil
-        }
-    }
-    
 #if DEBUG
     static func _tests_reset() {
         shared = .init()
