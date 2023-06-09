@@ -114,8 +114,10 @@ private extension InteractionHandler {
                     return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
                 }
 
-                /// Still try to insert `allExpressions` just incase our data is out of sync
-                try await pingsService.insert(allExpressions, forDiscordID: discordId)
+                /// Always try to insert `allExpressions` just incase our data is out of sync
+                discardingResult {
+                    try await pingsService.insert(allExpressions, forDiscordID: discordId)
+                }
 
                 var components = [String]()
 
@@ -154,8 +156,10 @@ private extension InteractionHandler {
                     try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
 
-                /// Still try to remove `allExpressions` just incase our data is out of sync
-                try await pingsService.remove(allExpressions, forDiscordID: discordId)
+                /// Always try to remove `allExpressions` just incase our data is out of sync
+                discardingResult {
+                    try await pingsService.remove(allExpressions, forDiscordID: discordId)
+                }
 
                 var components = [String]()
 
@@ -272,6 +276,28 @@ private extension InteractionHandler {
                         return response
                     }
                 }
+            }
+        }
+    }
+
+    /// Used to not care about result of auto-pings mutations.
+    /// This is because Discord expects us to answer in 3 seconds,
+    /// and waiting for auto-pings lambda makes us too slow.
+    private func discardingResult(
+        _ operation: @escaping () async throws -> Void,
+        function: String = #function,
+        line: UInt = #line
+    ) {
+        Task {
+            do {
+                try await operation()
+            } catch {
+                logger.report(
+                    "Pings Service failed",
+                    error: error,
+                    function: function,
+                    line: line
+                )
             }
         }
     }
