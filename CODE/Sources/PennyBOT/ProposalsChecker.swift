@@ -269,16 +269,22 @@ actor ProposalsChecker {
             ])
             return nil
         }
-        let latestLink = content
+        if let latestLink = content
             .split(whereSeparator: \.isNewline)
             .first(where: { $0.hasPrefix("* Review:") })?
             .split(separator: "(")
             .flatMap({ $0.split(separator: ")") })
             .reversed()
             .first(where: { $0.starts(with: "https://") })
-            .map(String.init)
-
-        return latestLink
+            .map(String.init) {
+            return latestLink
+        } else {
+            logger.error("Could not find a Swift forums link for proposal", metadata: [
+                "link": .string(link),
+                "content": .string(content)
+            ])
+            return nil
+        }
     }
 
     private func makeForumSearchLink(proposal: Proposal) -> String? {
