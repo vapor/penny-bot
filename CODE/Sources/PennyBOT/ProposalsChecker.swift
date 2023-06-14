@@ -11,7 +11,6 @@ actor ProposalsChecker {
     var queuedProposalsWaitTime: Double = 29 * 60
 
     let logger = Logger(label: "ProposalsChecker")
-    let linkPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
 
     var proposalsService: (any ProposalsService)!
     var discordService: DiscordService {
@@ -39,7 +38,7 @@ actor ProposalsChecker {
     }
 
     func check() async throws {
-        let proposals = try await self.proposalsService.get()
+        let proposals = try await self.proposalsService.list()
 
         if self.previousProposals.isEmpty {
             self.previousProposals = proposals
@@ -110,9 +109,9 @@ actor ProposalsChecker {
 
             let payload: Payloads.CreateMessage
             if let previousState = queuedProposal.firstKnownStateBeforeQueue {
-                payload = makePayloadForUpdatedProposal(proposal, previousState: previousState)
+                payload = await makePayloadForUpdatedProposal(proposal, previousState: previousState)
             } else {
-                payload = makePayloadForNewProposal(proposal)
+                payload = await makePayloadForNewProposal(proposal)
             }
 
             await self.send(proposal: proposal, payload: payload)
@@ -152,7 +151,7 @@ actor ProposalsChecker {
         )
     }
 
-    private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
+    private func makePayloadForNewProposal(_ proposal: Proposal) async -> Payloads.CreateMessage {
 
         let titleState = proposal.status.state.titleDescription
         let descriptionState = proposal.status.state.UIDescription
@@ -186,14 +185,14 @@ actor ProposalsChecker {
                 """,
                 color: proposal.status.state.color
             )],
-            components: makeComponents(link: proposal.link)
+            components: await makeComponents(proposal: proposal)
         )
     }
 
     private func makePayloadForUpdatedProposal(
         _ proposal: Proposal,
         previousState: Proposal.Status.State
-    ) -> Payloads.CreateMessage {
+    ) async -> Payloads.CreateMessage {
 
         let titleState = proposal.status.state.titleDescription
         let descriptionState = proposal.status.state.UIDescription
@@ -227,17 +226,70 @@ actor ProposalsChecker {
                 """,
                 color: proposal.status.state.color
             )],
-            components: makeComponents(link: proposal.link)
+            components: await makeComponents(proposal: proposal)
         )
     }
 
-    private func makeComponents(link: String) -> [Interaction.ActionRow] {
-        let link = link.sanitized()
+    private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
+        let link = proposal.link.sanitized()
         if link.isEmpty {
             return []
         } else {
-            return [[.button(.init(label: "Open Proposal", url: linkPrefix + link))]]
+            let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
+            let fullGithubLink = githubProposalsPrefix + link
+
+            var buttons: [Interaction.ActionRow] = [[
+                .button(.init(label: "Open Proposal", url: fullGithubLink)),
+            ]]
+
+            if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
+                buttons[0].components.append(
+                    .button(.init(label: "Open Forum Post", url: forumPostLink))
+                )
+            }
+
+            if let searchLink = makeForumSearchLink(proposal: proposal) {
+                buttons[0].components.append(
+                    .button(.init(label: "Related Forum Posts", url: searchLink))
+                )
+            }
+
+            return buttons
         }
+    }
+
+    private func findForumPostLink(link: String) async -> String? {
+        let content: String
+        do {
+            content = try await self.proposalsService.getProposalContent(link: link)
+        } catch {
+            logger.error("Could not fetch proposal content", metadata: [
+                "link": .string(link),
+                "error": "\(error)"
+            ])
+            return nil
+        }
+        let latestLink = content
+            .split(whereSeparator: \.isNewline)
+            .first(where: { $0.hasPrefix("* Review:") })?
+            .split(separator: "(")
+            .flatMap({ $0.split(separator: ")") })
+            .reversed()
+            .first(where: { $0.starts(with: "https://") })
+            .map(String.init)
+
+        return latestLink
+    }
+
+    private func makeForumSearchLink(proposal: Proposal) -> String? {
+        let title = proposal.title.sanitized()
+        guard !title.isEmpty else { return nil }
+        let rawQuery = title + " #evolution"
+        guard let query = rawQuery.addingPercentEncoding(
+            withAllowedCharacters: .urlQueryAllowed
+        ) else { return nil }
+        let link = "https://forums.swift.org/search?q=\(query)"
+        return link
     }
 
 #if DEBUG

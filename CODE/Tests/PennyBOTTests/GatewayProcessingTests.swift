@@ -322,12 +322,20 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let message = try XCTUnwrap(message1 as? Payloads.CreateMessage, "\(message1)")
 
-            let components = try XCTUnwrap(message.components)
-            let buttonComponent = try XCTUnwrap(components.first?.components.first)
-            if case let .button(button) = buttonComponent {
-                XCTAssertEqual(button.url, "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md")
-            } else {
-                XCTFail("\(buttonComponent) was not a button")
+            let buttons = try XCTUnwrap(message.components?.first?.components)
+            XCTAssertEqual(buttons.count, 3, "\(buttons)")
+            let expectedLinks = [
+                "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md",
+                "https://forums.swift.org/t/se-0400-init-accessors/65583",
+                "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
+            ]
+            for (idx, buttonComponent) in buttons.enumerated() {
+                if case let .button(button) = buttonComponent,
+                   let url = button.url {
+                    XCTAssertEqual(expectedLinks[idx], url)
+                } else {
+                    XCTFail("\(buttonComponent) was not a button")
+                }
             }
 
             let embed = try XCTUnwrap(message.embeds?.first)
@@ -340,13 +348,22 @@ class GatewayProcessingTests: XCTestCase {
         do {
             let message = try XCTUnwrap(message2 as? Payloads.CreateMessage, "\(message2)")
 
-            let components = try XCTUnwrap(message.components)
-            let buttonComponent = try XCTUnwrap(components.first?.components.first)
-            if case let .button(button) = buttonComponent {
-                XCTAssertEqual(button.url, "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md")
-            } else {
-                XCTFail("\(buttonComponent) was not a button")
+            let buttons = try XCTUnwrap(message.components?.first?.components)
+            XCTAssertEqual(buttons.count, 3, "\(buttons)")
+            let expectedLinks = [
+                "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md",
+                "https://forums.swift.org/t/se-0400-init-accessors/65583",
+                "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
+            ]
+            for (idx, buttonComponent) in buttons.enumerated() {
+                if case let .button(button) = buttonComponent,
+                   let url = button.url {
+                    XCTAssertEqual(expectedLinks[idx], url)
+                } else {
+                    XCTFail("\(buttonComponent) was not a button")
+                }
             }
+
 
             let embed = try XCTUnwrap(message.embeds?.first)
             XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")

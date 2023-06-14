@@ -31,7 +31,11 @@ public enum TestData {
         named: "proposals_updated.json",
         as: [Proposal].self
     )
-    
+    public static let proposalContent = String(
+        data: TestData.resource(named: "proposal_content.md"),
+        encoding: .utf8
+    )!
+
     private static let testData: [String: Any] = {
         let data = resource(named: "test_data.json")
         let object = try! JSONSerialization.jsonObject(with: data, options: [])
