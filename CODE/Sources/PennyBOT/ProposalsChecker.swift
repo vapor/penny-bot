@@ -99,8 +99,8 @@ actor ProposalsChecker {
         }
 
         /// Send the queued-proposals that are ready
-        var sentProposalIndices = [Int]()
-        for (idx, queuedProposal) in self.queuedProposals.enumerated() {
+        var sentProposalUUIDs = [UUID]()
+        for queuedProposal in self.queuedProposals {
             /// `queuedProposalsWaitTime` seconds old == ready to send
             let oldDate = Date().addingTimeInterval(-self.queuedProposalsWaitTime)
             guard queuedProposal.updatedAt < oldDate else { continue }
@@ -109,19 +109,20 @@ actor ProposalsChecker {
 
             let payload: Payloads.CreateMessage
             if let previousState = queuedProposal.firstKnownStateBeforeQueue {
-                payload = await makePayloadForUpdatedProposal(proposal, previousState: previousState)
+                payload = await makePayloadForUpdatedProposal(
+                    proposal,
+                    previousState: previousState
+                )
             } else {
                 payload = await makePayloadForNewProposal(proposal)
             }
 
             await self.send(proposal: proposal, payload: payload)
-            sentProposalIndices.append(idx)
+            sentProposalUUIDs.append(queuedProposal.uuid)
         }
 
         /// Remove the sent queued-proposals
-        for (idx, proposalIdx) in sentProposalIndices.enumerated() {
-            self.queuedProposals.remove(at: proposalIdx - idx)
-        }
+        self.queuedProposals.removeAll(where: { sentProposalUUIDs.contains($0.uuid) })
 
         /// Update the saved proposals
         self.previousProposals = proposals
@@ -344,6 +345,7 @@ private extension Proposal.User {
 }
 
 struct QueuedProposal {
+    let uuid = UUID()
     let firstKnownStateBeforeQueue: Proposal.Status.State?
     var updatedAt: Date
     var proposal: Proposal
