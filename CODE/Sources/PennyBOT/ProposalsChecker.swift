@@ -279,7 +279,7 @@ actor ProposalsChecker {
             .map(String.init) {
             return latestLink
         } else {
-            logger.error("Could not find a Swift forums link for proposal", metadata: [
+            logger.warning("Could not find a Swift forums link for proposal", metadata: [
                 "link": .string(link),
                 "content": .string(content)
             ])
