@@ -13,9 +13,9 @@ enum DiscordFactory {
         var clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
                 apiEndpoints: [
-                    .listApplicationCommands: 60 * 60 /// 1 hour
+                    .listApplicationCommands: .seconds(60 * 60) /// 1 hour
                 ],
-                apiEndpointsDefaultTTL: 5
+                apiEndpointsDefaultTTL: .seconds(5)
             )
         )
         return await BotGatewayManager(

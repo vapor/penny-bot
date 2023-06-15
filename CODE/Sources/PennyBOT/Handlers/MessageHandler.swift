@@ -188,7 +188,7 @@ struct MessageHandler {
             }
             let authorName = makeAuthorName(
                 nick: member.nick,
-                username: author.username,
+                user: author,
                 id: author.id.rawValue
             )
 
@@ -212,15 +212,12 @@ struct MessageHandler {
         }
     }
 
-    func makeAuthorName(nick: String?, username: String?, id: String) -> String {
-        switch (nick, username) {
-        case let (.some(nick), .some(username)) where nick != username:
+    func makeAuthorName(nick: String?, user: DiscordUser, id: String) -> String {
+        let username = user.global_name ?? user.username
+        if let nick, nick != username {
             return "\(username) (aka \(nick))"
-        case let (_, .some(username)):
+        } else {
             return username
-        default:
-            logger.warning("How could someone not have a username?!")
-            return "<unnamed-member:@\(id)>"
         }
     }
     

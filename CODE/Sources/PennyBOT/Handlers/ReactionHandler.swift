@@ -81,7 +81,7 @@ struct ReactionHandler {
             return
         }
         
-        let senderName = member.nick ?? user.username
+        let senderName = member.nick ?? user.global_name ?? user.username
         if let toEdit = await cache.messageToEditIfAvailable(
             in: event.channel_id,
             receiverMessageId: event.message_id
