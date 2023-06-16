@@ -35,7 +35,7 @@ struct DefaultProposalsService: ProposalsService {
             deadline: .now() + .seconds(15)
         )
         let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MB
-        let proposal = try decoder.decode(String.self, from: buffer)
-        return proposal
+        let content = String(buffer: buffer)
+        return content
     }
 }
