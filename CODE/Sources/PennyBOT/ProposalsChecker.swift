@@ -240,18 +240,18 @@ actor ProposalsChecker {
             let fullGithubLink = githubProposalsPrefix + link
 
             var buttons: [Interaction.ActionRow] = [[
-                .button(.init(label: "Open Proposal", url: fullGithubLink)),
+                .button(.init(label: "Proposal", url: fullGithubLink)),
             ]]
 
             if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
                 buttons[0].components.append(
-                    .button(.init(label: "Open Forum Post", url: forumPostLink))
+                    .button(.init(label: "Forum Post", url: forumPostLink))
                 )
             }
 
             if let searchLink = makeForumSearchLink(proposal: proposal) {
                 buttons[0].components.append(
-                    .button(.init(label: "Related Forum Posts", url: searchLink))
+                    .button(.init(label: "Related Posts", url: searchLink))
                 )
             }
 
