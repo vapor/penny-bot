@@ -81,7 +81,7 @@ struct ReactionHandler {
             return
         }
         
-        let senderName = member.nick ?? user.username
+        let senderName = member.nick ?? user.global_name ?? user.username
         if let toEdit = await cache.messageToEditIfAvailable(
             in: event.channel_id,
             receiverMessageId: event.message_id
@@ -340,18 +340,6 @@ actor ReactionCache {
             }
         } else {
             return nil
-        }
-    }
-    
-    /// If there is a new message in a channel, we need to invalidate the cache.
-    /// Existence of a cached value for a channel implies that penny should
-    /// edit its own last message.
-    func invalidateCachesIfNeeded(event: Gateway.MessageCreate) {
-        if let id = event.member?.user?.id ?? event.author?.id,
-           id.rawValue == Constants.botId {
-            return
-        } else {
-            channelWithLastThanksMessage[event.channel_id] = nil
         }
     }
     

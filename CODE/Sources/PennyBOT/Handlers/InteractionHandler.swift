@@ -92,25 +92,16 @@ private extension InteractionHandler {
         modal: Interaction.ModalSubmit,
         modalId: ModalID
     ) async throws -> any Response {
-        guard let member = event.member else {
-            logger.error("Discord did not send required info")
-            return oops
-        }
-        guard let discordId = (event.member?.user ?? event.user)?.id else {
-            logger.error("Can't find a user's id")
-            return oops
-        }
-        let allComponents = modal.components.flatMap(\.components)
+        let member = try event.member.requireValue()
+        let discordId = try (event.member?.user ?? event.user).requireValue().id
         switch modalId {
         case let .autoPings(autoPingsMode, mode):
             switch autoPingsMode {
             case .add:
-                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
-                      case let .textInput(textInput) = textComponent,
-                      let _text = textInput.value else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
+                let _text = try modal.components
+                    .requireComponent(customId: "texts")
+                    .requireTextInput()
+                    .value.requireValue()
 
                 let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
@@ -143,8 +134,10 @@ private extension InteractionHandler {
                     return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
                 }
 
-                /// Still try to insert `allExpressions` just incase our data is out of sync
-                try await pingsService.insert(allExpressions, forDiscordID: discordId)
+                /// Always try to insert `allExpressions` just incase our data is out of sync
+                discardingResult {
+                    try await pingsService.insert(allExpressions, forDiscordID: discordId)
+                }
 
                 var components = [String]()
 
@@ -168,12 +161,10 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .remove:
-                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
-                      case let .textInput(textInput) = textComponent,
-                      let _text = textInput.value else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
+                let _text = try modal.components
+                    .requireComponent(customId: "texts")
+                    .requireTextInput()
+                    .value.requireValue()
 
                 let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
@@ -185,8 +176,10 @@ private extension InteractionHandler {
                     try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
 
-                /// Still try to remove `allExpressions` just incase our data is out of sync
-                try await pingsService.remove(allExpressions, forDiscordID: discordId)
+                /// Always try to remove `allExpressions` just incase our data is out of sync
+                discardingResult {
+                    try await pingsService.remove(allExpressions, forDiscordID: discordId)
+                }
 
                 var components = [String]()
 
@@ -210,18 +203,13 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .test:
-                guard let messageComponent = (allComponents.first { $0.customId == "message" }),
-                      case let .textInput(messageInput) = messageComponent,
-                      let message = messageInput.value else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
-
-                guard let textComponent = allComponents.first(where: { $0.customId == "texts" }),
-                      case let .textInput(textInput) = textComponent else {
-                    logger.error("Can't find the texts value")
-                    return oops
-                }
+                let message = try modal.components
+                    .requireComponent(customId: "message")
+                    .requireTextInput()
+                    .value.requireValue()
+                let textInput = try modal.components
+                    .requireComponent(customId: "texts")
+                    .requireTextInput()
 
                 if let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
                     !_text.isEmpty {
@@ -250,7 +238,7 @@ private extension InteractionHandler {
                     """
 
                     if dividedExpressions.isEmpty {
-                        response += "The texts you entered seems like an empty list to me."
+                        response += "The texts you entered seem like an empty list to me."
                     } else {
                         response += """
                         The identified expressions are:
@@ -353,6 +341,28 @@ private extension InteractionHandler {
             }
         }
     }
+
+    /// Used to not care about result of auto-pings mutations.
+    /// This is because Discord expects us to answer in 3 seconds,
+    /// and waiting for auto-pings lambda makes us too slow.
+    private func discardingResult(
+        _ operation: @escaping () async throws -> Void,
+        function: String = #function,
+        line: UInt = #line
+    ) {
+        Task {
+            do {
+                try await operation()
+            } catch {
+                logger.report(
+                    "Pings Service failed",
+                    error: error,
+                    function: function,
+                    line: line
+                )
+            }
+        }
+    }
 }
 
 /// MARK: - makeResponseForApplicationCommand
@@ -363,46 +373,32 @@ private extension InteractionHandler {
         data: Interaction.ApplicationCommand
     ) async -> (any Response)? {
         let options = data.options ?? []
-        switch command {
-        case .link:
-            return handleLinkCommand(options: options)
-        case .autoPings:
-            do {
+        do {
+            switch command {
+            case .link:
+                return try handleLinkCommand(options: options)
+            case .autoPings:
                 return try await handlePingsCommand(options: options)
-            } catch {
-                logger.report("Pings command error", error: error)
-                return oops
-            }
-        case .help:
-            do {
+            case .help:
                 return try await handleHelpCommand(options: options)
-            } catch {
-                logger.report("Help command error", error: error)
-                return oops
+            case .howManyCoins:
+                return try await handleHowManyCoinsCommand(
+                    author: event.member?.user ?? event.user,
+                    options: options
+                )
+            case .howManyCoinsApp:
+                return try await handleHowManyCoinsAppCommand()
             }
-        case .howManyCoins:
-            return await handleHowManyCoinsCommand(
-                author: event.member?.user ?? event.user,
-                options: options
-            )
-        case .howManyCoinsApp:
-            return await handleHowManyCoinsAppCommand()
+        } catch {
+            logger.report("Command error", error: error)
+            return oops
         }
     }
     
-    func handleLinkCommand(options: [InteractionOption]) -> String {
-        guard let first = options.first else {
-            logger.error("Discord did not send required info")
-            return oops
-        }
-        guard let subCommand = LinkSubCommand(rawValue: first.name) else {
-            logger.error("Unrecognized link subCommand", metadata: ["name": "\(first.name)"])
-            return oops
-        }
-        guard let id = first.options?.first?.value?.asString else {
-            logger.error("Discord did not send the account id")
-            return oops
-        }
+    func handleLinkCommand(options: [InteractionOption]) throws -> String {
+        let first = try options.first.requireValue()
+        let subCommand = try LinkSubCommand(rawValue: first.name).requireValue()
+        let id = try (first.options?.first).requireValue().requireString()
         switch subCommand {
         case .discord:
             return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
@@ -414,18 +410,9 @@ private extension InteractionHandler {
     }
     
     func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
-        guard let discordId = (event.member?.user ?? event.user)?.id else {
-            logger.error("Can't find a user's id")
-            return oops
-        }
-        guard let first = options.first else {
-            logger.error("Discord did not send required interaction info")
-            return oops
-        }
-        guard let subcommand = AutoPingsSubCommand(rawValue: first.name) else {
-            logger.error("Unrecognized 'auto-pings' command", metadata: ["name": "\(first.name)"])
-            return oops
-        }
+        let discordId = try (event.member?.user ?? event.user).requireValue().id
+        let first = try options.first.requireValue()
+        let subcommand = try AutoPingsSubCommand(rawValue: first.name).requireValue()
 
         switch subcommand {
         case .help, .list:
@@ -452,21 +439,15 @@ private extension InteractionHandler {
                 """
             }
         case .add:
-            guard let mode = self.requireExpressionModeOrReport(first.options) else {
-                return oops
-            }
+            let mode = try self.requireExpressionMode(first.options)
             let modalId = ModalID.autoPings(.add, mode)
             return modalId.makeModal()
         case .remove:
-            guard let mode = self.requireExpressionModeOrReport(first.options) else {
-                return oops
-            }
+            let mode = try self.requireExpressionMode(first.options)
             let modalId = ModalID.autoPings(.remove, mode)
             return modalId.makeModal()
         case .test:
-            guard let mode = self.requireExpressionModeOrReport(first.options) else {
-                return oops
-            }
+            let mode = try self.requireExpressionMode(first.options)
             let modalId = ModalID.autoPings(.test, mode)
             return modalId.makeModal()
         }
@@ -591,36 +572,25 @@ private extension InteractionHandler {
         )
     }
     
-    func requireExpressionModeOrReport(_ options: [InteractionOption]?) -> Expression.Kind? {
-        if let _mode = options?.first(where: { $0.name == "mode" })?.value?.asString {
-            if let mode = Expression.Kind(rawValue: _mode) {
-                return mode
-            } else {
-                logger.error("Discord sent invalid ExpressionMode", metadata: [
-                    "invalid-mode": .string(_mode.debugDescription)
-                ])
-                return nil
-            }
-        } else {
-            logger.error("Discord didn't send ExpressionMode")
-            return nil
-        }
+    func requireExpressionMode(_ options: [InteractionOption]?) throws -> Expression.Kind {
+        let optionValue = try options.requireValue().requireOption(named: "mode").requireString()
+        return try Expression.Kind(rawValue: optionValue).requireValue()
     }
     
-    func handleHowManyCoinsAppCommand() async -> String {
+    func handleHowManyCoinsAppCommand() async throws -> String {
         guard case let .applicationCommand(data) = event.data,
               let userId = data.target_id else {
             logger.error("Coin-count command could not find appropriate data")
             return oops
         }
         let user = "<@\(userId.rawValue)>"
-        return await getCoinCount(of: user)
+        return try await getCoinCount(of: user)
     }
     
     func handleHowManyCoinsCommand(
         author: DiscordUser?,
         options: [InteractionOption]
-    ) async -> String {
+    ) async throws -> String {
         let user: String
         if let userOption = options.first?.value?.asString {
             user = "<@\(userOption)>"
@@ -631,19 +601,12 @@ private extension InteractionHandler {
             }
             user = "<@\(id.rawValue)>"
         }
-        return await getCoinCount(of: user)
+        return try await getCoinCount(of: user)
     }
     
-    func getCoinCount(of user: String) async -> String {
-        do {
-            let coinCount = try await coinService.getCoinCount(of: user)
-            return "\(user) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
-        } catch {
-            logger.report("Coin-count command couldn't get coin count", error: error, metadata: [
-                "user": "\(user)"
-            ])
-            return oops
-        }
+    func getCoinCount(of user: String) async throws -> String {
+        let coinCount = try await coinService.getCoinCount(of: user)
+        return "\(user) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
     }
     
     /// Returns `true` if the acknowledgement was successfully sent

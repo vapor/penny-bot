@@ -11,9 +11,12 @@ enum DiscordFactory {
         }
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         var clientConfiguration = ClientConfiguration(
-            cachingBehavior: .custom(apiEndpoints: [
-                .listApplicationCommands: 60 * 60 /// 1 hour
-            ])
+            cachingBehavior: .custom(
+                apiEndpoints: [
+                    .listApplicationCommands: .seconds(60 * 60) /// 1 hour
+                ],
+                apiEndpointsDefaultTTL: .seconds(5)
+            )
         )
         return await BotGatewayManager(
             eventLoopGroup: eventLoopGroup,

@@ -16,7 +16,6 @@ struct EventHandler: GatewayEventHandler {
     }
     
     func onMessageCreate(_ message: Gateway.MessageCreate) async {
-        await ReactionCache.shared.invalidateCachesIfNeeded(event: message)
         await MessageHandler(event: message).handle()
     }
     

@@ -14,7 +14,7 @@ struct Penny {
 
         /// Use `1` instead of `System.coreCount`.
         /// This is preferred for apps that primarily use structured concurrency.
-        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: System.coreCount)
+        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly

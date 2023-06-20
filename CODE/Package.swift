@@ -8,22 +8,22 @@ import PackageDescription
 let swiftSettings: [SwiftSetting] = [
     /// `minimal` / `targeted` / `complete`
     /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
-    .unsafeFlags(["-Xfrontend", "-strict-concurrency=targeted"]),
+        .unsafeFlags(["-strict-concurrency=targeted"]),
 
     /// `-enable-upcoming-feature` flags will get removed in the future
     /// and we'll need to remove them from here too.
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
     /// Require `any` for existential types.
-        .unsafeFlags(["-enable-upcoming-feature", "ExistentialAny"]),
+        .enableUpcomingFeature("ExistentialAny"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0274-magic-file.md
     /// Nicer `#file`.
-        .unsafeFlags(["-enable-upcoming-feature", "ConciseMagicFile"]),
+        .enableUpcomingFeature("ConciseMagicFile"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0286-forward-scan-trailing-closures.md
     /// This one shouldn't do much to be honest, but shouldn't hurt as well.
-        .unsafeFlags(["-enable-upcoming-feature", "ForwardTrailingClosures"]),
+        .enableUpcomingFeature("ForwardTrailingClosures"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
     /// `BareSlashRegexLiterals` not enabled since we don't use regex anywhere.
@@ -46,10 +46,9 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
-        /// Pinning these to the latest release/commit since they're not released.
-        /// You can pin them to the newest version if you're not afraid of fixing breaking changes.
-        .package(url: "https://github.com/DiscordBM/DiscordBM.git", exact: "1.0.0-beta.62"),
-        .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-beta.2"),
+        .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
+        .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
+        /// Pinning this to the latest release/commit since they're not released.
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"

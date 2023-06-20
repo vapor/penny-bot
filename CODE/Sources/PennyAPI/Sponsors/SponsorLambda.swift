@@ -175,7 +175,7 @@ struct AddSponsorHandler: LambdaHandler {
             )
         }
     }
-    
+
     /**
      Removes a role from the selected Discord user.
      */
@@ -190,7 +190,7 @@ struct AddSponsorHandler: LambdaHandler {
                 guildId: Constants.guildID,
                 userId: Snowflake(userDiscordID),
                 roleId: role.roleID
-            ).decodeError()
+            ).asError()
 
             switch error {
             case let .some(error):

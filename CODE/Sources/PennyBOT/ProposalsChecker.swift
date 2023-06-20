@@ -11,7 +11,6 @@ actor ProposalsChecker {
     var queuedProposalsWaitTime: Double = 29 * 60
 
     let logger = Logger(label: "ProposalsChecker")
-    let linkPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
 
     var proposalsService: (any ProposalsService)!
     var discordService: DiscordService {
@@ -39,7 +38,7 @@ actor ProposalsChecker {
     }
 
     func check() async throws {
-        let proposals = try await self.proposalsService.get()
+        let proposals = try await self.proposalsService.list()
 
         if self.previousProposals.isEmpty {
             self.previousProposals = proposals
@@ -100,8 +99,8 @@ actor ProposalsChecker {
         }
 
         /// Send the queued-proposals that are ready
-        var sentProposalIndices = [Int]()
-        for (idx, queuedProposal) in self.queuedProposals.enumerated() {
+        var sentProposalUUIDs = [UUID]()
+        for queuedProposal in self.queuedProposals {
             /// `queuedProposalsWaitTime` seconds old == ready to send
             let oldDate = Date().addingTimeInterval(-self.queuedProposalsWaitTime)
             guard queuedProposal.updatedAt < oldDate else { continue }
@@ -110,19 +109,20 @@ actor ProposalsChecker {
 
             let payload: Payloads.CreateMessage
             if let previousState = queuedProposal.firstKnownStateBeforeQueue {
-                payload = makePayloadForUpdatedProposal(proposal, previousState: previousState)
+                payload = await makePayloadForUpdatedProposal(
+                    proposal,
+                    previousState: previousState
+                )
             } else {
-                payload = makePayloadForNewProposal(proposal)
+                payload = await makePayloadForNewProposal(proposal)
             }
 
             await self.send(proposal: proposal, payload: payload)
-            sentProposalIndices.append(idx)
+            sentProposalUUIDs.append(queuedProposal.uuid)
         }
 
         /// Remove the sent queued-proposals
-        for (idx, proposalIdx) in sentProposalIndices.enumerated() {
-            self.queuedProposals.remove(at: proposalIdx - idx)
-        }
+        self.queuedProposals.removeAll(where: { sentProposalUUIDs.contains($0.uuid) })
 
         /// Update the saved proposals
         self.previousProposals = proposals
@@ -143,7 +143,7 @@ actor ProposalsChecker {
             messageId: message.id,
             payload: .init(
                 name: name,
-                auto_archive_duration: .sevenDays
+                auto_archive_duration: .threeDays
             )
         )
         await discordService.crosspostMessage(
@@ -152,7 +152,7 @@ actor ProposalsChecker {
         )
     }
 
-    private func makePayloadForNewProposal(_ proposal: Proposal) -> Payloads.CreateMessage {
+    private func makePayloadForNewProposal(_ proposal: Proposal) async -> Payloads.CreateMessage {
 
         let titleState = proposal.status.state.titleDescription
         let descriptionState = proposal.status.state.UIDescription
@@ -186,14 +186,14 @@ actor ProposalsChecker {
                 """,
                 color: proposal.status.state.color
             )],
-            components: makeComponents(link: proposal.link)
+            components: await makeComponents(proposal: proposal)
         )
     }
 
     private func makePayloadForUpdatedProposal(
         _ proposal: Proposal,
         previousState: Proposal.Status.State
-    ) -> Payloads.CreateMessage {
+    ) async -> Payloads.CreateMessage {
 
         let titleState = proposal.status.state.titleDescription
         let descriptionState = proposal.status.state.UIDescription
@@ -227,17 +227,76 @@ actor ProposalsChecker {
                 """,
                 color: proposal.status.state.color
             )],
-            components: makeComponents(link: proposal.link)
+            components: await makeComponents(proposal: proposal)
         )
     }
 
-    private func makeComponents(link: String) -> [Interaction.ActionRow] {
-        let link = link.sanitized()
+    private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
+        let link = proposal.link.sanitized()
         if link.isEmpty {
             return []
         } else {
-            return [[.button(.init(label: "Open Proposal", url: linkPrefix + link))]]
+            let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
+            let fullGithubLink = githubProposalsPrefix + link
+
+            var buttons: [Interaction.ActionRow] = [[
+                .button(.init(label: "Proposal", url: fullGithubLink)),
+            ]]
+
+            if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
+                buttons[0].components.append(
+                    .button(.init(label: "Forum Post", url: forumPostLink))
+                )
+            }
+
+            if let searchLink = makeForumSearchLink(proposal: proposal) {
+                buttons[0].components.append(
+                    .button(.init(label: "Related Posts", url: searchLink))
+                )
+            }
+
+            return buttons
         }
+    }
+
+    private func findForumPostLink(link: String) async -> String? {
+        let content: String
+        do {
+            content = try await self.proposalsService.getProposalContent(link: link)
+        } catch {
+            logger.error("Could not fetch proposal content", metadata: [
+                "link": .string(link),
+                "error": "\(error)"
+            ])
+            return nil
+        }
+        if let latestLink = content
+            .split(whereSeparator: \.isNewline)
+            .first(where: { $0.hasPrefix("* Review:") })?
+            .split(separator: "(")
+            .flatMap({ $0.split(separator: ")") })
+            .reversed()
+            .first(where: { $0.starts(with: "https://") })
+            .map(String.init) {
+            return latestLink
+        } else {
+            logger.warning("Could not find a Swift forums link for proposal", metadata: [
+                "link": .string(link),
+                "content": .string(content)
+            ])
+            return nil
+        }
+    }
+
+    private func makeForumSearchLink(proposal: Proposal) -> String? {
+        let title = proposal.title.sanitized()
+        guard !title.isEmpty else { return nil }
+        let rawQuery = title + " #evolution"
+        guard let query = rawQuery.addingPercentEncoding(
+            withAllowedCharacters: .urlQueryAllowed
+        ) else { return nil }
+        let link = "https://forums.swift.org/search?q=\(query)"
+        return link
     }
 
 #if DEBUG
@@ -286,6 +345,7 @@ private extension Proposal.User {
 }
 
 struct QueuedProposal {
+    let uuid = UUID()
     let firstKnownStateBeforeQueue: Proposal.Status.State?
     var updatedAt: Date
     var proposal: Proposal

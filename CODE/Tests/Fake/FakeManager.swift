@@ -8,17 +8,13 @@ public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id: UInt = 0
     public nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
-    let _state = ManagedAtomic<GatewayState>(.noConnection)
-    /// This `nonisolated var state` is just for protocol conformance
-    public nonisolated var state: GatewayState {
-        self._state.load(ordering: .relaxed)
-    }
+    var isConnected = false
     var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
     
     public init() { }
     
     public func connect() async {
-        self._state.store(.connected, ordering: .relaxed)
+        self.isConnected = true
         self.connectionWaiter?.resume()
         self.connectionWaiter = nil
     }
@@ -39,7 +35,7 @@ public actor FakeManager: GatewayManager {
     var connectionWaiter: CheckedContinuation<(), Never>?
     
     public func waitUntilConnected() async {
-        if self.state == .connected {
+        if self.isConnected {
             return
         } else {
             await withCheckedContinuation {
