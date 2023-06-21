@@ -78,12 +78,11 @@ private extension InteractionHandler {
 
             switch autoPingsMode {
             case .add:
-                let _text = try modal.components
+                let allExpressions = try modal.components
                     .requireComponent(customId: "texts")
                     .requireTextInput()
                     .value.requireValue()
-
-                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+                    .divideIntoAutoPingsExpressions(mode: mode)
 
                 if allExpressions.isEmpty {
                     return "The list you sent seems to be empty."
@@ -114,8 +113,8 @@ private extension InteractionHandler {
                     return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
                 }
 
-                /// Always try to insert `allExpressions` just incase our data is out of sync
                 discardingResult {
+                    /// Always try to insert `allExpressions` just incase our data is out of sync
                     try await pingsService.insert(allExpressions, forDiscordID: discordId)
                 }
 
@@ -141,12 +140,11 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .remove:
-                let _text = try modal.components
+                let allExpressions = try modal.components
                     .requireComponent(customId: "texts")
                     .requireTextInput()
                     .value.requireValue()
-
-                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+                    .divideIntoAutoPingsExpressions(mode: mode)
 
                 if allExpressions.isEmpty {
                     return "The list you sent seems to be empty."
@@ -156,8 +154,8 @@ private extension InteractionHandler {
                     try await pingsService.exists(expression: $0, forDiscordID: discordId)
                 }
 
-                /// Always try to remove `allExpressions` just incase our data is out of sync
                 discardingResult {
+                    /// Always try to remove `allExpressions` just incase our data is out of sync
                     try await pingsService.remove(allExpressions, forDiscordID: discordId)
                 }
 
@@ -175,7 +173,7 @@ private extension InteractionHandler {
                 if !newExpressions.isEmpty {
                     components.append(
                         """
-                        Some expressions were not available in your pings list at all:
+                        Some expressions were not available in your pings list at all with '\(mode.UIDescription)' mode:
                         \(newExpressions.makeExpressionListForDiscord())
                         """
                     )
@@ -626,10 +624,10 @@ private extension String {
             .map({ $0.foldForPingCommand() })
             .filter({ !$0.isEmpty }).map {
                 switch mode {
-                case .exactMatch:
-                    return .matches($0)
                 case .containment:
                     return .contains($0)
+                case .exactMatch:
+                    return .matches($0)
                 }
             }
     }
