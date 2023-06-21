@@ -452,14 +452,8 @@ private extension InteractionHandler {
     }
 
     func handleHelpCommand(options: [InteractionOption]) async throws -> (any Response)? {
-        guard let first = options.first else {
-            logger.error("Discord did not send required interaction info")
-            return oops
-        }
-        guard let subcommand = HelpSubCommand(rawValue: first.name) else {
-            logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
-            return oops
-        }
+        let first = try options.first.requireValue()
+        let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
         switch subcommand {
         case .get:
             guard await sendAcknowledgement(isEphemeral: false) else { return nil }
@@ -473,26 +467,21 @@ private extension InteractionHandler {
         }
         switch subcommand {
         case .get:
-            guard let name = first.options?
-                .first(where: { $0.name == "name" })?.value?.asString else {
-                logger.error("Discord did not send required interaction info")
-                return oops
-            }
+            let name = try first.options
+                .requireValue()
+                .requireOption(named: "name")
+                .requireString()
             if let value = try await helpsService.get(name: name) {
                 return value
             } else {
                 return "No help-text with name '\(name)' exists at all"
             }
         case .remove:
-            guard let name = first.options?
-                .first(where: { $0.name == "name" })?.value?.asString else {
-                logger.error("Discord did not send required interaction info")
-                return oops
-            }
-            guard let member = event.member else {
-                logger.error("Discord did not send required info")
-                return oops
-            }
+            let name = try first.options
+                .requireValue()
+                .requireOption(named: "name")
+                .requireString()
+            let member = try event.member.requireValue()
             guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
                 member: member
             ) else {
@@ -536,14 +525,8 @@ private extension InteractionHandler {
     }
 
     func handleHelpCommandAutocomplete(options: [InteractionOption]) async throws -> any Response {
-        guard let first = options.first else {
-            logger.error("Discord did not send required interaction info")
-            return oops
-        }
-        guard let subcommand = HelpSubCommand(rawValue: first.name) else {
-            logger.error("Unrecognized 'help' command", metadata: ["name": "\(first.name)"])
-            return oops
-        }
+        let first = try options.first.requireValue()
+        let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
         guard [.get, .remove].contains(subcommand) else {
             logger.error(
                 "Unrecognized 'help' subcommand for autocomplete",
@@ -551,11 +534,10 @@ private extension InteractionHandler {
             )
             return oops
         }
-        guard let name = first.options?
-            .first(where: { $0.name == "name" })?.value?.asString else {
-            logger.error("Discord did not send required interaction info")
-            return oops
-        }
+        let name = try first.options
+            .requireValue()
+            .requireOption(named: "name")
+            .requireString()
         let foldedName = name.heavyFolded()
         var choices = try await helpsService
             .getAll()
