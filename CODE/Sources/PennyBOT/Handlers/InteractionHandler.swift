@@ -86,7 +86,7 @@ struct InteractionHandler {
     }
 }
 
-/// MARK: - makeResponseForModal
+// MARK: - makeResponseForModal
 private extension InteractionHandler {
     func makeResponseForModal(
         modal: Interaction.ModalSubmit,
@@ -351,18 +351,13 @@ private extension InteractionHandler {
             do {
                 try await operation()
             } catch {
-                logger.report(
-                    "Pings Service failed",
-                    error: error,
-                    function: function,
-                    line: line
-                )
+                logger.report("Pings Service failed", error: error, function: function, line: line)
             }
         }
     }
 }
 
-/// MARK: - makeResponseForApplicationCommand
+// MARK: - makeResponseForApplicationCommand
 private extension InteractionHandler {
     /// Returns `nil` if no response is supposed to be sent to user.
     func makeResponseForApplicationCommand(
@@ -784,8 +779,8 @@ private extension String {
     }
 }
 
-/// MARK: - Response
-///
+// MARK: - Response
+
 /// This `Response` thing didn't turn out as good as I was hoping for.
 /// The approach of abstracting the response using a protocol like this is good imo, still.
 /// Just I didn't go full-in on it. Probably need to create a new type for each response type.
@@ -846,7 +841,7 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
     var isEditable: Bool { false }
 }
 
-//MARK: - Auto-pings help
+// MARK: - Auto-pings help
 private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
 
     let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
