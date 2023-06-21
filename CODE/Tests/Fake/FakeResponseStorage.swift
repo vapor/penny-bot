@@ -78,7 +78,7 @@ public actor FakeResponseStorage {
             let id = UUID()
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
             Task {
-                try await Task.sleep(nanoseconds: 3_000_000_000)
+                try await Task.sleep(nanoseconds: 5_000_000_000)
                 if continuations.retrieve(id: id) != nil {
                     if !expectFailure {
                         XCTFail(
