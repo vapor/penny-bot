@@ -18,8 +18,8 @@ extension Collection<S3AutoPingItems.Expression> {
         }
 
         return [
+            makeList(with: contains, kind: .containment),
             makeList(with: matches, kind: .exactMatch),
-            makeList(with: contains, kind: .containment)
         ].compactMap { $0 }.joined(separator: "\n")
     }
 
