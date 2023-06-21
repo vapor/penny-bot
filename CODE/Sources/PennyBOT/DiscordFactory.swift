@@ -1,4 +1,6 @@
 import DiscordBM
+import DiscordLogger
+import Logging
 import AsyncHTTPClient
 import NIOCore
 import Foundation
@@ -37,6 +39,44 @@ enum DiscordFactory {
             gatewayManager: $0,
             intents: [.guilds, .guildMembers],
             requestAllMembers: .enabled
+        )
+    }
+
+    static var bootstrapLoggingSystem: (HTTPClient) async -> Void = { httpClient in
+#if DEBUG
+        // Discord-logging is disabled in debug based on the logger configuration,
+        // so we can just use a fake url.
+        let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
+#else
+        guard let webhookUrl = Constants.loggingWebhookUrl else {
+            fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
+        }
+#endif
+        DiscordGlobalConfiguration.logManager = await DiscordLogManager(
+            httpClient: httpClient,
+            configuration: .init(
+                aliveNotice: .init(
+                    address: try! .url(webhookUrl),
+                    interval: nil,
+                    message: "I'm Alive! :)",
+                    initialNoticeMention: .user(Constants.botDevUserId)
+                ),
+                mentions: [
+                    .warning: .user(Constants.botDevUserId),
+                    .error: .user(Constants.botDevUserId),
+                    .critical: .user(Constants.botDevUserId)
+                ],
+                extraMetadata: [.warning, .error, .critical],
+                disabledLogLevels: [.debug, .trace],
+                disabledInDebug: true
+            )
+        )
+        await LoggingSystem.bootstrapWithDiscordLogger(
+            address: try! .url(webhookUrl),
+            level: .trace,
+            makeMainLogHandler: { label, metadataProvider in
+                StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)
+            }
         )
     }
 }

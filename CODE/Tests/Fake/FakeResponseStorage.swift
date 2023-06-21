@@ -91,7 +91,11 @@ public actor FakeResponseStorage {
                     return
                 } else {
                     if expectFailure {
-                        XCTFail("Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
+                        XCTFail(
+                            "Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            file: file,
+                            line: line
+                        )
                     }
                 }
             }
@@ -109,21 +113,38 @@ public actor FakeResponseStorage {
 }
 
 private struct Continuations: CustomStringConvertible {
+
+    enum Action: String, CustomStringConvertible {
+        case add, retrieve, remove
+
+        var description: String {
+            self.rawValue
+        }
+    }
+
     typealias Cont = CheckedContinuation<AnyBox, Never>
     
     private var storage: [(endpoint: any Endpoint, id: UUID, continuation: Cont)] = []
-    
+    /// History for debugging purposes 
+    private var history: [(endpoint: any Endpoint, id: UUID, action: Action)] = []
+
     var description: String {
-        "\(storage.map({ (endpoint: $0.endpoint, id: $0.id) }))"
+        "Continuations(" +
+        "storage: \(storage.map({ (endpoint: $0.endpoint, id: $0.id) })), " +
+        "history: \(history)" +
+        ")"
     }
     
     mutating func append(endpoint: any Endpoint, id: UUID, continuation: Cont) {
         storage.append((endpoint, id, continuation))
+        history.append((endpoint, id, .add))
     }
     
     mutating func retrieve(endpoint: any Endpoint) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
-            return storage.remove(at: idx).continuation
+            let removed = storage.remove(at: idx)
+            history.append((endpoint, removed.id, .remove))
+            return removed.continuation
         } else {
             return nil
         }
@@ -131,7 +152,9 @@ private struct Continuations: CustomStringConvertible {
     
     mutating func retrieve(id: UUID) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.id == id }) {
-            return storage.remove(at: idx).continuation
+            let removed = storage.remove(at: idx)
+            history.append((removed.endpoint, id, .retrieve))
+            return removed.continuation
         } else {
             return nil
         }
@@ -142,7 +165,7 @@ private struct UnhandledResponses: CustomStringConvertible {
     private var storage: [(endpoint: any Endpoint, payload: AnyBox)] = []
     
     var description: String {
-        "\(storage.map({ (endpoint: $0, id: type(of: $1)) }))"
+        "\(storage.map({ (endpoint: $0, payloadType: type(of: $1.value)) }))"
     }
     
     mutating func append(endpoint: any Endpoint, payload: AnyBox) {

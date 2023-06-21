@@ -191,7 +191,6 @@ struct MessageHandler {
                 user: author,
                 id: author.id.rawValue
             )
-
             await DiscordService.shared.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
