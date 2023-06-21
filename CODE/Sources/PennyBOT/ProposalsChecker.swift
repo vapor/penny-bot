@@ -17,9 +17,9 @@ actor ProposalsChecker {
         DiscordService.shared
     }
 
-    static let shared = ProposalsChecker()
+    static var shared = ProposalsChecker()
 
-    private init() { }
+    init() { }
 
     func initialize(proposalsService: any ProposalsService) {
         self.proposalsService = proposalsService
@@ -233,30 +233,27 @@ actor ProposalsChecker {
 
     private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
         let link = proposal.link.sanitized()
-        if link.isEmpty {
-            return []
-        } else {
-            let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
-            let fullGithubLink = githubProposalsPrefix + link
-
-            var buttons: [Interaction.ActionRow] = [[
-                .button(.init(label: "Proposal", url: fullGithubLink)),
-            ]]
-
-            if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
-                buttons[0].components.append(
-                    .button(.init(label: "Forum Post", url: forumPostLink))
-                )
-            }
-
-            if let searchLink = makeForumSearchLink(proposal: proposal) {
-                buttons[0].components.append(
-                    .button(.init(label: "Related Posts", url: searchLink))
-                )
-            }
-
-            return buttons
+        if link.isEmpty { return [] }
+        let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
+        let fullGithubLink = githubProposalsPrefix + link
+        
+        var buttons: [Interaction.ActionRow] = [[
+            .button(.init(label: "Proposal", url: fullGithubLink)),
+        ]]
+        
+        if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
+            buttons[0].components.append(
+                .button(.init(label: "Forum Post", url: forumPostLink))
+            )
         }
+        
+        if let searchLink = makeForumSearchLink(proposal: proposal) {
+            buttons[0].components.append(
+                .button(.init(label: "Related Posts", url: searchLink))
+            )
+        }
+        
+        return buttons
     }
 
     private func findForumPostLink(link: String) async -> String? {
@@ -280,7 +277,7 @@ actor ProposalsChecker {
             .map(String.init) {
             return latestLink
         } else {
-            logger.warning("Could not find a Swift forums link for proposal", metadata: [
+            logger.warning("Couldn't find forums link for proposal", metadata: [
                 "link": .string(link),
                 "content": .string(content)
             ])

@@ -1,11 +1,14 @@
 @testable import PennyBOT
 import PennyModels
 import DiscordModels
+import AsyncHTTPClient
 
 public struct FakePingsService: AutoPingsService {
     
     public init() { }
-    
+
+    public func initialize(httpClient: HTTPClient) async { }
+
     public func exists(
         expression: Expression,
         forDiscordID id: UserSnowflake

@@ -47,7 +47,7 @@ struct FakeDiscordClient: DiscordClient {
         try payload.validate().throw(model: payload)
         
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
-        
+
         return DiscordHTTPResponse(
             host: "discord.com",
             status: .ok,

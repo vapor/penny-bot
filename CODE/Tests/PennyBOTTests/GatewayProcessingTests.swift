@@ -1,5 +1,6 @@
 @testable import PennyBOT
 @testable import DiscordModels
+@testable import Logging
 import DiscordGateway
 import PennyLambdaAddCoins
 import PennyRepositories
@@ -14,6 +15,10 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
+        LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+        DiscordFactory.bootstrapLoggingSystem = { _ in
+            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+        }
         /// Fake webhook url
         Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
@@ -26,6 +31,7 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeHelpsService = { FakeHelpsService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
+        ProposalsChecker.shared = .init()
         await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
         /// So the proposals are send as soon as they're queued, in tests.
         await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
@@ -214,7 +220,7 @@ class GatewayProcessingTests: XCTestCase {
             responseStorage.awaitResponse(at: responseEndpoint).value,
             responseStorage.awaitResponse(at: responseEndpoint).value
         )
-        
+
         let recipients: [UserSnowflake] = ["950695294906007573", "432065887202181142"]
         
         do {
@@ -315,16 +321,21 @@ class GatewayProcessingTests: XCTestCase {
 
     func testProposalsChecker() async throws {
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
-        let (message1, message2) = await (
+        let messages = try await [
+            responseStorage.awaitResponse(at: endpoint).value,
             responseStorage.awaitResponse(at: endpoint).value,
             responseStorage.awaitResponse(at: endpoint).value
-        )
+        ].map {
+            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0)")
+        }
 
         /// New proposal message
         do {
-            let message = try XCTUnwrap(message1 as? Payloads.CreateMessage, "\(message1)")
+            let message = try XCTUnwrap(messages.first(where: {
+                $0.embeds?.first?.title?.contains("stride") == true
+            }), "\(messages)")
 
-            let buttons = try XCTUnwrap(message.components?.first?.components)
+            let buttons = try XCTUnwrap(message.components?.first?.components, "\(message)")
             XCTAssertEqual(buttons.count, 3, "\(buttons)")
             let expectedLinks = [
                 "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md",
@@ -348,7 +359,9 @@ class GatewayProcessingTests: XCTestCase {
 
         /// Updated proposal message
         do {
-            let message = try XCTUnwrap(message2 as? Payloads.CreateMessage, "\(message2)")
+            let message = try XCTUnwrap(messages.first(where: {
+                $0.embeds?.first?.title?.contains("(most)") == true
+            }), "\(messages)")
 
             let buttons = try XCTUnwrap(message.components?.first?.components)
             XCTAssertEqual(buttons.count, 3, "\(buttons)")
