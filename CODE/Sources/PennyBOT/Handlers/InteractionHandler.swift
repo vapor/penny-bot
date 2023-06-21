@@ -300,13 +300,11 @@ private extension InteractionHandler {
         case let .help(helpMode):
             switch helpMode {
             case .add:
-                guard let nameComponent = allComponents.first(where: { $0.customId == "name" }),
-                      case let .textInput(textInput) = nameComponent,
-                      let _name = textInput.value else {
-                    logger.error("Can't find the 'name' value")
-                    return oops
-                }
-                let name = _name.trimmingCharacters(in: .whitespaces)
+                let name = try modal.components
+                    .requireComponent(customId: "name")
+                    .requireTextInput()
+                    .value.requireValue()
+                    .trimmingCharacters(in: .whitespaces)
                     .replacingOccurrences(of: "\n", with: " ")
 
                 if let value = try await helpsService.get(name: name) {
@@ -317,14 +315,14 @@ private extension InteractionHandler {
                     """
                 }
 
-                guard let valueComponent = allComponents.first(where: { $0.customId == "value" }),
-                      case let .textInput(textInput) = valueComponent,
-                      let value = textInput.value?.trimmingCharacters(in: .whitespaces) else {
-                    logger.error("Can't find the 'value' value")
-                    return oops
-                }
+                let value = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+                    .trimmingCharacters(in: .whitespaces)
+
                 if name.isEmpty || value.isEmpty {
-                    return "'name' or 'value' seems empty to me :("
+                    return "'name' or 'value' seem empty to me :("
                 }
                 /// The response of this command is ephemeral so members feel free to add help-texts.
                 /// We will log this action so we can know if something malicious is happening.

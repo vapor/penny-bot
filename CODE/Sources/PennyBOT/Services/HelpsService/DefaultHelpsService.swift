@@ -21,6 +21,7 @@ actor DefaultHelpsService: HelpsService {
     func initialize(httpClient: HTTPClient) {
         self.httpClient = httpClient
         self.setUpResetItemsTask()
+        self.getFreshItemsForCache()
     }
     
     func insert(name: String, value: String) async throws {
@@ -83,12 +84,24 @@ actor DefaultHelpsService: HelpsService {
         self.resetItemsTask?.cancel()
     }
 
+    private func getFreshItemsForCache() {
+        Task {
+            do {
+                /// To freshen the cache
+                _ = try await self.send(request: .all)
+            } catch {
+                logger.report("Couldn't automatically freshen auto-pings cache", error: error)
+            }
+        }
+    }
+
     private func setUpResetItemsTask() {
         self.resetItemsTask?.cancel()
         self.resetItemsTask = Task {
             /// Force-refresh cache after 6 hours of no activity
             if (try? await Task.sleep(for: .seconds(60 * 60 * 6))) != nil {
                 self._cachedItems = nil
+                self.getFreshItemsForCache()
                 self.setUpResetItemsTask()
             } else {
                 /// If canceled, set up the task again.

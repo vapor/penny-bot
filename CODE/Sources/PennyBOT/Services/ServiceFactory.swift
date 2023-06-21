@@ -16,4 +16,11 @@ enum ServiceFactory {
     static var makeHelpsService: () -> any HelpsService = {
         DefaultHelpsService.shared
     }
+
+    static var initializeAndRunProposalsChecker: (HTTPClient) async -> Void = {
+        await ProposalsChecker.shared.initialize(
+            proposalsService: ServiceFactory.makeProposalsService($0)
+        )
+        ProposalsChecker.shared.run()
+    }
 }

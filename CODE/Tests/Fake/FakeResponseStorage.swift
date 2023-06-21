@@ -1,4 +1,5 @@
 @testable import DiscordBM
+import Atomics
 import XCTest
 
 public actor FakeResponseStorage {
@@ -8,7 +9,9 @@ public actor FakeResponseStorage {
     
     public init() { }
     public static var shared = FakeResponseStorage()
-    
+
+    private static let idGenerator = ManagedAtomic(UInt(0))
+
     public func awaitResponse(
         at endpoint: APIEndpoint,
         expectFailure: Bool = false,
@@ -75,7 +78,7 @@ public actor FakeResponseStorage {
                 continuation.resume(returning: response)
             }
         } else {
-            let id = UUID()
+            let id = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
             Task {
                 try await Task.sleep(nanoseconds: 3_000_000_000)
@@ -115,7 +118,7 @@ public actor FakeResponseStorage {
 private struct Continuations: CustomStringConvertible {
 
     enum Action: String, CustomStringConvertible {
-        case add, retrieve, remove
+        case add, removeByEndpoint, removeById
 
         var description: String {
             self.rawValue
@@ -124,9 +127,9 @@ private struct Continuations: CustomStringConvertible {
 
     typealias Cont = CheckedContinuation<AnyBox, Never>
     
-    private var storage: [(endpoint: any Endpoint, id: UUID, continuation: Cont)] = []
-    /// History for debugging purposes 
-    private var history: [(endpoint: any Endpoint, id: UUID, action: Action)] = []
+    private var storage: [(endpoint: any Endpoint, id: UInt, continuation: Cont)] = []
+    /// History for debugging purposes
+    private var history: [(endpoint: any Endpoint, id: UInt, action: Action)] = []
 
     var description: String {
         "Continuations(" +
@@ -135,7 +138,7 @@ private struct Continuations: CustomStringConvertible {
         ")"
     }
     
-    mutating func append(endpoint: any Endpoint, id: UUID, continuation: Cont) {
+    mutating func append(endpoint: any Endpoint, id: UInt, continuation: Cont) {
         storage.append((endpoint, id, continuation))
         history.append((endpoint, id, .add))
     }
@@ -143,17 +146,17 @@ private struct Continuations: CustomStringConvertible {
     mutating func retrieve(endpoint: any Endpoint) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             let removed = storage.remove(at: idx)
-            history.append((endpoint, removed.id, .remove))
+            history.append((endpoint, removed.id, .removeByEndpoint))
             return removed.continuation
         } else {
             return nil
         }
     }
     
-    mutating func retrieve(id: UUID) -> Cont? {
+    mutating func retrieve(id: UInt) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.id == id }) {
             let removed = storage.remove(at: idx)
-            history.append((removed.endpoint, id, .retrieve))
+            history.append((removed.endpoint, id, .removeById))
             return removed.continuation
         } else {
             return nil

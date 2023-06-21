@@ -1,9 +1,12 @@
 @testable import PennyBOT
 import PennyModels
+import AsyncHTTPClient
 
 public struct FakeHelpsService: HelpsService {
 
     public init() { }
+
+    public func initialize(httpClient: HTTPClient) async { }
 
     public func insert(name: String, value: String) async throws {
         _ = try await FakeHelpsRepository().insert(name: name, value: value)
