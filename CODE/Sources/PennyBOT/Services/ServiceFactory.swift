@@ -12,4 +12,11 @@ enum ServiceFactory {
     static var makeProposalsService: (HTTPClient) -> any ProposalsService = {
         DefaultProposalsService(httpClient: $0)
     }
+
+    static var initializeAndRunProposalsChecker: (HTTPClient) async -> Void = {
+        await ProposalsChecker.shared.initialize(
+            proposalsService: ServiceFactory.makeProposalsService($0)
+        )
+        ProposalsChecker.shared.run()
+    }
 }

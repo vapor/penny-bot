@@ -15,6 +15,7 @@ class GatewayProcessingTests: XCTestCase {
     var manager: FakeManager!
     
     override func setUp() async throws {
+        /// Disable logging
         LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
         DiscordFactory.bootstrapLoggingSystem = { _ in
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
@@ -29,10 +30,7 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeCoinService = { FakeCoinService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
-        ProposalsChecker.shared = .init()
-        await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
-        /// So the proposals are send as soon as they're queued, in tests.
-        await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
+        ServiceFactory.initializeAndRunProposalsChecker = { _ in }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()
@@ -318,13 +316,19 @@ class GatewayProcessingTests: XCTestCase {
     }
 
     func testProposalsChecker() async throws {
+        await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
+        /// So the proposals are send as soon as they're queued, in tests.
+        await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
+        await ProposalsChecker.shared.initialize(proposalsService: FakeProposalsService())
+        ProposalsChecker.shared.run()
+
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
-        let messages = try await [
-            responseStorage.awaitResponse(at: endpoint).value,
+        let _messages = await [
             responseStorage.awaitResponse(at: endpoint).value,
             responseStorage.awaitResponse(at: endpoint).value
-        ].map {
-            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0)")
+        ]
+        let messages = try _messages.map {
+            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
         }
 
         /// New proposal message

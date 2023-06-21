@@ -6,7 +6,7 @@ import Foundation
 actor ProposalsChecker {
     var previousProposals = [Proposal]()
 
-    var queuedProposals = [QueuedProposal]()
+    private var queuedProposals = [QueuedProposal]()
     /// The minimum time to wait before sending a queued-proposal
     var queuedProposalsWaitTime: Double = 29 * 60
 
@@ -17,9 +17,9 @@ actor ProposalsChecker {
         DiscordService.shared
     }
 
-    static var shared = ProposalsChecker()
+    static let shared = ProposalsChecker()
 
-    init() { }
+    private init() { }
 
     func initialize(proposalsService: any ProposalsService) {
         self.proposalsService = proposalsService
@@ -129,6 +129,7 @@ actor ProposalsChecker {
     }
 
     private func send(proposal: Proposal, payload: Payloads.CreateMessage) async {
+        if Task.isCancelled { return }
         /// Send the message, make sure it is successfully sent
         let response = await discordService.sendMessage(
             channelId: Constants.Channels.proposals.id,
@@ -146,6 +147,7 @@ actor ProposalsChecker {
                 auto_archive_duration: .threeDays
             )
         )
+        /// "Publish" the message to other announcement-channel subscribers
         await discordService.crosspostMessage(
             channelId: message.channel_id,
             messageId: message.id
@@ -233,7 +235,7 @@ actor ProposalsChecker {
 
     private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
         let link = proposal.link.sanitized()
-        if link.isEmpty { return [] }
+        if link.count < 4 { return [] }
         let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
         let fullGithubLink = githubProposalsPrefix + link
         
@@ -291,7 +293,12 @@ actor ProposalsChecker {
         let rawQuery = title + " #evolution"
         guard let query = rawQuery.addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed
-        ) else { return nil }
+        ) else {
+            logger.warning("Couldn't url-encode forum-search queries", metadata: [
+                "rawQuery": .string(rawQuery)
+            ])
+            return nil
+        }
         let link = "https://forums.swift.org/search?q=\(query)"
         return link
     }
@@ -341,7 +348,7 @@ private extension Proposal.User {
     }
 }
 
-struct QueuedProposal {
+private struct QueuedProposal {
     let uuid = UUID()
     let firstKnownStateBeforeQueue: Proposal.Status.State?
     var updatedAt: Date

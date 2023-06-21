@@ -30,10 +30,7 @@ struct Penny {
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await ServiceFactory.makePingsService().initialize(httpClient: client)
         await DefaultCoinService.shared.initialize(httpClient: client)
-        await ProposalsChecker.shared.initialize(
-            proposalsService: ServiceFactory.makeProposalsService(client)
-        )
-        ProposalsChecker.shared.run()
+        await ServiceFactory.initializeAndRunProposalsChecker(client)
         await CommandsManager().registerCommands()
         await BotStateManager.shared.initialize()
 
