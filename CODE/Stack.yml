@@ -403,6 +403,9 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
 Outputs:
+  helpsLambdaArn:
+    Value: !GetAtt helpsFunction.Arn
+
   autoPingsLambdaArn:
     Value: !GetAtt autoPingsFunction.Arn
 
