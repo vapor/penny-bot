@@ -542,12 +542,13 @@ private extension InteractionHandler {
             .requireOption(named: "name")
             .requireString()
         let foldedName = name.heavyFolded()
-        return try await Payloads.InteractionResponse.Autocomplete(choices: helpsService
-            .getAll()
-            .filter { $0.key.heavyFolded().contains(foldedName) }
-            .sorted { $0.key < $1.key }
-            .prefix(25)
-            .map { .init(name: $0.key, value: .string($0.value)) }
+        return try await Payloads.InteractionResponse.Autocomplete(
+            choices: helpsService
+                .getAll()
+                .filter { $0.key.heavyFolded().contains(foldedName) }
+                .sorted { $0.key < $1.key }
+                .prefix(25)
+                .map { .init(name: $0.key, value: .string($0.value)) }
         )
     }
     

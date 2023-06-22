@@ -46,7 +46,7 @@ actor DefaultHelpsService: HelpsService {
 
     @discardableResult
     func send(request helpsRequest: HelpsRequest) async throws -> [String: String] {
-        let url = Constants.apiBaseUrl + "/helps/"
+        let url = Constants.apiBaseUrl + "/helps"
         var request = HTTPClientRequest(url: url)
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
