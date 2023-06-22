@@ -19,10 +19,10 @@ public struct S3AutoPingItems: Sendable, Codable {
             }
         }
 
-        /// Exact match (with some insensitivity, such as case-insensitivity)
-        case matches(String)
         /// Containment (with some insensitivity, such as case-insensitivity)
         case contains(String)
+        /// Exact match (with some insensitivity, such as case-insensitivity)
+        case matches(String)
         
         public var kind: Kind {
             switch self {

@@ -160,12 +160,11 @@ private extension InteractionHandler {
 
                 return components.joined(separator: "\n\n")
             case .remove:
-                let _text = try modal.components
+                let allExpressions = try modal.components
                     .requireComponent(customId: "texts")
                     .requireTextInput()
                     .value.requireValue()
-
-                let allExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+                    .divideIntoAutoPingsExpressions(mode: mode)
 
                 if allExpressions.isEmpty {
                     return "The list you sent seems to be empty."
@@ -194,7 +193,7 @@ private extension InteractionHandler {
                 if !newExpressions.isEmpty {
                     components.append(
                         """
-                        Some expressions were not available in your pings list at all:
+                        Some expressions were not available in your pings list at all with '\(mode.UIDescription)' mode:
                         \(newExpressions.makeExpressionListForDiscord())
                         """
                     )
