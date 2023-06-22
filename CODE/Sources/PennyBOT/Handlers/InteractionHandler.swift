@@ -533,16 +533,12 @@ private extension InteractionHandler {
             .requireOption(named: "name")
             .requireString()
         let foldedName = name.heavyFolded()
-        var choices = try await helpsService
+        return try await Payloads.InteractionResponse.Autocomplete(choices: helpsService
             .getAll()
-            .filter({ $0.key.heavyFolded().contains(foldedName) })
-            .sorted(by: { $0.key < $1.key })
-        /// Discord only allows sending a max of 25 choices
-        if choices.count > 25 {
-            choices = Array(choices.dropLast(choices.count - 25))
-        }
-        return Payloads.InteractionResponse.Autocomplete(
-            choices: choices.map { .init(name: $0.key, value: .string($0.value)) }
+            .filter { $0.key.heavyFolded().contains(foldedName) }
+            .sorted { $0.key < $1.key }
+            .prefix(25)
+            .map { .init(name: $0.key, value: .string($0.value)) }
         )
     }
     
