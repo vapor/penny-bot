@@ -311,13 +311,6 @@ Resources:
       IntegrationUri: !GetAtt helpsFunction.Arn
       PayloadFormatVersion: '2.0'
 
-  helpsRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref apiGateway
-      RouteKey: 'GET /helps/'
-      Target: !Sub "integrations/${helpsIntegration}"
-
   helpsRoutePost:
     Type: AWS::ApiGatewayV2::Route
     Properties:
