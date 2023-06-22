@@ -319,6 +319,15 @@ private extension InteractionHandler {
                     """
                 }
 
+                if name.unicodeScalars.count > 95 {
+                    return """
+                    Name cannot be more than 95 letters.
+
+                    New value:
+                    > \(newValue)
+                    """
+                }
+
                 let all = try await helpsService.getAll()
 
                 if let similar = all.first(where: {
