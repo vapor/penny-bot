@@ -511,7 +511,7 @@ private extension InteractionHandler {
                     .map(\.rawValue)
                     .map(DiscordUtils.mention(id:))
                     .joined(separator: " ")
-                return "You don't have access level for this command. This command is only available to \(rolesString)"
+                return "You don't have access to this command; it is only available to \(rolesString)"
             }
             let modalId = ModalID.help(.add)
             return modalId.makeModal()
