@@ -55,7 +55,6 @@ extension String {
 
 extension Array where Element: StringProtocol {
     func containsSequence(_ other: Self) -> Bool {
-        
         if other.count > self.count { return false }
         
         for idx in 0..<(self.count - other.count + 1) {
