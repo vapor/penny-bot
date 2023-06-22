@@ -30,7 +30,7 @@ jobs:
         id: s3deploy
         uses: jakejarvis/s3-sync-action@master
         with:
-          args: --acl public-read --follow-symlinks --delete
+          args: --acl public-read --follow-symlinks
         env:
           AWS_S3_BUCKET: "penny-discord-bot"
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
