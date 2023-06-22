@@ -63,7 +63,10 @@ struct InteractionHandler {
                 response = try await handleHelpCommandAutocomplete(options: options)
             } catch {
                 logger.report("Help command error", error: error)
-                response = self.oops
+                /// An `autocomplete`'s response must be an autocomplete payload.
+                response = Payloads.InteractionResponse.Autocomplete(
+                    choices: [.init(name: "Failure", value: .string(self.oops))]
+                )
             }
             await respond(with: response, shouldEdit: false)
         case let .modalSubmit(modal):
@@ -338,7 +341,11 @@ private extension InteractionHandler {
                     "name": .string(name),
                     "value": .string(newValue),
                 ])
-                try await helpsService.insert(name: name, value: newValue)
+
+                discardingResult {
+                    try await helpsService.insert(name: name, value: newValue)
+                }
+
                 return """
                 Added a new help-text with name '\(name)':
 
@@ -502,7 +509,11 @@ private extension InteractionHandler {
                 "name": .string(name),
                 "value": .string(value),
             ])
-            try await helpsService.remove(name: name)
+
+            discardingResult {
+                try await helpsService.remove(name: name)
+            }
+            
             return "Removed a help-text with name '\(name)'"
         case .add:
             guard let member = event.member else {
@@ -532,7 +543,7 @@ private extension InteractionHandler {
         let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
         guard [.get, .remove].contains(subcommand) else {
             logger.error(
-                "Unrecognized 'help' subcommand for autocomplete",
+                "Unexpected 'help' subcommand for autocomplete",
                 metadata: ["subcommand": "\(subcommand)"]
             )
             return oops
@@ -553,7 +564,10 @@ private extension InteractionHandler {
     }
     
     func requireExpressionMode(_ options: [InteractionOption]?) throws -> Expression.Kind {
-        let optionValue = try options.requireValue().requireOption(named: "mode").requireString()
+        let optionValue = try options
+            .requireValue()
+            .requireOption(named: "mode")
+            .requireString()
         return try Expression.Kind(rawValue: optionValue).requireValue()
     }
     

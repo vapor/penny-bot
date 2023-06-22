@@ -91,7 +91,7 @@ actor DefaultHelpsService: HelpsService {
                 /// To freshen the cache
                 _ = try await self.send(request: .all)
             } catch {
-                logger.report("Couldn't automatically freshen auto-pings cache", error: error)
+                logger.report("Couldn't automatically freshen helps cache", error: error)
             }
         }
     }
