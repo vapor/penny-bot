@@ -199,12 +199,14 @@ private extension Sequence<Substring> {
 }
 
 private extension Substring {
+    private static var ignorable = Set(["", "and", "&"])
+
     /// These strings are considered neutral, and in the logic above we can ignore them.
     ///
     /// NOTE: The logic in `CoinHandler`, intentionally adds spaces after and before each
     /// user-mention. That means we _need_ to remove empty strings to neutralize those
     /// intentional spaces.
     var isIgnorable: Bool {
-        ["", "and", "&"].contains(self.lowercased())
+        Self.ignorable.contains(self.lowercased())
     }
 }
