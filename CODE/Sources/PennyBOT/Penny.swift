@@ -8,7 +8,7 @@ struct Penny {
         Backtrace.install()
 
         /// Use `1` instead of `System.coreCount`.
-        /// This is preferred for apps that primarily use structured concurrency.
+        /// This is preferred for apps that primarily use structured concurrency
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
 
