@@ -35,7 +35,7 @@ enum SlashCommand: String, CaseIterable {
         case .autoPings:
             return "Configure Penny to ping you when certain someone uses a word/text"
         case .help:
-            return "Ask Penny to send a predefined help message"
+            return "Display help and usage information for Penny"
         case .howManyCoins:
             return "See how many coins members have"
         case .howManyCoinsApp:
