@@ -67,7 +67,7 @@ class OtherTests: XCTestCase {
     }
     
     /// The `Codable` logic of `S3AutoPingItems.Expression` is manual, so we
-    /// need to make sure it actually works or it might corrupt the repository file.
+    /// need to make sure it actually works or it might corrupt the repository file
     func testAutoPingItemExpressionCodable() throws {
         typealias Expression = S3AutoPingItems.Expression
         
