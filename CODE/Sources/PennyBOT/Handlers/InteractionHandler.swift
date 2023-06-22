@@ -553,21 +553,21 @@ private extension InteractionHandler {
             .requireOption(named: "name")
             .requireString()
         let foldedName = name.heavyFolded()
-        let all = try await helpsService.getAll()
-        let queried: ArraySlice<(key: String, value: String)>
+        let all = try await helpsService.getAll().map(\.key)
+        let queried: ArraySlice<String>
         if foldedName.isEmpty {
             queried = ArraySlice(all.prefix(25))
         } else {
             queried = all
-                .filter { $0.key.heavyFolded().contains(foldedName) }
-                .sorted { $0.key < $1.key }
+                .filter { $0.heavyFolded().contains(foldedName) }
+                .sorted { $0 > $1 }
                 .prefix(25)
         }
         return Payloads.InteractionResponse.Autocomplete(
-            choices: queried.map {
+            choices: queried.map { name in
                 ApplicationCommand.Option.Choice(
-                    name: $0.key,
-                    value: .string($0.value)
+                    name: name,
+                    value: .string(name)
                 )
             }
         )
