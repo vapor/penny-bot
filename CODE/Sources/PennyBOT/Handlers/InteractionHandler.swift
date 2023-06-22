@@ -57,10 +57,9 @@ struct InteractionHandler {
                 logger.error("Unrecognized autocomplete command")
                 return await sendInteractionResolveFailure()
             }
-            let options = data.options ?? []
             let response: any Response
             do {
-                response = try await handleHelpCommandAutocomplete(options: options)
+                response = try await handleHelpCommandAutocomplete(data: data)
             } catch {
                 logger.report("Help command error", error: error)
                 /// An `autocomplete`'s response must be an autocomplete payload.
@@ -213,7 +212,7 @@ private extension InteractionHandler {
                     .requireTextInput()
 
                 if let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
-                    !_text.isEmpty {
+                   !_text.isEmpty {
                     let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
 
                     let divided = message.divideForPingCommandExactMatchChecking()
@@ -299,59 +298,75 @@ private extension InteractionHandler {
                 }
             }
         case let .help(helpMode):
+            let name = try modal.components
+                .requireComponent(customId: "name")
+                .requireTextInput()
+                .value.requireValue()
+            let newValue = try modal.components
+                .requireComponent(customId: "value")
+                .requireTextInput()
+                .value.requireValue()
+
+            if name.contains("\n") {
+                let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
+                return """
+                The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
+
+                New value:
+                > \(newValue)
+                """
+            }
+
+            let all = try await helpsService.getAll()
+
+            if let similar = all.first(where: {
+                $0.key.heavyFolded() == name &&
+                $0.key != name
+            })?.key {
+                return """
+                The entered name '\(DiscordUtils.escapingSpecialCharacters(name))' is too similar to another name '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
+                This will cause ambiguity for users.
+
+                New value:
+                \(newValue)
+                """
+            }
+
             switch helpMode {
             case .add:
-                let name = try modal.components
-                    .requireComponent(customId: "name")
-                    .requireTextInput()
-                    .value.requireValue()
-                let newValue = try modal.components
-                    .requireComponent(customId: "value")
-                    .requireTextInput()
-                    .value.requireValue()
-
-                if name.contains("\n") {
-                    let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
-                    return """
-                    The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
-
-                    New value:
-                    > \(newValue)
-                    """
-                }
-
-                if let value = try await helpsService.get(name: name) {
+                if let value = all[name] {
                     return """
                     A help-text with name '\(name)' already exists. Please remove it first.
 
                     New value:
-                    > \(newValue)
+                    \(newValue)
 
                     Old value:
-                    > \(value)
+                    \(value)
                     """
                 }
-
-                if name.isEmpty || newValue.isEmpty {
-                    return "'name' or 'value' seem empty to me :("
-                }
-                /// The response of this command is ephemeral so members feel free to add help-texts.
-                /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will add a help-text", metadata: [
-                    "name": .string(name),
-                    "value": .string(newValue),
-                ])
-
-                discardingResult {
-                    try await helpsService.insert(name: name, value: newValue)
-                }
-
-                return """
-                Added a new help-text with name '\(name)':
-
-                > \(newValue)
-                """
+            case .edit: break
             }
+
+            if name.isEmpty || newValue.isEmpty {
+                return "'name' or 'value' seem empty to me :("
+            }
+            /// The response of this command is ephemeral so members feel free to add help-texts.
+            /// We will log this action so we can know if something malicious is happening.
+            logger.notice("Will add a help-text", metadata: [
+                "name": .string(name),
+                "value": .string(newValue),
+            ])
+
+            discardingResult {
+                try await helpsService.insert(name: name, value: newValue)
+            }
+
+            return """
+            Added a new help-text with name '\(name)':
+
+            \(newValue)
+            """
         }
     }
 
@@ -390,10 +405,7 @@ private extension InteractionHandler {
             case .help:
                 return try await handleHelpCommand(options: options)
             case .howManyCoins:
-                return try await handleHowManyCoinsCommand(
-                    author: event.member?.user ?? event.user,
-                    options: options
-                )
+                return try await handleHowManyCoinsCommand(options: options)
             case .howManyCoinsApp:
                 return try await handleHowManyCoinsAppCommand()
             }
@@ -471,7 +483,7 @@ private extension InteractionHandler {
             /// This is ephemeral so members feel free to remove stuff,
             /// but we will log this action so we can know if something malicious is happening.
             guard await sendAcknowledgement(isEphemeral: true) else { return nil }
-        case .add:
+        case .add, .edit:
             /// Uses modals so can't send an acknowledgment first.
             break
         }
@@ -516,12 +528,8 @@ private extension InteractionHandler {
 
             return "Removed a help-text with name '\(name)'"
         case .add:
-            guard let member = event.member else {
-                logger.error("Discord did not send required info")
-                return oops
-            }
             guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-                member: member
+                member: try event.member.requireValue()
             ) else {
                 /// To not make things too complicated for now, send an acknowledgment,
                 /// so the String we return can be sent as an "edit".
@@ -535,11 +543,29 @@ private extension InteractionHandler {
             }
             let modalId = ModalID.help(.add)
             return modalId.makeModal()
+        case .edit:
+            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: try event.member.requireValue()
+            ) else {
+                /// To not make things too complicated for now, send an acknowledgment,
+                /// so the String we return can be sent as an "edit".
+                guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+                let rolesString = Constants.Roles
+                    .elevatedRestrictedCommandsAccess
+                    .map(\.rawValue)
+                    .map(DiscordUtils.mention(id:))
+                    .joined(separator: " ")
+                return "You don't have access to this command; it is only available to \(rolesString)"
+            }
+            let modalId = ModalID.help(.edit)
+            return modalId.makeModal()
         }
     }
 
-    func handleHelpCommandAutocomplete(options: [InteractionOption]) async throws -> any Response {
-        let first = try options.first.requireValue()
+    func handleHelpCommandAutocomplete(
+        data: Interaction.ApplicationCommand
+    ) async throws -> any Response {
+        let first = try (data.options?.first).requireValue()
         let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
         guard [.get, .remove].contains(subcommand) else {
             logger.error(
@@ -591,18 +617,13 @@ private extension InteractionHandler {
         return try await getCoinCount(of: user)
     }
     
-    func handleHowManyCoinsCommand(
-        author: DiscordUser?,
-        options: [InteractionOption]
-    ) async throws -> String {
+    func handleHowManyCoinsCommand(options: [InteractionOption]) async throws -> String {
         let user: String
         if let userOption = options.first?.value?.asString {
             user = "<@\(userOption)>"
         } else {
-            guard let id = author?.id else {
-                logger.error("Coin-count command could not find a user")
-                return oops
-            }
+            let author = event.member?.user ?? event.user
+            let id = try (author?.id).requireValue()
             user = "<@\(id.rawValue)>"
         }
         return try await getCoinCount(of: user)
@@ -681,6 +702,7 @@ private enum ModalID {
 
     enum HelpMode: String {
         case add
+        case edit
     }
 
     case autoPings(AutoPingsMode, Expression.Kind)
@@ -739,7 +761,7 @@ private enum ModalID {
             }
         case let .help(helpMode):
             switch helpMode {
-            case .add:
+            case .add, .edit:
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
                     style: .paragraph,

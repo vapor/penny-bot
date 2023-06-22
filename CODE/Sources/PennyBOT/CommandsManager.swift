@@ -174,7 +174,7 @@ enum AutoPingsSubCommand: String, CaseIterable {
 }
 
 enum HelpSubCommand: String, CaseIterable {
-    case get, add, remove
+    case get, add, edit, remove
 
     var description: String {
         switch self {
@@ -182,6 +182,8 @@ enum HelpSubCommand: String, CaseIterable {
             return "Get a help-text"
         case .add:
             return "Add a new help-text"
+        case .edit:
+            return "Add or replace with a new help-text"
         case .remove:
             return "Remove a help-text"
         }
@@ -197,7 +199,7 @@ enum HelpSubCommand: String, CaseIterable {
                 required: true,
                 autocomplete: true
             )]
-        case .add:
+        case .add, .edit:
             return []
         }
     }
