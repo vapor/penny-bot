@@ -20,7 +20,7 @@ public struct FakeHelpsService: HelpsService {
         try await self.getAll()[name]
     }
 
-    public func get(nameHash: Int) async throws -> String? {
+    public func getName(hash: Int) async throws -> String? {
         fatalError("not implemented")
     }
 

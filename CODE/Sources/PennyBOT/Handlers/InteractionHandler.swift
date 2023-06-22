@@ -366,7 +366,7 @@ private extension InteractionHandler {
                 \(newValue)
                 """
             case let .edit(nameHash):
-                guard let name = try await helpsService.get(nameHash: nameHash) else {
+                guard let name = try await helpsService.getName(hash: nameHash) else {
                     logger.warning(
                         "This should be very rare ... a name doesn't exist anymore to edit",
                         metadata: ["nameHash": .stringConvertible(nameHash)]
@@ -828,7 +828,7 @@ private enum ModalID {
             }
         case let .help(helpMode):
             switch helpMode {
-            case .add, .edit:
+            case .add:
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
                     style: .paragraph,
@@ -849,6 +849,19 @@ private enum ModalID {
                     """
                 )
                 return [name, value]
+            case .edit:
+                let value = Interaction.ActionRow.TextInput(
+                    custom_id: "value",
+                    style: .paragraph,
+                    label: "The value of the faq",
+                    min_length: 3,
+                    required: true,
+                    placeholder: """
+                    Example:
+                    How to set your working directory: <link>
+                    """
+                )
+                return [value]
             }
         }
     }

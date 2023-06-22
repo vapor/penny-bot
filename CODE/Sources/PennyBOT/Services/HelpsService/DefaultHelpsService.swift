@@ -39,12 +39,8 @@ actor DefaultHelpsService: HelpsService {
         try await self.getAll()[name]
     }
 
-    func get(nameHash: Int) async throws -> String? {
-        if let name = try await self.getAllNamesHashTable()[nameHash] {
-            return try await self.get(name: name)
-        } else {
-            return nil
-        }
+    func getName(hash: Int) async throws -> String? {
+        try await self.getAllNamesHashTable()[hash]
     }
 
     func getAll() async throws -> [String: String] {
