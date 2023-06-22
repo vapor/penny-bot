@@ -63,9 +63,9 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .byName(name: "PennyExtensions"),
-                .byName(name: "PennyServices"),
-                .byName(name: "PennyModels"),
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennyAPI/AddCoin",
             swiftSettings: swiftSettings
@@ -77,8 +77,8 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .byName(name: "PennyModels"),
-                .byName(name: "PennyRepositories"),
+                .target(name: "PennyModels"),
+                .target(name: "PennyRepositories"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -90,8 +90,8 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SotoSecretsManager", package: "soto"),
-                .byName(name: "PennyExtensions"),
-                .byName(name: "PennyServices"),
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
             ],
             path: "./Sources/PennyAPI/Sponsors",
             swiftSettings: swiftSettings
@@ -101,9 +101,9 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .byName(name: "PennyExtensions"),
-                .byName(name: "PennyServices"),
-                .byName(name: "PennyModels"),
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennyAPI/AutoPings",
             swiftSettings: swiftSettings
@@ -113,9 +113,9 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .byName(name: "PennyExtensions"),
-                .byName(name: "PennyServices"),
-                .byName(name: "PennyModels"),
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennyAPI/Helps",
             swiftSettings: swiftSettings
@@ -139,8 +139,8 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "SotoS3", package: "soto"),
-                .byName(name: "PennyModels"),
-                .byName(name: "PennyExtensions"),
+                .target(name: "PennyModels"),
+                .target(name: "PennyExtensions"),
             ],
             path: "./Sources/PennySHARED/Repositories",
             swiftSettings: swiftSettings
@@ -149,8 +149,8 @@ let package = Package(
             name: "PennyServices",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .byName(name: "PennyRepositories"),
-                .byName(name: "PennyModels"),
+                .target(name: "PennyRepositories"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennySHARED/Services",
             swiftSettings: swiftSettings
@@ -160,9 +160,9 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
-                .byName(name: "PennyBOT"),
-                .byName(name: "PennyRepositories"),
-                .byName(name: "PennyLambdaAddCoins"),
+                .target(name: "PennyBOT"),
+                .target(name: "PennyRepositories"),
+                .target(name: "PennyLambdaAddCoins"),
             ],
             path: "./Tests/Fake",
             swiftSettings: swiftSettings
@@ -171,10 +171,10 @@ let package = Package(
             name: "PennyBOTTests",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .byName(name: "PennyBOT"),
-                .byName(name: "PennyRepositories"),
-                .byName(name: "PennyLambdaAddCoins"),
-                .byName(name: "Fake"),
+                .target(name: "PennyBOT"),
+                .target(name: "PennyRepositories"),
+                .target(name: "PennyLambdaAddCoins"),
+                .target(name: "Fake"),
             ],
             swiftSettings: swiftSettings
         ),
