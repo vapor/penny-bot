@@ -513,7 +513,7 @@ private extension InteractionHandler {
             discardingResult {
                 try await helpsService.remove(name: name)
             }
-            
+
             return "Removed a help-text with name '\(name)'"
         case .add:
             guard let member = event.member else {
@@ -553,13 +553,23 @@ private extension InteractionHandler {
             .requireOption(named: "name")
             .requireString()
         let foldedName = name.heavyFolded()
-        return try await Payloads.InteractionResponse.Autocomplete(
-            choices: helpsService
-                .getAll()
+        let all = try await helpsService.getAll()
+        let queried: ArraySlice<(key: String, value: String)>
+        if foldedName.isEmpty {
+            queried = ArraySlice(all.prefix(25))
+        } else {
+            queried = all
                 .filter { $0.key.heavyFolded().contains(foldedName) }
                 .sorted { $0.key < $1.key }
                 .prefix(25)
-                .map { .init(name: $0.key, value: .string($0.value)) }
+        }
+        return Payloads.InteractionResponse.Autocomplete(
+            choices: queried.map {
+                ApplicationCommand.Option.Choice(
+                    name: $0.key,
+                    value: .string($0.value)
+                )
+            }
         )
     }
     
