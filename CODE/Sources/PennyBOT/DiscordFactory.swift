@@ -45,7 +45,7 @@ enum DiscordFactory {
     static var bootstrapLoggingSystem: (HTTPClient) async -> Void = { httpClient in
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
-        // so we can just use a fake url
+        // so we can just use an invalid url
         let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 #else
         guard let webhookUrl = Constants.loggingWebhookUrl else {
