@@ -12,6 +12,9 @@ actor DefaultHelpsService: HelpsService {
 
     /// Use `getAll()` to retrieve.
     var _cachedItems: [String: String]?
+    /// Use `getAllNamesHashTable()` to retrieve.
+    /// `[NameHash: Name]`
+    var _cachedNamesHashTable: [Int: String]?
     var resetItemsTask: Task<(), Never>?
 
     private init() { }
@@ -36,16 +39,34 @@ actor DefaultHelpsService: HelpsService {
         try await self.getAll()[name]
     }
 
+    func get(nameHash: Int) async throws -> String? {
+        if let name = try await self.getAllNamesHashTable()[nameHash] {
+            return try await self.get(name: name)
+        } else {
+            return nil
+        }
+    }
+
     func getAll() async throws -> [String: String] {
         if let cachedItems = _cachedItems {
             return cachedItems
         } else {
-            return try await self.send(request: .all)
+            try await self.send(request: .all)
+            return _cachedItems ?? [:]
         }
     }
 
-    @discardableResult
-    func send(request helpsRequest: HelpsRequest) async throws -> [String: String] {
+    func getAllNamesHashTable() async throws -> [Int: String] {
+        if let cachedItems = _cachedNamesHashTable {
+            return cachedItems
+        } else {
+            try await self.send(request: .all)
+            return _cachedNamesHashTable ?? [:]
+        }
+    }
+
+    /// Must "freshenCache" if it didn't throw an error.
+    func send(request helpsRequest: HelpsRequest) async throws {
         let url = Constants.apiBaseUrl + "/helps"
         var request = HTTPClientRequest(url: url)
         request.method = .POST
@@ -74,7 +95,6 @@ actor DefaultHelpsService: HelpsService {
         let items = try JSONDecoder().decode([String: String].self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
-        return items
     }
 
     private func freshenCache(_ new: [String: String]) {
@@ -82,6 +102,11 @@ actor DefaultHelpsService: HelpsService {
             "new": .stringConvertible(new)
         ])
         self._cachedItems = new
+        /// There is an insignificant chance that there will be duplicate hashes for different keys,
+        /// in which case i'd rather deal with a crash, than some buggy behavior.
+        self._cachedNamesHashTable = Dictionary(
+            uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })
+        )
         self.resetItemsTask?.cancel()
     }
 

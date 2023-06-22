@@ -53,7 +53,7 @@ struct InteractionHandler {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
             }
-            guard command == .help else {
+            guard command == .faqs else {
                 logger.error("Unrecognized autocomplete command")
                 return await sendInteractionResolveFailure()
             }
@@ -298,45 +298,45 @@ private extension InteractionHandler {
                 }
             }
         case let .help(helpMode):
-            let name = try modal.components
-                .requireComponent(customId: "name")
-                .requireTextInput()
-                .value.requireValue()
-            let newValue = try modal.components
-                .requireComponent(customId: "value")
-                .requireTextInput()
-                .value.requireValue()
-
-            if name.contains("\n") {
-                let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
-                return """
-                The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
-
-                New value:
-                > \(newValue)
-                """
-            }
-
-            let all = try await helpsService.getAll()
-
-            if let similar = all.first(where: {
-                $0.key.heavyFolded() == name &&
-                $0.key != name
-            })?.key {
-                return """
-                The entered name '\(DiscordUtils.escapingSpecialCharacters(name))' is too similar to another name '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
-                This will cause ambiguity for users.
-
-                New value:
-                \(newValue)
-                """
-            }
-
             switch helpMode {
             case .add:
+                let name = try modal.components
+                    .requireComponent(customId: "name")
+                    .requireTextInput()
+                    .value.requireValue()
+                let newValue = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if name.contains("\n") {
+                    let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
+                    return """
+                    The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
+
+                    New value:
+                    > \(newValue)
+                    """
+                }
+
+                let all = try await helpsService.getAll()
+
+                if let similar = all.first(where: {
+                    $0.key.heavyFolded().filter({ !$0.isWhitespace }) == name &&
+                    $0.key != name
+                })?.key {
+                    return """
+                    The entered name '\(DiscordUtils.escapingSpecialCharacters(name))' is too similar to another name '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
+                    This will cause ambiguity for users.
+
+                    New value:
+                    \(newValue)
+                    """
+                }
+
                 if let value = all[name] {
                     return """
-                    A help-text with name '\(name)' already exists. Please remove it first.
+                    A faq with name '\(name)' already exists. Please remove it first.
 
                     New value:
                     \(newValue)
@@ -345,28 +345,60 @@ private extension InteractionHandler {
                     \(value)
                     """
                 }
-            case .edit: break
+
+                if name.isEmpty || newValue.isEmpty {
+                    return "'name' or 'value' seem empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add faqs.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will add a faq", metadata: [
+                    "name": .string(name),
+                    "value": .string(newValue),
+                ])
+
+                discardingResult {
+                    try await helpsService.insert(name: name, value: newValue)
+                }
+
+                return """
+                Added a new faq with name '\(name)':
+
+                \(newValue)
+                """
+            case let .edit(nameHash):
+                guard let name = try await helpsService.get(nameHash: nameHash) else {
+                    logger.warning(
+                        "This should be very rare ... a name doesn't exist anymore to edit",
+                        metadata: ["nameHash": .stringConvertible(nameHash)]
+                    )
+                    return "The name no longer exists!"
+                }
+                let newValue = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if name.isEmpty || newValue.isEmpty {
+                    return "'name' or 'value' seem empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add faqs.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will edit a faq", metadata: [
+                    "name": .string(name),
+                    "value": .string(newValue),
+                ])
+
+                discardingResult {
+                    try await helpsService.insert(name: name, value: newValue)
+                }
+
+                return """
+                Edited a faq with name '\(name)':
+
+                \(newValue)
+                """
             }
 
-            if name.isEmpty || newValue.isEmpty {
-                return "'name' or 'value' seem empty to me :("
-            }
-            /// The response of this command is ephemeral so members feel free to add help-texts.
-            /// We will log this action so we can know if something malicious is happening.
-            logger.notice("Will add a help-text", metadata: [
-                "name": .string(name),
-                "value": .string(newValue),
-            ])
-
-            discardingResult {
-                try await helpsService.insert(name: name, value: newValue)
-            }
-
-            return """
-            Added a new help-text with name '\(name)':
-
-            \(newValue)
-            """
         }
     }
 
@@ -402,7 +434,7 @@ private extension InteractionHandler {
                 return try handleLinkCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
-            case .help:
+            case .faqs:
                 return try await handleHelpCommand(options: options)
             case .howManyCoins:
                 return try await handleHowManyCoinsCommand(options: options)
@@ -475,7 +507,7 @@ private extension InteractionHandler {
 
     func handleHelpCommand(options: [InteractionOption]) async throws -> (any Response)? {
         let first = try options.first.requireValue()
-        let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
+        let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
         switch subcommand {
         case .get:
             guard await sendAcknowledgement(isEphemeral: false) else { return nil }
@@ -496,7 +528,7 @@ private extension InteractionHandler {
             if let value = try await helpsService.get(name: name) {
                 return value
             } else {
-                return "No help-text with name '\(name)' exists at all"
+                return "No faq with name '\(name)' exists at all"
             }
         case .remove:
             let name = try first.options
@@ -515,9 +547,9 @@ private extension InteractionHandler {
                 return "You don't have access to this command; it is only available to \(rolesString)"
             }
             guard let value = try await helpsService.get(name: name) else {
-                return "No help-text with name '\(name)' exists at all"
+                return "No faq with name '\(name)' exists at all"
             }
-            logger.warning("Will remove a help-text", metadata: [
+            logger.warning("Will remove a faq", metadata: [
                 "name": .string(name),
                 "value": .string(value),
             ])
@@ -526,7 +558,7 @@ private extension InteractionHandler {
                 try await helpsService.remove(name: name)
             }
 
-            return "Removed a help-text with name '\(name)'"
+            return "Removed a faq with name '\(name)'"
         case .add:
             guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
                 member: try event.member.requireValue()
@@ -544,6 +576,10 @@ private extension InteractionHandler {
             let modalId = ModalID.help(.add)
             return modalId.makeModal()
         case .edit:
+            let name = try first.options
+                .requireValue()
+                .requireOption(named: "name")
+                .requireString()
             guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
                 member: try event.member.requireValue()
             ) else {
@@ -557,8 +593,12 @@ private extension InteractionHandler {
                     .joined(separator: " ")
                 return "You don't have access to this command; it is only available to \(rolesString)"
             }
-            let modalId = ModalID.help(.edit)
-            return modalId.makeModal()
+            if try await helpsService.get(name: name) != nil {
+                let modalId = ModalID.help(.edit(nameHash: name.hash))
+                return modalId.makeModal()
+            } else {
+                return "No faq with name '\(name)' exists at all"
+            }
         }
     }
 
@@ -566,8 +606,8 @@ private extension InteractionHandler {
         data: Interaction.ApplicationCommand
     ) async throws -> any Response {
         let first = try (data.options?.first).requireValue()
-        let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
-        guard [.get, .remove].contains(subcommand) else {
+        let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
+        guard [.get, .edit, .remove].contains(subcommand) else {
             logger.error(
                 "Unexpected 'help' subcommand for autocomplete",
                 metadata: ["subcommand": "\(subcommand)"]
@@ -682,13 +722,13 @@ extension SlashCommand {
     var isEphemeral: Bool {
         switch self {
         case .link, .autoPings, .howManyCoins, .howManyCoinsApp: return true
-        case .help: return false
+        case .faqs: return false
         }
     }
 
     var shouldSendAcknowledgment: Bool {
         switch self {
-        case .autoPings, .help: return false
+        case .autoPings, .faqs: return false
         case .link, .howManyCoins, .howManyCoinsApp: return true
         }
     }
@@ -700,9 +740,37 @@ private enum ModalID {
         case add, remove, test
     }
 
-    enum HelpMode: String {
+    enum HelpMode {
         case add
-        case edit
+        case edit(nameHash: Int)
+
+        var name: String {
+            switch self {
+            case .add:
+                return "Add"
+            case .edit:
+                return "Edit"
+            }
+        }
+
+        func makeForCustomId() -> String {
+            switch self {
+            case .add:
+                return "add"
+            case .edit(let nameHash):
+                return "edit-\(nameHash)"
+            }
+        }
+
+        init? (customIdPart part: String) {
+            if part == "add" {
+                self = .add
+            } else if part.hasPrefix("edit-"), let hash = Int(part.dropFirst(5)) {
+                self = .edit(nameHash: hash)
+            } else {
+                return nil
+            }
+        }
     }
 
     case autoPings(AutoPingsMode, Expression.Kind)
@@ -723,8 +791,7 @@ private enum ModalID {
             let expressionMode = expressionMode.UIDescription
             return "\(autoPingsMode) \(expressionMode) Auto-Pings"
         case let .help(helpMode):
-            let helpMode = helpMode.rawValue.capitalized
-            return "\(helpMode) Help Text"
+            return "\(helpMode.name) Help Text"
         }
     }
 
@@ -765,7 +832,7 @@ private enum ModalID {
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
                     style: .paragraph,
-                    label: "The name of the help-text",
+                    label: "The name of the faq",
                     min_length: 3,
                     required: true,
                     placeholder: "Example: Setting working directory in Xcode"
@@ -773,7 +840,7 @@ private enum ModalID {
                 let value = Interaction.ActionRow.TextInput(
                     custom_id: "value",
                     style: .paragraph,
-                    label: "The value of the help-text",
+                    label: "The value of the faq",
                     min_length: 3,
                     required: true,
                     placeholder: """
@@ -794,7 +861,7 @@ extension ModalID: RawRepresentable {
         case let .autoPings(autoPingsMode, expressionMode):
             return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
         case let .help(helpMode):
-            return "help;\(helpMode.rawValue)"
+            return "help;\(helpMode.makeForCustomId())"
         }
     }
 
@@ -807,7 +874,7 @@ extension ModalID: RawRepresentable {
             self = .autoPings(autoPingsMode, expressionMode)
         } else if split.count == 2,
                   split[0] == "help",
-                  let helpMode = HelpMode(rawValue: String(split[1])) {
+                  let helpMode = HelpMode(customIdPart: String(split[1])) {
             self = .help(helpMode)
         } else {
             return nil

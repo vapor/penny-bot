@@ -20,6 +20,10 @@ public struct FakeHelpsService: HelpsService {
         try await self.getAll()[name]
     }
 
+    public func get(nameHash: Int) async throws -> String? {
+        fatalError("not implemented")
+    }
+
     public func getAll() async throws -> [String: String] {
         try await FakeHelpsRepository().getAll()
     }

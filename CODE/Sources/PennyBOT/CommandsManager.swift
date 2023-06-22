@@ -24,7 +24,7 @@ struct CommandsManager {
 enum SlashCommand: String, CaseIterable {
     case link
     case autoPings = "auto-pings"
-    case help
+    case faqs
     case howManyCoins = "how-many-coins"
     case howManyCoinsApp = "How Many Coins?"
 
@@ -34,7 +34,7 @@ enum SlashCommand: String, CaseIterable {
             return "Links your accounts in Penny"
         case .autoPings:
             return "Configure Penny to ping you when certain someone uses a word/text"
-        case .help:
+        case .faqs:
             return "Display help and usage information for Penny"
         case .howManyCoins:
             return "See how many coins members have"
@@ -63,8 +63,8 @@ enum SlashCommand: String, CaseIterable {
                     options: subCommand.options
                 )
             }
-        case .help:
-            return HelpSubCommand.allCases.map { subCommand in
+        case .faqs:
+            return FaqsSubCommand.allCases.map { subCommand in
                 ApplicationCommand.Option(
                     type: .subCommand,
                     name: subCommand.rawValue,
@@ -91,7 +91,7 @@ enum SlashCommand: String, CaseIterable {
         switch self {
         case .howManyCoinsApp:
             return .user
-        case .link, .autoPings, .help, .howManyCoins:
+        case .link, .autoPings, .faqs, .howManyCoins:
             return nil
         }
     }
@@ -173,25 +173,25 @@ enum AutoPingsSubCommand: String, CaseIterable {
     )
 }
 
-enum HelpSubCommand: String, CaseIterable {
+enum FaqsSubCommand: String, CaseIterable {
     case get, add, edit, remove
 
     var description: String {
         switch self {
         case .get:
-            return "Get a help-text"
+            return "Get a faq"
         case .add:
-            return "Add a new help-text"
+            return "Add a new faq"
         case .edit:
-            return "Add or replace with a new help-text"
+            return "Add or replace with a new faq"
         case .remove:
-            return "Remove a help-text"
+            return "Remove a faq"
         }
     }
 
     var options: [ApplicationCommand.Option] {
         switch self {
-        case .get, .remove:
+        case .get, .remove, .edit:
             return [.init(
                 type: .string,
                 name: "name",
@@ -199,7 +199,7 @@ enum HelpSubCommand: String, CaseIterable {
                 required: true,
                 autocomplete: true
             )]
-        case .add, .edit:
+        case .add:
             return []
         }
     }
