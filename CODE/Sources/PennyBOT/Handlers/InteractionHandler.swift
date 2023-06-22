@@ -63,7 +63,7 @@ struct InteractionHandler {
                 response = try await handleHelpCommandAutocomplete(options: options)
             } catch {
                 logger.report("Help command error", error: error)
-                response =  oops
+                response = self.oops
             }
             await respond(with: response, shouldEdit: false)
         case let .modalSubmit(modal):
