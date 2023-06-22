@@ -377,9 +377,9 @@ actor DiscordService {
     }
 
     func memberHasRolesForElevatedRestrictedCommandsAccess(member: Guild.Member) -> Bool {
-        Constants.Roles.elevatedRestrictedCommandsAccess.contains(where: {
-            member.roles.contains($0.rawValue)
-        })
+        !Set(member.roles)
+            .intersection(Constants.Roles.elevatedRestrictedCommandsAccessSet)
+            .isEmpty
     }
 
 #if DEBUG

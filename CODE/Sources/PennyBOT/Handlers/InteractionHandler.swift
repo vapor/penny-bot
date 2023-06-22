@@ -303,37 +303,47 @@ private extension InteractionHandler {
                     .requireComponent(customId: "name")
                     .requireTextInput()
                     .value.requireValue()
-                    .trimmingCharacters(in: .whitespaces)
-                    .replacingOccurrences(of: "\n", with: " ")
+                let newValue = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if name.contains("\n") {
+                    let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
+                    return """
+                    The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
+
+                    New value:
+                    > \(newValue)
+                    """
+                }
 
                 if let value = try await helpsService.get(name: name) {
                     return """
-                    A help-text with name '\(name)' already exists. Please remove it first:
+                    A help-text with name '\(name)' already exists. Please remove it first.
 
+                    New value:
+                    > \(newValue)
+
+                    Old value:
                     > \(value)
                     """
                 }
 
-                let value = try modal.components
-                    .requireComponent(customId: "value")
-                    .requireTextInput()
-                    .value.requireValue()
-                    .trimmingCharacters(in: .whitespaces)
-
-                if name.isEmpty || value.isEmpty {
+                if name.isEmpty || newValue.isEmpty {
                     return "'name' or 'value' seem empty to me :("
                 }
                 /// The response of this command is ephemeral so members feel free to add help-texts.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.warning("Will add a help-text", metadata: [
+                logger.notice("Will add a help-text", metadata: [
                     "name": .string(name),
-                    "value": .string(value),
+                    "value": .string(newValue),
                 ])
-                try await helpsService.insert(name: name, value: value)
+                try await helpsService.insert(name: name, value: newValue)
                 return """
                 Added a new help-text with name '\(name)':
 
-                > \(value)
+                > \(newValue)
                 """
             }
         }
@@ -790,14 +800,14 @@ private protocol Response {
 extension String: Response {
     func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
         .channelMessageWithSource(.init(embeds: [.init(
-            description: self,
+            description: String(self.prefix(4_000)),
             color: .vaporPurple
         )], flags: isEphemeral ? [.ephemeral] : nil))
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
         .init(embeds: [.init(
-            description: self,
+            description: String(self.prefix(4_000)),
             color: .vaporPurple
         )])
     }

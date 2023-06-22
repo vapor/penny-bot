@@ -21,11 +21,6 @@ struct HelpsHandler: LambdaHandler {
         )
         self.awsClient = awsClient
         self.helpsRepo = RepositoryFactory.makeHelpsRepository((awsClient, context.logger))
-        context.terminator.register(name: "Shutdown AWS", handler: { eventLoop in
-            eventLoop.makeFutureWithTask {
-                try await awsClient.shutdown()
-            }
-        })
     }
 
     func handle(

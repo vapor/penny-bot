@@ -410,7 +410,7 @@ class GatewayProcessingTests: XCTestCase {
                 as: Payloads.EditWebhookMessage.self
             )
             let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("You don't have access level for this command. This command is only available to"), message)
+            XCTAssertTrue(message.hasPrefix("You don't have access to this command; it is only available to"), message)
         }
 
         do {

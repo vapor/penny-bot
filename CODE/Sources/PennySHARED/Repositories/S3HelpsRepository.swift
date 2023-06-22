@@ -33,7 +33,6 @@ struct S3HelpsRepository: HelpsRepository {
     }
 
     func getAll() async throws -> [String: String] {
-
         let response: S3.GetObjectOutput
 
         do {

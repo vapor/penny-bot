@@ -73,5 +73,12 @@ enum Constants {
             .moderator,
             .core,
         ]
+
+        static let elevatedRestrictedCommandsAccessSet: Set<RoleSnowflake> = Set([
+            Roles.contributor,
+            Roles.maintainer,
+            Roles.moderator,
+            Roles.core,
+        ].map(\.rawValue))
     }
 }

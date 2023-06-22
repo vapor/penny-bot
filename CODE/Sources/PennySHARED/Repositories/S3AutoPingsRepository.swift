@@ -43,7 +43,6 @@ struct S3AutoPingsRepository: AutoPingsRepository {
     }
     
     func getAll() async throws -> S3AutoPingItems {
-        
         let response: S3.GetObjectOutput
         
         do {
