@@ -318,6 +318,13 @@ Resources:
       RouteKey: 'GET /helps/'
       Target: !Sub "integrations/${helpsIntegration}"
 
+  helpsRoutePost:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /helps'
+      Target: !Sub "integrations/${helpsIntegration}"
+
   helpsFunction:
     Type: AWS::Lambda::Function
     Properties:
