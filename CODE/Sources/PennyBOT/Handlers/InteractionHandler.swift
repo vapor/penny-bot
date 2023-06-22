@@ -484,7 +484,7 @@ private extension InteractionHandler {
                     .map(\.rawValue)
                     .map(DiscordUtils.mention(id:))
                     .joined(separator: " ")
-                return "You don't have access level for this command. This command is only available to \(rolesString)"
+                return "You don't have access to this command; it is only available to \(rolesString)"
             }
             guard let value = try await helpsService.get(name: name) else {
                 return "No help-text with name '\(name)' exists at all"
