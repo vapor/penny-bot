@@ -32,7 +32,7 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeHelpsService = { FakeHelpsService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
-        ServiceFactory.initializeAndRunProposalsChecker = { _ in }
+        ServiceFactory.initiateProposalsChecker = { _ in }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         ReactionCache._tests_reset()

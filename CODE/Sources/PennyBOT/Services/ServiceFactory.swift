@@ -17,7 +17,7 @@ enum ServiceFactory {
         DefaultHelpsService.shared
     }
 
-    static var initializeAndRunProposalsChecker: (HTTPClient) async -> Void = {
+    static var initiateProposalsChecker: (HTTPClient) async -> Void = {
         await ProposalsChecker.shared.initialize(
             proposalsService: ServiceFactory.makeProposalsService($0)
         )
