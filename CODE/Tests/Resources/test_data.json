@@ -928,5 +928,304 @@
             "attachments": [],
             "guild_id": "431917998102675485"
         }
+    },
+    "helpsAdd": {
+        "t": "INTERACTION_CREATE",
+        "s": 6,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 2,
+            "token": "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 4194304,
+                    "id": "290483761559240704",
+                    "global_name": null,
+                    "display_name": null,
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "431920712505098240"
+                ],
+                "premium_since": null,
+                "permissions": "140737488355327",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1097057830038667314",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "entitlements": [],
+            "entitlement_sku_ids": [],
+            "data": {
+                "type": 1,
+                "options": [
+                    {
+                        "type": 1,
+                        "options": [],
+                        "name": "add"
+                    }
+                ],
+                "name": "help",
+                "id": "1096827807507689732"
+            },
+            "channel_id": "1016614538398937098",
+            "channel": {
+                "type": 0,
+                "topic": null,
+                "rate_limit_per_user": 0,
+                "position": 3,
+                "permissions": "140737488355327",
+                "parent_id": "808638139785936920",
+                "nsfw": false,
+                "name": "penny",
+                "last_message_id": "1096851988324552736",
+                "id": "1016614538398937098",
+                "guild_id": "808638139785936919",
+                "flags": 0
+            },
+            "application_id": "1016612301262041098",
+            "app_permissions": "140737488355327"
+        }
+    },
+    "helpsAddFailure": {
+        "t": "INTERACTION_CREATE",
+        "s": 6,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 2,
+            "token": "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 4194304,
+                    "id": "290483761559240704",
+                    "global_name": null,
+                    "display_name": null,
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [],
+                "premium_since": null,
+                "permissions": "140737488355327",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1097057830038667314",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "entitlements": [],
+            "entitlement_sku_ids": [],
+            "data": {
+                "type": 1,
+                "options": [
+                    {
+                        "type": 1,
+                        "options": [],
+                        "name": "add"
+                    }
+                ],
+                "name": "help",
+                "id": "1096827807507689732"
+            },
+            "channel_id": "1016614538398937098",
+            "channel": {
+                "type": 0,
+                "topic": null,
+                "rate_limit_per_user": 0,
+                "position": 3,
+                "permissions": "140737488355327",
+                "parent_id": "808638139785936920",
+                "nsfw": false,
+                "name": "penny",
+                "last_message_id": "1096851988324552736",
+                "id": "1016614538398937098",
+                "guild_id": "808638139785936919",
+                "flags": 0
+            },
+            "application_id": "1016612301262041098",
+            "app_permissions": "140737488355327"
+        }
+    },
+    "helpsGet": {
+        "t": "INTERACTION_CREATE",
+        "s": 15,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 2,
+            "token": "aW50ZXJhY3Rpb246MTA5NzA2MjQ3NDExODg2NDkwNjpJMXhuZEVPeXViZFVteXV0UUpNZjAzZFBNMTNvVndnSkpLZ0xlbFprbnFLbmNLSlpFQmc3bUc3bVF6YzdJVklZemRqNlIzcFhsZlBEM3FoZmtPeXQwZHRkY2psNlExeTRRcDB4dWhmcGwyOW1EWGtuajhVWjdidU1VQ2dUQk5JcA",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 4194304,
+                    "id": "290483761559240704",
+                    "global_name": null,
+                    "display_name": null,
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "permissions": "140737488355327",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1097062474118864906",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "entitlements": [],
+            "entitlement_sku_ids": [],
+            "data": {
+                "type": 1,
+                "options": [
+                    {
+                        "type": 1,
+                        "options": [
+                            {
+                                "value": "Working Directory",
+                                "type": 3,
+                                "name": "name"
+                            }
+                        ],
+                        "name": "get"
+                    }
+                ],
+                "name": "help",
+                "id": "1096827807507689732"
+            },
+            "channel_id": "1016614538398937098",
+            "channel": {
+                "type": 0,
+                "topic": null,
+                "rate_limit_per_user": 0,
+                "position": 3,
+                "permissions": "140737488355327",
+                "parent_id": "808638139785936920",
+                "nsfw": false,
+                "name": "penny",
+                "last_message_id": "1096851988324552736",
+                "id": "1016614538398937098",
+                "guild_id": "808638139785936919",
+                "flags": 0
+            },
+            "application_id": "1016612301262041098",
+            "app_permissions": "140737488355327"
+        }
+    },
+    "helpsGetAutocomplete": {
+        "t": "INTERACTION_CREATE",
+        "s": 4,
+        "op": 0,
+        "d": {
+            "version": 1,
+            "type": 4,
+            "token": "aW50ZXJhY3Rpb246MTA5NzA2MDMzMTUwODk5NDA4ODpyWDROWEtucXBJNm1ZaDRDQ2QzVFVyRDU5Q21pZlhFV3pkUHJaaDZUbHczUlVkc1dGRDdYdHBYdVJFT2VrN2ROUzByTEdUTVJNaXhMRk5uUWk4Mng4MWF5S00yRWdQdzNqbGlkbUR3N3pwTm5HR2JnQVZQUkhtajhJbWltMVBQOQ",
+            "member": {
+                "user": {
+                    "username": "Mahdi BM",
+                    "public_flags": 4194304,
+                    "id": "290483761559240704",
+                    "global_name": null,
+                    "display_name": null,
+                    "discriminator": "0517",
+                    "avatar_decoration": null,
+                    "avatar": "2df0a0198e00ba23bf2dc728c4db94d9"
+                },
+                "roles": [
+                    "892920753756975144",
+                    "970723029262942248",
+                    "970723101044244510"
+                ],
+                "premium_since": null,
+                "permissions": "140737488355327",
+                "pending": false,
+                "nick": null,
+                "mute": false,
+                "joined_at": "2021-02-09T09:59:16.364000+00:00",
+                "is_pending": false,
+                "flags": 0,
+                "deaf": false,
+                "communication_disabled_until": null,
+                "avatar": null
+            },
+            "locale": "en-US",
+            "id": "1097060331508994088",
+            "guild_locale": "en-US",
+            "guild_id": "808638139785936919",
+            "entitlements": [],
+            "entitlement_sku_ids": [],
+            "data": {
+                "type": 1,
+                "options": [
+                    {
+                        "type": 1,
+                        "options": [
+                            {
+                                "value": "",
+                                "type": 3,
+                                "name": "name",
+                                "focused": true
+                            }
+                        ],
+                        "name": "get"
+                    }
+                ],
+                "name": "help",
+                "id": "1096827807507689732"
+            },
+            "channel_id": "1016614538398937098",
+            "channel": {
+                "type": 0,
+                "topic": null,
+                "rate_limit_per_user": 0,
+                "position": 3,
+                "permissions": "140737488355327",
+                "parent_id": "808638139785936920",
+                "nsfw": false,
+                "name": "penny",
+                "last_message_id": "1096851988324552736",
+                "id": "1016614538398937098",
+                "guild_id": "808638139785936919",
+                "flags": 0
+            },
+            "application_id": "1016612301262041098",
+            "app_permissions": "140737488355327"
+        }
     }
 }

@@ -376,6 +376,12 @@ actor DiscordService {
         })
     }
 
+    func memberHasRolesForElevatedRestrictedCommandsAccess(member: Guild.Member) -> Bool {
+        !Set(member.roles)
+            .intersection(Constants.Roles.elevatedRestrictedCommandsAccessSet)
+            .isEmpty
+    }
+
 #if DEBUG
     func _tests_addToMessageCache(
         channelId: ChannelSnowflake,

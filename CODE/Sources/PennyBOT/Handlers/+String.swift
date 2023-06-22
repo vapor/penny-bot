@@ -4,7 +4,7 @@ import PennyModels
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
     /// trims whitespaces and makes the string case, diacritic and punctuation insensitive.
-    func foldForPingCommand() -> String {
+    func heavyFolded() -> String {
         self.trimmingCharacters(in: .whitespaces)
             .removingOccurrences(of: .punctuationCharacters)
             .lowercased()

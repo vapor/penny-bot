@@ -38,18 +38,13 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "PennyLambdaAddCoins", targets: ["PennyLambdaAddCoins"]),
-        .executable(name: "PennyBOT", targets: ["PennyBOT"]),
-        .library(name: "PennyExtensions", targets: ["PennyExtensions"]),
-        .library(name: "PennyRepositories", targets: ["PennyRepositories"]),
-        .library(name: "PennyModels", targets: ["PennyModels"]),
-        .library(name: "PennyServices", targets: ["PennyServices"]),
+        .executable(name: "PennyBOT", targets: ["PennyBOT"])
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
-        .package(url: "https://github.com/apple/swift-crypto.git", "1.0.0" ..< "3.0.0"),
+        .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
@@ -68,9 +63,9 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoDynamoDB", package: "soto"),
-                "PennyExtensions",
-                "PennyServices",
-                "PennyModels",
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennyAPI/AddCoin",
             swiftSettings: swiftSettings
@@ -82,8 +77,8 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                "PennyModels",
-                "PennyRepositories",
+                .target(name: "PennyModels"),
+                .target(name: "PennyRepositories"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -95,8 +90,8 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SotoSecretsManager", package: "soto"),
-                "PennyExtensions",
-                "PennyServices",
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
             ],
             path: "./Sources/PennyAPI/Sponsors",
             swiftSettings: swiftSettings
@@ -106,11 +101,23 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                "PennyExtensions",
-                "PennyServices",
-                "PennyModels",
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennyAPI/AutoPings",
+            swiftSettings: swiftSettings
+        ),
+        .executableTarget(
+            name: "HelpsLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .target(name: "PennyExtensions"),
+                .target(name: "PennyServices"),
+                .target(name: "PennyModels"),
+            ],
+            path: "./Sources/PennyAPI/Helps",
             swiftSettings: swiftSettings
         ),
         .target(
@@ -132,8 +139,8 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "SotoS3", package: "soto"),
-                "PennyModels",
-                "PennyExtensions"
+                .target(name: "PennyModels"),
+                .target(name: "PennyExtensions"),
             ],
             path: "./Sources/PennySHARED/Repositories",
             swiftSettings: swiftSettings
@@ -141,9 +148,9 @@ let package = Package(
         .target(
             name: "PennyServices",
             dependencies: [
-                "PennyRepositories",
-                "PennyModels",
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .target(name: "PennyRepositories"),
+                .target(name: "PennyModels"),
             ],
             path: "./Sources/PennySHARED/Services",
             swiftSettings: swiftSettings
@@ -151,11 +158,11 @@ let package = Package(
         .target(
             name: "Fake",
             dependencies: [
-                "PennyBOT",
-                "PennyRepositories",
-                "PennyLambdaAddCoins",
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .target(name: "PennyBOT"),
+                .target(name: "PennyRepositories"),
+                .target(name: "PennyLambdaAddCoins"),
             ],
             path: "./Tests/Fake",
             swiftSettings: swiftSettings
@@ -163,11 +170,11 @@ let package = Package(
         .testTarget(
             name: "PennyBOTTests",
             dependencies: [
-                "PennyBOT",
-                "PennyRepositories",
-                "PennyLambdaAddCoins",
-                "Fake",
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .target(name: "PennyBOT"),
+                .target(name: "PennyRepositories"),
+                .target(name: "PennyLambdaAddCoins"),
+                .target(name: "Fake"),
             ],
             swiftSettings: swiftSettings
         ),

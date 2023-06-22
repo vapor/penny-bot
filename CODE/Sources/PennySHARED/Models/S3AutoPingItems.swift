@@ -24,7 +24,6 @@ public struct S3AutoPingItems: Sendable, Codable {
         /// Exact match (with some insensitivity, such as case-insensitivity)
         case matches(String)
         
-        /// Priority of the kind of expression.
         public var kind: Kind {
             switch self {
             case .contains: return .containment

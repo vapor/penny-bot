@@ -18,6 +18,9 @@ struct InteractionHandler {
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
+    var helpsService: any HelpsService {
+        ServiceFactory.makeHelpsService()
+    }
     var discordService: DiscordService { .shared }
     
     private let oops = "Oopsie Woopsie... Something went wrong :("
@@ -31,7 +34,7 @@ struct InteractionHandler {
     
     func handle() async {
         switch event.data {
-        case let .applicationCommand(data):
+        case let .applicationCommand(data) where event.type == .applicationCommand:
             guard let command = SlashCommand(rawValue: data.name) else {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
@@ -45,6 +48,24 @@ struct InteractionHandler {
             ) {
                 await respond(with: response, shouldEdit: true)
             }
+        case let .applicationCommand(data) where event.type == .applicationCommandAutocomplete:
+            guard let command = SlashCommand(rawValue: data.name) else {
+                logger.error("Unrecognized command")
+                return await sendInteractionResolveFailure()
+            }
+            guard command == .help else {
+                logger.error("Unrecognized autocomplete command")
+                return await sendInteractionResolveFailure()
+            }
+            let options = data.options ?? []
+            let response: any Response
+            do {
+                response = try await handleHelpCommandAutocomplete(options: options)
+            } catch {
+                logger.report("Help command error", error: error)
+                response = self.oops
+            }
+            await respond(with: response, shouldEdit: false)
         case let .modalSubmit(modal):
             guard let modalId = ModalID(rawValue: modal.custom_id) else {
                 logger.error("Unrecognized command")
@@ -65,7 +86,7 @@ struct InteractionHandler {
     }
 }
 
-/// MARK: - makeResponseForModal
+// MARK: - makeResponseForModal
 private extension InteractionHandler {
     func makeResponseForModal(
         modal: Interaction.ModalSubmit,
@@ -75,7 +96,6 @@ private extension InteractionHandler {
         let discordId = try (event.member?.user ?? event.user).requireValue().id
         switch modalId {
         case let .autoPings(autoPingsMode, mode):
-
             switch autoPingsMode {
             case .add:
                 let allExpressions = try modal.components
@@ -275,6 +295,56 @@ private extension InteractionHandler {
                     }
                 }
             }
+        case let .help(helpMode):
+            switch helpMode {
+            case .add:
+                let name = try modal.components
+                    .requireComponent(customId: "name")
+                    .requireTextInput()
+                    .value.requireValue()
+                let newValue = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if name.contains("\n") {
+                    let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
+                    return """
+                    The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
+
+                    New value:
+                    > \(newValue)
+                    """
+                }
+
+                if let value = try await helpsService.get(name: name) {
+                    return """
+                    A help-text with name '\(name)' already exists. Please remove it first.
+
+                    New value:
+                    > \(newValue)
+
+                    Old value:
+                    > \(value)
+                    """
+                }
+
+                if name.isEmpty || newValue.isEmpty {
+                    return "'name' or 'value' seem empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add help-texts.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will add a help-text", metadata: [
+                    "name": .string(name),
+                    "value": .string(newValue),
+                ])
+                try await helpsService.insert(name: name, value: newValue)
+                return """
+                Added a new help-text with name '\(name)':
+
+                > \(newValue)
+                """
+            }
         }
     }
 
@@ -290,18 +360,13 @@ private extension InteractionHandler {
             do {
                 try await operation()
             } catch {
-                logger.report(
-                    "Pings Service failed",
-                    error: error,
-                    function: function,
-                    line: line
-                )
+                logger.report("Pings Service failed", error: error, function: function, line: line)
             }
         }
     }
 }
 
-/// MARK: - makeResponseForApplicationCommand
+// MARK: - makeResponseForApplicationCommand
 private extension InteractionHandler {
     /// Returns `nil` if no response is supposed to be sent to user.
     func makeResponseForApplicationCommand(
@@ -315,6 +380,8 @@ private extension InteractionHandler {
                 return try handleLinkCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
+            case .help:
+                return try await handleHelpCommand(options: options)
             case .howManyCoins:
                 return try await handleHowManyCoinsCommand(
                     author: event.member?.user ?? event.user,
@@ -385,6 +452,103 @@ private extension InteractionHandler {
             let modalId = ModalID.autoPings(.test, mode)
             return modalId.makeModal()
         }
+    }
+
+    func handleHelpCommand(options: [InteractionOption]) async throws -> (any Response)? {
+        let first = try options.first.requireValue()
+        let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
+        switch subcommand {
+        case .get:
+            guard await sendAcknowledgement(isEphemeral: false) else { return nil }
+        case .remove:
+            /// This is ephemeral so members feel free to remove stuff,
+            /// but we will log this action so we can know if something malicious is happening.
+            guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+        case .add:
+            /// Uses modals so can't send an acknowledgment first.
+            break
+        }
+        switch subcommand {
+        case .get:
+            let name = try first.options
+                .requireValue()
+                .requireOption(named: "name")
+                .requireString()
+            if let value = try await helpsService.get(name: name) {
+                return value
+            } else {
+                return "No help-text with name '\(name)' exists at all"
+            }
+        case .remove:
+            let name = try first.options
+                .requireValue()
+                .requireOption(named: "name")
+                .requireString()
+            let member = try event.member.requireValue()
+            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: member
+            ) else {
+                let rolesString = Constants.Roles
+                    .elevatedRestrictedCommandsAccess
+                    .map(\.rawValue)
+                    .map(DiscordUtils.mention(id:))
+                    .joined(separator: " ")
+                return "You don't have access to this command; it is only available to \(rolesString)"
+            }
+            guard let value = try await helpsService.get(name: name) else {
+                return "No help-text with name '\(name)' exists at all"
+            }
+            logger.warning("Will remove a help-text", metadata: [
+                "name": .string(name),
+                "value": .string(value),
+            ])
+            try await helpsService.remove(name: name)
+            return "Removed a help-text with name '\(name)'"
+        case .add:
+            guard let member = event.member else {
+                logger.error("Discord did not send required info")
+                return oops
+            }
+            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: member
+            ) else {
+                /// To not make things too complicated for now, send an acknowledgment,
+                /// so the String we return can be sent as an "edit".
+                guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+                let rolesString = Constants.Roles
+                    .elevatedRestrictedCommandsAccess
+                    .map(\.rawValue)
+                    .map(DiscordUtils.mention(id:))
+                    .joined(separator: " ")
+                return "You don't have access to this command; it is only available to \(rolesString)"
+            }
+            let modalId = ModalID.help(.add)
+            return modalId.makeModal()
+        }
+    }
+
+    func handleHelpCommandAutocomplete(options: [InteractionOption]) async throws -> any Response {
+        let first = try options.first.requireValue()
+        let subcommand = try HelpSubCommand(rawValue: first.name).requireValue()
+        guard [.get, .remove].contains(subcommand) else {
+            logger.error(
+                "Unrecognized 'help' subcommand for autocomplete",
+                metadata: ["subcommand": "\(subcommand)"]
+            )
+            return oops
+        }
+        let name = try first.options
+            .requireValue()
+            .requireOption(named: "name")
+            .requireString()
+        let foldedName = name.heavyFolded()
+        return try await Payloads.InteractionResponse.Autocomplete(choices: helpsService
+            .getAll()
+            .filter { $0.key.heavyFolded().contains(foldedName) }
+            .sorted { $0.key < $1.key }
+            .prefix(25)
+            .map { .init(name: $0.key, value: .string($0.value)) }
+        )
     }
     
     func requireExpressionMode(_ options: [InteractionOption]?) throws -> Expression.Kind {
@@ -472,12 +636,13 @@ extension SlashCommand {
     var isEphemeral: Bool {
         switch self {
         case .link, .autoPings, .howManyCoins, .howManyCoinsApp: return true
+        case .help: return false
         }
     }
 
     var shouldSendAcknowledgment: Bool {
         switch self {
-        case .autoPings: return false
+        case .autoPings, .help: return false
         case .link, .howManyCoins, .howManyCoinsApp: return true
         }
     }
@@ -489,7 +654,12 @@ private enum ModalID {
         case add, remove, test
     }
 
+    enum HelpMode: String {
+        case add
+    }
+
     case autoPings(AutoPingsMode, Expression.Kind)
+    case help(HelpMode)
 
     func makeModal() -> Payloads.InteractionResponse.Modal {
         .init(
@@ -505,6 +675,9 @@ private enum ModalID {
             let autoPingsMode = autoPingsMode.rawValue.capitalized
             let expressionMode = expressionMode.UIDescription
             return "\(autoPingsMode) \(expressionMode) Auto-Pings"
+        case let .help(helpMode):
+            let helpMode = helpMode.rawValue.capitalized
+            return "\(helpMode) Help Text"
         }
     }
 
@@ -528,7 +701,7 @@ private enum ModalID {
                     label: "The text to test against",
                     min_length: 3,
                     required: true,
-                    placeholder: "Example: Lorem ipsum dolor sit amet"
+                    placeholder: "Example: Lorem ipsum dolor sit amet."
                 )
                 let texts = Interaction.ActionRow.TextInput(
                     custom_id: "texts",
@@ -538,6 +711,30 @@ private enum ModalID {
                     placeholder: "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
                 )
                 return [message, texts]
+            }
+        case let .help(helpMode):
+            switch helpMode {
+            case .add:
+                let name = Interaction.ActionRow.TextInput(
+                    custom_id: "name",
+                    style: .paragraph,
+                    label: "The name of the help-text",
+                    min_length: 3,
+                    required: true,
+                    placeholder: "Example: Setting working directory in Xcode"
+                )
+                let value = Interaction.ActionRow.TextInput(
+                    custom_id: "value",
+                    style: .paragraph,
+                    label: "The value of the help-text",
+                    min_length: 3,
+                    required: true,
+                    placeholder: """
+                    Example:
+                    How to set your working directory: <link>
+                    """
+                )
+                return [name, value]
             }
         }
     }
@@ -549,6 +746,8 @@ extension ModalID: RawRepresentable {
         switch self {
         case let .autoPings(autoPingsMode, expressionMode):
             return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
+        case let .help(helpMode):
+            return "help;\(helpMode.rawValue)"
         }
     }
 
@@ -559,69 +758,21 @@ extension ModalID: RawRepresentable {
            let autoPingsMode = AutoPingsMode(rawValue: String(split[1])),
            let expressionMode = Expression.Kind(rawValue: String(split[2])) {
             self = .autoPings(autoPingsMode, expressionMode)
+        } else if split.count == 2,
+                  split[0] == "help",
+                  let helpMode = HelpMode(rawValue: String(split[1])) {
+            self = .help(helpMode)
         } else {
             return nil
         }
     }
 }
 
-private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
-    
-    let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
-    
-    func command(_ subcommand: String) -> String {
-        guard let id = commandId else {
-            return "`/auto-pings \(subcommand)`"
-        }
-        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
-    }
-    
-    let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
-        name: "is_typing",
-        id: "1087429908466253984"
-    )
-    
-    return """
-    **- Auto-Pings Help**
-    
-    You can add texts to be pinged for.
-    When someone uses those texts, Penny will DM you about the message.
-    
-    - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
-    
-    > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
-    
-    **Adding Expressions**
-    
-    You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
-    
-    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(Expression.Kind.default.UIDescription)'.
-    
-    - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
-    
-    - All texts are **space-sensitive**.
-    
-    > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
-    
-    **Removing Expressions**
-    
-    You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
-    
-    **Your Pings List**
-    
-    You can use \(command("list")) to see your current expressions.
-    
-    **Testing Expressions**
-    
-    You can use \(command("test")) to test if a message triggers some expressions.
-    """
-}
-
 private extension String {
     func divideIntoAutoPingsExpressions(mode: Expression.Kind) -> [Expression] {
         self.split(whereSeparator: { $0 == "," || $0.isNewline })
             .map(String.init)
-            .map({ $0.foldForPingCommand() })
+            .map({ $0.heavyFolded() })
             .filter({ !$0.isEmpty }).map {
                 switch mode {
                 case .containment:
@@ -633,8 +784,8 @@ private extension String {
     }
 }
 
-/// MARK: - Response
-///
+// MARK: - Response
+
 /// This `Response` thing didn't turn out as good as I was hoping for.
 /// The approach of abstracting the response using a protocol like this is good imo, still.
 /// Just I didn't go full-in on it. Probably need to create a new type for each response type.
@@ -648,14 +799,14 @@ private protocol Response {
 extension String: Response {
     func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
         .channelMessageWithSource(.init(embeds: [.init(
-            description: self,
+            description: String(self.prefix(4_000)),
             color: .vaporPurple
         )], flags: isEphemeral ? [.ephemeral] : nil))
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
         .init(embeds: [.init(
-            description: self,
+            description: String(self.prefix(4_000)),
             color: .vaporPurple
         )])
     }
@@ -677,4 +828,73 @@ extension Payloads.InteractionResponse.Modal: Response {
 
     /// Responses containing a modal can't be an edit to another message.
     var isEditable: Bool { false }
+}
+
+extension Payloads.InteractionResponse.Autocomplete: Response {
+    func makeResponse(isEphemeral _: Bool) -> Payloads.InteractionResponse {
+        .autocompleteResult(self)
+    }
+
+    func makeEditPayload() -> Payloads.EditWebhookMessage {
+        Logger(label: "Payloads.InteractionResponse.Autocomplete.makeEditPayload").error(
+            "This method must not be called"
+        )
+        return .init(content: "Oops, something went wrong")
+    }
+
+    /// Responses containing a modal can't be an edit to another message.
+    var isEditable: Bool { false }
+}
+
+// MARK: - Auto-pings help
+private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
+
+    let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
+
+    func command(_ subcommand: String) -> String {
+        guard let id = commandId else {
+            return "`/auto-pings \(subcommand)`"
+        }
+        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
+    }
+
+    let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
+        name: "is_typing",
+        id: "1087429908466253984"
+    )
+
+    return """
+    **- Auto-Pings Help**
+
+    You can add texts to be pinged for.
+    When someone uses those texts, Penny will DM you about the message.
+
+    - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
+
+    > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
+
+    **Adding Expressions**
+
+    You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+
+    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(Expression.Kind.default.UIDescription)'.
+
+    - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
+
+    - All texts are **space-sensitive**.
+
+    > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
+
+    **Removing Expressions**
+
+    You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
+
+    **Your Pings List**
+
+    You can use \(command("list")) to see your current expressions.
+
+    **Testing Expressions**
+
+    You can use \(command("test")) to test if a message triggers some expressions.
+    """
 }

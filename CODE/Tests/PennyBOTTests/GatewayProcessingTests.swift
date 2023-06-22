@@ -26,9 +26,11 @@ class GatewayProcessingTests: XCTestCase {
         Constants.botId = "950695294906007573"
         RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
         RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
+        RepositoryFactory.makeHelpsRepository = { _ in FakeHelpsRepository() }
         Constants.apiBaseUrl = "https://fake.com"
-        ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeCoinService = { FakeCoinService() }
+        ServiceFactory.makePingsService = { FakePingsService() }
+        ServiceFactory.makeHelpsService = { FakeHelpsService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
         ServiceFactory.initializeAndRunProposalsChecker = { _ in }
         // reset the storage
@@ -56,7 +58,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .bulkSetApplicationCommands(applicationId: "11111111")
         ).value
         
-        let commandNames = ["link", "auto-pings", "how-many-coins", "How Many Coins?"]
+        let commandNames = SlashCommand.allCases.map(\.rawValue)
         let commands = try XCTUnwrap(response as? [Payloads.ApplicationCommandCreate])
         XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
     }
@@ -386,6 +388,50 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
             XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n**Authors:** [Doug Gregor](https://github.com/DougGregor)\n")
             XCTAssertEqual(embed.color, .orange)
+        }
+    }
+
+    func testHelpsCommand() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsAdd,
+                as: Payloads.InteractionResponse.self
+            )
+            switch response.data {
+            case .modal: break
+            default:
+                XCTFail("Wrong response data type for `/help add`: \(response.data as Any)")
+            }
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsAddFailure,
+                as: Payloads.EditWebhookMessage.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("You don't have access to this command; it is only available to"), message)
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsGet,
+                as: Payloads.EditWebhookMessage.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "Test working directory help")
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .helpsGetAutocomplete,
+                as: Payloads.InteractionResponse.self
+            )
+            switch response.data {
+            case .autocomplete: break
+            default:
+                XCTFail("Wrong response data type for `/help get`: \(response.data as Any)")
+            }
         }
     }
 }

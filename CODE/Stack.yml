@@ -16,6 +16,10 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed for auto-pings
     Default: AutoPingsLambda
+  HelpsFilename:
+    Type: String
+    Description: Filename containing the code to be executed for helps
+    Default: HelpsLambda
   VPC:
     Description: VPC for the app
     Type: AWS::EC2::VPC::Id
@@ -292,6 +296,59 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       LogGroupName: /aws/lambda/AutoPingsLambda-lambda
+      RetentionInDays: 30
+
+  # Helps lambda config
+
+  helpsIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda Helps Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt helpsFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  helpsRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'GET /helps/'
+      Target: !Sub "integrations/${helpsIntegration}"
+
+  helpsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-discord-bot
+        S3Key: !Sub ${HelpsFilename}.zip
+      FunctionName: !Sub ${HelpsFilename}-lambda
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+
+  lambdaHelpsRoutePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub ${HelpsFilename}-lambda
+      Principal: apigateway.amazonaws.com
+    DependsOn:
+      - helpsFunction
+
+  helpsS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: penny-helps-lambda
+
+  helpsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: /aws/lambda/HelpsLambda-lambda
       RetentionInDays: 30
 
   dynamoUserTable:

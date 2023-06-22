@@ -1,4 +1,4 @@
-name: Build and upload auto-pings lambda function
+name: Build and upload helps lambda function
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -21,11 +21,11 @@ jobs:
       - name: Build and zip
         run: |
           cd ./CODE 
-          ./scripts/build-and-package.sh AutoPingsLambda
+          ./scripts/build-and-package.sh HelpsLambda
       - name: Remove build file
         run: |
           cd './CODE/.build/lambda/'
-          sudo rm -rf AutoPingsLambda
+          sudo rm -rf HelpsLambda
       - name: Deploy to S3
         id: s3deploy
         uses: jakejarvis/s3-sync-action@master
@@ -40,9 +40,9 @@ jobs:
       - name: Update Lambda code
         run: |
           aws lambda update-function-code \
-            --function-name 'AutoPingsLambda-lambda' \
+            --function-name 'HelpsLambda-lambda' \
             --s3-bucket 'penny-discord-bot' \
-            --s3-key 'AutoPingsLambda.zip'
+            --s3-key 'HelpsLambda.zip'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
