@@ -183,7 +183,7 @@ enum FaqsSubCommand: String, CaseIterable {
         case .add:
             return "Add a new faq"
         case .edit:
-            return "Add or replace with a new faq"
+            return "Edit value of a faq"
         case .remove:
             return "Remove a faq"
         }
