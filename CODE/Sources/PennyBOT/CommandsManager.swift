@@ -174,7 +174,7 @@ enum AutoPingsSubCommand: String, CaseIterable {
 }
 
 enum FaqsSubCommand: String, CaseIterable {
-    case get, add, edit, remove
+    case get, add, edit, rename, remove
 
     var description: String {
         switch self {
@@ -184,6 +184,8 @@ enum FaqsSubCommand: String, CaseIterable {
             return "Add a new faq"
         case .edit:
             return "Edit value of a faq"
+        case .rename:
+            return "Rename a faq"
         case .remove:
             return "Remove a faq"
         }
@@ -207,7 +209,7 @@ enum FaqsSubCommand: String, CaseIterable {
                     required: false
                 )
             ]
-        case .remove, .edit:
+        case .remove, .edit, .rename:
             return [.init(
                 type: .string,
                 name: "name",

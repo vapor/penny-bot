@@ -40,15 +40,8 @@ struct InteractionHandler {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
             }
-            var ephemeralOverride: Bool?
-            if let option = data.options?.first?.option(named: "ephemeral"),
-               case let .bool(bool) = option.value {
-                ephemeralOverride = bool
-            }
             if command.shouldSendAcknowledgment {
-                guard await sendAcknowledgement(
-                    isEphemeral: ephemeralOverride ?? command.isEphemeral
-                ) else { return }
+                guard await sendAcknowledgement(isEphemeral: command.isEphemeral) else { return }
             }
             if let response = await makeResponseForApplicationCommand(
                 command: command,
@@ -414,8 +407,47 @@ private extension InteractionHandler {
 
                 \(newValue)
                 """
-            }
+            case let .rename(nameHash, _):
+                guard let oldName = try await helpsService.getName(hash: nameHash) else {
+                    logger.warning(
+                        "This should be very rare ... a name doesn't exist anymore to edit",
+                        metadata: ["nameHash": .stringConvertible(nameHash)]
+                    )
+                    return "The name no longer exists!"
+                }
+                guard let value = try await helpsService.get(name: oldName) else {
+                    logger.warning(
+                        "This should be very rare ... a name doesn't have a value anymore",
+                        metadata: ["nameHash": .stringConvertible(nameHash)]
+                    )
+                    return "Oopsie Woopsie, there is no value specified for this name at all!"
+                }
+                let name = try modal.components
+                    .requireComponent(customId: "name")
+                    .requireTextInput()
+                    .value.requireValue()
 
+                if name.isEmpty {
+                    return "'name' seems empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add faqs.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will rename a faq", metadata: [
+                    "name": .string(name),
+                    "value": .string(value),
+                ])
+
+                discardingResult {
+                    try await helpsService.insert(name: name, value: value)
+                    try await helpsService.remove(name: oldName)
+                }
+
+                return """
+                Renamed a faq from '\(oldName)' to '\(name)':
+
+                \(value)
+                """
+            }
         }
     }
 
@@ -527,12 +559,19 @@ private extension InteractionHandler {
         let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
         switch subcommand {
         case .get:
-            guard await sendAcknowledgement(isEphemeral: false) else { return nil }
+            var ephemeralOverride: Bool?
+            if let option = first.option(named: "ephemeral"),
+               case let .bool(bool) = option.value {
+                ephemeralOverride = bool
+            }
+            guard await sendAcknowledgement(
+                isEphemeral: ephemeralOverride ?? false
+            ) else { return nil }
         case .remove:
             /// This is ephemeral so members feel free to remove stuff,
             /// but we will log this action so we can know if something malicious is happening.
             guard await sendAcknowledgement(isEphemeral: true) else { return nil }
-        case .add, .edit:
+        case .add, .edit, .rename:
             /// Uses modals so can't send an acknowledgment first.
             break
         }
@@ -577,18 +616,8 @@ private extension InteractionHandler {
 
             return "Removed a faq with name '\(name)'"
         case .add:
-            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-                member: try event.member.requireValue()
-            ) else {
-                /// To not make things too complicated for now, send an acknowledgment,
-                /// so the String we return can be sent as an "edit".
-                guard await sendAcknowledgement(isEphemeral: true) else { return nil }
-                let rolesString = Constants.Roles
-                    .elevatedRestrictedCommandsAccess
-                    .map(\.rawValue)
-                    .map(DiscordUtils.mention(id:))
-                    .joined(separator: " ")
-                return "You don't have access to this command; it is only available to \(rolesString)"
+            if let accessLevelError = try await helpCommandAccessLevelErrorIfNeeded() {
+                return accessLevelError
             }
             let modalId = ModalID.help(.add)
             return modalId.makeModal()
@@ -597,18 +626,8 @@ private extension InteractionHandler {
                 .requireValue()
                 .requireOption(named: "name")
                 .requireString()
-            guard await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-                member: try event.member.requireValue()
-            ) else {
-                /// To not make things too complicated for now, send an acknowledgment,
-                /// so the String we return can be sent as an "edit".
-                guard await sendAcknowledgement(isEphemeral: true) else { return nil }
-                let rolesString = Constants.Roles
-                    .elevatedRestrictedCommandsAccess
-                    .map(\.rawValue)
-                    .map(DiscordUtils.mention(id:))
-                    .joined(separator: " ")
-                return "You don't have access to this command; it is only available to \(rolesString)"
+            if let accessLevelError = try await helpCommandAccessLevelErrorIfNeeded() {
+                return accessLevelError
             }
             if let value = try await helpsService.get(name: name) {
                 let modalId = ModalID.help(.edit(nameHash: name.hash, value: value))
@@ -616,6 +635,39 @@ private extension InteractionHandler {
             } else {
                 return "No faq with name '\(name)' exists at all"
             }
+        case .rename:
+            let name = try first.options
+                .requireValue()
+                .requireOption(named: "name")
+                .requireString()
+            if let accessLevelError = try await helpCommandAccessLevelErrorIfNeeded() {
+                return accessLevelError
+            }
+            if try await helpsService.get(name: name) != nil {
+                let modalId = ModalID.help(.rename(nameHash: name.hash, name: name))
+                return modalId.makeModal()
+            } else {
+                return "No faq with name '\(name)' exists at all"
+            }
+        }
+    }
+
+    /// Returns a `String` if there is an access-level error. Otherwise `nil`.
+    func helpCommandAccessLevelErrorIfNeeded() async throws -> String? {
+        if await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+            member: try event.member.requireValue()
+        ) {
+            return nil
+        } else {
+            /// To not make things too complicated for now, send an acknowledgment,
+            /// so the String we return can be sent as an "edit".
+            guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+            let rolesString = Constants.Roles
+                .elevatedRestrictedCommandsAccess
+                .map(\.rawValue)
+                .map(DiscordUtils.mention(id:))
+                .joined(separator: " ")
+            return "You don't have access to this command; it is only available to \(rolesString)"
         }
     }
 
@@ -765,6 +817,9 @@ private enum ModalID {
         /// `value` is passed to the modal, and will not be populated when
         /// this enum case is re-constructed from a custom-id.
         case edit(nameHash: Int, value: String?)
+        /// `name` is passed to the modal, and will not be populated when
+        /// this enum case is re-constructed from a custom-id.
+        case rename(nameHash: Int, name: String?)
 
         var name: String {
             switch self {
@@ -772,6 +827,8 @@ private enum ModalID {
                 return "Add"
             case .edit:
                 return "Edit"
+            case .rename:
+                return "Rename"
             }
         }
 
@@ -781,6 +838,8 @@ private enum ModalID {
                 return "add"
             case .edit(let nameHash, _):
                 return "edit-\(nameHash)"
+            case .rename(let nameHash, _):
+                return "rename-\(nameHash)"
             }
         }
 
@@ -789,6 +848,8 @@ private enum ModalID {
                 self = .add
             } else if part.hasPrefix("edit-"), let hash = Int(part.dropFirst(5)) {
                 self = .edit(nameHash: hash, value: nil)
+            } else if part.hasPrefix("rename-"), let hash = Int(part.dropFirst(7)) {
+                self = .rename(nameHash: hash, name: nil)
             } else {
                 return nil
             }
@@ -886,6 +947,18 @@ private enum ModalID {
                     """ : nil
                 )
                 return [value]
+            case .rename(_, let name):
+                let name = Interaction.ActionRow.TextInput(
+                    custom_id: "name",
+                    style: .short,
+                    label: "The name of the faq",
+                    min_length: 3,
+                    max_length: Configuration.faqsNameMaxLength,
+                    required: true,
+                    value: name,
+                    placeholder: name == nil ? "Example: Setting working directory in Xcode" : nil
+                )
+                return [name]
             }
         }
     }

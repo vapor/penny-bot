@@ -400,7 +400,7 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .modal: break
             default:
-                XCTFail("Wrong response data type for `/help add`: \(response.data as Any)")
+                XCTFail("Wrong response data type for `/faqs add`: \(response.data as Any)")
             }
         }
 
@@ -423,6 +423,23 @@ class GatewayProcessingTests: XCTestCase {
         }
 
         do {
+            let key = EventKey.faqsGetEphemeral
+            let response = try await manager.sendAndAwaitResponse(
+                key: key,
+                endpoint: key.responseEndpoints[1],
+                as: Payloads.InteractionResponse.self
+            )
+            if case let .flags(flags) = response.data {
+                XCTAssertTrue(
+                    flags.flags?.contains(.ephemeral) == true,
+                    "\(flags.flags?.representableValues().values ?? [])"
+                )
+            } else {
+                XCTFail("Unexpected response: \(response)")
+            }
+        }
+
+        do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .faqsGetAutocomplete,
                 as: Payloads.InteractionResponse.self
@@ -430,7 +447,7 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .autocomplete: break
             default:
-                XCTFail("Wrong response data type for `/help get`: \(response.data as Any)")
+                XCTFail("Wrong response data type for `/faqs get`: \(response.data as Any)")
             }
         }
     }
