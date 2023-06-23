@@ -676,12 +676,14 @@ private extension InteractionHandler {
     ) async throws -> any Response {
         let first = try (data.options?.first).requireValue()
         let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
-        guard [.get, .edit, .remove].contains(subcommand) else {
+        guard [.get, .edit, .rename, .remove].contains(subcommand) else {
             logger.error(
                 "Unexpected 'help' subcommand for autocomplete",
                 metadata: ["subcommand": "\(subcommand)"]
             )
-            return oops
+            return Payloads.InteractionResponse.Autocomplete(
+                choices: [.init(name: "Failure", value: .string(self.oops))]
+            )
         }
         let name = try first.options
             .requireValue()
