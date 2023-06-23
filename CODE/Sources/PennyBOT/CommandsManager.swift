@@ -191,7 +191,24 @@ enum FaqsSubCommand: String, CaseIterable {
 
     var options: [ApplicationCommand.Option] {
         switch self {
-        case .get, .remove, .edit:
+        case .get:
+            return [
+                .init(
+                    type: .string,
+                    name: "name",
+                    description: "The name of the command",
+                    required: true,
+                    autocomplete: true
+                ),
+                .init(
+                    type: .boolean,
+                    name: "ephemeral",
+                    description: "If True, the response will only be visible to you",
+                    required: false,
+                    autocomplete: false
+                )
+            ]
+        case .remove, .edit:
             return [.init(
                 type: .string,
                 name: "name",

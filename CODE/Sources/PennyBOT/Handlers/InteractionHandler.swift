@@ -40,8 +40,15 @@ struct InteractionHandler {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
             }
+            var ephemeralOverride: Bool?
+            if let option = data.options?.first?.option(named: "ephemeral"),
+               case let .bool(bool) = option.value {
+                ephemeralOverride = bool
+            }
             if command.shouldSendAcknowledgment {
-                guard await sendAcknowledgement(isEphemeral: command.isEphemeral) else { return }
+                guard await sendAcknowledgement(
+                    isEphemeral: ephemeralOverride ?? command.isEphemeral
+                ) else { return }
             }
             if let response = await makeResponseForApplicationCommand(
                 command: command,
