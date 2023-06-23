@@ -3,6 +3,7 @@ import Logging
 import PennyModels
 
 private enum Configuration {
+    static let faqsNameMaxLength = 95
     static let autoPingsMaxLimit = 100
     static let autoPingsLowLimit = 20
 }
@@ -314,16 +315,16 @@ private extension InteractionHandler {
                     return """
                     The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
 
-                    New value:
+                    Value:
                     > \(newValue)
                     """
                 }
 
-                if name.unicodeScalars.count > 95 {
+                if name.unicodeScalars.count > Configuration.faqsNameMaxLength {
                     return """
-                    Name cannot be more than 95 letters.
+                    Name cannot be more than \(Configuration.faqsNameMaxLength) characters.
 
-                    New value:
+                    Value:
                     > \(newValue)
                     """
                 }
@@ -338,7 +339,7 @@ private extension InteractionHandler {
                     The entered name '\(DiscordUtils.escapingSpecialCharacters(name))' is too similar to another name '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
                     This will cause ambiguity for users.
 
-                    New value:
+                    Value:
                     \(newValue)
                     """
                 }
@@ -347,7 +348,7 @@ private extension InteractionHandler {
                     return """
                     A faq with name '\(name)' already exists. Please remove it first.
 
-                    New value:
+                    Value:
                     \(newValue)
 
                     Old value:
@@ -374,7 +375,7 @@ private extension InteractionHandler {
 
                 \(newValue)
                 """
-            case let .edit(nameHash):
+            case let .edit(nameHash, _):
                 guard let name = try await helpsService.getName(hash: nameHash) else {
                     logger.warning(
                         "This should be very rare ... a name doesn't exist anymore to edit",
@@ -602,8 +603,8 @@ private extension InteractionHandler {
                     .joined(separator: " ")
                 return "You don't have access to this command; it is only available to \(rolesString)"
             }
-            if try await helpsService.get(name: name) != nil {
-                let modalId = ModalID.help(.edit(nameHash: name.hash))
+            if let value = try await helpsService.get(name: name) {
+                let modalId = ModalID.help(.edit(nameHash: name.hash, value: value))
                 return modalId.makeModal()
             } else {
                 return "No faq with name '\(name)' exists at all"
@@ -751,7 +752,12 @@ private enum ModalID {
 
     enum HelpMode {
         case add
-        case edit(nameHash: Int)
+        /// Using the hash of the name to make sure we don't exceed Discord's
+        /// custom-id length limit (currently 100 characters).
+        ///
+        /// `value` is passed to the modal, and will not be populated when
+        /// this enum case is re-constructed from a custom-id.
+        case edit(nameHash: Int, value: String?)
 
         var name: String {
             switch self {
@@ -766,7 +772,7 @@ private enum ModalID {
             switch self {
             case .add:
                 return "add"
-            case .edit(let nameHash):
+            case .edit(let nameHash, _):
                 return "edit-\(nameHash)"
             }
         }
@@ -775,7 +781,7 @@ private enum ModalID {
             if part == "add" {
                 self = .add
             } else if part.hasPrefix("edit-"), let hash = Int(part.dropFirst(5)) {
-                self = .edit(nameHash: hash)
+                self = .edit(nameHash: hash, value: nil)
             } else {
                 return nil
             }
@@ -840,9 +846,10 @@ private enum ModalID {
             case .add:
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
-                    style: .paragraph,
+                    style: .short,
                     label: "The name of the faq",
                     min_length: 3,
+                    max_length: Configuration.faqsNameMaxLength,
                     required: true,
                     placeholder: "Example: Setting working directory in Xcode"
                 )
@@ -858,17 +865,18 @@ private enum ModalID {
                     """
                 )
                 return [name, value]
-            case .edit:
+            case .edit(_, let value):
                 let value = Interaction.ActionRow.TextInput(
                     custom_id: "value",
                     style: .paragraph,
                     label: "The value of the faq",
                     min_length: 3,
                     required: true,
-                    placeholder: """
+                    value: value,
+                    placeholder: value == nil ? """
                     Example:
                     How to set your working directory: <link>
-                    """
+                    """ : nil
                 )
                 return [value]
             }
