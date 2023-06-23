@@ -929,7 +929,7 @@
             "guild_id": "431917998102675485"
         }
     },
-    "helpsAdd": {
+    "faqsAdd": {
         "t": "INTERACTION_CREATE",
         "s": 6,
         "op": 0,
@@ -1000,7 +1000,7 @@
             "app_permissions": "140737488355327"
         }
     },
-    "helpsAddFailure": {
+    "faqsAddFailure": {
         "t": "INTERACTION_CREATE",
         "s": 6,
         "op": 0,
@@ -1069,7 +1069,7 @@
             "app_permissions": "140737488355327"
         }
     },
-    "helpsGet": {
+    "faqsGet": {
         "t": "INTERACTION_CREATE",
         "s": 15,
         "op": 0,
@@ -1148,7 +1148,7 @@
             "app_permissions": "140737488355327"
         }
     },
-    "helpsGetAutocomplete": {
+    "faqsGetAutocomplete": {
         "t": "INTERACTION_CREATE",
         "s": 4,
         "op": 0,

@@ -15,10 +15,10 @@ public enum EventKey: String, Sendable {
     case howManyCoins1
     case howManyCoins2
     case serverBoost
-    case helpsAdd
-    case helpsAddFailure
-    case helpsGet
-    case helpsGetAutocomplete
+    case faqsAdd
+    case faqsAddFailure
+    case faqsGet
+    case faqsGetAutocomplete
 
     /// The endpoints from which the bot will send a response, after receiving each event.
     public var responseEndpoints: [APIEndpoint] {
@@ -56,13 +56,13 @@ public enum EventKey: String, Sendable {
             return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag"), .createInteractionResponse(interactionId: "1059345641651830855", interactionToken: "aW50ZXJhY3Rpb246MTA1OTM0NTY0MTY1MTgzMDg1NTp2NWI1eVFkNEVJdHJaRlc0bUZoRmNjMUFKeHNqS09YcXhHTUxHZGJIMXdzdFhkVkhWSk95YnNUdUV4U29UdUl3ejJsN2k0RTlDNVA3Nmhza2xIdkdrR2ZQRnduOEFBNUFlM28zN1NzSlJta0tVSkt1M1FxQ1lvb3FZU1lnMWg1ag")]
         case .serverBoost:
             return [.createMessage(channelId: "443074453719744522")]
-        case .helpsAdd:
+        case .faqsAdd:
             return [.createInteractionResponse(interactionId: "1097057830038667314", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw")]
-        case .helpsAddFailure:
+        case .faqsAddFailure:
             return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw"),.createInteractionResponse(interactionId: "1097057830038667314", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA1NzgzMDAzODY2NzMxNDpISXNabG5KMTlPdUtDOEhSbU93WmlucUd2eGNRYXRuS2lUaVNVZ255RHhLMThLZGM1Q1diU21sY3ByaGJMSkJxYXBZdkdEZXJRbVdNSmZ0WHp0dzNvcVNWWkE5dmllSmxoRUE1UG0xdXVPSUE0cDA3N1AzY2ZlSjluTFFFMzJTRw")]
-        case .helpsGet:
+        case .faqsGet:
             return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA2MjQ3NDExODg2NDkwNjpJMXhuZEVPeXViZFVteXV0UUpNZjAzZFBNMTNvVndnSkpLZ0xlbFprbnFLbmNLSlpFQmc3bUc3bVF6YzdJVklZemRqNlIzcFhsZlBEM3FoZmtPeXQwZHRkY2psNlExeTRRcDB4dWhmcGwyOW1EWGtuajhVWjdidU1VQ2dUQk5JcA"), .createInteractionResponse(interactionId: "1097062474118864906", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA2MjQ3NDExODg2NDkwNjpJMXhuZEVPeXViZFVteXV0UUpNZjAzZFBNMTNvVndnSkpLZ0xlbFprbnFLbmNLSlpFQmc3bUc3bVF6YzdJVklZemRqNlIzcFhsZlBEM3FoZmtPeXQwZHRkY2psNlExeTRRcDB4dWhmcGwyOW1EWGtuajhVWjdidU1VQ2dUQk5JcA")]
-        case .helpsGetAutocomplete:
+        case .faqsGetAutocomplete:
             return [.createInteractionResponse(interactionId: "1097060331508994088", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA2MDMzMTUwODk5NDA4ODpyWDROWEtucXBJNm1ZaDRDQ2QzVFVyRDU5Q21pZlhFV3pkUHJaaDZUbHczUlVkc1dGRDdYdHBYdVJFT2VrN2ROUzByTEdUTVJNaXhMRk5uUWk4Mng4MWF5S00yRWdQdzNqbGlkbUR3N3pwTm5HR2JnQVZQUkhtajhJbWltMVBQOQ")]
         }
     }

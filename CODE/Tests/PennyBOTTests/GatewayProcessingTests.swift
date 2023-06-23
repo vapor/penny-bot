@@ -391,10 +391,10 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
 
-    func testHelpsCommand() async throws {
+    func testFaqsCommand() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
-                key: .helpsAdd,
+                key: .faqsAdd,
                 as: Payloads.InteractionResponse.self
             )
             switch response.data {
@@ -406,7 +406,7 @@ class GatewayProcessingTests: XCTestCase {
 
         do {
             let response = try await manager.sendAndAwaitResponse(
-                key: .helpsAddFailure,
+                key: .faqsAddFailure,
                 as: Payloads.EditWebhookMessage.self
             )
             let message = try XCTUnwrap(response.embeds?.first?.description)
@@ -415,7 +415,7 @@ class GatewayProcessingTests: XCTestCase {
 
         do {
             let response = try await manager.sendAndAwaitResponse(
-                key: .helpsGet,
+                key: .faqsGet,
                 as: Payloads.EditWebhookMessage.self
             )
             let message = try XCTUnwrap(response.embeds?.first?.description)
@@ -424,7 +424,7 @@ class GatewayProcessingTests: XCTestCase {
 
         do {
             let response = try await manager.sendAndAwaitResponse(
-                key: .helpsGetAutocomplete,
+                key: .faqsGetAutocomplete,
                 as: Payloads.InteractionResponse.self
             )
             switch response.data {

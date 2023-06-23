@@ -204,8 +204,7 @@ enum FaqsSubCommand: String, CaseIterable {
                     type: .boolean,
                     name: "ephemeral",
                     description: "If True, the response will only be visible to you",
-                    required: false,
-                    autocomplete: false
+                    required: false
                 )
             ]
         case .remove, .edit:
