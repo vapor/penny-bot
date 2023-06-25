@@ -79,7 +79,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "Lambdas/Coins",
+            path: "./Sources/Lambdas/Coins",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -93,7 +93,7 @@ let package = Package(
                 .target(name: "Extensions"),
                 .target(name: "SharedServices"),
             ],
-            path: "Lambdas/Sponsors",
+            path: "./Sources/Lambdas/Sponsors",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -105,7 +105,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "Lambdas/AutoPings",
+            path: "./Sources/Lambdas/AutoPings",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -117,7 +117,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "Lambdas/Faqs",
+            path: "./Sources/Lambdas/Faqs",
             swiftSettings: swiftSettings
         ),
         .target(
