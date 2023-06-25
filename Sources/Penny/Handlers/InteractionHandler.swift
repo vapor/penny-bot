@@ -484,7 +484,7 @@ private extension InteractionHandler {
             case .autoPings:
                 return try await handlePingsCommand(options: options)
             case .faqs:
-                return try await handleHelpCommand(options: options)
+                return try await handleFaqsCommand(options: options)
             case .howManyCoins:
                 return try await handleHowManyCoinsCommand(options: options)
             case .howManyCoinsApp:
@@ -554,7 +554,7 @@ private extension InteractionHandler {
         }
     }
 
-    func handleHelpCommand(options: [InteractionOption]) async throws -> (any Response)? {
+    func handleFaqsCommand(options: [InteractionOption]) async throws -> (any Response)? {
         let first = try options.first.requireValue()
         let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
         switch subcommand {
