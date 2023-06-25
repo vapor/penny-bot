@@ -39,4 +39,4 @@ USER vapor:vapor
 EXPOSE 8080
 
 ENTRYPOINT [ "./Penny" ]
-CMD [ "serve" ]
+CMD [ "serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080" ]

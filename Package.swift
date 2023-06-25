@@ -67,7 +67,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "./Lambdas/AddCoin",
+            path: "./Lambdas/Coins",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
