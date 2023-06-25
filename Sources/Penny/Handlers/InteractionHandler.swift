@@ -55,14 +55,14 @@ struct InteractionHandler {
                 return await sendInteractionResolveFailure()
             }
             guard command == .faqs else {
-                logger.error("Unrecognized autocomplete command")
+                logger.error("Unrecognized command with autocomplete")
                 return await sendInteractionResolveFailure()
             }
             let response: any Response
             do {
-                response = try await handleHelpCommandAutocomplete(data: data)
+                response = try await handleFaqsCommandAutocomplete(data: data)
             } catch {
-                logger.report("Help command error", error: error)
+                logger.report("FAQ command error", error: error)
                 /// An `autocomplete`'s response must be an autocomplete payload.
                 response = Payloads.InteractionResponse.Autocomplete(
                     choices: [.init(name: "Failure", value: .string(self.oops))]
@@ -71,7 +71,7 @@ struct InteractionHandler {
             await respond(with: response, shouldEdit: false)
         case let .modalSubmit(modal):
             guard let modalId = ModalID(rawValue: modal.custom_id) else {
-                logger.error("Unrecognized command")
+                logger.error("Unrecognized modal")
                 return await sendInteractionResolveFailure()
             }
             let response: any Response
@@ -671,11 +671,10 @@ private extension InteractionHandler {
         }
     }
 
-    func handleHelpCommandAutocomplete(
+    func handleFaqsCommandAutocomplete(
         data: Interaction.ApplicationCommand
     ) async throws -> any Response {
         let first = try (data.options?.first).requireValue()
-        let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
         let name = try first.options
             .requireValue()
             .requireOption(named: "name")
@@ -866,8 +865,8 @@ private enum ModalID {
             let autoPingsMode = autoPingsMode.rawValue.capitalized
             let expressionMode = expressionMode.UIDescription
             return "\(autoPingsMode) \(expressionMode) Auto-Pings"
-        case let .faqs(helpMode):
-            return "\(helpMode.name) Help Text"
+        case let .faqs(faqsMode):
+            return "\(faqsMode.name) FAQ Text"
         }
     }
 

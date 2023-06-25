@@ -79,7 +79,7 @@ actor DefaultFaqsService: FaqsService {
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error("-service failed", metadata: [
+            logger.error("Faqs-service failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
                 "body": "\(body)",

@@ -38,7 +38,11 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "Penny", targets: ["Penny"])
+        .executable(name: "Penny", targets: ["Penny"]),
+        .executable(name: "CoinsLambda", targets: ["CoinsLambda"]),
+        .executable(name: "SponsorsLambda", targets: ["SponsorsLambda"]),
+        .executable(name: "AutoPingsLambda", targets: ["AutoPingsLambda"]),
+        .executable(name: "FaqsLambda", targets: ["FaqsLambda"]),
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
@@ -58,6 +62,18 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
+            name: "Penny",
+            dependencies: [
+                .product(name: "Backtrace", package: "swift-backtrace"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "DiscordLogger", package: "DiscordLogger"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .target(name: "Models"),
+                .target(name: "Repositories"),
+            ],
+            swiftSettings: swiftSettings
+        ),
+        .executableTarget(
             name: "CoinsLambda",
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
@@ -68,18 +84,6 @@ let package = Package(
                 .target(name: "Models"),
             ],
             path: "./Lambdas/Coins",
-            swiftSettings: swiftSettings
-        ),
-        .executableTarget(
-            name: "Penny",
-            dependencies: [
-                .product(name: "Backtrace", package: "swift-backtrace"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "DiscordLogger", package: "DiscordLogger"),
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .target(name: "Models"),
-                .target(name: "Repositories"),
-            ],
             swiftSettings: swiftSettings
         ),
         .executableTarget(
