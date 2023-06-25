@@ -58,18 +58,6 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
-            name: "Penny",
-            dependencies: [
-                .product(name: "Backtrace", package: "swift-backtrace"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "DiscordLogger", package: "DiscordLogger"),
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .target(name: "Models"),
-                .target(name: "Repositories"),
-            ],
-            swiftSettings: swiftSettings
-        ),
-        .executableTarget(
             name: "CoinsLambda",
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
@@ -79,7 +67,19 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "./Sources/Lambdas/Coins",
+            path: "./Lambdas/Coins",
+            swiftSettings: swiftSettings
+        ),
+        .executableTarget(
+            name: "Penny",
+            dependencies: [
+                .product(name: "Backtrace", package: "swift-backtrace"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "DiscordLogger", package: "DiscordLogger"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .target(name: "Models"),
+                .target(name: "Repositories"),
+            ],
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -93,7 +93,7 @@ let package = Package(
                 .target(name: "Extensions"),
                 .target(name: "SharedServices"),
             ],
-            path: "./Sources/Lambdas/Sponsors",
+            path: "./Lambdas/Sponsors",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -105,7 +105,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "./Sources/Lambdas/AutoPings",
+            path: "./Lambdas/AutoPings",
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -117,7 +117,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "./Sources/Lambdas/Faqs",
+            path: "./Lambdas/Faqs",
             swiftSettings: swiftSettings
         ),
         .target(
