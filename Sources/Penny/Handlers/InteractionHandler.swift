@@ -298,8 +298,8 @@ private extension InteractionHandler {
                     }
                 }
             }
-        case let .help(helpMode):
-            switch helpMode {
+        case let .faqs(faqsMode):
+            switch faqsMode {
             case .add:
                 let name = try modal.components
                     .requireComponent(customId: "name")
@@ -346,7 +346,7 @@ private extension InteractionHandler {
 
                 if let value = all[name] {
                     return """
-                    A faq with name '\(name)' already exists. Please remove it first.
+                    A FAQ with name '\(name)' already exists. Please remove it first.
 
                     Value:
                     \(newValue)
@@ -361,7 +361,7 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will add a faq", metadata: [
+                logger.notice("Will add a FAQ", metadata: [
                     "name": .string(name),
                     "value": .string(newValue),
                 ])
@@ -371,7 +371,7 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Added a new faq with name '\(name)':
+                Added a new FAQ with name '\(name)':
 
                 \(newValue)
                 """
@@ -393,7 +393,7 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will edit a faq", metadata: [
+                logger.notice("Will edit a FAQ", metadata: [
                     "name": .string(name),
                     "value": .string(newValue),
                 ])
@@ -403,7 +403,7 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Edited a faq with name '\(name)':
+                Edited a FAQ with name '\(name)':
 
                 \(newValue)
                 """
@@ -432,7 +432,7 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will rename a faq", metadata: [
+                logger.notice("Will rename a FAQ", metadata: [
                     "name": .string(name),
                     "value": .string(value),
                 ])
@@ -443,7 +443,7 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Renamed a faq from '\(oldName)' to '\(name)':
+                Renamed a FAQ from '\(oldName)' to '\(name)':
 
                 \(value)
                 """
@@ -584,7 +584,7 @@ private extension InteractionHandler {
             if let value = try await faqsService.get(name: name) {
                 return value
             } else {
-                return "No faq with name '\(name)' exists at all"
+                return "No FAQ with name '\(name)' exists at all"
             }
         case .remove:
             let name = try first.options
@@ -603,9 +603,9 @@ private extension InteractionHandler {
                 return "You don't have access to this command; it is only available to \(rolesString)"
             }
             guard let value = try await faqsService.get(name: name) else {
-                return "No faq with name '\(name)' exists at all"
+                return "No FAQ with name '\(name)' exists at all"
             }
-            logger.warning("Will remove a faq", metadata: [
+            logger.warning("Will remove a FAQ", metadata: [
                 "name": .string(name),
                 "value": .string(value),
             ])
@@ -614,46 +614,46 @@ private extension InteractionHandler {
                 try await faqsService.remove(name: name)
             }
 
-            return "Removed a faq with name '\(name)'"
+            return "Removed a FAQ with name '\(name)'"
         case .add:
-            if let accessLevelError = try await helpCommandAccessLevelErrorIfNeeded() {
+            if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            let modalId = ModalID.help(.add)
+            let modalId = ModalID.faqs(.add)
             return modalId.makeModal()
         case .edit:
             let name = try first.options
                 .requireValue()
                 .requireOption(named: "name")
                 .requireString()
-            if let accessLevelError = try await helpCommandAccessLevelErrorIfNeeded() {
+            if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
             if let value = try await faqsService.get(name: name) {
-                let modalId = ModalID.help(.edit(nameHash: name.hash, value: value))
+                let modalId = ModalID.faqs(.edit(nameHash: name.hash, value: value))
                 return modalId.makeModal()
             } else {
-                return "No faq with name '\(name)' exists at all"
+                return "No FAQ with name '\(name)' exists at all"
             }
         case .rename:
             let name = try first.options
                 .requireValue()
                 .requireOption(named: "name")
                 .requireString()
-            if let accessLevelError = try await helpCommandAccessLevelErrorIfNeeded() {
+            if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
             if try await faqsService.get(name: name) != nil {
-                let modalId = ModalID.help(.rename(nameHash: name.hash, name: name))
+                let modalId = ModalID.faqs(.rename(nameHash: name.hash, name: name))
                 return modalId.makeModal()
             } else {
-                return "No faq with name '\(name)' exists at all"
+                return "No FAQ with name '\(name)' exists at all"
             }
         }
     }
 
     /// Returns a `String` if there is an access-levelerror. Otherwise `nil`.
-    func helpCommandAccessLevelErrorIfNeeded() async throws -> String? {
+    func faqsCommandAccessLevelErrorIfNeeded() async throws -> String? {
         if await discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
             member: try event.member.requireValue()
         ) {
@@ -676,15 +676,6 @@ private extension InteractionHandler {
     ) async throws -> any Response {
         let first = try (data.options?.first).requireValue()
         let subcommand = try FaqsSubCommand(rawValue: first.name).requireValue()
-        guard [.get, .edit, .rename, .remove].contains(subcommand) else {
-            logger.error(
-                "Unexpected 'faqs' subcommand for autocomplete",
-                metadata: ["subcommand": "\(subcommand)"]
-            )
-            return Payloads.InteractionResponse.Autocomplete(
-                choices: [.init(name: "Failure", value: .string(self.oops))]
-            )
-        }
         let name = try first.options
             .requireValue()
             .requireOption(named: "name")
@@ -811,7 +802,7 @@ private enum ModalID {
         case add, remove, test
     }
 
-    enum HelpMode {
+    enum FaqsMode {
         case add
         /// Using the hash of the name to make sure we don't exceed Discord's
         /// custom-id length limit (currently 100 characters).
@@ -859,7 +850,7 @@ private enum ModalID {
     }
 
     case autoPings(AutoPingsMode, Expression.Kind)
-    case help(HelpMode)
+    case faqs(FaqsMode)
 
     func makeModal() -> Payloads.InteractionResponse.Modal {
         .init(
@@ -875,7 +866,7 @@ private enum ModalID {
             let autoPingsMode = autoPingsMode.rawValue.capitalized
             let expressionMode = expressionMode.UIDescription
             return "\(autoPingsMode) \(expressionMode) Auto-Pings"
-        case let .help(helpMode):
+        case let .faqs(helpMode):
             return "\(helpMode.name) Help Text"
         }
     }
@@ -911,13 +902,13 @@ private enum ModalID {
                 )
                 return [message, texts]
             }
-        case let .help(helpMode):
-            switch helpMode {
+        case let .faqs(faqsMode):
+            switch faqsMode {
             case .add:
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
                     style: .short,
-                    label: "The name of the faq",
+                    label: "The name of the FAQ",
                     min_length: 3,
                     max_length: Configuration.faqsNameMaxLength,
                     required: true,
@@ -926,7 +917,7 @@ private enum ModalID {
                 let value = Interaction.ActionRow.TextInput(
                     custom_id: "value",
                     style: .paragraph,
-                    label: "The value of the faq",
+                    label: "The value of the FAQ",
                     min_length: 3,
                     required: true,
                     placeholder: """
@@ -939,7 +930,7 @@ private enum ModalID {
                 let value = Interaction.ActionRow.TextInput(
                     custom_id: "value",
                     style: .paragraph,
-                    label: "The value of the faq",
+                    label: "The value of the FAQ",
                     min_length: 3,
                     required: true,
                     value: value,
@@ -953,7 +944,7 @@ private enum ModalID {
                 let name = Interaction.ActionRow.TextInput(
                     custom_id: "name",
                     style: .short,
-                    label: "The name of the faq",
+                    label: "The name of the FAQ",
                     min_length: 3,
                     max_length: Configuration.faqsNameMaxLength,
                     required: true,
@@ -972,8 +963,8 @@ extension ModalID: RawRepresentable {
         switch self {
         case let .autoPings(autoPingsMode, expressionMode):
             return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
-        case let .help(helpMode):
-            return "help;\(helpMode.makeForCustomId())"
+        case let .faqs(faqsMode):
+            return "faqs;\(faqsMode.makeForCustomId())"
         }
     }
 
@@ -985,9 +976,9 @@ extension ModalID: RawRepresentable {
            let expressionMode = Expression.Kind(rawValue: String(split[2])) {
             self = .autoPings(autoPingsMode, expressionMode)
         } else if split.count == 2,
-                  split[0] == "help",
-                  let helpMode = HelpMode(customIdPart: String(split[1])) {
-            self = .help(helpMode)
+                  split[0] == "faqs",
+                  let faqsMode = FaqsMode(customIdPart: String(split[1])) {
+            self = .faqs(faqsMode)
         } else {
             return nil
         }

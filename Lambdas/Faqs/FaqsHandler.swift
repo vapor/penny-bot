@@ -56,7 +56,7 @@ struct FaqsHandler: LambdaHandler {
                 return APIGatewayV2Response(
                     status: .expectationFailed,
                     content: GatewayFailure(
-                        reason: "Error when adding help text: \(error)"
+                        reason: "Error when adding faqs text: \(error)"
                     )
                 )
             }
@@ -67,7 +67,7 @@ struct FaqsHandler: LambdaHandler {
                 return APIGatewayV2Response(
                     status: .expectationFailed,
                     content: GatewayFailure(
-                        reason: "Error when removing help text: \(error)"
+                        reason: "Error when removing faqs text: \(error)"
                     )
                 )
             }
