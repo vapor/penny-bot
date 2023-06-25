@@ -5,12 +5,10 @@
 xcuserdata/
 DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
-CODE/.swiftpm/*
-CODE/.build/*
+.swiftpm/*
+.build/*
 *.xcscheme
-CODE/.swiftpm/xcode/xcshareddata/xcschemes/BOT.xcscheme
-CODE/.swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .vscode/launch.json
 .devcontainer
-CODE/Sources/DBMigration/Data
+Sources/DBMigration/Data
 .vscode/
