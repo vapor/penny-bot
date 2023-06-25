@@ -7,16 +7,14 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 
 WORKDIR /build
 
-COPY ./CODE/Package.* ./
+COPY ./Package.* ./
 RUN swift package resolve
 
-COPY ./CODE .
-
-RUN swift build -c release --static-swift-stdlib --product PennyBOT
+RUN swift build -c release --static-swift-stdlib --product Penny
 
 WORKDIR /staging
 
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/PennyBOT" ./
+RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Penny" ./
 
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
@@ -40,5 +38,5 @@ USER vapor:vapor
 
 EXPOSE 8080
 
-ENTRYPOINT [ "./PennyBOT" ]
-CMD [ "serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080" ]
+ENTRYPOINT [ "./Penny" ]
+CMD [ "serve" ]
