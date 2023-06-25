@@ -9,7 +9,7 @@ executable=$arg
 echo "---------------------------------------"
 echo "preparing docker build image"
 echo "---------------------------------------"
-sudo docker build . -t builder
+sudo docker build -t builder -f Lambda-Dockerfile .
 echo "done"
 
 

@@ -38,11 +38,7 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "Penny", targets: ["Penny"]),
-        .executable(name: "CoinsLambda", targets: ["CoinsLambda"]),
-        .executable(name: "SponsorsLambda", targets: ["SponsorsLambda"]),
-        .executable(name: "AutoPingsLambda", targets: ["AutoPingsLambda"]),
-        .executable(name: "FaqsLambda", targets: ["FaqsLambda"]),
+        .executable(name: "Penny", targets: ["Penny"])
     ],
     dependencies: [
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),

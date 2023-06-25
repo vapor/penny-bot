@@ -1,4 +1,4 @@
-name: Build and upload lambda functions
+name: Build and upload coins lambda function
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
