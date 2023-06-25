@@ -1,5 +1,5 @@
-@testable import PennyBot
-import PennyModels
+@testable import Penny
+import Models
 
 public struct FakeCoinService: CoinService {
     

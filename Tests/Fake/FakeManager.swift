@@ -1,5 +1,5 @@
 import DiscordBM
-@testable import PennyBot
+@testable import Penny
 import Atomics
 import struct NIOCore.ByteBuffer
 import XCTest

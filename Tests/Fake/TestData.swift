@@ -1,6 +1,6 @@
 import Foundation
 import DiscordModels
-import PennyModels
+import Models
 
 public enum TestData {
     

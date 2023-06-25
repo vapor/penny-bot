@@ -2,9 +2,9 @@ import AWSLambdaRuntime
 import AWSLambdaEvents
 import Foundation
 import SotoCore
-import PennyModels
-import PennyRepositories
-import PennyExtensions
+import Models
+import Repositories
+import Extensions
 import NIOConcurrencyHelpers
 
 @main
@@ -29,7 +29,7 @@ struct FaqsHandler: LambdaHandler {
     ) async -> APIGatewayV2Response {
         let request: FaqsRequest
         do {
-            request = try event.bodyObject()
+            request = try event.decode()
         } catch {
             return APIGatewayV2Response(
                 status: .badRequest,

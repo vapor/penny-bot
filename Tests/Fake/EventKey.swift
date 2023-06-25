@@ -1,5 +1,5 @@
 import DiscordBM
-@testable import PennyBot
+@testable import Penny
 
 public enum EventKey: String, Sendable {
     case thanksMessage

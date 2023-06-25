@@ -19,11 +19,11 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3
     - name: Build and zip
-      run: ./scripts/build-and-package.sh PennyLambdaAddCoins
+      run: ./scripts/build-and-package.sh CoinsLambda
     - name: Remove build file
       run: |
         cd './.build/lambda/'
-        sudo rm -rf PennyLambdaAddCoins
+        sudo rm -rf CoinsLambda
     - name: Deploy to S3
       id: s3deploy
       uses: jakejarvis/s3-sync-action@master
@@ -38,9 +38,9 @@ jobs:
     - name: Update Lambda code
       run: |
         aws lambda update-function-code \
-          --function-name 'PennyLambdaAddCoins-lambda' \
+          --function-name 'CoinsLambda-lambda' \
           --s3-bucket 'penny-discord-bot' \
-          --s3-key 'PennyLambdaAddCoins.zip'
+          --s3-key 'CoinsLambda.zip'
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}

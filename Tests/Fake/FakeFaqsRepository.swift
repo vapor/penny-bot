@@ -1,6 +1,6 @@
 import Foundation
-import PennyModels
-import PennyRepositories
+import Models
+import Repositories
 
 public struct FakeFaqsRepository: FaqsRepository {
 

@@ -2,9 +2,9 @@ import AWSLambdaRuntime
 import AWSLambdaEvents
 import Foundation
 import SotoCore
-import PennyServices
-import PennyModels
-import PennyExtensions
+import SharedServices
+import Models
+import Extensions
 
 @main
 struct AddCoinHandler: LambdaHandler {
@@ -25,7 +25,7 @@ struct AddCoinHandler: LambdaHandler {
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
-            let request: CoinRequest = try event.bodyObject()
+            let request = try event.decode(as: CoinRequest.self)
             switch request {
             case .addCoin(let addCoin):
                 return await handleAddCoinRequest(request: addCoin, logger: context.logger)
