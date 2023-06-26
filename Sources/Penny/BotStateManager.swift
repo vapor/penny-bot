@@ -50,6 +50,7 @@ actor BotStateManager {
             try await Task.sleep(for: .seconds(15))
             if !isCachePopulated {
                 canRespond = true
+                isCachePopulated = true
                 logger.error("No CachesStorage-population signal was done in-time")
             }
         }
@@ -102,8 +103,8 @@ actor BotStateManager {
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
                 isCachePopulated = true
-                canRespond = true
                 await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
+                canRespond = true
                 logger.notice("Done loading old-instance's cached info")
             }
         }

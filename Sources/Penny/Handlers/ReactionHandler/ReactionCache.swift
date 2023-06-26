@@ -1,6 +1,6 @@
 import Logging
 import DiscordBM
-import Collections
+@preconcurrency import Collections
 import Foundation
 
 /// Cache for reactions-related stuff.
@@ -23,7 +23,7 @@ actor ReactionCache {
         var totalCoinCount: Int
     }
 
-    struct Storage: Codable {
+    struct Storage: Sendable, Codable {
         /// `[MessageID: AuthorID]`
         var cachedAuthorIds: OrderedDictionary<MessageSnowflake, UserSnowflake> = [:] {
             didSet {
@@ -182,11 +182,11 @@ actor ReactionCache {
         }
     }
 
-    func fromCachesStorageData(_ storage: Storage) {
+    func consumeCachesStorageData(_ storage: Storage) {
         self.storage = storage
     }
 
-    func toCachesStorageData() -> Storage {
+    func getCachedDataForCachesStorage() -> Storage {
         self.storage
     }
 

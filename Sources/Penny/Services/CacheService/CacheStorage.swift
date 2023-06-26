@@ -2,29 +2,24 @@ import Models
 
 struct CachesStorage: Codable {
 
-    struct ProposalsCheckerStorage: Codable {
-        var previousProposals: [Proposal]
-        var queuedProposals: [QueuedProposal]
-    }
-
     var reactionCacheData: ReactionCache.Storage?
-    var proposalsCheckerData: ProposalsCheckerStorage?
+    var proposalsCheckerData: ProposalsChecker.Storage?
 
     init() { }
 
     static func makeFromCachedData() async -> CachesStorage {
         var storage = CachesStorage()
-        storage.reactionCacheData = await ReactionCache.shared.toCachesStorageData()
-        storage.proposalsCheckerData = await ProposalsChecker.shared.toCachesStorageData()
+        storage.reactionCacheData = await ReactionCache.shared.getCachedDataForCachesStorage()
+        storage.proposalsCheckerData = await ProposalsChecker.shared.getCachedDataForCachesStorage()
         return storage
     }
 
     func populateServices() async {
         if let reactionCacheData = self.reactionCacheData {
-            await ReactionCache.shared.fromCachesStorageData(reactionCacheData)
+            await ReactionCache.shared.consumeCachesStorageData(reactionCacheData)
         }
         if let proposalsCheckerData = proposalsCheckerData {
-            await ProposalsChecker.shared.fromCachesStorageData(proposalsCheckerData)
+            await ProposalsChecker.shared.consumeCachesStorageData(proposalsCheckerData)
         }
     }
 }

@@ -54,7 +54,8 @@ class GatewayProcessingTests: XCTestCase {
         while let possibleSignal = await responseStorage.awaitResponse(
             at: .createMessage(channelId: Constants.Channels.logs.id)
         ).value as? Payloads.CreateMessage {
-            if possibleSignal.content?.contains(StateManagerSignal.shutdown.value) == true {
+            if let signal = possibleSignal.content,
+               signal.contains(StateManagerSignal.shutdown.value) == true {
                 let content = await BotStateManager.shared._tests_didShutdownSignalEventContent()
                 await manager.send(event: .init(
                     opcode: .dispatch,
@@ -83,15 +84,11 @@ class GatewayProcessingTests: XCTestCase {
         }
 
         /// Wait to make sure the `BotStateManager` cache is already populated.
-        for idx in 1...100 {
+        for _ in 1...100 where !(await BotStateManager.shared.isCachePopulated) {
             try? await Task.sleep(for: .milliseconds(50))
-            if await BotStateManager.shared.isCachePopulated {
-                break
-            }
-            if idx == 100 {
-                XCTFail("BotStateManager cache was too late to populate")
-            }
         }
+        let isPopulated = await BotStateManager.shared.isCachePopulated
+        XCTAssert(isPopulated, "BotStateManager cache was too late to populate")
     }
 
     func testCommandsRegisterOnStartup() async throws {
