@@ -303,6 +303,15 @@ actor ProposalsChecker {
         return link
     }
 
+    func fromCacheStorageData(_ storage: CacheStorage.ProposalsCheckerStorage) {
+        self.previousProposals = storage.previousProposals
+        self.queuedProposals = storage.queuedProposals
+    }
+
+    func toCacheStorageData() -> CacheStorage.ProposalsCheckerStorage {
+        .init(previousProposals: self.previousProposals, queuedProposals: self.queuedProposals)
+    }
+
 #if DEBUG
     func _tests_setPreviousProposals(to proposals: [Proposal]) {
         self.previousProposals = proposals
@@ -348,8 +357,8 @@ private extension Proposal.User {
     }
 }
 
-private struct QueuedProposal {
-    let uuid = UUID()
+struct QueuedProposal: Codable {
+    var uuid = UUID()
     let firstKnownStateBeforeQueue: Proposal.Status.State?
     var updatedAt: Date
     var proposal: Proposal

@@ -206,18 +206,25 @@ struct ReactionHandler {
 /// Optimally we would use some service like Redis to handle time-to-live
 /// and disk-persistence for us, but this actor is more than enough at our scale.
 actor ReactionCache {
-    /// `[MessageID: AuthorID]`
-    private var cachedAuthorIds: [MessageSnowflake: UserSnowflake] = [:]
-    /// `Set<[SenderID, MessageID]>`
-    private var givenCoins: Set<[AnySnowflake]> = []
-    /// Channel's last message id if it is a thanks message to another message.
-    private var channelWithLastThanksMessage: [
-        ChannelSnowflake: ChannelLastThanksMessage] = [:]
-    /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
-    private var thanksChannelForcedMessages: [
-        MessageSnowflake: ChannelForcedThanksMessage] = [:]
+
+    struct Storage: Codable {
+        /// `[MessageID: AuthorID]`
+        var cachedAuthorIds: [MessageSnowflake: UserSnowflake] = [:]
+        /// `Set<[SenderID, MessageID]>`
+        var givenCoins: Set<[AnySnowflake]> = []
+        /// Channel's last message id if it is a thanks message to another message.
+        fileprivate var channelWithLastThanksMessage = [
+            ChannelSnowflake: ChannelLastThanksMessage
+        ]()
+        /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
+        fileprivate var thanksChannelForcedMessages = [
+            MessageSnowflake: ChannelForcedThanksMessage
+        ]()
+    }
+
+    private var storage = Storage()
     let logger = Logger(label: "ReactionCache")
-    
+
     private init() { }
     
     static var shared = ReactionCache()
@@ -227,7 +234,7 @@ actor ReactionCache {
         channelId: ChannelSnowflake,
         messageId: MessageSnowflake
     ) async -> UserSnowflake? {
-        if let authorId = cachedAuthorIds[messageId] {
+        if let authorId = storage.cachedAuthorIds[messageId] {
             return authorId
         } else {
             guard let message = await self.getMessage(
@@ -237,7 +244,7 @@ actor ReactionCache {
                 return nil
             }
             if let authorId = message.author?.id {
-                cachedAuthorIds[messageId] = authorId
+                storage.cachedAuthorIds[messageId] = authorId
                 return authorId
             } else {
                 logger.error("ReactionCache could not find a message's author id", metadata: [
@@ -254,7 +261,7 @@ actor ReactionCache {
         fromSender senderId: UserSnowflake,
         toAuthorOfMessage messageId: MessageSnowflake
     ) -> Bool {
-        givenCoins.insert([AnySnowflake(senderId), AnySnowflake(messageId)]).inserted
+        storage.givenCoins.insert([AnySnowflake(senderId), AnySnowflake(messageId)]).inserted
     }
     
     /// Message have been created within last week,
@@ -298,20 +305,20 @@ actor ReactionCache {
         senderName: String
     ) {
         if sentToThanksChannelInstead {
-            let previous = thanksChannelForcedMessages[receiverMessageId]
+            let previous = storage.thanksChannelForcedMessages[receiverMessageId]
             let names = (previous?.senderUsers ?? []) + [senderName]
             let amount = (previous?.totalCoinCount ?? 0) + amount
-            thanksChannelForcedMessages[receiverMessageId] = .init(
+            storage.thanksChannelForcedMessages[receiverMessageId] = .init(
                 originalChannelId: channelId,
                 pennyResponseMessageId: responseMessageId,
                 senderUsers: names,
                 totalCoinCount: amount
             )
         } else {
-            let previous = channelWithLastThanksMessage[channelId]
+            let previous = storage.channelWithLastThanksMessage[channelId]
             let names = (previous?.senderUsers ?? []) + [senderName]
             let amount = (previous?.totalCoinCount ?? 0) + amount
-            channelWithLastThanksMessage[channelId] = .init(
+            storage.channelWithLastThanksMessage[channelId] = .init(
                 receiverMessageId: receiverMessageId,
                 pennyResponseMessageId: responseMessageId,
                 senderUsers: names,
@@ -329,20 +336,28 @@ actor ReactionCache {
         in channelId: ChannelSnowflake,
         receiverMessageId: MessageSnowflake
     ) -> MessageToEditResponse? {
-        if let existing = thanksChannelForcedMessages[receiverMessageId] {
+        if let existing = storage.thanksChannelForcedMessages[receiverMessageId] {
             return .forcedInThanksChannel(existing)
-        } else if let existing = channelWithLastThanksMessage[channelId] {
+        } else if let existing = storage.channelWithLastThanksMessage[channelId] {
             if existing.receiverMessageId == receiverMessageId {
                 return .normal(existing)
             } else {
-                channelWithLastThanksMessage[channelId] = nil
+                storage.channelWithLastThanksMessage[channelId] = nil
                 return nil
             }
         } else {
             return nil
         }
     }
-    
+
+    func fromCacheStorageData(_ storage: Storage) {
+        self.storage = storage
+    }
+
+    func toCacheStorageData() -> Storage {
+        self.storage
+    }
+
 #if DEBUG
     static func _tests_reset() {
         shared = .init()
@@ -350,14 +365,14 @@ actor ReactionCache {
 #endif
 }
 
-private struct ChannelLastThanksMessage {
+private struct ChannelLastThanksMessage: Codable {
     var receiverMessageId: MessageSnowflake
     var pennyResponseMessageId: MessageSnowflake
     var senderUsers: [String]
     var totalCoinCount: Int
 }
 
-private struct ChannelForcedThanksMessage {
+private struct ChannelForcedThanksMessage: Codable {
     var originalChannelId: ChannelSnowflake
     var pennyResponseMessageId: MessageSnowflake
     var senderUsers: [String]

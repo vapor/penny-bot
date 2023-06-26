@@ -64,6 +64,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "SotoS3", package: "soto"),
                 .target(name: "Models")
             ],
             swiftSettings: swiftSettings

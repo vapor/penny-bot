@@ -15,7 +15,8 @@ actor BotStateManager {
     var canRespond = true
     let id = Int(Date().timeIntervalSince1970)
     
-    let signal = "Hello the other Pennys 👋 you can retire now :)"
+    let shutdownSignal = "Hello the other Pennys 👋 you can retire now :)"
+    let didShutdownSignal = "I'm retired!"
     var disableDuration = Duration.seconds(3 * 60)
     
     static private(set) var shared = BotStateManager()
@@ -24,26 +25,36 @@ actor BotStateManager {
     
     func initialize() {
         self.logger[metadataKey: "id"] = "\(self.id)"
-        Task { await sendSignal() }
+        Task { await send(shutdownSignal) }
     }
     
     func canRespond(to event: Gateway.Event) -> Bool {
-        checkIfItsASlowdownSignal(event: event)
+        checkIfItsASignal(event: event)
         return canRespond
     }
     
-    private func checkIfItsASlowdownSignal(event: Gateway.Event) {
+    private func checkIfItsASignal(event: Gateway.Event) {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.logs.id,
               let author = message.author,
-              author.id.rawValue == Constants.botId,
-              message.content.hasPrefix(signal)
+              author.id.rawValue == Constants.botId
         else { return }
         guard let otherId = message.content.split(whereSeparator: \.isWhitespace).last else {
             logger.warning("Can't find id of the other Penny")
             return
         }
         if otherId == "\(self.id)" { return }
+        if message.content.hasPrefix(shutdownSignal) {
+            shutdown()
+        } else if message.content.hasPrefix(didShutdownSignal) {
+            
+        } else {
+            logger.error("Unknown signal")
+            return
+        }
+    }
+
+    private func shutdown() {
         logger.warning("Received shutdown signal from another Penny")
         self.canRespond = false
         Task {
@@ -52,11 +63,11 @@ actor BotStateManager {
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
         }
     }
-    
-    private func sendSignal() async {
+
+    private func send(_ text: String) async {
         await DiscordService.shared.sendMessage(
             channelId: Constants.Channels.logs.id,
-            payload: .init(content: signal + " \(self.id)")
+            payload: .init(content: text + " \(self.id)")
         )
     }
     

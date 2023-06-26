@@ -35,7 +35,7 @@ struct DynamoUserRepository {
     }
     
     // MARK: - Retrieve
-    func getUser(discord id: String) async throws -> User? {
+    func getUser(discord id: String) async throws -> DynamoUser? {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
             indexName: discordIndex,
@@ -47,7 +47,7 @@ struct DynamoUserRepository {
         return try await queryUser(with: query)
     }
     
-    func getUser(github id: String) async throws -> User? {
+    func getUser(github id: String) async throws -> DynamoUser? {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("GITHUB-\(id)")],
             indexName: githubIndex,
@@ -60,7 +60,7 @@ struct DynamoUserRepository {
     }
     
     /// Returns nil if user does not exist.
-    private func queryUser(with query: DynamoDB.QueryInput) async throws -> User? {
+    private func queryUser(with query: DynamoDB.QueryInput) async throws -> DynamoUser? {
         let results = try await db.query(
             query,
             type: DynamoDBUser.self,
@@ -71,7 +71,7 @@ struct DynamoUserRepository {
             return nil
         }
         
-        let localUser = User(
+        let localUser = DynamoUser(
             id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
             discordID: user.data1?.deletePrefix("DISCORD-"),
             githubID: user.data2?.deletePrefix("GITHUB-"),
