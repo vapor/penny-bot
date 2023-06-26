@@ -5,8 +5,8 @@ struct S3CacheRepository {
 
     let s3: S3
     let logger: Logger
-    let bucket = "penny-cache"
-    let key = "cache.json"
+    let bucket = "penny-caches"
+    let key = "caches.json"
 
     init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)

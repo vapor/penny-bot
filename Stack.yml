@@ -351,6 +351,15 @@ Resources:
       LogGroupName: /aws/lambda/FaqsLambda-lambda
       RetentionInDays: 30
 
+
+  cachesS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: penny-caches
+
+
   dynamoUserTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -401,6 +410,7 @@ Resources:
       BillingMode: PAY_PER_REQUEST
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
+
 
 Outputs:
   faqsLambdaArn:
