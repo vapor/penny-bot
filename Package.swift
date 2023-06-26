@@ -137,6 +137,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .target(name: "Models"),
+                .target(name: "Extensions"),
             ],
             swiftSettings: swiftSettings
         ),
