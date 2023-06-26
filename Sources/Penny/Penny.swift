@@ -31,15 +31,15 @@ struct Penny {
         await CommandsManager().registerCommands()
 
         await bot.connect()
+        let stream = await bot.makeEventsStream()
 
-        /// Initialize `BotStateManager` after `bot.connect()`
-        /// since it communicated through Discord and will need the Gateway connection.
+        /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
+        /// since it communicates through Discord and will need the Gateway connection.
         await BotStateManager.shared.initialize(onStart: {
             /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
             await ServiceFactory.initiateProposalsChecker(client)
         })
 
-        let stream = await bot.makeEventsStream()
         for await event in stream {
             EventHandler(event: event).handle()
         }

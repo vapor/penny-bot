@@ -73,11 +73,14 @@ actor BotStateManager {
         if otherId == "\(self.id)" { return }
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
+            logger.trace("Received 'shutdown' signal")
             shutdown()
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
+            logger.trace("Received 'didShutdown' signal")
             populateCache()
         } else {
-            return logger.error("Unknown signal", metadata: ["signal": .string(message.content)])
+            logger.error("Unknown signal", metadata: ["signal": .string(message.content)])
+            return
         }
     }
 
