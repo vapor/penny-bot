@@ -13,14 +13,14 @@ struct AutoPingsHandler: LambdaHandler {
     typealias Output = APIGatewayV2Response
     
     let awsClient: AWSClient
-    let pingsRepo: any AutoPingsRepository
-    
+    let pingsRepo: S3AutoPingsRepository
+
     init(context: LambdaInitializationContext) async {
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
         self.awsClient = awsClient
-        self.pingsRepo = RepositoryFactory.makeAutoPingsRepository((awsClient, context.logger))
+        self.pingsRepo = S3AutoPingsRepository(awsClient: awsClient, logger: context.logger)
     }
     
     func handle(

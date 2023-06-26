@@ -23,9 +23,6 @@ class GatewayProcessingTests: XCTestCase {
         Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
         Constants.botId = "950695294906007573"
-        RepositoryFactory.makeUserRepository = { _ in FakeUserRepository() }
-        RepositoryFactory.makeAutoPingsRepository = { _ in FakePingsRepository() }
-        RepositoryFactory.makeFaqsRepository = { _ in FakeFaqsRepository() }
         Constants.apiBaseUrl = "https://fake.com"
         ServiceFactory.makeCoinService = { FakeCoinService() }
         ServiceFactory.makePingsService = { FakePingsService() }

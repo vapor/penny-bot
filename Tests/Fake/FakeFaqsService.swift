@@ -6,25 +6,23 @@ public struct FakeFaqsService: FaqsService {
 
     public init() { }
 
+    private let all = ["Working Directory": "Test working directory help"]
+
     public func initialize(httpClient: HTTPClient) async { }
 
-    public func insert(name: String, value: String) async throws {
-        _ = try await FakeFaqsRepository().insert(name: name, value: value)
-    }
+    public func insert(name: String, value: String) async throws { }
 
-    public func remove(name: String) async throws {
-        _ = try await FakeFaqsRepository().remove(name: name)
-    }
+    public func remove(name: String) async throws { }
 
     public func get(name: String) async throws -> String? {
-        try await self.getAll()[name]
+        self.all[name]
     }
 
     public func getName(hash: Int) async throws -> String? {
-        fatalError("not implemented")
+        return nil
     }
 
     public func getAll() async throws -> [String: String] {
-        try await FakeFaqsRepository().getAll()
+        self.all
     }
 }

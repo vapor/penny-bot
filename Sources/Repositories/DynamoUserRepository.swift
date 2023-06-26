@@ -3,7 +3,7 @@ import Foundation
 import Models
 import Extensions
 
-struct DynamoUserRepository: UserRepository {
+public struct DynamoUserRepository {
     
     // MARK: - Properties
     let db: DynamoDB
@@ -14,7 +14,7 @@ struct DynamoUserRepository: UserRepository {
     let discordIndex = "GSI-1"
     let githubIndex = "GSI-2"
     
-    init(db: DynamoDB, tableName: String, eventLoop: any EventLoop, logger: Logger) {
+    public init(db: DynamoDB, tableName: String, eventLoop: any EventLoop, logger: Logger) {
         self.db = db
         self.tableName = tableName
         self.eventLoop = eventLoop
@@ -22,20 +22,20 @@ struct DynamoUserRepository: UserRepository {
     }
     
     // MARK: - Insert & Update
-    func insertUser(_ user: DynamoDBUser) async throws -> Void {
+    public func insertUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
         
         _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
     }
     
-    func updateUser(_ user: DynamoDBUser) async throws -> Void {
+    public func updateUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.UpdateItemCodableInput(key: ["pk", "sk"], tableName: self.tableName, updateItem: user)
         
         _ = try await db.updateItem(input, logger: self.logger, on: self.eventLoop)
     }
     
     // MARK: - Retrieve
-    func getUser(discord id: String) async throws -> User? {
+    public func getUser(discord id: String) async throws -> User? {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
             indexName: discordIndex,
@@ -47,7 +47,7 @@ struct DynamoUserRepository: UserRepository {
         return try await queryUser(with: query)
     }
     
-    func getUser(github id: String) async throws -> User? {
+    public func getUser(github id: String) async throws -> User? {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("GITHUB-\(id)")],
             indexName: githubIndex,

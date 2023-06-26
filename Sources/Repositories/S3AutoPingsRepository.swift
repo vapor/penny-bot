@@ -3,19 +3,19 @@ import Foundation
 import Models
 import Extensions
 
-struct S3AutoPingsRepository: AutoPingsRepository {
+public struct S3AutoPingsRepository {
     
     let s3: S3
     let logger: Logger
     let bucket = "penny-auto-pings-lambda"
     let key = "auto-pings-repo.json"
     
-    init(awsClient: AWSClient, logger: Logger) {
+    public init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
         self.logger = logger
     }
     
-    func insert(
+    public func insert(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: String
     ) async throws -> S3AutoPingItems {
@@ -26,8 +26,8 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         try await self.save(items: all)
         return all
     }
-    
-    func remove(
+
+    public func remove(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: String
     ) async throws -> S3AutoPingItems {
@@ -42,7 +42,7 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         return all
     }
     
-    func getAll() async throws -> S3AutoPingItems {
+    public func getAll() async throws -> S3AutoPingItems {
         let response: S3.GetObjectOutput
         
         do {
@@ -73,7 +73,7 @@ struct S3AutoPingsRepository: AutoPingsRepository {
         }
     }
     
-    func save(items: S3AutoPingItems) async throws {
+    public func save(items: S3AutoPingItems) async throws {
         let data = try JSONEncoder().encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,

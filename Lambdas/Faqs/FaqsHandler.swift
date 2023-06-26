@@ -13,14 +13,14 @@ struct FaqsHandler: LambdaHandler {
     typealias Output = APIGatewayV2Response
 
     let awsClient: AWSClient
-    let faqsRepo: any FaqsRepository
+    let faqsRepo: S3FaqsRepository
 
     init(context: LambdaInitializationContext) async {
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
         self.awsClient = awsClient
-        self.faqsRepo = RepositoryFactory.makeFaqsRepository((awsClient, context.logger))
+        self.faqsRepo = S3FaqsRepository(awsClient: awsClient, logger: context.logger)
     }
 
     func handle(
