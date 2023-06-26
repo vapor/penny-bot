@@ -97,11 +97,15 @@ actor BotStateManager {
     private func populateCache() {
         Task {
             if isCachePopulated {
+                /// Just incase
+                canRespond = true
+                
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
                 isCachePopulated = true
                 canRespond = true
                 await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
+                logger.notice("Done loading old-instance's cached info")
             }
         }
     }
