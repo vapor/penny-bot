@@ -36,7 +36,7 @@ extension String {
         /// into an array and by only using `String.Index`
         var copy = Array(self)
         
-        var remove = ContiguousArray<Int>()
+        var remove = [Int]()
         
         for idx in copy.indices {
             if  copy[idx].unicodeScalars.contains(where: { target.contains($0) }) {

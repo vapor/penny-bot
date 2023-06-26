@@ -4,8 +4,8 @@ import DiscordBM
 extension Collection<S3AutoPingItems.Expression> {
     /// Make sure the list in not empty before using this function.
     func makeExpressionListForDiscord() -> String {
-        var matches = ContiguousArray<Element>()
-        var contains = ContiguousArray<Element>()
+        var matches = [Element]()
+        var contains = [Element]()
 
         var iterator = self.makeIterator()
 
@@ -23,7 +23,7 @@ extension Collection<S3AutoPingItems.Expression> {
         ].compactMap { $0 }.joined(separator: "\n")
     }
 
-    private func makeList(with elements: ContiguousArray<Element>, kind: Element.Kind) -> String? {
+    private func makeList(with elements: [Element], kind: Element.Kind) -> String? {
         if elements.isEmpty {
             return nil
         } else {
