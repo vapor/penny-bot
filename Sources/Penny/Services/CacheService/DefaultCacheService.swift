@@ -19,7 +19,7 @@ actor DefaultCachesService: CachesService {
     func getCachedInfoFromRepositoryAndPopulateServices() async {
         do {
             let storage = try await self.cacheRepo.get()
-            await storage.populateServices()
+            await storage.populateServicesAndReport()
             self.delete()
         } catch {
             logger.report("Couldn't get CachesStorage", error: error)

@@ -7,7 +7,7 @@ public struct FakeCachesService: CachesService {
             previousProposals: TestData.proposals,
             queuedProposals: []
         )
-        await storage.populateServices()
+        await storage.populateServicesAndReport()
     }
 
     public func gatherCachedInfoAndSaveToRepository() async { }
