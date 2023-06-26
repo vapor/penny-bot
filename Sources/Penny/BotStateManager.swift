@@ -22,23 +22,25 @@ import Logging
      the new instance will start handling events without waiting more for the old instance.
  */
 actor BotStateManager {
-    
-    var logger = Logger(label: "BotStateManager")
-    var canRespond = false
+
     let id = Int(Date().timeIntervalSince1970)
+    var logger = Logger(label: "BotStateManager")
+
+    var canRespond = false
+    var disableDuration = Duration.seconds(3 * 60)
+    var onStart: (() async -> Void)?
 
     var cachesService: any CachesService {
         ServiceFactory.makeCachesService()
     }
 
-    var disableDuration = Duration.seconds(3 * 60)
-
     static private(set) var shared = BotStateManager()
     
     private init() { }
     
-    func initialize() async {
+    func initialize(onStart: @Sendable @escaping () async -> Void) async {
         self.logger[metadataKey: "id"] = "\(self.id)"
+        self.onStart = onStart
         Task { await send(.shutdown) }
         cancelIfCachePopulationTakesTooLong()
     }
@@ -47,7 +49,7 @@ actor BotStateManager {
         Task {
             try await Task.sleep(for: .seconds(15))
             if !canRespond {
-                canRespond = true
+                await startAllowingResponses()
                 logger.error("No CachesStorage-population was done in-time")
             }
         }
@@ -87,7 +89,7 @@ actor BotStateManager {
             await send(.didShutdown)
 
             try await Task.sleep(for: disableDuration)
-            self.canRespond = true
+            await startAllowingResponses()
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
         }
     }
@@ -95,16 +97,18 @@ actor BotStateManager {
     private func populateCache() {
         Task {
             if canRespond {
-                /// Just incase
-                canRespond = true
-
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
                 await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
-                canRespond = true
+                await startAllowingResponses()
                 logger.notice("Done loading old-instance's cached info")
             }
         }
+    }
+
+    private func startAllowingResponses() async {
+        canRespond = true
+        await onStart?()
     }
 
     private func send(_ signal: StateManagerSignal) async {
