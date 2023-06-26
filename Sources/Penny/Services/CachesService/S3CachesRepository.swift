@@ -1,7 +1,7 @@
 import SotoS3
 import Foundation
 
-struct S3CacheRepository {
+struct S3CachesRepository {
 
     let s3: S3
     let logger: Logger

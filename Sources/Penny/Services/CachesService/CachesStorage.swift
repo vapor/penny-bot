@@ -34,8 +34,8 @@ struct CachesStorage: Sendable, Codable {
             proposalsCheckerData!.queuedProposals.count,
         ]
         Logger(label: "CachesStorage").notice("Recovered some cached stuff", metadata: [
-            "reactionCacheDataCounts": .stringConvertible(reactionCacheDataCounts),
-            "proposalsCheckerDataCounts": .stringConvertible(proposalsCheckerDataCounts),
+            "reactionCache_Counts": .stringConvertible(reactionCacheDataCounts),
+            "proposalsChecker_Counts": .stringConvertible(proposalsCheckerDataCounts),
         ])
     }
 }
