@@ -28,6 +28,7 @@ struct Penny {
         await ServiceFactory.makePingsService().initialize(httpClient: client)
         await ServiceFactory.makeFaqsService().initialize(httpClient: client)
         await DefaultCoinService.shared.initialize(httpClient: client)
+        await DefaultCachesService.shared.initialize(httpClient: client)
         await CommandsManager().registerCommands()
 
         await bot.connect()

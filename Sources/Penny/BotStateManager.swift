@@ -64,12 +64,9 @@ actor BotStateManager {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.logs.id,
               let author = message.author,
-              author.id.rawValue == Constants.botId
+              author.id.rawValue == Constants.botId,
+              let otherId = message.content.split(whereSeparator: \.isWhitespace).last
         else { return }
-        guard let otherId = message.content.split(whereSeparator: \.isWhitespace).last else {
-            logger.warning("Can't find id of the other Penny")
-            return
-        }
         if otherId == "\(self.id)" { return }
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
