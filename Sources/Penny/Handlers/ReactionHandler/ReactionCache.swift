@@ -106,9 +106,23 @@ actor ReactionCache {
         guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
             return false
         }
-        let inPastWeek = message.timestamp.date > Date().addingTimeInterval(-7 * 24 * 60 * 60)
-        let isNotBot = message.author?.bot != true
-        return inPastWeek && isNotBot
+
+        let calendar = Calendar.utc
+        let now = Date()
+        guard let aWeekAgo = calendar.date(byAdding: .weekOfMonth, value: -1, to: now) else {
+            logger.error("Could not find the next-week date", metadata: [
+                "now": .stringConvertible(now.timeIntervalSince1970)
+            ])
+            return true
+        }
+        let inPastWeek = calendar.compare(
+            message.timestamp.date,
+            to: aWeekAgo,
+            toGranularity: .minute
+        ) == .orderedDescending
+
+        let isBot = message.author?.bot ?? false
+        return inPastWeek && !isBot
     }
 
     func getMessage(
@@ -195,4 +209,12 @@ actor ReactionCache {
         shared = .init()
     }
 #endif
+}
+
+private extension Calendar {
+    static let utc: Calendar = {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = .init(identifier: "UTC")!
+        return calendar
+    }()
 }
