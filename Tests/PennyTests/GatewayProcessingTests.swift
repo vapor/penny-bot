@@ -8,7 +8,6 @@ import XCTest
 
 class GatewayProcessingTests: XCTestCase {
 
-    var stateManager: BotStateManager { .shared }
     var responseStorage: FakeResponseStorage { .shared }
     var manager: FakeManager!
     
@@ -27,6 +26,7 @@ class GatewayProcessingTests: XCTestCase {
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeFaqsService = { FakeFaqsService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
+        ServiceFactory.makeCachesService = { FakeCachesService() }
         ServiceFactory.initiateProposalsChecker = { _ in }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
@@ -43,11 +43,54 @@ class GatewayProcessingTests: XCTestCase {
                 storage: storage
             )
         }
-        await stateManager._tests_reset()
+        await BotStateManager.shared._tests_reset()
         Task { try await Penny.main() }
-        await manager.waitUntilConnected()
+        await waitForStateManagerShutdownAndDidShutdownSignals()
     }
-    
+
+    func waitForStateManagerShutdownAndDidShutdownSignals() async {
+        /// Wait for the shutdown signal, then send a `didShutdown` signal.
+        /// in practice, the `didShutdown` signal is sent by another Penny that is online.
+        while let possibleSignal = await responseStorage.awaitResponse(
+            at: .createMessage(channelId: Constants.Channels.logs.id)
+        ).value as? Payloads.CreateMessage {
+            if let signal = possibleSignal.content,
+               StateManagerSignal.shutdown.isInMessage(signal) {
+                let content = await BotStateManager.shared._tests_didShutdownSignalEventContent()
+                await manager.send(event: .init(
+                    opcode: .dispatch,
+                    data: .messageCreate(.init(
+                        id: try! .makeFake(),
+                        channel_id: Constants.Channels.logs.id,
+                        author: .init(
+                            id: Snowflake(Constants.botId),
+                            username: "Penny",
+                            discriminator: "#0"
+                        ),
+                        content: content,
+                        timestamp: .fake,
+                        tts: false,
+                        mention_everyone: false,
+                        mention_roles: [],
+                        attachments: [],
+                        embeds: [],
+                        pinned: false,
+                        type: .default,
+                        mentions: []
+                    ))
+                ))
+                break
+            }
+        }
+
+        /// Wait to make sure the `BotStateManager` cache is already populated.
+        for _ in 1...100 where !(await BotStateManager.shared.canRespond) {
+            try? await Task.sleep(for: .milliseconds(50))
+        }
+        let canRespond = await BotStateManager.shared.canRespond
+        XCTAssert(canRespond, "BotStateManager cache was too late to populate and enable responding")
+    }
+
     func testCommandsRegisterOnStartup() async throws {
         let response = await responseStorage.awaitResponse(
             at: .bulkSetApplicationCommands(applicationId: "11111111")
@@ -163,20 +206,8 @@ class GatewayProcessingTests: XCTestCase {
         """))
     }
     
-    func testBotStateManagerSendsSignalOnStartUp() async throws {
-        let canRespond = await stateManager.canRespond
-        XCTAssertEqual(canRespond, true)
-        
-        let response = await responseStorage.awaitResponse(
-            at: .createMessage(channelId: Constants.Channels.logs.id)
-        ).value
-        
-        let message = try XCTUnwrap(response as? Payloads.CreateMessage)
-        XCTAssertGreaterThan(message.content?.count ?? -1, 20)
-    }
-    
     func testBotStateManagerReceivesSignal() async throws {
-        await stateManager._tests_setDisableDuration(to: .seconds(3))
+        await BotStateManager.shared._tests_setDisableDuration(to: .seconds(3))
         
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
@@ -185,19 +216,19 @@ class GatewayProcessingTests: XCTestCase {
         
         XCTAssertGreaterThan(response.content?.count ?? -1, 20)
         
-        // Wait to make sure BotStateManager has had enough time to process
+        // Wait to make sure BotBotStateManager.shared has had enough time to process
         try await Task.sleep(for: .milliseconds(800))
         let testEvent = Gateway.Event(opcode: .dispatch)
         do {
-            let canRespond = await stateManager.canRespond(to: testEvent)
+            let canRespond = await BotStateManager.shared.canRespond(to: testEvent)
             XCTAssertEqual(canRespond, false)
         }
         
         // After 3 seconds, the state manager should allow responses again, because
-        // `BotStateManager.disableDuration` has already been passed
+        // `BotBotStateManager.shared.disableDuration` has already been passed
         try await Task.sleep(for: .milliseconds(2600))
         do {
-            let canRespond = await stateManager.canRespond(to: testEvent)
+            let canRespond = await BotStateManager.shared.canRespond(to: testEvent)
             XCTAssertEqual(canRespond, true)
         }
     }
@@ -313,8 +344,10 @@ class GatewayProcessingTests: XCTestCase {
     }
 
     func testProposalsChecker() async throws {
-        await ProposalsChecker.shared._tests_setPreviousProposals(to: TestData.proposals)
-        /// So the proposals are send as soon as they're queued, in tests.
+        /// This tests expects the `CachesStorage` population to have worked correctly
+        /// and have already populated `ProposalsChecker.previousProposals`.
+
+        /// This is so the proposals are send as soon as they're queued, in tests.
         await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
         await ProposalsChecker.shared.initialize(proposalsService: FakeProposalsService())
         ProposalsChecker.shared.run()

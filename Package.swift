@@ -46,6 +46,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
+        .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Pinning this to the latest release/commit since they're not released.
@@ -64,6 +65,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "SotoS3", package: "soto"),
                 .target(name: "Models")
             ],
             swiftSettings: swiftSettings
@@ -74,6 +76,7 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoS3", package: "soto"),
+                .product(name: "Collections", package: "swift-collections"),
                 .target(name: "Extensions"),
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
@@ -136,6 +139,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .target(name: "Models"),
+                .target(name: "Extensions"),
             ],
             swiftSettings: swiftSettings
         ),

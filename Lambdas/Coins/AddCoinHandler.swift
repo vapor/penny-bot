@@ -47,7 +47,7 @@ struct AddCoinHandler: LambdaHandler {
         request: CoinRequest.AddCoin,
         logger: Logger
     ) async -> APIGatewayV2Response {
-        let from = User(
+        let from = DynamoUser(
             id: UUID(),
             discordID: request.from,
             githubID: request.from,
@@ -55,7 +55,7 @@ struct AddCoinHandler: LambdaHandler {
             coinEntries: [],
             createdAt: Date())
         
-        let user = User(
+        let user = DynamoUser(
             id: UUID(),
             discordID: request.receiver,
             githubID: request.receiver,

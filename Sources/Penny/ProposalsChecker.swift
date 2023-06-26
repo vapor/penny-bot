@@ -4,9 +4,14 @@ import Models
 import Foundation
 
 actor ProposalsChecker {
-    var previousProposals = [Proposal]()
 
-    private var queuedProposals = [QueuedProposal]()
+    struct Storage: Sendable, Codable {
+        var previousProposals: [Proposal] = []
+        var queuedProposals: [QueuedProposal] = []
+    }
+
+    var storage = Storage()
+
     /// The minimum time to wait before sending a queued-proposal
     var queuedProposalsWaitTime: Double = 29 * 60
 
@@ -40,24 +45,24 @@ actor ProposalsChecker {
     func check() async throws {
         let proposals = try await self.proposalsService.list()
 
-        if self.previousProposals.isEmpty {
-            self.previousProposals = proposals
+        if self.storage.previousProposals.isEmpty {
+            self.storage.previousProposals = proposals
             return
         }
 
         /// Queue newly-added proposals
-        let currentIds = Set(self.previousProposals.map(\.id))
+        let currentIds = Set(self.storage.previousProposals.map(\.id))
         let (olds, news) = proposals.divided({ currentIds.contains($0.id) })
 
         for new in news {
-            if let existingIdx = self.queuedProposals.firstIndex(
+            if let existingIdx = self.storage.queuedProposals.firstIndex(
                 where: { $0.proposal.id == new.id }
             ) {
-                self.queuedProposals[existingIdx].updatedAt = Date()
-                self.queuedProposals[existingIdx].proposal = new
+                self.storage.queuedProposals[existingIdx].updatedAt = Date()
+                self.storage.queuedProposals[existingIdx].proposal = new
                 logger.notice("A new proposal will be delayed", metadata: ["id": .string(new.id)])
             } else {
-                self.queuedProposals.append(.init(
+                self.storage.queuedProposals.append(.init(
                     firstKnownStateBeforeQueue: nil,
                     updatedAt: Date(),
                     proposal: new
@@ -68,7 +73,7 @@ actor ProposalsChecker {
 
         /// Queue proposals with change of status
         let previousStates = Dictionary(
-            self.previousProposals.map({ ($0.id, $0.status.state) }),
+            self.storage.previousProposals.map({ ($0.id, $0.status.state) }),
             uniquingKeysWith: { l, _ in l }
         )
         let updatedProposals = olds.filter {
@@ -78,16 +83,16 @@ actor ProposalsChecker {
         for updated in updatedProposals {
             guard let previousState = previousStates[updated.id] else { continue }
 
-            if let existingIdx = self.queuedProposals.firstIndex(
+            if let existingIdx = self.storage.queuedProposals.firstIndex(
                 where: { $0.proposal.id == updated.id }
             ) {
-                self.queuedProposals[existingIdx].updatedAt = Date()
-                self.queuedProposals[existingIdx].proposal = updated
+                self.storage.queuedProposals[existingIdx].updatedAt = Date()
+                self.storage.queuedProposals[existingIdx].proposal = updated
                 logger.notice("An updated proposal will be delayed", metadata: [
                     "id": .string(updated.id)
                 ])
             } else {
-                self.queuedProposals.append(.init(
+                self.storage.queuedProposals.append(.init(
                     firstKnownStateBeforeQueue: previousState,
                     updatedAt: Date(),
                     proposal: updated
@@ -100,8 +105,8 @@ actor ProposalsChecker {
 
         /// Send the queued-proposals that are ready
         var sentProposalUUIDs = [UUID]()
-        for queuedProposal in self.queuedProposals {
-            /// `queuedProposalsWaitTime` seconds old == ready to send
+        for queuedProposal in self.storage.queuedProposals {
+            /// `storage.queuedProposalsWaitTime` seconds old == ready to send
             let oldDate = Date().addingTimeInterval(-self.queuedProposalsWaitTime)
             guard queuedProposal.updatedAt < oldDate else { continue }
 
@@ -122,10 +127,10 @@ actor ProposalsChecker {
         }
 
         /// Remove the sent queued-proposals
-        self.queuedProposals.removeAll(where: { sentProposalUUIDs.contains($0.uuid) })
+        self.storage.queuedProposals.removeAll(where: { sentProposalUUIDs.contains($0.uuid) })
 
         /// Update the saved proposals
-        self.previousProposals = proposals
+        self.storage.previousProposals = proposals
     }
 
     private func send(proposal: Proposal, payload: Payloads.CreateMessage) async {
@@ -155,7 +160,6 @@ actor ProposalsChecker {
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) async -> Payloads.CreateMessage {
-
         let titleState = proposal.status.state.titleDescription
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
@@ -303,11 +307,16 @@ actor ProposalsChecker {
         return link
     }
 
-#if DEBUG
-    func _tests_setPreviousProposals(to proposals: [Proposal]) {
-        self.previousProposals = proposals
+    func consumeCachesStorageData(_ storage: Storage) {
+        self.storage.previousProposals = storage.previousProposals
+        self.storage.queuedProposals = storage.queuedProposals
     }
 
+    func getCachedDataForCachesStorage() -> Storage {
+        return self.storage
+    }
+
+#if DEBUG
     func _tests_setQueuedProposalsWaitTime(to amount: Double) {
         self.queuedProposalsWaitTime = amount
     }
@@ -348,11 +357,23 @@ private extension Proposal.User {
     }
 }
 
-private struct QueuedProposal {
-    let uuid = UUID()
+struct QueuedProposal: Codable {
+    let uuid: UUID
     let firstKnownStateBeforeQueue: Proposal.Status.State?
     var updatedAt: Date
     var proposal: Proposal
+
+    init(
+        uuid: UUID = UUID(),
+        firstKnownStateBeforeQueue: Proposal.Status.State?,
+        updatedAt: Date,
+        proposal: Proposal
+    ) {
+        self.uuid = uuid
+        self.firstKnownStateBeforeQueue = firstKnownStateBeforeQueue
+        self.updatedAt = updatedAt
+        self.proposal = proposal
+    }
 }
 
 private extension Proposal.Status.State {

@@ -16,6 +16,9 @@ actor DefaultFaqsService: FaqsService {
     var _cachedNamesHashTable: [Int: String]?
     var resetItemsTask: Task<(), Never>?
 
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+
     private init() { }
 
     static let shared = DefaultFaqsService()
@@ -66,7 +69,7 @@ actor DefaultFaqsService: FaqsService {
         var request = HTTPClientRequest(url: url)
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try JSONEncoder().encode(faqsRequest)
+        let data = try encoder.encode(faqsRequest)
         request.body = .bytes(data)
         let response = try await httpClient.execute(
             request,
@@ -87,7 +90,7 @@ actor DefaultFaqsService: FaqsService {
         }
 
         let body = try await response.body.collect(upTo: 1 << 24)
-        let items = try JSONDecoder().decode([String: String].self, from: body)
+        let items = try decoder.decode([String: String].self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
     }

@@ -28,9 +28,9 @@ public struct UserService {
     public func addCoins(
         with coinEntry: CoinEntry,
         fromDiscordID: String,
-        to user: User
+        to user: DynamoUser
     ) async throws -> CoinResponse {
-        var localUser: User?
+        var localUser: DynamoUser?
         
         do {
             switch coinEntry.source {
@@ -67,8 +67,8 @@ public struct UserService {
         }
     }
     
-    public func getUserUUID(from user: User, with source: CoinEntrySource) async throws -> UUID {
-        var localUser: User?
+    public func getUserUUID(from user: DynamoUser, with source: CoinEntrySource) async throws -> UUID {
+        var localUser: DynamoUser?
         
         do {
             switch source {
@@ -88,16 +88,16 @@ public struct UserService {
     }
     
     /// Returns nil if user does not exist.
-    public func getUserWith(discordID id: String) async throws -> User? {
+    public func getUserWith(discordID id: String) async throws -> DynamoUser? {
         try await userRepo.getUser(discord: id)
     }
     
     /// Returns nil if user does not exist.
-    public func getUserWith(githubID id: String) async throws -> User? {
+    public func getUserWith(githubID id: String) async throws -> DynamoUser? {
         try await userRepo.getUser(github: id)
     }
     
-    private func insertIntoDB(user account: User, with coinEntry: CoinEntry) async throws -> User {
+    private func insertIntoDB(user account: DynamoUser, with coinEntry: CoinEntry) async throws -> DynamoUser {
         var localUser = account
         
         localUser.addCoinEntry(coinEntry)

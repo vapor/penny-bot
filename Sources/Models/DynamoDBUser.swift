@@ -9,7 +9,7 @@ public struct DynamoDBUser: Sendable, Codable {
     public let coinEntries: [CoinEntry]?
     public let createdAt: Date
     
-    public init(user: User) {
+    public init(user: DynamoUser) {
         self.pk = "USER-\(user.id.uuidString)"
         self.sk = "CREATEDAT-\(user.createdAt)"
         if let discordID = user.discordID {
