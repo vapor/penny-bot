@@ -9,7 +9,10 @@ public struct S3AutoPingsRepository {
     let logger: Logger
     let bucket = "penny-auto-pings-lambda"
     let key = "auto-pings-repo.json"
-    
+
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+
     public init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
         self.logger = logger
@@ -55,7 +58,7 @@ public struct S3AutoPingsRepository {
         
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
             do {
-                return try JSONDecoder().decode(S3AutoPingItems.self, from: buffer)
+                return try decoder.decode(S3AutoPingItems.self, from: buffer)
             } catch {
                 let body = response.body?.asString() ?? "nil"
                 logger.error("Cannot find any data in the bucket", metadata: [
@@ -74,7 +77,7 @@ public struct S3AutoPingsRepository {
     }
     
     public func save(items: S3AutoPingItems) async throws {
-        let data = try JSONEncoder().encode(items)
+        let data = try encoder.encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
             body: .data(data),

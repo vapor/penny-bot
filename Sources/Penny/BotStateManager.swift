@@ -33,8 +33,6 @@ actor BotStateManager {
 
     var disableDuration = Duration.seconds(3 * 60)
 
-    var isCachePopulated = false
-
     static private(set) var shared = BotStateManager()
     
     private init() { }
@@ -48,10 +46,9 @@ actor BotStateManager {
     func cancelIfCachePopulationTakesTooLong() {
         Task {
             try await Task.sleep(for: .seconds(15))
-            if !isCachePopulated {
+            if !canRespond {
                 canRespond = true
-                isCachePopulated = true
-                logger.error("No CachesStorage-population signal was done in-time")
+                logger.error("No CachesStorage-population was done in-time")
             }
         }
     }
@@ -96,13 +93,12 @@ actor BotStateManager {
 
     private func populateCache() {
         Task {
-            if isCachePopulated {
+            if canRespond {
                 /// Just incase
                 canRespond = true
 
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
-                isCachePopulated = true
                 await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
                 canRespond = true
                 logger.notice("Done loading old-instance's cached info")
@@ -111,11 +107,10 @@ actor BotStateManager {
     }
 
     private func send(_ signal: StateManagerSignal) async {
+        let content = makeSignalMessage(text: signal.value, id: self.id)
         await DiscordService.shared.sendMessage(
             channelId: Constants.Channels.logs.id,
-            payload: .init(
-                content: makeSignalMessage(text: signal.value, id: self.id)
-            )
+            payload: .init(content: content)
         )
     }
 

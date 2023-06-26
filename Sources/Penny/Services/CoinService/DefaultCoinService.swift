@@ -7,6 +7,9 @@ actor DefaultCoinService: CoinService {
     var httpClient: HTTPClient!
     let logger = Logger(label: "DefaultCoinService")
 
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+
     static let shared = DefaultCoinService()
 
     private init() { }
@@ -19,7 +22,7 @@ actor DefaultCoinService: CoinService {
         var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/coin")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try JSONEncoder().encode(CoinRequest.addCoin(coinRequest))
+        let data = try encoder.encode(CoinRequest.addCoin(coinRequest))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
         logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
@@ -37,14 +40,14 @@ actor DefaultCoinService: CoinService {
         
         let body = try await response.body.collect(upTo: 1 << 24)
         
-        return try JSONDecoder().decode(CoinResponse.self, from: body)
+        return try decoder.decode(CoinResponse.self, from: body)
     }
     
     func getCoinCount(of user: String) async throws -> Int {
         var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/coin")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try JSONEncoder().encode(CoinRequest.getCoinCount(user: user))
+        let data = try encoder.encode(CoinRequest.getCoinCount(user: user))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
         logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
@@ -62,6 +65,6 @@ actor DefaultCoinService: CoinService {
         
         let body = try await response.body.collect(upTo: 1 << 24)
         
-        return try JSONDecoder().decode(Int.self, from: body)
+        return try decoder.decode(Int.self, from: body)
     }
 }

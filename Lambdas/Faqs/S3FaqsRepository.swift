@@ -10,6 +10,9 @@ public struct S3FaqsRepository {
     let bucket = "penny-faqs-lambda"
     let key = "faqs-repo.json"
 
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+
     public init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
         self.logger = logger
@@ -45,7 +48,7 @@ public struct S3FaqsRepository {
 
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
             do {
-                return try JSONDecoder().decode([String: String].self, from: buffer)
+                return try decoder.decode([String: String].self, from: buffer)
             } catch {
                 let body = response.body?.asString() ?? "nil"
                 logger.error("Cannot find any data in the bucket", metadata: [
@@ -64,7 +67,7 @@ public struct S3FaqsRepository {
     }
 
     public func save(items: [String: String]) async throws {
-        let data = try JSONEncoder().encode(items)
+        let data = try encoder.encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
             body: .data(data),

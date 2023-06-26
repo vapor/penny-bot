@@ -13,7 +13,10 @@ actor DefaultPingsService: AutoPingsService {
     /// Use `getAll()` to retrieve.
     var _cachedItems: S3AutoPingItems?
     var resetItemsTask: Task<(), Never>?
-    
+
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+
     private init() { }
     
     static let shared = DefaultPingsService()
@@ -83,7 +86,7 @@ actor DefaultPingsService: AutoPingsService {
         request.method = method
         if let pingRequest {
             request.headers.add(name: "Content-Type", value: "application/json")
-            let data = try JSONEncoder().encode(pingRequest)
+            let data = try encoder.encode(pingRequest)
             request.body = .bytes(data)
         }
         let response = try await httpClient.execute(
@@ -105,7 +108,7 @@ actor DefaultPingsService: AutoPingsService {
         }
         
         let body = try await response.body.collect(upTo: 1 << 24)
-        let items = try JSONDecoder().decode(S3AutoPingItems.self, from: body)
+        let items = try decoder.decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
         return items

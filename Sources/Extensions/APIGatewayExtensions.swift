@@ -45,7 +45,7 @@ extension APIGatewayV2Response {
             let string = String(data: data, encoding: .utf8)
             self.init(statusCode: status, body: string)
         } catch {
-            if let data = try? JSONEncoder().encode(content) {
+            if let data = try? jsonEncoder.encode(content) {
                 let string = String(data: data, encoding: .utf8)
                 self.init(statusCode: .failedDependency, body: string)
             } else {

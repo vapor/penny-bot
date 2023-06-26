@@ -8,6 +8,9 @@ struct S3CacheRepository {
     let bucket = "penny-caches"
     let key = "caches.json"
 
+    let decoder = JSONDecoder()
+    let encoder = JSONEncoder()
+
     init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
         self.logger = logger
@@ -19,7 +22,7 @@ struct S3CacheRepository {
 
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
             do {
-                return try JSONDecoder().decode(CachesStorage.self, from: buffer)
+                return try decoder.decode(CachesStorage.self, from: buffer)
             } catch {
                 let body = response.body?.asString() ?? "nil"
                 logger.error("Cannot find any data in the bucket", metadata: [
@@ -38,7 +41,7 @@ struct S3CacheRepository {
     }
 
     func save(storage: CachesStorage) async throws {
-        let data = try JSONEncoder().encode(storage)
+        let data = try encoder.encode(storage)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
             body: .data(data),

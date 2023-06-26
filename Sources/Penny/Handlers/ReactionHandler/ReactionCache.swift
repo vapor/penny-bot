@@ -9,14 +9,14 @@ import Foundation
 /// and disk-persistence for us, but this actor is more than enough at our scale.
 actor ReactionCache {
 
-    struct ChannelLastThanksMessage: Codable {
+    struct ChannelLastThanksMessage: Sendable, Codable {
         var receiverMessageId: MessageSnowflake
         var pennyResponseMessageId: MessageSnowflake
         var senderUsers: [String]
         var totalCoinCount: Int
     }
 
-    struct ChannelForcedThanksMessage: Codable {
+    struct ChannelForcedThanksMessage: Sendable, Codable {
         var originalChannelId: ChannelSnowflake
         var pennyResponseMessageId: MessageSnowflake
         var senderUsers: [String]

@@ -1,6 +1,6 @@
 import Models
 
-struct CachesStorage: Codable {
+struct CachesStorage: Sendable, Codable {
 
     var reactionCacheData: ReactionCache.Storage?
     var proposalsCheckerData: ProposalsChecker.Storage?

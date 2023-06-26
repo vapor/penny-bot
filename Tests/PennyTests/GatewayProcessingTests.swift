@@ -84,11 +84,11 @@ class GatewayProcessingTests: XCTestCase {
         }
 
         /// Wait to make sure the `BotStateManager` cache is already populated.
-        for _ in 1...100 where !(await BotStateManager.shared.isCachePopulated) {
+        for _ in 1...100 where !(await BotStateManager.shared.canRespond) {
             try? await Task.sleep(for: .milliseconds(50))
         }
-        let isPopulated = await BotStateManager.shared.isCachePopulated
-        XCTAssert(isPopulated, "BotStateManager cache was too late to populate")
+        let canRespond = await BotStateManager.shared.canRespond
+        XCTAssert(canRespond, "BotStateManager cache was too late to populate and enable responding")
     }
 
     func testCommandsRegisterOnStartup() async throws {
