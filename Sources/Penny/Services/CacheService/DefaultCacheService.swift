@@ -3,7 +3,6 @@ import AsyncHTTPClient
 import SotoS3
 
 actor DefaultCachesService: CachesService {
-
     var cacheRepo: S3CacheRepository!
     let logger = Logger(label: "DefaultCachesService")
 
