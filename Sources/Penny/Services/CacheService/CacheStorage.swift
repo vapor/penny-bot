@@ -23,13 +23,13 @@ struct CachesStorage: Sendable, Codable {
             await ProposalsChecker.shared.consumeCachesStorageData(proposalsCheckerData)
         }
 
-        let reactionCacheDataCounts = reactionCacheData == nil ? [0] : [
+        let reactionCacheDataCounts = reactionCacheData == nil ? [] : [
             reactionCacheData!.cachedAuthorIds.count,
             reactionCacheData!.givenCoins.count,
             reactionCacheData!.channelWithLastThanksMessage.count,
             reactionCacheData!.thanksChannelForcedMessages.count,
         ]
-        let proposalsCheckerDataCounts = proposalsCheckerData == nil ? [0] : [
+        let proposalsCheckerDataCounts = proposalsCheckerData == nil ? [] : [
             proposalsCheckerData!.previousProposals.count,
             proposalsCheckerData!.queuedProposals.count,
         ]
