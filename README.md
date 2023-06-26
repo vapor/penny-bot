@@ -1,4 +1,4 @@
-# Penny
+# <img src="https://github.com/vapor/penny-bot/assets/54685446/53e4684e-7511-4a5e-9933-34db0ceac0c6" alt="Penny" width="32"> Penny
 
 Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 
