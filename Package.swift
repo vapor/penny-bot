@@ -73,7 +73,7 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoS3", package: "soto"),
                 .target(name: "Extensions"),
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
@@ -100,8 +100,8 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoS3", package: "soto"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
             path: "./Lambdas/AutoPings",
@@ -112,8 +112,8 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoS3", package: "soto"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
             path: "./Lambdas/Faqs",

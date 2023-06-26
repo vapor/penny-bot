@@ -2,7 +2,6 @@
 @testable import DiscordModels
 @testable import Logging
 import DiscordGateway
-import Repositories
 import Fake
 import Models
 import XCTest

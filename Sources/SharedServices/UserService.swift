@@ -1,6 +1,5 @@
 import SotoDynamoDB
 import Foundation
-import Repositories
 import Models
 
 public struct UserService {
