@@ -47,7 +47,7 @@ actor BotStateManager {
 
     func cancelIfCachePopulationTakesTooLong() {
         Task {
-            try await Task.sleep(for: .seconds(15))
+            try await Task.sleep(for: .seconds(60))
             if !canRespond {
                 await startAllowingResponses()
                 logger.error("No CachesStorage-population was done in-time")
@@ -82,7 +82,6 @@ actor BotStateManager {
     }
 
     private func shutdown() {
-        logger.warning("Received shutdown signal from another Penny")
         self.canRespond = false
         Task {
             await cachesService.gatherCachedInfoAndSaveToRepository()
