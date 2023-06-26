@@ -64,8 +64,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .target(name: "Models"),
-                .target(name: "Repositories"),
+                .target(name: "Models")
             ],
             swiftSettings: swiftSettings
         ),
@@ -133,20 +132,9 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
         .target(
-            name: "Repositories",
-            dependencies: [
-                .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "SotoS3", package: "soto"),
-                .target(name: "Models"),
-                .target(name: "Extensions"),
-            ],
-            swiftSettings: swiftSettings
-        ),
-        .target(
             name: "SharedServices",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .target(name: "Repositories"),
                 .target(name: "Models"),
             ],
             swiftSettings: swiftSettings
@@ -157,7 +145,6 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Penny"),
-                .target(name: "Repositories"),
             ],
             path: "./Tests/Fake",
             swiftSettings: swiftSettings
@@ -167,7 +154,6 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .target(name: "Penny"),
-                .target(name: "Repositories"),
                 .target(name: "Fake"),
             ],
             swiftSettings: swiftSettings
