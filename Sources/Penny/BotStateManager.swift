@@ -76,8 +76,7 @@ actor BotStateManager {
         } else if message.content.hasPrefix(StateManagerSignal.didShutdown.value) {
             populateCache()
         } else {
-            logger.error("Unknown signal")
-            return
+            return logger.error("Unknown signal", metadata: ["signal": .string(message.content)])
         }
     }
 
