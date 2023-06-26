@@ -30,7 +30,7 @@ struct Penny {
         await DefaultCoinService.shared.initialize(httpClient: client)
         await ServiceFactory.initiateProposalsChecker(client)
         await CommandsManager().registerCommands()
-        await BotStateManager.shared.initialize()
+        await BotStateManager.shared.initializeAndWaitForCachePopulation()
 
         await bot.connect()
 

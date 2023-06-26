@@ -17,14 +17,13 @@ actor DefaultCacheService: CacheService {
     }
 
     /// Get the storage from the repository and then delete it from the repository.
-    func getAndFlush() async -> CacheStorage {
+    func getAndPopulate() async {
         do {
             let storage = try await self.cacheRepo.get()
+            await storage.populateServices()
             self.delete()
-            return storage
         } catch {
             logger.report("Couldn't get CacheStorage", error: error)
-            return CacheStorage()
         }
     }
 
@@ -41,8 +40,9 @@ actor DefaultCacheService: CacheService {
     }
 
     /// Save the storage to the repository.
-    func save(storage: CacheStorage) async {
+    func makeAndSave() async {
         do {
+            let storage = await CacheStorage.makeFromCachedData()
             try await self.cacheRepo.save(storage: storage)
         } catch {
             logger.report("Couldn't save CacheStorage", error: error)

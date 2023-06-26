@@ -14,20 +14,47 @@ actor BotStateManager {
     var logger = Logger(label: "BotStateManager")
     var canRespond = true
     let id = Int(Date().timeIntervalSince1970)
-    
+
+    var cacheService: any CacheService {
+        ServiceFactory.makeCacheService()
+    }
+
     let shutdownSignal = "Hello the other Pennys 👋 you can retire now :)"
     let didShutdownSignal = "I'm retired!"
     var disableDuration = Duration.seconds(3 * 60)
-    
+
+    var isCachePopulated = false
+    var cachePopulationContinuation: CheckedContinuation<Void, Never>?
+
     static private(set) var shared = BotStateManager()
     
     private init() { }
     
-    func initialize() {
+    func initializeAndWaitForCachePopulation() async {
         self.logger[metadataKey: "id"] = "\(self.id)"
-        Task { await send(shutdownSignal) }
+
+        await send(shutdownSignal)
+        await waitForCachePopulation()
     }
-    
+
+    func waitForCachePopulation() async {
+        await withCheckedContinuation { continuation in
+            if isCachePopulated {
+                return
+            } else {
+                cachePopulationContinuation = continuation
+                Task {
+                    try await Task.sleep(for: .seconds(15))
+                    if cachePopulationContinuation != nil {
+                        cachePopulationContinuation?.resume()
+                        cachePopulationContinuation = nil
+                        logger.error("No CacheStorage-population signal was received in-time")
+                    }
+                }
+            }
+        }
+    }
+
     func canRespond(to event: Gateway.Event) -> Bool {
         checkIfItsASignal(event: event)
         return canRespond
@@ -47,7 +74,7 @@ actor BotStateManager {
         if message.content.hasPrefix(shutdownSignal) {
             shutdown()
         } else if message.content.hasPrefix(didShutdownSignal) {
-            
+            populateCache()
         } else {
             logger.error("Unknown signal")
             return
@@ -57,10 +84,24 @@ actor BotStateManager {
     private func shutdown() {
         logger.warning("Received shutdown signal from another Penny")
         self.canRespond = false
+        Task { await cacheService.makeAndSave() }
         Task {
             try await Task.sleep(for: disableDuration)
             self.canRespond = true
             logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
+        }
+    }
+
+    private func populateCache() {
+        Task {
+            if isCachePopulated {
+                logger.warning("Received a did-shutdown signal but Cache is already populated")
+            } else {
+                isCachePopulated = true
+                await cacheService.getAndPopulate()
+            }
+            cachePopulationContinuation?.resume()
+            cachePopulationContinuation = nil
         }
     }
 
