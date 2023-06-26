@@ -303,12 +303,12 @@ actor ProposalsChecker {
         return link
     }
 
-    func fromCacheStorageData(_ storage: CacheStorage.ProposalsCheckerStorage) {
+    func fromCachesStorageData(_ storage: CachesStorage.ProposalsCheckerStorage) {
         self.previousProposals = storage.previousProposals
         self.queuedProposals = storage.queuedProposals
     }
 
-    func toCacheStorageData() -> CacheStorage.ProposalsCheckerStorage {
+    func toCachesStorageData() -> CachesStorage.ProposalsCheckerStorage {
         .init(previousProposals: self.previousProposals, queuedProposals: self.queuedProposals)
     }
 

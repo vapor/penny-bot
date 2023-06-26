@@ -50,7 +50,7 @@ actor BotStateManager {
             try await Task.sleep(for: .seconds(15))
             if !isCachePopulated {
                 canRespond = true
-                logger.error("No CacheStorage-population signal was done in-time")
+                logger.error("No CachesStorage-population signal was done in-time")
             }
         }
     }
@@ -99,7 +99,7 @@ actor BotStateManager {
             if isCachePopulated {
                 /// Just incase
                 canRespond = true
-                
+
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
                 isCachePopulated = true

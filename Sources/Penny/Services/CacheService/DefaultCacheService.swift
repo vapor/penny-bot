@@ -23,7 +23,7 @@ actor DefaultCachesService: CachesService {
             await storage.populateServices()
             self.delete()
         } catch {
-            logger.report("Couldn't get CacheStorage", error: error)
+            logger.report("Couldn't get CachesStorage", error: error)
         }
     }
 
@@ -34,7 +34,7 @@ actor DefaultCachesService: CachesService {
             do {
                 try await self.cacheRepo.delete()
             } catch {
-                logger.report("Couldn't delete CacheStorage", error: error)
+                logger.report("Couldn't delete CachesStorage", error: error)
             }
         }
     }
@@ -42,10 +42,10 @@ actor DefaultCachesService: CachesService {
     /// Save the storage to the repository.
     func gatherCachedInfoAndSaveToRepository() async {
         do {
-            let storage = await CacheStorage.makeFromCachedData()
+            let storage = await CachesStorage.makeFromCachedData()
             try await self.cacheRepo.save(storage: storage)
         } catch {
-            logger.report("Couldn't save CacheStorage", error: error)
+            logger.report("Couldn't save CachesStorage", error: error)
         }
     }
 }

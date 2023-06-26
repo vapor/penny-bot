@@ -1,6 +1,6 @@
 import Models
 
-struct CacheStorage: Codable {
+struct CachesStorage: Codable {
 
     struct ProposalsCheckerStorage: Codable {
         var previousProposals: [Proposal]
@@ -12,19 +12,19 @@ struct CacheStorage: Codable {
 
     init() { }
 
-    static func makeFromCachedData() async -> CacheStorage {
-        var storage = CacheStorage()
-        storage.reactionCacheData = await ReactionCache.shared.toCacheStorageData()
-        storage.proposalsCheckerData = await ProposalsChecker.shared.toCacheStorageData()
+    static func makeFromCachedData() async -> CachesStorage {
+        var storage = CachesStorage()
+        storage.reactionCacheData = await ReactionCache.shared.toCachesStorageData()
+        storage.proposalsCheckerData = await ProposalsChecker.shared.toCachesStorageData()
         return storage
     }
 
     func populateServices() async {
         if let reactionCacheData = self.reactionCacheData {
-            await ReactionCache.shared.fromCacheStorageData(reactionCacheData)
+            await ReactionCache.shared.fromCachesStorageData(reactionCacheData)
         }
         if let proposalsCheckerData = proposalsCheckerData {
-            await ProposalsChecker.shared.fromCacheStorageData(proposalsCheckerData)
+            await ProposalsChecker.shared.fromCachesStorageData(proposalsCheckerData)
         }
     }
 }

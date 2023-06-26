@@ -13,31 +13,31 @@ struct S3CacheRepository {
         self.logger = logger
     }
 
-    func get() async throws -> CacheStorage {
+    func get() async throws -> CachesStorage {
         let request = S3.GetObjectRequest(bucket: bucket, key: key)
         let response = try await s3.getObject(request, logger: logger)
 
         if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
             do {
-                return try JSONDecoder().decode(CacheStorage.self, from: buffer)
+                return try JSONDecoder().decode(CachesStorage.self, from: buffer)
             } catch {
                 let body = response.body?.asString() ?? "nil"
                 logger.error("Cannot find any data in the bucket", metadata: [
                     "response-body": .string(body),
                     "error": "\(error)"
                 ])
-                return CacheStorage()
+                return CachesStorage()
             }
         } else {
             let body = response.body?.asString() ?? "nil"
             logger.error("Cannot find any data in the bucket", metadata: [
                 "response-body": .string(body)
             ])
-            return CacheStorage()
+            return CachesStorage()
         }
     }
 
-    func save(storage: CacheStorage) async throws {
+    func save(storage: CachesStorage) async throws {
         let data = try JSONEncoder().encode(storage)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,

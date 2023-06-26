@@ -347,7 +347,7 @@ class GatewayProcessingTests: XCTestCase {
     }
 
     func testProposalsChecker() async throws {
-        /// This tests expects the `CacheStorage` population to have worked correctly
+        /// This tests expects the `CachesStorage` population to have worked correctly
         /// and have already populated `ProposalsChecker.previousProposals`.
 
         /// This is so the proposals are send as soon as they're queued, in tests.

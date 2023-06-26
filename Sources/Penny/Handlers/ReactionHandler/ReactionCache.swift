@@ -182,11 +182,11 @@ actor ReactionCache {
         }
     }
 
-    func fromCacheStorageData(_ storage: Storage) {
+    func fromCachesStorageData(_ storage: Storage) {
         self.storage = storage
     }
 
-    func toCacheStorageData() -> Storage {
+    func toCachesStorageData() -> Storage {
         self.storage
     }
 
