@@ -1,5 +1,6 @@
 import NIOPosix
 import AsyncHTTPClient
+import SotoS3
 import Backtrace
 
 @main
@@ -11,10 +12,12 @@ struct Penny {
         /// This is preferred for apps that primarily use structured concurrency
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+        let awsClient = AWSClient(httpClientProvider: .shared(client))
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         defer {
             /// Shutdown in reverse order (client first, then the ELG)
+            try! awsClient.syncShutdown()
             try! client.syncShutdown()
             try! eventLoopGroup.syncShutdownGracefully()
         }
@@ -28,7 +31,7 @@ struct Penny {
         await ServiceFactory.makePingsService().initialize(httpClient: client)
         await ServiceFactory.makeFaqsService().initialize(httpClient: client)
         await DefaultCoinService.shared.initialize(httpClient: client)
-        await DefaultCachesService.shared.initialize(httpClient: client)
+        await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
 
         await bot.connect()

@@ -10,8 +10,7 @@ actor DefaultCachesService: CachesService {
 
     static let shared = DefaultCachesService()
 
-    func initialize(httpClient: HTTPClient) {
-        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
+    func initialize(awsClient: AWSClient) {
         self.cacheRepo = .init(awsClient: awsClient, logger: self.logger)
     }
 
