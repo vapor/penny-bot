@@ -13,7 +13,7 @@ import Logging
    * Disallow Gateway-event handling from the beginning.
    * When `initialize()` is called, this will send a "please shutdown" message.
    * When the old Penny instance receive that message.
-     * The old instance will cache save all needed cached stuff into a S3 bucket.
+     * The old instance will save all needed cached stuff into a S3 bucket.
      * Then it will send a "did shutdown" message.
    * The new instance will catch the "did shutdown" message.
      * The new instance will get the stuff from the S3 bucket.
@@ -69,9 +69,10 @@ actor BotStateManager {
             return
         }
         if otherId == "\(self.id)" { return }
-        if message.content.hasPrefix(StateManagerSignal.shutdown.value) {
+
+        if StateManagerSignal.shutdown.isInMessage(message.content) {
             shutdown()
-        } else if message.content.hasPrefix(StateManagerSignal.didShutdown.value) {
+        } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             populateCache()
         } else {
             return logger.error("Unknown signal", metadata: ["signal": .string(message.content)])
@@ -107,7 +108,7 @@ actor BotStateManager {
     }
 
     private func send(_ signal: StateManagerSignal) async {
-        let content = makeSignalMessage(text: signal.value, id: self.id)
+        let content = makeSignalMessage(text: signal.rawValue, id: self.id)
         await DiscordService.shared.sendMessage(
             channelId: Constants.Channels.logs.id,
             payload: .init(content: content)
@@ -128,21 +129,16 @@ actor BotStateManager {
     }
 
     func _tests_didShutdownSignalEventContent() -> String {
-        makeSignalMessage(text: StateManagerSignal.didShutdown.value, id: self.id - 10)
+        makeSignalMessage(text: StateManagerSignal.didShutdown.rawValue, id: self.id - 10)
     }
 #endif
 }
 
-enum StateManagerSignal {
-    case shutdown
-    case didShutdown
+enum StateManagerSignal: String {
+    case shutdown = "Hello the other Pennys 👋 you can retire now :)"
+    case didShutdown = "I'm retired!"
 
-    var value: String {
-        switch self {
-        case .shutdown:
-            return "Hello the other Pennys 👋 you can retire now :)"
-        case .didShutdown:
-            return "I'm retired!"
-        }
+    func isInMessage(_ text: String) -> Bool {
+        text.hasPrefix(self.rawValue)
     }
 }

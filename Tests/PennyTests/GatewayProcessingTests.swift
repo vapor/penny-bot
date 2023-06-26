@@ -55,7 +55,7 @@ class GatewayProcessingTests: XCTestCase {
             at: .createMessage(channelId: Constants.Channels.logs.id)
         ).value as? Payloads.CreateMessage {
             if let signal = possibleSignal.content,
-               signal.contains(StateManagerSignal.shutdown.value) == true {
+               StateManagerSignal.shutdown.isInMessage(signal) {
                 let content = await BotStateManager.shared._tests_didShutdownSignalEventContent()
                 await manager.send(event: .init(
                     opcode: .dispatch,
