@@ -8,16 +8,11 @@ public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id: UInt = 0
     public nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
-    var isConnected = false
     var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
     
     public init() { }
     
-    public func connect() async {
-        self.isConnected = true
-        self.connectionWaiter?.resume()
-        self.connectionWaiter = nil
-    }
+    public func connect() async { }
 
     public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     public func updatePresence(payload: Gateway.Identify.Presence) async { }
@@ -31,19 +26,13 @@ public actor FakeManager: GatewayManager {
         AsyncStream { _ in }
     }
     public func disconnect() { }
-    
-    var connectionWaiter: CheckedContinuation<(), Never>?
-    
-    public func waitUntilConnected() async {
-        if self.isConnected {
-            return
-        } else {
-            await withCheckedContinuation {
-                self.connectionWaiter = $0
-            }
+
+    public func send(event: Gateway.Event) {
+        for continuation in eventContinuations {
+            continuation.yield(event)
         }
     }
-    
+
     public func send(key: EventKey) {
         let data = TestData.for(key: key.rawValue)!
         let decoder = JSONDecoder()

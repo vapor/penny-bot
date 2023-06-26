@@ -30,9 +30,12 @@ struct Penny {
         await DefaultCoinService.shared.initialize(httpClient: client)
         await ServiceFactory.initiateProposalsChecker(client)
         await CommandsManager().registerCommands()
-        await BotStateManager.shared.initializeAndWaitForCachePopulation()
 
         await bot.connect()
+
+        /// Initialize `BotStateManager` after `bot.connect()`
+        /// since it communicated through Discord and will need the Gateway connection.
+        await BotStateManager.shared.initialize()
 
         let stream = await bot.makeEventsStream()
         for await event in stream {

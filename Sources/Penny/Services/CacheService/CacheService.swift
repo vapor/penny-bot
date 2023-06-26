@@ -1,5 +1,5 @@
 
-protocol CacheService {
-    func getAndPopulate() async
-    func makeAndSave() async
+protocol CachesService {
+    func getCachedInfoFromRepositoryAndPopulateServices() async
+    func gatherCachedInfoAndSaveToRepository() async
 }

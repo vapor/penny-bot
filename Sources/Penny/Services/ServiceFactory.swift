@@ -24,7 +24,7 @@ enum ServiceFactory {
         ProposalsChecker.shared.run()
     }
 
-    static var makeCacheService: () -> any CacheService = {
-        DefaultCacheService.shared
+    static var makeCachesService: () -> any CachesService = {
+        DefaultCachesService.shared
     }
 }

@@ -313,10 +313,6 @@ actor ProposalsChecker {
     }
 
 #if DEBUG
-    func _tests_setPreviousProposals(to proposals: [Proposal]) {
-        self.previousProposals = proposals
-    }
-
     func _tests_setQueuedProposalsWaitTime(to amount: Double) {
         self.queuedProposalsWaitTime = amount
     }
