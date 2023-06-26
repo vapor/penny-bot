@@ -110,7 +110,7 @@ actor ReactionCache {
         let calendar = Calendar.utc
         let now = Date()
         guard let aWeekAgo = calendar.date(byAdding: .weekOfMonth, value: -1, to: now) else {
-            logger.error("Could not find the next-week date", metadata: [
+            logger.error("Could not find the past-week date", metadata: [
                 "now": .stringConvertible(now.timeIntervalSince1970)
             ])
             return true
