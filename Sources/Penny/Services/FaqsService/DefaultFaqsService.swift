@@ -100,8 +100,6 @@ actor DefaultFaqsService: FaqsService {
             "new": .stringConvertible(new)
         ])
         self._cachedItems = new
-        /// There is an insignificant chance that there will be duplicate hashes for different keys,
-        /// in which case i'd rather deal with a crash, than some buggy behavior.
         self._cachedNamesHashTable = Dictionary(
             uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })
         )

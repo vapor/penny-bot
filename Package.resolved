@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "119256d8af0a81bb378e3d62fec15fb0496d3d27"
+        "revision" : "381dd99c3e0027f4eff11c65ecbfc2b3337d2a4f"
       }
     },
     {
@@ -50,8 +50,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "18184ba84e97e598ee6c5a7b803851e049e6eab5",
-        "version" : "6.6.0"
+        "revision" : "26bd91a43a3e569956b99b7f15aa2709a1a6ff23",
+        "version" : "6.5.0"
       }
     },
     {

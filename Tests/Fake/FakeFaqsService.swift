@@ -19,7 +19,7 @@ public struct FakeFaqsService: FaqsService {
     }
 
     public func getName(hash: Int) async throws -> String? {
-        return nil
+        self.all.first(where: { $0.key.hash == hash })?.key
     }
 
     public func getAll() async throws -> [String: String] {

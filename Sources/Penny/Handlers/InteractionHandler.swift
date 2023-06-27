@@ -54,20 +54,10 @@ struct InteractionHandler {
                 logger.error("Unrecognized command")
                 return await sendInteractionResolveFailure()
             }
-            guard command == .faqs else {
-                logger.error("Unrecognized command with autocomplete")
-                return await sendInteractionResolveFailure()
-            }
-            let response: any Response
-            do {
-                response = try await handleFaqsCommandAutocomplete(data: data)
-            } catch {
-                logger.report("FAQ command error", error: error)
-                /// An `autocomplete`'s response must be an autocomplete payload.
-                response = Payloads.InteractionResponse.Autocomplete(
-                    choices: [.init(name: "Failure", value: .string(self.oops))]
-                )
-            }
+            let response = await makeResponseForAutocomplete(
+                command: command,
+                data: data
+            )
             await respond(with: response, shouldEdit: false)
         case let .modalSubmit(modal):
             guard let modalId = ModalID(rawValue: modal.custom_id) else {
@@ -511,14 +501,14 @@ private extension InteractionHandler {
     }
     
     func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
-        let discordId = try (event.member?.user ?? event.user).requireValue().id
+        let discordId = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
         let subcommand = try AutoPingsSubCommand(rawValue: first.name).requireValue()
 
         switch subcommand {
-        case .help, .list:
+        case .help, .list, .remove:
             guard await sendAcknowledgement(isEphemeral: true) else { return nil }
-        case .add, .remove, .test:
+        case .add, .bulkRemove, .test:
             /// Response of these commands are modals.
             /// For modals you can't send an acknowledgement first, then send the modal.
             /// You have to just right-away send the modal.
@@ -539,11 +529,36 @@ private extension InteractionHandler {
                 \(items.makeExpressionListForDiscord())
                 """
             }
+        case .remove:
+            let expressionInput = try first
+                .requireOption(named: "expression")
+                .requireString()
+            guard let expression = try await AutoPingsAutocompleteExpression(
+                rawValue: expressionInput,
+                pingsService: pingsService,
+                logger: logger
+            )?.expression else {
+                logger.warning(
+                    "Invalid ping-expression input. This could be a user error",
+                    metadata: [
+                        "expressionInput": .string(expressionInput)
+                    ]
+                )
+                return "The ping-expression input is not valid: '\(expressionInput)'"
+            }
+            discardingResult {
+                try await pingsService.remove([expression], forDiscordID: discordId)
+            }
+
+            return """
+            Successfully removed the followings from your pings-list:
+            \([expression].makeExpressionListForDiscord())
+            """
         case .add:
             let mode = try self.requireExpressionMode(first.options)
             let modalId = ModalID.autoPings(.add, mode)
             return modalId.makeModal()
-        case .remove:
+        case .bulkRemove:
             let mode = try self.requireExpressionMode(first.options)
             let modalId = ModalID.autoPings(.remove, mode)
             return modalId.makeModal()
@@ -671,9 +686,67 @@ private extension InteractionHandler {
         }
     }
 
-    func handleFaqsCommandAutocomplete(
+    func makeResponseForAutocomplete(
+        command: SlashCommand,
         data: Interaction.ApplicationCommand
-    ) async throws -> any Response {
+    ) async -> Payloads.InteractionResponse.Autocomplete {
+        do {
+            switch command {
+            case .autoPings:
+                return try await handleAutoPingsAutocomplete(data: data)
+            case .faqs:
+                return try await handleFaqsAutocomplete(data: data)
+            case .link, .howManyCoins, .howManyCoinsApp:
+                logger.error("Unrecognized command with autocomplete")
+                return Payloads.InteractionResponse.Autocomplete(
+                    choices: [.init(name: "Failure", value: .string(self.oops))]
+                )
+            }
+        } catch {
+            logger.report("Autocomplete generation error", error: error, metadata: [
+                "command": .string(command.rawValue)
+            ])
+            return Payloads.InteractionResponse.Autocomplete(
+                choices: [.init(name: "Failure", value: .string(self.oops))]
+            )
+        }
+    }
+
+    func handleAutoPingsAutocomplete(
+        data: Interaction.ApplicationCommand
+    ) async throws -> Payloads.InteractionResponse.Autocomplete {
+        let first = try (data.options?.first).requireValue()
+        let expressionQuery = try first.options
+            .requireValue()
+            .requireOption(named: "expression")
+            .requireString()
+        let pennyProvidedExpression = try? await AutoPingsAutocompleteExpression(
+            rawValue: expressionQuery,
+            pingsService: pingsService,
+            logger: logger
+        )
+        /// The expression they have entered is already a valid expression
+        if pennyProvidedExpression != nil {
+            return .init(choices: [])
+        }
+
+        let userId = try (event.member?.user?.id).requireValue()
+        let expressions = try await pingsService.get(discordID: userId)
+        let autocompleteExpressions = expressions.map {
+            AutoPingsAutocompleteExpression(expression: $0)
+        }
+
+        return .init(choices: autocompleteExpressions.map {
+            .init(
+                name: String($0.UIDescription.unicodeScalars.prefix(100)),
+                value: .string($0.rawValue) /// `rawValue` is already 100 chars max
+            )
+        })
+    }
+
+    func handleFaqsAutocomplete(
+        data: Interaction.ApplicationCommand
+    ) async throws -> Payloads.InteractionResponse.Autocomplete {
         let first = try (data.options?.first).requireValue()
         let name = try first.options
             .requireValue()
@@ -794,6 +867,8 @@ extension SlashCommand {
         }
     }
 }
+
+//MARK: - ModalID
 
 private enum ModalID {
 
@@ -981,6 +1056,53 @@ extension ModalID: RawRepresentable {
         } else {
             return nil
         }
+    }
+}
+
+//MARK: - AutoPingsAutocompleteExpression
+struct AutoPingsAutocompleteExpression {
+    let expression: S3AutoPingItems.Expression
+    let hash: Int
+
+    var UIDescription: String {
+        "\(expression.kind.UIDescription) - \(expression.innerValue)"
+    }
+
+    init(expression: S3AutoPingItems.Expression) {
+        self.expression = expression
+        self.hash = expression.hashValue
+    }
+
+    var rawValue: String {
+        /// A pings-expression can be arbitrarily long,
+        /// but Discord only accepts 100 characters in string options.
+        /// That's also why we need to rely on the expression-hash to identify it.
+        let hashDescription = " - \(hash)"
+        let max = 100 - hashDescription.count
+        let prefixedUIDescription = String(self.UIDescription.unicodeScalars.prefix(max))
+        return prefixedUIDescription + hashDescription
+    }
+
+    init? (
+        rawValue: String,
+        pingsService: any AutoPingsService,
+        logger: Logger
+    ) async throws {
+        guard let hashSubstring = rawValue.reversed()
+            .split(separator: "-")
+            .first,
+              let hash = Int(String(hashSubstring).trimmingCharacters(in: .whitespaces))
+        else { return nil }
+        self.hash = hash
+
+        guard let expression = try await pingsService.getExpression(hash: hash) else {
+            logger.warning("Could not find a ping-expression using its hash. This could just be a bad-input by user", metadata: [
+                "hash": .stringConvertible(hash),
+                "rawValue": .string(rawValue),
+            ])
+            return nil
+        }
+        self.expression = expression
     }
 }
 

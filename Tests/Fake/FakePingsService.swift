@@ -38,10 +38,11 @@ public struct FakePingsService: AutoPingsService {
     ) async throws { }
 
     public func get(discordID id: UserSnowflake) async throws -> [Expression] {
-        self.all
-            .items
-            .filter { $0.value.contains(id.rawValue) }
-            .map(\.key)
+        self.all.items.filter({ $0.value.contains(id.rawValue) }).map(\.key)
+    }
+
+    public func getExpression(hash: Int) async throws -> Expression? {
+        self.all.items.first(where: { $0.key.hashValue == hash })?.key
     }
 
     public func getAll() async throws -> S3AutoPingItems {

@@ -12,6 +12,8 @@ actor DefaultPingsService: AutoPingsService {
     
     /// Use `getAll()` to retrieve.
     var _cachedItems: S3AutoPingItems?
+    /// `[ExpressionHash: Expression]`
+    var _cachedExpressionsHashTable: [Int: Expression]?
     var resetItemsTask: Task<(), Never>?
 
     let decoder = JSONDecoder()
@@ -62,7 +64,11 @@ actor DefaultPingsService: AutoPingsService {
             .filter { $0.value.contains(id.rawValue) }
             .map(\.key)
     }
-    
+
+    func getExpression(hash: Int) async throws -> Expression? {
+        try await getAllExpressionsHashTable()[hash]
+    }
+
     func getAll() async throws -> S3AutoPingItems {
         if let cachedItems = _cachedItems {
             return cachedItems
@@ -74,7 +80,20 @@ actor DefaultPingsService: AutoPingsService {
             )
         }
     }
-    
+
+    func getAllExpressionsHashTable() async throws -> [Int: Expression] {
+        if let cachedItems = _cachedExpressionsHashTable {
+            return cachedItems
+        } else {
+            try await self.send(
+                pathParameter: "all",
+                method: .GET,
+                pingRequest: nil
+            )
+            return _cachedExpressionsHashTable ?? [:]
+        }
+    }
+
     @discardableResult
     func send(
         pathParameter: String,
@@ -119,6 +138,9 @@ actor DefaultPingsService: AutoPingsService {
             "new": .stringConvertible(new.items)
         ])
         self._cachedItems = new
+        self._cachedExpressionsHashTable = Dictionary(
+            uniqueKeysWithValues: new.items.map({ ($0.key.hashValue, $0.key) })
+        )
         self.resetItemsTask?.cancel()
     }
 

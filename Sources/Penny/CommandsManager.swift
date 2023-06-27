@@ -136,27 +136,42 @@ enum LinkSubCommand: String, CaseIterable {
 }
 
 enum AutoPingsSubCommand: String, CaseIterable {
-    case help, add, remove, list, test
+    case help
+    case add
+    case remove
+    case bulkRemove = "bulk-remove"
+    case list
+    case test
 
     var description: String {
         switch self {
         case .help:
             return "Help about how auto-pings works"
         case .add:
-            return "Add multiple texts to be pinged for (Slack compatible)"
+            return "Add multiple expressions to be pinged for (Slack compatible)"
         case .remove:
-            return "Remove multiple ping texts"
+            return "Remove a ping expression"
+        case .bulkRemove:
+            return "Remove multiple ping expressions"
         case .list:
             return "See what you'll get pinged for"
         case .test:
-            return "Test if a message triggers an auto-ping text"
+            return "Test if a message triggers an auto-ping expression"
         }
     }
 
     var options: [ApplicationCommand.Option] {
         switch self {
-        case .add, .remove, .test:
+        case .add, .bulkRemove, .test:
             return [Self.expressionModeOption]
+        case .remove:
+            return [.init(
+                type: .string,
+                name: "expression",
+                description: "What expression to remove",
+                required: true,
+                autocomplete: true
+            )]
         case .help, .list:
             return []
         }
