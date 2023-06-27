@@ -166,7 +166,7 @@ enum AutoPingsSubCommand: String, CaseIterable {
             return [Self.expressionModeOption]
         case .remove:
             return [.init(
-                type: .integer,
+                type: .string,
                 name: "expression",
                 description: "What expression to remove",
                 required: true,

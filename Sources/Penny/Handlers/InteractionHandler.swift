@@ -737,7 +737,7 @@ private extension InteractionHandler {
             let name = "\(expression.kind.UIDescription) - \(expression.innerValue)"
             return .init(
                 name: String(name.unicodeScalars.prefix(100)),
-                value: .int(expression.hashValue)
+                value: .string("\(expression.hashValue)")
             )
         })
     }
