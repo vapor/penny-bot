@@ -720,15 +720,15 @@ private extension InteractionHandler {
         let queried: ArraySlice<S3AutoPingItems.Expression>
         if foldedName.isEmpty {
             queried = ArraySlice(all
-                .sorted { $0.kind.priority > $1.kind.priority }
                 .sorted { $0.innerValue > $1.innerValue }
+                .sorted { $0.kind.priority > $1.kind.priority }
                 .prefix(25)
             )
         } else {
             queried = all
                 .filter { $0.innerValue.heavyFolded().contains(foldedName) }
-                .sorted { $0.kind.priority > $1.kind.priority }
                 .sorted { $0.innerValue > $1.innerValue }
+                .sorted { $0.kind.priority > $1.kind.priority }
                 .prefix(25)
         }
         
