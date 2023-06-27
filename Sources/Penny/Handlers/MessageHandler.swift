@@ -11,7 +11,10 @@ struct MessageHandler {
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
     }
-    
+    var discordService: DiscordService {
+        DiscordService.shared
+    }
+
     init(event: Gateway.MessageCreate) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
@@ -132,7 +135,8 @@ struct MessageHandler {
     }
     
     func checkForPings() async {
-        if event.content.isEmpty { return }
+        let content = event.content
+        if content.isEmpty { return }
         /// Check guild-id too, just to make sure / future-proofing.
         guard event.guild_id == Constants.vaporGuildId,
               let author = event.author,
@@ -147,8 +151,8 @@ struct MessageHandler {
             logger.report("Can't retrieve ping-words", error: error)
             return
         }
-        let divided = event.content.divideForPingCommandExactMatchChecking()
-        let folded = event.content.foldedForPingCommandContainmentChecking()
+        let divided = content.divideForPingCommandExactMatchChecking()
+        let folded = content.foldedForPingCommandContainmentChecking()
         /// `[UserID: [Expression]]`
         var usersToPing: [String: Set<S3AutoPingItems.Expression>] = [:]
         for exp in expUsersDict.keys {
@@ -160,7 +164,7 @@ struct MessageHandler {
                 for userId in users {
                     /// Checks if the user is in the guild at all,
                     /// + if the user has read access of the channel.
-                    if (try? await DiscordService.shared.userHasReadAccess(
+                    if (try? await discordService.userHasReadAccess(
                         userId: Snowflake(userId),
                         channelId: event.channel_id
                     )) == true {
@@ -191,7 +195,7 @@ struct MessageHandler {
                 user: author,
                 id: author.id.rawValue
             )
-            await DiscordService.shared.sendDM(
+            await discordService.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
                     embeds: [.init(
@@ -202,6 +206,8 @@ struct MessageHandler {
 
                         Triggered by:
                         \(words.makeExpressionListForDiscord())
+
+                        >>> \(content.prefix(256))
                         """,
                         color: .vaporPurple
                     )],
@@ -240,7 +246,7 @@ struct MessageHandler {
         isFailureMessage: Bool,
         userToExplicitlyMention: UserSnowflake? = nil
     ) async {
-        await DiscordService.shared.sendThanksResponse(
+        await discordService.sendThanksResponse(
             channelId: channelId ?? event.channel_id,
             replyingToMessageId: event.id,
             isFailureMessage: isFailureMessage,

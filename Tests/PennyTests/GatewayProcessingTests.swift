@@ -277,7 +277,9 @@ class GatewayProcessingTests: XCTestCase {
             [message1, message2].contains(where: { $0.contains("- godb dr") }),
             #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
         )
-        
+
+        XCTAssertTrue(message2.hasSuffix(">>> need help with some MongoDB Driver"), message2)
+
         let event2 = EventKey.autoPingsTrigger2
         let createDMEndpoint2 = event2.responseEndpoints[0]
         let responseEndpoint2 = event2.responseEndpoints[1]
@@ -303,6 +305,8 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertTrue(message.contains("- discord"), message)
             XCTAssertTrue(message.contains("- discord-kit"), message)
             XCTAssertTrue(message.contains("- cord"), message)
+
+            XCTAssertTrue(message.hasSuffix(">>> I want to use the discord-kit library\nhttps://www.swift.org/blog/swift-certificates-and-asn1/"), message)
         }
     }
     
