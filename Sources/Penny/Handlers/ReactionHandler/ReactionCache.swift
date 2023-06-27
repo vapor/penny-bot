@@ -29,7 +29,7 @@ actor ReactionCache {
             didSet {
                 /// To limit the amount of items to not leak memory
                 /// and not explode the caches S3 bucket.
-                if cachedAuthorIds.count > 200 {
+                if cachedAuthorIds.count > 500 {
                     cachedAuthorIds.removeLast()
                 }
             }
@@ -37,7 +37,7 @@ actor ReactionCache {
         /// `Set<[SenderID, MessageID]>`
         var givenCoins: OrderedSet<[AnySnowflake]> = [] {
             didSet {
-                if givenCoins.count > 200 {
+                if givenCoins.count > 500 {
                     givenCoins.removeLast()
                 }
             }
@@ -47,7 +47,7 @@ actor ReactionCache {
         /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
         var thanksChannelForcedMessages = OrderedDictionary<MessageSnowflake, ChannelForcedThanksMessage>() {
             didSet {
-                if thanksChannelForcedMessages.count > 200 {
+                if thanksChannelForcedMessages.count > 500 {
                     thanksChannelForcedMessages.removeLast()
                 }
             }

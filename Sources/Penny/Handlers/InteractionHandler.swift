@@ -533,18 +533,11 @@ private extension InteractionHandler {
             let expressionInput = try first
                 .requireOption(named: "expression")
                 .requireString()
-            guard let expression = try await AutoPingsAutocompleteExpression(
-                rawValue: expressionInput,
-                pingsService: pingsService,
-                logger: logger
-            )?.expression else {
-                logger.warning(
-                    "Invalid ping-expression input. This could be a user error",
-                    metadata: [
-                        "expressionInput": .string(expressionInput)
-                    ]
-                )
-                return "The ping-expression input is not valid: '\(expressionInput)'"
+            guard let hash = Int(expressionInput) else {
+                return "Malformed expression value: '\(expressionInput)'"
+            }
+            guard let expression = try await pingsService.getExpression(hash: hash) else {
+                return "Could not find any expression matching your input"
             }
             discardingResult {
                 try await pingsService.remove([expression], forDiscordID: discordId)
@@ -716,30 +709,35 @@ private extension InteractionHandler {
         data: Interaction.ApplicationCommand
     ) async throws -> Payloads.InteractionResponse.Autocomplete {
         let first = try (data.options?.first).requireValue()
-        let expressionQuery = try first.options
+        let name = try first.options
             .requireValue()
             .requireOption(named: "expression")
             .requireString()
-        let pennyProvidedExpression = try? await AutoPingsAutocompleteExpression(
-            rawValue: expressionQuery,
-            pingsService: pingsService,
-            logger: logger
-        )
-        /// The expression they have entered is already a valid expression
-        if pennyProvidedExpression != nil {
-            return .init(choices: [])
-        }
 
+        let foldedName = name.heavyFolded()
         let userId = try (event.member?.user?.id).requireValue()
-        let expressions = try await pingsService.get(discordID: userId)
-        let autocompleteExpressions = expressions.map {
-            AutoPingsAutocompleteExpression(expression: $0)
+        let all = try await pingsService.get(discordID: userId)
+        let queried: ArraySlice<S3AutoPingItems.Expression>
+        if foldedName.isEmpty {
+            queried = ArraySlice(all
+                .sorted { $0.kind.priority > $1.kind.priority }
+                .sorted { $0.innerValue > $1.innerValue }
+                .prefix(25)
+            )
+        } else {
+            queried = all
+                .filter { $0.innerValue.heavyFolded().contains(foldedName) }
+                .sorted { $0.kind.priority > $1.kind.priority }
+                .sorted { $0.innerValue > $1.innerValue }
+                .prefix(25)
         }
+        
 
-        return .init(choices: autocompleteExpressions.map {
-            .init(
-                name: String($0.UIDescription.unicodeScalars.prefix(100)),
-                value: .string($0.rawValue) /// `rawValue` is already 100 chars max
+        return .init(choices: queried.map { expression in
+            let name = "\(expression.kind.UIDescription) - \(expression.innerValue)"
+            return .init(
+                name: String(name.unicodeScalars.prefix(100)),
+                value: .int(expression.hashValue)
             )
         })
     }
@@ -756,7 +754,7 @@ private extension InteractionHandler {
         let all = try await faqsService.getAll().map(\.key)
         let queried: ArraySlice<String>
         if foldedName.isEmpty {
-            queried = ArraySlice(all.prefix(25))
+            queried = ArraySlice(all.sorted { $0 > $1 }.prefix(25))
         } else {
             queried = all
                 .filter { $0.heavyFolded().contains(foldedName) }
@@ -1056,53 +1054,6 @@ extension ModalID: RawRepresentable {
         } else {
             return nil
         }
-    }
-}
-
-//MARK: - AutoPingsAutocompleteExpression
-struct AutoPingsAutocompleteExpression {
-    let expression: S3AutoPingItems.Expression
-    let hash: Int
-
-    var UIDescription: String {
-        "\(expression.kind.UIDescription) - \(expression.innerValue)"
-    }
-
-    init(expression: S3AutoPingItems.Expression) {
-        self.expression = expression
-        self.hash = expression.hashValue
-    }
-
-    var rawValue: String {
-        /// A pings-expression can be arbitrarily long,
-        /// but Discord only accepts 100 characters in string options.
-        /// That's also why we need to rely on the expression-hash to identify it.
-        let hashDescription = " - \(hash)"
-        let max = 100 - hashDescription.count
-        let prefixedUIDescription = String(self.UIDescription.unicodeScalars.prefix(max))
-        return prefixedUIDescription + hashDescription
-    }
-
-    init? (
-        rawValue: String,
-        pingsService: any AutoPingsService,
-        logger: Logger
-    ) async throws {
-        guard let hashSubstring = rawValue.reversed()
-            .split(separator: "-")
-            .first,
-              let hash = Int(String(hashSubstring).trimmingCharacters(in: .whitespaces))
-        else { return nil }
-        self.hash = hash
-
-        guard let expression = try await pingsService.getExpression(hash: hash) else {
-            logger.warning("Could not find a ping-expression using its hash. This could just be a bad-input by user", metadata: [
-                "hash": .stringConvertible(hash),
-                "rawValue": .string(rawValue),
-            ])
-            return nil
-        }
-        self.expression = expression
     }
 }
 

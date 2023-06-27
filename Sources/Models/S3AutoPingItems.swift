@@ -17,6 +17,15 @@ public struct S3AutoPingItems: Sendable, Codable {
                     return "Exact Match"
                 }
             }
+
+            public var priority: Int {
+                switch self {
+                case .containment:
+                    return 2
+                case .exactMatch:
+                    return 1
+                }
+            }
         }
 
         /// Containment (with some insensitivity, such as case-insensitivity)
