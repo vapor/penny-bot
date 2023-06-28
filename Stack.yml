@@ -218,31 +218,24 @@ Resources:
                   - lambda:UpdateFunctionCode
                   - secretsmanager:GetSecretValue
                   - s3:PutObject
-				          - s3:GetObject
+                  - s3:GetObject
                 Effect: Allow 
                 Resource: 
                   - !GetAtt dynamoUserTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
-                  
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}-lambda
-
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}-lambda
-
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoPingsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoPingsFilename}-lambda
-
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FaqsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FaqsFilename}-lambda
-
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHHooksFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHHooksFilename}-lambda
-                  
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
-
                   - arn:aws:s3:::penny-auto-pings-lambda/*
 				          - arn:aws:s3:::penny-faqs-lambda/*
           PolicyName: lamda
