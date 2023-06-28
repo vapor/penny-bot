@@ -23,31 +23,34 @@ struct EventHandler {
         let action = event.action.map({ PullRequest.Action(rawValue: $0) })
         /// FIXME: testing
 //        guard action == .opened else { return }
-//        let pr = try event.pullRequest.requireValue()
 
         let number = try event.number.requireValue()
         let repoName = event.repository.name
         let orgName = event.organization.login
-        let prLink = "https://github.com/\(orgName)/\(repoName)/pull/\(number)"
+        let linkSuffix = "\(orgName)/\(repoName)/pull/\(number)"
+
+        let prLink = "https://github.com/\(linkSuffix)"
 
         let senderName = event.sender.login
         let senderLink = "https://github.com/\(senderName)"
+
+        let ogImage = "https://opengraph.githubassets.com/1/\(linkSuffix)"
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(
                 embeds: [
                     .init(
-                        title: "New PR",
+                        title: "New Pull Request",
                         description: """
                         Created by **[\(senderName)](\(senderLink))**
                         """,
-                        color: .green
-                    ),
-                    .init(url: prLink)
+                        color: .green,
+                        image: .init(url: .exact(ogImage))
+                    )
                 ],
                 components: [[
-                    .button(.init(label: "Open PR", url: prLink))
+                    .button(.init(label: "Open", url: prLink))
                 ]]
             )
         ).guardSuccess()
@@ -57,15 +60,18 @@ struct EventHandler {
         let action = event.action.map({ Issue.Action(rawValue: $0) })
         /// FIXME: testing
 //        guard action == .opened else { return }
-//        let issue = try event.issue.requireValue()
 
         let number = try event.number.requireValue()
         let repoName = event.repository.name
         let orgName = event.organization.login
-        let issueLink = "https://github.com/\(orgName)/\(repoName)/issues/\(number)"
+        let linkSuffix = "\(orgName)/\(repoName)/issues/\(number)"
+
+        let issueLink = "https://github.com/\(linkSuffix)"
 
         let senderName = event.sender.login
         let senderLink = "https://github.com/\(senderName)"
+
+        let ogImage = "https://opengraph.githubassets.com/1/\(linkSuffix)"
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
@@ -76,12 +82,12 @@ struct EventHandler {
                         description: """
                         Created by **[\(senderName)](\(senderLink))**
                         """,
-                        color: .yellow
-                    ),
-                    .init(url: issueLink)
+                        color: .yellow,
+                        image: .init(url: .exact(ogImage))
+                    )
                 ],
                 components: [[
-                    .button(.init(label: "Open Issue", url: issueLink))
+                    .button(.init(label: "Open", url: issueLink))
                 ]]
             )
         ).guardSuccess()
