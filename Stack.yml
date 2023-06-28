@@ -126,6 +126,7 @@ Resources:
       Handler: handler 
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
+      Timeout: 6
 
   lambdaAddCoinPermission:
     Type: AWS::Lambda::Permission
@@ -166,6 +167,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
+      Timeout: 6
     
   lambdaSponsorsPermission:
     Type: AWS::Lambda::Permission
@@ -275,6 +277,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
+      Timeout: 6
 
   lambdaAutoPingsRoutePermission:
     Type: AWS::Lambda::Permission
@@ -328,6 +331,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
+      Timeout: 6
 
   lambdaFaqsRoutePermission:
     Type: AWS::Lambda::Permission
