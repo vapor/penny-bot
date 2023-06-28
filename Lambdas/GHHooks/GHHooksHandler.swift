@@ -34,38 +34,69 @@ struct GHHooksHandler: LambdaHandler {
         try await verifyWebhookSignature(request: request)
         logger.debug("Verified signature")
 
-        guard let eventName = request.headers.first(name: "x-gitHub-event") else {
+        guard let _eventName = request.headers.first(name: "x-gitHub-event"),
+              let eventName = GHEvent.Kind(rawValue: _eventName) else {
             throw Errors.headerNotFound(name: "x-gitHub-event", headers: request.headers)
         }
 
         logger.trace("Event name is '\(eventName)'")
 
-        if eventName == "ping" {
+        /// To make sure we don't miss pings because of a decoding error or something
+        if eventName == .ping {
             return APIGatewayV2Response(statusCode: .ok)
         }
 
-        var event = try request.decode(as: GithubEvent.self)
-        event.name = eventName
+        let client = try await makeDiscordClient()
+
+        let event: GHEvent
+        do {
+            event = try request.decode(as: GHEvent.self)
+        } catch {
+            try await client.createMessage(
+                channelId: Constants.Channels.logs.id,
+                payload: .init(embeds: [.init(
+                    title: "Failed decoding for event \(eventName.rawValue)",
+                    color: .red
+                )])
+            ).guardSuccess()
+            throw error
+        }
 
         logger.debug("Decoded event", metadata: [
             "event": "\(event)"
         ])
 
-        let client = try await makeDiscordClient()
+        /// This is for testing purposes for now:
 
-        /// This is for testing purposes for now
-
-        try await client.createMessage(
-            channelId: Constants.Channels.logs.id,
-            payload: .init(embeds: [.init(
-                title: "Received \(event.name ?? "null")",
-                description: """
-                Action: \(event.action ?? "null")
-                Repo: \(event.repository.name)
-                """,
-                color: .yellow
-            )])
-        ).guardSuccess()
+        switch eventName {
+        case .issues, .pull_request:
+            try await client.createMessage(
+                channelId: Constants.Channels.logs.id,
+                payload: .init(embeds: [.init(
+                    title: "Received event \(eventName)",
+                    description: """
+                    Action: \(event.action ?? "null")
+                    Repo: \(event.repository.name)
+                    """,
+                    color: .yellow
+                )])
+            ).guardSuccess()
+        case .ping:
+            /// Already handled
+            break
+        default:
+            try await client.createMessage(
+                channelId: Constants.Channels.logs.id,
+                payload: .init(embeds: [.init(
+                    title: "Received UNHANDLED event \(eventName)",
+                    description: """
+                    Action: \(event.action ?? "null")
+                    Repo: \(event.repository.name)
+                    """,
+                    color: .red
+                )])
+            ).guardSuccess()
+        }
 
         logger.trace("Event handled")
 

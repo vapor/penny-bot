@@ -171,6 +171,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .target(name: "Penny"),
+                .target(name: "GHHooksLambda"),
                 .target(name: "Fake"),
             ],
             swiftSettings: swiftSettings
