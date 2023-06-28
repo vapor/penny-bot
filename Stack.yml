@@ -393,8 +393,8 @@ Resources:
         S3Key: !Sub ${GHHooksFilename}.zip
       Environment:
         Variables:
-          BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          WH_SECRET_ARN: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}-lambda
       Handler: handler
