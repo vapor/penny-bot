@@ -364,12 +364,12 @@ Resources:
   ghHooksIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      Description: Lambda Faqs Integration
+      Description: Lambda GHHooks Integration
       ApiId: !Ref apiGateway
       ConnectionType: INTERNET
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
-      IntegrationUri: !GetAtt faqsFunction.Arn
+      IntegrationUri: !GetAtt ghHooksFunction.Arn
       PayloadFormatVersion: '2.0'
 
   ghHooksRoutePost:
@@ -474,6 +474,9 @@ Resources:
 
 
 Outputs:
+  ghHooksLambdaArn:
+    Value: !GetAtt ghHooksFunction.Arn
+
   faqsLambdaArn:
     Value: !GetAtt faqsFunction.Arn
 
