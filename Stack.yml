@@ -83,9 +83,6 @@ Resources:
       Name: !Ref apiGatewayName
       Description: API Endpoints for the discord Penny bot
       ProtocolType: HTTP
-      #Target: 
-        #- !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}-lambda/invocations
-        #- !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FileNameBot}-lambda/invocations
 
   apiGatewayStage:
     Type: AWS::ApiGatewayV2::Stage
@@ -203,7 +200,6 @@ Resources:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
-                  - lambda:InvokeFunction
                   - dynamodb:DescribeTable
                   - dynamodb:GetItem
                   - dynamodb:Query
@@ -216,6 +212,7 @@ Resources:
                   - dynamodb:ConditionCheckItem
                   - dynamodb:Scan
                   - lambda:UpdateFunctionCode
+                  - lambda:InvokeFunction
                   - secretsmanager:GetSecretValue
                   - s3:PutObject
                   - s3:GetObject
@@ -396,8 +393,9 @@ Resources:
         S3Key: !Sub ${GHHooksFilename}.zip
       Environment:
         Variables:
-          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+          BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          WH_SECRET_ARN: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+          LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}-lambda
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
