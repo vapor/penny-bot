@@ -30,6 +30,8 @@ struct EventHandler {
         let creatorName = pr.user.login
         let creatorLink = try pr.user.htmlURL.requireValue()
 
+        let prLink = try pr.htmlURL.requireValue()
+
         let repositoryLink = try event.repository.htmlURL.requireValue()
         let repositoryName = event.repository.fullName ?? event.repository.name
 
@@ -47,7 +49,7 @@ struct EventHandler {
                     )
                 ],
                 components: [[
-                    .button(.init(label: "Open", url: pr.htmlURL))
+                    .button(.init(label: "Open", url: prLink))
                 ]]
             )
         ).guardSuccess()

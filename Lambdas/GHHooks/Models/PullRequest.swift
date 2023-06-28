@@ -4,42 +4,46 @@ import Foundation
 struct PullRequest: Codable {
     let url: String
     let id: Int
-    let nodeID: String
-    let htmlURL: String
-    let diffURL: String
-    let patchURL: String
-    let issueURL: String
+    let nodeID: String?
+    let htmlURL: String?
+    let diffURL: String?
+    let patchURL: String?
+    let issueURL: String?
     let number: Int
     let state: String
     let locked: Bool
     let title: String
     let user: User
-    let body: String
-    let createdAt, updatedAt: Date
+    let body: String?
+    let createdAt, updatedAt: Date?
     let closedAt, mergedAt: Date?
-    let mergeCommitSHA: String
+    let mergeCommitSHA: String?
     /// Might not be a `String`
     let assignee: String?
     /// Might not be a `String`
-    let assignees, requestedReviewers, requestedTeams, labels: [String?]
+    let assignees, requestedReviewers, requestedTeams, labels: [String]?
     let milestone: Date?
     let draft: Bool
-    let commitsURL, reviewCommentsURL: String
-    let reviewCommentURL: String
-    let commentsURL, statusesURL: String
+    let commitsURL: String?
+    let reviewCommentsURL: String?
+    let reviewCommentURL: String?
+    let commentsURL: String?
+    let statusesURL: String?
     let head, base: Base
-    let links: Links
-    let authorAssociation: String
+    let links: Links?
+    let authorAssociation: String?
     let autoMerge: Bool?
     let activeLockReason: String?
     let merged: Bool
     let mergeable, rebaseable: Bool?
-    let mergeableState: String
+    let mergeableState: String?
     /// Might not be a `String`
     let mergedBy: String?
-    let comments, reviewComments: Int
-    let maintainerCanModify: Bool
-    let commits, additions, deletions, changedFiles: Int
+    let comments: Int
+    let reviewComments: Int?
+    let maintainerCanModify: Bool?
+    let commits, additions, deletions: Int
+    let changedFiles: Int?
 
     enum CodingKeys: String, CodingKey {
         case url, id
