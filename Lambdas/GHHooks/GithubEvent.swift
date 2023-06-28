@@ -272,10 +272,12 @@ final class DereferenceBox<C: Codable>: Codable {
     var value: C
 
     init(from decoder: any Decoder) throws {
-        self.value = try .init(from: decoder)
+        let container = try decoder.singleValueContainer()
+        self.value = try container.decode(C.self)
     }
 
     func encode(to encoder: any Encoder) throws {
-        try self.value.encode(to: encoder)
+        var container = encoder.singleValueContainer()
+        try container.encode(self.value)
     }
 }
