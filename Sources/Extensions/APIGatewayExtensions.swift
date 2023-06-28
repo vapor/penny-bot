@@ -7,13 +7,13 @@ private let jsonEncoder = JSONEncoder()
 
 extension APIGatewayV2Request {
     
-    public func decode<C: Codable>(as type: C.Type = C.self) throws -> C {
+    public func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body,
               let dataBody = body.data(using: .utf8)
         else {
             throw APIError.invalidRequest
         }
-        return try jsonDecoder.decode(C.self, from: dataBody)
+        return try jsonDecoder.decode(D.self, from: dataBody)
     }
     
     /// Unused
