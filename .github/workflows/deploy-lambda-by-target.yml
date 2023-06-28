@@ -1,8 +1,5 @@
 name: Build and deploy a lambda function
 
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
 on:
   workflow_call:
     inputs:
@@ -41,18 +38,33 @@ jobs:
     steps:
       - name: Install additional dependencies
         run: |
-          yum -y install {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel libtool jq zip awscli
+          yum -y install \
+            {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
+            libtool jq zip awscli
       - name: Configure AWS
         run: |
-          printf '%s\n%s\n%s\ntext\n' "${AWS_ACCESS_KEY_ID}" "${AWS_SECRET_ACCESS_KEY}" "${AWS_REGION}" | aws configure >/dev/null 2>&1 
+          printf '%s\n%s\n%s\ntext\n' \
+            "${AWS_ACCESS_KEY_ID}" \
+            "${AWS_SECRET_ACCESS_KEY}" \
+            "${AWS_REGION}" | \
+          aws configure >/dev/null 2>&1 
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Build lambda target
-        run: swift build --product "${LAMBDA_NAME}" -c release --static-swift-stdlib
+        run: |
+          swift build \
+            --product "${LAMBDA_NAME}" \
+            -c release \
+            --static-swift-stdlib
       - name: Package executable
         run: |
-          ln -s -r "./.build/release/${LAMBDA_NAME}" ./.build/release/bootstrap
-          zip -j -y "./.build/release/${LAMBDA_NAME}.zip" "./.build/release/${LAMBDA_NAME}" ./.build/release/bootstrap
+          ln --symbolic --relative \
+            "./.build/release/${LAMBDA_NAME}" \
+            ./.build/release/bootstrap
+          zip --junk-paths -symlinks \
+            "./.build/release/${LAMBDA_NAME}.zip" \
+            "./.build/release/${LAMBDA_NAME}" \
+            ./.build/release/bootstrap
       - name: Sync to S3
         run: |
           aws s3 sync \

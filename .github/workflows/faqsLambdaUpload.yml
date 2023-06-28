@@ -1,9 +1,0 @@
-name: Deploy fsqa lambda function
-on:
-  push: { branches: [main] }
-jobs:
-  deploy:
-    uses: ./.github/workflows/deploy-lambda-by-target.yml
-    with:
-      target: FaqsLambda
-    secrets: inherit
