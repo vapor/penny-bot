@@ -20,6 +20,10 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed for Faqs
     Default: FaqsLambda
+  GHHooksFilename:
+    Type: String
+    Description: Filename containing the code to be executed for gh-hooks
+    Default: GHHooksLambda
   VPC:
     Description: VPC for the app
     Type: AWS::EC2::VPC::Id
@@ -96,7 +100,7 @@ Resources:
       ApiId: !Ref apiGateway
       StageName: !Ref apiGatewayStage
 
-  # Coin lambda config
+  # Coins lambda config
 
   addCoinIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -137,7 +141,7 @@ Resources:
     DependsOn: 
       - addCoinFunction
       
-  # Sponsor lambda config
+  # Sponsors lambda config
       
   sponsorsIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -355,6 +359,58 @@ Resources:
       LogGroupName: /aws/lambda/FaqsLambda-lambda
       RetentionInDays: 30
 
+  # GH-Hooks lambda config
+
+  ghHooksIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda Faqs Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt faqsFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  ghHooksRoutePost:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /gh-hooks'
+      Target: !Sub "integrations/${ghHooksIntegration}"
+
+  ghHooksFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-discord-bot
+        S3Key: !Sub ${GHHooksFilename}.zip
+      Environment:
+        Variables:
+          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+      FunctionName: !Sub ${GHHooksFilename}-lambda
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+      Timeout: 6
+
+  lambdaGHHooksRoutePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub ${GHHooksFilename}-lambda
+      Principal: apigateway.amazonaws.com
+    DependsOn:
+      - ghHooksFunction
+
+  ghHooksLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: /aws/lambda/GHHooksLambda-lambda
+      RetentionInDays: 30
+
+  # Caches S3 bucket
 
   cachesS3Bucket:
     Type: AWS::S3::Bucket
@@ -363,6 +419,7 @@ Resources:
     Properties:
       BucketName: penny-caches
 
+  # DynamoDB penny-bot table
 
   dynamoUserTable:
     Type: AWS::DynamoDB::Table

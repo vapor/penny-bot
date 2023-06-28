@@ -90,8 +90,8 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
                 .target(name: "SharedServices"),
             ],
@@ -120,6 +120,19 @@ let package = Package(
                 .target(name: "Models"),
             ],
             path: "./Lambdas/Faqs",
+            swiftSettings: swiftSettings
+        ),
+        .executableTarget(
+            name: "GHHooksLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .target(name: "Extensions"),
+            ],
+            path: "./Lambdas/GHHooks",
             swiftSettings: swiftSettings
         ),
         .target(
