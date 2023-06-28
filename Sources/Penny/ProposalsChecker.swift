@@ -60,14 +60,14 @@ actor ProposalsChecker {
             ) {
                 self.storage.queuedProposals[existingIdx].updatedAt = Date()
                 self.storage.queuedProposals[existingIdx].proposal = new
-                logger.notice("A new proposal will be delayed", metadata: ["id": .string(new.id)])
+                logger.warning("A new proposal will be delayed", metadata: ["id": .string(new.id)])
             } else {
                 self.storage.queuedProposals.append(.init(
                     firstKnownStateBeforeQueue: nil,
                     updatedAt: Date(),
                     proposal: new
                 ))
-                logger.notice("A new proposal was queued", metadata: ["id": .string(new.id)])
+                logger.debug("A new proposal was queued", metadata: ["id": .string(new.id)])
             }
         }
 
@@ -88,7 +88,7 @@ actor ProposalsChecker {
             ) {
                 self.storage.queuedProposals[existingIdx].updatedAt = Date()
                 self.storage.queuedProposals[existingIdx].proposal = updated
-                logger.notice("An updated proposal will be delayed", metadata: [
+                logger.warning("An updated proposal will be delayed", metadata: [
                     "id": .string(updated.id)
                 ])
             } else {
@@ -97,7 +97,7 @@ actor ProposalsChecker {
                     updatedAt: Date(),
                     proposal: updated
                 ))
-                logger.notice("An updated proposal was queued", metadata: [
+                logger.debug("An updated proposal was queued", metadata: [
                     "id": .string(updated.id)
                 ])
             }
