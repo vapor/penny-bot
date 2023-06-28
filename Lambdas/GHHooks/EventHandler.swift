@@ -23,9 +23,9 @@ struct EventHandler {
         let action = event.action.map({ PullRequest.Action(rawValue: $0) })
         /// FIXME: testing
 //        guard action == .opened else { return }
-        let pr = try event.pullRequest.requireValue()
+//        let pr = try event.pullRequest.requireValue()
 
-        let number = pr.number
+        let number = try event.number.requireValue()
         let repoName = event.repository.name
         let orgName = event.organization.login
         let prLink = "https://github.com/\(orgName)/\(repoName)/pull/\(number)"
@@ -57,9 +57,9 @@ struct EventHandler {
         let action = event.action.map({ Issue.Action(rawValue: $0) })
         /// FIXME: testing
 //        guard action == .opened else { return }
-        let issue = try event.issue.requireValue()
+//        let issue = try event.issue.requireValue()
 
-        let number = issue.number
+        let number = try event.number.requireValue()
         let repoName = event.repository.name
         let orgName = event.organization.login
         let issueLink = "https://github.com/\(orgName)/\(repoName)/issues/\(number)"
