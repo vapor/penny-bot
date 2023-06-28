@@ -1,47 +1,9 @@
-name: Build and upload ghHooks lambda function
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
+name: Deploy GitHub hooks lambda function
 on:
-  push:
-    branches:
-      - main
-
+  push: { branches: [main] }
 jobs:
-  build:
-    name: Build and upload to S3
-    runs-on: ubuntu-latest
-    steps:
-      - name: Log directory
-        run: ls -a
-      - name: Checkout repository
-        uses: actions/checkout@v3
-      - name: Build and zip
-        run: ./scripts/build-and-package.sh GHHooksLambda
-      - name: Remove build file
-        run: |
-          cd './.build/lambda/'
-          sudo rm -rf GHHooksLambda
-      - name: Deploy to S3
-        id: s3deploy
-        uses: jakejarvis/s3-sync-action@master
-        with:
-          args: --acl public-read --follow-symlinks
-        env:
-          AWS_S3_BUCKET: "penny-discord-bot"
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
-          AWS_REGION: "eu-west-1"
-          SOURCE_DIR: "./.build/lambda/"
-      - name: Update Lambda code
-        run: |
-          aws lambda update-function-code \
-            --function-name 'GHHooksLambda-lambda' \
-            --s3-bucket 'penny-discord-bot' \
-            --s3-key 'GHHooksLambda.zip'
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
-          AWS_REGION: "eu-west-1"
+  deploy:
+    uses: ./.github/workflows/deploy-lambda-by-target.yml
+    with:
+      target: GHHooksLambda
+    secrets: inherit
