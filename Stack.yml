@@ -229,6 +229,7 @@ Resources:
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoPingsFilename}-lambda
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           PolicyName: lamda
   
   lambdaLogGroup:
