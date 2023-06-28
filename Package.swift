@@ -122,6 +122,18 @@ let package = Package(
             path: "./Lambdas/Faqs",
             swiftSettings: swiftSettings
         ),
+        .executableTarget(
+            name: "GHHooksLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoS3", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .target(name: "Extensions"),
+            ],
+            path: "./Lambdas/GHHooks",
+            swiftSettings: swiftSettings
+        ),
         .target(
             name: "Extensions",
             dependencies: [
