@@ -4,7 +4,6 @@ import Foundation
 import SotoCore
 import Models
 import Extensions
-import NIOConcurrencyHelpers
 
 @main
 struct AutoPingsHandler: LambdaHandler {

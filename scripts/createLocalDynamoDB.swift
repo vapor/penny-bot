@@ -77,9 +77,10 @@ func checkDatabaseIsUp() -> Bool {
     }
 
     do {
-        guard let string = describeTableOutput.string(), let data = string.data(using: .utf8) else {
+        guard let string = describeTableOutput.string() else {
             return false
         }
+        let data = Data(string.utf8)
         let decoded = try JSONDecoder().decode(DescribeTableResult.self, from: data)
         guard decoded.Table.TableStatus == "ACTIVE" else {
             return false
