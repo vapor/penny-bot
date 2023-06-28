@@ -6,7 +6,7 @@ on:
 
 jobs:
   lint:
-    name: Check cloudFormation
+    name: Check CloudFormation
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
