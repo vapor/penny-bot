@@ -9,3 +9,4 @@ jobs:
     with:
       with_coverage: false
       with_tsan: false
+      with_public_api_check: false
