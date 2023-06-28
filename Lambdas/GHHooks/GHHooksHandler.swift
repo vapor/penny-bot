@@ -7,6 +7,8 @@ import DiscordHTTP
 import Extensions
 import Foundation
 
+import OpenAPIAsyncHTTPClient
+
 @main
 struct GHHooksHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
@@ -25,6 +27,17 @@ struct GHHooksHandler: LambdaHandler {
 
         let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
         self.discordClient = await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+
+        let transport = AsyncHTTPClientTransport(
+            configuration: .init(client: httpClient)
+        )
+
+        let serverURL = try Servers.server1()
+
+        let client = Client(
+            serverURL: serverURL,
+            transport: transport
+        )
     }
 
     func handle(
