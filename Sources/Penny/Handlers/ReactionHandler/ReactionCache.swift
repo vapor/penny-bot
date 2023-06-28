@@ -28,27 +28,27 @@ actor ReactionCache {
         var cachedAuthorIds: OrderedDictionary<MessageSnowflake, UserSnowflake> = [:] {
             didSet {
                 /// To limit the amount of items to not leak memory
-                /// and not explode the caches S3 bucket.
-                if cachedAuthorIds.count > 500 {
-                    cachedAuthorIds.removeLast()
+                /// and not explode the `penny-caches` S3 bucket.
+                if cachedAuthorIds.count > 200 {
+                    cachedAuthorIds.removeFirst()
                 }
             }
         }
         /// `Set<[SenderID, MessageID]>`
         var givenCoins: OrderedSet<[AnySnowflake]> = [] {
             didSet {
-                if givenCoins.count > 500 {
-                    givenCoins.removeLast()
+                if givenCoins.count > 200 {
+                    givenCoins.removeFirst()
                 }
             }
         }
-        /// Channel's last message id if it is a thanks message to another message.
+        /// Channel's last message id if it's a thanks message to another message.
         var channelWithLastThanksMessage = [ChannelSnowflake: ChannelLastThanksMessage]()
         /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
         var thanksChannelForcedMessages = OrderedDictionary<MessageSnowflake, ChannelForcedThanksMessage>() {
             didSet {
-                if thanksChannelForcedMessages.count > 500 {
-                    thanksChannelForcedMessages.removeLast()
+                if thanksChannelForcedMessages.count > 200 {
+                    thanksChannelForcedMessages.removeFirst()
                 }
             }
         }
