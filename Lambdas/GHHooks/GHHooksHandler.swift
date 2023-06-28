@@ -34,10 +34,15 @@ struct GHHooksHandler: LambdaHandler {
         try await verifyWebhookSignature(request: request)
         logger.debug("Verified signature")
 
-        guard let eventName = request.headers.first(name: "X-GitHub-Event") else {
-            throw Errors.headerNotFound(name: "X-GitHub-Event", headers: request.headers)
+        guard let eventName = request.headers.first(name: "x-gitHub-event") else {
+            throw Errors.headerNotFound(name: "x-gitHub-event", headers: request.headers)
         }
+
         logger.trace("Event name is '\(eventName)'")
+
+        if eventName == "ping" {
+            return APIGatewayV2Response(statusCode: .ok)
+        }
 
         var event = try request.decode(as: GithubEvent.self)
         event.name = eventName
@@ -68,8 +73,8 @@ struct GHHooksHandler: LambdaHandler {
     }
 
     func verifyWebhookSignature(request: APIGatewayV2Request) async throws {
-        guard let signature = request.headers.first(name: "X-Hub-Signature-256") else {
-            throw Errors.headerNotFound(name: "X-Hub-Signature-256", headers: request.headers)
+        guard let signature = request.headers.first(name: "x-hub-signature-256") else {
+            throw Errors.headerNotFound(name: "x-hub-signature-256", headers: request.headers)
         }
         let hmacMessageData = Data((request.body ?? "").utf8)
         let secret = try await getWebhookSecret()
