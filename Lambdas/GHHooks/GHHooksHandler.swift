@@ -46,23 +46,34 @@ struct GHHooksHandler: LambdaHandler {
             return APIGatewayV2Response(statusCode: .ok)
         }
 
-        var event = try request.decode(as: GHEvent.self)
-        event.name = eventName
+        let client = try await makeDiscordClient()
+
+        let event: GHEvent
+        do {
+            event = try request.decode(as: GHEvent.self)
+        } catch {
+            try await client.createMessage(
+                channelId: Constants.Channels.logs.id,
+                payload: .init(embeds: [.init(
+                    title: "Failed decoding for event \(eventName.rawValue)",
+                    color: .red
+                )])
+            ).guardSuccess()
+            throw error
+        }
 
         logger.debug("Decoded event", metadata: [
             "event": "\(event)"
         ])
 
-        let client = try await makeDiscordClient()
-
         /// This is for testing purposes for now:
 
-        switch event.name {
+        switch eventName {
         case .issues, .pull_request:
             try await client.createMessage(
                 channelId: Constants.Channels.logs.id,
                 payload: .init(embeds: [.init(
-                    title: "Received event \(event.name?.rawValue ?? "null")",
+                    title: "Received event \(eventName)",
                     description: """
                     Action: \(event.action ?? "null")
                     Repo: \(event.repository.name)
@@ -77,7 +88,7 @@ struct GHHooksHandler: LambdaHandler {
             try await client.createMessage(
                 channelId: Constants.Channels.logs.id,
                 payload: .init(embeds: [.init(
-                    title: "Received UNHANDLED event \(event.name?.rawValue ?? "null")",
+                    title: "Received UNHANDLED event \(eventName)",
                     description: """
                     Action: \(event.action ?? "null")
                     Repo: \(event.repository.name)

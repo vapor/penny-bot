@@ -1,8 +1,6 @@
 import Foundation
 
 struct GHEvent: Codable {
-    /// Name will be populated after decode
-    var name: Kind!
     let action: String?
     let sender: User
     let repository: Repository
