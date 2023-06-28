@@ -1,21 +1,17 @@
-name: Check cloudformation lint 
+name: Check CloudFormation lint 
 
 on:
-  push:
-    branches:
-      - main
+  push: { branches: [main] }
   pull_request:
-    branches:
-      - main
 
 jobs:
   lint:
-    name: Check cloudformation
+    name: Check cloudFormation
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v2
-    - name: Setup cloudformation lint
+      uses: actions/checkout@v3
+    - name: Setup CloudFormation lint
       uses: ScottBrenner/cfn-lint-action@v2
-    - name: Run cloudformation lint on bot deployment stack
+    - name: Run CloudFormation lint on bot deployment stack
       run: cfn-lint -t Stack.yml
