@@ -45,7 +45,7 @@ actor BotStateManager {
         cancelIfCachePopulationTakesTooLong()
     }
 
-    func cancelIfCachePopulationTakesTooLong() {
+    private func cancelIfCachePopulationTakesTooLong() {
         Task {
             try await Task.sleep(for: .seconds(2 * 60))
             if !canRespond {
@@ -82,14 +82,14 @@ actor BotStateManager {
     }
 
     private func shutdown() {
-        self.canRespond = false
         Task {
             await cachesService.gatherCachedInfoAndSaveToRepository()
             await send(.didShutdown)
+            self.canRespond = false
 
             try await Task.sleep(for: disableDuration)
             await startAllowingResponses()
-            logger.error("AWS has not yet shutdown this instance of Penny! Why?!")
+            logger.critical("AWS has not yet shutdown this instance of Penny! Why?!")
         }
     }
 
@@ -100,7 +100,6 @@ actor BotStateManager {
             } else {
                 await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
                 await startAllowingResponses()
-                logger.notice("Done loading old-instance's cached info")
             }
         }
     }
