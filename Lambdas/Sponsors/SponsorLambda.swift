@@ -42,7 +42,7 @@ struct ClientFailedShutdownError: Error {
 struct AddSponsorHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
-    
+
     let httpClient: HTTPClient
     let awsClient: AWSClient
     let secretsManager: SecretsManager
@@ -53,10 +53,8 @@ struct AddSponsorHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
-        let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
-        self.httpClient = httpClient
-        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
-        self.awsClient = awsClient
+        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+        self.awsClient = AWSClient(httpClientProvider: .shared(httpClient))
         self.secretsManager = SecretsManager(client: awsClient)
         self.logger = context.logger
     }
