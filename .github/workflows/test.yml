@@ -1,26 +1,11 @@
 name: test
-
-on: 
-  push:
-    branches: 
-      - "main"
-  pull_request:
-    branches: 
-      - "*"
+on:
+  pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
+  push: { branches: [ main ] }
 
 jobs:
-  linux-all:
-    strategy:
-      fail-fast: false
-      matrix:
-        container:
-          - swift:5.8-jammy
-          - swiftlang/swift:nightly-5.9-jammy
-          - swiftlang/swift:nightly-main-jammy
-    container: ${{ matrix.container }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out package
-        uses: actions/checkout@v3
-      - name: Run tests
-        run: swift test
+  unit-tests:
+    uses: vapor/ci/.github/workflows/run-unit-tests.yml@reusable-workflows
+    with:
+      with_coverage: false
+      with_tsan: false
