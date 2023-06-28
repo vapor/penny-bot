@@ -14,30 +14,9 @@ extension APIGatewayV2Request {
         let data = Data(body.utf8)
         return try jsonDecoder.decode(D.self, from: data)
     }
-    
-    /// Unused
-    public func verifyRequest() throws -> Bool {
-        guard let publicKey = ProcessInfo.processInfo.environment["PUBLIC_KEY"]?.hexDecodedData() else {
-            fatalError()
-        }
-        let key = try Curve25519.Signing.PublicKey(rawRepresentation: publicKey)
-        
-        guard let signature = self.headers["x-signature-ed25519"], let timestamp = self.headers["x-signature-timestamp"], let body = self.body else {
-            // Throw error to return a 401
-            fatalError()
-        }
-        
-        //possibly convert from hex
-        let signatureBytes: [UInt8] = .init(signature.hexDecodedData())
-
-        let bodyBytes: [UInt8] = .init("\(timestamp)\(body)".utf8)
-        
-        return key.isValidSignature(signatureBytes, for: bodyBytes)
-    }
 }
 
 extension APIGatewayV2Response {
-    
     public init(status: HTTPResponseStatus, content: some Encodable) {
         do {
             let data = try jsonEncoder.encode(content)
