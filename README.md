@@ -6,7 +6,7 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
     <a href="https://discord.gg/vapor">
         <img src="https://img.shields.io/discord/431917998102675485.svg" alt="Team Chat">
     </a>
-    <a href="https://github.com/vapor/vapor/actions">
+    <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml">
         <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deployment CI">
     </a>
     <a href="https://github.com/vapor/vapor/actions">
