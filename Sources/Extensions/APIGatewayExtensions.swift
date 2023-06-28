@@ -8,12 +8,11 @@ private let jsonEncoder = JSONEncoder()
 extension APIGatewayV2Request {
     
     public func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
-        guard let body = self.body,
-              let dataBody = body.data(using: .utf8)
-        else {
+        guard let body = self.body else {
             throw APIError.invalidRequest
         }
-        return try jsonDecoder.decode(D.self, from: dataBody)
+        let data = Data(body.utf8)
+        return try jsonDecoder.decode(D.self, from: data)
     }
     
     /// Unused
