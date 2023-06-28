@@ -21,36 +21,33 @@ struct EventHandler {
 
     func onPullRequest() async throws {
         let action = event.action.map({ PullRequest.Action(rawValue: $0) })
-        /// FIXME: testing
-//        guard action == .opened else { return }
+        guard action == .opened else { return }
+
+        let pr = try event.pullRequest.requireValue()
 
         let number = try event.number.requireValue()
-        let repoName = event.repository.name
-        let orgName = event.organization.login
-        let linkSuffix = "\(orgName)/\(repoName)/pull/\(number)"
 
-        let prLink = "https://github.com/\(linkSuffix)"
+        let creatorName = pr.user.login
+        let creatorLink = try pr.user.htmlURL.requireValue()
 
-        let senderName = event.sender.login
-        let senderLink = "https://github.com/\(senderName)"
-
-        let ogImage = "https://opengraph.githubassets.com/1/\(linkSuffix)"
+        let repositoryLink = try event.repository.htmlURL.requireValue()
+        let repositoryName = event.repository.fullName ?? event.repository.name
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(
                 embeds: [
                     .init(
-                        title: "New Pull Request",
+                        title: String("PR #\(number): \(pr.title)".prefix(256)),
                         description: """
-                        Created by **[\(senderName)](\(senderLink))**
+                        In [\(repositoryName)](\(repositoryLink))
+                        Opened by **[\(creatorName)](\(creatorLink))**
                         """,
-                        color: .green,
-                        image: .init(url: .exact(ogImage))
+                        color: .green
                     )
                 ],
                 components: [[
-                    .button(.init(label: "Open", url: prLink))
+                    .button(.init(label: "Open", url: pr.htmlURL))
                 ]]
             )
         ).guardSuccess()
@@ -58,32 +55,31 @@ struct EventHandler {
 
     func onIssue() async throws {
         let action = event.action.map({ Issue.Action(rawValue: $0) })
-        /// FIXME: testing
-//        guard action == .opened else { return }
+        guard action == .opened else { return }
+
+        let issue = try event.issue.requireValue()
 
         let number = try event.number.requireValue()
-        let repoName = event.repository.name
-        let orgName = event.organization.login
-        let linkSuffix = "\(orgName)/\(repoName)/issues/\(number)"
 
-        let issueLink = "https://github.com/\(linkSuffix)"
+        let creatorName = issue.user.login
+        let creatorLink = try issue.user.htmlURL.requireValue()
 
-        let senderName = event.sender.login
-        let senderLink = "https://github.com/\(senderName)"
+        let issueLink = try issue.htmlURL.requireValue()
 
-        let ogImage = "https://opengraph.githubassets.com/1/\(linkSuffix)"
+        let repositoryLink = try event.repository.htmlURL.requireValue()
+        let repositoryName = event.repository.fullName ?? event.repository.name
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(
                 embeds: [
                     .init(
-                        title: "New Issue",
+                        title: String("Issue #\(number): \(issue.title)".prefix(256)),
                         description: """
-                        Created by **[\(senderName)](\(senderLink))**
+                        In [\(repositoryName)](\(repositoryLink))
+                        Opened by **[\(creatorName)](\(creatorLink))**
                         """,
-                        color: .yellow,
-                        image: .init(url: .exact(ogImage))
+                        color: .yellow
                     )
                 ],
                 components: [[
