@@ -28,12 +28,24 @@ struct GHHooksHandler: LambdaHandler {
         _ request: APIGatewayV2Request,
         context: LambdaContext
     ) async throws -> APIGatewayV2Response {
+        logger.trace("Got request", metadata: [
+            "request": "\(request)"
+        ])
+
         try await verifyWebhookSignature(request: request)
+        logger.debug("Verified signature")
+
         guard let eventName = request.headers.first(where: { $0.key == "X-GitHub-Event" }) else {
             throw Errors.headerNotFound(name: "X-GitHub-Event", headers: request.headers)
         }
+        logger.trace("Event name is '\(eventName)'")
+
         var event = try request.decode(as: GithubEvent.self)
         event.name = eventName.value
+
+        logger.debug("Decoded event", metadata: [
+            "event": "\(event)"
+        ])
 
         let client = try await makeDiscordClient()
 
@@ -50,6 +62,8 @@ struct GHHooksHandler: LambdaHandler {
                 color: .yellow
             )])
         ).guardSuccess()
+
+        logger.trace("Event handled")
 
         return APIGatewayV2Response(statusCode: .ok)
     }

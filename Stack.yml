@@ -388,7 +388,7 @@ Resources:
       Environment:
         Variables:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          WH_SECRET_ARN: FIXME PLEASE . Add when we have one.
+          WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
       FunctionName: !Sub ${GHHooksFilename}-lambda
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
