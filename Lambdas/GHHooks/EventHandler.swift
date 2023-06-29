@@ -21,69 +21,66 @@ struct EventHandler {
 
     func onPullRequest() async throws {
         let action = event.action.map({ PullRequest.Action(rawValue: $0) })
-        /// FIXME: testing
-//        guard action == .opened else { return }
-//        let pr = try event.pullRequest.requireValue()
+        guard action == .opened else { return }
+
+        let pr = try event.pullRequest.requireValue()
 
         let number = try event.number.requireValue()
-        let repoName = event.repository.name
-        let orgName = event.organization.login
-        let prLink = "https://github.com/\(orgName)/\(repoName)/pull/\(number)"
 
-        let senderName = event.sender.login
-        let senderLink = "https://github.com/\(senderName)"
+        let creatorName = pr.user.login
+        let creatorLink = pr.user.htmlURL
+
+        let prLink = pr.htmlURL
+
+        let repo = event.repository
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
+
+        let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
+
+        let title = "\(repoName) #\(number): \(pr.title)"
+        let descriptionHeader = "### PR opened by **[\(creatorName)](\(creatorLink))**"
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(
-                embeds: [
-                    .init(
-                        title: "New PR",
-                        description: """
-                        Created by **[\(senderName)](\(senderLink))**
-                        """,
-                        color: .green
-                    ),
-                    .init(url: prLink)
-                ],
-                components: [[
-                    .button(.init(label: "Open PR", url: prLink))
-                ]]
-            )
+            payload: .init(embeds: [.init(
+                title: String(title.prefix(256)),
+                description: descriptionHeader + body,
+                url: prLink,
+                color: .green
+            )])
         ).guardSuccess()
     }
 
     func onIssue() async throws {
         let action = event.action.map({ Issue.Action(rawValue: $0) })
-        /// FIXME: testing
-//        guard action == .opened else { return }
-//        let issue = try event.issue.requireValue()
+        guard action == .opened else { return }
+
+        let issue = try event.issue.requireValue()
 
         let number = try event.number.requireValue()
-        let repoName = event.repository.name
-        let orgName = event.organization.login
-        let issueLink = "https://github.com/\(orgName)/\(repoName)/issues/\(number)"
 
-        let senderName = event.sender.login
-        let senderLink = "https://github.com/\(senderName)"
+        let user = try issue.user.requireValue()
+        let creatorName = user.login
+        let creatorLink = user.htmlURL
+
+        let issueLink = issue.htmlURL
+
+        let repo = event.repository
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
+
+        let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
+
+        let title = "\(repoName) #\(number): \(issue.title)"
+        let descriptionHeader = "### Issue opened by **[\(creatorName)](\(creatorLink))**"
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(
-                embeds: [
-                    .init(
-                        title: "New Issue",
-                        description: """
-                        Created by **[\(senderName)](\(senderLink))**
-                        """,
-                        color: .yellow
-                    ),
-                    .init(url: issueLink)
-                ],
-                components: [[
-                    .button(.init(label: "Open Issue", url: issueLink))
-                ]]
-            )
+            payload: .init(embeds: [.init(
+                title: String(title.prefix(256)),
+                description: descriptionHeader + body,
+                url: issueLink,
+                color: .yellow
+            )])
         ).guardSuccess()
     }
 
@@ -108,9 +105,9 @@ struct EventHandler {
             payload: .init(embeds: [.init(
                 title: "Received UNHANDLED event \(eventName)",
                 description: """
-                    Action: \(event.action ?? "null")
-                    Repo: \(event.repository.name)
-                    """,
+                Action: \(event.action ?? "null")
+                Repo: \(event.repository.name)
+                """,
                 color: .red
             )])
         ).guardSuccess()

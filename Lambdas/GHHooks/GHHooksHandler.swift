@@ -88,7 +88,7 @@ struct GHHooksHandler: LambdaHandler {
             return APIGatewayV2Response(statusCode: .ok)
         }
 
-        let event = try request.decode(as: GHEvent.self)
+        let event = try request.decodeWithISO8601(as: GHEvent.self)
 
         logger.debug("Decoded event", metadata: [
             "event": "\(event)"

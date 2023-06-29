@@ -1,26 +1,26 @@
 name: test
-
-on: 
-  push:
-    branches: 
-      - "main"
-  pull_request:
-    branches: 
-      - "*"
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
+  push: { branches: [ main ] }
 
 jobs:
-  linux-all:
-    strategy:
-      fail-fast: false
-      matrix:
-        container:
-          - swift:5.8-jammy
-          - swiftlang/swift:nightly-5.9-jammy
-          - swiftlang/swift:nightly-main-jammy
-    container: ${{ matrix.container }}
+  unit-tests:
+    uses: vapor/ci/.github/workflows/run-unit-tests.yml@reusable-workflows
+    with:
+      with_coverage: false
+      with_tsan: false
+      with_public_api_check: false
+
+  cloudformation-lint:
+    name: Check CloudFormation
     runs-on: ubuntu-latest
     steps:
-      - name: Check out package
-        uses: actions/checkout@v3
-      - name: Run tests
-        run: swift test
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup and run CloudFormation lint
+      uses: ScottBrenner/cfn-lint-action@v2
+      with:
+        command: cfn-lint -t ./deploy/penny-discord-bot-stack.yml
