@@ -3,6 +3,11 @@ import Crypto
 import Foundation
 
 private let jsonDecoder = JSONDecoder()
+private let iso8601jsonDecoder: JSONDecoder = {
+    var decoder = JSONDecoder()
+    decoder.dateDecodingStrategy = .iso8601
+    return decoder
+}()
 private let jsonEncoder = JSONEncoder()
 
 extension APIGatewayV2Request {
@@ -13,6 +18,14 @@ extension APIGatewayV2Request {
         }
         let data = Data(body.utf8)
         return try jsonDecoder.decode(D.self, from: data)
+    }
+
+    public func decodeWithISO8601<D: Decodable>(as type: D.Type = D.self) throws -> D {
+        guard let body = self.body else {
+            throw APIError.invalidRequest
+        }
+        let data = Data(body.utf8)
+        return try iso8601jsonDecoder.decode(D.self, from: data)
     }
 }
 
