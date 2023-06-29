@@ -32,28 +32,21 @@ struct EventHandler {
 
         let prLink = pr.htmlURL
 
-        let repositoryLink = event.repository.htmlURL
         let repositoryName = event.repository.fullName
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
+        let title = "\(repositoryName) #\(number): \(pr.title)"
+        let descriptionHeader = "### PR opened by **[\(creatorName)](\(creatorLink))**"
+
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(
-                embeds: [
-                    .init(
-                        title: String("PR #\(number): \(pr.title)".prefix(256)),
-                        description: """
-                        In [\(repositoryName)](\(repositoryLink))
-                        Opened by **[\(creatorName)](\(creatorLink))**
-                        """ + body,
-                        color: .green
-                    )
-                ],
-                components: [[
-                    .button(.init(label: "Open", url: prLink))
-                ]]
-            )
+            payload: .init(embeds: [.init(
+                title: String(title.prefix(256)),
+                description: descriptionHeader + body,
+                url: prLink,
+                color: .green
+            )])
         ).guardSuccess()
     }
 
@@ -71,28 +64,21 @@ struct EventHandler {
 
         let issueLink = issue.htmlURL
 
-        let repositoryLink = event.repository.htmlURL
         let repositoryName = event.repository.fullName
 
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
+        let title = "\(repositoryName) #\(number): \(issue.title)"
+        let descriptionHeader = "### Issue opened by **[\(creatorName)](\(creatorLink))**"
+
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(
-                embeds: [
-                    .init(
-                        title: String("Issue #\(number): \(issue.title)".prefix(256)),
-                        description: """
-                        In [\(repositoryName)](\(repositoryLink))
-                        Opened by **[\(creatorName)](\(creatorLink))**
-                        """ + body,
-                        color: .yellow
-                    )
-                ],
-                components: [[
-                    .button(.init(label: "Open", url: issueLink))
-                ]]
-            )
+            payload: .init(embeds: [.init(
+                title: String(title.prefix(256)),
+                description: descriptionHeader + body,
+                url: issueLink,
+                color: .yellow
+            )])
         ).guardSuccess()
     }
 
@@ -117,9 +103,9 @@ struct EventHandler {
             payload: .init(embeds: [.init(
                 title: "Received UNHANDLED event \(eventName)",
                 description: """
-                    Action: \(event.action ?? "null")
-                    Repo: \(event.repository.name)
-                    """,
+                Action: \(event.action ?? "null")
+                Repo: \(event.repository.name)
+                """,
                 color: .red
             )])
         ).guardSuccess()
