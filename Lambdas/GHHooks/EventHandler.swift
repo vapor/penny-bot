@@ -28,12 +28,12 @@ struct EventHandler {
         let number = try event.number.requireValue()
 
         let creatorName = pr.user.login
-        let creatorLink = try pr.user.htmlURL.requireValue()
+        let creatorLink = pr.user.htmlURL
 
-        let prLink = try pr.htmlURL.requireValue()
+        let prLink = pr.htmlURL
 
-        let repositoryLink = try event.repository.htmlURL.requireValue()
-        let repositoryName = event.repository.fullName ?? event.repository.name
+        let repositoryLink = event.repository.htmlURL
+        let repositoryName = event.repository.fullName
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
@@ -63,13 +63,14 @@ struct EventHandler {
 
         let number = try event.number.requireValue()
 
-        let creatorName = issue.user.login
-        let creatorLink = try issue.user.htmlURL.requireValue()
+        let user = try issue.user.requireValue()
+        let creatorName = user.login
+        let creatorLink = user.htmlURL
 
-        let issueLink = try issue.htmlURL.requireValue()
+        let issueLink = issue.htmlURL
 
-        let repositoryLink = try event.repository.htmlURL.requireValue()
-        let repositoryName = event.repository.fullName ?? event.repository.name
+        let repositoryLink = event.repository.htmlURL
+        let repositoryName = event.repository.fullName
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,

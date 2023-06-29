@@ -1,22 +1,16 @@
 
 // MARK: - Reactions
 struct Reactions: Codable {
+    let the1, reactionRollup1, confused, eyes: Int
+    let heart, hooray, laugh, rocket: Int
+    let totalCount: Int
     let url: String
-    let totalCount: Int?
-    let the1: Int?
-    let reactions1: Int?
-    let laugh: Int?
-    let hooray: Int?
-    let confused: Int?
-    let heart: Int?
-    let rocket: Int?
-    let eyes: Int?
 
     enum CodingKeys: String, CodingKey {
+        case the1 = "+1"
+        case reactionRollup1 = "-1"
+        case confused, eyes, heart, hooray, laugh, rocket
+        case totalCount = "total_count"
         case url
-        case totalCount
-        case the1
-        case reactions1
-        case laugh, hooray, confused, heart, rocket, eyes
     }
 }

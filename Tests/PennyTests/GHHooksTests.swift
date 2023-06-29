@@ -3,28 +3,32 @@ import XCTest
 
 class GHHooksTests: XCTestCase {
 
-    let decoder = JSONDecoder()
+    var decoder: JSONDecoder = {
+        var decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
     func testDecode() throws {
-        do {
-            let data = Data(issueEvent.utf8)
-            _ = try decoder.decode(GHEvent.self, from: data)
-        }
+        _ = try decoder.decode(
+            GHEvent.self,
+            from: Data(issueEvent.utf8)
+        )
 
-        do {
-            let data = Data(pullRequestEvent.utf8)
-            _ = try decoder.decode(GHEvent.self, from: data)
-        }
+        _ = try decoder.decode(
+            GHEvent.self,
+            from: Data(pullRequestEvent.utf8)
+        )
 
-        do {
-            let data = Data(pullRequest2Event.utf8)
-            _ = try decoder.decode(GHEvent.self, from: data)
-        }
+        _ = try decoder.decode(
+            GHEvent.self,
+            from: Data(pullRequest2Event.utf8)
+        )
 
-        do {
-            let data = Data(pullRequest3Event.utf8)
-            _ = try decoder.decode(GHEvent.self, from: data)
-        }
+        _ = try decoder.decode(
+            GHEvent.self,
+            from: Data(pullRequest3Event.utf8)
+        )
     }
 
 }
