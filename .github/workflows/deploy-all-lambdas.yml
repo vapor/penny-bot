@@ -1,0 +1,35 @@
+name: Deploy the various lambda functions
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+on:
+  push: { branches: [main] }
+
+jobs:
+  deploy-lambdas:
+    runs-on: ubuntu-latest
+    container: swift:5.8-amazonlinux2
+    env:
+      AWS_REGION: eu-west-1
+      AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+    steps:
+      - name: Install additional dependencies
+        run: |
+          echo "::add_mask::$AWS_ACCESS_KEY_ID"
+          echo "::add_mask::$AWS_SECRET_ACCESS_KEY"
+          yum -y install \
+            {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
+            libtool jq zip awscli
+      - name: Check out repository
+        uses: actions/checkout@v3
+      - name: Build, package, and deploy
+        run: |
+          for name in $(\ls ./Lambdas); do
+            swift package archive \
+              --output-path ./zips \
+              --product "${name}Lambda"
+            aws lambda update-function-code \
+              --function-name "${name}Lambda-lambda" \
+              --zip-file "fileb://./zips/${name}Lambda/${name}Lambda.zip"
+          done
