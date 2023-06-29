@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     container: swift:5.8-amazonlinux2
     env:
-      AWS_REGION: eu-west-1
+      AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
     steps:
@@ -29,7 +29,7 @@ jobs:
           for name in $(\ls ./Lambdas); do
             swift package archive \
               --output-path ./zips \
-              --product "${name}Lambda"
+              --products "${name}Lambda"
             aws lambda update-function-code \
               --function-name "${name}Lambda-lambda" \
               --zip-file "fileb://./zips/${name}Lambda/${name}Lambda.zip"
