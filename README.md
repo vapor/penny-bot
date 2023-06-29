@@ -6,11 +6,14 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
     <a href="https://discord.gg/vapor">
         <img src="https://img.shields.io/discord/431917998102675485.svg" alt="Team Chat">
     </a>
-    <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml">
-        <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deployment CI">
-    </a>
     <a href="https://github.com/vapor/vapor/actions/workflows/test.yml">
         <img src="https://github.com/vapor/penny-bot/actions/workflows/test.yml/badge.svg?branch=main" alt="Tests CI">
+    </a>
+    <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy-all-lambdas.yml">
+        <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy-all-lambdas.yml/badge.svg?branch=main" alt="Deploy Lambdas CI">
+    </a>
+    <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy-penny.yml">
+        <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy-penny.yml/badge.svg?branch=main" alt="Deploy Penny CI">
     </a>
     <a href="https://swift.org">
         <img src="https://img.shields.io/badge/swift-5.8-brightgreen.svg" alt="Swift 5.8">
@@ -23,6 +26,7 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
   * Implemented as `/auto-pings` slash command. 
 * [x] Respond to certain command-texts with predefined answers.
   * Implemented as `/faqs` slash command.
+* [x] Report Github PRs and Issues on Discord.
 * [ ] Automatically respond to commonly asked questions.
 * [ ] Manage sponsor/backer status of Github users.
 * [ ] Connect members' Discord & Github accounts for better integrations.

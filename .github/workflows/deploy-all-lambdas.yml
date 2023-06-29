@@ -1,4 +1,4 @@
-name: Deploy the various lambda functions
+name: Deploy lambda functions
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
