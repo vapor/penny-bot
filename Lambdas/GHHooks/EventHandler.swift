@@ -32,11 +32,12 @@ struct EventHandler {
 
         let prLink = pr.htmlURL
 
-        let repositoryName = event.repository.fullName
+        let repo = event.repository
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
-        let title = "\(repositoryName) #\(number): \(pr.title)"
+        let title = "\(repoName) #\(number): \(pr.title)"
         let descriptionHeader = "### PR opened by **[\(creatorName)](\(creatorLink))**"
 
         try await client.createMessage(
@@ -64,11 +65,12 @@ struct EventHandler {
 
         let issueLink = issue.htmlURL
 
-        let repositoryName = event.repository.fullName
+        let repo = event.repository
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
 
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
-        let title = "\(repositoryName) #\(number): \(issue.title)"
+        let title = "\(repoName) #\(number): \(issue.title)"
         let descriptionHeader = "### Issue opened by **[\(creatorName)](\(creatorLink))**"
 
         try await client.createMessage(
