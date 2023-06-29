@@ -37,15 +37,18 @@ struct EventHandler {
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
-        let title = "\(repoName) #\(number): \(pr.title)"
-        let descriptionHeader = "### PR opened by **[\(creatorName)](\(creatorLink))**"
+        let description = """
+        ## [\(repoName) #\(number): \(pr.title)](\(prLink))
+
+        ### PR opened by **[\(creatorName)](\(creatorLink))**
+
+        >>> \(body)
+        """
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: String(title.prefix(256)),
-                description: descriptionHeader + body,
-                url: prLink,
+                description: description,
                 color: .green
             )])
         ).guardSuccess()
@@ -70,15 +73,18 @@ struct EventHandler {
 
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
-        let title = "\(repoName) #\(number): \(issue.title)"
-        let descriptionHeader = "### Issue opened by **[\(creatorName)](\(creatorLink))**"
+        let description = """
+        ## [\(repoName) #\(number): \(issue.title)](\(issueLink))
+
+        ### PR opened by **[\(creatorName)](\(creatorLink))**
+
+        >>> \(body)
+        """
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: String(title.prefix(256)),
-                description: descriptionHeader + body,
-                url: issueLink,
+                description: description,
                 color: .yellow
             )])
         ).guardSuccess()
