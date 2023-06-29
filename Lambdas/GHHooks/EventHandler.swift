@@ -35,10 +35,7 @@ struct EventHandler {
         let repositoryLink = event.repository.htmlURL
         let repositoryName = event.repository.fullName
 
-        let body = pr.body == nil ? "" : """
-
-        >>> \(pr.body!)
-        """.prefix(512)
+        let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
@@ -77,10 +74,7 @@ struct EventHandler {
         let repositoryLink = event.repository.htmlURL
         let repositoryName = event.repository.fullName
 
-        let body = issue.body == nil ? "" : """
-
-        >>> \(issue.body!)
-        """.prefix(512)
+        let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
