@@ -55,10 +55,6 @@ let package = Package(
             exact: "1.0.0-alpha.1"
         ),
         .package(
-            url: "https://github.com/swift-server/swift-openapi-async-http-client",
-            .upToNextMinor(from: "0.1.0")
-        ),
-        .package(
             url: "https://github.com/apple/swift-openapi-generator",
             .upToNextMinor(from: "0.1.0")
         )
@@ -136,7 +132,6 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "OpenAPIAsyncHTTPClient", package: "swift-openapi-async-http-client"),
                 .product(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
