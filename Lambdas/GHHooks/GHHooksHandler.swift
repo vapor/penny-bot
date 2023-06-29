@@ -12,19 +12,48 @@ struct GHHooksHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
-    let httpClient: HTTPClient
-    let awsClient: AWSClient
-    let secretsManager: SecretsManager
+    let discordClient: any DiscordClient
+    let secretsRetriever: SecretsRetriever
     let logger: Logger
 
-    init(context: LambdaInitializationContext) async {
-        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
-        self.awsClient = AWSClient(httpClientProvider: .shared(httpClient))
-        self.secretsManager = SecretsManager(client: awsClient)
+    init(context: LambdaInitializationContext) async throws {
         self.logger = context.logger
+
+        let httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
+        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
+
+        let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+        self.discordClient = await DefaultDiscordClient(httpClient: httpClient, token: botToken)
     }
 
     func handle(
+        _ request: APIGatewayV2Request,
+        context: LambdaContext
+    ) async throws -> APIGatewayV2Response {
+        do {
+            return try await handleThrowing(request, context: context)
+        } catch {
+            do {
+                /// Report to Discord server for easier notification of maintainers
+                try await discordClient.createMessage(
+                    channelId: Constants.Channels.logs.id,
+                    payload: .init(embeds: [.init(
+                        title: "GHHooks lambda top-level error",
+                        description: String("\(error)".prefix(4_000)),
+                        color: .red
+                    )])
+                ).guardSuccess()
+            } catch {
+                logger.error("DiscordClient logging error", metadata: [
+                    "error": "\(error)"
+                ])
+            }
+            throw error
+        }
+    }
+
+    func handleThrowing(
         _ request: APIGatewayV2Request,
         context: LambdaContext
     ) async throws -> APIGatewayV2Response {
@@ -46,57 +75,17 @@ struct GHHooksHandler: LambdaHandler {
             return APIGatewayV2Response(statusCode: .ok)
         }
 
-        let client = try await makeDiscordClient()
-
-        let event: GHEvent
-        do {
-            event = try request.decode(as: GHEvent.self)
-        } catch {
-            try await client.createMessage(
-                channelId: Constants.Channels.logs.id,
-                payload: .init(embeds: [.init(
-                    title: "Failed decoding for event \(eventName.rawValue)",
-                    color: .red
-                )])
-            ).guardSuccess()
-            throw error
-        }
+        let event = try request.decodeWithISO8601(as: GHEvent.self)
 
         logger.debug("Decoded event", metadata: [
             "event": "\(event)"
         ])
 
-        /// This is for testing purposes for now:
-
-        switch eventName {
-        case .issues, .pull_request:
-            try await client.createMessage(
-                channelId: Constants.Channels.logs.id,
-                payload: .init(embeds: [.init(
-                    title: "Received event \(eventName)",
-                    description: """
-                    Action: \(event.action ?? "null")
-                    Repo: \(event.repository.name)
-                    """,
-                    color: .yellow
-                )])
-            ).guardSuccess()
-        case .ping:
-            /// Already handled
-            break
-        default:
-            try await client.createMessage(
-                channelId: Constants.Channels.logs.id,
-                payload: .init(embeds: [.init(
-                    title: "Received UNHANDLED event \(eventName)",
-                    description: """
-                    Action: \(event.action ?? "null")
-                    Repo: \(event.repository.name)
-                    """,
-                    color: .red
-                )])
-            ).guardSuccess()
-        }
+        try await EventHandler(
+            client: discordClient,
+            eventName: eventName,
+            event: event
+        ).handle()
 
         logger.trace("Event handled")
 
@@ -119,27 +108,8 @@ struct GHHooksHandler: LambdaHandler {
     }
 
     func getWebhookSecret() async throws -> SymmetricKey {
-        let secret = try await getSecret(arnEnvVarKey: "WH_SECRET_ARN")
+        let secret = try await secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
         let data = Data(secret.utf8)
         return SymmetricKey(data: data)
-    }
-
-    func makeDiscordClient() async throws -> any DiscordClient {
-        let botToken = try await getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-        return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
-    }
-
-    func getSecret(arnEnvVarKey: String) async throws -> String {
-        guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
-            throw Errors.envVarNotFound(name: arnEnvVarKey)
-        }
-        let secret = try await secretsManager.getSecretValue(
-            .init(secretId: arn),
-            logger: logger
-        )
-        guard let secret = secret.secretString else {
-            throw Errors.secretNotFound(arn: arn)
-        }
-        return secret
     }
 }
