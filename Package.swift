@@ -61,10 +61,6 @@ let package = Package(
         .package(
             url: "https://github.com/apple/swift-openapi-generator",
             .upToNextMinor(from: "0.1.0")
-        ),
-        .package(
-            url: "https://github.com/apple/swift-openapi-runtime",
-            .upToNextMinor(from: "0.1.0")
         )
     ],
     targets: [

@@ -28,12 +28,12 @@ struct EventHandler {
         let number = try event.number.requireValue()
 
         let creatorName = pr.user.login
-        let creatorLink = pr.user.htmlURL
+        let creatorLink = pr.user.html_url
 
-        let prLink = pr.htmlURL
+        let prLink = pr.html_url
 
         let repo = event.repository
-        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.full_name
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
@@ -59,14 +59,14 @@ struct EventHandler {
 
         let number = try event.number.requireValue()
 
-        let user = try issue.user.requireValue()
+        let user = issue.user
         let creatorName = user.login
-        let creatorLink = user.htmlURL
+        let creatorLink = user.html_url
 
-        let issueLink = issue.htmlURL
+        let issueLink = issue.html_url
 
         let repo = event.repository
-        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.full_name
 
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
