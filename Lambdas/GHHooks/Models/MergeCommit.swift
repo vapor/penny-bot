@@ -11,4 +11,5 @@ enum MergeCommitMessage: String, Codable {
 enum MergeCommitTitle: String, Codable {
     case mergeMessage = "MERGE_MESSAGE"
     case prTitle = "PR_TITLE"
+    case commitOrPRTitle = "COMMIT_OR_PR_TITLE"
 }
