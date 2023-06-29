@@ -57,6 +57,10 @@ let package = Package(
         .package(
             url: "https://github.com/apple/swift-openapi-generator",
             .upToNextMinor(from: "0.1.0")
+        ),
+        .package(
+            url: "https://github.com/apple/swift-openapi-runtime",
+            .upToNextMinor(from: "0.1.0")
         )
     ],
     targets: [
@@ -133,6 +137,7 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),

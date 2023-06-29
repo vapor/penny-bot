@@ -7,8 +7,6 @@ import DiscordHTTP
 import Extensions
 import Foundation
 
-import OpenAPIAsyncHTTPClient
-
 @main
 struct GHHooksHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request

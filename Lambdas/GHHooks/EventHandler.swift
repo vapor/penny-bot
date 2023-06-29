@@ -23,7 +23,7 @@ struct EventHandler {
         let action = event.action.map({ PullRequest.Action(rawValue: $0) })
         guard action == .opened else { return }
 
-        let pr = try event.pullRequest.requireValue()
+        let pr = try event.pull_request.requireValue()
 
         let number = try event.number.requireValue()
 
