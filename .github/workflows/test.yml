@@ -1,4 +1,7 @@
 name: test
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 on:
   pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
   push: { branches: [ main ] }
@@ -10,3 +13,14 @@ jobs:
       with_coverage: false
       with_tsan: false
       with_public_api_check: false
+
+  cloudformation-lint:
+    name: Check CloudFormation
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup and run CloudFormation lint
+      uses: ScottBrenner/cfn-lint-action@v2
+      with:
+        command: cfn-lint -t ./deploy/penny-discord-bot-stack.yml

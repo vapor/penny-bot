@@ -9,7 +9,7 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
     <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml">
         <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy.yml/badge.svg?branch=main" alt="Deployment CI">
     </a>
-    <a href="https://github.com/vapor/vapor/actions">
+    <a href="https://github.com/vapor/vapor/actions/workflows/test.yml">
         <img src="https://github.com/vapor/penny-bot/actions/workflows/test.yml/badge.svg?branch=main" alt="Tests CI">
     </a>
     <a href="https://swift.org">
@@ -27,4 +27,3 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 * [ ] Manage sponsor/backer status of Github users.
 * [ ] Connect members' Discord & Github accounts for better integrations.
 * [ ] Thank members when they contribute to Vapor repositories.
-* [ ] Execute Swift code and show the result.
