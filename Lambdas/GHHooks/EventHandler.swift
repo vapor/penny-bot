@@ -35,6 +35,11 @@ struct EventHandler {
         let repositoryLink = event.repository.htmlURL
         let repositoryName = event.repository.fullName
 
+        let body = pr.body == nil ? "" : """
+
+        >>> \(pr.body!)
+        """.prefix(512)
+
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(
@@ -44,7 +49,7 @@ struct EventHandler {
                         description: """
                         In [\(repositoryName)](\(repositoryLink))
                         Opened by **[\(creatorName)](\(creatorLink))**
-                        """,
+                        """ + body,
                         color: .green
                     )
                 ],
@@ -72,6 +77,11 @@ struct EventHandler {
         let repositoryLink = event.repository.htmlURL
         let repositoryName = event.repository.fullName
 
+        let body = issue.body == nil ? "" : """
+
+        >>> \(issue.body!)
+        """.prefix(512)
+
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(
@@ -81,7 +91,7 @@ struct EventHandler {
                         description: """
                         In [\(repositoryName)](\(repositoryLink))
                         Opened by **[\(creatorName)](\(creatorLink))**
-                        """,
+                        """ + body,
                         color: .yellow
                     )
                 ],
