@@ -141,12 +141,13 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "OpenAPIAsyncHTTPClient", package: "swift-openapi-async-http-client"),
+                .product(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
             ],
-            path: "./Lambdas/GHHooks",
-            swiftSettings: swiftSettings
+            path: "./Lambdas/GHHooks"
+//            , swiftSettings: swiftSettings
         ),
         .target(
             name: "Extensions",

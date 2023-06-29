@@ -34,10 +34,7 @@ struct GHHooksHandler: LambdaHandler {
 
         let serverURL = try Servers.server1()
 
-        let client = Client(
-            serverURL: serverURL,
-            transport: transport
-        )
+        let client = Client(serverURL: serverURL, transport: transport)
     }
 
     func handle(
