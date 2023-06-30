@@ -22,7 +22,7 @@ struct CommandsManager {
 }
 
 enum SlashCommand: String, CaseIterable {
-    case link
+    case linkGithub
     case autoPings = "auto-pings"
     case faqs
     case howManyCoins = "how-many-coins"
@@ -30,7 +30,7 @@ enum SlashCommand: String, CaseIterable {
 
     var description: String? {
         switch self {
-        case .link:
+        case .linkGithub:
             return "Links your accounts in Penny"
         case .autoPings:
             return "Configure Penny to ping you when certain someone uses a word/text"
@@ -45,15 +45,13 @@ enum SlashCommand: String, CaseIterable {
 
     var options: [ApplicationCommand.Option]? {
         switch self {
-        case .link:
-            return LinkSubCommand.allCases.map { subCommand in
-                ApplicationCommand.Option(
-                    type: .subCommand,
-                    name: subCommand.rawValue,
-                    description: subCommand.description,
-                    options: subCommand.options
-                )
-            }
+        case .linkGithub: 
+            return [.init(
+                type: .string,
+                name: "username",
+                description: "Your GitHub username",
+                required: true
+            )]
         case .autoPings:
             return AutoPingsSubCommand.allCases.map { subCommand in
                 ApplicationCommand.Option(
@@ -91,46 +89,8 @@ enum SlashCommand: String, CaseIterable {
         switch self {
         case .howManyCoinsApp:
             return .user
-        case .link, .autoPings, .faqs, .howManyCoins:
+        case .linkGithub, .autoPings, .faqs, .howManyCoins:
             return nil
-        }
-    }
-}
-
-enum LinkSubCommand: String, CaseIterable {
-    case discord, github, slack
-
-    var description: String {
-        switch self {
-        case .discord:
-            return "Link your Discord account"
-        case .github:
-            return "Link your Github account"
-        case .slack:
-            return "Link your Slack account"
-        }
-    }
-
-    var options: [ApplicationCommand.Option] {
-        switch self {
-        case .discord: return [.init(
-            type: .string,
-            name: "id",
-            description: "Your Discord account ID",
-            required: true
-        )]
-        case .github: return [.init(
-            type: .string,
-            name: "id",
-            description: "Your Github account ID",
-            required: true
-        )]
-        case .slack: return [.init(
-            type: .string,
-            name: "id",
-            description: "Your Slack account ID",
-            required: true
-        )]
         }
     }
 }

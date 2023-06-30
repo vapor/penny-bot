@@ -469,7 +469,7 @@ private extension InteractionHandler {
         let options = data.options ?? []
         do {
             switch command {
-            case .link:
+            case .linkGithub:
                 return try handleLinkCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
@@ -487,17 +487,7 @@ private extension InteractionHandler {
     }
     
     func handleLinkCommand(options: [InteractionOption]) throws -> String {
-        let first = try options.first.requireValue()
-        let subCommand = try LinkSubCommand(rawValue: first.name).requireValue()
-        let id = try (first.options?.first).requireValue().requireString()
-        switch subCommand {
-        case .discord:
-            return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
-        case .github:
-            return "This command is still a WIP. Linking Discord with Github ID '\(id)'"
-        case .slack:
-            return "This command is still a WIP. Linking Discord with Slack ID '\(id)'"
-        }
+        return "This command is still a WIP."
     }
     
     func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
@@ -689,7 +679,7 @@ private extension InteractionHandler {
                 return try await handleAutoPingsAutocomplete(data: data)
             case .faqs:
                 return try await handleFaqsAutocomplete(data: data)
-            case .link, .howManyCoins, .howManyCoinsApp:
+            case .linkGithub, .howManyCoins, .howManyCoinsApp:
                 logger.error("Unrecognized command with autocomplete")
                 return Payloads.InteractionResponse.Autocomplete(
                     choices: [.init(name: "Failure", value: .string(self.oops))]
@@ -853,7 +843,7 @@ extension SlashCommand {
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
-        case .link, .autoPings, .howManyCoins, .howManyCoinsApp: return true
+        case .linkGithub, .autoPings, .howManyCoins, .howManyCoinsApp: return true
         case .faqs: return false
         }
     }
@@ -861,7 +851,7 @@ extension SlashCommand {
     var shouldSendAcknowledgment: Bool {
         switch self {
         case .autoPings, .faqs: return false
-        case .link, .howManyCoins, .howManyCoinsApp: return true
+        case .linkGithub, .howManyCoins, .howManyCoinsApp: return true
         }
     }
 }
