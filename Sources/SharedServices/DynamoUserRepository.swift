@@ -39,7 +39,7 @@ struct DynamoUserRepository {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
             indexName: discordIndex,
-            keyConditionExpression: "data1 = :v1",
+            keyConditionExpression: "discordID = :v1",
             limit: 1,
             tableName: self.tableName
         )
@@ -49,9 +49,9 @@ struct DynamoUserRepository {
     
     func getUser(github id: String) async throws -> DynamoUser? {
         let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s("GITHUB-\(id)")],
+            expressionAttributeValues: [":v1": .s(id)],
             indexName: githubIndex,
-            keyConditionExpression: "data2 = :v1",
+            keyConditionExpression: "githubID = :v1",
             limit: 1,
             tableName: self.tableName
         )
@@ -73,8 +73,8 @@ struct DynamoUserRepository {
         
         let localUser = DynamoUser(
             id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
-            discordID: user.data1?.deletePrefix("DISCORD-"),
-            githubID: user.data2?.deletePrefix("GITHUB-"),
+            discordID: user.discordID?.deletePrefix("DISCORD-"),
+            githubID: user.githubID,
             numberOfCoins: user.amountOfCoins ?? 0,
             coinEntries: user.coinEntries ?? [],
             createdAt: user.createdAt
@@ -84,39 +84,14 @@ struct DynamoUserRepository {
     }
     
     // MARK: - Link users
+
     func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
-        // TODO: Implement
-        // Check if the users github already exists
-        
-        // If it exists, merge the 2 accounts
-        
-        // If the the given discordId already has a github account linked, overwrite the githubId
-        
-        // Delete the account that's not up-to-date
-        abort()
-    }
-    
-    func linkDiscord(with githubId: String, _ discordId: String) async throws -> String {
-        // TODO: Implement
-        // Check if the users discord already exists
-        
-        // If it exists, merge the 2 accounts
-        
-        // If the the given discordId already has a github account linked, overwrite the githubId
-        
-        // Delete the account that's not up-to-date
-        abort()
-    }
-    
-    private func mergeAccounts() async throws -> Bool {
-        // TODO: Implement
-        // Return true if the merge was successful
-        abort()
-    }
-    
-    private func deleteAccount() async throws -> Bool {
-        // TODO: Implement
-        // Return true if the deletion was successful
+        // TODO: Wip
+        guard let discordUser = try await getUser(discord: discordId) else {
+            fatalError()
+        }
+
+
         abort()
     }
 }

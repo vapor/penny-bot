@@ -3,8 +3,8 @@ import Foundation
 public struct DynamoDBUser: Sendable, Codable {
     public let pk: String
     public let sk: String
-    public let data1: String?
-    public let data2: String?
+    public let discordID: String?
+    public let githubID: String?
     public let amountOfCoins: Int?
     public let coinEntries: [CoinEntry]?
     public let createdAt: Date
@@ -13,15 +13,11 @@ public struct DynamoDBUser: Sendable, Codable {
         self.pk = "USER-\(user.id.uuidString)"
         self.sk = "CREATEDAT-\(user.createdAt)"
         if let discordID = user.discordID {
-            self.data1 = "DISCORD-\(discordID)"
+            self.discordID = "DISCORD-\(discordID)"
         } else {
-            self.data1 = nil
+            self.discordID = nil
         }
-        if let githubID = user.githubID {
-            self.data2 = "GITHUB-\(githubID)"
-        } else {
-            self.data2 = nil
-        }
+        self.githubID = user.githubID
         self.amountOfCoins = user.numberOfCoins
         self.coinEntries = user.coinEntries
         self.createdAt = user.createdAt
