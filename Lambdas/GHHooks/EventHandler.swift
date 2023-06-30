@@ -37,7 +37,7 @@ struct EventHandler {
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
         let description = """
-        ## [\(repoName) #\(number): \(pr.title)](\(prLink))
+        ## [\(repoName) #\(number)](\(prLink)): \(pr.title)
 
         ### PR opened by **[\(creatorName)](\(creatorLink))**
         \(body)
@@ -72,7 +72,7 @@ struct EventHandler {
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
         let description = """
-        ## [\(repoName) #\(number): \(issue.title)](\(issueLink))
+        ## [\(repoName) #\(number)](\(issueLink)): \(issue.title)
 
         ### PR opened by **[\(creatorName)](\(creatorLink))**
         \(body)
