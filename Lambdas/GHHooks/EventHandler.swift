@@ -6,7 +6,6 @@ struct EventHandler {
     let event: GHEvent
 
     func handle() async throws {
-        /// This is for testing purposes for now:
         switch eventName {
         case .issues:
             try await onIssue()
