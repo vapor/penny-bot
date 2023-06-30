@@ -40,8 +40,7 @@ struct EventHandler {
         ## [\(repoName) #\(number): \(pr.title)](\(prLink))
 
         ### PR opened by **[\(creatorName)](\(creatorLink))**
-
-        >>> \(body)
+        \(body)
         """
 
         try await client.createMessage(
@@ -76,8 +75,7 @@ struct EventHandler {
         ## [\(repoName) #\(number): \(issue.title)](\(issueLink))
 
         ### PR opened by **[\(creatorName)](\(creatorLink))**
-
-        >>> \(body)
+        \(body)
         """
 
         try await client.createMessage(
