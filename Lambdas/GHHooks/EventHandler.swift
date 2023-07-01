@@ -37,17 +37,18 @@ struct EventHandler {
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
 
         let description = """
-        ## [\(repoName) #\(number): \(pr.title)](\(prLink))
+        ## \(pr.title)
 
-        ### PR opened by **[\(creatorName)](\(creatorLink))**
-
-        >>> \(body)
+        ### By **[\(creatorName)](\(creatorLink))**
+        \(body)
         """
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
+                title: String("\(repoName) PR #\(number)".prefix(250)),
                 description: description,
+                url: prLink,
                 color: .green
             )])
         ).guardSuccess()
@@ -73,17 +74,18 @@ struct EventHandler {
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
 
         let description = """
-        ## [\(repoName) #\(number): \(issue.title)](\(issueLink))
+        ## \(issue.title)
 
-        ### PR opened by **[\(creatorName)](\(creatorLink))**
-
-        >>> \(body)
+        ### By **[\(creatorName)](\(creatorLink))**
+        \(body)
         """
 
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
+                title: String("\(repoName) Issue #\(number)".prefix(250)),
                 description: description,
+                url: issueLink,
                 color: .yellow
             )])
         ).guardSuccess()
