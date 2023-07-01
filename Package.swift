@@ -54,9 +54,13 @@ let package = Package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
         ),
+//        .package(
+//            url: "https://github.com/apple/swift-openapi-generator",
+//            .upToNextMinor(from: "0.1.0")
+//        ),
         .package(
-            url: "https://github.com/apple/swift-openapi-generator",
-            .upToNextMinor(from: "0.1.0")
+            url: "https://github.com/mahdibm/swift-openapi-generator",
+            .branch("main")
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
