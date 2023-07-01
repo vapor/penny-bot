@@ -22,7 +22,7 @@ struct CommandsManager {
 }
 
 enum SlashCommand: String, CaseIterable {
-    case linkGithub
+    case github
     case autoPings = "auto-pings"
     case faqs
     case howManyCoins = "how-many-coins"
@@ -30,8 +30,8 @@ enum SlashCommand: String, CaseIterable {
 
     var description: String? {
         switch self {
-        case .linkGithub:
-            return "Links your accounts in Penny"
+        case .github:
+            return "Link your GitHub account to Penny"
         case .autoPings:
             return "Configure Penny to ping you when certain someone uses a word/text"
         case .faqs:
@@ -45,13 +45,15 @@ enum SlashCommand: String, CaseIterable {
 
     var options: [ApplicationCommand.Option]? {
         switch self {
-        case .linkGithub: 
-            return [.init(
-                type: .string,
-                name: "username",
-                description: "Your GitHub username",
-                required: true
-            )]
+        case .github: 
+            return GitHubSubCommand.allCases.map { subCommand in
+                ApplicationCommand.Option(
+                    type: .subCommand,
+                    name: subCommand.rawValue,
+                    description: subCommand.description,
+                    options: subCommand.options
+                )
+            }
         case .autoPings:
             return AutoPingsSubCommand.allCases.map { subCommand in
                 ApplicationCommand.Option(
@@ -89,8 +91,41 @@ enum SlashCommand: String, CaseIterable {
         switch self {
         case .howManyCoinsApp:
             return .user
-        case .linkGithub, .autoPings, .faqs, .howManyCoins:
+        case .github, .autoPings, .faqs, .howManyCoins:
             return nil
+        }
+    }
+}
+
+enum GitHubSubCommand: String, CaseIterable {
+    case help
+    case link
+    case unlink
+
+    var description: String {
+        switch self {
+        case .help:
+            return "Help about how GitHub linking works"
+        case .link:
+            return "Link your GitHub account to Penny"
+        case .unlink:
+            return "Unlink your GitHub account from Penny"
+        }
+    }
+
+    var options: [ApplicationCommand.Option] {
+        switch self {
+        case .help:
+            return []
+        case .link:
+            return [.init(
+                type: .string,
+                name: "username",
+                description: "Your GitHub username",
+                required: true
+            )]
+        case .unlink:
+            return []
         }
     }
 }

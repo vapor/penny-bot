@@ -469,8 +469,8 @@ private extension InteractionHandler {
         let options = data.options ?? []
         do {
             switch command {
-            case .linkGithub:
-                return try handleLinkCommand(options: options)
+            case .github:
+                return try handleGitHubCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
             case .faqs:
@@ -486,8 +486,24 @@ private extension InteractionHandler {
         }
     }
     
-    func handleLinkCommand(options: [InteractionOption]) throws -> String {
-        return "This command is still a WIP."
+    func handleGitHubCommand(options: [InteractionOption]) throws -> (any Response)? {
+        let discordId = try (event.member?.user).requireValue().id
+        let first = try options.first.requireValue()
+        let subcommand = try GitHubSubCommand(rawValue: first.name).requireValue()
+        let githubUsername = first.options?.first?.value
+
+        if subcommand == .link, githubUsername == nil {
+            return "You need to provide a GitHub username to link your account."
+        }
+
+        switch subcommand {
+        case GitHubSubCommand.link:
+            return "This command is still a WIP. Linking discordId: \(discordId) with GitHub account: \(String(describing: githubUsername))"
+        case GitHubSubCommand.unlink:
+            return "This command is still a WIP. Unlinking discordId: \(discordId) from GitHub account: \(String(describing: githubUsername))"
+        case GitHubSubCommand.help:
+            return "This command is still a WIP."
+        }
     }
     
     func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
@@ -679,7 +695,7 @@ private extension InteractionHandler {
                 return try await handleAutoPingsAutocomplete(data: data)
             case .faqs:
                 return try await handleFaqsAutocomplete(data: data)
-            case .linkGithub, .howManyCoins, .howManyCoinsApp:
+            case .github, .howManyCoins, .howManyCoinsApp:
                 logger.error("Unrecognized command with autocomplete")
                 return Payloads.InteractionResponse.Autocomplete(
                     choices: [.init(name: "Failure", value: .string(self.oops))]
@@ -843,7 +859,7 @@ extension SlashCommand {
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
-        case .linkGithub, .autoPings, .howManyCoins, .howManyCoinsApp: return true
+        case .github, .autoPings, .howManyCoins, .howManyCoinsApp: return true
         case .faqs: return false
         }
     }
@@ -851,7 +867,7 @@ extension SlashCommand {
     var shouldSendAcknowledgment: Bool {
         switch self {
         case .autoPings, .faqs: return false
-        case .linkGithub, .howManyCoins, .howManyCoinsApp: return true
+        case .github, .howManyCoins, .howManyCoinsApp: return true
         }
     }
 }
