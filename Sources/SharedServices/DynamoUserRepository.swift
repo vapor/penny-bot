@@ -39,7 +39,7 @@ struct DynamoUserRepository {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
             indexName: discordIndex,
-            keyConditionExpression: "discordID = :v1",
+            keyConditionExpression: "data1 = :v1",
             limit: 1,
             tableName: self.tableName
         )
@@ -51,7 +51,7 @@ struct DynamoUserRepository {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s(id)],
             indexName: githubIndex,
-            keyConditionExpression: "githubID = :v1",
+            keyConditionExpression: "data2 = :v1",
             limit: 1,
             tableName: self.tableName
         )
@@ -87,9 +87,14 @@ struct DynamoUserRepository {
 
     func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
         // TODO: Wip
-        guard let discordUser = try await getUser(discord: discordId) else {
-            fatalError()
-        }
+        let query = DynamoDB.QueryInput(
+            expressionAttributeValues: [":v1": .s("DISCORD-\(discordId)")],
+            indexName: discordIndex,
+            keyConditionExpression: "discordID = :v1",
+            limit: 1,
+            tableName: self.tableName
+        )
+        
 
 
         abort()

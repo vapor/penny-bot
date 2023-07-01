@@ -15,15 +15,42 @@ struct GHOAuthHandler: LambdaHandler {
     let client: HTTPClient
     let logger: Logger
     let secretsRetriever: SecretsRetriever
+    let discordClient: any DiscordClient
 
-    init(context: LambdaInitializationContext) {
+    init(context: LambdaInitializationContext) async throws {
         self.client = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
         self.logger = context.logger
+
         let awsClient = AWSClient(httpClientProvider: .shared(client))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
+
+        let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+        self.discordClient = await DefaultDiscordClient(httpClient: client, token: botToken)
     }
 
-    func handle(
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
+        do {
+            return try await handleThrowing(event, context: context)
+        } catch {
+            do {
+                try await discordClient.createMessage(
+                    channelId: OAuthLambdaConstants.Channels.logs.id,
+                    payload: .init(embeds: [.init(
+                        title: "GHOAuth lambda top-level error",
+                        description: String("\(error)".prefix(4_000)),
+                        color: .red
+                    )])
+                ).guardSuccess()
+            } catch {
+                logger.error("DiscordClient logging error", metadata: [
+                    "error": "\(error)"
+                ])
+            }
+            throw error
+        }
+    }
+
+    func handleThrowing(
         _ event: APIGatewayV2Request,
         context: LambdaContext
     ) async throws -> APIGatewayV2Response {
@@ -37,8 +64,10 @@ struct GHOAuthHandler: LambdaHandler {
         }
 
         logger.trace("Retrieving secrets")
-        let clientID = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-        let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
+        let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
+        guard let clientID = ProcessInfo.processInfo.environment["GH_CLIENT_ID"] else {
+            throw OAuthLambdaError.envVarNotFound(name: "GH_CLIENT_ID")
+        }
 
         // https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
 
@@ -60,10 +89,7 @@ struct GHOAuthHandler: LambdaHandler {
         logger.trace("Got response: \(response.status)")
 
         guard response.status == .ok else {
-            return .init(
-                statusCode: .internalServerError,
-                body: "Unexpected response from GitHub: \(response.status)"
-            )
+            throw OAuthLambdaError.unexpectedResponse(statusCode: Int(response.status.code))
         }
 
         let responseBody = try await response.body.collect(upTo: 1024 * 1024)
@@ -83,19 +109,16 @@ struct GHOAuthHandler: LambdaHandler {
         let userResponse = try await client.execute(request, timeout: .seconds(30))
 
         guard userResponse.status == .ok else {
-            return .init(
-                statusCode: .internalServerError,
-                body: "Unexpected response from GitHub: \(userResponse.status)"
-            )
+            throw OAuthLambdaError.unexpectedResponse(statusCode: Int(userResponse.status.code))
         }
 
         let userResponseBody = try await userResponse.body.collect(upTo: 1024 * 1024)
         let id = try JSONDecoder().decode(User.self, from: userResponseBody).id
         
-        logger.trace("Got user id: \(id)")
+        logger.info("Got user id: \(id)")
 
         // TODO: Link id to Discord user
 
-        return .init(statusCode: .ok)
+        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
     }
 }

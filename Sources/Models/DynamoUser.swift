@@ -2,23 +2,23 @@ import Foundation
 
 public struct DynamoUser: Codable {
     public let id: UUID
-    public let discordID: String?
-    public let githubID: String?
+    public let data1: String?
+    public let data2: String?
     public var numberOfCoins: Int
     public var coinEntries: [CoinEntry]
     public let createdAt: Date
     
     public init(
         id: UUID,
-        discordID: String?,
-        githubID: String?,
+        data1: String?,
+        data2: String?,
         numberOfCoins: Int,
         coinEntries: [CoinEntry],
         createdAt: Date
     ) {
         self.id = id
-        self.discordID = discordID
-        self.githubID = githubID
+        self.data1 = data1
+        self.data2 = data2
         self.numberOfCoins = numberOfCoins
         self.coinEntries = coinEntries
         self.createdAt = createdAt

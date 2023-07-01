@@ -14,14 +14,14 @@ struct SecretsRetriever {
 
     func getSecret(arnEnvVarKey: String) async throws -> String {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
-            throw Errors.envVarNotFound(name: arnEnvVarKey)
+            throw OAuthLambdaError.envVarNotFound(name: arnEnvVarKey)
         }
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
             logger: logger
         )
         guard let secret = secret.secretString else {
-            throw Errors.secretNotFound(arn: arn)
+            throw OAuthLambdaError.secretNotFound(arn: arn)
         }
         return secret
     }
