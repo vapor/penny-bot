@@ -24,6 +24,10 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed for gh-hooks
     Default: GHHooksLambda
+  GHOAuthFilename:
+    Type: String
+    Description: Filename containing the code to be executed for gh-oauth
+    Default: GHOAuthLambda
   VPC:
     Description: VPC for the app
     Type: AWS::EC2::VPC::Id
@@ -417,6 +421,58 @@ Resources:
       LogGroupName: /aws/lambda/GHHooksLambda-lambda
       RetentionInDays: 30
 
+  # GH-OAuth lambda config
+
+  ghOAuthIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda GHOAuth Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt ghOAuthFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  ghOAuthRoutePost:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /gh-oauth'
+      Target: !Sub "integrations/${ghOAuthIntegration}"
+
+  ghOAuthFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-discord-bot
+        S3Key: !Sub ${GHOAuthFilename}.zip
+      Environment:
+        Variables:
+          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+          LOG_LEVEL: trace
+      FunctionName: !Sub ${GHOAuthFilename}-lambda
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+      Timeout: 6
+
+  lambdaGHOAuthRoutePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub ${GHOAuthFilename}-lambda
+      Principal: apigateway.amazonaws.com
+    DependsOn:
+      - ghOAuthFunction
+
+  ghOAuthLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: /aws/lambda/GHOAuthLambda-lambda
+      RetentionInDays: 30
+
   # Caches S3 bucket
 
   cachesS3Bucket:
@@ -495,6 +551,9 @@ Outputs:
 
   addCoinLambdaArn:
     Value: !GetAtt addCoinFunction.Arn
+
+  ghOAuthLambdaArn:
+    Value: !GetAtt ghOAuthFunction.Arn
 
   dynamoDBArn:
     Value: !GetAtt dynamoUserTable.Arn

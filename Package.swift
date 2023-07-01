@@ -135,6 +135,19 @@ let package = Package(
             path: "./Lambdas/GHHooks",
             swiftSettings: swiftSettings
         ),
+        .executableTarget(
+            name: "GHOAuthLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .target(name: "Extensions"),
+            ],
+            path: "./Lambdas/GHOAuth",
+            swiftSettings: swiftSettings
+        ),
         .target(
             name: "Extensions",
             dependencies: [
