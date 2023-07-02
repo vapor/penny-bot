@@ -470,7 +470,7 @@ private extension InteractionHandler {
         do {
             switch command {
             case .github:
-                return try handleGitHubCommand(options: options)
+                return try await handleGitHubCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
             case .faqs:
@@ -498,7 +498,10 @@ private extension InteractionHandler {
 
         switch subcommand {
         case GitHubSubCommand.link:
-            return "This command is still a WIP. Linking discordId: \(discordId) with GitHub account: \(String(describing: githubUsername))"
+            let clientID = try Constants.ghOAuthClientId.requireValue()
+            let url = "https://github.com/login/oauth/authorize"
+            let githubLink = "\(url)?client_id=\(clientID)"
+            return "Use this to link your GitHub account to your Penny account: \(githubLink)"
         case GitHubSubCommand.unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordId) from GitHub account: \(String(describing: githubUsername))"
         case GitHubSubCommand.help:
