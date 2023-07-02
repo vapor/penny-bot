@@ -45,7 +45,8 @@ struct GHOAuthHandler: LambdaHandler {
         do {
             accessToken = try await getAccessToken(code: code)
         } catch {
-            return .init(statusCode: .badRequest, body: "Error getting access token: \(error)")
+            logger.error("Error getting access token: \(error)")
+            return .init(statusCode: .badRequest, body: "Error getting access token")
         }
 
         let userID: Int
@@ -53,7 +54,8 @@ struct GHOAuthHandler: LambdaHandler {
         do {
             userID = try await getUserID(accessToken: accessToken)
         } catch {
-            return .init(statusCode: .badRequest, body: "Error getting user: \(error)")
+            logger.error("Error getting user ID: \(error)")
+            return .init(statusCode: .badRequest, body: "Error getting user")
         }
 
         // TODO: Link id to Discord user
