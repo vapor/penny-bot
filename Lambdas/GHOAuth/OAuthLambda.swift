@@ -33,42 +33,39 @@ struct GHOAuthHandler: LambdaHandler {
         self.jsonEncoder = JSONEncoder()
     }
 
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
-        do {
-            return try await handleThrowing(event, context: context)
-        } catch {
-            do {
-                try await discordClient.createMessage(
-                    channelId: OAuthLambdaConstants.Channels.logs.id,
-                    payload: .init(embeds: [.init(
-                        title: "GHOAuth lambda top-level error",
-                        description: String("\(error)".prefix(4_000)),
-                        color: .red
-                    )])
-                ).guardSuccess()
-            } catch {
-                logger.error("DiscordClient logging error", metadata: [
-                    "error": "\(error)"
-                ])
-            }
-            throw error
-        }
-    }
-
-    func handleThrowing(
-        _ event: APIGatewayV2Request,
-        context: LambdaContext
-    ) async throws -> APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         logger.trace("Received event: \(event)")
 
         guard let code = event.queryStringParameters?["code"] else {
-            return .init(
-                statusCode: .badRequest,
-                body: "Missing code query parameter"
-            )
+            return .init(statusCode: .badRequest, body: "Missing code query parameter")
         }
 
+        let accessToken: String
+
+        do {
+            accessToken = try await getAccessToken(code: code)
+        } catch {
+            return .init(statusCode: .badRequest, body: "Error getting access token: \(error)")
+        }
+
+        let userID: Int
+
+        do {
+            userID = try await getUserID(accessToken: accessToken)
+        } catch {
+            return .init(statusCode: .badRequest, body: "Error getting user: \(error)")
+        }
+
+        // TODO: Link id to Discord user
+
+        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
+    }
+
+    // write two functions to abstract the two requests from the above method
+
+    func getAccessToken(code: String) async throws -> String {
         logger.trace("Retrieving secrets")
+
         let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
         guard let clientID = ProcessInfo.processInfo.environment["GH_CLIENT_ID"] else {
             throw OAuthLambdaError.envVarNotFound(name: "GH_CLIENT_ID")
@@ -94,20 +91,21 @@ struct GHOAuthHandler: LambdaHandler {
         logger.trace("Got response: \(response.status)")
 
         guard response.status == .ok else {
-            return .init(
-                statusCode: .badRequest,
-                body: "GitHub returned unexpected response: \(response.status)"
-            )
+            throw OAuthLambdaError.badResponse(status: Int(response.status.code))
         }
 
         let responseBody = try await response.body.collect(upTo: 1024 * 1024)
         let accessToken = try jsonDecoder.decode(AccessTokenResponse.self, from: responseBody).accessToken
 
-        // https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
+        return accessToken
+    }
 
+    func getUserID(accessToken: String) async throws -> Int {
         logger.trace("Requesting GitHub user info")
 
-        request = HTTPClientRequest(url: "https://api.github.com/user")
+        // https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
+
+        var request = HTTPClientRequest(url: "https://api.github.com/user")
         request.method = .GET
         request.headers = [
             "Accept": "application/vnd.github+json",
@@ -115,22 +113,17 @@ struct GHOAuthHandler: LambdaHandler {
             "X-GitHub-Api-Version": "2022-11-28"
         ]
 
-        let userResponse = try await client.execute(request, timeout: .seconds(30))
+        let response = try await client.execute(request, timeout: .seconds(30))
 
-        guard userResponse.status == .ok else {
-            return .init(
-                statusCode: .badRequest, 
-                body: "GitHub returned unexpected response: \(userResponse.status)"
-            )
+        guard response.status == .ok else {
+            throw OAuthLambdaError.badResponse(status: Int(response.status.code))
         }
 
-        let userResponseBody = try await userResponse.body.collect(upTo: 1024 * 1024)
+        let userResponseBody = try await response.body.collect(upTo: 1024 * 1024)
         let id = try jsonDecoder.decode(User.self, from: userResponseBody).id
         
         logger.info("Got user id: \(id)")
 
-        // TODO: Link id to Discord user
-
-        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
+        return id
     }
 }

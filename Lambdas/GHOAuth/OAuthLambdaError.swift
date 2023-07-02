@@ -3,6 +3,7 @@ import AWSLambdaEvents
 enum OAuthLambdaError: Error, CustomStringConvertible {
     case envVarNotFound(name: String)
     case secretNotFound(arn: String)
+    case badResponse(status: Int)
 
     var description: String {
         switch self {
@@ -10,6 +11,8 @@ enum OAuthLambdaError: Error, CustomStringConvertible {
             return "Environment variable not found: \(name)"
         case let .secretNotFound(arn):
             return "Could not find secret with ARN: \(arn)"
+        case let .badResponse(status):
+            return "Bad response from GitHub: \(status)"
         }
     }
 }
