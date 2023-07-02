@@ -16,6 +16,8 @@ struct GHOAuthHandler: LambdaHandler {
     let logger: Logger
     let secretsRetriever: SecretsRetriever
     let discordClient: any DiscordClient
+    let jsonDecoder: JSONDecoder
+    let jsonEncoder: JSONEncoder
 
     init(context: LambdaInitializationContext) async throws {
         self.client = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
@@ -26,6 +28,9 @@ struct GHOAuthHandler: LambdaHandler {
 
         let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
         self.discordClient = await DefaultDiscordClient(httpClient: client, token: botToken)
+
+        self.jsonDecoder = JSONDecoder()
+        self.jsonEncoder = JSONEncoder()
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async throws -> APIGatewayV2Response {
@@ -78,7 +83,7 @@ struct GHOAuthHandler: LambdaHandler {
             "Accept": "application/json",
             "Content-Type": "application/json"
         ]
-        let requestBody = try JSONEncoder().encode([
+        let requestBody = try jsonEncoder.encode([
             "client_id": clientID,
             "client_secret": clientSecret,
             "code": code
@@ -89,11 +94,14 @@ struct GHOAuthHandler: LambdaHandler {
         logger.trace("Got response: \(response.status)")
 
         guard response.status == .ok else {
-            throw OAuthLambdaError.unexpectedResponse(statusCode: Int(response.status.code))
+            return .init(
+                statusCode: .badRequest,
+                body: "GitHub returned unexpected response: \(response.status)"
+            )
         }
 
         let responseBody = try await response.body.collect(upTo: 1024 * 1024)
-        let accessToken = try JSONDecoder().decode(AccessTokenResponse.self, from: responseBody).accessToken
+        let accessToken = try jsonDecoder.decode(AccessTokenResponse.self, from: responseBody).accessToken
 
         // https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
 
@@ -103,17 +111,21 @@ struct GHOAuthHandler: LambdaHandler {
         request.method = .GET
         request.headers = [
             "Accept": "application/vnd.github+json",
-            "Authorization": "Bearer \(accessToken)"
+            "Authorization": "Bearer \(accessToken)",
+            "X-GitHub-Api-Version": "2022-11-28"
         ]
 
         let userResponse = try await client.execute(request, timeout: .seconds(30))
 
         guard userResponse.status == .ok else {
-            throw OAuthLambdaError.unexpectedResponse(statusCode: Int(userResponse.status.code))
+            return .init(
+                statusCode: .badRequest, 
+                body: "GitHub returned unexpected response: \(userResponse.status)"
+            )
         }
 
         let userResponseBody = try await userResponse.body.collect(upTo: 1024 * 1024)
-        let id = try JSONDecoder().decode(User.self, from: userResponseBody).id
+        let id = try jsonDecoder.decode(User.self, from: userResponseBody).id
         
         logger.info("Got user id: \(id)")
 

@@ -90,7 +90,7 @@ struct DynamoUserRepository {
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(discordId)")],
             indexName: discordIndex,
-            keyConditionExpression: "discordID = :v1",
+            keyConditionExpression: "data1 = :v1",
             limit: 1,
             tableName: self.tableName
         )
