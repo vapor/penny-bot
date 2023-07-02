@@ -470,7 +470,7 @@ private extension InteractionHandler {
         do {
             switch command {
             case .github:
-                return try await handleGitHubCommand(options: options)
+                return try handleGitHubCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
             case .faqs:
