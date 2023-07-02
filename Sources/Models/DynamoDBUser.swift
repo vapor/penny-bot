@@ -12,12 +12,12 @@ public struct DynamoDBUser: Sendable, Codable {
     public init(user: DynamoUser) {
         self.pk = "USER-\(user.id.uuidString)"
         self.sk = "CREATEDAT-\(user.createdAt)"
-        if let discordID = user.data1 {
+        if let discordID = user.discordID {
             self.data1 = "DISCORD-\(discordID)"
         } else {
             self.data1 = nil
         }
-        self.data2 = user.data2
+        self.data2 = user.githubID
         self.amountOfCoins = user.numberOfCoins
         self.coinEntries = user.coinEntries
         self.createdAt = user.createdAt

@@ -73,8 +73,8 @@ struct DynamoUserRepository {
         
         let localUser = DynamoUser(
             id: UUID(uuidString: user.pk.deletePrefix("USER-"))!,
-            discordID: user.discordID?.deletePrefix("DISCORD-"),
-            githubID: user.githubID,
+            discordID: user.data1?.deletePrefix("DISCORD-"),
+            githubID: user.data2,
             numberOfCoins: user.amountOfCoins ?? 0,
             coinEntries: user.coinEntries ?? [],
             createdAt: user.createdAt
