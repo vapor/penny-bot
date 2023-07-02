@@ -498,10 +498,17 @@ private extension InteractionHandler {
 
         switch subcommand {
         case GitHubSubCommand.link:
-            let clientID = try Constants.ghOAuthClientId.requireValue()
-            let url = "https://github.com/login/oauth/authorize"
-            let githubLink = "\(url)?client_id=\(clientID)"
-            return "Use this to link your GitHub account to your Penny account: \(githubLink)"
+            let clientID = Constants.ghOAuthClientId!
+            let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)"
+            return Payloads.EditWebhookMessage(
+                embeds: [.init(
+                    description: "Click the link below to authorize Vapor",
+                    color: .vaporPurple
+                )],
+                components: [[
+                    .button(.init(label: "Authorize", url: url))
+                ]]
+            )
         case GitHubSubCommand.unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordId) from GitHub account: \(String(describing: githubUsername))"
         case GitHubSubCommand.help:
@@ -1142,6 +1149,23 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
 
     /// Responses containing a modal can't be an edit to another message.
     var isEditable: Bool { false }
+}
+
+extension Payloads.EditWebhookMessage: Response {
+    func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
+        Logger(label: "Payloads.EditWebhookMessage.makeResponse").error(
+            "This method is unimplemented and must not be called"
+        )
+        return .channelMessageWithSource(
+            .init(content: "Oops, something went wrong")
+        )
+    }
+
+    func makeEditPayload() -> Payloads.EditWebhookMessage {
+        self
+    }
+
+    var isEditable: Bool { true }
 }
 
 // MARK: - Auto-pings help
