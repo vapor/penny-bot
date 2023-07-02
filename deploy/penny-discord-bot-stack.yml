@@ -452,7 +452,8 @@ Resources:
       Environment:
         Variables:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          # TODO: Add client id and secret
+          GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-oauth-client-secret-hQSGeh
+          GH_CLIENT_ID: 5c544fca6b43f1bf31a3
           LOG_LEVEL: trace # TODO: change to info
       FunctionName: !Sub ${GHOAuthFilename}-lambda
       Handler: handler
