@@ -1,4 +1,4 @@
 generate:
   - types
 #  - client
-disabledAsBuildToolPlugin: True
+pluginMode: Command

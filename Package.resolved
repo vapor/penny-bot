@@ -231,7 +231,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "7f7b33a7873581f20b2ba63fc996b88520d33d58"
+        "revision" : "7ada532ec90056d3d95ec0cfe83e576469536ae4"
       }
     },
     {
