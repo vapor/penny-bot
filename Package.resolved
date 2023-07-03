@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "381dd99c3e0027f4eff11c65ecbfc2b3337d2a4f"
+        "revision" : "97ba11ec15e470015cb6858151d1161a28894ac7"
       }
     },
     {
@@ -231,7 +231,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "7ada532ec90056d3d95ec0cfe83e576469536ae4"
+        "revision" : "3cb098d6e2b6472b5af4de9e96e00ed6947b6e0d"
       }
     },
     {
