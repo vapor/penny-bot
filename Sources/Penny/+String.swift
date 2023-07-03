@@ -1,6 +1,12 @@
 import Foundation
 import Models
 
+extension String {
+    func unicodesPrefix(_ maxLength: Int) -> String {
+        String(self.unicodeScalars.prefix(maxLength))
+    }
+}
+
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
     /// trims whitespaces and makes the string case, diacritic and punctuation insensitive.
