@@ -377,6 +377,7 @@ struct QueuedProposal: Codable {
     }
 }
 
+// MARK: - +Proposal
 private extension Proposal.Status.State {
     var color: DiscordColor {
         switch self {
@@ -387,6 +388,7 @@ private extension Proposal.Status.State {
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
+        case .unknown: return .init(value: 0)!
         }
     }
 
@@ -399,6 +401,7 @@ private extension Proposal.Status.State {
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
+        case let .unknown(unknown): return unknown.capitalized
         }
     }
 
@@ -408,4 +411,187 @@ private extension Proposal.Status.State {
         default: return self.UIDescription
         }
     }
+}
+
+// MARK: - Proposal
+struct Proposal: Sendable, Codable {
+
+    struct User: Sendable, Codable {
+        let link: String
+        let name: String
+    }
+
+    struct Status: Sendable, Codable {
+
+        enum State: RawRepresentable, Equatable, Sendable, Codable {
+            case accepted
+            case activeReview
+            case implemented
+            case previewing
+            case rejected
+            case returnedForRevision
+            case withdrawn
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .accepted: return ".accepted"
+                case .activeReview: return ".activeReview"
+                case .implemented: return ".implemented"
+                case .previewing: return ".previewing"
+                case .rejected: return ".rejected"
+                case .returnedForRevision: return ".returnedForRevision"
+                case .withdrawn: return ".withdrawn"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case ".accepted": self = .accepted
+                case ".activeReview": self = .activeReview
+                case ".implemented": self = .implemented
+                case ".previewing": self = .previewing
+                case ".rejected": self = .rejected
+                case ".returnedForRevision": self = .returnedForRevision
+                case ".withdrawn": self = .withdrawn
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        let state: State
+        let version: String?
+        let end: String?
+        let start: String?
+    }
+
+    struct TrackingBug: Sendable, Codable {
+        let assignee: String
+        let id: String
+        let link: String
+        let radar: String
+        let resolution: String
+        let status: String
+        let title: String
+        let updated: String
+    }
+
+    struct Warning: Sendable, Codable {
+        let kind: String
+        let message: String
+        let stage: String
+    }
+
+    struct Implementation: Sendable, Codable {
+
+        enum Account: RawRepresentable, Sendable, Codable {
+            case apple
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .apple: return "apple"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case "apple": self = .apple
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        enum Repository: RawRepresentable, Sendable, Codable {
+            case swift
+            case swiftSyntax
+            case swiftCorelibsFoundation
+            case swiftPackageManager
+            case swiftXcodePlaygroundSupport
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .swift: return "swift"
+                case .swiftSyntax: return "swift-syntax"
+                case .swiftCorelibsFoundation: return "swift-corelibs-foundation"
+                case .swiftPackageManager: return "swift-package-manager"
+                case .swiftXcodePlaygroundSupport: return "swift-xcode-playground-support"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case "swift": self = .swift
+                case "swift-syntax": self = .swiftSyntax
+                case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
+                case "swift-package-manager": self = .swiftPackageManager
+                case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        enum Kind: RawRepresentable, Sendable, Codable {
+            case commit
+            case pull
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .commit: return "commit"
+                case .pull: return "pull"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case "commit": self = .commit
+                case "pull": self = .pull
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        let account: Account
+        let id: String
+        let repository: Repository
+        let type: Kind
+    }
+
+    let authors: [User]
+    let id: String
+    let link: String
+    let reviewManager: User
+    let sha: String
+    let status: Status
+    let summary: String
+    let title: String
+    let trackingBugs: [TrackingBug]?
+    let warnings: [Warning]?
+    let implementation: [Implementation]?
 }
