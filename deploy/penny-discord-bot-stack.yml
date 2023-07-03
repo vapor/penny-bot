@@ -129,7 +129,7 @@ Resources:
       Runtime: provided.al2
       Timeout: 6
 
-  lambdaAddCoinPermission:
+  lambdaCoinsRoutePermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
@@ -137,6 +137,12 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn: 
       - addCoinFunction
+ 
+  coinsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${CoinsFilename}-lambda
+      RetentionInDays: 30
       
   # Sponsors lambda config
       
@@ -178,6 +184,14 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn:
       - sponsorsFunction
+    
+  sponsorsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${SponsorsFilename}-lambda
+      RetentionInDays: 30
+
+  # IAM roles
 
   lambdaIAMRole:
     Type: AWS::IAM::Role
@@ -308,7 +322,7 @@ Resources:
   autoPingsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/AutoPingsLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
       RetentionInDays: 30
 
   # Faqs lambda config
@@ -362,7 +376,7 @@ Resources:
   faqsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/FaqsLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${FaqsFilename}-lambda
       RetentionInDays: 30
 
   # GH-Hooks lambda config
@@ -414,7 +428,7 @@ Resources:
   ghHooksLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/GHHooksLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${GHHooksFilename}-lambda
       RetentionInDays: 30
 
   # Caches S3 bucket
