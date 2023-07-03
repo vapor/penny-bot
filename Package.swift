@@ -141,7 +141,6 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "OpenAPIGenerator", package: "swift-openapi-generator"),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
