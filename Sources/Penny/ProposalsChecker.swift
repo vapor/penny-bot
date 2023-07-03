@@ -32,12 +32,12 @@ actor ProposalsChecker {
 
     nonisolated func run() {
         Task {
-            try await Task.sleep(for: .seconds(60)) /// 1 min
             do {
                 try await self.check()
-                try await Task.sleep(for: .seconds(60 * 14)) /// 14 mins
+                try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
             } catch {
                 logger.report("Couldn't check proposals", error: error)
+                try await Task.sleep(for: .seconds(60 * 5))
             }
             self.run()
         }
