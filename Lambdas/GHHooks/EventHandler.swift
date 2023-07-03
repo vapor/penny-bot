@@ -60,7 +60,7 @@ struct EventHandler {
 
         let issue = try event.issue.requireValue()
 
-        let number = try event.number.requireValue()
+        let number = try event.issue.requireValue().number
 
         let user = try issue.user.requireValue()
         let creatorName = user.login
