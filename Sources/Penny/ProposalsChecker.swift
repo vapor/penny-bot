@@ -401,7 +401,7 @@ private extension Proposal.Status.State {
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
-        case let .unknown(unknown): return unknown.capitalized
+        case let .unknown(unknown): return String(unknown.dropFirst().capitalized)
         }
     }
 
