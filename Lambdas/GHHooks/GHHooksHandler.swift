@@ -40,7 +40,7 @@ struct GHHooksHandler: LambdaHandler {
                     channelId: Constants.Channels.logs.id,
                     payload: .init(embeds: [.init(
                         title: "GHHooks lambda top-level error",
-                        description: String("\(error)".prefix(4_000)),
+                        description: String("\(error)".unicodesPrefix(4_000)),
                         color: .red
                     )])
                 ).guardSuccess()

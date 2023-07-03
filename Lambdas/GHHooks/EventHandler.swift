@@ -34,7 +34,7 @@ struct EventHandler {
         let repo = event.repository
         let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
 
-        let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".prefix(264)
+        let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
         let description = """
         ## \(pr.title)
@@ -46,7 +46,7 @@ struct EventHandler {
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: String("\(repoName) PR #\(number)".prefix(250)),
+                title: String("\(repoName) PR #\(number)".unicodesPrefix(256)),
                 description: description,
                 url: prLink,
                 color: .green
@@ -71,7 +71,7 @@ struct EventHandler {
         let repo = event.repository
         let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
 
-        let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".prefix(264)
+        let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".unicodesPrefix(264)
 
         let description = """
         ## \(issue.title)
@@ -83,7 +83,7 @@ struct EventHandler {
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: String("\(repoName) Issue #\(number)".prefix(250)),
+                title: String("\(repoName) Issue #\(number)".unicodesPrefix(256)),
                 description: description,
                 url: issueLink,
                 color: .yellow
@@ -118,5 +118,11 @@ struct EventHandler {
                 color: .red
             )])
         ).guardSuccess()
+    }
+}
+
+extension String {
+    func unicodesPrefix(_ maxLength: Int) -> String {
+        String(self.unicodeScalars.prefix(maxLength))
     }
 }

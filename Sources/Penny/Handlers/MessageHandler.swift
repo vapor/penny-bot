@@ -207,7 +207,7 @@ struct MessageHandler {
                         Triggered by:
                         \(words.makeExpressionListForDiscord())
 
-                        >>> \(content.prefix(256))
+                        >>> \(content.unicodesPrefix(256))
                         """,
                         color: .vaporPurple
                     )],
