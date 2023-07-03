@@ -1,3 +1,4 @@
+import Logging
 
 public struct Proposal: Sendable, Codable {
 
@@ -47,11 +48,40 @@ public struct Proposal: Sendable, Codable {
             case apple = "apple"
         }
 
-        public enum Repository: String, Sendable, Codable {
-            case swift = "swift"
-            case swiftCorelibsFoundation = "swift-corelibs-foundation"
-            case swiftPackageManager = "swift-package-manager"
-            case swiftXcodePlaygroundSupport = "swift-xcode-playground-support"
+        public enum Repository: RawRepresentable, Sendable, Codable {
+            case swift
+            case swiftSyntax
+            case swiftCorelibsFoundation
+            case swiftPackageManager
+            case swiftXcodePlaygroundSupport
+            case unknown(String)
+
+            public var rawValue: String {
+                switch self {
+                case .swift: return "swift"
+                case .swiftSyntax: return "swift-syntax"
+                case .swiftCorelibsFoundation: return "swift-corelibs-foundation"
+                case .swiftPackageManager: return "swift-package-manager"
+                case .swiftXcodePlaygroundSupport: return "swift-xcode-playground-support"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            public init? (rawValue: String) {
+                switch rawValue {
+                case "swift": self = .swift
+                case "swift-syntax": self = .swiftSyntax
+                case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
+                case "swift-package-manager": self = .swiftPackageManager
+                case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
+                default:
+                    Logger(label: "Proposal.Implementation.Repository").warning(
+                        "New unknown 'Repository' case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
         }
 
         public enum Kind: String, Sendable, Codable {
