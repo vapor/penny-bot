@@ -61,7 +61,7 @@ let package = Package(
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
 //            .branch("main")
-            .branch("generator-command-plugin")
+            branch: "generator-command-plugin"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
