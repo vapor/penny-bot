@@ -45,7 +45,7 @@ struct EventHandler {
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: "[\(repo.name)] PR #\(number)".unicodesPrefix(256),
+                title: "[\(repo.full_name)] PR #\(number)".unicodesPrefix(256),
                 description: description,
                 url: prLink,
                 color: .green
@@ -81,7 +81,7 @@ struct EventHandler {
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: "[\(repo.name)] Issue #\(number)".unicodesPrefix(256),
+                title: "[\(repo.full_name)] Issue #\(number)".unicodesPrefix(256),
                 description: description,
                 url: issueLink,
                 color: .yellow

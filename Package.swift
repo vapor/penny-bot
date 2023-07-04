@@ -33,7 +33,7 @@ let swiftSettings: [SwiftSetting] = [
 ]
 
 let package = Package(
-    name: "Lambdas",
+    name: "Penny",
     platforms: [
         .macOS(.v13)
     ],
