@@ -49,11 +49,24 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
-        /// Pinning this to the latest release/commit since they're not released.
+        /// Not using 'from:' since they're not released:
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
         ),
+//        .package(
+//            url: "https://github.com/apple/swift-openapi-generator",
+//            .upToNextMinor(from: "0.1.0")
+//        ),
+        .package(
+            url: "https://github.com/mahdibm/swift-openapi-generator",
+//            .branch("main")
+            branch: "generator-command-plugin"
+        ),
+        .package(
+            url: "https://github.com/apple/swift-openapi-runtime",
+            .upToNextMinor(from: "0.1.0")
+        )
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -128,12 +141,13 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
             ],
-            path: "./Lambdas/GHHooks",
-            swiftSettings: swiftSettings
+            path: "./Lambdas/GHHooks"
+//            , swiftSettings: swiftSettings
         ),
         .target(
             name: "Extensions",

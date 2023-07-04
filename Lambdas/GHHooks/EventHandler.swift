@@ -22,17 +22,17 @@ struct EventHandler {
         let action = event.action.map({ PullRequest.Action(rawValue: $0) })
         guard action == .opened else { return }
 
-        let pr = try event.pullRequest.requireValue()
+        let pr = try event.pull_request.requireValue()
 
         let number = try event.number.requireValue()
 
         let creatorName = pr.user.login
-        let creatorLink = pr.user.htmlURL
+        let creatorLink = pr.user.html_url
 
-        let prLink = pr.htmlURL
+        let prLink = pr.html_url
 
         let repo = event.repository
-        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.full_name
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
@@ -62,14 +62,14 @@ struct EventHandler {
 
         let number = try event.issue.requireValue().number
 
-        let user = try issue.user.requireValue()
+        let user = issue.user
         let creatorName = user.login
-        let creatorLink = user.htmlURL
+        let creatorLink = user.html_url
 
-        let issueLink = issue.htmlURL
+        let issueLink = issue.html_url
 
         let repo = event.repository
-        let repoName = repo.owner.login == "vapor" ? repo.name : repo.fullName
+        let repoName = repo.owner.login == "vapor" ? repo.name : repo.full_name
 
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".unicodesPrefix(264)
 

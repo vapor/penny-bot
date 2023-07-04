@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "381dd99c3e0027f4eff11c65ecbfc2b3337d2a4f"
+        "revision" : "9d9d018f5c3c5fc17fb6172d9a86f9e7b0b4fe1f"
       }
     },
     {
@@ -46,6 +46,15 @@
       }
     },
     {
+      "identity" : "openapikit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mattpolzin/OpenAPIKit.git",
+      "state" : {
+        "revision" : "84f6702500fb00476d74420c1a0df64cddd3993e",
+        "version" : "3.0.0-alpha.7"
+      }
+    },
+    {
       "identity" : "soto",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
@@ -61,6 +70,24 @@
       "state" : {
         "revision" : "3462ca704a43ded3b5a2903f5df3280dd5fa6b1f",
         "version" : "6.5.0"
+      }
+    },
+    {
+      "identity" : "swift-algorithms",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-algorithms",
+      "state" : {
+        "revision" : "b14b7f4c528c942f121c8b860b9410b2bf57825e",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swift-argument-parser",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "state" : {
+        "revision" : "fee6933f37fde9a5e12a1e4aeaa93fe60116ff2a",
+        "version" : "1.2.2"
       }
     },
     {
@@ -115,6 +142,15 @@
       "state" : {
         "revision" : "33a20e650c33f6d72d822d558333f2085effa3dc",
         "version" : "2.5.0"
+      }
+    },
+    {
+      "identity" : "swift-format",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-format.git",
+      "state" : {
+        "revision" : "fbfe1869527923dd9f9b2edac148baccfce0dce7",
+        "version" : "508.0.1"
       }
     },
     {
@@ -178,6 +214,69 @@
       "state" : {
         "revision" : "41f4098903878418537020075a4d8a6e20a0b182",
         "version" : "1.17.0"
+      }
+    },
+    {
+      "identity" : "swift-numerics",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-numerics",
+      "state" : {
+        "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
+        "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "swift-openapi-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/mahdibm/swift-openapi-generator",
+      "state" : {
+        "branch" : "generator-command-plugin",
+        "revision" : "ceaeb2dae9c73cbaafdcd701e61cf9179015aa45"
+      }
+    },
+    {
+      "identity" : "swift-openapi-runtime",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-openapi-runtime",
+      "state" : {
+        "revision" : "e81f70f2a8b445224dc6b97d0c31ed0d190e04de",
+        "version" : "0.1.4"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax.git",
+      "state" : {
+        "revision" : "2c49d66d34dfd6f8130afdba889de77504b58ec0",
+        "version" : "508.0.1"
+      }
+    },
+    {
+      "identity" : "swift-system",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-system.git",
+      "state" : {
+        "revision" : "836bc4557b74fe6d2660218d56e3ce96aff76574",
+        "version" : "1.1.1"
+      }
+    },
+    {
+      "identity" : "swift-tools-support-core",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-tools-support-core.git",
+      "state" : {
+        "revision" : "93784c59434dbca8e8a9e4b700d0d6d94551da6a",
+        "version" : "0.5.2"
+      }
+    },
+    {
+      "identity" : "yams",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jpsim/Yams.git",
+      "state" : {
+        "revision" : "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
+        "version" : "4.0.6"
       }
     }
   ],

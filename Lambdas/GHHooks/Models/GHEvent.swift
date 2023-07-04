@@ -8,24 +8,10 @@ struct GHEvent: Codable {
 
     let issue: Issue?
     let label: Label?
-
     let number: Int?
-    let pullRequest: PullRequest?
+    let pull_request: PullRequest?
     let before: String?
     let after: String?
-
-    enum CodingKeys: String, CodingKey {
-        case action
-        case sender
-        case repository
-        case organization
-        case issue
-        case label
-        case number
-        case pullRequest = "pull_request"
-        case before
-        case after
-    }
 }
 
 extension GHEvent {
