@@ -50,7 +50,7 @@ struct Sender: Codable {
     let nodeID: String
     let avatarURL: String
     let gravatarID: String
-    let url, html_url, followersURL: String
+    let url, htmlURL, followersURL: String
     let followingURL, gistsURL, starredURL: String
     let subscriptionsURL, organizationsURL, reposURL: String
     let eventsURL: String
@@ -64,7 +64,7 @@ struct Sender: Codable {
         case avatarURL = "avatar_url"
         case gravatarID = "gravatar_id"
         case url
-        case html_url = "html_url"
+        case htmlURL = "html_url"
         case followersURL = "followers_url"
         case followingURL = "following_url"
         case gistsURL = "gists_url"
