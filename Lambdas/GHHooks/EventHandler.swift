@@ -32,7 +32,6 @@ struct EventHandler {
         let prLink = pr.html_url
 
         let repo = event.repository
-        let repoName = repo.owner.login == "vapor" ? repo.name : repo.full_name
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
@@ -46,7 +45,7 @@ struct EventHandler {
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: String("\(repoName) PR #\(number)".unicodesPrefix(256)),
+                title: String("\(repo.name) PR #\(number)".unicodesPrefix(256)),
                 description: description,
                 url: prLink,
                 color: .green
@@ -69,7 +68,6 @@ struct EventHandler {
         let issueLink = issue.html_url
 
         let repo = event.repository
-        let repoName = repo.owner.login == "vapor" ? repo.name : repo.full_name
 
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".unicodesPrefix(264)
 
@@ -83,7 +81,7 @@ struct EventHandler {
         try await client.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: String("\(repoName) Issue #\(number)".unicodesPrefix(256)),
+                title: String("\(repo.name) Issue #\(number)".unicodesPrefix(256)),
                 description: description,
                 url: issueLink,
                 color: .yellow
