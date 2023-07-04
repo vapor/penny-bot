@@ -1,4 +1,5 @@
 @testable import GHHooksLambda
+import DiscordModels
 import Fake
 import XCTest
 
@@ -14,21 +15,22 @@ class GHHooksTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
 
-    func testDecode() async throws {
-        try await handleEvent(eventName: .issues, issueEvent)
-        try await handleEvent(eventName: .issues, issue2Event)
+    func testEventHandler() async throws {
+        try await handleEvent(key: "issue1", eventName: .issues, expectNoResponse: true)
+        try await handleEvent(key: "issue2", eventName: .issues, expectNoResponse: false)
 
-        try await handleEvent(eventName: .pull_request, pullRequestEvent)
-        try await handleEvent(eventName: .pull_request, pullRequest2Event)
-        try await handleEvent(eventName: .pull_request, pullRequest3Event)
+        try await handleEvent(key: "pr1", eventName: .pull_request, expectNoResponse: true)
+        try await handleEvent(key: "pr2", eventName: .pull_request, expectNoResponse: true)
+        try await handleEvent(key: "pr3", eventName: .pull_request, expectNoResponse: true)
     }
 
     func handleEvent(
+        key: String,
         eventName: GHEvent.Kind,
-        _ eventString: String,
+        expectNoResponse: Bool,
         line: UInt = #line
     ) async throws {
-        let data = Data(eventString.utf8)
+        let data = TestData.for(ghEventKey: key)!
         do {
             let event = try decoder.decode(GHEvent.self, from: data)
             try await EventHandler(
@@ -36,12 +38,20 @@ class GHHooksTests: XCTestCase {
                 eventName: eventName,
                 event: event
             ).handle()
+            let response = await FakeResponseStorage.shared.awaitResponse(
+                at: .createMessage(channelId: Constants.Channels.issueAndPRs.id),
+                expectFailure: expectNoResponse,
+                line: line
+            ).value
+            if !expectNoResponse {
+                XCTAssertNotNil(response as? Payloads.CreateMessage, line: line)
+            }
         } catch {
             let prettyJSON = try? JSONSerialization.data(
                 withJSONObject: JSONSerialization.jsonObject(with: data),
                 options: .prettyPrinted
             )
-            let event = prettyJSON.map({ String(decoding: $0, as: UTF8.self) }) ?? eventString
+            let event = prettyJSON.map({ String(decoding: $0, as: UTF8.self) })!
             XCTFail("Failed handling event with error: \(error). EventName: \(eventName), event: \(event)", line: line)
         }
     }
