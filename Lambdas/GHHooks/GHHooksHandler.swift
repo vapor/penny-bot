@@ -25,11 +25,6 @@ struct GHHooksHandler: LambdaHandler {
 
         let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
         self.discordClient = await DefaultDiscordClient(httpClient: httpClient, token: botToken)
-
-        /// Unused for now
-//        let transport = AsyncHTTPClientTransport(configuration: .init(client: httpClient))
-//        let serverURL = try Servers.server1()
-//        let client = Client(serverURL: serverURL, transport: transport)
     }
 
     func handle(
