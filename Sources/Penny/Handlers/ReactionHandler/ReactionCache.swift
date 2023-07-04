@@ -4,9 +4,6 @@ import DiscordBM
 import Foundation
 
 /// Cache for reactions-related stuff.
-///
-/// Optimally we would use some service like Redis to handle time-to-live
-/// and disk-persistence for us, but this actor is more than enough at our scale.
 actor ReactionCache {
 
     struct ChannelLastThanksMessage: Sendable, Codable {
@@ -106,6 +103,7 @@ actor ReactionCache {
         guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
             return false
         }
+        if message.author?.bot ?? false { return false }
 
         let calendar = Calendar.utc
         let now = Date()
@@ -121,8 +119,7 @@ actor ReactionCache {
             toGranularity: .minute
         ) == .orderedDescending
 
-        let isBot = message.author?.bot ?? false
-        return inPastWeek && !isBot
+        return inPastWeek
     }
 
     func getMessage(

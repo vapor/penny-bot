@@ -41,7 +41,6 @@ let package = Package(
         .executable(name: "Penny", targets: ["Penny"])
     ],
     dependencies: [
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.1.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
@@ -49,15 +48,16 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
-        /// Not using 'from:' since they're not released:
+        /// Not-released area:
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
         ),
-//        .package(
-//            url: "https://github.com/apple/swift-openapi-generator",
-//            .upToNextMinor(from: "0.1.0")
-//        ),
+        .package(
+            url: "https://github.com/swift-server/swift-aws-lambda-events.git",
+            // Use 'from: "0.1.0"' when there is tag higher than "0.1.0"
+            revision: "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
+        ),
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
             branch: "generator-command-plugin"

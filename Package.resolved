@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "9d9d018f5c3c5fc17fb6172d9a86f9e7b0b4fe1f"
+        "revision" : "0f1d5955650f40375dec424e0c1bfc2b73aa59f3"
       }
     },
     {
@@ -104,8 +104,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-events.git",
       "state" : {
-        "revision" : "8e836e0893bc906fafd6b09e1c46a7efcc441fd5",
-        "version" : "0.1.0"
+        "revision" : "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
       }
     },
     {
