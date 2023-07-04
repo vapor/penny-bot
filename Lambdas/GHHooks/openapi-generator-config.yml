@@ -1,4 +1,3 @@
 generate:
   - types
 #  - client
-pluginMode: Command
