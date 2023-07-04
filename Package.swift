@@ -60,7 +60,6 @@ let package = Package(
 //        ),
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
-//            .branch("main")
             branch: "generator-command-plugin"
         ),
         .package(
@@ -146,8 +145,8 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
             ],
-            path: "./Lambdas/GHHooks"
-//            , swiftSettings: swiftSettings
+            path: "./Lambdas/GHHooks",
+            swiftSettings: swiftSettings
         ),
         .target(
             name: "Extensions",

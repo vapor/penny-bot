@@ -294,7 +294,7 @@ public enum Components {
                     case case3([Swift.String])
                     /// Parsed a case that was not defined in the OpenAPI document.
                     case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
-                    public init(from decoder: Decoder) throws {
+                    public init(from decoder: any Decoder) throws {
                         do {
                             self = .case1(try .init(from: decoder))
                             return
@@ -311,7 +311,7 @@ public enum Components {
                         let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                         self = .undocumented(value)
                     }
-                    public func encode(to encoder: Encoder) throws {
+                    public func encode(to encoder: any Encoder) throws {
                         switch self {
                         case let .case1(value): try value.encode(to: encoder)
                         case let .case2(value): try value.encode(to: encoder)
@@ -450,10 +450,10 @@ public enum Components {
                     public init(
                         additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
                     ) { self.additionalProperties = additionalProperties }
-                    public init(from decoder: Decoder) throws {
+                    public init(from decoder: any Decoder) throws {
                         additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
                     }
-                    public func encode(to encoder: Encoder) throws {
+                    public func encode(to encoder: any Encoder) throws {
                         try encoder.encodeAdditionalProperties(additionalProperties)
                     }
                 }
@@ -474,10 +474,10 @@ public enum Components {
                     public init(
                         additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
                     ) { self.additionalProperties = additionalProperties }
-                    public init(from decoder: Decoder) throws {
+                    public init(from decoder: any Decoder) throws {
                         additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
                     }
-                    public func encode(to encoder: Encoder) throws {
+                    public func encode(to encoder: any Encoder) throws {
                         try encoder.encodeAdditionalProperties(additionalProperties)
                     }
                 }
@@ -519,10 +519,10 @@ public enum Components {
                     public init(
                         additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
                     ) { self.additionalProperties = additionalProperties }
-                    public init(from decoder: Decoder) throws {
+                    public init(from decoder: any Decoder) throws {
                         additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
                     }
-                    public func encode(to encoder: Encoder) throws {
+                    public func encode(to encoder: any Encoder) throws {
                         try encoder.encodeAdditionalProperties(additionalProperties)
                     }
                 }
@@ -2607,7 +2607,7 @@ public enum Components {
                 case ecosystem
                 case name
             }
-            public init(from decoder: Decoder) throws {
+            public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 ecosystem = try container.decode(Swift.String.self, forKey: .ecosystem)
                 name = try container.decode(Swift.String.self, forKey: .name)
@@ -2678,7 +2678,7 @@ public enum Components {
                 ///   - identifier: The package version that patches this vulnerability.
                 public init(identifier: Swift.String) { self.identifier = identifier }
                 public enum CodingKeys: String, CodingKey { case identifier }
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     identifier = try container.decode(Swift.String.self, forKey: .identifier)
                     try decoder.ensureNoAdditionalProperties(knownKeys: ["identifier"])
@@ -2716,7 +2716,7 @@ public enum Components {
                 case vulnerable_version_range
                 case first_patched_version
             }
-            public init(from decoder: Decoder) throws {
+            public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 package = try container.decode(
                     Components.Schemas.dependabot_alert_package.self,
@@ -2827,7 +2827,7 @@ public enum Components {
                     case score
                     case vector_string
                 }
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     score = try container.decode(Swift.Double.self, forKey: .score)
                     vector_string = try container.decode(Swift.String.self, forKey: .vector_string)
@@ -2863,7 +2863,7 @@ public enum Components {
                     case cwe_id
                     case name
                 }
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     cwe_id = try container.decode(Swift.String.self, forKey: .cwe_id)
                     name = try container.decode(Swift.String.self, forKey: .name)
@@ -2937,7 +2937,7 @@ public enum Components {
                     case _type = "type"
                     case value
                 }
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     _type = try container.decode(
                         Components.Schemas.dependabot_alert_security_advisory
@@ -2972,7 +2972,7 @@ public enum Components {
                 ///   - url: The URL of the reference.
                 public init(url: Swift.String) { self.url = url }
                 public enum CodingKeys: String, CodingKey { case url }
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     url = try container.decode(Swift.String.self, forKey: .url)
                     try decoder.ensureNoAdditionalProperties(knownKeys: ["url"])
@@ -3061,7 +3061,7 @@ public enum Components {
                 case updated_at
                 case withdrawn_at
             }
-            public init(from decoder: Decoder) throws {
+            public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
                 ghsa_id = try container.decode(Swift.String.self, forKey: .ghsa_id)
                 cve_id = try container.decode(Swift.String.self, forKey: .cve_id)
@@ -3727,7 +3727,7 @@ public enum Components {
                     case contents
                     case deployments
                 }
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     issues = try container.decodeIfPresent(Swift.String.self, forKey: .issues)
                     checks = try container.decodeIfPresent(Swift.String.self, forKey: .checks)
@@ -3741,7 +3741,7 @@ public enum Components {
                         "issues", "checks", "metadata", "contents", "deployments",
                     ])
                 }
-                public func encode(to encoder: Encoder) throws {
+                public func encode(to encoder: any Encoder) throws {
                     var container = encoder.container(keyedBy: CodingKeys.self)
                     try container.encodeIfPresent(issues, forKey: .issues)
                     try container.encodeIfPresent(checks, forKey: .checks)
@@ -4094,7 +4094,7 @@ public enum Components {
                 case case2(Components.Schemas.issue.labelsPayloadPayload.Case2Payload)
                 /// Parsed a case that was not defined in the OpenAPI document.
                 case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
-                public init(from decoder: Decoder) throws {
+                public init(from decoder: any Decoder) throws {
                     do {
                         self = .case1(try .init(from: decoder))
                         return
@@ -4107,7 +4107,7 @@ public enum Components {
                     let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                     self = .undocumented(value)
                 }
-                public func encode(to encoder: Encoder) throws {
+                public func encode(to encoder: any Encoder) throws {
                     switch self {
                     case let .case1(value): try value.encode(to: encoder)
                     case let .case2(value): try value.encode(to: encoder)
@@ -9988,7 +9988,7 @@ public enum Components {
             case case2(Swift.String)
             /// Parsed a case that was not defined in the OpenAPI document.
             case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
-            public init(from decoder: Decoder) throws {
+            public init(from decoder: any Decoder) throws {
                 do {
                     self = .case1(try .init(from: decoder))
                     return
@@ -10001,7 +10001,7 @@ public enum Components {
                 let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                 self = .undocumented(value)
             }
-            public func encode(to encoder: Encoder) throws {
+            public func encode(to encoder: any Encoder) throws {
                 switch self {
                 case let .case1(value): try value.encode(to: encoder)
                 case let .case2(value): try value.encode(to: encoder)
