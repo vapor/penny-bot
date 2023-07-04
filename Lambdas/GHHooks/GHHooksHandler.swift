@@ -1,9 +1,11 @@
 import AWSLambdaRuntime
 import AWSLambdaEvents
 import AsyncHTTPClient
-import SotoSecretsManager
-import Crypto
+import OpenAPIAsyncHTTPClient
+import SotoCore
 import DiscordHTTP
+import Crypto
+import Logging
 import Extensions
 import Foundation
 
@@ -13,6 +15,7 @@ struct GHHooksHandler: LambdaHandler {
     typealias Output = APIGatewayV2Response
 
     let discordClient: any DiscordClient
+    let githubClient: Client
     let secretsRetriever: SecretsRetriever
     let logger: Logger
 
@@ -25,6 +28,12 @@ struct GHHooksHandler: LambdaHandler {
 
         let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
         self.discordClient = await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+
+        let transport = AsyncHTTPClientTransport(configuration: .init(
+            client: httpClient,
+            timeout: .seconds(3)
+        ))
+        self.githubClient = Client(serverURL: try Servers.server1(), transport: transport)
     }
 
     func handle(
@@ -40,7 +49,7 @@ struct GHHooksHandler: LambdaHandler {
                     channelId: Constants.Channels.logs.id,
                     payload: .init(embeds: [.init(
                         title: "GHHooks lambda top-level error",
-                        description: String("\(error)".unicodesPrefix(4_000)),
+                        description: "\(error)".unicodesPrefix(4_000),
                         color: .red
                     )])
                 ).guardSuccess()
@@ -68,10 +77,11 @@ struct GHHooksHandler: LambdaHandler {
             throw Errors.headerNotFound(name: "x-gitHub-event", headers: request.headers)
         }
 
-        logger.trace("Event name is '\(eventName)'")
+        logger.debug("Event name is '\(eventName)'")
 
         /// To make sure we don't miss pings because of a decoding error or something
         if eventName == .ping {
+            logger.trace("Will pong and return")
             return APIGatewayV2Response(statusCode: .ok)
         }
 

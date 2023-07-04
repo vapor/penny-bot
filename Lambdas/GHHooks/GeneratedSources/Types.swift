@@ -38,6 +38,21 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
     func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input) async throws
         -> Operations.issues_list_for_repo.Output
+    /// Create an issue comment
+    ///
+    ///
+    /// You can use the REST API to create comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications).
+    /// Creating content too quickly using this endpoint may result in secondary rate limiting.
+    /// See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)"
+    /// and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)"
+    /// for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
+    func issues_create_comment(_ input: Operations.issues_create_comment.Input) async throws
+        -> Operations.issues_create_comment.Output
     /// List pull requests
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -46,6 +61,26 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
     func pulls_list(_ input: Operations.pulls_list.Input) async throws
         -> Operations.pulls_list.Output
+    /// Create a release
+    ///
+    /// Users with push access to the repository can create a release.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/releases`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)`.
+    func repos_create_release(_ input: Operations.repos_create_release.Input) async throws
+        -> Operations.repos_create_release.Output
+    /// Get the latest release
+    ///
+    /// View the latest published full release for the repository.
+    ///
+    /// The latest release is the most recent non-prerelease, non-draft release, sorted by the `created_at` attribute. The `created_at` attribute is the date of the commit used for the release, and not the date when the release was drafted or published.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases/latest`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
+    func repos_get_latest_release(_ input: Operations.repos_get_latest_release.Input) async throws
+        -> Operations.repos_get_latest_release.Output
 }
 /// Server URLs defined in the OpenAPI document.
 public enum Servers {
@@ -4344,6 +4379,109 @@ public enum Components {
                 case repository
                 case performed_via_github_app
                 case author_association
+                case reactions
+            }
+        }
+        /// Comments provide a way for people to collaborate on an issue.
+        ///
+        /// - Remark: Generated from `#/components/schemas/issue-comment`.
+        public struct issue_comment: Codable, Equatable, Hashable, Sendable {
+            /// Unique identifier of the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/issue-comment/id`.
+            public var id: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/issue-comment/node_id`.
+            public var node_id: Swift.String
+            /// URL for the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/issue-comment/url`.
+            public var url: Swift.String
+            /// Contents of the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/issue-comment/body`.
+            public var body: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/body_text`.
+            public var body_text: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/body_html`.
+            public var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/issue-comment/user`.
+            public var user: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/issue-comment/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/issue-comment/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/issue-comment/issue_url`.
+            public var issue_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/issue-comment/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// - Remark: Generated from `#/components/schemas/issue-comment/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/reactions`.
+            public var reactions: Components.Schemas.reaction_rollup?
+            /// Creates a new `issue_comment`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the issue comment
+            ///   - node_id:
+            ///   - url: URL for the issue comment
+            ///   - body: Contents of the issue comment
+            ///   - body_text:
+            ///   - body_html:
+            ///   - html_url:
+            ///   - user:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - issue_url:
+            ///   - author_association:
+            ///   - performed_via_github_app:
+            ///   - reactions:
+            public init(
+                id: Swift.Int64,
+                node_id: Swift.String,
+                url: Swift.String,
+                body: Swift.String? = nil,
+                body_text: Swift.String? = nil,
+                body_html: Swift.String? = nil,
+                html_url: Swift.String,
+                user: Components.Schemas.nullable_simple_user,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                issue_url: Swift.String,
+                author_association: Components.Schemas.author_association,
+                performed_via_github_app: Components.Schemas.nullable_integration? = nil,
+                reactions: Components.Schemas.reaction_rollup? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.body = body
+                self.body_text = body_text
+                self.body_html = body_html
+                self.html_url = html_url
+                self.user = user
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.issue_url = issue_url
+                self.author_association = author_association
+                self.performed_via_github_app = performed_via_github_app
+                self.reactions = reactions
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case body
+                case body_text
+                case body_html
+                case html_url
+                case user
+                case created_at
+                case updated_at
+                case issue_url
+                case author_association
+                case performed_via_github_app
                 case reactions
             }
         }
@@ -9213,6 +9351,289 @@ public enum Components {
                 case _default = "default"
             }
         }
+        /// Data related to a release.
+        ///
+        /// - Remark: Generated from `#/components/schemas/release-asset`.
+        public struct release_asset: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/release-asset/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release-asset/browser_download_url`.
+            public var browser_download_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release-asset/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/release-asset/node_id`.
+            public var node_id: Swift.String
+            /// The file name of the asset.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release-asset/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release-asset/label`.
+            public var label: Swift.String
+            /// State of the release asset.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release-asset/state`.
+            @frozen
+            public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case uploaded
+                case open
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "uploaded": self = .uploaded
+                    case "open": self = .open
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .uploaded: return "uploaded"
+                    case .open: return "open"
+                    }
+                }
+                public static var allCases: [statePayload] { [.uploaded, .open] }
+            }
+            /// State of the release asset.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release-asset/state`.
+            public var state: Components.Schemas.release_asset.statePayload
+            /// - Remark: Generated from `#/components/schemas/release-asset/content_type`.
+            public var content_type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release-asset/size`.
+            public var size: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/release-asset/download_count`.
+            public var download_count: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/release-asset/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/release-asset/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/release-asset/uploader`.
+            public var uploader: Components.Schemas.nullable_simple_user
+            /// Creates a new `release_asset`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - browser_download_url:
+            ///   - id:
+            ///   - node_id:
+            ///   - name: The file name of the asset.
+            ///   - label:
+            ///   - state: State of the release asset.
+            ///   - content_type:
+            ///   - size:
+            ///   - download_count:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - uploader:
+            public init(
+                url: Swift.String,
+                browser_download_url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                name: Swift.String,
+                label: Swift.String,
+                state: Components.Schemas.release_asset.statePayload,
+                content_type: Swift.String,
+                size: Swift.Int,
+                download_count: Swift.Int,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                uploader: Components.Schemas.nullable_simple_user
+            ) {
+                self.url = url
+                self.browser_download_url = browser_download_url
+                self.id = id
+                self.node_id = node_id
+                self.name = name
+                self.label = label
+                self.state = state
+                self.content_type = content_type
+                self.size = size
+                self.download_count = download_count
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.uploader = uploader
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case browser_download_url
+                case id
+                case node_id
+                case name
+                case label
+                case state
+                case content_type
+                case size
+                case download_count
+                case created_at
+                case updated_at
+                case uploader
+            }
+        }
+        /// A release.
+        ///
+        /// - Remark: Generated from `#/components/schemas/release`.
+        public struct release: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/release/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/assets_url`.
+            public var assets_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/upload_url`.
+            public var upload_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/tarball_url`.
+            public var tarball_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/zipball_url`.
+            public var zipball_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/release/node_id`.
+            public var node_id: Swift.String
+            /// The name of the tag.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release/tag_name`.
+            public var tag_name: Swift.String
+            /// Specifies the commitish value that determines where the Git tag is created from.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release/target_commitish`.
+            public var target_commitish: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/release/body`.
+            public var body: Swift.String?
+            /// true to create a draft (unpublished) release, false to create a published one.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release/draft`.
+            public var draft: Swift.Bool
+            /// Whether to identify the release as a prerelease or a full release.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release/prerelease`.
+            public var prerelease: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/release/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/release/published_at`.
+            public var published_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/release/author`.
+            public var author: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/release/assets`.
+            public var assets: [Components.Schemas.release_asset]
+            /// - Remark: Generated from `#/components/schemas/release/body_html`.
+            public var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/release/body_text`.
+            public var body_text: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/release/mentions_count`.
+            public var mentions_count: Swift.Int?
+            /// The URL of the release discussion.
+            ///
+            /// - Remark: Generated from `#/components/schemas/release/discussion_url`.
+            public var discussion_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/release/reactions`.
+            public var reactions: Components.Schemas.reaction_rollup?
+            /// Creates a new `release`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - html_url:
+            ///   - assets_url:
+            ///   - upload_url:
+            ///   - tarball_url:
+            ///   - zipball_url:
+            ///   - id:
+            ///   - node_id:
+            ///   - tag_name: The name of the tag.
+            ///   - target_commitish: Specifies the commitish value that determines where the Git tag is created from.
+            ///   - name:
+            ///   - body:
+            ///   - draft: true to create a draft (unpublished) release, false to create a published one.
+            ///   - prerelease: Whether to identify the release as a prerelease or a full release.
+            ///   - created_at:
+            ///   - published_at:
+            ///   - author:
+            ///   - assets:
+            ///   - body_html:
+            ///   - body_text:
+            ///   - mentions_count:
+            ///   - discussion_url: The URL of the release discussion.
+            ///   - reactions:
+            public init(
+                url: Swift.String,
+                html_url: Swift.String,
+                assets_url: Swift.String,
+                upload_url: Swift.String,
+                tarball_url: Swift.String,
+                zipball_url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                tag_name: Swift.String,
+                target_commitish: Swift.String,
+                name: Swift.String,
+                body: Swift.String? = nil,
+                draft: Swift.Bool,
+                prerelease: Swift.Bool,
+                created_at: Foundation.Date,
+                published_at: Foundation.Date,
+                author: Components.Schemas.simple_user,
+                assets: [Components.Schemas.release_asset],
+                body_html: Swift.String? = nil,
+                body_text: Swift.String? = nil,
+                mentions_count: Swift.Int? = nil,
+                discussion_url: Swift.String? = nil,
+                reactions: Components.Schemas.reaction_rollup? = nil
+            ) {
+                self.url = url
+                self.html_url = html_url
+                self.assets_url = assets_url
+                self.upload_url = upload_url
+                self.tarball_url = tarball_url
+                self.zipball_url = zipball_url
+                self.id = id
+                self.node_id = node_id
+                self.tag_name = tag_name
+                self.target_commitish = target_commitish
+                self.name = name
+                self.body = body
+                self.draft = draft
+                self.prerelease = prerelease
+                self.created_at = created_at
+                self.published_at = published_at
+                self.author = author
+                self.assets = assets
+                self.body_html = body_html
+                self.body_text = body_text
+                self.mentions_count = mentions_count
+                self.discussion_url = discussion_url
+                self.reactions = reactions
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case html_url
+                case assets_url
+                case upload_url
+                case tarball_url
+                case zipball_url
+                case id
+                case node_id
+                case tag_name
+                case target_commitish
+                case name
+                case body
+                case draft
+                case prerelease
+                case created_at
+                case published_at
+                case author
+                case assets
+                case body_html
+                case body_text
+                case mentions_count
+                case discussion_url
+                case reactions
+            }
+        }
     }
     /// Types generated from the `#/components/parameters` section of the OpenAPI document.
     public enum Parameters {
@@ -11533,6 +11954,163 @@ public enum Operations {
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
     }
+    /// Create an issue comment
+    ///
+    ///
+    /// You can use the REST API to create comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications).
+    /// Creating content too quickly using this endpoint may result in secondary rate limiting.
+    /// See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)"
+    /// and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)"
+    /// for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
+    public enum issues_create_comment {
+        public static let id: String = "issues/create-comment"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var issue_number: Components.Parameters.issue_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - issue_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    issue_number: Components.Parameters.issue_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.issue_number = issue_number
+                }
+            }
+            public var path: Operations.issues_create_comment.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.issues_create_comment.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.issues_create_comment.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.issues_create_comment.Input.Cookies
+            public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The contents of the comment.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/json/body`.
+                    public var body: Swift.String
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - body: The contents of the comment.
+                    public init(body: Swift.String) { self.body = body }
+                    public enum CodingKeys: String, CodingKey { case body }
+                }
+                case json(Operations.issues_create_comment.Input.Body.jsonPayload)
+            }
+            public var body: Operations.issues_create_comment.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.issues_create_comment.Input.Path,
+                query: Operations.issues_create_comment.Input.Query = .init(),
+                headers: Operations.issues_create_comment.Input.Headers = .init(),
+                cookies: Operations.issues_create_comment.Input.Cookies = .init(),
+                body: Operations.issues_create_comment.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Location: Swift.String?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Location:
+                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.issues_create_comment.Output.Created.Headers
+                public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.issue_comment)
+                }
+                /// Received HTTP response body
+                public var body: Operations.issues_create_comment.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.issues_create_comment.Output.Created.Headers,
+                    body: Operations.issues_create_comment.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.issues_create_comment.Output.Created)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
     /// List pull requests
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -11761,6 +12339,370 @@ public enum Operations {
             ///
             /// HTTP response code: `422 unprocessableEntity`.
             case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Create a release
+    ///
+    /// Users with push access to the repository can create a release.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/releases`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)`.
+    public enum repos_create_release {
+        public static let id: String = "repos/create-release"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_create_release.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.repos_create_release.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_create_release.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_create_release.Input.Cookies
+            public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The name of the tag.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/tag_name`.
+                    public var tag_name: Swift.String
+                    /// Specifies the commitish value that determines where the Git tag is created from. Can be any branch or commit SHA. Unused if the Git tag already exists. Default: the repository's default branch.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/target_commitish`.
+                    public var target_commitish: Swift.String?
+                    /// The name of the release.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/name`.
+                    public var name: Swift.String?
+                    /// Text describing the contents of the tag.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/body`.
+                    public var body: Swift.String?
+                    /// `true` to create a draft (unpublished) release, `false` to create a published one.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/draft`.
+                    public var draft: Swift.Bool?
+                    /// `true` to identify the release as a prerelease. `false` to identify the release as a full release.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/prerelease`.
+                    public var prerelease: Swift.Bool?
+                    /// If specified, a discussion of the specified category is created and linked to the release. The value must be a category that already exists in the repository. For more information, see "[Managing categories for discussions in your repository](https://docs.github.com/discussions/managing-discussions-for-your-community/managing-categories-for-discussions-in-your-repository)."
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/discussion_category_name`.
+                    public var discussion_category_name: Swift.String?
+                    /// Whether to automatically generate the name and body for this release. If `name` is specified, the specified name will be used; otherwise, a name will be automatically generated. If `body` is specified, the body will be pre-pended to the automatically generated notes.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/generate_release_notes`.
+                    public var generate_release_notes: Swift.Bool?
+                    /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/make_latest`.
+                    @frozen
+                    public enum make_latestPayload: RawRepresentable, Codable, Equatable, Hashable,
+                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    {
+                        case _true
+                        case _false
+                        case legacy
+                        /// Parsed a raw value that was not defined in the OpenAPI document.
+                        case undocumented(String)
+                        public init?(rawValue: String) {
+                            switch rawValue {
+                            case "true": self = ._true
+                            case "false": self = ._false
+                            case "legacy": self = .legacy
+                            default: self = .undocumented(rawValue)
+                            }
+                        }
+                        public var rawValue: String {
+                            switch self {
+                            case let .undocumented(string): return string
+                            case ._true: return "true"
+                            case ._false: return "false"
+                            case .legacy: return "legacy"
+                            }
+                        }
+                        public static var allCases: [make_latestPayload] {
+                            [._true, ._false, .legacy]
+                        }
+                    }
+                    /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/make_latest`.
+                    public var make_latest:
+                        Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - tag_name: The name of the tag.
+                    ///   - target_commitish: Specifies the commitish value that determines where the Git tag is created from. Can be any branch or commit SHA. Unused if the Git tag already exists. Default: the repository's default branch.
+                    ///   - name: The name of the release.
+                    ///   - body: Text describing the contents of the tag.
+                    ///   - draft: `true` to create a draft (unpublished) release, `false` to create a published one.
+                    ///   - prerelease: `true` to identify the release as a prerelease. `false` to identify the release as a full release.
+                    ///   - discussion_category_name: If specified, a discussion of the specified category is created and linked to the release. The value must be a category that already exists in the repository. For more information, see "[Managing categories for discussions in your repository](https://docs.github.com/discussions/managing-discussions-for-your-community/managing-categories-for-discussions-in-your-repository)."
+                    ///   - generate_release_notes: Whether to automatically generate the name and body for this release. If `name` is specified, the specified name will be used; otherwise, a name will be automatically generated. If `body` is specified, the body will be pre-pended to the automatically generated notes.
+                    ///   - make_latest: Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
+                    public init(
+                        tag_name: Swift.String,
+                        target_commitish: Swift.String? = nil,
+                        name: Swift.String? = nil,
+                        body: Swift.String? = nil,
+                        draft: Swift.Bool? = nil,
+                        prerelease: Swift.Bool? = nil,
+                        discussion_category_name: Swift.String? = nil,
+                        generate_release_notes: Swift.Bool? = nil,
+                        make_latest: Operations.repos_create_release.Input.Body.jsonPayload
+                            .make_latestPayload? = nil
+                    ) {
+                        self.tag_name = tag_name
+                        self.target_commitish = target_commitish
+                        self.name = name
+                        self.body = body
+                        self.draft = draft
+                        self.prerelease = prerelease
+                        self.discussion_category_name = discussion_category_name
+                        self.generate_release_notes = generate_release_notes
+                        self.make_latest = make_latest
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case tag_name
+                        case target_commitish
+                        case name
+                        case body
+                        case draft
+                        case prerelease
+                        case discussion_category_name
+                        case generate_release_notes
+                        case make_latest
+                    }
+                }
+                case json(Operations.repos_create_release.Input.Body.jsonPayload)
+            }
+            public var body: Operations.repos_create_release.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_create_release.Input.Path,
+                query: Operations.repos_create_release.Input.Query = .init(),
+                headers: Operations.repos_create_release.Input.Headers = .init(),
+                cookies: Operations.repos_create_release.Input.Cookies = .init(),
+                body: Operations.repos_create_release.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Location: Swift.String?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Location:
+                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_create_release.Output.Created.Headers
+                public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.release)
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_create_release.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_create_release.Output.Created.Headers,
+                    body: Operations.repos_create_release.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.repos_create_release.Output.Created)
+            public struct NotFound: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_create_release.Output.NotFound.Headers
+                public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.basic_error)
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_create_release.Output.NotFound.Body
+                /// Creates a new `NotFound`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_create_release.Output.NotFound.Headers = .init(),
+                    body: Operations.repos_create_release.Output.NotFound.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Not Found if the discussion category name is invalid
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Operations.repos_create_release.Output.NotFound)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get the latest release
+    ///
+    /// View the latest published full release for the repository.
+    ///
+    /// The latest release is the most recent non-prerelease, non-draft release, sorted by the `created_at` attribute. The `created_at` attribute is the date of the commit used for the release, and not the date when the release was drafted or published.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases/latest`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
+    public enum repos_get_latest_release {
+        public static let id: String = "repos/get-latest-release"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_get_latest_release.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.repos_get_latest_release.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_get_latest_release.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_get_latest_release.Input.Cookies
+            public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_get_latest_release.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_get_latest_release.Input.Path,
+                query: Operations.repos_get_latest_release.Input.Query = .init(),
+                headers: Operations.repos_get_latest_release.Input.Headers = .init(),
+                cookies: Operations.repos_get_latest_release.Input.Cookies = .init(),
+                body: Operations.repos_get_latest_release.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_get_latest_release.Output.Ok.Headers
+                public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.release)
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_get_latest_release.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_get_latest_release.Output.Ok.Headers = .init(),
+                    body: Operations.repos_get_latest_release.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_get_latest_release.Output.Ok)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

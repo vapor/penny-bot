@@ -33,7 +33,7 @@ let swiftSettings: [SwiftSetting] = [
 ]
 
 let package = Package(
-    name: "Lambdas",
+    name: "Penny",
     platforms: [
         .macOS(.v13)
     ],
@@ -61,6 +61,10 @@ let package = Package(
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
             branch: "generator-command-plugin"
+        ),
+        .package(
+            url: "https://github.com/swift-server/swift-openapi-async-http-client",
+            .upToNextMinor(from: "0.1.0")
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
@@ -140,12 +144,20 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(
+                    name: "OpenAPIAsyncHTTPClient",
+                    package: "swift-openapi-async-http-client"
+                ),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
             ],
             path: "./Lambdas/GHHooks",
+            resources: [
+                .copy("openapi-generator-config.yml"),
+                .copy("openapi.yaml"),
+            ],
             swiftSettings: swiftSettings
         ),
         .target(

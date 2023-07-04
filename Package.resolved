@@ -225,6 +225,15 @@
       }
     },
     {
+      "identity" : "swift-openapi-async-http-client",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
+      "state" : {
+        "revision" : "32f3ae2f51e4989d540ce7f46d770f224fe51a28",
+        "version" : "0.1.1"
+      }
+    },
+    {
       "identity" : "swift-openapi-generator",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
