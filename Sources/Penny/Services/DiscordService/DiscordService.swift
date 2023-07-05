@@ -150,22 +150,29 @@ actor DiscordService {
         userToExplicitlyMention: UserSnowflake?,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
-        let hasPermissionToSend: Bool
-        do {
-            hasPermissionToSend = try await vaporGuild.userHasPermissions(
-                userId: Snowflake(Constants.botId),
-                channelId: channelId,
-                permissions: [.sendMessages]
-            )
-        } catch {
-            logger.report("Can't resolve user permissions", error: error)
-            return nil
+        var canSendToChannel = true
+
+        canSendToChannel = !Constants.Channels.thanksResponseDenyList.contains(channelId)
+
+        if canSendToChannel {
+            do {
+                canSendToChannel = try await vaporGuild.userHasPermissions(
+                    userId: Snowflake(Constants.botId),
+                    channelId: channelId,
+                    permissions: [.sendMessages]
+                )
+            } catch {
+                logger.report("Can't resolve user permissions", error: error)
+                return nil
+            }
         }
+
         var allowedMentions: Payloads.AllowedMentions?
         if let userToExplicitlyMention {
             allowedMentions = .init(users: [userToExplicitlyMention])
         }
-        if hasPermissionToSend {
+
+        if canSendToChannel {
             return await self.sendMessage(
                 channelId: channelId,
                 payload: .init(
