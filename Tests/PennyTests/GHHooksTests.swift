@@ -1,5 +1,6 @@
 @testable import GHHooksLambda
 import DiscordModels
+import OpenAPIRuntime
 import Fake
 import XCTest
 
@@ -34,9 +35,15 @@ class GHHooksTests: XCTestCase {
         do {
             let event = try decoder.decode(GHEvent.self, from: data)
             try await EventHandler(
-                client: FakeDiscordClient(),
-                eventName: eventName,
-                event: event
+                context: .init(
+                    eventName: eventName,
+                    event: event,
+                    discordClient: FakeDiscordClient(),
+                    githubClient: Client(
+                        serverURL: try Servers.server1(),
+                        transport: FakeClientTransport()
+                    )
+                )
             ).handle()
             let response = await FakeResponseStorage.shared.awaitResponse(
                 at: .createMessage(channelId: Constants.Channels.issueAndPRs.id),

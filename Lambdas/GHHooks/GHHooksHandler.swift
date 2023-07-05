@@ -92,9 +92,12 @@ struct GHHooksHandler: LambdaHandler {
         ])
 
         try await EventHandler(
-            client: discordClient,
-            eventName: eventName,
-            event: event
+            context: .init(
+                eventName: eventName,
+                event: event,
+                discordClient: discordClient,
+                githubClient: githubClient
+            )
         ).handle()
 
         logger.trace("Event handled")
