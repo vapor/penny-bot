@@ -71,12 +71,19 @@ class GHHooksTests: XCTestCase {
     func testEventHandler() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expectResponse: false)
         try await handleEvent(key: "issue2", eventName: .issues, expectResponse: true)
+        try await handleEvent(key: "issue3", eventName: .issues, expectResponse: false)
 
         try await handleEvent(key: "pr1", eventName: .pull_request, expectResponse: false)
         try await handleEvent(key: "pr2", eventName: .pull_request, expectResponse: false)
         try await handleEvent(key: "pr3", eventName: .pull_request, expectResponse: false)
         try await handleEvent(
             key: "pr4",
+            eventName: .pull_request,
+            expectResponse: true,
+            responseChannelId: Constants.Channels.logs.id
+        )
+        try await handleEvent(
+            key: "pr5",
             eventName: .pull_request,
             expectResponse: true,
             responseChannelId: Constants.Channels.logs.id
