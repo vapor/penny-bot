@@ -1,10 +1,12 @@
 import DiscordBM
+import SwiftSemver
 
 struct PRHandler {
 
     enum Errors: Error, CustomStringConvertible {
         case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
         case tagDoesNotFollowSemVer(release: Components.Schemas.release, tag: String)
+        case cantBumpSemVer(version: SemanticVersion, bump: SemVerBump)
 
         var description: String {
             switch self {
@@ -12,6 +14,8 @@ struct PRHandler {
                 return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
             case let .tagDoesNotFollowSemVer(release, tag):
                 return "tagDoesNotFollowSemVer(release: \(release), tag: \(tag))"
+            case let .cantBumpSemVer(version, bump):
+                return "cantBumpSemVer(version: \(version), bump: \(bump))"
             }
         }
     }
@@ -81,11 +85,13 @@ struct PRHandler {
         let previousRelease = try await getLatestRelease()
 
         let tag = previousRelease.tag_name
-        guard let previousVersion = SemVer(string: tag) else {
+        guard let previousVersion = SemanticVersion(string: tag) else {
             throw Errors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
         }
 
-        let version = previousVersion.next(bump)
+        guard let version = previousVersion.next(bump) else {
+            throw Errors.cantBumpSemVer(version: previousVersion, bump: bump)
+        }
 
         let acknowledgment: String
         if pr.user.login == mergedBy.login {
@@ -135,7 +141,7 @@ struct PRHandler {
     }
 
     func makeNewRelease(
-        version: SemVer,
+        version: SemanticVersion,
         acknowledgment: String
     ) async throws -> Components.Schemas.release {
         let response = try await context.githubClient.repos_create_release(.init(
@@ -153,7 +159,7 @@ struct PRHandler {
                 \(pr.body ?? "")
                 """,
                 draft: false,
-                prerelease: version.prerelease != nil,
+                prerelease: !version.prereleaseIdentifiers.isEmpty,
                 make_latest: ._true
             ))
         ))

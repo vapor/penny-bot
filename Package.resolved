@@ -252,6 +252,15 @@
       }
     },
     {
+      "identity" : "swift-semver",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gwynne/swift-semver",
+      "state" : {
+        "revision" : "cfed59ed4485a68d87700c2a40297f7786f7ae9e",
+        "version" : "0.1.0-alpha.3"
+      }
+    },
+    {
       "identity" : "swift-syntax",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",

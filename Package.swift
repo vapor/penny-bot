@@ -50,6 +50,10 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
         .package(
+            url: "https://github.com/gwynne/swift-semver",
+            from: "0.1.0-alpha.3"
+        ),
+        .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
         ),
@@ -151,6 +155,7 @@ let package = Package(
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "SwiftSemver", package: "swift-semver"),
                 .target(name: "Extensions"),
             ],
             path: "./Lambdas/GHHooks",

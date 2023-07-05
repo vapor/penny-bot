@@ -2,6 +2,7 @@
 import DiscordModels
 import OpenAPIRuntime
 import Logging
+import SwiftSemver
 import Fake
 import XCTest
 
@@ -15,6 +16,56 @@ class GHHooksTests: XCTestCase {
 
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
+    }
+
+    func testSemVerBump() throws {
+        do {
+            let version = SemanticVersion(string: "11.0.0")!
+            let next = try XCTUnwrap(version.next(.major))
+            XCTAssertEqual(next.description, "12.0.0")
+        }
+
+        do {
+            let version = SemanticVersion(string: "2.12.0")!
+            let next = try XCTUnwrap(version.next(.minor))
+            XCTAssertEqual(next.description, "2.13.0")
+        }
+
+        do {
+            let version = SemanticVersion(string: "0.0.299")!
+            let next = try XCTUnwrap(version.next(.patch))
+            XCTAssertEqual(next.description, "0.0.300")
+        }
+
+        do {
+            let version = SemanticVersion(string: "122.9.67-alpha.1")!
+            let next = try XCTUnwrap(version.next(.major))
+            XCTAssertEqual(next.description, "122.9.67-alpha.2")
+        }
+
+        do {
+            let version = SemanticVersion(string: "122.9.67-alpha")!
+            let next = try XCTUnwrap(version.next(.major))
+            XCTAssertEqual(next.description, "122.9.67-alpha.1")
+        }
+
+        do {
+            let version = SemanticVersion(string: "122.9.67-alpha.44.55")!
+            let next = try XCTUnwrap(version.next(.minor))
+            XCTAssertEqual(next.description, "122.9.67-alpha.44.56")
+        }
+
+        do {
+            let version = SemanticVersion(string: "122.9.67-alpha")!
+            let next = try XCTUnwrap(version.next(.minor))
+            XCTAssertEqual(next.description, "122.9.67-alpha.0.1")
+        }
+
+        do {
+            let version = SemanticVersion(string: "122.9.67-alpha.1")!
+            let next = try XCTUnwrap(version.next(.minor))
+            XCTAssertEqual(next.description, "122.9.67-alpha.1.1")
+        }
     }
 
     func testEventHandler() async throws {
