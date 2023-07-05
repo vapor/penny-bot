@@ -7,6 +7,10 @@ struct PRHandler {
         case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
         case tagDoesNotFollowSemVer(release: Components.Schemas.release, tag: String)
         case cantBumpSemVer(version: SemanticVersion, bump: SemVerBump)
+        case cantFindAnyRelease(
+            latest: Components.Schemas.release?,
+            releases: [Components.Schemas.release]
+        )
 
         var description: String {
             switch self {
@@ -16,6 +20,8 @@ struct PRHandler {
                 return "tagDoesNotFollowSemVer(release: \(release), tag: \(tag))"
             case let .cantBumpSemVer(version, bump):
                 return "cantBumpSemVer(version: \(version), bump: \(bump))"
+            case let .cantFindAnyRelease(latest, releases):
+                return "cantFindAnyRelease(latest: \(String(describing: latest)), releases: \(releases))"
             }
         }
     }
@@ -82,15 +88,10 @@ struct PRHandler {
               let bump = pr.knownLabels.first?.toBump()
         else { return }
 
-        let previousRelease = try await getLatestRelease()
+        let previousRelease = try await getLastRelease()
 
-        var tag = previousRelease.tag_name
-        var tagPrefix = ""
-        /// For tags like "v1.0.0" which start with a alphabetical character.
-        if tag.first?.isNumber == false {
-            tagPrefix = String(tag.removeFirst())
-        }
-        guard let previousVersion = SemanticVersion(string: tag) else {
+        let tag = previousRelease.tag_name
+        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGithubTag(tag) else {
             throw Errors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
         }
 
@@ -130,8 +131,55 @@ struct PRHandler {
             )])
         ).guardSuccess()
     }
+}
 
-    func getLatestRelease() async throws -> Components.Schemas.release {
+private extension PRHandler {
+    func getLastRelease() async throws -> Components.Schemas.release {
+        let latest = try await self.getLatestRelease()
+
+        let response = try await context.githubClient.repos_list_releases(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            )
+        ))
+
+        guard case let .ok(ok) = response,
+              case let .json(releases) = ok.body
+        else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+
+        let filteredReleases: [Components.Schemas.release] = releases.compactMap {
+            release -> (Components.Schemas.release, SemanticVersion)? in
+            if let (_, version) = SemanticVersion.fromGithubTag(release.tag_name) {
+                return (release, version)
+            }
+            return nil
+        }.filter { release, version -> Bool in
+            if let majorVersion = Int(pr.base.ref) {
+                // If the branch name is an integer, only include releases
+                // for that major version.
+                return version.major == majorVersion
+            }
+            return true
+        }.sorted {
+            $0.1 > $1.1
+        }.sorted { (lhs, rhs) in
+            if let latest {
+                return latest.id == lhs.0.id
+            }
+            return true
+        }.map(\.0)
+
+        guard let release = filteredReleases.first else {
+            throw Errors.cantFindAnyRelease(latest: latest, releases: releases)
+        }
+
+        return release
+    }
+
+    private func getLatestRelease() async throws -> Components.Schemas.release? {
         let response = try await context.githubClient.repos_get_latest_release(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -148,7 +196,13 @@ struct PRHandler {
         default: break
         }
 
-        throw Errors.httpRequestFailed(response: response)
+        context.logger.warning("Could not find a 'latest' release", metadata: [
+            "owner": .string(repo.owner.login),
+            "name": .string(repo.name),
+            "response": "\(response)",
+        ])
+
+        return nil
     }
 
     func makeNewRelease(

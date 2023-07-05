@@ -556,6 +556,83 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List releases
+    ///
+    /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
+    ///
+    /// Information about published releases are available to everyone. Only users with push access will receive listings for draft releases.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
+    public func repos_list_releases(_ input: Operations.repos_list_releases.Input) async throws
+        -> Operations.repos_list_releases.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.repos_list_releases.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/releases",
+                    parameters: [input.path.owner, input.path.repo]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.repos_list_releases.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.repos_list_releases.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.release].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.not_found.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .notFound(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// Create a release
     ///
     /// Users with push access to the repository can create a release.

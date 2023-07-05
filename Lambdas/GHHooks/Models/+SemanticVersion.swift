@@ -92,3 +92,20 @@ extension SemanticVersion {
         return version
     }
 }
+
+extension SemanticVersion {
+    static func fromGithubTag(
+        _ tagName: String
+    ) -> (prefix: String, version: SemanticVersion)? {
+        var tagName = tagName
+        var tagPrefix = ""
+        /// For tags like "v1.0.0" which start with an alphabetical character.
+        if tagName.first?.isNumber == false {
+            tagPrefix = String(tagName.removeFirst())
+        }
+        guard let version = SemanticVersion(string: tagName) else {
+            return nil
+        }
+        return (tagPrefix, version)
+    }
+}

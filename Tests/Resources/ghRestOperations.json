@@ -179,5 +179,47 @@
         "updated_at": "2011-04-14T16:00:49Z",
         "issue_url": "https://api.github.com/repos/octocat/Hello-World/issues/1347",
         "author_association": "COLLABORATOR"
-    }
+    },
+    "repos/list-releases": [
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/releases/111111521",
+            "assets_url": "https://api.github.com/repos/vapor/vapor/releases/111111521/assets",
+            "upload_url": "https://uploads.github.com/repos/vapor/vapor/releases/111111521/assets{?name,label}",
+            "html_url": "https://github.com/vapor/vapor/releases/tag/4.77.1",
+            "id": 111111521,
+            "author": {
+                "login": "VaporBot",
+                "id": 73653552,
+                "node_id": "MDQ6VXNlcjczNjUzNTUy",
+                "avatar_url": "https://avatars.githubusercontent.com/u/73653552?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/VaporBot",
+                "html_url": "https://github.com/VaporBot",
+                "followers_url": "https://api.github.com/users/VaporBot/followers",
+                "following_url": "https://api.github.com/users/VaporBot/following{/other_user}",
+                "gists_url": "https://api.github.com/users/VaporBot/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/VaporBot/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/VaporBot/subscriptions",
+                "organizations_url": "https://api.github.com/users/VaporBot/orgs",
+                "repos_url": "https://api.github.com/users/VaporBot/repos",
+                "events_url": "https://api.github.com/users/VaporBot/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/VaporBot/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "node_id": "RE_kwDOAvmRT84Gn21h",
+            "tag_name": "4.77.1",
+            "target_commitish": "main",
+            "name": "Improve error reporting for `EncodingError` and `DecodingError`",
+            "draft": false,
+            "prerelease": false,
+            "created_at": "2023-07-05T13:07:26Z",
+            "published_at": "2023-07-05T13:07:31Z",
+            "assets": [],
+            "tarball_url": "https://api.github.com/repos/vapor/vapor/tarball/4.77.1",
+            "zipball_url": "https://api.github.com/repos/vapor/vapor/zipball/4.77.1",
+            "body": "###### _This patch was authored by @grahamburgsma and released by @0xTim._\n\nAs `EncodingError` and `DecodingError` both conform to `LocalizedError`, error reporting uses their `localizedDescription` which is just a generic error message.\r\n\r\nSo this changes the error reporting from:\r\n> The operation could not be completed. The data isn’t in the correct format.\r\n\r\nTo a description much more useful (for example):\r\n> invalidValue(inf, Swift.EncodingError.Context(codingPath: [...], debugDescription: \"Unable to encode Double.inf directly in JSON.\", underlyingError: nil))",
+            "mentions_count": 2
+        }
+    ]
 }

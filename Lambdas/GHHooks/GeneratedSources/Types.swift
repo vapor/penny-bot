@@ -61,6 +61,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
     func pulls_list(_ input: Operations.pulls_list.Input) async throws
         -> Operations.pulls_list.Output
+    /// List releases
+    ///
+    /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
+    ///
+    /// Information about published releases are available to everyone. Only users with push access will receive listings for draft releases.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
+    func repos_list_releases(_ input: Operations.repos_list_releases.Input) async throws
+        -> Operations.repos_list_releases.Output
     /// Create a release
     ///
     /// Users with push access to the repository can create a release.
@@ -14633,6 +14643,130 @@ public enum Operations {
             ///
             /// HTTP response code: `422 unprocessableEntity`.
             case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List releases
+    ///
+    /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
+    ///
+    /// Information about published releases are available to everyone. Only users with push access will receive listings for draft releases.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
+    public enum repos_list_releases {
+        public static let id: String = "repos/list-releases"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_list_releases.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_releases.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_list_releases.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_list_releases.Input.Cookies
+            public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_releases.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_releases.Input.Path,
+                query: Operations.repos_list_releases.Input.Query = .init(),
+                headers: Operations.repos_list_releases.Input.Headers = .init(),
+                cookies: Operations.repos_list_releases.Input.Cookies = .init(),
+                body: Operations.repos_list_releases.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_releases.Output.Ok.Headers
+                public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.release])
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_list_releases.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_releases.Output.Ok.Headers,
+                    body: Operations.repos_list_releases.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_releases.Output.Ok)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.
