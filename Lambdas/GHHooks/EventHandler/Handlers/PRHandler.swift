@@ -96,11 +96,7 @@ struct PRHandler {
 
         let release = try await makeNewRelease(version: version, acknowledgment: acknowledgment)
 
-        let ownerLogin = repo.owner.login
-        let repoName = repo.name
-        let url = "https://github.com/\(ownerLogin)/\(repoName)/releases/tag/\(release.tag_name)"
-
-        try await sendComment(release: release, url: url)
+        try await sendComment(release: release)
 
         /// FXIME: change channel to `.release` after tests.
         /// Give send-message perm to Penny for the release channel.
@@ -112,7 +108,7 @@ struct PRHandler {
                 description: """
                 >>> \(pr.title)
 
-                \(url)
+                \(release.html_url)
                 """
             )])
         ).guardSuccess()
@@ -174,10 +170,7 @@ struct PRHandler {
         throw Errors.httpRequestFailed(response: response)
     }
 
-    func sendComment(
-        release: Components.Schemas.release,
-        url: String
-    ) async throws {
+    func sendComment(release: Components.Schemas.release) async throws {
         // '"Issues" create comment', but works for PRs too. Didn't find an endpoint for PRs.
         let response = try await context.githubClient.issues_create_comment(.init(
             path: .init(
@@ -186,7 +179,9 @@ struct PRHandler {
                 issue_number: number
             ),
             body: .json(.init(
-                body: "These changes are now available in [\(release.tag_name)](\(url))"
+                body: """
+                These changes are now available in [\(release.tag_name)](\(release.html_url))
+                """
             ))
         ))
 
