@@ -96,7 +96,8 @@ struct GHHooksHandler: LambdaHandler {
                 eventName: eventName,
                 event: event,
                 discordClient: discordClient,
-                githubClient: githubClient
+                githubClient: githubClient,
+                logger: logger
             )
         ).handle()
 

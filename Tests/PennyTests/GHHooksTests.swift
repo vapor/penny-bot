@@ -1,6 +1,7 @@
 @testable import GHHooksLambda
 import DiscordModels
 import OpenAPIRuntime
+import Logging
 import Fake
 import XCTest
 
@@ -23,12 +24,19 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(key: "pr1", eventName: .pull_request, expectResponse: false)
         try await handleEvent(key: "pr2", eventName: .pull_request, expectResponse: false)
         try await handleEvent(key: "pr3", eventName: .pull_request, expectResponse: false)
+        try await handleEvent(
+            key: "pr4",
+            eventName: .pull_request,
+            expectResponse: true,
+            responseChannelId: Constants.Channels.logs.id
+        )
     }
 
     func handleEvent(
         key: String,
         eventName: GHEvent.Kind,
         expectResponse: Bool,
+        responseChannelId: ChannelSnowflake = Constants.Channels.issueAndPRs.id,
         line: UInt = #line
     ) async throws {
         let data = TestData.for(ghEventKey: key)!
@@ -42,16 +50,21 @@ class GHHooksTests: XCTestCase {
                     githubClient: Client(
                         serverURL: try Servers.server1(),
                         transport: FakeClientTransport()
-                    )
+                    ),
+                    logger: Logger(label: "GHHooksTests")
                 )
             ).handle()
             let response = await FakeResponseStorage.shared.awaitResponse(
-                at: .createMessage(channelId: Constants.Channels.issueAndPRs.id),
+                at: .createMessage(channelId: responseChannelId),
                 expectFailure: !expectResponse,
                 line: line
             ).value
             if expectResponse {
-                XCTAssertNotNil(response as? Payloads.CreateMessage, line: line)
+                XCTAssertTrue(
+                    type(of: response) == Payloads.CreateMessage.self,
+                    "'\(type(of: response))' is not equal to 'Payloads.CreateMessage'",
+                    line: line
+                )
             }
         } catch {
             let prettyJSON = try! JSONSerialization.data(

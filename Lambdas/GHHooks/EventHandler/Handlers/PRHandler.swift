@@ -1,31 +1,56 @@
 import DiscordBM
 
 struct PRHandler {
+
+    enum Errors: Error, CustomStringConvertible {
+        case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
+        case tagDoesNotFollowSemVer(release: Components.Schemas.release, tag: String)
+
+        var description: String {
+            switch self {
+            case let .httpRequestFailed(response, file, line):
+                return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
+            case let .tagDoesNotFollowSemVer(release, tag):
+                return "tagDoesNotFollowSemVer(release: \(release), tag: \(tag))"
+            }
+        }
+    }
+
     let context: HandlerContext
+    let pr: PullRequest
+    let number: Int
+    var event: GHEvent {
+        context.event
+    }
+    var repo: Repository {
+        event.repository
+    }
+    var repoName: String {
+        repo.organization?.name == "vapor" ? repo.name : repo.full_name
+    }
+
+    init(context: HandlerContext) throws {
+        self.context = context
+        self.pr = try context.event.pull_request.requireValue()
+        self.number = try context.event.number.requireValue()
+    }
 
     func handle() async throws {
         let action = context.event.action.map({ PullRequest.Action(rawValue: $0) })
         switch action {
         case .opened:
             try await onOpened()
+        case .closed:
+            try await onClosed()
         default: break
         }
     }
 
     func onOpened() async throws {
-        let event = context.event
-
-        let pr = try event.pull_request.requireValue()
-
-        let number = try event.number.requireValue()
-
         let creatorName = pr.user.login
         let creatorLink = pr.user.html_url
 
         let prLink = pr.html_url
-
-        let repo = event.repository
-        let repoName = repo.organization?.name == "vapor" ? repo.name : repo.full_name
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
@@ -45,5 +70,130 @@ struct PRHandler {
                 color: .green
             )])
         ).guardSuccess()
+    }
+
+    func onClosed() async throws {
+        guard pr.base.ref == "main",
+              let mergedBy = pr.merged_by,
+              let bump = pr.knownLabels.first?.toBump()
+        else { return }
+
+        let previousRelease = try await getLatestRelease()
+
+        let tag = previousRelease.tag_name
+        guard let previousVersion = SemVer(string: tag) else {
+            throw Errors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
+        }
+
+        let version = previousVersion.next(bump)
+
+        let acknowledgment: String
+        if pr.user.login == mergedBy.login {
+            acknowledgment = "This patch was authored and released by @\(pr.user.login)."
+        } else {
+            acknowledgment = "This patch was authored by @\(pr.user.login) and released by @\(mergedBy.login)."
+        }
+
+        let release = try await makeNewRelease(version: version, acknowledgment: acknowledgment)
+
+        let ownerLogin = repo.owner.login
+        let repoName = repo.name
+        let url = "https://github.com/\(ownerLogin)/\(repoName)/releases/tag/\(release.tag_name)"
+
+        try await sendComment(release: release, url: url)
+
+        /// FXIME: change channel to `.release` after tests.
+        /// Give send-message perm to Penny for the release channel.
+        /// Repair tests.
+        try await context.discordClient.createMessage(
+            channelId: Constants.Channels.logs.id,
+            payload: .init(embeds: [.init(
+                title: "[\(repoName)] \(release.tag_name)",
+                description: """
+                >>> \(pr.title)
+
+                \(url)
+                """
+            )])
+        ).guardSuccess()
+    }
+
+    func getLatestRelease() async throws -> Components.Schemas.release {
+        let response = try await context.githubClient.repos_get_latest_release(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            )
+        ))
+
+        switch response {
+        case let .ok(ok):
+            switch ok.body {
+            case let .json(json):
+                return json
+            }
+        default: break
+        }
+
+        throw Errors.httpRequestFailed(response: response)
+    }
+
+    func makeNewRelease(
+        version: SemVer,
+        acknowledgment: String
+    ) async throws -> Components.Schemas.release {
+        let response = try await context.githubClient.repos_create_release(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            ),
+            body: .json(.init(
+                tag_name: version.description,
+                target_commitish: pr.base.ref,
+                name: pr.title,
+                body: """
+                ###### _\(acknowledgment)_
+
+                \(pr.body ?? "")
+                """,
+                draft: false,
+                prerelease: version.prerelease != nil,
+                make_latest: ._true
+            ))
+        ))
+
+        switch response {
+        case let .created(created):
+            switch created.body {
+            case let .json(release):
+                return release
+            }
+        default: break
+        }
+
+        throw Errors.httpRequestFailed(response: response)
+    }
+
+    func sendComment(
+        release: Components.Schemas.release,
+        url: String
+    ) async throws {
+        // '"Issues" create comment', but works for PRs too. Didn't find an endpoint for PRs.
+        let response = try await context.githubClient.issues_create_comment(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name,
+                issue_number: number
+            ),
+            body: .json(.init(
+                body: "These changes are now available in [\(release.tag_name)](\(url))"
+            ))
+        ))
+
+        switch response {
+        case .created: return
+        default:
+            throw Errors.httpRequestFailed(response: response)
+        }
     }
 }

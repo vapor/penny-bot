@@ -6167,6 +6167,113 @@ public enum Components {
                 case parent
             }
         }
+        /// Groups of organization members that gives permissions on specified repositories.
+        ///
+        /// - Remark: Generated from `#/components/schemas/team-simple`.
+        public struct team_simple: Codable, Equatable, Hashable, Sendable {
+            /// Unique identifier of the team
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/team-simple/node_id`.
+            public var node_id: Swift.String
+            /// URL for the team
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/team-simple/members_url`.
+            public var members_url: Swift.String
+            /// Name of the team
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/name`.
+            public var name: Swift.String
+            /// Description of the team
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/description`.
+            public var description: Swift.String
+            /// Permission that the team will have for its repositories
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/permission`.
+            public var permission: Swift.String
+            /// The level of privacy this team should have
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/privacy`.
+            public var privacy: Swift.String?
+            /// The notification setting the team has set
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/notification_setting`.
+            public var notification_setting: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/team-simple/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/team-simple/repositories_url`.
+            public var repositories_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/team-simple/slug`.
+            public var slug: Swift.String
+            /// Distinguished Name (DN) that team maps to within LDAP environment
+            ///
+            /// - Remark: Generated from `#/components/schemas/team-simple/ldap_dn`.
+            public var ldap_dn: Swift.String?
+            /// Creates a new `team_simple`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the team
+            ///   - node_id:
+            ///   - url: URL for the team
+            ///   - members_url:
+            ///   - name: Name of the team
+            ///   - description: Description of the team
+            ///   - permission: Permission that the team will have for its repositories
+            ///   - privacy: The level of privacy this team should have
+            ///   - notification_setting: The notification setting the team has set
+            ///   - html_url:
+            ///   - repositories_url:
+            ///   - slug:
+            ///   - ldap_dn: Distinguished Name (DN) that team maps to within LDAP environment
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                members_url: Swift.String,
+                name: Swift.String,
+                description: Swift.String,
+                permission: Swift.String,
+                privacy: Swift.String? = nil,
+                notification_setting: Swift.String? = nil,
+                html_url: Swift.String,
+                repositories_url: Swift.String,
+                slug: Swift.String,
+                ldap_dn: Swift.String? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.members_url = members_url
+                self.name = name
+                self.description = description
+                self.permission = permission
+                self.privacy = privacy
+                self.notification_setting = notification_setting
+                self.html_url = html_url
+                self.repositories_url = repositories_url
+                self.slug = slug
+                self.ldap_dn = ldap_dn
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case members_url
+                case name
+                case description
+                case permission
+                case privacy
+                case notification_setting
+                case html_url
+                case repositories_url
+                case slug
+                case ldap_dn
+            }
+        }
         /// A repository on GitHub.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-repository`.
@@ -8901,7 +9008,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/user`.
             public var user: Components.Schemas.nullable_simple_user
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/body`.
-            public var body: Swift.String?
+            public var body: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload`.
             public struct labelsPayloadPayload: Codable, Equatable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload/id`.
@@ -8961,7 +9068,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labels`.
             public var labels: Components.Schemas.pull_request_simple.labelsPayload
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/milestone`.
-            public var milestone: Components.Schemas.nullable_milestone?
+            public var milestone: Components.Schemas.nullable_milestone
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/active_lock_reason`.
             public var active_lock_reason: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/created_at`.
@@ -8969,13 +9076,13 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/updated_at`.
             public var updated_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/closed_at`.
-            public var closed_at: Foundation.Date?
+            public var closed_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merged_at`.
-            public var merged_at: Foundation.Date?
+            public var merged_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merge_commit_sha`.
-            public var merge_commit_sha: Swift.String?
+            public var merge_commit_sha: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/assignee`.
-            public var assignee: Components.Schemas.nullable_simple_user?
+            public var assignee: Components.Schemas.nullable_simple_user
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/assignees`.
             public var assignees: [Components.Schemas.simple_user]?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/requested_reviewers`.
@@ -9132,7 +9239,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/author_association`.
             public var author_association: Components.Schemas.author_association
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/auto_merge`.
-            public var auto_merge: Components.Schemas.auto_merge?
+            public var auto_merge: Components.Schemas.auto_merge
             /// Indicates whether or not the pull request is a draft.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/draft`.
@@ -9194,16 +9301,16 @@ public enum Components {
                 locked: Swift.Bool,
                 title: Swift.String,
                 user: Components.Schemas.nullable_simple_user,
-                body: Swift.String? = nil,
+                body: Swift.String,
                 labels: Components.Schemas.pull_request_simple.labelsPayload,
-                milestone: Components.Schemas.nullable_milestone? = nil,
+                milestone: Components.Schemas.nullable_milestone,
                 active_lock_reason: Swift.String? = nil,
                 created_at: Foundation.Date,
                 updated_at: Foundation.Date,
-                closed_at: Foundation.Date? = nil,
-                merged_at: Foundation.Date? = nil,
-                merge_commit_sha: Swift.String? = nil,
-                assignee: Components.Schemas.nullable_simple_user? = nil,
+                closed_at: Foundation.Date,
+                merged_at: Foundation.Date,
+                merge_commit_sha: Swift.String,
+                assignee: Components.Schemas.nullable_simple_user,
                 assignees: [Components.Schemas.simple_user]? = nil,
                 requested_reviewers: [Components.Schemas.simple_user]? = nil,
                 requested_teams: [Components.Schemas.team]? = nil,
@@ -9211,7 +9318,7 @@ public enum Components {
                 base: Components.Schemas.pull_request_simple.basePayload,
                 _links: Components.Schemas.pull_request_simple._linksPayload,
                 author_association: Components.Schemas.author_association,
-                auto_merge: Components.Schemas.auto_merge? = nil,
+                auto_merge: Components.Schemas.auto_merge,
                 draft: Swift.Bool? = nil
             ) {
                 self.url = url
@@ -9349,6 +9456,2193 @@ public enum Components {
                 case description
                 case color
                 case _default = "default"
+            }
+        }
+        /// Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
+        ///
+        /// - Remark: Generated from `#/components/schemas/pull-request`.
+        public struct pull_request: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/pull-request/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/pull-request/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/diff_url`.
+            public var diff_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/patch_url`.
+            public var patch_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/issue_url`.
+            public var issue_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/commits_url`.
+            public var commits_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/review_comments_url`.
+            public var review_comments_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/review_comment_url`.
+            public var review_comment_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/comments_url`.
+            public var comments_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/statuses_url`.
+            public var statuses_url: Swift.String
+            /// Number uniquely identifying the pull request within its repository.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request/number`.
+            public var number: Swift.Int
+            /// State of this Pull Request. Either `open` or `closed`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request/state`.
+            @frozen
+            public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case open
+                case closed
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "open": self = .open
+                    case "closed": self = .closed
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .open: return "open"
+                    case .closed: return "closed"
+                    }
+                }
+                public static var allCases: [statePayload] { [.open, .closed] }
+            }
+            /// State of this Pull Request. Either `open` or `closed`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request/state`.
+            public var state: Components.Schemas.pull_request.statePayload
+            /// - Remark: Generated from `#/components/schemas/pull-request/locked`.
+            public var locked: Swift.Bool
+            /// The title of the pull request.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request/title`.
+            public var title: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/user`.
+            public var user: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/pull-request/body`.
+            public var body: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload`.
+            public struct labelsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/id`.
+                public var id: Swift.Int64
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/node_id`.
+                public var node_id: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/name`.
+                public var name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/description`.
+                public var description: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/color`.
+                public var color: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/default`.
+                public var _default: Swift.Bool
+                /// Creates a new `labelsPayloadPayload`.
+                ///
+                /// - Parameters:
+                ///   - id:
+                ///   - node_id:
+                ///   - url:
+                ///   - name:
+                ///   - description:
+                ///   - color:
+                ///   - _default:
+                public init(
+                    id: Swift.Int64,
+                    node_id: Swift.String,
+                    url: Swift.String,
+                    name: Swift.String,
+                    description: Swift.String,
+                    color: Swift.String,
+                    _default: Swift.Bool
+                ) {
+                    self.id = id
+                    self.node_id = node_id
+                    self.url = url
+                    self.name = name
+                    self.description = description
+                    self.color = color
+                    self._default = _default
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case id
+                    case node_id
+                    case url
+                    case name
+                    case description
+                    case color
+                    case _default = "default"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request/labels`.
+            public typealias labelsPayload = [Components.Schemas.pull_request.labelsPayloadPayload]
+            /// - Remark: Generated from `#/components/schemas/pull-request/labels`.
+            public var labels: Components.Schemas.pull_request.labelsPayload
+            /// - Remark: Generated from `#/components/schemas/pull-request/milestone`.
+            public var milestone: Components.Schemas.nullable_milestone?
+            /// - Remark: Generated from `#/components/schemas/pull-request/active_lock_reason`.
+            public var active_lock_reason: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/pull-request/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/pull-request/closed_at`.
+            public var closed_at: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/pull-request/merged_at`.
+            public var merged_at: Foundation.Date?
+            /// - Remark: Generated from `#/components/schemas/pull-request/merge_commit_sha`.
+            public var merge_commit_sha: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request/assignee`.
+            public var assignee: Components.Schemas.nullable_simple_user?
+            /// - Remark: Generated from `#/components/schemas/pull-request/assignees`.
+            public var assignees: [Components.Schemas.simple_user]?
+            /// - Remark: Generated from `#/components/schemas/pull-request/requested_reviewers`.
+            public var requested_reviewers: [Components.Schemas.simple_user]?
+            /// - Remark: Generated from `#/components/schemas/pull-request/requested_teams`.
+            public var requested_teams: [Components.Schemas.team_simple]?
+            /// - Remark: Generated from `#/components/schemas/pull-request/head`.
+            public struct headPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/label`.
+                public var label: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/ref`.
+                public var ref: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/repo`.
+                public struct repoPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/archive_url`.
+                    public var archive_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/assignees_url`.
+                    public var assignees_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/blobs_url`.
+                    public var blobs_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/branches_url`.
+                    public var branches_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/collaborators_url`.
+                    public var collaborators_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/comments_url`.
+                    public var comments_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/commits_url`.
+                    public var commits_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/compare_url`.
+                    public var compare_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/contents_url`.
+                    public var contents_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/contributors_url`.
+                    public var contributors_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/deployments_url`.
+                    public var deployments_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/description`.
+                    public var description: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/downloads_url`.
+                    public var downloads_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/events_url`.
+                    public var events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/fork`.
+                    public var fork: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/forks_url`.
+                    public var forks_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/full_name`.
+                    public var full_name: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/git_commits_url`.
+                    public var git_commits_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/git_refs_url`.
+                    public var git_refs_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/git_tags_url`.
+                    public var git_tags_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/hooks_url`.
+                    public var hooks_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/html_url`.
+                    public var html_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/id`.
+                    public var id: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/node_id`.
+                    public var node_id: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/issue_comment_url`.
+                    public var issue_comment_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/issue_events_url`.
+                    public var issue_events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/issues_url`.
+                    public var issues_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/keys_url`.
+                    public var keys_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/labels_url`.
+                    public var labels_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/languages_url`.
+                    public var languages_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/merges_url`.
+                    public var merges_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/milestones_url`.
+                    public var milestones_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/name`.
+                    public var name: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/notifications_url`.
+                    public var notifications_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner`.
+                    public struct ownerPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/avatar_url`.
+                        public var avatar_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/events_url`.
+                        public var events_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/followers_url`.
+                        public var followers_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/following_url`.
+                        public var following_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/gists_url`.
+                        public var gists_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/gravatar_id`.
+                        public var gravatar_id: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/html_url`.
+                        public var html_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/id`.
+                        public var id: Swift.Int
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/node_id`.
+                        public var node_id: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/login`.
+                        public var login: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/organizations_url`.
+                        public var organizations_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/received_events_url`.
+                        public var received_events_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/repos_url`.
+                        public var repos_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/site_admin`.
+                        public var site_admin: Swift.Bool
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/starred_url`.
+                        public var starred_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/subscriptions_url`.
+                        public var subscriptions_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/type`.
+                        public var _type: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/url`.
+                        public var url: Swift.String
+                        /// Creates a new `ownerPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - avatar_url:
+                        ///   - events_url:
+                        ///   - followers_url:
+                        ///   - following_url:
+                        ///   - gists_url:
+                        ///   - gravatar_id:
+                        ///   - html_url:
+                        ///   - id:
+                        ///   - node_id:
+                        ///   - login:
+                        ///   - organizations_url:
+                        ///   - received_events_url:
+                        ///   - repos_url:
+                        ///   - site_admin:
+                        ///   - starred_url:
+                        ///   - subscriptions_url:
+                        ///   - _type:
+                        ///   - url:
+                        public init(
+                            avatar_url: Swift.String,
+                            events_url: Swift.String,
+                            followers_url: Swift.String,
+                            following_url: Swift.String,
+                            gists_url: Swift.String,
+                            gravatar_id: Swift.String,
+                            html_url: Swift.String,
+                            id: Swift.Int,
+                            node_id: Swift.String,
+                            login: Swift.String,
+                            organizations_url: Swift.String,
+                            received_events_url: Swift.String,
+                            repos_url: Swift.String,
+                            site_admin: Swift.Bool,
+                            starred_url: Swift.String,
+                            subscriptions_url: Swift.String,
+                            _type: Swift.String,
+                            url: Swift.String
+                        ) {
+                            self.avatar_url = avatar_url
+                            self.events_url = events_url
+                            self.followers_url = followers_url
+                            self.following_url = following_url
+                            self.gists_url = gists_url
+                            self.gravatar_id = gravatar_id
+                            self.html_url = html_url
+                            self.id = id
+                            self.node_id = node_id
+                            self.login = login
+                            self.organizations_url = organizations_url
+                            self.received_events_url = received_events_url
+                            self.repos_url = repos_url
+                            self.site_admin = site_admin
+                            self.starred_url = starred_url
+                            self.subscriptions_url = subscriptions_url
+                            self._type = _type
+                            self.url = url
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case avatar_url
+                            case events_url
+                            case followers_url
+                            case following_url
+                            case gists_url
+                            case gravatar_id
+                            case html_url
+                            case id
+                            case node_id
+                            case login
+                            case organizations_url
+                            case received_events_url
+                            case repos_url
+                            case site_admin
+                            case starred_url
+                            case subscriptions_url
+                            case _type = "type"
+                            case url
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner`.
+                    public var owner:
+                        Components.Schemas.pull_request.headPayload.repoPayload.ownerPayload
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/private`.
+                    public var _private: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/pulls_url`.
+                    public var pulls_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/releases_url`.
+                    public var releases_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/stargazers_url`.
+                    public var stargazers_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/statuses_url`.
+                    public var statuses_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/subscribers_url`.
+                    public var subscribers_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/subscription_url`.
+                    public var subscription_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/tags_url`.
+                    public var tags_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/teams_url`.
+                    public var teams_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/trees_url`.
+                    public var trees_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/url`.
+                    public var url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/clone_url`.
+                    public var clone_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/default_branch`.
+                    public var default_branch: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/forks`.
+                    public var forks: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/forks_count`.
+                    public var forks_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/git_url`.
+                    public var git_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_downloads`.
+                    public var has_downloads: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_issues`.
+                    public var has_issues: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_projects`.
+                    public var has_projects: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_wiki`.
+                    public var has_wiki: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_pages`.
+                    public var has_pages: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_discussions`.
+                    public var has_discussions: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/homepage`.
+                    public var homepage: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/language`.
+                    public var language: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/master_branch`.
+                    public var master_branch: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/archived`.
+                    public var archived: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/disabled`.
+                    public var disabled: Swift.Bool
+                    /// The repository visibility: public, private, or internal.
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/visibility`.
+                    public var visibility: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/mirror_url`.
+                    public var mirror_url: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/open_issues`.
+                    public var open_issues: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/open_issues_count`.
+                    public var open_issues_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions`.
+                    public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/admin`.
+                        public var admin: Swift.Bool
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/maintain`.
+                        public var maintain: Swift.Bool?
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/push`.
+                        public var push: Swift.Bool
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/triage`.
+                        public var triage: Swift.Bool?
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/pull`.
+                        public var pull: Swift.Bool
+                        /// Creates a new `permissionsPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - admin:
+                        ///   - maintain:
+                        ///   - push:
+                        ///   - triage:
+                        ///   - pull:
+                        public init(
+                            admin: Swift.Bool,
+                            maintain: Swift.Bool? = nil,
+                            push: Swift.Bool,
+                            triage: Swift.Bool? = nil,
+                            pull: Swift.Bool
+                        ) {
+                            self.admin = admin
+                            self.maintain = maintain
+                            self.push = push
+                            self.triage = triage
+                            self.pull = pull
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case admin
+                            case maintain
+                            case push
+                            case triage
+                            case pull
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions`.
+                    public var permissions:
+                        Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/temp_clone_token`.
+                    public var temp_clone_token: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_merge_commit`.
+                    public var allow_merge_commit: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_squash_merge`.
+                    public var allow_squash_merge: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_rebase_merge`.
+                    public var allow_rebase_merge: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license`.
+                    public struct licensePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/key`.
+                        public var key: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/name`.
+                        public var name: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/url`.
+                        public var url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/spdx_id`.
+                        public var spdx_id: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/node_id`.
+                        public var node_id: Swift.String
+                        /// Creates a new `licensePayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - key:
+                        ///   - name:
+                        ///   - url:
+                        ///   - spdx_id:
+                        ///   - node_id:
+                        public init(
+                            key: Swift.String,
+                            name: Swift.String,
+                            url: Swift.String,
+                            spdx_id: Swift.String,
+                            node_id: Swift.String
+                        ) {
+                            self.key = key
+                            self.name = name
+                            self.url = url
+                            self.spdx_id = spdx_id
+                            self.node_id = node_id
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case key
+                            case name
+                            case url
+                            case spdx_id
+                            case node_id
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license`.
+                    public var license:
+                        Components.Schemas.pull_request.headPayload.repoPayload.licensePayload?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/pushed_at`.
+                    public var pushed_at: Foundation.Date
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/size`.
+                    public var size: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/ssh_url`.
+                    public var ssh_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/stargazers_count`.
+                    public var stargazers_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/svn_url`.
+                    public var svn_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/topics`.
+                    public var topics: [Swift.String]?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/watchers`.
+                    public var watchers: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/watchers_count`.
+                    public var watchers_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/created_at`.
+                    public var created_at: Foundation.Date
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/updated_at`.
+                    public var updated_at: Foundation.Date
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_forking`.
+                    public var allow_forking: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/is_template`.
+                    public var is_template: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/web_commit_signoff_required`.
+                    public var web_commit_signoff_required: Swift.Bool?
+                    /// Creates a new `repoPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - archive_url:
+                    ///   - assignees_url:
+                    ///   - blobs_url:
+                    ///   - branches_url:
+                    ///   - collaborators_url:
+                    ///   - comments_url:
+                    ///   - commits_url:
+                    ///   - compare_url:
+                    ///   - contents_url:
+                    ///   - contributors_url:
+                    ///   - deployments_url:
+                    ///   - description:
+                    ///   - downloads_url:
+                    ///   - events_url:
+                    ///   - fork:
+                    ///   - forks_url:
+                    ///   - full_name:
+                    ///   - git_commits_url:
+                    ///   - git_refs_url:
+                    ///   - git_tags_url:
+                    ///   - hooks_url:
+                    ///   - html_url:
+                    ///   - id:
+                    ///   - node_id:
+                    ///   - issue_comment_url:
+                    ///   - issue_events_url:
+                    ///   - issues_url:
+                    ///   - keys_url:
+                    ///   - labels_url:
+                    ///   - languages_url:
+                    ///   - merges_url:
+                    ///   - milestones_url:
+                    ///   - name:
+                    ///   - notifications_url:
+                    ///   - owner:
+                    ///   - _private:
+                    ///   - pulls_url:
+                    ///   - releases_url:
+                    ///   - stargazers_url:
+                    ///   - statuses_url:
+                    ///   - subscribers_url:
+                    ///   - subscription_url:
+                    ///   - tags_url:
+                    ///   - teams_url:
+                    ///   - trees_url:
+                    ///   - url:
+                    ///   - clone_url:
+                    ///   - default_branch:
+                    ///   - forks:
+                    ///   - forks_count:
+                    ///   - git_url:
+                    ///   - has_downloads:
+                    ///   - has_issues:
+                    ///   - has_projects:
+                    ///   - has_wiki:
+                    ///   - has_pages:
+                    ///   - has_discussions:
+                    ///   - homepage:
+                    ///   - language:
+                    ///   - master_branch:
+                    ///   - archived:
+                    ///   - disabled:
+                    ///   - visibility: The repository visibility: public, private, or internal.
+                    ///   - mirror_url:
+                    ///   - open_issues:
+                    ///   - open_issues_count:
+                    ///   - permissions:
+                    ///   - temp_clone_token:
+                    ///   - allow_merge_commit:
+                    ///   - allow_squash_merge:
+                    ///   - allow_rebase_merge:
+                    ///   - license:
+                    ///   - pushed_at:
+                    ///   - size:
+                    ///   - ssh_url:
+                    ///   - stargazers_count:
+                    ///   - svn_url:
+                    ///   - topics:
+                    ///   - watchers:
+                    ///   - watchers_count:
+                    ///   - created_at:
+                    ///   - updated_at:
+                    ///   - allow_forking:
+                    ///   - is_template:
+                    ///   - web_commit_signoff_required:
+                    public init(
+                        archive_url: Swift.String,
+                        assignees_url: Swift.String,
+                        blobs_url: Swift.String,
+                        branches_url: Swift.String,
+                        collaborators_url: Swift.String,
+                        comments_url: Swift.String,
+                        commits_url: Swift.String,
+                        compare_url: Swift.String,
+                        contents_url: Swift.String,
+                        contributors_url: Swift.String,
+                        deployments_url: Swift.String,
+                        description: Swift.String,
+                        downloads_url: Swift.String,
+                        events_url: Swift.String,
+                        fork: Swift.Bool,
+                        forks_url: Swift.String,
+                        full_name: Swift.String,
+                        git_commits_url: Swift.String,
+                        git_refs_url: Swift.String,
+                        git_tags_url: Swift.String,
+                        hooks_url: Swift.String,
+                        html_url: Swift.String,
+                        id: Swift.Int,
+                        node_id: Swift.String,
+                        issue_comment_url: Swift.String,
+                        issue_events_url: Swift.String,
+                        issues_url: Swift.String,
+                        keys_url: Swift.String,
+                        labels_url: Swift.String,
+                        languages_url: Swift.String,
+                        merges_url: Swift.String,
+                        milestones_url: Swift.String,
+                        name: Swift.String,
+                        notifications_url: Swift.String,
+                        owner: Components.Schemas.pull_request.headPayload.repoPayload.ownerPayload,
+                        _private: Swift.Bool,
+                        pulls_url: Swift.String,
+                        releases_url: Swift.String,
+                        stargazers_url: Swift.String,
+                        statuses_url: Swift.String,
+                        subscribers_url: Swift.String,
+                        subscription_url: Swift.String,
+                        tags_url: Swift.String,
+                        teams_url: Swift.String,
+                        trees_url: Swift.String,
+                        url: Swift.String,
+                        clone_url: Swift.String,
+                        default_branch: Swift.String,
+                        forks: Swift.Int,
+                        forks_count: Swift.Int,
+                        git_url: Swift.String,
+                        has_downloads: Swift.Bool,
+                        has_issues: Swift.Bool,
+                        has_projects: Swift.Bool,
+                        has_wiki: Swift.Bool,
+                        has_pages: Swift.Bool,
+                        has_discussions: Swift.Bool,
+                        homepage: Swift.String,
+                        language: Swift.String,
+                        master_branch: Swift.String? = nil,
+                        archived: Swift.Bool,
+                        disabled: Swift.Bool,
+                        visibility: Swift.String? = nil,
+                        mirror_url: Swift.String? = nil,
+                        open_issues: Swift.Int,
+                        open_issues_count: Swift.Int,
+                        permissions: Components.Schemas.pull_request.headPayload.repoPayload
+                            .permissionsPayload? = nil,
+                        temp_clone_token: Swift.String? = nil,
+                        allow_merge_commit: Swift.Bool? = nil,
+                        allow_squash_merge: Swift.Bool? = nil,
+                        allow_rebase_merge: Swift.Bool? = nil,
+                        license: Components.Schemas.pull_request.headPayload.repoPayload
+                            .licensePayload? = nil,
+                        pushed_at: Foundation.Date,
+                        size: Swift.Int,
+                        ssh_url: Swift.String,
+                        stargazers_count: Swift.Int,
+                        svn_url: Swift.String,
+                        topics: [Swift.String]? = nil,
+                        watchers: Swift.Int,
+                        watchers_count: Swift.Int,
+                        created_at: Foundation.Date,
+                        updated_at: Foundation.Date,
+                        allow_forking: Swift.Bool? = nil,
+                        is_template: Swift.Bool? = nil,
+                        web_commit_signoff_required: Swift.Bool? = nil
+                    ) {
+                        self.archive_url = archive_url
+                        self.assignees_url = assignees_url
+                        self.blobs_url = blobs_url
+                        self.branches_url = branches_url
+                        self.collaborators_url = collaborators_url
+                        self.comments_url = comments_url
+                        self.commits_url = commits_url
+                        self.compare_url = compare_url
+                        self.contents_url = contents_url
+                        self.contributors_url = contributors_url
+                        self.deployments_url = deployments_url
+                        self.description = description
+                        self.downloads_url = downloads_url
+                        self.events_url = events_url
+                        self.fork = fork
+                        self.forks_url = forks_url
+                        self.full_name = full_name
+                        self.git_commits_url = git_commits_url
+                        self.git_refs_url = git_refs_url
+                        self.git_tags_url = git_tags_url
+                        self.hooks_url = hooks_url
+                        self.html_url = html_url
+                        self.id = id
+                        self.node_id = node_id
+                        self.issue_comment_url = issue_comment_url
+                        self.issue_events_url = issue_events_url
+                        self.issues_url = issues_url
+                        self.keys_url = keys_url
+                        self.labels_url = labels_url
+                        self.languages_url = languages_url
+                        self.merges_url = merges_url
+                        self.milestones_url = milestones_url
+                        self.name = name
+                        self.notifications_url = notifications_url
+                        self.owner = owner
+                        self._private = _private
+                        self.pulls_url = pulls_url
+                        self.releases_url = releases_url
+                        self.stargazers_url = stargazers_url
+                        self.statuses_url = statuses_url
+                        self.subscribers_url = subscribers_url
+                        self.subscription_url = subscription_url
+                        self.tags_url = tags_url
+                        self.teams_url = teams_url
+                        self.trees_url = trees_url
+                        self.url = url
+                        self.clone_url = clone_url
+                        self.default_branch = default_branch
+                        self.forks = forks
+                        self.forks_count = forks_count
+                        self.git_url = git_url
+                        self.has_downloads = has_downloads
+                        self.has_issues = has_issues
+                        self.has_projects = has_projects
+                        self.has_wiki = has_wiki
+                        self.has_pages = has_pages
+                        self.has_discussions = has_discussions
+                        self.homepage = homepage
+                        self.language = language
+                        self.master_branch = master_branch
+                        self.archived = archived
+                        self.disabled = disabled
+                        self.visibility = visibility
+                        self.mirror_url = mirror_url
+                        self.open_issues = open_issues
+                        self.open_issues_count = open_issues_count
+                        self.permissions = permissions
+                        self.temp_clone_token = temp_clone_token
+                        self.allow_merge_commit = allow_merge_commit
+                        self.allow_squash_merge = allow_squash_merge
+                        self.allow_rebase_merge = allow_rebase_merge
+                        self.license = license
+                        self.pushed_at = pushed_at
+                        self.size = size
+                        self.ssh_url = ssh_url
+                        self.stargazers_count = stargazers_count
+                        self.svn_url = svn_url
+                        self.topics = topics
+                        self.watchers = watchers
+                        self.watchers_count = watchers_count
+                        self.created_at = created_at
+                        self.updated_at = updated_at
+                        self.allow_forking = allow_forking
+                        self.is_template = is_template
+                        self.web_commit_signoff_required = web_commit_signoff_required
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case archive_url
+                        case assignees_url
+                        case blobs_url
+                        case branches_url
+                        case collaborators_url
+                        case comments_url
+                        case commits_url
+                        case compare_url
+                        case contents_url
+                        case contributors_url
+                        case deployments_url
+                        case description
+                        case downloads_url
+                        case events_url
+                        case fork
+                        case forks_url
+                        case full_name
+                        case git_commits_url
+                        case git_refs_url
+                        case git_tags_url
+                        case hooks_url
+                        case html_url
+                        case id
+                        case node_id
+                        case issue_comment_url
+                        case issue_events_url
+                        case issues_url
+                        case keys_url
+                        case labels_url
+                        case languages_url
+                        case merges_url
+                        case milestones_url
+                        case name
+                        case notifications_url
+                        case owner
+                        case _private = "private"
+                        case pulls_url
+                        case releases_url
+                        case stargazers_url
+                        case statuses_url
+                        case subscribers_url
+                        case subscription_url
+                        case tags_url
+                        case teams_url
+                        case trees_url
+                        case url
+                        case clone_url
+                        case default_branch
+                        case forks
+                        case forks_count
+                        case git_url
+                        case has_downloads
+                        case has_issues
+                        case has_projects
+                        case has_wiki
+                        case has_pages
+                        case has_discussions
+                        case homepage
+                        case language
+                        case master_branch
+                        case archived
+                        case disabled
+                        case visibility
+                        case mirror_url
+                        case open_issues
+                        case open_issues_count
+                        case permissions
+                        case temp_clone_token
+                        case allow_merge_commit
+                        case allow_squash_merge
+                        case allow_rebase_merge
+                        case license
+                        case pushed_at
+                        case size
+                        case ssh_url
+                        case stargazers_count
+                        case svn_url
+                        case topics
+                        case watchers
+                        case watchers_count
+                        case created_at
+                        case updated_at
+                        case allow_forking
+                        case is_template
+                        case web_commit_signoff_required
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/repo`.
+                public var repo: Components.Schemas.pull_request.headPayload.repoPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/sha`.
+                public var sha: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/user`.
+                public struct userPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/avatar_url`.
+                    public var avatar_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/events_url`.
+                    public var events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/followers_url`.
+                    public var followers_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/following_url`.
+                    public var following_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/gists_url`.
+                    public var gists_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/gravatar_id`.
+                    public var gravatar_id: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/html_url`.
+                    public var html_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/id`.
+                    public var id: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/node_id`.
+                    public var node_id: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/login`.
+                    public var login: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/organizations_url`.
+                    public var organizations_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/received_events_url`.
+                    public var received_events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/repos_url`.
+                    public var repos_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/site_admin`.
+                    public var site_admin: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/starred_url`.
+                    public var starred_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/subscriptions_url`.
+                    public var subscriptions_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/type`.
+                    public var _type: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/head/user/url`.
+                    public var url: Swift.String
+                    /// Creates a new `userPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - avatar_url:
+                    ///   - events_url:
+                    ///   - followers_url:
+                    ///   - following_url:
+                    ///   - gists_url:
+                    ///   - gravatar_id:
+                    ///   - html_url:
+                    ///   - id:
+                    ///   - node_id:
+                    ///   - login:
+                    ///   - organizations_url:
+                    ///   - received_events_url:
+                    ///   - repos_url:
+                    ///   - site_admin:
+                    ///   - starred_url:
+                    ///   - subscriptions_url:
+                    ///   - _type:
+                    ///   - url:
+                    public init(
+                        avatar_url: Swift.String,
+                        events_url: Swift.String,
+                        followers_url: Swift.String,
+                        following_url: Swift.String,
+                        gists_url: Swift.String,
+                        gravatar_id: Swift.String,
+                        html_url: Swift.String,
+                        id: Swift.Int,
+                        node_id: Swift.String,
+                        login: Swift.String,
+                        organizations_url: Swift.String,
+                        received_events_url: Swift.String,
+                        repos_url: Swift.String,
+                        site_admin: Swift.Bool,
+                        starred_url: Swift.String,
+                        subscriptions_url: Swift.String,
+                        _type: Swift.String,
+                        url: Swift.String
+                    ) {
+                        self.avatar_url = avatar_url
+                        self.events_url = events_url
+                        self.followers_url = followers_url
+                        self.following_url = following_url
+                        self.gists_url = gists_url
+                        self.gravatar_id = gravatar_id
+                        self.html_url = html_url
+                        self.id = id
+                        self.node_id = node_id
+                        self.login = login
+                        self.organizations_url = organizations_url
+                        self.received_events_url = received_events_url
+                        self.repos_url = repos_url
+                        self.site_admin = site_admin
+                        self.starred_url = starred_url
+                        self.subscriptions_url = subscriptions_url
+                        self._type = _type
+                        self.url = url
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case avatar_url
+                        case events_url
+                        case followers_url
+                        case following_url
+                        case gists_url
+                        case gravatar_id
+                        case html_url
+                        case id
+                        case node_id
+                        case login
+                        case organizations_url
+                        case received_events_url
+                        case repos_url
+                        case site_admin
+                        case starred_url
+                        case subscriptions_url
+                        case _type = "type"
+                        case url
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request/head/user`.
+                public var user: Components.Schemas.pull_request.headPayload.userPayload
+                /// Creates a new `headPayload`.
+                ///
+                /// - Parameters:
+                ///   - label:
+                ///   - ref:
+                ///   - repo:
+                ///   - sha:
+                ///   - user:
+                public init(
+                    label: Swift.String,
+                    ref: Swift.String,
+                    repo: Components.Schemas.pull_request.headPayload.repoPayload,
+                    sha: Swift.String,
+                    user: Components.Schemas.pull_request.headPayload.userPayload
+                ) {
+                    self.label = label
+                    self.ref = ref
+                    self.repo = repo
+                    self.sha = sha
+                    self.user = user
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case label
+                    case ref
+                    case repo
+                    case sha
+                    case user
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request/head`.
+            public var head: Components.Schemas.pull_request.headPayload
+            /// - Remark: Generated from `#/components/schemas/pull-request/base`.
+            public struct basePayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/label`.
+                public var label: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/ref`.
+                public var ref: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/repo`.
+                public struct repoPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/archive_url`.
+                    public var archive_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/assignees_url`.
+                    public var assignees_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/blobs_url`.
+                    public var blobs_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/branches_url`.
+                    public var branches_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/collaborators_url`.
+                    public var collaborators_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/comments_url`.
+                    public var comments_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/commits_url`.
+                    public var commits_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/compare_url`.
+                    public var compare_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/contents_url`.
+                    public var contents_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/contributors_url`.
+                    public var contributors_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/deployments_url`.
+                    public var deployments_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/description`.
+                    public var description: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/downloads_url`.
+                    public var downloads_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/events_url`.
+                    public var events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/fork`.
+                    public var fork: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/forks_url`.
+                    public var forks_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/full_name`.
+                    public var full_name: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/git_commits_url`.
+                    public var git_commits_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/git_refs_url`.
+                    public var git_refs_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/git_tags_url`.
+                    public var git_tags_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/hooks_url`.
+                    public var hooks_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/html_url`.
+                    public var html_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/id`.
+                    public var id: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/is_template`.
+                    public var is_template: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/node_id`.
+                    public var node_id: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/issue_comment_url`.
+                    public var issue_comment_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/issue_events_url`.
+                    public var issue_events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/issues_url`.
+                    public var issues_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/keys_url`.
+                    public var keys_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/labels_url`.
+                    public var labels_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/languages_url`.
+                    public var languages_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/merges_url`.
+                    public var merges_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/milestones_url`.
+                    public var milestones_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/name`.
+                    public var name: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/notifications_url`.
+                    public var notifications_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner`.
+                    public struct ownerPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/avatar_url`.
+                        public var avatar_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/events_url`.
+                        public var events_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/followers_url`.
+                        public var followers_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/following_url`.
+                        public var following_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/gists_url`.
+                        public var gists_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/gravatar_id`.
+                        public var gravatar_id: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/html_url`.
+                        public var html_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/id`.
+                        public var id: Swift.Int
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/node_id`.
+                        public var node_id: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/login`.
+                        public var login: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/organizations_url`.
+                        public var organizations_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/received_events_url`.
+                        public var received_events_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/repos_url`.
+                        public var repos_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/site_admin`.
+                        public var site_admin: Swift.Bool
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/starred_url`.
+                        public var starred_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/subscriptions_url`.
+                        public var subscriptions_url: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/type`.
+                        public var _type: Swift.String
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/url`.
+                        public var url: Swift.String
+                        /// Creates a new `ownerPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - avatar_url:
+                        ///   - events_url:
+                        ///   - followers_url:
+                        ///   - following_url:
+                        ///   - gists_url:
+                        ///   - gravatar_id:
+                        ///   - html_url:
+                        ///   - id:
+                        ///   - node_id:
+                        ///   - login:
+                        ///   - organizations_url:
+                        ///   - received_events_url:
+                        ///   - repos_url:
+                        ///   - site_admin:
+                        ///   - starred_url:
+                        ///   - subscriptions_url:
+                        ///   - _type:
+                        ///   - url:
+                        public init(
+                            avatar_url: Swift.String,
+                            events_url: Swift.String,
+                            followers_url: Swift.String,
+                            following_url: Swift.String,
+                            gists_url: Swift.String,
+                            gravatar_id: Swift.String,
+                            html_url: Swift.String,
+                            id: Swift.Int,
+                            node_id: Swift.String,
+                            login: Swift.String,
+                            organizations_url: Swift.String,
+                            received_events_url: Swift.String,
+                            repos_url: Swift.String,
+                            site_admin: Swift.Bool,
+                            starred_url: Swift.String,
+                            subscriptions_url: Swift.String,
+                            _type: Swift.String,
+                            url: Swift.String
+                        ) {
+                            self.avatar_url = avatar_url
+                            self.events_url = events_url
+                            self.followers_url = followers_url
+                            self.following_url = following_url
+                            self.gists_url = gists_url
+                            self.gravatar_id = gravatar_id
+                            self.html_url = html_url
+                            self.id = id
+                            self.node_id = node_id
+                            self.login = login
+                            self.organizations_url = organizations_url
+                            self.received_events_url = received_events_url
+                            self.repos_url = repos_url
+                            self.site_admin = site_admin
+                            self.starred_url = starred_url
+                            self.subscriptions_url = subscriptions_url
+                            self._type = _type
+                            self.url = url
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case avatar_url
+                            case events_url
+                            case followers_url
+                            case following_url
+                            case gists_url
+                            case gravatar_id
+                            case html_url
+                            case id
+                            case node_id
+                            case login
+                            case organizations_url
+                            case received_events_url
+                            case repos_url
+                            case site_admin
+                            case starred_url
+                            case subscriptions_url
+                            case _type = "type"
+                            case url
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner`.
+                    public var owner:
+                        Components.Schemas.pull_request.basePayload.repoPayload.ownerPayload
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/private`.
+                    public var _private: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/pulls_url`.
+                    public var pulls_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/releases_url`.
+                    public var releases_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/stargazers_url`.
+                    public var stargazers_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/statuses_url`.
+                    public var statuses_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/subscribers_url`.
+                    public var subscribers_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/subscription_url`.
+                    public var subscription_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/tags_url`.
+                    public var tags_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/teams_url`.
+                    public var teams_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/trees_url`.
+                    public var trees_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/url`.
+                    public var url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/clone_url`.
+                    public var clone_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/default_branch`.
+                    public var default_branch: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/forks`.
+                    public var forks: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/forks_count`.
+                    public var forks_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/git_url`.
+                    public var git_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_downloads`.
+                    public var has_downloads: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_issues`.
+                    public var has_issues: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_projects`.
+                    public var has_projects: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_wiki`.
+                    public var has_wiki: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_pages`.
+                    public var has_pages: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_discussions`.
+                    public var has_discussions: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/homepage`.
+                    public var homepage: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/language`.
+                    public var language: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/master_branch`.
+                    public var master_branch: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/archived`.
+                    public var archived: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/disabled`.
+                    public var disabled: Swift.Bool
+                    /// The repository visibility: public, private, or internal.
+                    ///
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/visibility`.
+                    public var visibility: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/mirror_url`.
+                    public var mirror_url: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/open_issues`.
+                    public var open_issues: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/open_issues_count`.
+                    public var open_issues_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions`.
+                    public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/admin`.
+                        public var admin: Swift.Bool
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/maintain`.
+                        public var maintain: Swift.Bool?
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/push`.
+                        public var push: Swift.Bool
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/triage`.
+                        public var triage: Swift.Bool?
+                        /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/pull`.
+                        public var pull: Swift.Bool
+                        /// Creates a new `permissionsPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - admin:
+                        ///   - maintain:
+                        ///   - push:
+                        ///   - triage:
+                        ///   - pull:
+                        public init(
+                            admin: Swift.Bool,
+                            maintain: Swift.Bool? = nil,
+                            push: Swift.Bool,
+                            triage: Swift.Bool? = nil,
+                            pull: Swift.Bool
+                        ) {
+                            self.admin = admin
+                            self.maintain = maintain
+                            self.push = push
+                            self.triage = triage
+                            self.pull = pull
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case admin
+                            case maintain
+                            case push
+                            case triage
+                            case pull
+                        }
+                    }
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions`.
+                    public var permissions:
+                        Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/temp_clone_token`.
+                    public var temp_clone_token: Swift.String?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/allow_merge_commit`.
+                    public var allow_merge_commit: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/allow_squash_merge`.
+                    public var allow_squash_merge: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/allow_rebase_merge`.
+                    public var allow_rebase_merge: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/license`.
+                    public var license: Components.Schemas.nullable_license_simple?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/pushed_at`.
+                    public var pushed_at: Foundation.Date
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/size`.
+                    public var size: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/ssh_url`.
+                    public var ssh_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/stargazers_count`.
+                    public var stargazers_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/svn_url`.
+                    public var svn_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/topics`.
+                    public var topics: [Swift.String]?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/watchers`.
+                    public var watchers: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/watchers_count`.
+                    public var watchers_count: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/created_at`.
+                    public var created_at: Foundation.Date
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/updated_at`.
+                    public var updated_at: Foundation.Date
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/allow_forking`.
+                    public var allow_forking: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/web_commit_signoff_required`.
+                    public var web_commit_signoff_required: Swift.Bool?
+                    /// Creates a new `repoPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - archive_url:
+                    ///   - assignees_url:
+                    ///   - blobs_url:
+                    ///   - branches_url:
+                    ///   - collaborators_url:
+                    ///   - comments_url:
+                    ///   - commits_url:
+                    ///   - compare_url:
+                    ///   - contents_url:
+                    ///   - contributors_url:
+                    ///   - deployments_url:
+                    ///   - description:
+                    ///   - downloads_url:
+                    ///   - events_url:
+                    ///   - fork:
+                    ///   - forks_url:
+                    ///   - full_name:
+                    ///   - git_commits_url:
+                    ///   - git_refs_url:
+                    ///   - git_tags_url:
+                    ///   - hooks_url:
+                    ///   - html_url:
+                    ///   - id:
+                    ///   - is_template:
+                    ///   - node_id:
+                    ///   - issue_comment_url:
+                    ///   - issue_events_url:
+                    ///   - issues_url:
+                    ///   - keys_url:
+                    ///   - labels_url:
+                    ///   - languages_url:
+                    ///   - merges_url:
+                    ///   - milestones_url:
+                    ///   - name:
+                    ///   - notifications_url:
+                    ///   - owner:
+                    ///   - _private:
+                    ///   - pulls_url:
+                    ///   - releases_url:
+                    ///   - stargazers_url:
+                    ///   - statuses_url:
+                    ///   - subscribers_url:
+                    ///   - subscription_url:
+                    ///   - tags_url:
+                    ///   - teams_url:
+                    ///   - trees_url:
+                    ///   - url:
+                    ///   - clone_url:
+                    ///   - default_branch:
+                    ///   - forks:
+                    ///   - forks_count:
+                    ///   - git_url:
+                    ///   - has_downloads:
+                    ///   - has_issues:
+                    ///   - has_projects:
+                    ///   - has_wiki:
+                    ///   - has_pages:
+                    ///   - has_discussions:
+                    ///   - homepage:
+                    ///   - language:
+                    ///   - master_branch:
+                    ///   - archived:
+                    ///   - disabled:
+                    ///   - visibility: The repository visibility: public, private, or internal.
+                    ///   - mirror_url:
+                    ///   - open_issues:
+                    ///   - open_issues_count:
+                    ///   - permissions:
+                    ///   - temp_clone_token:
+                    ///   - allow_merge_commit:
+                    ///   - allow_squash_merge:
+                    ///   - allow_rebase_merge:
+                    ///   - license:
+                    ///   - pushed_at:
+                    ///   - size:
+                    ///   - ssh_url:
+                    ///   - stargazers_count:
+                    ///   - svn_url:
+                    ///   - topics:
+                    ///   - watchers:
+                    ///   - watchers_count:
+                    ///   - created_at:
+                    ///   - updated_at:
+                    ///   - allow_forking:
+                    ///   - web_commit_signoff_required:
+                    public init(
+                        archive_url: Swift.String,
+                        assignees_url: Swift.String,
+                        blobs_url: Swift.String,
+                        branches_url: Swift.String,
+                        collaborators_url: Swift.String,
+                        comments_url: Swift.String,
+                        commits_url: Swift.String,
+                        compare_url: Swift.String,
+                        contents_url: Swift.String,
+                        contributors_url: Swift.String,
+                        deployments_url: Swift.String,
+                        description: Swift.String,
+                        downloads_url: Swift.String,
+                        events_url: Swift.String,
+                        fork: Swift.Bool,
+                        forks_url: Swift.String,
+                        full_name: Swift.String,
+                        git_commits_url: Swift.String,
+                        git_refs_url: Swift.String,
+                        git_tags_url: Swift.String,
+                        hooks_url: Swift.String,
+                        html_url: Swift.String,
+                        id: Swift.Int,
+                        is_template: Swift.Bool? = nil,
+                        node_id: Swift.String,
+                        issue_comment_url: Swift.String,
+                        issue_events_url: Swift.String,
+                        issues_url: Swift.String,
+                        keys_url: Swift.String,
+                        labels_url: Swift.String,
+                        languages_url: Swift.String,
+                        merges_url: Swift.String,
+                        milestones_url: Swift.String,
+                        name: Swift.String,
+                        notifications_url: Swift.String,
+                        owner: Components.Schemas.pull_request.basePayload.repoPayload.ownerPayload,
+                        _private: Swift.Bool,
+                        pulls_url: Swift.String,
+                        releases_url: Swift.String,
+                        stargazers_url: Swift.String,
+                        statuses_url: Swift.String,
+                        subscribers_url: Swift.String,
+                        subscription_url: Swift.String,
+                        tags_url: Swift.String,
+                        teams_url: Swift.String,
+                        trees_url: Swift.String,
+                        url: Swift.String,
+                        clone_url: Swift.String,
+                        default_branch: Swift.String,
+                        forks: Swift.Int,
+                        forks_count: Swift.Int,
+                        git_url: Swift.String,
+                        has_downloads: Swift.Bool,
+                        has_issues: Swift.Bool,
+                        has_projects: Swift.Bool,
+                        has_wiki: Swift.Bool,
+                        has_pages: Swift.Bool,
+                        has_discussions: Swift.Bool,
+                        homepage: Swift.String,
+                        language: Swift.String,
+                        master_branch: Swift.String? = nil,
+                        archived: Swift.Bool,
+                        disabled: Swift.Bool,
+                        visibility: Swift.String? = nil,
+                        mirror_url: Swift.String? = nil,
+                        open_issues: Swift.Int,
+                        open_issues_count: Swift.Int,
+                        permissions: Components.Schemas.pull_request.basePayload.repoPayload
+                            .permissionsPayload? = nil,
+                        temp_clone_token: Swift.String? = nil,
+                        allow_merge_commit: Swift.Bool? = nil,
+                        allow_squash_merge: Swift.Bool? = nil,
+                        allow_rebase_merge: Swift.Bool? = nil,
+                        license: Components.Schemas.nullable_license_simple? = nil,
+                        pushed_at: Foundation.Date,
+                        size: Swift.Int,
+                        ssh_url: Swift.String,
+                        stargazers_count: Swift.Int,
+                        svn_url: Swift.String,
+                        topics: [Swift.String]? = nil,
+                        watchers: Swift.Int,
+                        watchers_count: Swift.Int,
+                        created_at: Foundation.Date,
+                        updated_at: Foundation.Date,
+                        allow_forking: Swift.Bool? = nil,
+                        web_commit_signoff_required: Swift.Bool? = nil
+                    ) {
+                        self.archive_url = archive_url
+                        self.assignees_url = assignees_url
+                        self.blobs_url = blobs_url
+                        self.branches_url = branches_url
+                        self.collaborators_url = collaborators_url
+                        self.comments_url = comments_url
+                        self.commits_url = commits_url
+                        self.compare_url = compare_url
+                        self.contents_url = contents_url
+                        self.contributors_url = contributors_url
+                        self.deployments_url = deployments_url
+                        self.description = description
+                        self.downloads_url = downloads_url
+                        self.events_url = events_url
+                        self.fork = fork
+                        self.forks_url = forks_url
+                        self.full_name = full_name
+                        self.git_commits_url = git_commits_url
+                        self.git_refs_url = git_refs_url
+                        self.git_tags_url = git_tags_url
+                        self.hooks_url = hooks_url
+                        self.html_url = html_url
+                        self.id = id
+                        self.is_template = is_template
+                        self.node_id = node_id
+                        self.issue_comment_url = issue_comment_url
+                        self.issue_events_url = issue_events_url
+                        self.issues_url = issues_url
+                        self.keys_url = keys_url
+                        self.labels_url = labels_url
+                        self.languages_url = languages_url
+                        self.merges_url = merges_url
+                        self.milestones_url = milestones_url
+                        self.name = name
+                        self.notifications_url = notifications_url
+                        self.owner = owner
+                        self._private = _private
+                        self.pulls_url = pulls_url
+                        self.releases_url = releases_url
+                        self.stargazers_url = stargazers_url
+                        self.statuses_url = statuses_url
+                        self.subscribers_url = subscribers_url
+                        self.subscription_url = subscription_url
+                        self.tags_url = tags_url
+                        self.teams_url = teams_url
+                        self.trees_url = trees_url
+                        self.url = url
+                        self.clone_url = clone_url
+                        self.default_branch = default_branch
+                        self.forks = forks
+                        self.forks_count = forks_count
+                        self.git_url = git_url
+                        self.has_downloads = has_downloads
+                        self.has_issues = has_issues
+                        self.has_projects = has_projects
+                        self.has_wiki = has_wiki
+                        self.has_pages = has_pages
+                        self.has_discussions = has_discussions
+                        self.homepage = homepage
+                        self.language = language
+                        self.master_branch = master_branch
+                        self.archived = archived
+                        self.disabled = disabled
+                        self.visibility = visibility
+                        self.mirror_url = mirror_url
+                        self.open_issues = open_issues
+                        self.open_issues_count = open_issues_count
+                        self.permissions = permissions
+                        self.temp_clone_token = temp_clone_token
+                        self.allow_merge_commit = allow_merge_commit
+                        self.allow_squash_merge = allow_squash_merge
+                        self.allow_rebase_merge = allow_rebase_merge
+                        self.license = license
+                        self.pushed_at = pushed_at
+                        self.size = size
+                        self.ssh_url = ssh_url
+                        self.stargazers_count = stargazers_count
+                        self.svn_url = svn_url
+                        self.topics = topics
+                        self.watchers = watchers
+                        self.watchers_count = watchers_count
+                        self.created_at = created_at
+                        self.updated_at = updated_at
+                        self.allow_forking = allow_forking
+                        self.web_commit_signoff_required = web_commit_signoff_required
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case archive_url
+                        case assignees_url
+                        case blobs_url
+                        case branches_url
+                        case collaborators_url
+                        case comments_url
+                        case commits_url
+                        case compare_url
+                        case contents_url
+                        case contributors_url
+                        case deployments_url
+                        case description
+                        case downloads_url
+                        case events_url
+                        case fork
+                        case forks_url
+                        case full_name
+                        case git_commits_url
+                        case git_refs_url
+                        case git_tags_url
+                        case hooks_url
+                        case html_url
+                        case id
+                        case is_template
+                        case node_id
+                        case issue_comment_url
+                        case issue_events_url
+                        case issues_url
+                        case keys_url
+                        case labels_url
+                        case languages_url
+                        case merges_url
+                        case milestones_url
+                        case name
+                        case notifications_url
+                        case owner
+                        case _private = "private"
+                        case pulls_url
+                        case releases_url
+                        case stargazers_url
+                        case statuses_url
+                        case subscribers_url
+                        case subscription_url
+                        case tags_url
+                        case teams_url
+                        case trees_url
+                        case url
+                        case clone_url
+                        case default_branch
+                        case forks
+                        case forks_count
+                        case git_url
+                        case has_downloads
+                        case has_issues
+                        case has_projects
+                        case has_wiki
+                        case has_pages
+                        case has_discussions
+                        case homepage
+                        case language
+                        case master_branch
+                        case archived
+                        case disabled
+                        case visibility
+                        case mirror_url
+                        case open_issues
+                        case open_issues_count
+                        case permissions
+                        case temp_clone_token
+                        case allow_merge_commit
+                        case allow_squash_merge
+                        case allow_rebase_merge
+                        case license
+                        case pushed_at
+                        case size
+                        case ssh_url
+                        case stargazers_count
+                        case svn_url
+                        case topics
+                        case watchers
+                        case watchers_count
+                        case created_at
+                        case updated_at
+                        case allow_forking
+                        case web_commit_signoff_required
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/repo`.
+                public var repo: Components.Schemas.pull_request.basePayload.repoPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/sha`.
+                public var sha: Swift.String
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/user`.
+                public struct userPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/avatar_url`.
+                    public var avatar_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/events_url`.
+                    public var events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/followers_url`.
+                    public var followers_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/following_url`.
+                    public var following_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/gists_url`.
+                    public var gists_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/gravatar_id`.
+                    public var gravatar_id: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/html_url`.
+                    public var html_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/id`.
+                    public var id: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/node_id`.
+                    public var node_id: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/login`.
+                    public var login: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/organizations_url`.
+                    public var organizations_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/received_events_url`.
+                    public var received_events_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/repos_url`.
+                    public var repos_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/site_admin`.
+                    public var site_admin: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/starred_url`.
+                    public var starred_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/subscriptions_url`.
+                    public var subscriptions_url: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/type`.
+                    public var _type: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/pull-request/base/user/url`.
+                    public var url: Swift.String
+                    /// Creates a new `userPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - avatar_url:
+                    ///   - events_url:
+                    ///   - followers_url:
+                    ///   - following_url:
+                    ///   - gists_url:
+                    ///   - gravatar_id:
+                    ///   - html_url:
+                    ///   - id:
+                    ///   - node_id:
+                    ///   - login:
+                    ///   - organizations_url:
+                    ///   - received_events_url:
+                    ///   - repos_url:
+                    ///   - site_admin:
+                    ///   - starred_url:
+                    ///   - subscriptions_url:
+                    ///   - _type:
+                    ///   - url:
+                    public init(
+                        avatar_url: Swift.String,
+                        events_url: Swift.String,
+                        followers_url: Swift.String,
+                        following_url: Swift.String,
+                        gists_url: Swift.String,
+                        gravatar_id: Swift.String,
+                        html_url: Swift.String,
+                        id: Swift.Int,
+                        node_id: Swift.String,
+                        login: Swift.String,
+                        organizations_url: Swift.String,
+                        received_events_url: Swift.String,
+                        repos_url: Swift.String,
+                        site_admin: Swift.Bool,
+                        starred_url: Swift.String,
+                        subscriptions_url: Swift.String,
+                        _type: Swift.String,
+                        url: Swift.String
+                    ) {
+                        self.avatar_url = avatar_url
+                        self.events_url = events_url
+                        self.followers_url = followers_url
+                        self.following_url = following_url
+                        self.gists_url = gists_url
+                        self.gravatar_id = gravatar_id
+                        self.html_url = html_url
+                        self.id = id
+                        self.node_id = node_id
+                        self.login = login
+                        self.organizations_url = organizations_url
+                        self.received_events_url = received_events_url
+                        self.repos_url = repos_url
+                        self.site_admin = site_admin
+                        self.starred_url = starred_url
+                        self.subscriptions_url = subscriptions_url
+                        self._type = _type
+                        self.url = url
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case avatar_url
+                        case events_url
+                        case followers_url
+                        case following_url
+                        case gists_url
+                        case gravatar_id
+                        case html_url
+                        case id
+                        case node_id
+                        case login
+                        case organizations_url
+                        case received_events_url
+                        case repos_url
+                        case site_admin
+                        case starred_url
+                        case subscriptions_url
+                        case _type = "type"
+                        case url
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request/base/user`.
+                public var user: Components.Schemas.pull_request.basePayload.userPayload
+                /// Creates a new `basePayload`.
+                ///
+                /// - Parameters:
+                ///   - label:
+                ///   - ref:
+                ///   - repo:
+                ///   - sha:
+                ///   - user:
+                public init(
+                    label: Swift.String,
+                    ref: Swift.String,
+                    repo: Components.Schemas.pull_request.basePayload.repoPayload,
+                    sha: Swift.String,
+                    user: Components.Schemas.pull_request.basePayload.userPayload
+                ) {
+                    self.label = label
+                    self.ref = ref
+                    self.repo = repo
+                    self.sha = sha
+                    self.user = user
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case label
+                    case ref
+                    case repo
+                    case sha
+                    case user
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request/base`.
+            public var base: Components.Schemas.pull_request.basePayload
+            /// - Remark: Generated from `#/components/schemas/pull-request/_links`.
+            public struct _linksPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/comments`.
+                public var comments: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/commits`.
+                public var commits: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/statuses`.
+                public var statuses: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/html`.
+                public var html: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/issue`.
+                public var issue: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/review_comments`.
+                public var review_comments: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/review_comment`.
+                public var review_comment: Components.Schemas.link
+                /// - Remark: Generated from `#/components/schemas/pull-request/_links/self`.
+                public var _self: Components.Schemas.link
+                /// Creates a new `_linksPayload`.
+                ///
+                /// - Parameters:
+                ///   - comments:
+                ///   - commits:
+                ///   - statuses:
+                ///   - html:
+                ///   - issue:
+                ///   - review_comments:
+                ///   - review_comment:
+                ///   - _self:
+                public init(
+                    comments: Components.Schemas.link,
+                    commits: Components.Schemas.link,
+                    statuses: Components.Schemas.link,
+                    html: Components.Schemas.link,
+                    issue: Components.Schemas.link,
+                    review_comments: Components.Schemas.link,
+                    review_comment: Components.Schemas.link,
+                    _self: Components.Schemas.link
+                ) {
+                    self.comments = comments
+                    self.commits = commits
+                    self.statuses = statuses
+                    self.html = html
+                    self.issue = issue
+                    self.review_comments = review_comments
+                    self.review_comment = review_comment
+                    self._self = _self
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case comments
+                    case commits
+                    case statuses
+                    case html
+                    case issue
+                    case review_comments
+                    case review_comment
+                    case _self = "self"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request/_links`.
+            public var _links: Components.Schemas.pull_request._linksPayload
+            /// - Remark: Generated from `#/components/schemas/pull-request/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// - Remark: Generated from `#/components/schemas/pull-request/auto_merge`.
+            public var auto_merge: Components.Schemas.auto_merge?
+            /// Indicates whether or not the pull request is a draft.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request/draft`.
+            public var draft: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/pull-request/merged`.
+            public var merged: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/pull-request/mergeable`.
+            public var mergeable: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/pull-request/rebaseable`.
+            public var rebaseable: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/pull-request/mergeable_state`.
+            public var mergeable_state: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request/merged_by`.
+            public var merged_by: Components.Schemas.nullable_simple_user?
+            /// - Remark: Generated from `#/components/schemas/pull-request/comments`.
+            public var comments: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/pull-request/review_comments`.
+            public var review_comments: Swift.Int
+            /// Indicates whether maintainers can modify the pull request.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request/maintainer_can_modify`.
+            public var maintainer_can_modify: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/pull-request/commits`.
+            public var commits: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/pull-request/additions`.
+            public var additions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/pull-request/deletions`.
+            public var deletions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/pull-request/changed_files`.
+            public var changed_files: Swift.Int
+            /// Creates a new `pull_request`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - id:
+            ///   - node_id:
+            ///   - html_url:
+            ///   - diff_url:
+            ///   - patch_url:
+            ///   - issue_url:
+            ///   - commits_url:
+            ///   - review_comments_url:
+            ///   - review_comment_url:
+            ///   - comments_url:
+            ///   - statuses_url:
+            ///   - number: Number uniquely identifying the pull request within its repository.
+            ///   - state: State of this Pull Request. Either `open` or `closed`.
+            ///   - locked:
+            ///   - title: The title of the pull request.
+            ///   - user:
+            ///   - body:
+            ///   - labels:
+            ///   - milestone:
+            ///   - active_lock_reason:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - closed_at:
+            ///   - merged_at:
+            ///   - merge_commit_sha:
+            ///   - assignee:
+            ///   - assignees:
+            ///   - requested_reviewers:
+            ///   - requested_teams:
+            ///   - head:
+            ///   - base:
+            ///   - _links:
+            ///   - author_association:
+            ///   - auto_merge:
+            ///   - draft: Indicates whether or not the pull request is a draft.
+            ///   - merged:
+            ///   - mergeable:
+            ///   - rebaseable:
+            ///   - mergeable_state:
+            ///   - merged_by:
+            ///   - comments:
+            ///   - review_comments:
+            ///   - maintainer_can_modify: Indicates whether maintainers can modify the pull request.
+            ///   - commits:
+            ///   - additions:
+            ///   - deletions:
+            ///   - changed_files:
+            public init(
+                url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                html_url: Swift.String,
+                diff_url: Swift.String,
+                patch_url: Swift.String,
+                issue_url: Swift.String,
+                commits_url: Swift.String,
+                review_comments_url: Swift.String,
+                review_comment_url: Swift.String,
+                comments_url: Swift.String,
+                statuses_url: Swift.String,
+                number: Swift.Int,
+                state: Components.Schemas.pull_request.statePayload,
+                locked: Swift.Bool,
+                title: Swift.String,
+                user: Components.Schemas.simple_user,
+                body: Swift.String? = nil,
+                labels: Components.Schemas.pull_request.labelsPayload,
+                milestone: Components.Schemas.nullable_milestone? = nil,
+                active_lock_reason: Swift.String? = nil,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                closed_at: Foundation.Date? = nil,
+                merged_at: Foundation.Date? = nil,
+                merge_commit_sha: Swift.String? = nil,
+                assignee: Components.Schemas.nullable_simple_user? = nil,
+                assignees: [Components.Schemas.simple_user]? = nil,
+                requested_reviewers: [Components.Schemas.simple_user]? = nil,
+                requested_teams: [Components.Schemas.team_simple]? = nil,
+                head: Components.Schemas.pull_request.headPayload,
+                base: Components.Schemas.pull_request.basePayload,
+                _links: Components.Schemas.pull_request._linksPayload,
+                author_association: Components.Schemas.author_association,
+                auto_merge: Components.Schemas.auto_merge? = nil,
+                draft: Swift.Bool? = nil,
+                merged: Swift.Bool,
+                mergeable: Swift.Bool? = nil,
+                rebaseable: Swift.Bool? = nil,
+                mergeable_state: Swift.String,
+                merged_by: Components.Schemas.nullable_simple_user? = nil,
+                comments: Swift.Int,
+                review_comments: Swift.Int,
+                maintainer_can_modify: Swift.Bool,
+                commits: Swift.Int,
+                additions: Swift.Int,
+                deletions: Swift.Int,
+                changed_files: Swift.Int
+            ) {
+                self.url = url
+                self.id = id
+                self.node_id = node_id
+                self.html_url = html_url
+                self.diff_url = diff_url
+                self.patch_url = patch_url
+                self.issue_url = issue_url
+                self.commits_url = commits_url
+                self.review_comments_url = review_comments_url
+                self.review_comment_url = review_comment_url
+                self.comments_url = comments_url
+                self.statuses_url = statuses_url
+                self.number = number
+                self.state = state
+                self.locked = locked
+                self.title = title
+                self.user = user
+                self.body = body
+                self.labels = labels
+                self.milestone = milestone
+                self.active_lock_reason = active_lock_reason
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.closed_at = closed_at
+                self.merged_at = merged_at
+                self.merge_commit_sha = merge_commit_sha
+                self.assignee = assignee
+                self.assignees = assignees
+                self.requested_reviewers = requested_reviewers
+                self.requested_teams = requested_teams
+                self.head = head
+                self.base = base
+                self._links = _links
+                self.author_association = author_association
+                self.auto_merge = auto_merge
+                self.draft = draft
+                self.merged = merged
+                self.mergeable = mergeable
+                self.rebaseable = rebaseable
+                self.mergeable_state = mergeable_state
+                self.merged_by = merged_by
+                self.comments = comments
+                self.review_comments = review_comments
+                self.maintainer_can_modify = maintainer_can_modify
+                self.commits = commits
+                self.additions = additions
+                self.deletions = deletions
+                self.changed_files = changed_files
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case id
+                case node_id
+                case html_url
+                case diff_url
+                case patch_url
+                case issue_url
+                case commits_url
+                case review_comments_url
+                case review_comment_url
+                case comments_url
+                case statuses_url
+                case number
+                case state
+                case locked
+                case title
+                case user
+                case body
+                case labels
+                case milestone
+                case active_lock_reason
+                case created_at
+                case updated_at
+                case closed_at
+                case merged_at
+                case merge_commit_sha
+                case assignee
+                case assignees
+                case requested_reviewers
+                case requested_teams
+                case head
+                case base
+                case _links
+                case author_association
+                case auto_merge
+                case draft
+                case merged
+                case mergeable
+                case rebaseable
+                case mergeable_state
+                case merged_by
+                case comments
+                case review_comments
+                case maintainer_can_modify
+                case commits
+                case additions
+                case deletions
+                case changed_files
             }
         }
         /// Data related to a release.

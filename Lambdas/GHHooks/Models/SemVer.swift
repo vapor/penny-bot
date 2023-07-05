@@ -34,7 +34,7 @@ struct SemVer {
     var patch: Int
     var prerelease: Prerelease?
 
-    init?(string: String) {
+    init? (string: String) {
         // 1.2.3-beta.4.5
         let parts = string.split(separator: "-")
         switch parts.count {
