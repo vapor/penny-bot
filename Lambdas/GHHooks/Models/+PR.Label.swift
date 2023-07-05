@@ -12,13 +12,15 @@ enum KnownLabel: String {
     case semVerMinor = "semver-minor"
     case semVerPatch = "semver-patch"
     case release = "release"
+    case noReleaseNeeded = "no-release-needed"
 
-    func toBump() -> SemVerBump {
+    func toBump() -> SemVerBump? {
         switch self {
         case .semVerMajor: return .major
         case .semVerMinor: return .minor
         case .semVerPatch: return .patch
         case .release: return .releaseStage
+        case .noReleaseNeeded: return nil
         }
     }
 }
