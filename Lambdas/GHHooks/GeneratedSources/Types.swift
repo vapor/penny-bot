@@ -970,7 +970,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/homepage`.
             public var homepage: Swift.String
             /// - Remark: Generated from `#/components/schemas/repository/language`.
-            public var language: Swift.String
+            public var language: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/forks_count`.
             public var forks_count: Swift.Int
             /// - Remark: Generated from `#/components/schemas/repository/stargazers_count`.
@@ -2285,7 +2285,7 @@ public enum Components {
                 hooks_url: Swift.String,
                 svn_url: Swift.String,
                 homepage: Swift.String,
-                language: Swift.String,
+                language: Swift.String? = nil,
                 forks_count: Swift.Int,
                 stargazers_count: Swift.Int,
                 watchers_count: Swift.Int,
@@ -9169,7 +9169,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/label/name`.
             public var name: Swift.String
             /// - Remark: Generated from `#/components/schemas/label/description`.
-            public var description: Swift.String
+            public var description: Swift.String?
             /// 6-character hex code, without the leading #, identifying the color
             ///
             /// - Remark: Generated from `#/components/schemas/label/color`.
@@ -9191,7 +9191,7 @@ public enum Components {
                 node_id: Swift.String,
                 url: Swift.String,
                 name: Swift.String,
-                description: Swift.String,
+                description: Swift.String? = nil,
                 color: Swift.String,
                 _default: Swift.Bool
             ) {
