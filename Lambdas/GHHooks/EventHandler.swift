@@ -32,7 +32,7 @@ struct EventHandler {
         let prLink = pr.html_url
 
         let repo = event.repository
-        let repoName = repo.organization?.name == "vapor" ? repo.name : repo.full_name
+        let repoName = repo.organization?.login == "vapor" ? repo.name : repo.full_name
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
