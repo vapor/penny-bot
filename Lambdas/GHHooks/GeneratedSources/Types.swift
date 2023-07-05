@@ -9855,7 +9855,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/homepage`.
                     public var homepage: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/language`.
-                    public var language: Swift.String
+                    public var language: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/master_branch`.
                     public var master_branch: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/archived`.
@@ -10141,7 +10141,7 @@ public enum Components {
                         has_pages: Swift.Bool,
                         has_discussions: Swift.Bool,
                         homepage: Swift.String,
-                        language: Swift.String,
+                        language: Swift.String? = nil,
                         master_branch: Swift.String? = nil,
                         archived: Swift.Bool,
                         disabled: Swift.Bool,
