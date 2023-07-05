@@ -30,7 +30,7 @@ struct PRHandler {
         event.repository
     }
     var repoName: String {
-        repo.organization?.name == "vapor" ? repo.name : repo.full_name
+        repo.organization?.login == "vapor" ? repo.name : repo.full_name
     }
 
     init(context: HandlerContext) throws {
@@ -55,9 +55,6 @@ struct PRHandler {
         let creatorLink = pr.user.html_url
 
         let prLink = pr.html_url
-
-        let repo = event.repository
-        let repoName = repo.organization?.login == "vapor" ? repo.name : repo.full_name
 
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
@@ -118,7 +115,8 @@ struct PRHandler {
                 >>> \(pr.title)
 
                 \(release.html_url)
-                """
+                """,
+                color: .blue
             )])
         ).guardSuccess()
     }
