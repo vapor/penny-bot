@@ -33,7 +33,10 @@ struct GHHooksHandler: LambdaHandler {
             client: httpClient,
             timeout: .seconds(3)
         ))
-        let middleware = GHLazyMiddleware(secretsRetriever: secretsRetriever)
+        let middleware = GHLazyMiddleware(
+            secretsRetriever: secretsRetriever,
+            logger: logger
+        )
         self.githubClient = Client(
             serverURL: try Servers.server1(),
             transport: transport,

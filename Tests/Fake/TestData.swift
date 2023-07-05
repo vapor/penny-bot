@@ -65,4 +65,19 @@ public enum TestData {
             return nil
         }
     }
+
+    private static let ghRestOperations: [String: Any] = {
+        let data = resource(named: "ghRestOperations.json")
+        let object = try! JSONSerialization.jsonObject(with: data, options: [])
+        return object as! [String: Any]
+    }()
+
+    /// Probably could be more efficient than encoding then decoding again?!
+    public static func `for`(ghOperationId key: String) -> Data? {
+        if let object = ghRestOperations[key] {
+            return try! JSONSerialization.data(withJSONObject: object)
+        } else {
+            return nil
+        }
+    }
 }

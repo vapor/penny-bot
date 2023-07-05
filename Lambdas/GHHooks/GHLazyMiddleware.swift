@@ -1,4 +1,5 @@
 import OpenAPIRuntime
+import Logging
 import Foundation
 import struct DiscordModels.Secret
 
@@ -10,12 +11,16 @@ actor GHLazyMiddleware: ClientMiddleware {
     /// doesn't end up in logs just because of a print()/log().
     private var githubToken: Secret?
     private let secretsRetriever: SecretsRetriever
+    private let logger: Logger
+
+    private var idGenerator = 0
 
     private var isLoading = false
     private var loadWaiters: [CheckedContinuation<Void, Never>] = []
 
-    init(secretsRetriever: SecretsRetriever) {
+    init(secretsRetriever: SecretsRetriever, logger: Logger) {
         self.secretsRetriever = secretsRetriever
+        self.logger = logger
     }
 
     func intercept(
@@ -38,7 +43,24 @@ actor GHLazyMiddleware: ClientMiddleware {
             value: "2022-11-28"
         )
 
-        return try await next(request, baseURL)
+        self.idGenerator += 1
+        let requestID = idGenerator
+
+        logger.debug("Will send request to Github", metadata: [
+            "request": "\(request)",
+            "baseURL": .stringConvertible(baseURL),
+            "operationID": .string(operationID),
+            "requestID": .stringConvertible(requestID),
+        ])
+
+        let response = try await next(request, baseURL)
+
+        logger.debug("Got response from Github", metadata: [
+            "response": "\(response.fullDescription)",
+            "requestID": .stringConvertible(requestID),
+        ])
+
+        return response
     }
 
     /// Claims a loading lock then loads the token.
@@ -74,5 +96,15 @@ private extension [HeaderField] {
         } else {
             self.append(header)
         }
+    }
+}
+
+private extension Response {
+    var fullDescription: String {
+        "Response(" +
+        "status: \(statusCode), " +
+        "headers: \(headerFields.description), " +
+        "body: \(String(decoding: body, as: UTF8.self))" +
+        ")"
     }
 }

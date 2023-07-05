@@ -2803,7 +2803,15 @@
             "assignees": [],
             "requested_reviewers": [],
             "requested_teams": [],
-            "labels": [],
+            "labels": [{
+                "id": 3894514138,
+                "node_id": "LA_kwDOG8kJ8M7oIZHa",
+                "url": "https://api.github.com/repos/vapor/penny-bot/labels/bug",
+                "name": "semver-patch",
+                "color": "d73a4a",
+                "default": true,
+                "description": "Changed this label for the tests"
+            }],
             "milestone": null,
             "draft": false,
             "commits_url": "https://api.github.com/repos/vapor/websocket-kit/pulls/141/commits",

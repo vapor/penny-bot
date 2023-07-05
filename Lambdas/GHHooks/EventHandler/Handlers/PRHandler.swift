@@ -84,7 +84,12 @@ struct PRHandler {
 
         let previousRelease = try await getLatestRelease()
 
-        let tag = previousRelease.tag_name
+        var tag = previousRelease.tag_name
+        var tagPrefix = ""
+        /// For tags like "v1.0.0" which start with a alphabetical character.
+        if tag.first?.isNumber == false {
+            tagPrefix = String(tag.removeFirst())
+        }
         guard let previousVersion = SemanticVersion(string: tag) else {
             throw Errors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
         }
@@ -92,6 +97,7 @@ struct PRHandler {
         guard let version = previousVersion.next(bump) else {
             throw Errors.cantBumpSemVer(version: previousVersion, bump: bump)
         }
+        let versionDescription = tagPrefix + version.description
 
         let acknowledgment: String
         if pr.user.login == mergedBy.login {
@@ -100,7 +106,11 @@ struct PRHandler {
             acknowledgment = "This patch was authored by @\(pr.user.login) and released by @\(mergedBy.login)."
         }
 
-        let release = try await makeNewRelease(version: version, acknowledgment: acknowledgment)
+        let release = try await makeNewRelease(
+            version: versionDescription,
+            isPrerelease: !version.prereleaseIdentifiers.isEmpty,
+            acknowledgment: acknowledgment
+        )
 
         try await sendComment(release: release)
 
@@ -142,7 +152,8 @@ struct PRHandler {
     }
 
     func makeNewRelease(
-        version: SemanticVersion,
+        version: String,
+        isPrerelease: Bool,
         acknowledgment: String
     ) async throws -> Components.Schemas.release {
         let response = try await context.githubClient.repos_create_release(.init(
@@ -160,7 +171,7 @@ struct PRHandler {
                 \(pr.body ?? "")
                 """,
                 draft: false,
-                prerelease: !version.prereleaseIdentifiers.isEmpty,
+                prerelease: isPrerelease,
                 make_latest: ._true
             ))
         ))
