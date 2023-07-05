@@ -152,8 +152,10 @@ actor DiscordService {
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         var canSendToChannel = true
 
+        /// If the channel is in the deny-list, then can't send the response to the channel directly.
         canSendToChannel = !Constants.Channels.thanksResponseDenyList.contains(channelId)
 
+        /// If it still can send the message, check for permissions too.
         if canSendToChannel {
             do {
                 canSendToChannel = try await vaporGuild.userHasPermissions(
@@ -167,6 +169,8 @@ actor DiscordService {
             }
         }
 
+        /// Allowed mentions make it so the user is notified even when they are only
+        /// mentioned in an embed, which by default denies notifications.
         var allowedMentions: Payloads.AllowedMentions?
         if let userToExplicitlyMention {
             allowedMentions = .init(users: [userToExplicitlyMention])
