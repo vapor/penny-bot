@@ -31,9 +31,9 @@ struct IssueHandler {
         let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".unicodesPrefix(264)
 
         let description = """
-        ## \(issue.title)
+        ### \(issue.title)
 
-        ### By **[\(creatorName)](\(creatorLink))**
+        **By [\(creatorName)](\(creatorLink))**
         \(body)
         """
 

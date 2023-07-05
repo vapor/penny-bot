@@ -59,9 +59,9 @@ struct PRHandler {
         let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
 
         let description = """
-        ## \(pr.title)
+        ### \(pr.title)
 
-        ### By **[\(creatorName)](\(creatorLink))**
+        **By [\(creatorName)](\(creatorLink))**
         \(body)
         """
 
