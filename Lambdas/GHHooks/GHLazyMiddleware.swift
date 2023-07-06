@@ -27,12 +27,15 @@ actor GHLazyMiddleware: ClientMiddleware {
         _ request: Request,
         baseURL: URL,
         operationID: String,
-        next: (Request, URL) async throws -> Response
+        next: @Sendable (Request, URL) async throws -> Response
     ) async throws -> Response {
         try await loadTokenIfNotLoaded()
 
         var request = request
-        request.headerFields.addOrReplace(name: "Accept", value: "application/vnd.github.raw+json")
+        request.headerFields.addOrReplace(
+            name: "Accept",
+            value: "application/vnd.github.raw+json"
+        )
         request.headerFields.addOrReplace(
             name: "Authorization",
             /// Token loaded so can force-unwrap.
