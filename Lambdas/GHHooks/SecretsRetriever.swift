@@ -19,10 +19,10 @@ actor SecretsRetriever {
     }
 
     func getSecret(arnEnvVarKey: String) async throws -> Secret {
-        if let cached = cache[arnEnvVarKey] {
-            return cached
-        } else {
-            return try await withLock {
+        return try await withLock {
+            if let cached = cache[arnEnvVarKey] {
+                return cached
+            } else {
                 let value = try await self.getSecretFromAWS(arnEnvVarKey: arnEnvVarKey)
                 self.setCache(key: arnEnvVarKey, value: value)
                 return value
