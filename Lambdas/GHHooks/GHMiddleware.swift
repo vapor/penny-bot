@@ -4,7 +4,6 @@ import Foundation
 import struct DiscordModels.Secret
 
 /// Adds some headers to all requests.
-/// Loads the GH token lazily to avoid additional secrets-manager costs.
 actor GHMiddleware: ClientMiddleware {
     private let secretsRetriever: SecretsRetriever
     private let logger: Logger

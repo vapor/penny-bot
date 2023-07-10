@@ -62,7 +62,7 @@ struct PRHandler {
 
         let prLink = pr.html_url
 
-        let body = pr.body.map { "\n\n>>> \($0)".unicodesPrefix(264) } ?? ""
+        let body = pr.body.map { "\n>>> \($0)".unicodesPrefix(264) } ?? ""
 
         let description = """
         ### \(pr.title)
