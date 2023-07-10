@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "0f1d5955650f40375dec424e0c1bfc2b73aa59f3"
+        "revision" : "c6c68bc6d3e93de23018e9a882359d0561d42f1e"
       }
     },
     {
@@ -175,8 +175,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "6213ba7a06febe8fef60563a4a7d26a4085783cf",
-        "version" : "2.54.0"
+        "revision" : "324bc65a28323660fad8a36a7a37f0c2c78eeb9a",
+        "version" : "2.55.0"
       }
     },
     {
@@ -225,6 +225,15 @@
       }
     },
     {
+      "identity" : "swift-openapi-async-http-client",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
+      "state" : {
+        "revision" : "32f3ae2f51e4989d540ce7f46d770f224fe51a28",
+        "version" : "0.1.1"
+      }
+    },
+    {
       "identity" : "swift-openapi-generator",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
@@ -240,6 +249,15 @@
       "state" : {
         "revision" : "e81f70f2a8b445224dc6b97d0c31ed0d190e04de",
         "version" : "0.1.4"
+      }
+    },
+    {
+      "identity" : "swift-semver",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/gwynne/swift-semver",
+      "state" : {
+        "revision" : "cfed59ed4485a68d87700c2a40297f7786f7ae9e",
+        "version" : "0.1.0-alpha.3"
       }
     },
     {

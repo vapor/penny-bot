@@ -150,22 +150,33 @@ actor DiscordService {
         userToExplicitlyMention: UserSnowflake?,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
-        let hasPermissionToSend: Bool
-        do {
-            hasPermissionToSend = try await vaporGuild.userHasPermissions(
-                userId: Snowflake(Constants.botId),
-                channelId: channelId,
-                permissions: [.sendMessages]
-            )
-        } catch {
-            logger.report("Can't resolve user permissions", error: error)
-            return nil
+        var canSendToChannel = true
+
+        /// If the channel is in the deny-list, then can't send the response to the channel directly.
+        canSendToChannel = !Constants.Channels.thanksResponseDenyList.contains(channelId)
+
+        /// If it still can send the message, check for permissions too.
+        if canSendToChannel {
+            do {
+                canSendToChannel = try await vaporGuild.userHasPermissions(
+                    userId: Snowflake(Constants.botId),
+                    channelId: channelId,
+                    permissions: [.sendMessages]
+                )
+            } catch {
+                logger.report("Can't resolve user permissions", error: error)
+                return nil
+            }
         }
+
+        /// Allowed mentions make it so the user is notified even when they are only
+        /// mentioned in an embed, which by default denies notifications.
         var allowedMentions: Payloads.AllowedMentions?
         if let userToExplicitlyMention {
             allowedMentions = .init(users: [userToExplicitlyMention])
         }
-        if hasPermissionToSend {
+
+        if canSendToChannel {
             return await self.sendMessage(
                 channelId: channelId,
                 payload: .init(
