@@ -113,32 +113,38 @@ class GHHooksTests: XCTestCase {
     }
 
     func testEventHandler() async throws {
-        try await handleEvent(key: "issue1", eventName: .issues, expectResponse: false)
-        try await handleEvent(key: "issue2", eventName: .issues, expectResponse: true)
-        try await handleEvent(key: "issue3", eventName: .issues, expectResponse: false)
+        try await handleEvent(key: "issue1", eventName: .issues, expectResponse: .no)
+        try await handleEvent(
+            key: "issue2",
+            eventName: .issues,
+            expectResponse: .yes(at: .issueAndPRs)
+        )
+        try await handleEvent(key: "issue3", eventName: .issues, expectResponse: .no)
 
-        try await handleEvent(key: "pr1", eventName: .pull_request, expectResponse: false)
-        try await handleEvent(key: "pr2", eventName: .pull_request, expectResponse: false)
-        try await handleEvent(key: "pr3", eventName: .pull_request, expectResponse: false)
+        try await handleEvent(key: "pr1", eventName: .pull_request, expectResponse: .no)
+        try await handleEvent(key: "pr2", eventName: .pull_request, expectResponse: .no)
+        try await handleEvent(key: "pr3", eventName: .pull_request, expectResponse: .no)
         try await handleEvent(
             key: "pr4",
             eventName: .pull_request,
-            expectResponse: true,
-            responseChannelId: Constants.Channels.logs.id
+            expectResponse: .yes(at: .logs)
         )
         try await handleEvent(
             key: "pr5",
             eventName: .pull_request,
-            expectResponse: true,
-            responseChannelId: Constants.Channels.logs.id
+            expectResponse: .yes(at: .logs)
+        )
+        try await handleEvent(
+            key: "pr6",
+            eventName: .pull_request,
+            expectResponse: .no
         )
     }
 
     func handleEvent(
         key: String,
         eventName: GHEvent.Kind,
-        expectResponse: Bool,
-        responseChannelId: ChannelSnowflake = Constants.Channels.issueAndPRs.id,
+        expectResponse: ExpectResponse,
         line: UInt = #line
     ) async throws {
         let data = TestData.for(ghEventKey: key)!
@@ -156,12 +162,13 @@ class GHHooksTests: XCTestCase {
                     logger: Logger(label: "GHHooksTests")
                 )
             ).handle()
-            let response = await FakeResponseStorage.shared.awaitResponse(
-                at: .createMessage(channelId: responseChannelId),
-                expectFailure: !expectResponse,
-                line: line
-            ).value
-            if expectResponse {
+            switch expectResponse {
+            case .no: break
+            case .yes(let channel):
+                let response = await FakeResponseStorage.shared.awaitResponse(
+                    at: .createMessage(channelId: channel.id),
+                    line: line
+                ).value
                 XCTAssertEqual(
                     "\(type(of: response))", "\(Payloads.CreateMessage.self)",
                     line: line
@@ -175,5 +182,10 @@ class GHHooksTests: XCTestCase {
             let event = String(decoding: prettyJSON, as: UTF8.self)
             XCTFail("Failed handling event with error: \(error). EventName: \(eventName), event: \(event)", line: line)
         }
+    }
+
+    enum ExpectResponse {
+        case no
+        case yes(at: Constants.Channels)
     }
 }
