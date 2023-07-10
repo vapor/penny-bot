@@ -130,12 +130,12 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "pr4",
             eventName: .pull_request,
-            expectResponse: .yes(at: .logs)
+            expectResponse: .yes(at: .release)
         )
         try await handleEvent(
             key: "pr5",
             eventName: .pull_request,
-            expectResponse: .yes(at: .logs)
+            expectResponse: .yes(at: .release)
         )
         try await handleEvent(
             key: "pr6",
