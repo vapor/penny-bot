@@ -76,6 +76,7 @@ extension SemanticVersion {
                     /// Doesn't have any minor identifiers. We add it.
                     version.prereleaseIdentifiers.append("1")
                 } else {
+                    /// Already checked not-nil, but still trying to be safe.
                     guard let prev = Int(version.prereleaseIdentifiers.removeLast())
                     else { return nil }
                     version.prereleaseIdentifiers.append("\(prev + 1)")
@@ -86,9 +87,9 @@ extension SemanticVersion {
                     version.prereleaseIdentifiers.append("1")
                 } else {
                     /// Already checked not-nil, but still trying to be safe.
-                    guard let number = Int(version.prereleaseIdentifiers[1])
+                    guard let prev = Int(version.prereleaseIdentifiers[1])
                     else { return nil }
-                    version.prereleaseIdentifiers[1] = "\(number + 1)"
+                    version.prereleaseIdentifiers[1] = "\(prev + 1)"
                 }
             }
         }
