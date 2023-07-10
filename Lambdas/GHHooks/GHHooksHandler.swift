@@ -14,20 +14,27 @@ struct GHHooksHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
-    let discordClient: any DiscordClient
+    let httpClient: HTTPClient
     let githubClient: Client
     let secretsRetriever: SecretsRetriever
     let logger: Logger
 
+    /// We don't do this in the initializer to avoid an unnecessary
+    /// `secretsRetriever.getSecret()` call which costs $$$.
+    var discordClient: any DiscordClient {
+        get async throws {
+            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+        }
+    }
+
     init(context: LambdaInitializationContext) async throws {
         self.logger = context.logger
 
-        let httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
-        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
-        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
+        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
 
-        let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-        self.discordClient = await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+        let awsClient = AWSClient(httpClientProvider: .shared(self.httpClient))
+        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         let transport = AsyncHTTPClientTransport(configuration: .init(
             client: httpClient,
