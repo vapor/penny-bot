@@ -10,8 +10,8 @@ actor SecretsRetriever {
     private var cache: [String: Secret] = [:]
     let logger: Logger
 
-    private var isLoading = false
-    private var loadWaiters: [CheckedContinuation<Void, Never>] = []
+    private var isLocked = false
+    private var lockWaiters: [CheckedContinuation<Void, Never>] = []
 
     init(awsClient: AWSClient, logger: Logger) {
         self.secretsManager = SecretsManager(client: awsClient)
@@ -20,7 +20,7 @@ actor SecretsRetriever {
 
     func getSecret(arnEnvVarKey: String) async throws -> Secret {
         return try await withLock {
-            if let cached = cache[arnEnvVarKey] {
+            if let cached = getCache(key: arnEnvVarKey) {
                 return cached
             } else {
                 let value = try await self.getSecretFromAWS(arnEnvVarKey: arnEnvVarKey)
@@ -45,16 +45,16 @@ actor SecretsRetriever {
     }
 
     private func withLock<T>(block: () async throws -> T) async rethrows -> T {
-        while isLoading {
+        while isLocked {
             await withCheckedContinuation { continuation in
-                loadWaiters.append(continuation)
+                lockWaiters.append(continuation)
             }
         }
 
-        isLoading = true
+        isLocked = true
         defer {
-            isLoading = false
-            loadWaiters.popLast()?.resume()
+            isLocked = false
+            lockWaiters.popLast()?.resume()
         }
 
         return try await block()
@@ -62,5 +62,9 @@ actor SecretsRetriever {
 
     private func setCache(key: String, value: Secret) {
         self.cache[key] = value
+    }
+
+    private func getCache(key: String) -> Secret? {
+        self.cache[key]
     }
 }
