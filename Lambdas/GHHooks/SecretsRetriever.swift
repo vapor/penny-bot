@@ -1,18 +1,36 @@
+import struct DiscordModels.Secret
 import SotoCore
 import SotoSecretsManager
 import Logging
 import Foundation
 
-struct SecretsRetriever {
+actor SecretsRetriever {
     private let secretsManager: SecretsManager
+    /// `[arnEnvVarKey: secret]`
+    private var cache: [String: Secret] = [:]
     let logger: Logger
+
+    private var isLoading = false
+    private var loadWaiters: [CheckedContinuation<Void, Never>] = []
 
     init(awsClient: AWSClient, logger: Logger) {
         self.secretsManager = SecretsManager(client: awsClient)
         self.logger = logger
     }
 
-    func getSecret(arnEnvVarKey: String) async throws -> String {
+    func getSecret(arnEnvVarKey: String) async throws -> Secret {
+        if let cached = cache[arnEnvVarKey] {
+            return cached
+        } else {
+            return try await withLock {
+                let value = try await self.getSecretFromAWS(arnEnvVarKey: arnEnvVarKey)
+                self.setCache(key: arnEnvVarKey, value: value)
+                return value
+            }
+        }
+    }
+
+    private func getSecretFromAWS(arnEnvVarKey: String) async throws -> Secret {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
             throw Errors.envVarNotFound(name: arnEnvVarKey)
         }
@@ -23,6 +41,30 @@ struct SecretsRetriever {
         guard let secret = secret.secretString else {
             throw Errors.secretNotFound(arn: arn)
         }
-        return secret
+        return Secret(secret)
+    }
+
+    private func withLock<T>(block: () async throws -> T) async rethrows -> T {
+        if isLoading {
+            await withCheckedContinuation { continuation in
+                loadWaiters.append(continuation)
+            }
+        }
+
+        isLoading = true
+        defer { isLoading = false }
+
+        let value = try await block()
+
+        for waiter in self.loadWaiters {
+            waiter.resume()
+        }
+        self.loadWaiters.removeAll()
+
+        return value
+    }
+
+    private func setCache(key: String, value: Secret) {
+        self.cache[key] = value
     }
 }

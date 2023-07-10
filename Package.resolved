@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "0f1d5955650f40375dec424e0c1bfc2b73aa59f3"
+        "revision" : "c6c68bc6d3e93de23018e9a882359d0561d42f1e"
       }
     },
     {
@@ -175,8 +175,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "6213ba7a06febe8fef60563a4a7d26a4085783cf",
-        "version" : "2.54.0"
+        "revision" : "324bc65a28323660fad8a36a7a37f0c2c78eeb9a",
+        "version" : "2.55.0"
       }
     },
     {

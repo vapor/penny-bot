@@ -7,9 +7,6 @@ import struct DiscordModels.Secret
 /// Loads the GH token lazily to avoid additional secrets-manager costs.
 actor GHLazyMiddleware: ClientMiddleware {
 
-    /// Use the Secret type from DiscordBM to make sure that the token
-    /// doesn't end up in logs just because of a print()/log().
-    private var githubToken: Secret?
     private let secretsRetriever: SecretsRetriever
     private let logger: Logger
 
@@ -29,17 +26,17 @@ actor GHLazyMiddleware: ClientMiddleware {
         operationID: String,
         next: @Sendable (Request, URL) async throws -> Response
     ) async throws -> Response {
-        try await loadTokenIfNotLoaded()
-
         var request = request
-        request.headerFields.addOrReplace(
-            name: "Accept",
-            value: "application/vnd.github.raw+json"
-        )
+
+        let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
         request.headerFields.addOrReplace(
             name: "Authorization",
             /// Token loaded so can force-unwrap.
-            value: "Bearer \(githubToken!.value)"
+            value: "Bearer \(token.value)"
+        )
+        request.headerFields.addOrReplace(
+            name: "Accept",
+            value: "application/vnd.github.raw+json"
         )
         request.headerFields.addOrReplace(
             name: "X-GitHub-Api-Version",
@@ -64,28 +61,6 @@ actor GHLazyMiddleware: ClientMiddleware {
         ])
 
         return response
-    }
-
-    /// Claims a loading lock then loads the token.
-    private func loadTokenIfNotLoaded() async throws {
-        if isLoading {
-            await withCheckedContinuation { continuation in
-                loadWaiters.append(continuation)
-            }
-        }
-
-        guard githubToken == nil else { return }
-
-        isLoading = true
-        defer { isLoading = false }
-
-        let githubToken = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
-        self.githubToken = Secret(githubToken)
-
-        for waiter in self.loadWaiters {
-            waiter.resume()
-        }
-        self.loadWaiters.removeAll()
     }
 }
 

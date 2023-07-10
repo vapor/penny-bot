@@ -131,7 +131,7 @@ struct GHHooksHandler: LambdaHandler {
 
     func getWebhookSecret() async throws -> SymmetricKey {
         let secret = try await secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
-        let data = Data(secret.utf8)
+        let data = Data(secret.value.utf8)
         return SymmetricKey(data: data)
     }
 }
