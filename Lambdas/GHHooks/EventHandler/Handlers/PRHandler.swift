@@ -115,11 +115,8 @@ struct PRHandler {
 
         try await sendComment(release: release)
 
-        /// FXIME: change channel to `.release` after tests.
-        /// Give send-message perm to Penny for the release channel.
-        /// Repair tests.
         try await context.discordClient.createMessage(
-            channelId: Constants.Channels.logs.id,
+            channelId: Constants.Channels.release.id,
             payload: .init(embeds: [.init(
                 title: "[\(repoName)] \(release.tag_name)",
                 description: """
