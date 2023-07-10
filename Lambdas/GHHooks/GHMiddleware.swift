@@ -24,9 +24,11 @@ actor GHMiddleware: ClientMiddleware {
         var request = request
 
         let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
+        let username = "VaporBot"
+        let basicCredentials = Data("\(username):\(token.value)".utf8).base64EncodedString()
         request.headerFields.addOrReplace(
             name: "Authorization",
-            value: "Bearer \(token.value)"
+            value: "Basic \(basicCredentials)"
         )
         request.headerFields.addOrReplace(
             name: "Accept",
