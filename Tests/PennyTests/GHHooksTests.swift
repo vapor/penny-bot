@@ -19,6 +19,49 @@ class GHHooksTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
 
+    func testUnicodesPrefix() throws {
+        do {
+            let scalars_16 = "Hello, world! 👍🏾"
+            let scalars_14 = "Hello, world! "
+            let scalars_13 = "Hello, world!"
+            let scalars_12 = "Hello, world"
+            let scalars_7 = "Hello, "
+            XCTAssertEqual(scalars_16.unicodesPrefix(17), scalars_16)
+            XCTAssertEqual(scalars_16.unicodesPrefix(16), scalars_16)
+            XCTAssertEqual(scalars_16.unicodesPrefix(15), scalars_14)
+            XCTAssertEqual(scalars_16.unicodesPrefix(14), scalars_14)
+            XCTAssertEqual(scalars_16.unicodesPrefix(13), scalars_13)
+            XCTAssertEqual(scalars_16.unicodesPrefix(12), scalars_12)
+            XCTAssertEqual(scalars_16.unicodesPrefix(7), scalars_7)
+        }
+
+        do {
+            let scalars_11 = "👍🏿👍🏾👍🏽👍🏼👍🏻👍"
+            let scalars_10 = "👍🏿👍🏾👍🏽👍🏼👍🏻"
+            let scalars_8 = "👍🏿👍🏾👍🏽👍🏼"
+            XCTAssertEqual(scalars_11.unicodesPrefix(12), scalars_11)
+            XCTAssertEqual(scalars_11.unicodesPrefix(11), scalars_11)
+            XCTAssertEqual(scalars_11.unicodesPrefix(10), scalars_10)
+            XCTAssertEqual(scalars_11.unicodesPrefix(9), scalars_8)
+            XCTAssertEqual(scalars_11.unicodesPrefix(8), scalars_8)
+        }
+
+        do {
+            let scalars_14 = "👩‍👩‍👧‍👦👨‍👨‍👧‍👦"
+            let scalars_7 = "👩‍👩‍👧‍👦"
+            let scalars_0 = ""
+            XCTAssertEqual(scalars_14.unicodesPrefix(15), scalars_14)
+            XCTAssertEqual(scalars_14.unicodesPrefix(14), scalars_14)
+            XCTAssertEqual(scalars_14.unicodesPrefix(13), scalars_7)
+            XCTAssertEqual(scalars_14.unicodesPrefix(10), scalars_7)
+            XCTAssertEqual(scalars_14.unicodesPrefix(8), scalars_7)
+            XCTAssertEqual(scalars_14.unicodesPrefix(7), scalars_7)
+            XCTAssertEqual(scalars_14.unicodesPrefix(6), scalars_0)
+            XCTAssertEqual(scalars_14.unicodesPrefix(1), scalars_0)
+            XCTAssertEqual(scalars_14.unicodesPrefix(0), scalars_0)
+        }
+    }
+
     func testSemVerBump() throws {
         do {
             let version = try XCTUnwrap(SemanticVersion(string: "11.0.0"))
