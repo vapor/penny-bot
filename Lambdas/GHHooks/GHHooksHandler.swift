@@ -40,7 +40,7 @@ struct GHHooksHandler: LambdaHandler {
             client: httpClient,
             timeout: .seconds(3)
         ))
-        let middleware = GHLazyMiddleware(
+        let middleware = GHMiddleware(
             secretsRetriever: secretsRetriever,
             logger: logger
         )

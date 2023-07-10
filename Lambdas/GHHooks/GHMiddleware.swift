@@ -5,15 +5,11 @@ import struct DiscordModels.Secret
 
 /// Adds some headers to all requests.
 /// Loads the GH token lazily to avoid additional secrets-manager costs.
-actor GHLazyMiddleware: ClientMiddleware {
-
+actor GHMiddleware: ClientMiddleware {
     private let secretsRetriever: SecretsRetriever
     private let logger: Logger
 
     private var idGenerator = 0
-
-    private var isLoading = false
-    private var loadWaiters: [CheckedContinuation<Void, Never>] = []
 
     init(secretsRetriever: SecretsRetriever, logger: Logger) {
         self.secretsRetriever = secretsRetriever
@@ -31,7 +27,6 @@ actor GHLazyMiddleware: ClientMiddleware {
         let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
         request.headerFields.addOrReplace(
             name: "Authorization",
-            /// Token loaded so can force-unwrap.
             value: "Bearer \(token.value)"
         )
         request.headerFields.addOrReplace(

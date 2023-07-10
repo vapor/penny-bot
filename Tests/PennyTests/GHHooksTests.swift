@@ -39,11 +39,14 @@ class GHHooksTests: XCTestCase {
             let scalars_11 = "👍🏿👍🏾👍🏽👍🏼👍🏻👍"
             let scalars_10 = "👍🏿👍🏾👍🏽👍🏼👍🏻"
             let scalars_8 = "👍🏿👍🏾👍🏽👍🏼"
+            let scalars_6 = "👍🏿👍🏾👍🏽"
             XCTAssertEqual(scalars_11.unicodesPrefix(12), scalars_11)
             XCTAssertEqual(scalars_11.unicodesPrefix(11), scalars_11)
             XCTAssertEqual(scalars_11.unicodesPrefix(10), scalars_10)
             XCTAssertEqual(scalars_11.unicodesPrefix(9), scalars_8)
             XCTAssertEqual(scalars_11.unicodesPrefix(8), scalars_8)
+            XCTAssertEqual(scalars_11.unicodesPrefix(7), scalars_6)
+            XCTAssertEqual(scalars_11.unicodesPrefix(6), scalars_6)
         }
 
         do {

@@ -45,23 +45,19 @@ actor SecretsRetriever {
     }
 
     private func withLock<T>(block: () async throws -> T) async rethrows -> T {
-        if isLoading {
+        while isLoading {
             await withCheckedContinuation { continuation in
                 loadWaiters.append(continuation)
             }
         }
 
         isLoading = true
-        defer { isLoading = false }
-
-        let value = try await block()
-
-        for waiter in self.loadWaiters {
-            waiter.resume()
+        defer {
+            isLoading = false
+            loadWaiters.popLast()?.resume()
         }
-        self.loadWaiters.removeAll()
 
-        return value
+        return try await block()
     }
 
     private func setCache(key: String, value: Secret) {
