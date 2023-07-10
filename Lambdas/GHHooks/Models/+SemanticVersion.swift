@@ -44,8 +44,7 @@ extension SemanticVersion {
                 return nil
             }
 
-            guard version.prereleaseIdentifiers[1...]
-                .allSatisfy({ $0.allSatisfy(\.isNumber) }) else {
+            guard version.prereleaseIdentifiers[1...].allSatisfy({ UInt($0) != nil }) else {
                 /// Identifiers should be like `["alpha", "1"]`.
                 /// All identifiers other than the first one should be a number.
                 return nil
