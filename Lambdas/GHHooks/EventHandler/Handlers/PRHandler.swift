@@ -62,7 +62,7 @@ struct PRHandler {
 
         let prLink = pr.html_url
 
-        let body = pr.body == nil ? "" : "\n\n>>> \(pr.body!)".unicodesPrefix(264)
+        let body = pr.body.map { "\n\n>>> \($0)".unicodesPrefix(264) } ?? ""
 
         let description = """
         ### \(pr.title)
@@ -226,7 +226,7 @@ private extension PRHandler {
                 """,
                 draft: false,
                 prerelease: isPrerelease,
-                make_latest: ._true
+                make_latest: isPrerelease ? ._false : ._true
             ))
         ))
 

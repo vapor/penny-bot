@@ -3,6 +3,7 @@ import Models
 
 extension String {
     func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
+        // Well, I mean, you _can_, but you won't like the resulting infinite loop!
         assert(maxUnicodeScalars >= 0, "Can request a negative maximum.")
 
         // Take a prefix of the string (i.e. a sequence of extended grapheme clusters) first.

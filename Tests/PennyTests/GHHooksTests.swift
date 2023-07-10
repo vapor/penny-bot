@@ -119,9 +119,8 @@ class GHHooksTests: XCTestCase {
                 line: line
             ).value
             if expectResponse {
-                XCTAssertTrue(
-                    type(of: response) == Payloads.CreateMessage.self,
-                    "'\(type(of: response))' is not equal to 'Payloads.CreateMessage'",
+                XCTAssertEqual(
+                    "\(type(of: response))", "\(Payloads.CreateMessage.self)",
                     line: line
                 )
             }

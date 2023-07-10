@@ -7,6 +7,12 @@ enum SemVerBump {
     case patch
 }
 
+enum SemVerStage: String {
+    case alpha
+    case beta
+    case rc
+}
+
 extension SemanticVersion {
     func next(_ bump: SemVerBump) -> SemanticVersion? {
         var version = self
@@ -32,7 +38,7 @@ extension SemanticVersion {
             }
             /// At this point we are guaranteed 1/2/3 `prereleaseIdentifiers`.
 
-            guard !version.prereleaseIdentifiers[0].allSatisfy(\.isNumber) else {
+            guard version.prereleaseIdentifiers[0].first?.isLetter ?? false else {
                 /// Identifiers should be like `["alpha", "1"]`.
                 /// First identifier should not be a number.
                 return nil
@@ -47,12 +53,13 @@ extension SemanticVersion {
 
             switch bump {
             case .releaseStage:
-                switch version.prereleaseIdentifiers[0] {
-                case "alpha":
-                    version.prereleaseIdentifiers[0] = "beta"
-                case "beta":
-                    version.prereleaseIdentifiers[0] = "rc"
-                case "rc":
+                let stage = SemVerStage(rawValue: version.prereleaseIdentifiers[0])
+                switch stage {
+                case .alpha:
+                    version.prereleaseIdentifiers[0] = SemVerStage.beta.rawValue
+                case .beta:
+                    version.prereleaseIdentifiers[0] = SemVerStage.rc.rawValue
+                case .rc:
                     /// A bot shouldn't release a whole library.
                     return nil
                 default:
@@ -66,15 +73,13 @@ extension SemanticVersion {
                 }
                 /// At this point we are guaranteed 2 or 3 identifiers.
 
-                let lastIndex = version.prereleaseIdentifiers.count - 1
-                if lastIndex == 1 {
+                if version.prereleaseIdentifiers.count == 2 {
                     /// Doesn't have any minor identifiers. We add it.
                     version.prereleaseIdentifiers.append("1")
                 } else {
-                    /// Already checked not-nil, but still trying to be safe.
-                    guard let number = Int(version.prereleaseIdentifiers[lastIndex])
+                    guard let prev = Int(version.prereleaseIdentifiers.removeLast())
                     else { return nil }
-                    version.prereleaseIdentifiers[lastIndex] = "\(number + 1)"
+                    version.prereleaseIdentifiers.append("\(prev + 1)")
                 }
             case .major:
                 if version.prereleaseIdentifiers.count == 1 {

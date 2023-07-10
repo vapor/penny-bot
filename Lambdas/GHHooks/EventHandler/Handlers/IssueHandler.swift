@@ -28,7 +28,7 @@ struct IssueHandler {
         let repo = event.repository
         let repoName = repo.organization?.name == "vapor" ? repo.name : repo.full_name
 
-        let body = issue.body == nil ? "" : "\n\n>>> \(issue.body!)".unicodesPrefix(264)
+        let body = issue.body.map { "\n\n>>> \($0)".unicodesPrefix(264) } ?? ""
 
         let description = """
         ### \(issue.title)
