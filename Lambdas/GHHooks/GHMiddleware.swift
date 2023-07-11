@@ -38,6 +38,10 @@ actor GHMiddleware: ClientMiddleware {
             name: "X-GitHub-Api-Version",
             value: "2022-11-28"
         )
+        request.headerFields.addOrReplace(
+            name: "User-Agent",
+            value: "Penny - 1.0.0 (https://github.com/vapor/penny-bot)"
+        )
 
         self.idGenerator += 1
         let requestID = idGenerator

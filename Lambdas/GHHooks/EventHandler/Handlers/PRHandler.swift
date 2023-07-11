@@ -218,7 +218,7 @@ private extension PRHandler {
             body: .json(.init(
                 tag_name: version.description,
                 target_commitish: pr.base.ref,
-                name: pr.title,
+                name: "\(version) - \(pr.title)",
                 body: """
                 ###### _\(acknowledgment)_
 
