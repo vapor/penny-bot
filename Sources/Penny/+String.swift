@@ -6,12 +6,14 @@ extension String {
         /// Well, I mean, you _can_, but you won't like the resulting infinite loop!
         assert(maxUnicodeScalars >= 0, "Can request a negative maximum.")
 
-        guard self.unicodeScalars.count <= maxUnicodeScalars else {
+        guard self.unicodeScalars.count > maxUnicodeScalars else {
             return self
         }
 
+        let newMaxUnicodeScalars = maxUnicodeScalars - 3
+        let needsDots = newMaxUnicodeScalars >= 0
         /// `-3` because we'll append `...` to the string.
-        let maxUnicodeScalars = maxUnicodeScalars - 3
+        let maxUnicodeScalars = needsDots ? newMaxUnicodeScalars : maxUnicodeScalars
 
         /// Take a prefix of the string (i.e. a sequence of extended grapheme clusters) first.
         /// Most of the time, this will already be short enough.
@@ -25,7 +27,8 @@ extension String {
             trimmed.removeLast()
         }
 
-        return "\(trimmed)..."
+        let dots = needsDots ? "..." : ""
+        return "\(trimmed)\(dots)"
     }
 }
 /// `StringProtocol` is basically either `String` or `Substring`.

@@ -20,33 +20,36 @@ class GHHooksTests: XCTestCase {
     }
 
     func testUnicodesPrefix() throws {
+        let dots = "..." /// 3 scalars
+
         do {
             let scalars_16 = "Hello, world! 👍🏾"
-            let scalars_14 = "Hello, world! "
-            let scalars_13 = "Hello, world!"
             let scalars_12 = "Hello, world"
-            let scalars_7 = "Hello, "
+            let scalars_11 = "Hello, worl"
+            let scalars_10 = "Hello, wor"
+            let scalars_9 = "Hello, wo"
+            let scalars_4 = "Hell"
             XCTAssertEqual(scalars_16.unicodesPrefix(17), scalars_16)
             XCTAssertEqual(scalars_16.unicodesPrefix(16), scalars_16)
-            XCTAssertEqual(scalars_16.unicodesPrefix(15), scalars_14)
-            XCTAssertEqual(scalars_16.unicodesPrefix(14), scalars_14)
-            XCTAssertEqual(scalars_16.unicodesPrefix(13), scalars_13)
-            XCTAssertEqual(scalars_16.unicodesPrefix(12), scalars_12)
-            XCTAssertEqual(scalars_16.unicodesPrefix(7), scalars_7)
+            XCTAssertEqual(scalars_16.unicodesPrefix(15), scalars_12 + dots)
+            XCTAssertEqual(scalars_16.unicodesPrefix(14), scalars_11 + dots)
+            XCTAssertEqual(scalars_16.unicodesPrefix(13), scalars_10 + dots)
+            XCTAssertEqual(scalars_16.unicodesPrefix(12), scalars_9 + dots)
+            XCTAssertEqual(scalars_16.unicodesPrefix(7), scalars_4 + dots)
         }
 
         do {
             let scalars_11 = "👍🏿👍🏾👍🏽👍🏼👍🏻👍"
-            let scalars_10 = "👍🏿👍🏾👍🏽👍🏼👍🏻"
-            let scalars_8 = "👍🏿👍🏾👍🏽👍🏼"
             let scalars_6 = "👍🏿👍🏾👍🏽"
+            let scalars_4 = "👍🏿👍🏾"
+            let scalars_2 = "👍🏿"
             XCTAssertEqual(scalars_11.unicodesPrefix(12), scalars_11)
             XCTAssertEqual(scalars_11.unicodesPrefix(11), scalars_11)
-            XCTAssertEqual(scalars_11.unicodesPrefix(10), scalars_10)
-            XCTAssertEqual(scalars_11.unicodesPrefix(9), scalars_8)
-            XCTAssertEqual(scalars_11.unicodesPrefix(8), scalars_8)
-            XCTAssertEqual(scalars_11.unicodesPrefix(7), scalars_6)
-            XCTAssertEqual(scalars_11.unicodesPrefix(6), scalars_6)
+            XCTAssertEqual(scalars_11.unicodesPrefix(10), scalars_6 + dots)
+            XCTAssertEqual(scalars_11.unicodesPrefix(9), scalars_6 + dots)
+            XCTAssertEqual(scalars_11.unicodesPrefix(8), scalars_4 + dots)
+            XCTAssertEqual(scalars_11.unicodesPrefix(7), scalars_4 + dots)
+            XCTAssertEqual(scalars_11.unicodesPrefix(6), scalars_2 + dots)
         }
 
         do {
@@ -55,11 +58,14 @@ class GHHooksTests: XCTestCase {
             let scalars_0 = ""
             XCTAssertEqual(scalars_14.unicodesPrefix(15), scalars_14)
             XCTAssertEqual(scalars_14.unicodesPrefix(14), scalars_14)
-            XCTAssertEqual(scalars_14.unicodesPrefix(13), scalars_7)
-            XCTAssertEqual(scalars_14.unicodesPrefix(10), scalars_7)
-            XCTAssertEqual(scalars_14.unicodesPrefix(8), scalars_7)
-            XCTAssertEqual(scalars_14.unicodesPrefix(7), scalars_7)
-            XCTAssertEqual(scalars_14.unicodesPrefix(6), scalars_0)
+            XCTAssertEqual(scalars_14.unicodesPrefix(13), scalars_7 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(10), scalars_7 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(9), scalars_0 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(8), scalars_0 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(7), scalars_0 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(6), scalars_0 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(3), scalars_0 + dots)
+            XCTAssertEqual(scalars_14.unicodesPrefix(2), scalars_0)
             XCTAssertEqual(scalars_14.unicodesPrefix(1), scalars_0)
             XCTAssertEqual(scalars_14.unicodesPrefix(0), scalars_0)
         }
