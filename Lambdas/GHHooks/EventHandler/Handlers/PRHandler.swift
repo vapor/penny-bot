@@ -218,7 +218,7 @@ private extension PRHandler {
                 body: """
                 ###### _\(acknowledgment)_
 
-                \(pr.body ?? "")
+                \(pr.body ?? "Pull Request:") \(pr.html_url)
                 """,
                 draft: false,
                 prerelease: isPrerelease,
