@@ -120,15 +120,11 @@ struct PRHandler {
 
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
-            payload: .init(embeds: [.init(
-                title: "[\(repoName)] \(release.tag_name)",
-                description: """
-                > \(pr.title.replacingOccurrences(of: "\n", with: ". "))
-
-                \(release.html_url)
-                """,
-                color: .blue
-            )])
+            payload: .init(content: """
+            \(repoName) \(version.description): \(pr.title)
+            \(pr.html_url)
+            """
+            )
         ).guardSuccess()
     }
 }
