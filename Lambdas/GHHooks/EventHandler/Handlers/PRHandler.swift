@@ -59,7 +59,17 @@ struct PRHandler {
 
         let prLink = pr.html_url
 
-        let body = pr.body.map { "\n>>> \($0)".unicodesPrefix(264) } ?? ""
+        let body: String
+        if let prBody = pr.body {
+            /// If starts with a html comment, then it's probably just the default template.
+            if prBody.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<!--") {
+                body = ""
+            } else {
+                body = "\n>>> \(prBody)".unicodesPrefix(264)
+            }
+        } else {
+            body = ""
+        }
 
         let description = """
         ### \(pr.title)
