@@ -75,7 +75,7 @@ struct PRHandler {
                 url: prLink,
                 color: .green,
                 footer: .init(
-                    text: "By **\(authorName)**",
+                    text: "By \(authorName)",
                     icon_url: .exact(authorAvatarLink)
                 )
             )])
