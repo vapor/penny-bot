@@ -35,9 +35,6 @@ struct PRHandler {
     var repo: Repository {
         event.repository
     }
-    var repoName: String {
-        repo.organization?.login == "vapor" ? repo.name : repo.full_name
-    }
 
     init(context: HandlerContext) throws {
         self.context = context
@@ -73,7 +70,7 @@ struct PRHandler {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [.init(
-                title: "[\(repoName)] PR #\(number)".unicodesPrefix(256),
+                title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
                 description: description,
                 url: prLink,
                 color: .green,
@@ -121,7 +118,7 @@ struct PRHandler {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
             payload: .init(content: """
-            \(repoName) \(version.description): \(pr.title)
+            [\(repo.uiName)] \(version.description): \(pr.title)
             \(release.html_url)
             """
             )

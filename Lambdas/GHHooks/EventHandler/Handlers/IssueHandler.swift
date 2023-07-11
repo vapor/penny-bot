@@ -24,8 +24,7 @@ struct IssueHandler {
 
         let issueLink = issue.html_url
 
-        let repo = event.repository
-        let repoName = repo.organization?.name == "vapor" ? repo.name : repo.full_name
+        let repoName = event.repository.uiName
 
         let body = issue.body.map { "\n>>> \($0)".unicodesPrefix(264) } ?? ""
 
