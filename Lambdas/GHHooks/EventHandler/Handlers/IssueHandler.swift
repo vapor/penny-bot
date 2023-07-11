@@ -19,9 +19,8 @@ struct IssueHandler {
 
         let number = try event.issue.requireValue().number
 
-        let user = issue.user
-        let creatorName = user.login
-        let creatorLink = user.html_url
+        let authorName = issue.user.login
+        let authorAvatarLink = issue.user.avatar_url
 
         let issueLink = issue.html_url
 
@@ -33,7 +32,6 @@ struct IssueHandler {
         let description = """
         ### \(issue.title)
 
-        **By [\(creatorName)](\(creatorLink))**
         \(body)
         """
 
@@ -43,7 +41,11 @@ struct IssueHandler {
                 title: "[\(repoName)] Issue #\(number)".unicodesPrefix(256),
                 description: description,
                 url: issueLink,
-                color: .yellow
+                color: .yellow,
+                footer: .init(
+                    text: authorName,
+                    icon_url: .exact(authorAvatarLink)
+                )
             )])
         ).guardSuccess()
     }

@@ -57,8 +57,8 @@ struct PRHandler {
     }
 
     func onOpened() async throws {
-        let creatorName = pr.user.login
-        let creatorLink = pr.user.html_url
+        let authorName = pr.user.login
+        let authorAvatarLink = pr.user.avatar_url
 
         let prLink = pr.html_url
 
@@ -67,7 +67,6 @@ struct PRHandler {
         let description = """
         ### \(pr.title)
 
-        **By [\(creatorName)](\(creatorLink))**
         \(body)
         """
 
@@ -77,7 +76,11 @@ struct PRHandler {
                 title: "[\(repoName)] PR #\(number)".unicodesPrefix(256),
                 description: description,
                 url: prLink,
-                color: .green
+                color: .green,
+                footer: .init(
+                    text: authorName,
+                    icon_url: .exact(authorAvatarLink)
+                )
             )])
         ).guardSuccess()
     }
