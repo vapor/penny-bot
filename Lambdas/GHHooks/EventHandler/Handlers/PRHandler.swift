@@ -122,7 +122,7 @@ struct PRHandler {
             channelId: Constants.Channels.release.id,
             payload: .init(content: """
             \(repoName) \(version.description): \(pr.title)
-            \(pr.html_url)
+            \(release.html_url)
             """
             )
         ).guardSuccess()
