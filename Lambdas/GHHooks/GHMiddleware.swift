@@ -5,8 +5,8 @@ import struct DiscordModels.Secret
 
 /// Adds some headers to all requests.
 actor GHMiddleware: ClientMiddleware {
-    private let secretsRetriever: SecretsRetriever
-    private let logger: Logger
+    let secretsRetriever: SecretsRetriever
+    let logger: Logger
 
     private var idGenerator = 0
 
@@ -53,14 +53,23 @@ actor GHMiddleware: ClientMiddleware {
             "requestID": .stringConvertible(requestID),
         ])
 
-        let response = try await next(request, baseURL)
+        do {
+            let response = try await next(request, baseURL)
+            
+            logger.debug("Got response from Github", metadata: [
+                "response": "\(response.fullDescription)",
+                "requestID": .stringConvertible(requestID),
+            ])
 
-        logger.debug("Got response from Github", metadata: [
-            "response": "\(response.fullDescription)",
-            "requestID": .stringConvertible(requestID),
-        ])
+            return response
+        } catch {
+            logger.error("Got error from Github", metadata: [
+                "error": "\(error)",
+                "requestID": .stringConvertible(requestID),
+            ])
 
-        return response
+            throw error
+        }
     }
 }
 

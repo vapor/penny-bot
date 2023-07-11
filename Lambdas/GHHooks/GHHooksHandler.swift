@@ -81,13 +81,14 @@ struct GHHooksHandler: LambdaHandler {
         _ request: APIGatewayV2Request,
         context: LambdaContext
     ) async throws -> APIGatewayV2Response {
-        logger.trace("Got request", metadata: [
+        logger.debug("Got request", metadata: [
             "request": "\(request)"
         ])
+        
         try await verifyWebhookSignature(request: request)
-        logger.debug("Verified signature")
+        logger.trace("Verified signature")
 
-        guard let _eventName = request.headers.first(name: "x-gitHub-event"),
+        guard let _eventName = request.headers.first(name: "x-github-event"),
               let eventName = GHEvent.Kind(rawValue: _eventName) else {
             throw Errors.headerNotFound(name: "x-gitHub-event", headers: request.headers)
         }
@@ -102,7 +103,7 @@ struct GHHooksHandler: LambdaHandler {
 
         let event = try request.decodeWithISO8601(as: GHEvent.self)
 
-        logger.debug("Decoded event", metadata: [
+        logger.trace("Decoded event", metadata: [
             "event": "\(event)"
         ])
 
