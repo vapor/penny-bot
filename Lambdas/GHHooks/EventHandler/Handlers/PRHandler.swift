@@ -123,7 +123,7 @@ struct PRHandler {
             payload: .init(embeds: [.init(
                 title: "[\(repoName)] \(release.tag_name)",
                 description: """
-                >>> \(pr.title)
+                > \(pr.title.replacingOccurrences(of: "\n", with: ". "))
 
                 \(release.html_url)
                 """,
@@ -216,7 +216,7 @@ private extension PRHandler {
                 repo: repo.name
             ),
             body: .json(.init(
-                tag_name: version.description,
+                tag_name: version,
                 target_commitish: pr.base.ref,
                 name: "\(version) - \(pr.title)",
                 body: """
