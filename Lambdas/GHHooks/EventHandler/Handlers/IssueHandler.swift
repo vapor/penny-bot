@@ -42,7 +42,7 @@ struct IssueHandler {
                 url: issueLink,
                 color: .yellow,
                 footer: .init(
-                    text: authorName,
+                    text: "By **\(authorName)**",
                     icon_url: .exact(authorAvatarLink)
                 )
             )])
