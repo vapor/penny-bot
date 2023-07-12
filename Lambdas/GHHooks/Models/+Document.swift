@@ -1,7 +1,10 @@
 import Markdown
 
 extension Document {
-    func filterOutChildren(ofType type: (some BlockMarkup).Type) -> Document {
-        Document(self.blockChildren.filter { type(of: $0) != type }
+    func filterOutChildren(ofType: (some BlockMarkup).Type) -> Document {
+        let children = self.blockChildren.filter {
+            type(of: $0) != ofType
+        }
+        return Document(children)
     }
 }
