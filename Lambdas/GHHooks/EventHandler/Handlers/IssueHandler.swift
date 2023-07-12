@@ -64,7 +64,8 @@ struct IssueHandler {
         \(body)
         """
 
-        let statusString = issue.uiStatus.map { " - \($0)" } ?? ""
+        let status = Status(issue: issue)
+        let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
         /// A few string that the title contains, to search and uniquely identify the message with.
@@ -74,7 +75,7 @@ struct IssueHandler {
             title: title,
             description: description,
             url: issueLink,
-            color: issue.discordColor,
+            color: status.color,
             footer: .init(
                 text: "By \(authorName)",
                 icon_url: .exact(authorAvatarLink)
@@ -85,20 +86,33 @@ struct IssueHandler {
     }
 }
 
-private extension Issue {
-    var discordColor: DiscordColor {
-        if self.closed_at != nil {
+private enum Status: String {
+    case closed = "Closed"
+    case opened = "Opened"
+
+    var color: DiscordColor {
+        switch self {
+        case .closed:
             return .init(red: 153, green: 153, blue: 153)! /// Gray
-        } else {
+        case .opened:
             return .yellow
         }
     }
 
-    var uiStatus: String? {
-        if self.closed_at != nil {
-            return "Closed"
-        } else {
+    var titleDescription: String? {
+        switch self {
+        case .closed:
+            return self.rawValue
+        case .opened:
             return nil
+        }
+    }
+
+    init(issue: Issue) {
+        if issue.closed_at != nil {
+            self = .closed
+        } else {
+            self = .opened
         }
     }
 }

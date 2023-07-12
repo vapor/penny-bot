@@ -140,7 +140,8 @@ struct PRHandler {
         \(body)
         """
 
-        let statusString = pr.uiStatus.map { " - \($0)" } ?? ""
+        let status = Status(pr: pr)
+        let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
         /// A few string that the title contains, to search and uniquely identify the message with.
@@ -150,7 +151,7 @@ struct PRHandler {
             title: title,
             description: description,
             url: prLink,
-            color: pr.discordColor,
+            color: status.color,
             footer: .init(
                 text: "By \(authorName)",
                 icon_url: .exact(authorAvatarLink)
@@ -293,24 +294,43 @@ private extension PRHandler {
     }
 }
 
-private extension PullRequest {
-    var discordColor: DiscordColor {
-        if self.merged_by != nil {
+private enum Status: String {
+    case merged = "Merged"
+    case closed = "Closed"
+    case draft = "Draft"
+    case opened = "Opened"
+
+    var color: DiscordColor {
+        switch self {
+        case .merged:
             return .purple
-        } else if self.closed_at != nil {
+        case .closed:
             return .red
-        } else {
+        case .draft:
+            return .init(red: 153, green: 153, blue: 153)! /// Gray
+        case .opened:
             return .green
         }
     }
 
-    var uiStatus: String? {
-        if self.merged_by != nil {
-            return "Merged"
-        } else if self.closed_at != nil {
-            return "Closed"
-        } else {
+    var titleDescription: String? {
+        switch self {
+        case .opened:
             return nil
+        case .merged, .closed, .draft:
+            return self.rawValue
+        }
+    }
+
+    init(pr: PullRequest) {
+        if pr.merged_by != nil {
+            self = .merged
+        } else if pr.closed_at != nil {
+            self = .closed
+        } else if pr.draft == true {
+            self = .draft
+        } else {
+            self = .opened
         }
     }
 }
