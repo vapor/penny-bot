@@ -34,7 +34,6 @@ struct Penny {
         await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
 
-
         await bot.connect()
         let stream = await bot.makeEventsStream()
 

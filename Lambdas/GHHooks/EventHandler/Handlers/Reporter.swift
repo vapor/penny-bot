@@ -4,12 +4,15 @@ import DiscordBM
 struct Reporter {
 
     enum Errors: Error, CustomStringConvertible {
-        case tooManyMatchingMessagesFound(matchingTitle: String, messages: [DiscordChannel.Message])
+        case tooManyMatchingMessagesFound(
+            matchingTitleProperties: [String],
+            messages: [DiscordChannel.Message]
+        )
 
         var description: String {
             switch self {
-            case let .tooManyMatchingMessagesFound(matchingTitle, messages):
-                return "tooManyMatchingMessagesFound(matchingTitle: \(matchingTitle), messages: \(messages))"
+            case let .tooManyMatchingMessagesFound(matchingTitleProperties, messages):
+                return "tooManyMatchingMessagesFound(matchingTitleProperties: \(matchingTitleProperties), messages: \(messages))"
             }
         }
     }
@@ -24,13 +27,16 @@ struct Reporter {
     }
 
     func reportEdit(embed: Embed, searchableTitleProperties: [String]) async throws {
+        /// Optimally we should have some kind of database of the issue/pr sent-messages,
+        /// so we can lookup the old message id for each issue/pr easily.
+        /// But getting messages from Discord and listing them does the trick 95%+ of the times,
+        /// and is much simpler.
         let lastMessages = try await context.discordClient.listMessages(
             channelId: Constants.Channels.issueAndPRs.id,
             limit: 100
         ).decode()
 
         /// Embed title shouldn't be nil based on `createPRReportEmbed()`, but trying to be safe.
-        let embedTitle = try embed.title.requireValue()
         let matchedMessages = lastMessages.filter { message in
             guard let title = message.embeds.first?.title else {
                 return false
@@ -59,7 +65,7 @@ struct Reporter {
             ).guardSuccess()
         default:
             throw Errors.tooManyMatchingMessagesFound(
-                matchingTitle: embedTitle,
+                matchingTitleProperties: searchableTitleProperties,
                 messages: matchedMessages
             )
         }
