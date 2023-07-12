@@ -1,5 +1,6 @@
 import DiscordBM
 import SwiftSemver
+import Markdown
 
 struct PRHandler {
 
@@ -73,17 +74,12 @@ struct PRHandler {
 
         let prLink = pr.html_url
 
-        let body: String
-        if let prBody = pr.body {
-            /// If starts with a html comment, then it's probably just the default template.
-            if prBody.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("<!--") {
-                body = ""
-            } else {
-                body = "\n>>> \(prBody)".unicodesPrefix(264)
-            }
-        } else {
-            body = ""
-        }
+        let body = pr.body.map { body in
+            let formatted = Document(parsing: body)
+                .filterOutChildren(ofType: HTMLBlock.self)
+                .format()
+            return ">>> \(formatted)".unicodesPrefix(260)
+        } ?? ""
 
         let description = """
         ### \(pr.title)

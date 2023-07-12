@@ -1,4 +1,5 @@
 import DiscordBM
+import Markdown
 
 struct IssueHandler {
     let context: HandlerContext
@@ -40,7 +41,12 @@ struct IssueHandler {
 
         let repoName = event.repository.uiName
 
-        let body = issue.body.map { "\n>>> \($0)".unicodesPrefix(264) } ?? ""
+        let body = issue.body.map { body in
+            let formatted = Document(parsing: body)
+                .filterOutChildren(ofType: HTMLBlock.self)
+                .format()
+            return ">>> \(formatted)".unicodesPrefix(260)
+        } ?? ""
 
         let description = """
         ### \(issue.title)
