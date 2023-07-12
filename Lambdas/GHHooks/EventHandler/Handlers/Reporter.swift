@@ -4,15 +4,12 @@ import DiscordBM
 struct Reporter {
 
     enum Errors: Error, CustomStringConvertible {
-        case tooManyMatchingMessagesFound(
-            matchingTitleProperties: [String],
-            messages: [DiscordChannel.Message]
-        )
+        case tooManyMatchingMessagesFound(matchingUrl: String, messages: [DiscordChannel.Message])
 
         var description: String {
             switch self {
-            case let .tooManyMatchingMessagesFound(matchingTitleProperties, messages):
-                return "tooManyMatchingMessagesFound(matchingTitleProperties: \(matchingTitleProperties), messages: \(messages))"
+            case let .tooManyMatchingMessagesFound(matchingUrl, messages):
+                return "tooManyMatchingMessagesFound(matchingUrl: \(matchingUrl), messages: \(messages))"
             }
         }
     }
@@ -26,7 +23,7 @@ struct Reporter {
         ).guardSuccess()
     }
 
-    func reportEdit(embed: Embed, searchableTitleProperties: [String]) async throws {
+    func reportEdit(embed: Embed) async throws {
         /// Optimally we should have some kind of database of the issue/pr sent-messages,
         /// so we can lookup the old message id for each issue/pr easily.
         /// But getting messages from Discord and listing them does the trick 95%+ of the times,
@@ -36,13 +33,11 @@ struct Reporter {
             limit: 100
         ).decode()
 
-        /// Embed title shouldn't be nil based on `createPRReportEmbed()`, but trying to be safe.
-        let matchedMessages = lastMessages.filter { message in
-            guard let title = message.embeds.first?.title else {
-                return false
-            }
-            return searchableTitleProperties.allSatisfy({ title.contains($0) })
-        }
+        /// Embed url shouldn't be nil based on `createPRReportEmbed()`, but trying to be safe.
+        /// The url is, and must remain, the url to the issue/pr, so it can act as an unique
+        /// identifier for the message related to an issue/pr.
+        let url = try embed.url.requireValue()
+        let matchedMessages = lastMessages.filter { $0.embeds.first?.url == url }
 
         switch matchedMessages.count {
         case 0:
@@ -64,10 +59,7 @@ struct Reporter {
                 payload: .init(embeds: [embed])
             ).guardSuccess()
         default:
-            throw Errors.tooManyMatchingMessagesFound(
-                matchingTitleProperties: searchableTitleProperties,
-                messages: matchedMessages
-            )
+            throw Errors.tooManyMatchingMessagesFound(matchingUrl: url, messages: matchedMessages)
         }
     }
 }

@@ -61,7 +61,7 @@ struct PRHandler {
     }
 
     func onOpened() async throws {
-        let (embed, _) = createReportEmbed()
+        let embed = createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
     }
@@ -116,18 +116,18 @@ struct PRHandler {
     }
 
     func editPRReport() async throws {
-        let (embed, properties) = createReportEmbed()
+        let embed = createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed, searchableTitleProperties: properties)
+        try await reporter.reportEdit(embed: embed)
     }
 
-    func createReportEmbed() -> (embed: Embed, searchableTitleProperties: [String]) {
+    func createReportEmbed() -> Embed {
         let authorName = pr.user.login
         let authorAvatarLink = pr.user.avatar_url
 
         let prLink = pr.html_url
 
-        let body = pr.body.map { body in
+        let body = pr.body.map { body -> String in
             let formatted = Document(parsing: body)
                 .filterOutChildren(ofType: HTMLBlock.self)
                 .format()
@@ -144,8 +144,6 @@ struct PRHandler {
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
-        /// A few string that the title contains, to search and uniquely identify the message with.
-        let searchableTitleProperties = [repo.uiName, "PR", "#\(number)"]
 
         let embed = Embed(
             title: title,
@@ -158,7 +156,7 @@ struct PRHandler {
             )
         )
 
-        return (embed, searchableTitleProperties)
+        return embed
     }
 }
 

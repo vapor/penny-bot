@@ -22,7 +22,7 @@ struct IssueHandler {
     }
 
     func onOpened() async throws {
-        let (embed, _) = try createReportEmbed()
+        let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
     }
@@ -32,12 +32,12 @@ struct IssueHandler {
     }
 
     func editIssueReport() async throws {
-        let (embed, properties) = try createReportEmbed()
+        let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed, searchableTitleProperties: properties)
+        try await reporter.reportEdit(embed: embed)
     }
 
-    func createReportEmbed() throws -> (embed: Embed, searchableTitleProperties: [String]) {
+    func createReportEmbed() throws -> Embed {
         let event = context.event
 
         let issue = try event.issue.requireValue()
@@ -51,7 +51,7 @@ struct IssueHandler {
 
         let repoName = event.repository.uiName
 
-        let body = issue.body.map { body in
+        let body = issue.body.map { body -> String in
             let formatted = Document(parsing: body)
                 .filterOutChildren(ofType: HTMLBlock.self)
                 .format()
@@ -68,8 +68,6 @@ struct IssueHandler {
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
-        /// A few string that the title contains, to search and uniquely identify the message with.
-        let searchableTitleProperties = [repoName, "Issue", "#\(number)"]
 
         let embed = Embed(
             title: title,
@@ -82,7 +80,7 @@ struct IssueHandler {
             )
         )
 
-        return (embed, searchableTitleProperties)
+        return embed
     }
 }
 
