@@ -39,6 +39,14 @@ struct Reporter {
             return
         case 1:
             let message = matchedMessages[0]
+            if let existingEmbed = message.embeds.first,
+               existingEmbed == embed {
+                context.logger.debug("Embeds are equal. Will not edit message", metadata: [
+                    "existing": "\(existingEmbed)",
+                    "new": "\(embed)"
+                ])
+                return
+            }
             try await context.discordClient.updateMessage(
                 channelId: Constants.Channels.issueAndPRs.id,
                 messageId: message.id,
