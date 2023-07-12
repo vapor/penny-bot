@@ -22,6 +22,8 @@ actor GHMiddleware: ClientMiddleware {
         next: @Sendable (Request, URL) async throws -> Response
     ) async throws -> Response {
         var request = request
+        
+        request.headerFields.reserveCapacity(4)
 
         let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
         let username = "VaporBot"

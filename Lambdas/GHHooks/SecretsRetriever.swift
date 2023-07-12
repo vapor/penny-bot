@@ -10,6 +10,7 @@ actor SecretsRetriever {
     private var cache: [String: Secret] = [:]
     let logger: Logger
 
+    /// For locking:
     private var isLocked = false
     private var lockWaiters: [CheckedContinuation<Void, Never>] = []
 
@@ -30,10 +31,14 @@ actor SecretsRetriever {
         }
     }
 
+    /// Gets a secret directly from AWS.
     private func getSecretFromAWS(arnEnvVarKey: String) async throws -> Secret {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
             throw Errors.envVarNotFound(name: arnEnvVarKey)
         }
+        logger.trace("Retrieving secret from AWS", metadata: [
+            "arnEnvVarKey": .string(arnEnvVarKey)
+        ])
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
             logger: logger
@@ -44,6 +49,7 @@ actor SecretsRetriever {
         return Secret(secret)
     }
 
+    /// Acquires a lock and performs the async work, then releases the lock.
     private func withLock<T>(block: () async throws -> T) async rethrows -> T {
         while isLocked {
             await withCheckedContinuation { continuation in
@@ -60,10 +66,12 @@ actor SecretsRetriever {
         return try await block()
     }
 
+    /// Sets a value in the cache.
     private func setCache(key: String, value: Secret) {
         self.cache[key] = value
     }
 
+    /// Gets a value from the cache.
     private func getCache(key: String) -> Secret? {
         self.cache[key]
     }

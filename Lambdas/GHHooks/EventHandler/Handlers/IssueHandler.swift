@@ -8,11 +8,25 @@ struct IssueHandler {
         switch action {
         case .opened:
             try await onOpened()
+        case .edited:
+            try await onEdited()
         default: break
         }
     }
 
+    func onEdited() async throws {
+        let embed = try createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportEdit(embed: embed)
+    }
+
     func onOpened() async throws {
+        let embed = try createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportNew(embed: embed)
+    }
+
+    func createReportEmbed() throws -> Embed {
         let event = context.event
 
         let issue = try event.issue.requireValue()
@@ -34,18 +48,15 @@ struct IssueHandler {
         \(body)
         """
 
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(embeds: [.init(
-                title: "[\(repoName)] Issue #\(number)".unicodesPrefix(256),
-                description: description,
-                url: issueLink,
-                color: .yellow,
-                footer: .init(
-                    text: "By \(authorName)",
-                    icon_url: .exact(authorAvatarLink)
-                )
-            )])
-        ).guardSuccess()
+        return .init(
+            title: "[\(repoName)] Issue #\(number)".unicodesPrefix(256),
+            description: description,
+            url: issueLink,
+            color: .yellow,
+            footer: .init(
+                text: "By \(authorName)",
+                icon_url: .exact(authorAvatarLink)
+            )
+        )
     }
 }

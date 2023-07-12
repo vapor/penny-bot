@@ -49,11 +49,25 @@ struct PRHandler {
             try await onOpened()
         case .closed:
             try await onClosed()
+        case .edited:
+            try await onEdited()
         default: break
         }
     }
 
+    func onEdited() async throws {
+        let embed = createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportEdit(embed: embed)
+    }
+
     func onOpened() async throws {
+        let embed = createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportNew(embed: embed)
+    }
+
+    func createReportEmbed() -> Embed {
         let authorName = pr.user.login
         let authorAvatarLink = pr.user.avatar_url
 
@@ -77,19 +91,16 @@ struct PRHandler {
         \(body)
         """
 
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(embeds: [.init(
-                title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
-                description: description,
-                url: prLink,
-                color: .green,
-                footer: .init(
-                    text: "By \(authorName)",
-                    icon_url: .exact(authorAvatarLink)
-                )
-            )])
-        ).guardSuccess()
+        return .init(
+            title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
+            description: description,
+            url: prLink,
+            color: .green,
+            footer: .init(
+                text: "By \(authorName)",
+                icon_url: .exact(authorAvatarLink)
+            )
+        )
     }
 
     func onClosed() async throws {
@@ -246,7 +257,7 @@ private extension PRHandler {
     }
 
     func sendComment(release: Components.Schemas.release) async throws {
-        // '"Issues" create comment', but works for PRs too. Didn't find an endpoint for PRs.
+        /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
         let response = try await context.githubClient.issues_create_comment(.init(
             path: .init(
                 owner: repo.owner.login,

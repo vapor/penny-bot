@@ -4,6 +4,7 @@ import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import SotoCore
 import DiscordHTTP
+import DiscordUtilities
 import Crypto
 import Logging
 import Extensions
@@ -19,7 +20,7 @@ struct GHHooksHandler: LambdaHandler {
     let secretsRetriever: SecretsRetriever
     let logger: Logger
 
-    /// We don't do this in the initializer to avoid an unnecessary
+    /// We don't do this in the initializer to avoid a possible unnecessary
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
@@ -29,7 +30,12 @@ struct GHHooksHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
+        context.logger.trace("Handler will initialize")
+
         self.logger = context.logger
+        /// We can remove this if/when the lambda runtime gets support for
+        /// bootstrapping the logging system which it appears to now have.
+        DiscordGlobalConfiguration.makeLogger = { _ in context.logger }
 
         self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
 
@@ -49,6 +55,8 @@ struct GHHooksHandler: LambdaHandler {
             transport: transport,
             middlewares: [middleware]
         )
+
+        context.logger.trace("Handler did initialize")
     }
 
     func handle(
@@ -62,11 +70,14 @@ struct GHHooksHandler: LambdaHandler {
                 /// Report to Discord server for easier notification of maintainers
                 try await discordClient.createMessage(
                     channelId: Constants.Channels.logs.id,
-                    payload: .init(embeds: [.init(
-                        title: "GHHooks lambda top-level error",
-                        description: "\(error)".unicodesPrefix(4_000),
-                        color: .red
-                    )])
+                    payload: .init(
+                        content: DiscordUtils.mention(id: UserSnowflake("290483761559240704")),
+                        embeds: [.init(
+                            title: "GHHooks lambda top-level error",
+                            description: "\(error)".unicodesPrefix(4_000),
+                            color: .red
+                        )]
+                    )
                 ).guardSuccess()
             } catch {
                 logger.error("DiscordClient logging error", metadata: [
