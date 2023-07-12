@@ -3934,19 +3934,19 @@
     },
     "pr7": {
         "action": "edited",
-        "number": 843,
+        "number": 855,
         "pull_request": {
-            "url": "https://api.github.com/repos/vapor/docs/pulls/843",
-            "id": 1402996500,
-            "node_id": "PR_kwDOA9kepc5ToAcU",
-            "html_url": "https://github.com/vapor/docs/pull/843",
-            "diff_url": "https://github.com/vapor/docs/pull/843.diff",
-            "patch_url": "https://github.com/vapor/docs/pull/843.patch",
-            "issue_url": "https://api.github.com/repos/vapor/docs/issues/843",
-            "number": 843,
-            "state": "open",
+            "url": "https://api.github.com/repos/vapor/docs/pulls/855",
+            "id": 1430201723,
+            "node_id": "PR_kwDOA9kepc5VPyV7",
+            "html_url": "https://github.com/vapor/docs/pull/855",
+            "diff_url": "https://github.com/vapor/docs/pull/855.diff",
+            "patch_url": "https://github.com/vapor/docs/pull/855.patch",
+            "issue_url": "https://api.github.com/repos/vapor/docs/issues/855",
+            "number": 855,
+            "state": "closed",
             "locked": false,
-            "title": "Extend lifecycle handler example",
+            "title": "Add dark mode support",
             "user": {
                 "login": "fananek",
                 "id": 54376466,
@@ -3967,25 +3967,46 @@
                 "type": "User",
                 "site_admin": false
             },
-            "body": "Server lifecycle has been extended with `didBoot` and `shutdown` events.\r\n\r\nExtend lifecycle handler example.",
-            "created_at": "2023-06-22T07:18:20Z",
-            "updated_at": "2023-07-11T21:12:43Z",
-            "closed_at": null,
-            "merged_at": null,
-            "merge_commit_sha": "3f33ff884c4c2d7fc5f407893ab40ede22aab45d",
+            "body": "<!-- 🚀 Thank you for contributing! -->\r\n\r\n<!-- Describe your changes clearly and use examples if possible -->\r\nAdd dark mode support using Material for MkDocs theme standard color schemas.  \r\n\r\n<img width=\"1273\" alt=\"Vapor_docs_dark\" src=\"https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13\">  \r\n\r\n<img width=\"1265\" alt=\"Vapor_docs_light\" src=\"https://github.com/vapor/docs/assets/54376466/f6006cca-bbd2-45ce-a7ae-8e749d98ec05\">\r\n\r\n\r\n<!-- When this PR is merged, the title and body will be -->\r\nAdd dark mode support\r\n<!-- used to generate a release automatically. -->\r\n",
+            "created_at": "2023-07-11T21:19:57Z",
+            "updated_at": "2023-07-12T02:05:35Z",
+            "closed_at": "2023-07-11T21:25:14Z",
+            "merged_at": "2023-07-11T21:25:14Z",
+            "merge_commit_sha": "1d9b0d49a2c0340c73257ccebd6e2883d473d719",
             "assignee": null,
             "assignees": [],
-            "requested_reviewers": [],
+            "requested_reviewers": [
+                {
+                    "login": "mattesmohr",
+                    "id": 64681110,
+                    "node_id": "MDQ6VXNlcjY0NjgxMTEw",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/64681110?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/mattesmohr",
+                    "html_url": "https://github.com/mattesmohr",
+                    "followers_url": "https://api.github.com/users/mattesmohr/followers",
+                    "following_url": "https://api.github.com/users/mattesmohr/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/mattesmohr/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/mattesmohr/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/mattesmohr/subscriptions",
+                    "organizations_url": "https://api.github.com/users/mattesmohr/orgs",
+                    "repos_url": "https://api.github.com/users/mattesmohr/repos",
+                    "events_url": "https://api.github.com/users/mattesmohr/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/mattesmohr/received_events",
+                    "type": "User",
+                    "site_admin": false
+                }
+            ],
             "requested_teams": [],
             "labels": [
                 {
-                    "id": 876612640,
-                    "node_id": "MDU6TGFiZWw4NzY2MTI2NDA=",
-                    "url": "https://api.github.com/repos/vapor/docs/labels/updates",
-                    "name": "updates",
-                    "color": "1d76db",
+                    "id": 416795228,
+                    "node_id": "MDU6TGFiZWw0MTY3OTUyMjg=",
+                    "url": "https://api.github.com/repos/vapor/docs/labels/meta-enhancement",
+                    "name": "meta-enhancement",
+                    "color": "c5def5",
                     "default": false,
-                    "description": "Adding new or updated documentation."
+                    "description": "An improvement to the docs website."
                 },
                 {
                     "id": 4319726028,
@@ -3995,28 +4016,19 @@
                     "color": "5319E7",
                     "default": false,
                     "description": "This PR does not require the translations to be updated (e.g. fixing a typo or infrastructure work)"
-                },
-                {
-                    "id": 4319728109,
-                    "node_id": "LA_kwDOA9kepc8AAAABAXnR7Q",
-                    "url": "https://api.github.com/repos/vapor/docs/labels/translation-update",
-                    "name": "translation-update",
-                    "color": "D4C5F9",
-                    "default": false,
-                    "description": "This PR contains translations for the docs"
                 }
             ],
             "milestone": null,
             "draft": false,
-            "commits_url": "https://api.github.com/repos/vapor/docs/pulls/843/commits",
-            "review_comments_url": "https://api.github.com/repos/vapor/docs/pulls/843/comments",
+            "commits_url": "https://api.github.com/repos/vapor/docs/pulls/855/commits",
+            "review_comments_url": "https://api.github.com/repos/vapor/docs/pulls/855/comments",
             "review_comment_url": "https://api.github.com/repos/vapor/docs/pulls/comments{/number}",
-            "comments_url": "https://api.github.com/repos/vapor/docs/issues/843/comments",
-            "statuses_url": "https://api.github.com/repos/vapor/docs/statuses/f5b0c4e4dde97330ed6984914c7dd7312b446dad",
+            "comments_url": "https://api.github.com/repos/vapor/docs/issues/855/comments",
+            "statuses_url": "https://api.github.com/repos/vapor/docs/statuses/302489fa17d05f0ddeca83d98c30bc3308b291c6",
             "head": {
                 "label": "fananek:main",
                 "ref": "main",
-                "sha": "f5b0c4e4dde97330ed6984914c7dd7312b446dad",
+                "sha": "302489fa17d05f0ddeca83d98c30bc3308b291c6",
                 "user": {
                     "login": "fananek",
                     "id": 54376466,
@@ -4105,13 +4117,13 @@
                     "deployments_url": "https://api.github.com/repos/fananek/docs/deployments",
                     "created_at": "2022-05-11T09:25:35Z",
                     "updated_at": "2023-06-22T07:05:33Z",
-                    "pushed_at": "2023-07-11T09:46:41Z",
+                    "pushed_at": "2023-07-11T21:14:51Z",
                     "git_url": "git://github.com/fananek/docs.git",
                     "ssh_url": "git@github.com:fananek/docs.git",
                     "clone_url": "https://github.com/fananek/docs.git",
                     "svn_url": "https://github.com/fananek/docs",
                     "homepage": "https://docs.vapor.codes",
-                    "size": 18104,
+                    "size": 18109,
                     "stargazers_count": 0,
                     "watchers_count": 0,
                     "language": "Swift",
@@ -4152,7 +4164,7 @@
             "base": {
                 "label": "vapor:main",
                 "ref": "main",
-                "sha": "f6b4271e69c4a20606fd27e46f4dd7ac4610d3a3",
+                "sha": "871eab9b96253745fc475e686328f91eb2c7d71a",
                 "user": {
                     "login": "vapor",
                     "id": 17364220,
@@ -4241,13 +4253,13 @@
                     "deployments_url": "https://api.github.com/repos/vapor/docs/deployments",
                     "created_at": "2016-07-30T19:28:18Z",
                     "updated_at": "2023-07-07T11:51:27Z",
-                    "pushed_at": "2023-07-11T09:46:44Z",
+                    "pushed_at": "2023-07-11T21:25:14Z",
                     "git_url": "git://github.com/vapor/docs.git",
                     "ssh_url": "git@github.com:vapor/docs.git",
                     "clone_url": "https://github.com/vapor/docs.git",
                     "svn_url": "https://github.com/vapor/docs",
                     "homepage": "https://docs.vapor.codes",
-                    "size": 18106,
+                    "size": 18116,
                     "stargazers_count": 296,
                     "watchers_count": 296,
                     "language": "Swift",
@@ -4261,7 +4273,7 @@
                     "mirror_url": null,
                     "archived": false,
                     "disabled": false,
-                    "open_issues_count": 29,
+                    "open_issues_count": 28,
                     "license": null,
                     "allow_forking": true,
                     "is_template": false,
@@ -4273,7 +4285,7 @@
                     ],
                     "visibility": "public",
                     "forks": 309,
-                    "open_issues": 29,
+                    "open_issues": 28,
                     "watchers": 296,
                     "default_branch": "main",
                     "allow_squash_merge": true,
@@ -4291,49 +4303,68 @@
             },
             "_links": {
                 "self": {
-                    "href": "https://api.github.com/repos/vapor/docs/pulls/843"
+                    "href": "https://api.github.com/repos/vapor/docs/pulls/855"
                 },
                 "html": {
-                    "href": "https://github.com/vapor/docs/pull/843"
+                    "href": "https://github.com/vapor/docs/pull/855"
                 },
                 "issue": {
-                    "href": "https://api.github.com/repos/vapor/docs/issues/843"
+                    "href": "https://api.github.com/repos/vapor/docs/issues/855"
                 },
                 "comments": {
-                    "href": "https://api.github.com/repos/vapor/docs/issues/843/comments"
+                    "href": "https://api.github.com/repos/vapor/docs/issues/855/comments"
                 },
                 "review_comments": {
-                    "href": "https://api.github.com/repos/vapor/docs/pulls/843/comments"
+                    "href": "https://api.github.com/repos/vapor/docs/pulls/855/comments"
                 },
                 "review_comment": {
                     "href": "https://api.github.com/repos/vapor/docs/pulls/comments{/number}"
                 },
                 "commits": {
-                    "href": "https://api.github.com/repos/vapor/docs/pulls/843/commits"
+                    "href": "https://api.github.com/repos/vapor/docs/pulls/855/commits"
                 },
                 "statuses": {
-                    "href": "https://api.github.com/repos/vapor/docs/statuses/f5b0c4e4dde97330ed6984914c7dd7312b446dad"
+                    "href": "https://api.github.com/repos/vapor/docs/statuses/302489fa17d05f0ddeca83d98c30bc3308b291c6"
                 }
             },
             "author_association": "CONTRIBUTOR",
             "auto_merge": null,
             "active_lock_reason": null,
-            "merged": false,
-            "mergeable": true,
-            "rebaseable": true,
-            "mergeable_state": "clean",
-            "merged_by": null,
-            "comments": 3,
+            "merged": true,
+            "mergeable": null,
+            "rebaseable": null,
+            "mergeable_state": "unknown",
+            "merged_by": {
+                "login": "0xTim",
+                "id": 9938337,
+                "node_id": "MDQ6VXNlcjk5MzgzMzc=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/9938337?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/0xTim",
+                "html_url": "https://github.com/0xTim",
+                "followers_url": "https://api.github.com/users/0xTim/followers",
+                "following_url": "https://api.github.com/users/0xTim/following{/other_user}",
+                "gists_url": "https://api.github.com/users/0xTim/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/0xTim/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/0xTim/subscriptions",
+                "organizations_url": "https://api.github.com/users/0xTim/orgs",
+                "repos_url": "https://api.github.com/users/0xTim/repos",
+                "events_url": "https://api.github.com/users/0xTim/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/0xTim/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "comments": 0,
             "review_comments": 0,
-            "maintainer_can_modify": true,
-            "commits": 3,
-            "additions": 30,
-            "deletions": 0,
-            "changed_files": 3
+            "maintainer_can_modify": false,
+            "commits": 5,
+            "additions": 16,
+            "deletions": 2,
+            "changed_files": 1
         },
         "changes": {
             "body": {
-                "from": "<!-- 🚀 Thank you for contributing! -->\r\n\r\n<!-- Describe your changes clearly and use examples if possible. -->\r\nServer lifecycle has been extended with `didBoot` and `shutdown` events.\r\n<!-- When this PR is merged, the title and body will be -->\r\nExtend lifecycle handler example.\r\n<!-- used to generate a release automatically. -->\r\n"
+                "from": "<!-- 🚀 Thank you for contributing! -->\r\n\r\n<!-- Describe your changes clearly and use examples if possible. -->\r\nAdd dark mode support using Material for MkDocs theme standard color schemas.  \r\n\r\n<img width=\"1273\" alt=\"Vapor_docs_dark\" src=\"https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13\">  \r\n\r\n<img width=\"1265\" alt=\"Vapor_docs_light\" src=\"https://github.com/vapor/docs/assets/54376466/f6006cca-bbd2-45ce-a7ae-8e749d98ec05\">\r\n\r\n\r\n<!-- When this PR is merged, the title and body will be -->\r\nAdd dark mode support\r\n<!-- used to generate a release automatically. -->\r\n"
             }
         },
         "repository": {
@@ -4404,13 +4435,13 @@
             "deployments_url": "https://api.github.com/repos/vapor/docs/deployments",
             "created_at": "2016-07-30T19:28:18Z",
             "updated_at": "2023-07-07T11:51:27Z",
-            "pushed_at": "2023-07-11T09:46:44Z",
+            "pushed_at": "2023-07-11T21:25:14Z",
             "git_url": "git://github.com/vapor/docs.git",
             "ssh_url": "git@github.com:vapor/docs.git",
             "clone_url": "https://github.com/vapor/docs.git",
             "svn_url": "https://github.com/vapor/docs",
             "homepage": "https://docs.vapor.codes",
-            "size": 18106,
+            "size": 18116,
             "stargazers_count": 296,
             "watchers_count": 296,
             "language": "Swift",
@@ -4424,7 +4455,7 @@
             "mirror_url": null,
             "archived": false,
             "disabled": false,
-            "open_issues_count": 29,
+            "open_issues_count": 28,
             "license": null,
             "allow_forking": true,
             "is_template": false,
@@ -4436,7 +4467,7 @@
             ],
             "visibility": "public",
             "forks": 309,
-            "open_issues": 29,
+            "open_issues": 28,
             "watchers": 296,
             "default_branch": "main"
         },
@@ -4455,22 +4486,22 @@
             "description": "Creating modular server side software with Swift."
         },
         "sender": {
-            "login": "gwynne",
-            "id": 1130717,
-            "node_id": "MDQ6VXNlcjExMzA3MTc=",
-            "avatar_url": "https://avatars.githubusercontent.com/u/1130717?v=4",
+            "login": "MahdiBM",
+            "id": 54685446,
+            "node_id": "MDQ6VXNlcjU0Njg1NDQ2",
+            "avatar_url": "https://avatars.githubusercontent.com/u/54685446?v=4",
             "gravatar_id": "",
-            "url": "https://api.github.com/users/gwynne",
-            "html_url": "https://github.com/gwynne",
-            "followers_url": "https://api.github.com/users/gwynne/followers",
-            "following_url": "https://api.github.com/users/gwynne/following{/other_user}",
-            "gists_url": "https://api.github.com/users/gwynne/gists{/gist_id}",
-            "starred_url": "https://api.github.com/users/gwynne/starred{/owner}{/repo}",
-            "subscriptions_url": "https://api.github.com/users/gwynne/subscriptions",
-            "organizations_url": "https://api.github.com/users/gwynne/orgs",
-            "repos_url": "https://api.github.com/users/gwynne/repos",
-            "events_url": "https://api.github.com/users/gwynne/events{/privacy}",
-            "received_events_url": "https://api.github.com/users/gwynne/received_events",
+            "url": "https://api.github.com/users/MahdiBM",
+            "html_url": "https://github.com/MahdiBM",
+            "followers_url": "https://api.github.com/users/MahdiBM/followers",
+            "following_url": "https://api.github.com/users/MahdiBM/following{/other_user}",
+            "gists_url": "https://api.github.com/users/MahdiBM/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/MahdiBM/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/MahdiBM/subscriptions",
+            "organizations_url": "https://api.github.com/users/MahdiBM/orgs",
+            "repos_url": "https://api.github.com/users/MahdiBM/repos",
+            "events_url": "https://api.github.com/users/MahdiBM/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/MahdiBM/received_events",
             "type": "User",
             "site_admin": false
         }

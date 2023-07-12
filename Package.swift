@@ -49,6 +49,7 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
+        .package(url: "https://github.com/apple/swift-markdown.git", .branch("main")),
         .package(
             url: "https://github.com/gwynne/swift-semver",
             from: "0.1.0-alpha.3"
@@ -64,6 +65,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
+            // Use the apple repo when command plugin is merged
             branch: "generator-command-plugin"
         ),
         .package(
@@ -156,6 +158,7 @@ let package = Package(
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SwiftSemver", package: "swift-semver"),
+                .product(name: "Markdown", package: "swift-markdown"),
                 .target(name: "Extensions"),
             ],
             path: "./Lambdas/GHHooks",

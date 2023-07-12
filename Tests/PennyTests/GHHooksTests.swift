@@ -4,6 +4,7 @@ import DiscordModels
 import OpenAPIRuntime
 import Logging
 import SwiftSemver
+import Markdown
 import Fake
 import XCTest
 
@@ -119,6 +120,35 @@ class GHHooksTests: XCTestCase {
             let next = try XCTUnwrap(version.next(.minor))
             XCTAssertEqual(next.description, "122.9.67-alpha.1.1")
         }
+    }
+
+    func testMarkdown() async throws {
+        let text = """
+        <!-- 🚀 Thank you for contributing! -->
+
+        <!-- Describe your changes clearly and use examples if possible -->
+
+        Add dark mode support using Material for MkDocs theme standard color schemas.
+
+        <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+        <img width="1265" alt="Vapor_docs_light" src="https://github.com/vapor/docs/assets/54376466/f6006cca-bbd2-45ce-a7ae-8e749d98ec05">
+
+        <!-- When this PR is merged, the title and body will be -->
+
+        Add dark mode support
+
+        <!-- used to generate a release automatically. -->
+        """
+
+        let doc = Document(parsing: text)
+        let docNoHTML = doc.filterOutChildren(ofType: HTMLBlock.self)
+
+        XCTAssertEqual(docNoHTML.format(), """
+        Add dark mode support using Material for MkDocs theme standard color schemas.
+
+        Add dark mode support
+        """)
     }
 
     func testEventHandler() async throws {
