@@ -317,16 +317,17 @@ private extension PRHandler {
         }
         let body = try await response.body.collect(upTo: 1 << 16)
         let text = String(buffer: body)
-        let codeOwners = text.split(
-            omittingEmptySubsequences: true,
-            whereSeparator: \.isNewline
-        ).map {
-            $0.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
-        }.flatMap {
-            $0.dropFirst().map {
-                String($0.dropFirst())
-            }
-        }
+        let codeOwners = text
+            // split into lines
+            .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
+            // trim leading whitespace per line
+            .map { $0.trimmingPrefix(\.isWhitespace) }
+            // remove whole-line comments
+            .filter { !$0.starts(with: "#") }
+            // remove partial-line comments
+            .compactMap { $0.split(separator: "#", maxSplits: 1, omittingEmptySubsequences: true).first } 
+            // split lines on whitespace, dropping first word, and combine to single list
+            .flatMap { $0.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace).dropFirst() }
         return Set(codeOwners)
     }
 }
