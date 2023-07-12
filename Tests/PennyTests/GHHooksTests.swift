@@ -1,4 +1,5 @@
 @testable import GHHooksLambda
+import AsyncHTTPClient
 import SotoCore
 import DiscordModels
 import OpenAPIRuntime
@@ -16,8 +17,14 @@ class GHHooksTests: XCTestCase {
         return decoder
     }()
 
+    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
+    }
+
+    override func tearDown() {
+        try! httpClient.syncShutdown()
     }
 
     func testUnicodesPrefix() throws {
@@ -207,6 +214,7 @@ class GHHooksTests: XCTestCase {
                 context: .init(
                     eventName: eventName,
                     event: event,
+                    httpClient: httpClient,
                     discordClient: FakeDiscordClient(),
                     githubClient: Client(
                         serverURL: try Servers.server1(),
@@ -262,6 +270,7 @@ class GHHooksTests: XCTestCase {
     }
 
     enum Expectation {
+
         enum ResponseKind {
             case create
             case edit(messageId: MessageSnowflake)

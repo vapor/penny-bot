@@ -1,6 +1,10 @@
 import DiscordBM
+import AsyncHTTPClient
 import SwiftSemver
 import Markdown
+import NIOCore
+import NIOFoundationCompat
+import Foundation
 
 struct PRHandler {
 
@@ -117,17 +121,10 @@ struct PRHandler {
         }
         let versionDescription = tagPrefix + version.description
 
-        let acknowledgment: String
-        if pr.user.login == mergedBy.login {
-            acknowledgment = "This patch was authored and released by @\(pr.user.login)."
-        } else {
-            acknowledgment = "This patch was authored by @\(pr.user.login) and released by @\(mergedBy.login)."
-        }
-
         let release = try await makeNewRelease(
             version: versionDescription,
-            isPrerelease: !version.prereleaseIdentifiers.isEmpty,
-            acknowledgment: acknowledgment
+            mergedBy: mergedBy,
+            isPrerelease: !version.prereleaseIdentifiers.isEmpty
         )
 
         try await sendComment(release: release)
@@ -217,9 +214,10 @@ private extension PRHandler {
 
     func makeNewRelease(
         version: String,
-        isPrerelease: Bool,
-        acknowledgment: String
+        mergedBy: Components.Schemas.nullable_simple_user,
+        isPrerelease: Bool
     ) async throws -> Components.Schemas.release {
+        let body = try await makeReleaseBody(mergedBy: mergedBy)
         let response = try await context.githubClient.repos_create_release(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -229,11 +227,7 @@ private extension PRHandler {
                 tag_name: version,
                 target_commitish: pr.base.ref,
                 name: "\(version) - \(pr.title)",
-                body: """
-                ###### _\(acknowledgment)_
-
-                \(pr.body ?? "Pull Request:") \(pr.html_url)
-                """,
+                body: body,
                 draft: false,
                 prerelease: isPrerelease,
                 make_latest: isPrerelease ? ._false : ._true
@@ -272,5 +266,67 @@ private extension PRHandler {
         default:
             throw Errors.httpRequestFailed(response: response)
         }
+    }
+
+    /**
+     - A user who appears in a given repo's code owners file should NOT be credited as either an author or reviewer for a release in that repo (but can still be credited for releasing it).
+     - The user who authored the PR should be credited unless they are a code owner. Such a credit should be prominent and - as the GitHub changelog generator does - include a notation if it's that user's first merged PR.
+     - Any users who reviewed the PR (even if they requested changes or did a comments-only review without approving) should also be credited unless they are code owners. Such a credit should be less prominent than the author credit, something like a "thanks to ... for helping to review this release"
+     - The release author (user who merged the PR) should always be credited in a release, even if they're a code owner. This credit should be the least prominent, maybe even just a footnote (since it will pretty much always be a owner/maintainer).
+     */
+    func makeReleaseBody(
+        mergedBy: Components.Schemas.nullable_simple_user
+    ) async throws -> String {
+        let codeOwners = try await getCodeOwners()
+
+        let acknowledgment: String
+
+        let author = pr.user.login
+        let merger = mergedBy.login
+
+        /// If author is a code owner, skip crediting them as the author.
+        if codeOwners.contains(author) {
+            acknowledgment = "This patch was released by @\(author)."
+        } else {
+            if author == merger {
+                acknowledgment = "This patch was authored and released by @\(author)."
+            } else {
+                acknowledgment = "This patch was authored by @\(author) and released by @\(merger)."
+            }
+        }
+
+        return """
+        ###### _\(acknowledgment)_
+
+        "\(pr.body ?? "Pull Request:") \(pr.html_url)"
+        """
+    }
+
+    /// Returns code owners if the repo contains the file or returns `nil`.
+    /// In form of `["gwynne", "0xTim"]`.
+    func getCodeOwners() async throws -> Set<String> {
+        let fullName = repo.full_name.addingPercentEncoding(
+            withAllowedCharacters: .urlPathAllowed
+        ) ?? repo.full_name
+        let url = "https://raw.githubusercontent.com/\(fullName)/main/.github/CODEOWNERS"
+        let request = HTTPClientRequest(url: url)
+        let response = try await context.httpClient.execute(request, timeout: .seconds(3))
+        guard response.status == .ok else {
+            context.logger.debug("Can't find code owners of repo")
+            return []
+        }
+        let body = try await response.body.collect(upTo: 1 << 16)
+        let text = String(decoding: Data(buffer: body), as: UTF8.self)
+        let codeOwners = text.split(
+            omittingEmptySubsequences: true,
+            whereSeparator: \.isNewline
+        ).map {
+            $0.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace)
+        }.flatMap {
+            $0.dropFirst().map {
+                String($0.dropFirst())
+            }
+        }
+        return Set(codeOwners)
     }
 }
