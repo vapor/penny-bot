@@ -1347,5 +1347,6 @@
             "application_id": "1016612301262041098",
             "app_permissions": "140737488355327"
         }
-    }
+    },
+    "GET-https://discord.com/api/v10/channels/1123702585006768228/messages": []
 }

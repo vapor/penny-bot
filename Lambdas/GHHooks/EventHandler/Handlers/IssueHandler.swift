@@ -11,20 +11,30 @@ struct IssueHandler {
             try await onOpened()
         case .edited:
             try await onEdited()
+        case .closed:
+            try await onClosed()
         default: break
         }
     }
 
     func onEdited() async throws {
-        let embed = try createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await editIssueReport()
     }
 
     func onOpened() async throws {
         let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
+    }
+
+    func onClosed() async throws {
+        try await editIssueReport()
+    }
+
+    func editIssueReport() async throws {
+        let embed = try createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportEdit(embed: embed)
     }
 
     func createReportEmbed() throws -> Embed {
@@ -58,11 +68,21 @@ struct IssueHandler {
             title: "[\(repoName)] Issue #\(number)".unicodesPrefix(256),
             description: description,
             url: issueLink,
-            color: .yellow,
+            color: issue.discordColor,
             footer: .init(
                 text: "By \(authorName)",
                 icon_url: .exact(authorAvatarLink)
             )
         )
+    }
+}
+
+private extension Issue {
+    var discordColor: DiscordColor {
+        if self.closed_at != nil {
+            return .init(red: 153, green: 153, blue: 153)! /// Gray
+        } else {
+            return .yellow
+        }
     }
 }

@@ -57,9 +57,7 @@ struct PRHandler {
     }
 
     func onEdited() async throws {
-        let embed = createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await editPRReport()
     }
 
     func onOpened() async throws {
@@ -68,38 +66,12 @@ struct PRHandler {
         try await reporter.reportNew(embed: embed)
     }
 
-    func createReportEmbed() -> Embed {
-        let authorName = pr.user.login
-        let authorAvatarLink = pr.user.avatar_url
-
-        let prLink = pr.html_url
-
-        let body = pr.body.map { body in
-            let formatted = Document(parsing: body)
-                .filterOutChildren(ofType: HTMLBlock.self)
-                .format()
-            return ">>> \(formatted)".unicodesPrefix(260)
-        } ?? ""
-
-        let description = """
-        ### \(pr.title)
-
-        \(body)
-        """
-
-        return .init(
-            title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
-            description: description,
-            url: prLink,
-            color: .green,
-            footer: .init(
-                text: "By \(authorName)",
-                icon_url: .exact(authorAvatarLink)
-            )
-        )
+    func onClosed() async throws {
+        try await makeReleaseForMergedPR()
+        try await editPRReport()
     }
 
-    func onClosed() async throws {
+    func makeReleaseForMergedPR() async throws {
         guard pr.base.ref == "main",
               let mergedBy = pr.merged_by,
               let bump = pr.knownLabels.first?.toBump()
@@ -134,12 +106,50 @@ struct PRHandler {
 
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
-            payload: .init(content: """
-            [\(repo.uiName)] \(version.description): \(pr.title)
-            \(release.html_url)
-            """
+            payload: .init(
+                content: """
+                [\(repo.uiName)] \(version.description): \(pr.title)
+                \(release.html_url)
+                """
             )
         ).guardSuccess()
+    }
+
+    func editPRReport() async throws {
+        let embed = createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportEdit(embed: embed)
+    }
+
+    func createReportEmbed() -> Embed {
+        let authorName = pr.user.login
+        let authorAvatarLink = pr.user.avatar_url
+
+        let prLink = pr.html_url
+
+        let body = pr.body.map { body in
+            let formatted = Document(parsing: body)
+                .filterOutChildren(ofType: HTMLBlock.self)
+                .format()
+            return ">>> \(formatted)".unicodesPrefix(260)
+        } ?? ""
+
+        let description = """
+        ### \(pr.title)
+
+        \(body)
+        """
+
+        return .init(
+            title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
+            description: description,
+            url: prLink,
+            color: pr.discordColor,
+            footer: .init(
+                text: "By \(authorName)",
+                icon_url: .exact(authorAvatarLink)
+            )
+        )
     }
 }
 
@@ -271,6 +281,18 @@ private extension PRHandler {
         case .created: return
         default:
             throw Errors.httpRequestFailed(response: response)
+        }
+    }
+}
+
+private extension PullRequest {
+    var discordColor: DiscordColor {
+        if self.merged_by != nil {
+            return .purple
+        } else if self.closed_at != nil {
+            return .red
+        } else {
+            return .green
         }
     }
 }
