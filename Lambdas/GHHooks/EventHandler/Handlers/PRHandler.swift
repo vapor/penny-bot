@@ -140,7 +140,7 @@ struct PRHandler {
     }
 }
 
-private extension PRHandler {
+extension PRHandler {
     func getLastRelease() async throws -> Components.Schemas.release {
         let latest = try await self.getLatestRelease()
 
@@ -317,17 +317,33 @@ private extension PRHandler {
         }
         let body = try await response.body.collect(upTo: 1 << 16)
         let text = String(buffer: body)
-        let codeOwners = text
-            // split into lines
+        return parseCodeOwners(text: text)
+    }
+
+    func parseCodeOwners(text: String) -> Set<String> {
+        let codeOwners: [String] = text
+        /// split into lines
             .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
-            // trim leading whitespace per line
-            .map { $0.trimmingPrefix(\.isWhitespace) }
-            // remove whole-line comments
+        /// trim leading whitespace per line
+            .map { $0.trimmingPrefix(while: \.isWhitespace) }
+        /// remove whole-line comments
             .filter { !$0.starts(with: "#") }
-            // remove partial-line comments
-            .compactMap { $0.split(separator: "#", maxSplits: 1, omittingEmptySubsequences: true).first } 
-            // split lines on whitespace, dropping first word, and combine to single list
-            .flatMap { $0.split(omittingEmptySubsequences: true, whereSeparator: \.isWhitespace).dropFirst() }
+        /// remove partial-line comments
+            .compactMap {
+                $0.split(
+                    separator: "#",
+                    maxSplits: 1,
+                    omittingEmptySubsequences: true
+                ).first
+            }
+        /// split lines on whitespace, dropping first word, and combine to single list
+            .flatMap {
+                $0.split(
+                    omittingEmptySubsequences: true,
+                    whereSeparator: \.isWhitespace
+                ).dropFirst()
+            }.map(String.init)
+
         return Set(codeOwners)
     }
 }

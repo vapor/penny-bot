@@ -158,6 +158,48 @@ class GHHooksTests: XCTestCase {
         """)
     }
 
+    func testParseCodeOwners() async throws {
+        let text = """
+        # This is a comment.
+        # Each line is a file pattern followed by one or more owners.
+
+        # These owners will be the default owners for everything in
+        *       @global-owner1 @global-owner2
+
+        *.js    @js-owner #This is an inline comment.
+
+        *.go docs@example.com
+
+        *.txt @octo-org/octocats
+        /build/logs/ @doctocat
+
+        # The `docs/*` pattern will match files like
+        # `docs/getting-started.md` but not further nested files like
+        # `docs/build-app/troubleshooting.md`.
+        docs/*  docs@example.com
+
+        apps/ @octocat
+        /docs/ @doctocat
+        /scripts/ @doctocat @octocat
+        **/logs @octocat
+
+        /apps/ @octocat
+        /apps/github
+        """
+        let data = TestData.for(ghEventKey: "pr1")!
+        let event = try decoder.decode(GHEvent.self, from: data)
+        let handler = try PRHandler(
+            context: makeContext(
+                eventName: .pull_request,
+                event: event
+            )
+        )
+        XCTAssertEqual(
+            handler.parseCodeOwners(text: text).sorted(),
+            ["@doctocat", "@global-owner1", "@global-owner2", "@js-owner", "@octo-org/octocats", "@octocat", "docs@example.com"]
+        )
+    }
+
     func testEventHandler() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
         try await handleEvent(
@@ -211,16 +253,9 @@ class GHHooksTests: XCTestCase {
         do {
             let event = try decoder.decode(GHEvent.self, from: data)
             try await EventHandler(
-                context: .init(
+                context: makeContext(
                     eventName: eventName,
-                    event: event,
-                    httpClient: httpClient,
-                    discordClient: FakeDiscordClient(),
-                    githubClient: Client(
-                        serverURL: try Servers.server1(),
-                        transport: FakeClientTransport()
-                    ),
-                    logger: Logger(label: "GHHooksTests")
+                    event: event
                 )
             ).handle()
             if case let .response(channel, responseType) = expect {
@@ -267,6 +302,20 @@ class GHHooksTests: XCTestCase {
                 line: line
             )
         }
+    }
+
+    func makeContext(eventName: GHEvent.Kind, event: GHEvent) throws -> HandlerContext {
+        HandlerContext(
+            eventName: eventName,
+            event: event,
+            httpClient: httpClient,
+            discordClient: FakeDiscordClient(),
+            githubClient: Client(
+                serverURL: try Servers.server1(),
+                transport: FakeClientTransport()
+            ),
+            logger: Logger(label: "GHHooksTests")
+        )
     }
 
     enum Expectation {
