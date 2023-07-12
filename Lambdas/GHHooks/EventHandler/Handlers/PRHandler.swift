@@ -316,7 +316,7 @@ private extension PRHandler {
             return []
         }
         let body = try await response.body.collect(upTo: 1 << 16)
-        let text = String(decoding: Data(buffer: body), as: UTF8.self)
+        let text = String(buffer: body)
         let codeOwners = text.split(
             omittingEmptySubsequences: true,
             whereSeparator: \.isNewline
