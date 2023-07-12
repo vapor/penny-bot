@@ -34,11 +34,6 @@ struct Penny {
         await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
 
-        #warning("this")
-
-//        sendTestMessage(client: bot.client)
-//        return
-
 
         await bot.connect()
         let stream = await bot.makeEventsStream()
@@ -54,34 +49,4 @@ struct Penny {
             EventHandler(event: event).handle()
         }
     }
-}
-
-#warning("this")
-import DiscordHTTP
-func sendTestMessage(client: any DiscordClient) async throws {
-    let creatorName = "mahdibm"
-    let creatorLink = "https://github.com/mahdibm"
-
-    let prLink = "https://github.com/vapor/redis/pull/209"
-
-    let bod: String? = """
-            - Cleanup CI a little
-            - Update README
-            - Move CONTRIBUTING.md to .github
-            - Make tests more reliable
-            """
-
-    let body = bod.map { ">>> \($0)".unicodesPrefix(264) } ?? ""
-
-    let description = """
-            > \("some\nthing\nmhh")
-
-            """
-
-    try await client.createMessage(
-        channelId: "1016614538398937098",
-        payload: .init(
-            content: "https://google.com"
-        )
-    ).guardSuccess()
 }
