@@ -140,7 +140,7 @@ struct PRHandler {
         \(body)
         """
 
-        let statusString = " - \(pr.uiStatus)"
+        let statusString = pr.uiStatus.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
         /// A few string that the title contains, to search and uniquely identify the message with.
@@ -304,13 +304,13 @@ private extension PullRequest {
         }
     }
 
-    var uiStatus: String {
+    var uiStatus: String? {
         if self.merged_by != nil {
             return "Merged"
         } else if self.closed_at != nil {
             return "Closed"
         } else {
-            return "Opened"
+            return nil
         }
     }
 }

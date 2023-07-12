@@ -64,7 +64,7 @@ struct IssueHandler {
         \(body)
         """
 
-        let statusString = " - \(issue.uiStatus)"
+        let statusString = issue.uiStatus.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
         /// A few string that the title contains, to search and uniquely identify the message with.
@@ -94,11 +94,11 @@ private extension Issue {
         }
     }
 
-    var uiStatus: String {
+    var uiStatus: String? {
         if self.closed_at != nil {
             return "Closed"
         } else {
-            return "Opened"
+            return nil
         }
     }
 }
