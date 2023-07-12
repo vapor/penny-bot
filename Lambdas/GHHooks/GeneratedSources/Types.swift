@@ -8953,7 +8953,7 @@ public enum Components {
             /// Commit message for the merge commit.
             ///
             /// - Remark: Generated from `#/components/schemas/auto-merge/commit_message`.
-            public var commit_message: Swift.String
+            public var commit_message: Swift.String?
             /// Creates a new `auto_merge`.
             ///
             /// - Parameters:
@@ -8965,7 +8965,7 @@ public enum Components {
                 enabled_by: Components.Schemas.simple_user,
                 merge_method: Components.Schemas.auto_merge.merge_methodPayload,
                 commit_title: Swift.String? = nil,
-                commit_message: Swift.String
+                commit_message: Swift.String? = nil
             ) {
                 self.enabled_by = enabled_by
                 self.merge_method = merge_method

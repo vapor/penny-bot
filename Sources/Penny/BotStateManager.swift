@@ -75,9 +75,6 @@ actor BotStateManager {
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             logger.trace("Received 'didShutdown' signal")
             populateCache()
-        } else {
-            logger.error("Unknown signal", metadata: ["signal": .string(message.content)])
-            return
         }
     }
 

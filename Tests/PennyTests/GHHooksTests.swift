@@ -186,6 +186,12 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             expect: .error(description: "DiscordHTTPError.emptyBody(DiscordHTTPResponse(host: discord.com, status: 200 OK, version: HTTP/2.0, headers: [], body: nil))")
         )
+
+        try await handleEvent(
+            key: "pr8",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
     }
 
     func handleEvent(
