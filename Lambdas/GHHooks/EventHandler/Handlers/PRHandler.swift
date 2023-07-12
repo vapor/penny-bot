@@ -61,7 +61,7 @@ struct PRHandler {
     }
 
     func onOpened() async throws {
-        let embed = createReportEmbed()
+        let (embed, _) = createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
     }
@@ -116,12 +116,12 @@ struct PRHandler {
     }
 
     func editPRReport() async throws {
-        let embed = createReportEmbed()
+        let (embed, properties) = createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await reporter.reportEdit(embed: embed, searchableTitleProperties: properties)
     }
 
-    func createReportEmbed() -> Embed {
+    func createReportEmbed() -> (embed: Embed, searchableTitleProperties: [String]) {
         let authorName = pr.user.login
         let authorAvatarLink = pr.user.avatar_url
 
@@ -140,8 +140,14 @@ struct PRHandler {
         \(body)
         """
 
-        return .init(
-            title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
+        let statusString = " - \(pr.uiStatus)"
+        let maxCount = 256 - statusString.unicodeScalars.count
+        let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
+        /// A few string that the title contains, to search and uniquely identify the message with.
+        let searchableTitleProperties = [repo.uiName, "PR", "#\(number)"]
+
+        let embed = Embed(
+            title: title,
             description: description,
             url: prLink,
             color: pr.discordColor,
@@ -150,6 +156,8 @@ struct PRHandler {
                 icon_url: .exact(authorAvatarLink)
             )
         )
+
+        return (embed, searchableTitleProperties)
     }
 }
 
@@ -293,6 +301,16 @@ private extension PullRequest {
             return .red
         } else {
             return .green
+        }
+    }
+
+    var uiStatus: String {
+        if self.merged_by != nil {
+            return "Merged"
+        } else if self.closed_at != nil {
+            return "Closed"
+        } else {
+            return "Opened"
         }
     }
 }

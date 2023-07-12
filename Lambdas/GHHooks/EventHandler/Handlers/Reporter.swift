@@ -23,7 +23,7 @@ struct Reporter {
         ).guardSuccess()
     }
 
-    func reportEdit(embed: Embed) async throws {
+    func reportEdit(embed: Embed, searchableTitleProperties: [String]) async throws {
         let lastMessages = try await context.discordClient.listMessages(
             channelId: Constants.Channels.issueAndPRs.id,
             limit: 100
@@ -31,7 +31,12 @@ struct Reporter {
 
         /// Embed title shouldn't be nil based on `createPRReportEmbed()`, but trying to be safe.
         let embedTitle = try embed.title.requireValue()
-        let matchedMessages = lastMessages.filter { $0.embeds.first?.title == embedTitle }
+        let matchedMessages = lastMessages.filter { message in
+            guard let title = message.embeds.first?.title else {
+                return false
+            }
+            return searchableTitleProperties.allSatisfy({ title.contains($0) })
+        }
 
         switch matchedMessages.count {
         case 0:

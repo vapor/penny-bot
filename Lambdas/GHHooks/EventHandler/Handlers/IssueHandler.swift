@@ -22,7 +22,7 @@ struct IssueHandler {
     }
 
     func onOpened() async throws {
-        let embed = try createReportEmbed()
+        let (embed, _) = try createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
     }
@@ -32,12 +32,12 @@ struct IssueHandler {
     }
 
     func editIssueReport() async throws {
-        let embed = try createReportEmbed()
+        let (embed, properties) = try createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await reporter.reportEdit(embed: embed, searchableTitleProperties: properties)
     }
 
-    func createReportEmbed() throws -> Embed {
+    func createReportEmbed() throws -> (embed: Embed, searchableTitleProperties: [String]) {
         let event = context.event
 
         let issue = try event.issue.requireValue()
@@ -64,8 +64,14 @@ struct IssueHandler {
         \(body)
         """
 
-        return .init(
-            title: "[\(repoName)] Issue #\(number)".unicodesPrefix(256),
+        let statusString = " - \(issue.uiStatus)"
+        let maxCount = 256 - statusString.unicodeScalars.count
+        let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
+        /// A few string that the title contains, to search and uniquely identify the message with.
+        let searchableTitleProperties = [repoName, "Issue", "#\(number)"]
+
+        let embed = Embed(
+            title: title,
             description: description,
             url: issueLink,
             color: issue.discordColor,
@@ -74,6 +80,8 @@ struct IssueHandler {
                 icon_url: .exact(authorAvatarLink)
             )
         )
+
+        return (embed, searchableTitleProperties)
     }
 }
 
@@ -83,6 +91,14 @@ private extension Issue {
             return .init(red: 153, green: 153, blue: 153)! /// Gray
         } else {
             return .yellow
+        }
+    }
+
+    var uiStatus: String {
+        if self.closed_at != nil {
+            return "Closed"
+        } else {
+            return "Opened"
         }
     }
 }
