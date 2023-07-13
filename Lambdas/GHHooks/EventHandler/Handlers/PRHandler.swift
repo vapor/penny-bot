@@ -6,12 +6,9 @@ struct PRHandler {
 
     enum Errors: Error, CustomStringConvertible {
         case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
-        case tagDoesNotFollowSemVer(release: Components.Schemas.release, tag: String)
+        case tagDoesNotFollowSemVer(release: Release, tag: String)
         case cantBumpSemVer(version: SemanticVersion, bump: SemVerBump)
-        case cantFindAnyRelease(
-            latest: Components.Schemas.release?,
-            releases: [Components.Schemas.release]
-        )
+        case cantFindAnyRelease(latest: Release?, releases: [Release])
 
         var description: String {
             switch self {
@@ -161,7 +158,7 @@ struct PRHandler {
 }
 
 private extension PRHandler {
-    func getLastRelease() async throws -> Components.Schemas.release {
+    func getLastRelease() async throws -> Release {
         let latest = try await self.getLatestRelease()
 
         let response = try await context.githubClient.repos_list_releases(.init(
@@ -177,16 +174,16 @@ private extension PRHandler {
             throw Errors.httpRequestFailed(response: response)
         }
 
-        let filteredReleases: [Components.Schemas.release] = releases.compactMap {
-            release -> (Components.Schemas.release, SemanticVersion)? in
+        let filteredReleases: [Release] = releases.compactMap {
+            release -> (Release, SemanticVersion)? in
             if let (_, version) = SemanticVersion.fromGithubTag(release.tag_name) {
                 return (release, version)
             }
             return nil
         }.filter { release, version -> Bool in
             if let majorVersion = Int(pr.base.ref) {
-                // If the branch name is an integer, only include releases
-                // for that major version.
+                /// If the branch name is an integer, only include releases
+                /// for that major version.
                 return version.major == majorVersion
             }
             return true
@@ -206,7 +203,7 @@ private extension PRHandler {
         return release
     }
 
-    private func getLatestRelease() async throws -> Components.Schemas.release? {
+    private func getLatestRelease() async throws -> Release? {
         let response = try await context.githubClient.repos_get_latest_release(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -236,7 +233,7 @@ private extension PRHandler {
         version: String,
         isPrerelease: Bool,
         acknowledgment: String
-    ) async throws -> Components.Schemas.release {
+    ) async throws -> Release {
         let response = try await context.githubClient.repos_create_release(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -249,7 +246,7 @@ private extension PRHandler {
                 body: """
                 ###### _\(acknowledgment)_
 
-                \(pr.body ?? "Pull Request:") \(pr.html_url)
+                \(pr.body ?? "Pull Request"); in \(pr.html_url)
                 """,
                 draft: false,
                 prerelease: isPrerelease,
@@ -269,7 +266,7 @@ private extension PRHandler {
         throw Errors.httpRequestFailed(response: response)
     }
 
-    func sendComment(release: Components.Schemas.release) async throws {
+    func sendComment(release: Release) async throws {
         /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
         let response = try await context.githubClient.issues_create_comment(.init(
             path: .init(
