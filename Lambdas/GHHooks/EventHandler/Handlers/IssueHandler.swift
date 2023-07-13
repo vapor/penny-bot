@@ -56,7 +56,7 @@ struct IssueHandler {
             let formatted = Document(parsing: body)
                 .filterOutChildren(ofType: HTMLBlock.self)
                 .format()
-            return ">>> \(formatted)".unicodesPrefix(260)
+            return formatted.isEmpty ? "" : ">>> \(formatted)".unicodesPrefix(260)
         } ?? ""
 
         let description = """
