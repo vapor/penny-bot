@@ -91,7 +91,7 @@ private enum Status: String {
     var color: DiscordColor {
         switch self {
         case .closed:
-            return .init(red: 153, green: 153, blue: 153)! /// Gray
+            return .brown
         case .opened:
             return .yellow
         }
