@@ -1,6 +1,6 @@
 
 extension PullRequest {
-    enum Action: String, Codable {
+    public enum Action: String, Codable {
         case assigned
         case auto_merge_disabled
         case auto_merge_enabled
@@ -26,7 +26,7 @@ extension PullRequest {
 }
 
 extension Issue {
-    enum Action: String, Codable {
+    public enum Action: String, Codable {
         case assigned
         case closed
         case deleted

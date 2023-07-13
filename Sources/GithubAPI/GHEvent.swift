@@ -1,21 +1,21 @@
 import Foundation
 
-struct GHEvent: Codable {
-    let action: String?
-    let sender: User
-    let repository: Repository
-    let organization: Organization
+public struct GHEvent: Codable {
+    public let action: String?
+    public let sender: User
+    public let repository: Repository
+    public let organization: Organization
 
-    let issue: Issue?
-    let label: Label?
-    let number: Int?
-    let pull_request: PullRequest?
-    let before: String?
-    let after: String?
+    public let issue: Issue?
+    public let label: Label?
+    public let number: Int?
+    public let pull_request: PullRequest?
+    public let before: String?
+    public let after: String?
 }
 
 extension GHEvent {
-    enum Kind: String, Codable {
+    public enum Kind: String, Codable {
         case branch_protection_rule
         case check_run
         case check_suite

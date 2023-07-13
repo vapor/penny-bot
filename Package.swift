@@ -149,19 +149,27 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "SwiftSemver", package: "swift-semver"),
+                .product(name: "Markdown", package: "swift-markdown"),
+                .target(name: "GithubAPI"),
+                .target(name: "Extensions")
+            ],
+            path: "./Lambdas/GHHooks",
+            swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "GithubAPI",
+            dependencies: [
                 .product(
                     name: "OpenAPIAsyncHTTPClient",
                     package: "swift-openapi-async-http-client"
                 ),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .product(name: "SotoSecretsManager", package: "soto"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "SwiftSemver", package: "swift-semver"),
-                .product(name: "Markdown", package: "swift-markdown"),
-                .target(name: "Extensions"),
             ],
-            path: "./Lambdas/GHHooks",
             resources: [
                 .copy("openapi-generator-config.yml"),
                 .copy("openapi.yaml"),

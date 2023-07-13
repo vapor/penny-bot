@@ -4,6 +4,7 @@ import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import SotoCore
 import DiscordHTTP
+import GithubAPI
 import DiscordUtilities
 import Crypto
 import Logging

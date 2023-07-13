@@ -1,4 +1,5 @@
 import DiscordBM
+import GithubAPI
 import Markdown
 
 struct IssueHandler {
