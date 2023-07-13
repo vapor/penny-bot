@@ -303,7 +303,7 @@ private enum Status: String {
         case .closed:
             return .red
         case .draft:
-            return .init(red: 153, green: 153, blue: 153)! /// Gray
+            return .gray
         case .opened:
             return .green
         }
