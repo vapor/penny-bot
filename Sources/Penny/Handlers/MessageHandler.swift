@@ -211,7 +211,7 @@ struct MessageHandler {
                         color: .blue,
                         footer: .init(
                             text: "By \(authorName)",
-                            icon_url: author.avatar.map { avatar in
+                            icon_url: (member.avatar ?? author.avatar).map { avatar in
                                 .exact("\(avatarPrefix)/\(author.id.rawValue)/\(avatar).png")
                             }
                         )
