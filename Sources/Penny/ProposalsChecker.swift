@@ -384,11 +384,11 @@ private extension Proposal.Status.State {
         case .accepted: return .green
         case .activeReview: return .orange
         case .implemented: return .blue
-        case .previewing: return .lightGreen
+        case .previewing: return .teal
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
-        case .unknown: return .init(value: 0)!
+        case .unknown: return .gray(level: .level6, scheme: .dark)
         }
     }
 
