@@ -49,6 +49,7 @@ struct GHHooksHandler: LambdaHandler {
         ))
         let middleware = GHMiddleware(
             secretsRetriever: secretsRetriever,
+            authorization: .basic,
             logger: logger
         )
         self.githubClient = Client(

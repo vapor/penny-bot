@@ -1,17 +1,39 @@
 import OpenAPIRuntime
+import Atomics
 import Logging
 import Foundation
 import struct DiscordModels.Secret
 
 /// Adds some headers to all requests.
-actor GHMiddleware: ClientMiddleware {
+struct GHMiddleware: ClientMiddleware {
+
+    enum Authorization {
+        case bearer(String)
+        /// FIXME: After implementation check if this enum is needed or not.
+        case basic
+
+        func getHeader(secretsRetriever: SecretsRetriever) async throws -> String {
+            switch self {
+            case let .bearer(token):
+                return "Bearer \(token)"
+            case .basic:
+                let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
+                let username = "VaporBot"
+                let basicCredentials = Data("\(username):\(token.value)".utf8).base64EncodedString()
+                return "Basic \(basicCredentials)"
+            }
+        }
+    }
+
     let secretsRetriever: SecretsRetriever
+    let authorization: Authorization
     let logger: Logger
 
-    private var idGenerator = 0
+    static let idGenerator = ManagedAtomic(UInt(0))
 
-    init(secretsRetriever: SecretsRetriever, logger: Logger) {
+    init(secretsRetriever: SecretsRetriever, authorization: Authorization, logger: Logger) {
         self.secretsRetriever = secretsRetriever
+        self.authorization = authorization
         self.logger = logger
     }
 
@@ -22,15 +44,12 @@ actor GHMiddleware: ClientMiddleware {
         next: @Sendable (Request, URL) async throws -> Response
     ) async throws -> Response {
         var request = request
-        
         request.headerFields.reserveCapacity(4)
 
-        let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
-        let username = "VaporBot"
-        let basicCredentials = Data("\(username):\(token.value)".utf8).base64EncodedString()
+        let authHeader = try await authorization.getHeader(secretsRetriever: secretsRetriever)
         request.headerFields.addOrReplace(
             name: "Authorization",
-            value: "Basic \(basicCredentials)"
+            value: authHeader
         )
         request.headerFields.addOrReplace(
             name: "Accept",
@@ -45,8 +64,7 @@ actor GHMiddleware: ClientMiddleware {
             value: "Penny - 1.0.0 (https://github.com/vapor/penny-bot)"
         )
 
-        self.idGenerator += 1
-        let requestID = idGenerator
+        let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
 
         logger.debug("Will send request to Github", metadata: [
             "request": "\(request)",
