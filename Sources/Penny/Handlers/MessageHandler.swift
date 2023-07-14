@@ -195,21 +195,26 @@ struct MessageHandler {
                 user: author,
                 id: author.id.rawValue
             )
+            let avatarPrefix = "https://cdn.discordapp.com/avatars"
             await discordService.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
                     embeds: [.init(
                         description: """
-                        There is a new message that might be of interest to you.
-
-                        By **\(authorName)** in \(channelLink)
+                        There is a new message in \(channelLink) that might be of interest to you.
 
                         Triggered by:
                         \(words.makeExpressionListForDiscord())
 
                         >>> \(content.unicodesPrefix(256))
                         """,
-                        color: .vaporPurple
+                        color: .blue,
+                        footer: .init(
+                            text: "By \(authorName)",
+                            icon_url: member.avatar.map { avatar in
+                                .exact("\(avatarPrefix)/\(author.id.rawValue)/\(avatar).png")
+                            }
+                        )
                     )],
                     components: [[.button(.init(label: "Open Message", url: messageLink))]]
                 )
