@@ -144,8 +144,7 @@ actor ProposalsChecker {
         )
         guard let message = try? response?.decode() else { return }
         /// Create a thread on top of the message
-        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())"
-            .truncate(ifLongerThan: 100)
+        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())".unicodesPrefix(100)
         await discordService.createThreadFromMessage(
             channelId: message.channel_id,
             messageId: message.id,
@@ -181,7 +180,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -219,7 +218,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -243,22 +242,22 @@ actor ProposalsChecker {
             .button(.init(label: "Proposal", url: fullGithubLink)),
         ]]
         
-        if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
+        if let link = await findForumPostLink(link: fullGithubLink) {
             buttons[0].components.append(
-                .button(.init(label: "Forum Post", url: forumPostLink))
+                .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
             )
         }
         
-        if let searchLink = makeForumSearchLink(proposal: proposal) {
+        if let link = makeForumSearchLink(proposal: proposal) {
             buttons[0].components.append(
-                .button(.init(label: "Related Posts", url: searchLink))
+                .button(.init(label: "Related Posts", url: link))
             )
         }
         
         return buttons
     }
 
-    private func findForumPostLink(link: String) async -> String? {
+    private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
         let content: String
         do {
             content = try await self.proposalsService.getProposalContent(link: link)
@@ -269,22 +268,19 @@ actor ProposalsChecker {
             ])
             return nil
         }
-        if let latestLink = content
-            .split(whereSeparator: \.isNewline)
-            .first(where: { $0.hasPrefix("* Review:") })?
-            .split(separator: "(")
-            .flatMap({ $0.split(separator: ")") })
-            .reversed()
-            .first(where: { $0.starts(with: "https://") })
-            .map(String.init) {
-            return latestLink
-        } else {
+
+        let document = Document(parsing: content)
+        var finder = ReviewLinksFinder()
+        finder.visit(document)
+
+        guard let lastLink = finder.links.last else {
             logger.warning("Couldn't find forums link for proposal", metadata: [
                 "link": .string(link),
                 "content": .string(content)
             ])
             return nil
         }
+        return lastLink
     }
 
     private func makeForumSearchLink(proposal: Proposal) -> String? {
@@ -305,8 +301,10 @@ actor ProposalsChecker {
 
     func makeSummary(proposal: Proposal) -> String {
         let document = Document(parsing: proposal.summary)
-        var editor = LinkEditor()
-        let newMarkup = editor.visit(document)
+        var repairer = LinkRepairer(
+            relativeTo: "https://github.com/apple/swift-evolution/blob/main/proposals"
+        )
+        let newMarkup = repairer.visit(document)
         /// Won't be `nil`, but just in case.
         if newMarkup == nil {
             logger.warning("Edited Markup was nil", metadata: ["proposal": "\(proposal)"])
@@ -315,7 +313,7 @@ actor ProposalsChecker {
         return newSummary
             .replacingOccurrences(of: "\n", with: " ")
             .sanitized()
-            .truncate(ifLongerThan: 2_048)
+            .unicodesPrefix(2_048)
     }
 
     func consumeCachesStorageData(_ storage: Storage) {
@@ -339,17 +337,6 @@ private extension String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
     }
-
-    func truncate(ifLongerThan max: Int) -> String {
-        let scalars = self.unicodeScalars
-        if scalars.count > max {
-            /// `scalars.count - max` makes the text as long as the limit.
-            /// `+ 3` is for the extra `...` that is added.
-            return String(scalars.dropLast(scalars.count - max + 3)) + "..."
-        } else {
-            return self
-        }
-    }
 }
 
 private extension Proposal.User {
@@ -368,10 +355,12 @@ private extension Proposal.User {
     }
 }
 
-// MARK: - LinkEditor
+// MARK: - LinkRepairer
 
 /// Edits relative proposal links to absolute links so they look correct on Discord.
-struct LinkEditor: MarkupRewriter {
+struct LinkRepairer: MarkupRewriter {
+    let relativeTo: String
+
     func visitLink(_ link: Link) -> (any Markup)? {
         if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
            !dest.hasPrefix("https://"),
@@ -379,11 +368,49 @@ struct LinkEditor: MarkupRewriter {
             /// It's relative .md link like "0400-init-accessors.md".
             /// We make it absolute.
             var link = link
-            let dir = "https://github.com/apple/swift-evolution/blob/main/proposals"
-            link.destination = "\(dir)/\(dest)"
+            link.destination = "\(relativeTo)/\(dest)"
             return link
         }
         return link
+    }
+}
+
+// MARK: - ReviewLinksFinder
+
+/// Finds the review links of a proposal.
+struct ReviewLinksFinder: MarkupWalker {
+
+    struct SimpleLink: Equatable {
+        let description: String
+        let destination: String
+    }
+
+    private struct LinksFinder: MarkupWalker {
+        var links = [SimpleLink]()
+
+        mutating func visitLink(_ link: Link) {
+            guard let destination = link.destination?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  destination.hasPrefix("https"),
+                  let text = link.children.first(where: { _ in true }) as? Text else {
+                return
+            }
+            self.links.append(SimpleLink(
+                description: text.string.trimmingCharacters(in: .whitespacesAndNewlines),
+                destination: destination
+            ))
+        }
+    }
+
+    var links = [SimpleLink]()
+
+    mutating func visitParagraph(_ paragraph: Paragraph) {
+        guard let text = paragraph.children.first(where: { _ in true }) as? Text,
+              text.string.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("Review:")
+        else { return }
+        var linkFinder = LinksFinder()
+        linkFinder.visitParagraph(paragraph)
+        self.links = linkFinder.links
     }
 }
 
