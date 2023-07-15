@@ -30,7 +30,7 @@ struct DefaultProposalsService: ProposalsService {
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
         /// to
         /// https://raw.githubusercontent.com/apple/swift-evolution/main/proposals/0401-remove-property-wrapper-isolation.md
-        /// to get the raw content of the file instead of the Github web page.
+        /// to get the raw content of the file instead of the GitHub web page.
         let link = link.replacingOccurrences(
             of: "github.com",
             with: "raw.githubusercontent.com"

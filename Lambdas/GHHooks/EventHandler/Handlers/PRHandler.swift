@@ -1,20 +1,17 @@
 import DiscordBM
-import GithubAPI
+import GitHubAPI
 import SwiftSemver
 import Markdown
 
 struct PRHandler {
 
-    enum Errors: Error, CustomStringConvertible {
-        case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
+    enum PRErrors: Error, CustomStringConvertible {
         case tagDoesNotFollowSemVer(release: Release, tag: String)
         case cantBumpSemVer(version: SemanticVersion, bump: SemVerBump)
         case cantFindAnyRelease(latest: Release?, releases: [Release])
 
         var description: String {
             switch self {
-            case let .httpRequestFailed(response, file, line):
-                return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
             case let .tagDoesNotFollowSemVer(release, tag):
                 return "tagDoesNotFollowSemVer(release: \(release), tag: \(tag))"
             case let .cantBumpSemVer(version, bump):
@@ -42,15 +39,16 @@ struct PRHandler {
     }
 
     func handle() async throws {
-        let action = context.event.action.map({ PullRequest.Action(rawValue: $0) })
+        let action = context.event.action.flatMap({ PullRequest.Action(rawValue: $0) })
         switch action {
         case .opened:
             try await onOpened()
         case .closed:
             try await onClosed()
-        case .edited:
+        case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
             try await onEdited()
-        default: break
+        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .none:
+            break
         }
     }
 
@@ -78,12 +76,12 @@ struct PRHandler {
         let previousRelease = try await getLastRelease()
 
         let tag = previousRelease.tag_name
-        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGithubTag(tag) else {
-            throw Errors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
+        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(tag) else {
+            throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
         }
 
         guard let version = previousVersion.next(bump) else {
-            throw Errors.cantBumpSemVer(version: previousVersion, bump: bump)
+            throw PRErrors.cantBumpSemVer(version: previousVersion, bump: bump)
         }
         let versionDescription = tagPrefix + version.description
 
@@ -177,7 +175,7 @@ private extension PRHandler {
 
         let filteredReleases: [Release] = releases.compactMap {
             release -> (Release, SemanticVersion)? in
-            if let (_, version) = SemanticVersion.fromGithubTag(release.tag_name) {
+            if let (_, version) = SemanticVersion.fromGitHubTag(release.tag_name) {
                 return (release, version)
             }
             return nil
@@ -198,7 +196,7 @@ private extension PRHandler {
         }.map(\.0)
 
         guard let release = filteredReleases.first else {
-            throw Errors.cantFindAnyRelease(latest: latest, releases: releases)
+            throw PRErrors.cantFindAnyRelease(latest: latest, releases: releases)
         }
 
         return release

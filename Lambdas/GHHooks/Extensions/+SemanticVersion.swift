@@ -99,7 +99,7 @@ extension SemanticVersion {
 }
 
 extension SemanticVersion {
-    static func fromGithubTag(
+    static func fromGitHubTag(
         _ tagName: String
     ) -> (prefix: String, version: SemanticVersion)? {
         var tagName = tagName

@@ -1,4 +1,4 @@
-import GithubAPI
+import GitHubAPI
 
 extension PullRequest {
     var knownLabels: [KnownLabel] {

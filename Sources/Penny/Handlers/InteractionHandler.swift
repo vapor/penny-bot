@@ -494,7 +494,7 @@ private extension InteractionHandler {
         case .discord:
             return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
         case .github:
-            return "This command is still a WIP. Linking Discord with Github ID '\(id)'"
+            return "This command is still a WIP. Linking Discord with GitHub ID '\(id)'"
         case .slack:
             return "This command is still a WIP. Linking Discord with Slack ID '\(id)'"
         }

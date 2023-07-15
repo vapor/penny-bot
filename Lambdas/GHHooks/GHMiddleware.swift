@@ -1,17 +1,36 @@
 import OpenAPIRuntime
+import Atomics
 import Logging
 import Foundation
 import struct DiscordModels.Secret
 
 /// Adds some headers to all requests.
-actor GHMiddleware: ClientMiddleware {
-    let secretsRetriever: SecretsRetriever
+struct GHMiddleware: ClientMiddleware {
+
+    enum Authorization {
+        case bearer(Secret)
+        case authenticator(Authenticator)
+
+        func makeHeader(forceRefreshToken: Bool = false) async throws -> String {
+            switch self {
+            case let .bearer(token):
+                return "Bearer \(token.value)"
+            case let .authenticator(authenticator):
+                let token = try await authenticator.generateAccessToken(
+                    forceRefreshToken: forceRefreshToken
+                )
+                return "Bearer \(token.value)"
+            }
+        }
+    }
+
+    let authorization: Authorization
     let logger: Logger
 
-    private var idGenerator = 0
+    static let idGenerator = ManagedAtomic(UInt(0))
 
-    init(secretsRetriever: SecretsRetriever, logger: Logger) {
-        self.secretsRetriever = secretsRetriever
+    init(authorization: Authorization, logger: Logger) {
+        self.authorization = authorization
         self.logger = logger
     }
 
@@ -22,16 +41,8 @@ actor GHMiddleware: ClientMiddleware {
         next: @Sendable (Request, URL) async throws -> Response
     ) async throws -> Response {
         var request = request
-        
         request.headerFields.reserveCapacity(4)
 
-        let token = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_TOKEN_ARN")
-        let username = "VaporBot"
-        let basicCredentials = Data("\(username):\(token.value)".utf8).base64EncodedString()
-        request.headerFields.addOrReplace(
-            name: "Authorization",
-            value: "Basic \(basicCredentials)"
-        )
         request.headerFields.addOrReplace(
             name: "Accept",
             value: "application/vnd.github.raw+json"
@@ -45,10 +56,28 @@ actor GHMiddleware: ClientMiddleware {
             value: "Penny - 1.0.0 (https://github.com/vapor/penny-bot)"
         )
 
-        self.idGenerator += 1
-        let requestID = idGenerator
+        return try await intercept(
+            &request,
+            baseURL: baseURL,
+            operationID: operationID,
+            isRetry: false,
+            next: next
+        )
+    }
 
-        logger.debug("Will send request to Github", metadata: [
+    private func intercept(
+        _ request: inout Request,
+        baseURL: URL,
+        operationID: String,
+        isRetry: Bool,
+        next: @Sendable (Request, URL) async throws -> Response
+    ) async throws -> Response {
+        let authHeader = try await authorization.makeHeader(forceRefreshToken: isRetry)
+        request.headerFields.addOrReplace(name: "Authorization", value: authHeader)
+
+        let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
+
+        logger.debug("Will send request to GitHub", metadata: [
             "request": "\(request)",
             "baseURL": .stringConvertible(baseURL),
             "operationID": .string(operationID),
@@ -57,15 +86,32 @@ actor GHMiddleware: ClientMiddleware {
 
         do {
             let response = try await next(request, baseURL)
-            
-            logger.debug("Got response from Github", metadata: [
+
+            logger.debug("Got response from GitHub", metadata: [
                 "response": "\(response.fullDescription)",
                 "requestID": .stringConvertible(requestID),
             ])
 
-            return response
+            /// If this is not _the_ retry,
+            /// and if the authorization is set to use an authenticator,
+            /// and if the response status is `401 Unauthorized`,
+            /// then retry the request with a force-refreshed token.
+            if !isRetry,
+               case .authenticator = authorization,
+               response.statusCode == 401 {
+                logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
+                return try await intercept(
+                    &request,
+                    baseURL: baseURL,
+                    operationID: operationID,
+                    isRetry: true,
+                    next: next
+                )
+            } else {
+                return response
+            }
         } catch {
-            logger.error("Got error from Github", metadata: [
+            logger.error("Got error from GitHub", metadata: [
                 "error": "\(error)",
                 "requestID": .stringConvertible(requestID),
             ])

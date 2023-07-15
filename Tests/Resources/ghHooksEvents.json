@@ -2249,7 +2249,7 @@
                 "type": "User",
                 "site_admin": false
             },
-            "body": "Uses Github OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\r\n\r\nThe downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\r\nThe upside is we won't need to make these models / api-endpoints in the future.",
+            "body": "Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\r\n\r\nThe downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\r\nThe upside is we won't need to make these models / api-endpoints in the future.",
             "created_at": "2023-06-29T17:00:32Z",
             "updated_at": "2023-07-04T01:19:47Z",
             "closed_at": "2023-07-04T01:19:46Z",

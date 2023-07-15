@@ -1,4 +1,4 @@
-import GithubAPI
+import GitHubAPI
 
 extension Repository {
     /// If it's a Vapor repository, use the raw repo name like `postgres-nio`.

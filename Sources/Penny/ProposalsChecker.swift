@@ -236,13 +236,13 @@ actor ProposalsChecker {
         let link = proposal.link.sanitized()
         if link.count < 4 { return [] }
         let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
-        let fullGithubLink = githubProposalsPrefix + link
+        let fullGitHubLink = githubProposalsPrefix + link
         
         var buttons: [Interaction.ActionRow] = [[
-            .button(.init(label: "Proposal", url: fullGithubLink)),
+            .button(.init(label: "Proposal", url: fullGitHubLink)),
         ]]
         
-        if let link = await findForumPostLink(link: fullGithubLink) {
+        if let link = await findForumPostLink(link: fullGitHubLink) {
             buttons[0].components.append(
                 .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
             )

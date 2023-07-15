@@ -84,7 +84,7 @@ struct DynamoUserRepository {
     }
     
     // MARK: - Link users
-    func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
+    func linkGitHub(with discordId: String, _ githubId: String) async throws -> String {
         // TODO: Implement
         // Check if the users github already exists
         

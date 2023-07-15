@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "76579e3a42f3bf55ef71c5f6a4493cc0ae2d081d"
+        "revision" : "10dc0b916a9e40404a0b9d9603500b6d4a9e1015"
       }
     },
     {
@@ -34,6 +34,15 @@
       "state" : {
         "revision" : "4513d319c4aaa6c3b2ac18e1e6566a803515ad91",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "jwt-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt-kit.git",
+      "state" : {
+        "revision" : "dd3fe317f826d43bcefbe20d86f0f787927d05d8",
+        "version" : "4.12.0"
       }
     },
     {
@@ -176,7 +185,7 @@
       "location" : "https://github.com/apple/swift-markdown.git",
       "state" : {
         "branch" : "main",
-        "revision" : "f631ea604654abf6ea31e184da677b82dab549ca"
+        "revision" : "07da205e1fc488d88609fea5da1ca227efc6c000"
       }
     },
     {
@@ -257,7 +266,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "0e009a0bf6bf6b029215d7ad74baa3d8ea1cb699"
+        "revision" : "91620421bd3ff773b96a8eda14a78344bc8141fc"
       }
     },
     {
