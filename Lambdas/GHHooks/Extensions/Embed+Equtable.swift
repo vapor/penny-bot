@@ -59,7 +59,7 @@ extension Embed.Field: Equatable {
     }
 }
 
-/// Returns `true` if both values are nil, or if both values are the same. Otherwise `false`.
+/// Returns `true` if any of the values is nil, or if both values are the same. Otherwise `false`.
 /// This is used for the fields that even if we send `nil` for, Discord might populate them itself.
 private func anyNilOrEqual<E: Equatable>(_ lhs: E?, _ rhs: E?) -> Bool {
     switch (lhs, rhs) {
