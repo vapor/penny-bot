@@ -39,15 +39,16 @@ struct PRHandler {
     }
 
     func handle() async throws {
-        let action = context.event.action.map({ PullRequest.Action(rawValue: $0) })
+        let action = context.event.action.flatMap({ PullRequest.Action(rawValue: $0) })
         switch action {
         case .opened:
             try await onOpened()
         case .closed:
             try await onClosed()
-        case .edited:
+        case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
             try await onEdited()
-        default: break
+        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .none:
+            break
         }
     }
 

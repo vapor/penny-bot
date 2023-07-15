@@ -6,15 +6,14 @@ struct IssueHandler {
     let context: HandlerContext
 
     func handle() async throws {
-        let action = context.event.action.map({ Issue.Action(rawValue: $0) })
+        let action = context.event.action.flatMap({ Issue.Action(rawValue: $0) })
         switch action {
         case .opened:
             try await onOpened()
-        case .edited:
+        case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
             try await onEdited()
-        case .closed:
-            try await onClosed()
-        default: break
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned, .none:
+            break
         }
     }
 
@@ -26,10 +25,6 @@ struct IssueHandler {
         let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
-    }
-
-    func onClosed() async throws {
-        try await editIssueReport()
     }
 
     func editIssueReport() async throws {
