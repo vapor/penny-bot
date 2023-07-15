@@ -105,7 +105,7 @@ enum LinkSubCommand: String, CaseIterable {
         case .discord:
             return "Link your Discord account"
         case .github:
-            return "Link your Github account"
+            return "Link your GitHub account"
         case .slack:
             return "Link your Slack account"
         }
@@ -122,7 +122,7 @@ enum LinkSubCommand: String, CaseIterable {
         case .github: return [.init(
             type: .string,
             name: "id",
-            description: "Your Github account ID",
+            description: "Your GitHub account ID",
             required: true
         )]
         case .slack: return [.init(

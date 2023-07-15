@@ -160,14 +160,14 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Markdown", package: "swift-markdown"),
-                .target(name: "GithubAPI"),
-                .target(name: "Extensions")
+                .target(name: "GitHubAPI"),
+                .target(name: "Extensions"),
             ],
             path: "./Lambdas/GHHooks",
             swiftSettings: swiftSettings
         ),
         .target(
-            name: "GithubAPI",
+            name: "GitHubAPI",
             dependencies: [
                 .product(
                     name: "OpenAPIAsyncHTTPClient",

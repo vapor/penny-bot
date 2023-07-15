@@ -1,15 +1,20 @@
 import JWTKit
-import GithubAPI
+import GitHubAPI
 import OpenAPIRuntime
 import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import Logging
 import struct DiscordModels.Secret
 
-struct Authenticator {
+actor Authenticator {
     private let secretsRetriever: SecretsRetriever
     private let httpClient: HTTPClient
-    private let logger: Logger
+    let logger: Logger
+
+    /// The cached access token.
+    private var cachedAccessToken: InstallationToken?
+
+    private let lock = ActorLock()
 
     init(secretsRetriever: SecretsRetriever, httpClient: HTTPClient, logger: Logger) {
         self.secretsRetriever = secretsRetriever
@@ -17,38 +22,42 @@ struct Authenticator {
         self.logger = logger
     }
 
-    func generateAccessToken() async throws -> String {
-        let token = try await makeJWTToken()
-        let client = try makeClient(token: token)
-        let accessToken = try await createAccessToken(client: client)
-        return accessToken
+    /// TODO: Actually "refresh" the token if needed and possible,
+    /// instead of just creating a new one.
+    func generateAccessToken(forceRefreshToken: Bool = false) async throws -> Secret {
+        try await lock.withLock {
+            if !forceRefreshToken,
+               let cachedAccessToken = await cachedAccessToken {
+                return Secret(cachedAccessToken.token)
+            } else {
+                let token = try await makeJWTToken()
+                let client = try await makeClient(token: token)
+                let accessToken = try await createAccessToken(client: client)
+                await setCachedAccessToken(to: accessToken)
+                return Secret(accessToken.token)
+            }
+        }
     }
 
-    private func createAccessToken(client: Client) async throws -> String {
+    private func createAccessToken(client: Client) async throws -> InstallationToken {
         let response = try await client.apps_create_installation_access_token(.init(
             path: .init(installation_id: Constants.pennyGitHubAppID)
         ))
 
-        switch response {
-        case let .created(created):
-            switch created.body {
-            case let .json(json):
-                /// FIXME: take care of refreshing the token and stuff
-                /// When we get back a 403, we should refresh the token and retry request
-                return json.token
-            }
-        default:
+        if case let .created(created) = response,
+           case let .json(json) = created.body {
+            return json
+        } else {
             throw Errors.httpRequestFailed(response: response)
         }
     }
 
-    private func makeClient(token: String) throws -> Client {
+    private func makeClient(token: Secret) throws -> Client {
         let transport = AsyncHTTPClientTransport(configuration: .init(
             client: httpClient,
             timeout: .seconds(3)
         ))
         let middleware = GHMiddleware(
-            secretsRetriever: secretsRetriever,
             authorization: .bearer(token),
             logger: logger
         )
@@ -60,20 +69,23 @@ struct Authenticator {
         return client
     }
 
-    private func makeJWTToken() async throws -> String {
+    private func makeJWTToken() async throws -> Secret {
         let signers = JWTSigners()
         let key = try await getPrivKey()
         try signers.use(.rs256(key: .private(pem: key.value)))
         let payload = TokenPayload()
         let token = try signers.sign(payload)
-        return token
+        return Secret(token)
     }
 
     private func getPrivKey() async throws -> Secret {
         try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY")
     }
-}
 
+    private func setCachedAccessToken(to token: InstallationToken) {
+        self.cachedAccessToken = token
+    }
+}
 
 /// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app#about-json-web-tokens-jwts
 private struct TokenPayload: JWTPayload, Equatable {

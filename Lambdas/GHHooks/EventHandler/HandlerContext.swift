@@ -1,5 +1,5 @@
 import DiscordBM
-import GithubAPI
+import GitHubAPI
 import OpenAPIRuntime
 import Logging
 

@@ -1,5 +1,5 @@
 @testable import GHHooksLambda
-import GithubAPI
+import GitHubAPI
 import SotoCore
 import DiscordModels
 import OpenAPIRuntime

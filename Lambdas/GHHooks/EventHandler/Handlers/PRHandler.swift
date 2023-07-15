@@ -1,5 +1,5 @@
 import DiscordBM
-import GithubAPI
+import GitHubAPI
 import SwiftSemver
 import Markdown
 
@@ -75,7 +75,7 @@ struct PRHandler {
         let previousRelease = try await getLastRelease()
 
         let tag = previousRelease.tag_name
-        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGithubTag(tag) else {
+        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(tag) else {
             throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
         }
 
@@ -174,7 +174,7 @@ private extension PRHandler {
 
         let filteredReleases: [Release] = releases.compactMap {
             release -> (Release, SemanticVersion)? in
-            if let (_, version) = SemanticVersion.fromGithubTag(release.tag_name) {
+            if let (_, version) = SemanticVersion.fromGitHubTag(release.tag_name) {
                 return (release, version)
             }
             return nil
