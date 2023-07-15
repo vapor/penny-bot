@@ -54,8 +54,8 @@ struct IssueHandler {
 
         let body = issue.body.map { body -> String in
             let formatted = Document(parsing: body)
-                .filterOutChildren(ofType: HTMLBlock.self)
-                .format()
+                .removeHTMLBlocks()?
+                .format() ?? ""
             return formatted.isEmpty ? "" : ">>> \(formatted)".unicodesPrefix(260)
         } ?? ""
 

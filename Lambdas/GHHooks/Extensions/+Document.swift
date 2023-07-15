@@ -1,10 +1,15 @@
 import Markdown
 
 extension Document {
-    func filterOutChildren(ofType: (some BlockMarkup).Type) -> Document {
-        let children = self.blockChildren.filter {
-            type(of: $0) != ofType
-        }
-        return Document(children)
+    func removeHTMLBlocks() -> (any Markup)? {
+        var deleter = HTMLBlockDeleter()
+        let markup = deleter.visit(self)
+        return markup
+    }
+}
+
+private struct HTMLBlockDeleter: MarkupRewriter {
+    func visitHTMLBlock(_ html: HTMLBlock) -> (any Markup)? {
+        return nil
     }
 }

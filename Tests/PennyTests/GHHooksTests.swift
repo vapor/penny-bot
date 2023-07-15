@@ -143,9 +143,9 @@ class GHHooksTests: XCTestCase {
         """
 
         let doc = Document(parsing: text)
-        let docNoHTML = doc.filterOutChildren(ofType: HTMLBlock.self)
+        let docNoHTML = doc.removeHTMLBlocks()
 
-        XCTAssertEqual(docNoHTML.format(), """
+        XCTAssertEqual(docNoHTML?.format(), """
         Add dark mode support using Material for MkDocs theme standard color schemas.
 
         Add dark mode support

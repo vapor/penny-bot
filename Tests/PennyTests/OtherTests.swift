@@ -1,5 +1,7 @@
 @testable import Penny
 @testable import Models
+import Fake
+import Markdown
 import XCTest
 
 class OtherTests: XCTestCase {
@@ -106,5 +108,19 @@ class OtherTests: XCTestCase {
                 XCTFail("\(Expression.self) decoded wrong value: \(decoded)")
             }
         }
+    }
+
+    func testExtractProposalForumsPostLink() throws {
+        let proposal = TestData.proposalContent
+        let document = Document(parsing: proposal)
+
+        let originalLink = try XCTUnwrap(document.child(through: 1, 0, 0, 1) as? Link)
+        XCTAssertEqual(originalLink.destination, "0400-init-accessors.md")
+
+        var editor = LinkEditor()
+        let newMarkup = editor.visit(document)
+
+        let editedLink = try XCTUnwrap(newMarkup?.child(through: 1, 0, 0, 1) as? Link)
+        XCTAssertEqual(editedLink.destination, "https://github.com/apple/swift-evolution/blob/main/proposals/0400-init-accessors.md")
     }
 }

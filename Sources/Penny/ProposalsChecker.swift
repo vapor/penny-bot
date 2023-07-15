@@ -1,4 +1,5 @@
 import Logging
+import Markdown
 import DiscordModels
 import Models
 import Foundation
@@ -165,10 +166,7 @@ actor ProposalsChecker {
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
-        let summary = proposal.summary
-            .replacingOccurrences(of: "\n", with: " ")
-            .sanitized()
-            .truncate(ifLongerThan: 2_048)
+        let summary = makeSummary(proposal: proposal)
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -206,10 +204,7 @@ actor ProposalsChecker {
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
-        let summary = proposal.summary
-            .replacingOccurrences(of: "\n", with: " ")
-            .sanitized()
-            .truncate(ifLongerThan: 2_048)
+        let summary = makeSummary(proposal: proposal)
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -308,6 +303,21 @@ actor ProposalsChecker {
         return link
     }
 
+    func makeSummary(proposal: Proposal) -> String {
+        let document = Document(parsing: proposal.summary)
+        var editor = LinkEditor()
+        let newMarkup = editor.visit(document)
+        /// Won't be `nil`, but just in case.
+        if newMarkup == nil {
+            logger.warning("Edited Markup was nil", metadata: ["proposal": "\(proposal)"])
+        }
+        let newSummary = newMarkup?.format() ?? proposal.summary
+        return newSummary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .truncate(ifLongerThan: 2_048)
+    }
+
     func consumeCachesStorageData(_ storage: Storage) {
         self.storage.previousProposals = storage.previousProposals
         self.storage.queuedProposals = storage.queuedProposals
@@ -358,6 +368,26 @@ private extension Proposal.User {
     }
 }
 
+// MARK: - LinkEditor
+
+/// Edits relative proposal links to absolute links so they look correct on Discord.
+struct LinkEditor: MarkupRewriter {
+    func visitLink(_ link: Link) -> (any Markup)? {
+        if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
+           !dest.hasPrefix("https://"),
+           dest.hasSuffix(".md") {
+            /// It's relative .md link like "0400-init-accessors.md".
+            /// We make it absolute.
+            var link = link
+            let dir = "https://github.com/apple/swift-evolution/blob/main/proposals"
+            link.destination = "\(dir)/\(dest)"
+            return link
+        }
+        return link
+    }
+}
+
+// MARK: - QueuedProposal
 struct QueuedProposal: Codable {
     let uuid: UUID
     let firstKnownStateBeforeQueue: Proposal.Status.State?
