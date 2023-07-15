@@ -31,6 +31,121 @@ public struct Client: APIProtocol {
         )
     }
     private var converter: Converter { client.converter }
+    /// Create an installation access token for an app
+    ///
+    /// Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access. To restrict the access to specific repositories, you can provide the `repository_ids` when creating the token. When you omit `repository_ids`, the response does not contain the `repositories` key.
+    ///
+    /// You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
+    ///
+    /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
+    /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
+    public func apps_create_installation_access_token(
+        _ input: Operations.apps_create_installation_access_token.Input
+    ) async throws -> Operations.apps_create_installation_access_token.Output {
+        try await client.send(
+            input: input,
+            forOperation: Operations.apps_create_installation_access_token.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/app/installations/{}/access_tokens",
+                    parameters: [input.path.installation_id]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .post)
+                suppressMutabilityWarning(&request)
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                request.body = try converter.setOptionalRequestBodyAsJSON(
+                    input.body,
+                    headerFields: &request.headerFields,
+                    transforming: { wrapped in
+                        switch wrapped {
+                        case let .json(value):
+                            return .init(
+                                value: value,
+                                contentType: "application/json; charset=utf-8"
+                            )
+                        }
+                    }
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 201:
+                    let headers:
+                        Operations.apps_create_installation_access_token.Output.Created.Headers =
+                            .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.apps_create_installation_access_token.Output.Created.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.installation_token.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .created(.init(headers: headers, body: body))
+                case 403:
+                    let headers: Components.Responses.forbidden.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.forbidden.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .forbidden(.init(headers: headers, body: body))
+                case 401:
+                    let headers: Components.Responses.requires_authentication.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.requires_authentication.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .unauthorized(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.not_found.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .notFound(.init(headers: headers, body: body))
+                case 422:
+                    let headers: Components.Responses.validation_failed.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.validation_failed.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.validation_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .unprocessableEntity(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// Get an organization
     ///
     /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).

@@ -1,24 +1,90 @@
 import JWTKit
+import GithubAPI
+import OpenAPIRuntime
+import AsyncHTTPClient
+import OpenAPIAsyncHTTPClient
+import Logging
 import struct DiscordModels.Secret
 
 struct Authenticator {
-    let secretesRetriever: SecretsRetriever
+    private let secretsRetriever: SecretsRetriever
+    private let httpClient: HTTPClient
+    private let logger: Logger
 
-    /// FIXME: set the env var `GH_APP_AUTH_PRIV_KEY` to `arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ`.
-    func getPrivKey() async throws -> Secret {
-        try await secretesRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY")
+    init(secretsRetriever: SecretsRetriever, httpClient: HTTPClient, logger: Logger) {
+        self.secretsRetriever = secretsRetriever
+        self.httpClient = httpClient
+        self.logger = logger
+    }
+
+    func generateAccessToken() async throws -> String {
+        let token = try await makeJWTToken()
+        let client = try makeClient(token: token)
+        let accessToken = try await createAccessToken(client: client)
+        return accessToken
+    }
+
+    private func createAccessToken(client: Client) async throws -> String {
+        let response = try await client.apps_create_installation_access_token(.init(
+            path: .init(installation_id: Constants.pennyGitHubAppID)
+        ))
+
+        switch response {
+        case let .created(created):
+            switch created.body {
+            case let .json(json):
+                /// FIXME: take care of refreshing the token and stuff
+                /// When we get back a 403, we should refresh the token and retry request
+                return json.token
+            }
+        default:
+            throw Errors.httpRequestFailed(response: response)
+        }
+    }
+
+    private func makeClient(token: String) throws -> Client {
+        let transport = AsyncHTTPClientTransport(configuration: .init(
+            client: httpClient,
+            timeout: .seconds(3)
+        ))
+        let middleware = GHMiddleware(
+            secretsRetriever: secretsRetriever,
+            authorization: .bearer(token),
+            logger: logger
+        )
+        let client = Client(
+            serverURL: try Servers.server1(),
+            transport: transport,
+            middlewares: [middleware]
+        )
+        return client
+    }
+
+    private func makeJWTToken() async throws -> String {
+        let signers = JWTSigners()
+        let key = try await getPrivKey()
+        try signers.use(.rs256(key: .private(pem: key.value)))
+        let payload = TokenPayload()
+        let token = try signers.sign(payload)
+        return token
+    }
+
+    private func getPrivKey() async throws -> Secret {
+        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY")
     }
 }
 
 
 /// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app#about-json-web-tokens-jwts
 private struct TokenPayload: JWTPayload, Equatable {
-    var issuedAt: IssuedAtClaim
-    var expiresAt: ExpirationClaim
+    /// When the token was issued.
+    let issuedAt: IssuedAtClaim
+    /// When the token will expire.
+    let expiresAt: ExpirationClaim
     /// Penny's GitHub app-id.
-    var issuer: String
+    let issuer: String
     /// The algorithm. GitHub says `RS256`.
-    var algorithm: String
+    let algorithm: String
 
     enum CodingKeys: String, CodingKey {
         case issuedAt = "iat"
@@ -33,7 +99,7 @@ private struct TokenPayload: JWTPayload, Equatable {
         /// 5 mins into the future. GitHub docs says no more than 10 mins.
         self.expiresAt = .init(value: Date().addingTimeInterval(5 * 60))
         /// The app-id, per GitHub docs.
-        self.issuer = "360798"
+        self.issuer = "\(Constants.pennyGitHubAppID)"
         /// `RS256`, per GitHub docs.
         self.algorithm = "RS256"
     }

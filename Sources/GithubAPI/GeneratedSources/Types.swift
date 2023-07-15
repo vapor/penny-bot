@@ -7,6 +7,17 @@ import Foundation
 #endif
 /// A type that performs HTTP operations defined by the OpenAPI document.
 public protocol APIProtocol: Sendable {
+    /// Create an installation access token for an app
+    ///
+    /// Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access. To restrict the access to specific repositories, you can provide the `repository_ids` when creating the token. When you omit `repository_ids`, the response does not contain the `repositories` key.
+    ///
+    /// You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
+    ///
+    /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
+    /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
+    func apps_create_installation_access_token(
+        _ input: Operations.apps_create_installation_access_token.Input
+    ) async throws -> Operations.apps_create_installation_access_token.Output
     /// Get an organization
     ///
     /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).
@@ -800,6 +811,1255 @@ public enum Components {
                 case _type = "type"
                 case site_admin
                 case starred_at
+            }
+        }
+        /// The permissions granted to the user access token.
+        ///
+        /// - Remark: Generated from `#/components/schemas/app-permissions`.
+        public struct app_permissions: Codable, Equatable, Hashable, Sendable {
+            /// The level of permission to grant the access token for GitHub Actions workflows, workflow runs, and artifacts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/actions`.
+            @frozen
+            public enum actionsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [actionsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for GitHub Actions workflows, workflow runs, and artifacts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/actions`.
+            public var actions: Components.Schemas.app_permissions.actionsPayload?
+            /// The level of permission to grant the access token for repository creation, deletion, settings, teams, and collaborators creation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/administration`.
+            @frozen
+            public enum administrationPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [administrationPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for repository creation, deletion, settings, teams, and collaborators creation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/administration`.
+            public var administration: Components.Schemas.app_permissions.administrationPayload?
+            /// The level of permission to grant the access token for checks on code.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/checks`.
+            @frozen
+            public enum checksPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [checksPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for checks on code.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/checks`.
+            public var checks: Components.Schemas.app_permissions.checksPayload?
+            /// The level of permission to grant the access token for repository contents, commits, branches, downloads, releases, and merges.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/contents`.
+            @frozen
+            public enum contentsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [contentsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for repository contents, commits, branches, downloads, releases, and merges.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/contents`.
+            public var contents: Components.Schemas.app_permissions.contentsPayload?
+            /// The level of permission to grant the access token for deployments and deployment statuses.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/deployments`.
+            @frozen
+            public enum deploymentsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [deploymentsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for deployments and deployment statuses.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/deployments`.
+            public var deployments: Components.Schemas.app_permissions.deploymentsPayload?
+            /// The level of permission to grant the access token for managing repository environments.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/environments`.
+            @frozen
+            public enum environmentsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [environmentsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for managing repository environments.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/environments`.
+            public var environments: Components.Schemas.app_permissions.environmentsPayload?
+            /// The level of permission to grant the access token for issues and related comments, assignees, labels, and milestones.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/issues`.
+            @frozen
+            public enum issuesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [issuesPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for issues and related comments, assignees, labels, and milestones.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/issues`.
+            public var issues: Components.Schemas.app_permissions.issuesPayload?
+            /// The level of permission to grant the access token to search repositories, list collaborators, and access repository metadata.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/metadata`.
+            @frozen
+            public enum metadataPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [metadataPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to search repositories, list collaborators, and access repository metadata.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/metadata`.
+            public var metadata: Components.Schemas.app_permissions.metadataPayload?
+            /// The level of permission to grant the access token for packages published to GitHub Packages.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/packages`.
+            @frozen
+            public enum packagesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [packagesPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for packages published to GitHub Packages.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/packages`.
+            public var packages: Components.Schemas.app_permissions.packagesPayload?
+            /// The level of permission to grant the access token to retrieve Pages statuses, configuration, and builds, as well as create new builds.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/pages`.
+            @frozen
+            public enum pagesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [pagesPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to retrieve Pages statuses, configuration, and builds, as well as create new builds.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/pages`.
+            public var pages: Components.Schemas.app_permissions.pagesPayload?
+            /// The level of permission to grant the access token for pull requests and related comments, assignees, labels, milestones, and merges.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/pull_requests`.
+            @frozen
+            public enum pull_requestsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [pull_requestsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for pull requests and related comments, assignees, labels, milestones, and merges.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/pull_requests`.
+            public var pull_requests: Components.Schemas.app_permissions.pull_requestsPayload?
+            /// The level of permission to grant the access token to manage the post-receive hooks for a repository.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/repository_hooks`.
+            @frozen
+            public enum repository_hooksPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [repository_hooksPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage the post-receive hooks for a repository.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/repository_hooks`.
+            public var repository_hooks: Components.Schemas.app_permissions.repository_hooksPayload?
+            /// The level of permission to grant the access token to manage repository projects, columns, and cards.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/repository_projects`.
+            @frozen
+            public enum repository_projectsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                case admin
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    case "admin": self = .admin
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    case .admin: return "admin"
+                    }
+                }
+                public static var allCases: [repository_projectsPayload] {
+                    [.read, .write, .admin]
+                }
+            }
+            /// The level of permission to grant the access token to manage repository projects, columns, and cards.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/repository_projects`.
+            public var repository_projects:
+                Components.Schemas.app_permissions.repository_projectsPayload?
+            /// The level of permission to grant the access token to view and manage secret scanning alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/secret_scanning_alerts`.
+            @frozen
+            public enum secret_scanning_alertsPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [secret_scanning_alertsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to view and manage secret scanning alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/secret_scanning_alerts`.
+            public var secret_scanning_alerts:
+                Components.Schemas.app_permissions.secret_scanning_alertsPayload?
+            /// The level of permission to grant the access token to manage repository secrets.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/secrets`.
+            @frozen
+            public enum secretsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [secretsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage repository secrets.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/secrets`.
+            public var secrets: Components.Schemas.app_permissions.secretsPayload?
+            /// The level of permission to grant the access token to view and manage security events like code scanning alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/security_events`.
+            @frozen
+            public enum security_eventsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [security_eventsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to view and manage security events like code scanning alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/security_events`.
+            public var security_events: Components.Schemas.app_permissions.security_eventsPayload?
+            /// The level of permission to grant the access token to manage just a single file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
+            @frozen
+            public enum single_filePayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [single_filePayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage just a single file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
+            public var single_file: Components.Schemas.app_permissions.single_filePayload?
+            /// The level of permission to grant the access token for commit statuses.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
+            @frozen
+            public enum statusesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [statusesPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for commit statuses.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
+            public var statuses: Components.Schemas.app_permissions.statusesPayload?
+            /// The level of permission to grant the access token to manage Dependabot alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/vulnerability_alerts`.
+            @frozen
+            public enum vulnerability_alertsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [vulnerability_alertsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage Dependabot alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/vulnerability_alerts`.
+            public var vulnerability_alerts:
+                Components.Schemas.app_permissions.vulnerability_alertsPayload?
+            /// The level of permission to grant the access token to update GitHub Actions workflow files.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/workflows`.
+            @frozen
+            public enum workflowsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [workflowsPayload] { [.write] }
+            }
+            /// The level of permission to grant the access token to update GitHub Actions workflow files.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/workflows`.
+            public var workflows: Components.Schemas.app_permissions.workflowsPayload?
+            /// The level of permission to grant the access token for organization teams and members.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/members`.
+            @frozen
+            public enum membersPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [membersPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for organization teams and members.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/members`.
+            public var members: Components.Schemas.app_permissions.membersPayload?
+            /// The level of permission to grant the access token to manage access to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_administration`.
+            @frozen
+            public enum organization_administrationPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_administrationPayload] {
+                    [.read, .write]
+                }
+            }
+            /// The level of permission to grant the access token to manage access to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_administration`.
+            public var organization_administration:
+                Components.Schemas.app_permissions.organization_administrationPayload?
+            /// The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
+            @frozen
+            public enum organization_custom_rolesPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_custom_rolesPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
+            public var organization_custom_roles:
+                Components.Schemas.app_permissions.organization_custom_rolesPayload?
+            /// The level of permission to grant the access token to view and manage announcement banners for an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_announcement_banners`.
+            @frozen
+            public enum organization_announcement_bannersPayload: RawRepresentable, Codable,
+                Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_announcement_bannersPayload] {
+                    [.read, .write]
+                }
+            }
+            /// The level of permission to grant the access token to view and manage announcement banners for an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_announcement_banners`.
+            public var organization_announcement_banners:
+                Components.Schemas.app_permissions.organization_announcement_bannersPayload?
+            /// The level of permission to grant the access token to manage the post-receive hooks for an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_hooks`.
+            @frozen
+            public enum organization_hooksPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_hooksPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage the post-receive hooks for an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_hooks`.
+            public var organization_hooks:
+                Components.Schemas.app_permissions.organization_hooksPayload?
+            /// The level of permission to grant the access token for viewing and managing fine-grained personal access token requests to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_tokens`.
+            @frozen
+            public enum organization_personal_access_tokensPayload: RawRepresentable, Codable,
+                Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_personal_access_tokensPayload] {
+                    [.read, .write]
+                }
+            }
+            /// The level of permission to grant the access token for viewing and managing fine-grained personal access token requests to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_tokens`.
+            public var organization_personal_access_tokens:
+                Components.Schemas.app_permissions.organization_personal_access_tokensPayload?
+            /// The level of permission to grant the access token for viewing and managing fine-grained personal access tokens that have been approved by an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
+            @frozen
+            public enum organization_personal_access_token_requestsPayload: RawRepresentable,
+                Codable, Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_personal_access_token_requestsPayload] {
+                    [.read, .write]
+                }
+            }
+            /// The level of permission to grant the access token for viewing and managing fine-grained personal access tokens that have been approved by an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
+            public var organization_personal_access_token_requests:
+                Components.Schemas.app_permissions
+                    .organization_personal_access_token_requestsPayload?
+            /// The level of permission to grant the access token for viewing an organization's plan.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
+            @frozen
+            public enum organization_planPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    }
+                }
+                public static var allCases: [organization_planPayload] { [.read] }
+            }
+            /// The level of permission to grant the access token for viewing an organization's plan.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
+            public var organization_plan:
+                Components.Schemas.app_permissions.organization_planPayload?
+            /// The level of permission to grant the access token to manage organization projects and projects beta (where available).
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_projects`.
+            @frozen
+            public enum organization_projectsPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                case admin
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    case "admin": self = .admin
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    case .admin: return "admin"
+                    }
+                }
+                public static var allCases: [organization_projectsPayload] {
+                    [.read, .write, .admin]
+                }
+            }
+            /// The level of permission to grant the access token to manage organization projects and projects beta (where available).
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_projects`.
+            public var organization_projects:
+                Components.Schemas.app_permissions.organization_projectsPayload?
+            /// The level of permission to grant the access token for organization packages published to GitHub Packages.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_packages`.
+            @frozen
+            public enum organization_packagesPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_packagesPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for organization packages published to GitHub Packages.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_packages`.
+            public var organization_packages:
+                Components.Schemas.app_permissions.organization_packagesPayload?
+            /// The level of permission to grant the access token to manage organization secrets.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_secrets`.
+            @frozen
+            public enum organization_secretsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_secretsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage organization secrets.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_secrets`.
+            public var organization_secrets:
+                Components.Schemas.app_permissions.organization_secretsPayload?
+            /// The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
+            @frozen
+            public enum organization_self_hosted_runnersPayload: RawRepresentable, Codable,
+                Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_self_hosted_runnersPayload] {
+                    [.read, .write]
+                }
+            }
+            /// The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
+            public var organization_self_hosted_runners:
+                Components.Schemas.app_permissions.organization_self_hosted_runnersPayload?
+            /// The level of permission to grant the access token to view and manage users blocked by the organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
+            @frozen
+            public enum organization_user_blockingPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [organization_user_blockingPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to view and manage users blocked by the organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
+            public var organization_user_blocking:
+                Components.Schemas.app_permissions.organization_user_blockingPayload?
+            /// The level of permission to grant the access token to manage team discussions and related comments.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/team_discussions`.
+            @frozen
+            public enum team_discussionsPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [team_discussionsPayload] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage team discussions and related comments.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/team_discussions`.
+            public var team_discussions: Components.Schemas.app_permissions.team_discussionsPayload?
+            /// Creates a new `app_permissions`.
+            ///
+            /// - Parameters:
+            ///   - actions: The level of permission to grant the access token for GitHub Actions workflows, workflow runs, and artifacts.
+            ///   - administration: The level of permission to grant the access token for repository creation, deletion, settings, teams, and collaborators creation.
+            ///   - checks: The level of permission to grant the access token for checks on code.
+            ///   - contents: The level of permission to grant the access token for repository contents, commits, branches, downloads, releases, and merges.
+            ///   - deployments: The level of permission to grant the access token for deployments and deployment statuses.
+            ///   - environments: The level of permission to grant the access token for managing repository environments.
+            ///   - issues: The level of permission to grant the access token for issues and related comments, assignees, labels, and milestones.
+            ///   - metadata: The level of permission to grant the access token to search repositories, list collaborators, and access repository metadata.
+            ///   - packages: The level of permission to grant the access token for packages published to GitHub Packages.
+            ///   - pages: The level of permission to grant the access token to retrieve Pages statuses, configuration, and builds, as well as create new builds.
+            ///   - pull_requests: The level of permission to grant the access token for pull requests and related comments, assignees, labels, milestones, and merges.
+            ///   - repository_hooks: The level of permission to grant the access token to manage the post-receive hooks for a repository.
+            ///   - repository_projects: The level of permission to grant the access token to manage repository projects, columns, and cards.
+            ///   - secret_scanning_alerts: The level of permission to grant the access token to view and manage secret scanning alerts.
+            ///   - secrets: The level of permission to grant the access token to manage repository secrets.
+            ///   - security_events: The level of permission to grant the access token to view and manage security events like code scanning alerts.
+            ///   - single_file: The level of permission to grant the access token to manage just a single file.
+            ///   - statuses: The level of permission to grant the access token for commit statuses.
+            ///   - vulnerability_alerts: The level of permission to grant the access token to manage Dependabot alerts.
+            ///   - workflows: The level of permission to grant the access token to update GitHub Actions workflow files.
+            ///   - members: The level of permission to grant the access token for organization teams and members.
+            ///   - organization_administration: The level of permission to grant the access token to manage access to an organization.
+            ///   - organization_custom_roles: The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
+            ///   - organization_announcement_banners: The level of permission to grant the access token to view and manage announcement banners for an organization.
+            ///   - organization_hooks: The level of permission to grant the access token to manage the post-receive hooks for an organization.
+            ///   - organization_personal_access_tokens: The level of permission to grant the access token for viewing and managing fine-grained personal access token requests to an organization.
+            ///   - organization_personal_access_token_requests: The level of permission to grant the access token for viewing and managing fine-grained personal access tokens that have been approved by an organization.
+            ///   - organization_plan: The level of permission to grant the access token for viewing an organization's plan.
+            ///   - organization_projects: The level of permission to grant the access token to manage organization projects and projects beta (where available).
+            ///   - organization_packages: The level of permission to grant the access token for organization packages published to GitHub Packages.
+            ///   - organization_secrets: The level of permission to grant the access token to manage organization secrets.
+            ///   - organization_self_hosted_runners: The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
+            ///   - organization_user_blocking: The level of permission to grant the access token to view and manage users blocked by the organization.
+            ///   - team_discussions: The level of permission to grant the access token to manage team discussions and related comments.
+            public init(
+                actions: Components.Schemas.app_permissions.actionsPayload? = nil,
+                administration: Components.Schemas.app_permissions.administrationPayload? = nil,
+                checks: Components.Schemas.app_permissions.checksPayload? = nil,
+                contents: Components.Schemas.app_permissions.contentsPayload? = nil,
+                deployments: Components.Schemas.app_permissions.deploymentsPayload? = nil,
+                environments: Components.Schemas.app_permissions.environmentsPayload? = nil,
+                issues: Components.Schemas.app_permissions.issuesPayload? = nil,
+                metadata: Components.Schemas.app_permissions.metadataPayload? = nil,
+                packages: Components.Schemas.app_permissions.packagesPayload? = nil,
+                pages: Components.Schemas.app_permissions.pagesPayload? = nil,
+                pull_requests: Components.Schemas.app_permissions.pull_requestsPayload? = nil,
+                repository_hooks: Components.Schemas.app_permissions.repository_hooksPayload? = nil,
+                repository_projects: Components.Schemas.app_permissions
+                    .repository_projectsPayload? = nil,
+                secret_scanning_alerts: Components.Schemas.app_permissions
+                    .secret_scanning_alertsPayload? = nil,
+                secrets: Components.Schemas.app_permissions.secretsPayload? = nil,
+                security_events: Components.Schemas.app_permissions.security_eventsPayload? = nil,
+                single_file: Components.Schemas.app_permissions.single_filePayload? = nil,
+                statuses: Components.Schemas.app_permissions.statusesPayload? = nil,
+                vulnerability_alerts: Components.Schemas.app_permissions
+                    .vulnerability_alertsPayload? = nil,
+                workflows: Components.Schemas.app_permissions.workflowsPayload? = nil,
+                members: Components.Schemas.app_permissions.membersPayload? = nil,
+                organization_administration: Components.Schemas.app_permissions
+                    .organization_administrationPayload? = nil,
+                organization_custom_roles: Components.Schemas.app_permissions
+                    .organization_custom_rolesPayload? = nil,
+                organization_announcement_banners: Components.Schemas.app_permissions
+                    .organization_announcement_bannersPayload? = nil,
+                organization_hooks: Components.Schemas.app_permissions.organization_hooksPayload? =
+                    nil,
+                organization_personal_access_tokens: Components.Schemas.app_permissions
+                    .organization_personal_access_tokensPayload? = nil,
+                organization_personal_access_token_requests: Components.Schemas.app_permissions
+                    .organization_personal_access_token_requestsPayload? = nil,
+                organization_plan: Components.Schemas.app_permissions.organization_planPayload? =
+                    nil,
+                organization_projects: Components.Schemas.app_permissions
+                    .organization_projectsPayload? = nil,
+                organization_packages: Components.Schemas.app_permissions
+                    .organization_packagesPayload? = nil,
+                organization_secrets: Components.Schemas.app_permissions
+                    .organization_secretsPayload? = nil,
+                organization_self_hosted_runners: Components.Schemas.app_permissions
+                    .organization_self_hosted_runnersPayload? = nil,
+                organization_user_blocking: Components.Schemas.app_permissions
+                    .organization_user_blockingPayload? = nil,
+                team_discussions: Components.Schemas.app_permissions.team_discussionsPayload? = nil
+            ) {
+                self.actions = actions
+                self.administration = administration
+                self.checks = checks
+                self.contents = contents
+                self.deployments = deployments
+                self.environments = environments
+                self.issues = issues
+                self.metadata = metadata
+                self.packages = packages
+                self.pages = pages
+                self.pull_requests = pull_requests
+                self.repository_hooks = repository_hooks
+                self.repository_projects = repository_projects
+                self.secret_scanning_alerts = secret_scanning_alerts
+                self.secrets = secrets
+                self.security_events = security_events
+                self.single_file = single_file
+                self.statuses = statuses
+                self.vulnerability_alerts = vulnerability_alerts
+                self.workflows = workflows
+                self.members = members
+                self.organization_administration = organization_administration
+                self.organization_custom_roles = organization_custom_roles
+                self.organization_announcement_banners = organization_announcement_banners
+                self.organization_hooks = organization_hooks
+                self.organization_personal_access_tokens = organization_personal_access_tokens
+                self.organization_personal_access_token_requests =
+                    organization_personal_access_token_requests
+                self.organization_plan = organization_plan
+                self.organization_projects = organization_projects
+                self.organization_packages = organization_packages
+                self.organization_secrets = organization_secrets
+                self.organization_self_hosted_runners = organization_self_hosted_runners
+                self.organization_user_blocking = organization_user_blocking
+                self.team_discussions = team_discussions
+            }
+            public enum CodingKeys: String, CodingKey {
+                case actions
+                case administration
+                case checks
+                case contents
+                case deployments
+                case environments
+                case issues
+                case metadata
+                case packages
+                case pages
+                case pull_requests
+                case repository_hooks
+                case repository_projects
+                case secret_scanning_alerts
+                case secrets
+                case security_events
+                case single_file
+                case statuses
+                case vulnerability_alerts
+                case workflows
+                case members
+                case organization_administration
+                case organization_custom_roles
+                case organization_announcement_banners
+                case organization_hooks
+                case organization_personal_access_tokens
+                case organization_personal_access_token_requests
+                case organization_plan
+                case organization_projects
+                case organization_packages
+                case organization_secrets
+                case organization_self_hosted_runners
+                case organization_user_blocking
+                case team_discussions
             }
         }
         /// License Simple
@@ -2578,6 +3838,94 @@ public enum Components {
                 case master_branch
                 case starred_at
                 case anonymous_access_enabled
+            }
+        }
+        /// Authentication token for a GitHub App installed on a user or org.
+        ///
+        /// - Remark: Generated from `#/components/schemas/installation-token`.
+        public struct installation_token: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/installation-token/token`.
+            public var token: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation-token/expires_at`.
+            public var expires_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation-token/permissions`.
+            public var permissions: Components.Schemas.app_permissions?
+            /// - Remark: Generated from `#/components/schemas/installation-token/repository_selection`.
+            @frozen
+            public enum repository_selectionPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case all
+                case selected
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "all": self = .all
+                    case "selected": self = .selected
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .all: return "all"
+                    case .selected: return "selected"
+                    }
+                }
+                public static var allCases: [repository_selectionPayload] { [.all, .selected] }
+            }
+            /// - Remark: Generated from `#/components/schemas/installation-token/repository_selection`.
+            public var repository_selection:
+                Components.Schemas.installation_token.repository_selectionPayload?
+            /// - Remark: Generated from `#/components/schemas/installation-token/repositories`.
+            public var repositories: [Components.Schemas.repository]?
+            /// - Remark: Generated from `#/components/schemas/installation-token/single_file`.
+            public var single_file: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/installation-token/has_multiple_single_files`.
+            public var has_multiple_single_files: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/installation-token/single_file_paths`.
+            public var single_file_paths: [Swift.String]?
+            /// Creates a new `installation_token`.
+            ///
+            /// - Parameters:
+            ///   - token:
+            ///   - expires_at:
+            ///   - permissions:
+            ///   - repository_selection:
+            ///   - repositories:
+            ///   - single_file:
+            ///   - has_multiple_single_files:
+            ///   - single_file_paths:
+            public init(
+                token: Swift.String,
+                expires_at: Swift.String,
+                permissions: Components.Schemas.app_permissions? = nil,
+                repository_selection: Components.Schemas.installation_token
+                    .repository_selectionPayload? = nil,
+                repositories: [Components.Schemas.repository]? = nil,
+                single_file: Swift.String? = nil,
+                has_multiple_single_files: Swift.Bool? = nil,
+                single_file_paths: [Swift.String]? = nil
+            ) {
+                self.token = token
+                self.expires_at = expires_at
+                self.permissions = permissions
+                self.repository_selection = repository_selection
+                self.repositories = repositories
+                self.single_file = single_file
+                self.has_multiple_single_files = has_multiple_single_files
+                self.single_file_paths = single_file_paths
+            }
+            public enum CodingKeys: String, CodingKey {
+                case token
+                case expires_at
+                case permissions
+                case repository_selection
+                case repositories
+                case single_file
+                case has_multiple_single_files
+                case single_file_paths
             }
         }
         /// Code Of Conduct
@@ -12996,7 +14344,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.not_found.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13021,7 +14369,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.validation_failed_simple.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.validation_error_simple)
             }
             /// Received HTTP response body
@@ -13046,7 +14394,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.bad_request.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13071,7 +14419,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.validation_failed.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.validation_error)
             }
             /// Received HTTP response body
@@ -13096,7 +14444,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.accepted.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(OpenAPIRuntime.OpenAPIObjectContainer)
             }
             /// Received HTTP response body
@@ -13121,7 +14469,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.not_modified.Headers
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.not_modified.Body?
             /// Creates a new `not_modified`.
@@ -13144,7 +14492,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.requires_authentication.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13169,7 +14517,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.forbidden.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13194,7 +14542,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.service_unavailable.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/components/responses/service_unavailable/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/responses/service_unavailable/json/code`.
@@ -13248,7 +14596,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.forbidden_gist.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/components/responses/forbidden_gist/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/responses/forbidden_gist/json/block`.
@@ -13333,7 +14681,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.moved_permanently.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13358,7 +14706,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.conflict.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13383,7 +14731,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.actions_runner_jitconfig.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/json/runner`.
@@ -13431,7 +14779,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.actions_runner_labels.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/components/responses/actions_runner_labels/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/responses/actions_runner_labels/json/total_count`.
@@ -13476,7 +14824,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.actions_runner_labels_readonly.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/json/total_count`.
@@ -13521,7 +14869,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.internal_error.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13546,7 +14894,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.package_es_list_error.Headers
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.package_es_list_error.Body?
             /// Creates a new `package_es_list_error`.
@@ -13569,7 +14917,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.no_content.Headers
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.no_content.Body?
             /// Creates a new `no_content`.
@@ -13592,7 +14940,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.gone.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13617,7 +14965,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.temporary_redirect.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13642,7 +14990,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.code_scanning_forbidden_read.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13667,7 +15015,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.code_scanning_forbidden_write.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13692,7 +15040,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.found.Headers
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.found.Body?
             /// Creates a new `found`.
@@ -13715,7 +15063,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.code_scanning_conflict.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13740,7 +15088,7 @@ public enum Components {
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.porter_maintenance.Headers
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -13779,6 +15127,167 @@ public enum Components {
 }
 /// API operations, with input and output types, generated from `#/paths` in the OpenAPI document.
 public enum Operations {
+    /// Create an installation access token for an app
+    ///
+    /// Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access. To restrict the access to specific repositories, you can provide the `repository_ids` when creating the token. When you omit `repository_ids`, the response does not contain the `repositories` key.
+    ///
+    /// You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
+    ///
+    /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
+    /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
+    public enum apps_create_installation_access_token {
+        public static let id: String = "apps/create-installation-access-token"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var installation_id: Components.Parameters.installation_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - installation_id:
+                public init(installation_id: Components.Parameters.installation_id) {
+                    self.installation_id = installation_id
+                }
+            }
+            public var path: Operations.apps_create_installation_access_token.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.apps_create_installation_access_token.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.apps_create_installation_access_token.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.apps_create_installation_access_token.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// List of repository names that the token should have access to
+                    ///
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json/repositories`.
+                    public var repositories: [Swift.String]?
+                    /// List of repository IDs that the token should have access to
+                    ///
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json/repository_ids`.
+                    public var repository_ids: [Swift.Int]?
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json/permissions`.
+                    public var permissions: Components.Schemas.app_permissions?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - repositories: List of repository names that the token should have access to
+                    ///   - repository_ids: List of repository IDs that the token should have access to
+                    ///   - permissions:
+                    public init(
+                        repositories: [Swift.String]? = nil,
+                        repository_ids: [Swift.Int]? = nil,
+                        permissions: Components.Schemas.app_permissions? = nil
+                    ) {
+                        self.repositories = repositories
+                        self.repository_ids = repository_ids
+                        self.permissions = permissions
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case repositories
+                        case repository_ids
+                        case permissions
+                    }
+                }
+                case json(Operations.apps_create_installation_access_token.Input.Body.jsonPayload)
+            }
+            public var body: Operations.apps_create_installation_access_token.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.apps_create_installation_access_token.Input.Path,
+                query: Operations.apps_create_installation_access_token.Input.Query = .init(),
+                headers: Operations.apps_create_installation_access_token.Input.Headers = .init(),
+                cookies: Operations.apps_create_installation_access_token.Input.Cookies = .init(),
+                body: Operations.apps_create_installation_access_token.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers:
+                    Operations.apps_create_installation_access_token.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.installation_token)
+                }
+                /// Received HTTP response body
+                public var body:
+                    Operations.apps_create_installation_access_token.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.apps_create_installation_access_token.Output.Created
+                        .Headers = .init(),
+                    body: Operations.apps_create_installation_access_token.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.apps_create_installation_access_token.Output.Created)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
     /// Get an organization
     ///
     /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).
@@ -13814,7 +15323,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.orgs_get.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             public var body: Operations.orgs_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -13838,7 +15347,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Ok: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     /// Creates a new `Headers`.
@@ -13846,7 +15355,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.orgs_get.Output.Ok.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json(Components.Schemas.organization_full)
                 }
                 /// Received HTTP response body
@@ -13922,7 +15431,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.repos_get.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             public var body: Operations.repos_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -13946,7 +15455,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Ok: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     /// Creates a new `Headers`.
@@ -13954,7 +15463,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_get.Output.Ok.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json(Components.Schemas.full_repository)
                 }
                 /// Received HTTP response body
@@ -14174,7 +15683,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.issues_list_for_repo.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             public var body: Operations.issues_list_for_repo.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -14198,7 +15707,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Ok: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     public var Link: Components.Headers.link?
@@ -14210,7 +15719,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_list_for_repo.Output.Ok.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json([Components.Schemas.issue])
                 }
                 /// Received HTTP response body
@@ -14310,7 +15819,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.issues_create_comment.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// The contents of the comment.
@@ -14349,7 +15858,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Created: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     public var Location: Swift.String?
@@ -14361,7 +15870,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_create_comment.Output.Created.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json(Components.Schemas.issue_comment)
                 }
                 /// Received HTTP response body
@@ -14571,7 +16080,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.pulls_list.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             public var body: Operations.pulls_list.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -14595,7 +16104,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Ok: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     public var Link: Components.Headers.link?
@@ -14607,7 +16116,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list.Output.Ok.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json([Components.Schemas.pull_request_simple])
                 }
                 /// Received HTTP response body
@@ -14701,7 +16210,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.repos_list_releases.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             public var body: Operations.repos_list_releases.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -14725,7 +16234,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Ok: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     public var Link: Components.Headers.link?
@@ -14737,7 +16246,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_releases.Output.Ok.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json([Components.Schemas.release])
                 }
                 /// Received HTTP response body
@@ -14813,7 +16322,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.repos_create_release.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {
+            @frozen public enum Body: Sendable, Equatable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json`.
                 public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
                     /// The name of the tag.
@@ -14956,7 +16465,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Created: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     public var Location: Swift.String?
@@ -14968,7 +16477,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_create_release.Output.Created.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json(Components.Schemas.release)
                 }
                 /// Received HTTP response body
@@ -14999,7 +16508,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_create_release.Output.NotFound.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json(Components.Schemas.basic_error)
                 }
                 /// Received HTTP response body
@@ -15075,7 +16584,7 @@ public enum Operations {
                 public init() {}
             }
             public var cookies: Operations.repos_get_latest_release.Input.Cookies
-            public enum Body: Sendable, Equatable, Hashable {}
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
             public var body: Operations.repos_get_latest_release.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -15099,7 +16608,7 @@ public enum Operations {
                 self.body = body
             }
         }
-        public enum Output: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Equatable, Hashable {
             public struct Ok: Sendable, Equatable, Hashable {
                 public struct Headers: Sendable, Equatable, Hashable {
                     /// Creates a new `Headers`.
@@ -15107,7 +16616,7 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_get_latest_release.Output.Ok.Headers
-                public enum Body: Sendable, Equatable, Hashable {
+                @frozen public enum Body: Sendable, Equatable, Hashable {
                     case json(Components.Schemas.release)
                 }
                 /// Received HTTP response body

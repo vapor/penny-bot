@@ -43,13 +43,21 @@ struct GHHooksHandler: LambdaHandler {
         let awsClient = AWSClient(httpClientProvider: .shared(self.httpClient))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
+        /// FIXME: only generate one access token lazily.
+        let authenticator = Authenticator(
+            secretsRetriever: secretsRetriever,
+            httpClient: httpClient,
+            logger: logger
+        )
+        let accessToken = try await authenticator.generateAccessToken()
+
         let transport = AsyncHTTPClientTransport(configuration: .init(
             client: httpClient,
             timeout: .seconds(3)
         ))
         let middleware = GHMiddleware(
             secretsRetriever: secretsRetriever,
-            authorization: .basic,
+            authorization: .bearer(accessToken),
             logger: logger
         )
         self.githubClient = Client(

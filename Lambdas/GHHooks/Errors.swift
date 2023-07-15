@@ -1,6 +1,7 @@
 import AWSLambdaEvents
 
 enum Errors: Error, CustomStringConvertible {
+    case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
     case envVarNotFound(name: String)
     case secretNotFound(arn: String)
     case signaturesDoNotMatch(found: String, expected: String)
@@ -8,6 +9,8 @@ enum Errors: Error, CustomStringConvertible {
 
     var description: String {
         switch self {
+        case let .httpRequestFailed(response, file, line):
+            return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
         case let .envVarNotFound(name):
             return "envVarNotFound(name: \(name))"
         case let .secretNotFound(arn):

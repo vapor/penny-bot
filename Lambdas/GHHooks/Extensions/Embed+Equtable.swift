@@ -21,9 +21,9 @@ extension Embed: Equatable {
 extension Embed.Media: Equatable {
     public static func == (lhs: Embed.Media, rhs: Embed.Media) -> Bool {
         lhs.url.asString == rhs.url.asString &&
-        anyNilOrBothEqual(lhs.proxy_url, rhs.proxy_url) &&
-        anyNilOrBothEqual(lhs.height, rhs.height) &&
-        anyNilOrBothEqual(lhs.width, rhs.width)
+        anyNilOrEqual(lhs.proxy_url, rhs.proxy_url) &&
+        anyNilOrEqual(lhs.height, rhs.height) &&
+        anyNilOrEqual(lhs.width, rhs.width)
     }
 }
 
@@ -31,7 +31,7 @@ extension Embed.Footer: Equatable {
     public static func == (lhs: Embed.Footer, rhs: Embed.Footer) -> Bool {
         lhs.icon_url?.asString == rhs.icon_url?.asString &&
         lhs.text == rhs.text &&
-        anyNilOrBothEqual(lhs.proxy_icon_url, rhs.proxy_icon_url)
+        anyNilOrEqual(lhs.proxy_icon_url, rhs.proxy_icon_url)
     }
 }
 
@@ -47,7 +47,7 @@ extension Embed.Author: Equatable {
         lhs.url == rhs.url &&
         lhs.icon_url?.asString == rhs.icon_url?.asString &&
         lhs.name == rhs.name &&
-        anyNilOrBothEqual(lhs.proxy_icon_url, rhs.proxy_icon_url)
+        anyNilOrEqual(lhs.proxy_icon_url, rhs.proxy_icon_url)
     }
 }
 
@@ -55,13 +55,13 @@ extension Embed.Field: Equatable {
     public static func == (lhs: Embed.Field, rhs: Embed.Field) -> Bool {
         lhs.name == rhs.name &&
         lhs.value == rhs.value &&
-        anyNilOrBothEqual(lhs.inline, rhs.inline)
+        anyNilOrEqual(lhs.inline, rhs.inline)
     }
 }
 
 /// Returns `true` if both values are nil, or if both values are the same. Otherwise `false`.
 /// This is used for the fields that even if we send `nil` for, Discord might populate them itself.
-private func anyNilOrBothEqual<E: Equatable>(_ lhs: E?, _ rhs: E?) -> Bool {
+private func anyNilOrEqual<E: Equatable>(_ lhs: E?, _ rhs: E?) -> Bool {
     switch (lhs, rhs) {
     case (.none, _):
         return true
