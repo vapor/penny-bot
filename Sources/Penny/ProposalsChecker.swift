@@ -144,8 +144,7 @@ actor ProposalsChecker {
         )
         guard let message = try? response?.decode() else { return }
         /// Create a thread on top of the message
-        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())"
-            .truncate(ifLongerThan: 100)
+        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())".unicodesPrefix(100)
         await discordService.createThreadFromMessage(
             channelId: message.channel_id,
             messageId: message.id,
@@ -181,7 +180,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -219,7 +218,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -314,7 +313,7 @@ actor ProposalsChecker {
         return newSummary
             .replacingOccurrences(of: "\n", with: " ")
             .sanitized()
-            .truncate(ifLongerThan: 2_048)
+            .unicodesPrefix(2_048)
     }
 
     func consumeCachesStorageData(_ storage: Storage) {
@@ -337,17 +336,6 @@ private extension String {
     func sanitized() -> String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
-    }
-
-    func truncate(ifLongerThan max: Int) -> String {
-        let scalars = self.unicodeScalars
-        if scalars.count > max {
-            /// `scalars.count - max` makes the text as long as the limit.
-            /// `+ 3` is for the extra `...` that is added.
-            return String(scalars.dropLast(scalars.count - max + 3)) + "..."
-        } else {
-            return self
-        }
     }
 }
 
