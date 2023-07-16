@@ -92,7 +92,7 @@ private struct TokenPayload: JWTPayload, Equatable {
     /// When the token was issued.
     let issuedAt: IssuedAtClaim
     /// When the token will expire.
-    let expiresAt: ExpirationClaim
+    let expiresAt: IntExpirationClaim
     /// Penny's GitHub app-id.
     let issuer: String
     /// The algorithm. GitHub says `RS256`.
@@ -122,5 +122,33 @@ private struct TokenPayload: JWTPayload, Equatable {
     // call its verify method.
     func verify(using signer: JWTSigner) throws {
         try self.expiresAt.verifyNotExpired()
+    }
+}
+
+struct IntExpirationClaim: JWTClaim, Equatable {
+    var value: Date
+
+    init(value: Date) {
+        self.value = value
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.value = Date(timeIntervalSince1970: Double(try container.decode(Int.self)))
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(Int(self.value.timeIntervalSince1970))
+    }
+
+    /// Throws an error if the claim's date is later than current date.
+    func verifyNotExpired(currentDate: Date = .init()) throws {
+        switch self.value.compare(currentDate) {
+        case .orderedAscending, .orderedSame:
+            throw JWTError.claimVerificationFailure(name: "exp", reason: "expired")
+        case .orderedDescending:
+            break
+        }
     }
 }
