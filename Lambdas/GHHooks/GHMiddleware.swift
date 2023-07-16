@@ -34,6 +34,8 @@ struct GHMiddleware: ClientMiddleware {
         self.logger = logger
     }
 
+    /// Intercepts, modifies and makes the request and
+    /// retries it if it seems like a invalid-auth-header problem.
     func intercept(
         _ request: Request,
         baseURL: URL,
