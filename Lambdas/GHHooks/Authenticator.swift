@@ -29,6 +29,7 @@ actor Authenticator {
                 return cachedAccessToken
             } else {
                 let token = try await makeJWTToken()
+                logger.trace("Made a JWT token: \(token.value.debugDescription)")
                 await setCachedAccessToken(to: token)
                 return token
             }
