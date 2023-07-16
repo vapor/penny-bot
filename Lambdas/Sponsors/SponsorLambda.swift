@@ -9,13 +9,13 @@ import SharedServices
 import SotoCore
 import SotoSecretsManager
 
-enum GithubRequestError: Error, CustomStringConvertible {
+enum GitHubRequestError: Error, CustomStringConvertible {
     case runWorkflowError(message: String)
 
     var description: String {
         switch self {
         case let .runWorkflowError(message):
-            return "GithubRequestError.runWorkflowError(\(message))"
+            return "GitHubRequestError.runWorkflowError(\(message))"
         }
     }
 }
@@ -96,7 +96,7 @@ struct AddSponsorHandler: LambdaHandler {
             
             // Decode GitHub Webhook Response
             context.logger.debug("Decoding GitHub Payload")
-            let payload = try event.decode(as: GithubWebhookPayload.self)
+            let payload = try event.decode(as: GitHubWebhookPayload.self)
             
             // Look for the user in the DB
             context.logger.debug("Looking for user in the DB")
@@ -104,7 +104,7 @@ struct AddSponsorHandler: LambdaHandler {
             let userService = UserService(awsClient, context.logger)
             let user = try await userService.getUserWith(githubID: String(newSponsorID))
             guard let user = user else {
-                context.logger.error("No user found with Github ID \(newSponsorID)")
+                context.logger.error("No user found with GitHub ID \(newSponsorID)")
                 return APIGatewayV2Response(
                     statusCode: .ok,
                     body: "Error: no user found with GitHub ID \(newSponsorID)"
@@ -124,7 +124,7 @@ struct AddSponsorHandler: LambdaHandler {
             let role = try SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)
             
             // Do different stuff depending on what happened to the sponsorship
-            let actionType = GithubWebhookPayload.ActionType(rawValue: payload.action)!
+            let actionType = GitHubWebhookPayload.ActionType(rawValue: payload.action)!
             
             context.logger.debug("Managing Discord roles")
 
@@ -147,10 +147,10 @@ struct AddSponsorHandler: LambdaHandler {
                 break
             case .tierChanged:
                 guard let changes = payload.changes else {
-                    context.logger.error("Error: Github returned 'tier_changed' event but no 'changes' data in the payload")
+                    context.logger.error("Error: GitHub returned 'tier_changed' event but no 'changes' data in the payload")
                     return APIGatewayV2Response(
                         statusCode: .ok,
-                        body: "Error: Github returned 'tier_changed' event but no 'changes' data in the payload"
+                        body: "Error: GitHub returned 'tier_changed' event but no 'changes' data in the payload"
                     )
                 }
                 // This means that the user downgraded from a sponsor role to a backer role
@@ -271,7 +271,7 @@ struct AddSponsorHandler: LambdaHandler {
         let workflowTokenRequest = SecretsManager.GetSecretValueRequest(secretId: workflowTokenArn)
         let workflowToken = try await secretsManager.getSecretValue(workflowTokenRequest)
         guard let workflowTokenString = workflowToken.secretString else {
-            fatalError("Couldn't retrieve Github token from AWS Secrets Manager")
+            fatalError("Couldn't retrieve GitHub token from AWS Secrets Manager")
         }
         return workflowTokenString
     }
@@ -302,7 +302,7 @@ struct AddSponsorHandler: LambdaHandler {
         guard 200...299 ~= githubResponse.status.code else {
             let body = try await githubResponse.body.collect(upTo: 1024 * 1024)
             logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code) and body: \(String(buffer: body))")
-            throw GithubRequestError.runWorkflowError(
+            throw GitHubRequestError.runWorkflowError(
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )
         }

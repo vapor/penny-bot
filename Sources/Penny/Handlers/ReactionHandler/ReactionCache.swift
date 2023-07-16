@@ -4,9 +4,6 @@ import DiscordBM
 import Foundation
 
 /// Cache for reactions-related stuff.
-///
-/// Optimally we would use some service like Redis to handle time-to-live
-/// and disk-persistence for us, but this actor is more than enough at our scale.
 actor ReactionCache {
 
     struct ChannelLastThanksMessage: Sendable, Codable {
@@ -24,16 +21,6 @@ actor ReactionCache {
     }
 
     struct Storage: Sendable, Codable {
-        /// `[MessageID: AuthorID]`
-        var cachedAuthorIds: OrderedDictionary<MessageSnowflake, UserSnowflake> = [:] {
-            didSet {
-                /// To limit the amount of items to not leak memory
-                /// and not explode the `penny-caches` S3 bucket.
-                if cachedAuthorIds.count > 200 {
-                    cachedAuthorIds.removeFirst()
-                }
-            }
-        }
         /// `Set<[SenderID, MessageID]>`
         var givenCoins: OrderedSet<[AnySnowflake]> = [] {
             didSet {
@@ -61,32 +48,6 @@ actor ReactionCache {
 
     static var shared = ReactionCache()
 
-    /// Returns author of the message.
-    func getAuthorId(
-        channelId: ChannelSnowflake,
-        messageId: MessageSnowflake
-    ) async -> UserSnowflake? {
-        if let authorId = storage.cachedAuthorIds[messageId] {
-            return authorId
-        } else {
-            guard let message = await self.getMessage(
-                channelId: channelId,
-                messageId: messageId
-            ) else {
-                return nil
-            }
-            if let authorId = message.author?.id {
-                storage.cachedAuthorIds[messageId] = authorId
-                return authorId
-            } else {
-                logger.error("ReactionCache could not find a message's author id", metadata: [
-                    "message": "\(message)"
-                ])
-                return nil
-            }
-        }
-    }
-
     /// This is to prevent spams. In case someone removes their reaction and
     /// reacts again, we should not give coins to message's author anymore.
     func canGiveCoin(
@@ -106,6 +67,7 @@ actor ReactionCache {
         guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
             return false
         }
+        if message.author?.bot ?? false { return false }
 
         let calendar = Calendar.utc
         let now = Date()
@@ -121,8 +83,7 @@ actor ReactionCache {
             toGranularity: .minute
         ) == .orderedDescending
 
-        let isBot = message.author?.bot ?? false
-        return inPastWeek && !isBot
+        return inPastWeek
     }
 
     func getMessage(

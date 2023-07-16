@@ -16,7 +16,7 @@ struct Penny {
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         defer {
-            /// Shutdown in reverse order (client first, then the ELG)
+            /// Shutdown in reverse order (clients first, then the ELG)
             try! awsClient.syncShutdown()
             try! client.syncShutdown()
             try! eventLoopGroup.syncShutdownGracefully()

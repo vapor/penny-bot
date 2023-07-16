@@ -40,6 +40,13 @@ enum Constants {
     }
 
     enum Channels: ChannelSnowflake {
+        case welcome = "437050958061764608"
+        case news = "431917998102675487"
+        case publications = "435934451046809600"
+        case release = "431926479752921098"
+        case jobs = "442420282292961282"
+        case status = "459521920241500220"
+
         case logs = "1067060193982156880"
         case proposals = "1104650517549953094"
         case thanks = "443074453719744522"
@@ -47,8 +54,19 @@ enum Constants {
         var id: ChannelSnowflake {
             self.rawValue
         }
+
+        /// Must not send thanks-responses to these channels.
+        /// Instead send to the #thanks channel.
+        static var thanksResponseDenyList: Set<ChannelSnowflake> = Set([
+            Channels.welcome,
+            Channels.news,
+            Channels.publications,
+            Channels.release,
+            Channels.jobs,
+            Channels.status,
+        ].map(\.id))
     }
-    
+
     enum Roles: RoleSnowflake {
         case nitroBooster = "621412660973535233"
         case backer = "431921695524126722"

@@ -34,7 +34,7 @@ public actor FakeManager: GatewayManager {
     }
 
     public func send(key: EventKey) {
-        let data = TestData.for(key: key.rawValue)!
+        let data = TestData.for(gatewayEventKey: key.rawValue)!
         let decoder = JSONDecoder()
         let event: Gateway.Event
         do {

@@ -2,25 +2,29 @@
 import NIOHTTP1
 import XCTest
 
-struct FakeDiscordClient: DiscordClient {
-    var appId: ApplicationSnowflake? = "11111111"
-    
-    func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
+public struct FakeDiscordClient: DiscordClient {
+    public var appId: ApplicationSnowflake? = "11111111"
+
+    public init() { }
+
+    public func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(
             to: request.endpoint,
             with: AnyBox(Optional<Never>.none as Any)
         )
-        
+
         return DiscordHTTPResponse(
             host: "discord.com",
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData.for(key: request.endpoint.testingKey).map { .init(data: $0) }
+            body: TestData
+                .for(gatewayEventKey: request.endpoint.testingKey)
+                .map { .init(data: $0) }
         )
     }
     
-    func send<E: Encodable & ValidatablePayload>(
+    public func send<E: Encodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
     ) async throws -> DiscordHTTPResponse {
@@ -35,11 +39,13 @@ struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData.for(key: request.endpoint.testingKey).map { .init(data: $0) }
+            body: TestData
+                .for(gatewayEventKey: request.endpoint.testingKey)
+                .map { .init(data: $0) }
         )
     }
     
-    func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
+    public func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
     ) async throws -> DiscordHTTPResponse {
@@ -54,7 +60,9 @@ struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData.for(key: request.endpoint.testingKey).map { .init(data: $0) }
+            body: TestData
+                .for(gatewayEventKey: request.endpoint.testingKey)
+                .map { .init(data: $0) }
         )
     }
 }

@@ -3,7 +3,7 @@ import Logging
 import Models
 
 private enum Configuration {
-    static let faqsNameMaxLength = 95
+    static let faqsNameMaxLength = 100
     static let autoPingsMaxLimit = 100
     static let autoPingsLowLimit = 20
 }
@@ -752,7 +752,7 @@ private extension InteractionHandler {
         return .init(choices: queried.map { expression in
             let name = "\(expression.kind.UIDescription) - \(expression.innerValue)"
             return .init(
-                name: String(name.unicodeScalars.prefix(100)),
+                name: name.unicodesPrefix(100),
                 value: .string("\(expression.hashValue)")
             )
         })
@@ -1104,14 +1104,14 @@ private protocol Response {
 extension String: Response {
     func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
         .channelMessageWithSource(.init(embeds: [.init(
-            description: String(self.prefix(4_000)),
+            description: String(self.unicodesPrefix(4_000)),
             color: .vaporPurple
         )], flags: isEphemeral ? [.ephemeral] : nil))
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
         .init(embeds: [.init(
-            description: String(self.prefix(4_000)),
+            description: String(self.unicodesPrefix(4_000)),
             color: .vaporPurple
         )])
     }

@@ -1,4 +1,5 @@
 import Logging
+import Markdown
 import DiscordModels
 import Models
 import Foundation
@@ -37,6 +38,7 @@ actor ProposalsChecker {
                 try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
             } catch {
                 logger.report("Couldn't check proposals", error: error)
+                try await Task.sleep(for: .seconds(60 * 5))
             }
             self.run()
         }
@@ -60,7 +62,7 @@ actor ProposalsChecker {
             ) {
                 self.storage.queuedProposals[existingIdx].updatedAt = Date()
                 self.storage.queuedProposals[existingIdx].proposal = new
-                logger.warning("A new proposal will be delayed", metadata: ["id": .string(new.id)])
+                logger.debug("A new proposal will be delayed", metadata: ["id": .string(new.id)])
             } else {
                 self.storage.queuedProposals.append(.init(
                     firstKnownStateBeforeQueue: nil,
@@ -88,7 +90,7 @@ actor ProposalsChecker {
             ) {
                 self.storage.queuedProposals[existingIdx].updatedAt = Date()
                 self.storage.queuedProposals[existingIdx].proposal = updated
-                logger.warning("An updated proposal will be delayed", metadata: [
+                logger.debug("An updated proposal will be delayed", metadata: [
                     "id": .string(updated.id)
                 ])
             } else {
@@ -142,8 +144,7 @@ actor ProposalsChecker {
         )
         guard let message = try? response?.decode() else { return }
         /// Create a thread on top of the message
-        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())"
-            .truncate(ifLongerThan: 100)
+        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())".unicodesPrefix(100)
         await discordService.createThreadFromMessage(
             channelId: message.channel_id,
             messageId: message.id,
@@ -164,10 +165,7 @@ actor ProposalsChecker {
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
-        let summary = proposal.summary
-            .replacingOccurrences(of: "\n", with: " ")
-            .sanitized()
-            .truncate(ifLongerThan: 2_048)
+        let summary = makeSummary(proposal: proposal)
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -182,7 +180,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -205,10 +203,7 @@ actor ProposalsChecker {
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
-        let summary = proposal.summary
-            .replacingOccurrences(of: "\n", with: " ")
-            .sanitized()
-            .truncate(ifLongerThan: 2_048)
+        let summary = makeSummary(proposal: proposal)
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -223,7 +218,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -241,28 +236,28 @@ actor ProposalsChecker {
         let link = proposal.link.sanitized()
         if link.count < 4 { return [] }
         let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
-        let fullGithubLink = githubProposalsPrefix + link
+        let fullGitHubLink = githubProposalsPrefix + link
         
         var buttons: [Interaction.ActionRow] = [[
-            .button(.init(label: "Proposal", url: fullGithubLink)),
+            .button(.init(label: "Proposal", url: fullGitHubLink)),
         ]]
         
-        if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
+        if let link = await findForumPostLink(link: fullGitHubLink) {
             buttons[0].components.append(
-                .button(.init(label: "Forum Post", url: forumPostLink))
+                .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
             )
         }
         
-        if let searchLink = makeForumSearchLink(proposal: proposal) {
+        if let link = makeForumSearchLink(proposal: proposal) {
             buttons[0].components.append(
-                .button(.init(label: "Related Posts", url: searchLink))
+                .button(.init(label: "Related Posts", url: link))
             )
         }
         
         return buttons
     }
 
-    private func findForumPostLink(link: String) async -> String? {
+    private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
         let content: String
         do {
             content = try await self.proposalsService.getProposalContent(link: link)
@@ -273,22 +268,19 @@ actor ProposalsChecker {
             ])
             return nil
         }
-        if let latestLink = content
-            .split(whereSeparator: \.isNewline)
-            .first(where: { $0.hasPrefix("* Review:") })?
-            .split(separator: "(")
-            .flatMap({ $0.split(separator: ")") })
-            .reversed()
-            .first(where: { $0.starts(with: "https://") })
-            .map(String.init) {
-            return latestLink
-        } else {
+
+        let document = Document(parsing: content)
+        var finder = ReviewLinksFinder()
+        finder.visit(document)
+
+        guard let lastLink = finder.links.last else {
             logger.warning("Couldn't find forums link for proposal", metadata: [
                 "link": .string(link),
                 "content": .string(content)
             ])
             return nil
         }
+        return lastLink
     }
 
     private func makeForumSearchLink(proposal: Proposal) -> String? {
@@ -305,6 +297,23 @@ actor ProposalsChecker {
         }
         let link = "https://forums.swift.org/search?q=\(query)"
         return link
+    }
+
+    func makeSummary(proposal: Proposal) -> String {
+        let document = Document(parsing: proposal.summary)
+        var repairer = LinkRepairer(
+            relativeTo: "https://github.com/apple/swift-evolution/blob/main/proposals"
+        )
+        let newMarkup = repairer.visit(document)
+        /// Won't be `nil`, but just in case.
+        if newMarkup == nil {
+            logger.warning("Edited Markup was nil", metadata: ["proposal": "\(proposal)"])
+        }
+        let newSummary = newMarkup?.format() ?? proposal.summary
+        return newSummary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .unicodesPrefix(2_048)
     }
 
     func consumeCachesStorageData(_ storage: Storage) {
@@ -328,17 +337,6 @@ private extension String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
     }
-
-    func truncate(ifLongerThan max: Int) -> String {
-        let scalars = self.unicodeScalars
-        if scalars.count > max {
-            /// `scalars.count - max` makes the text as long as the limit.
-            /// `+ 3` is for the extra `...` that is added.
-            return String(scalars.dropLast(scalars.count - max + 3)) + "..."
-        } else {
-            return self
-        }
-    }
 }
 
 private extension Proposal.User {
@@ -357,6 +355,66 @@ private extension Proposal.User {
     }
 }
 
+// MARK: - LinkRepairer
+
+/// Edits relative proposal links to absolute links so they look correct on Discord.
+struct LinkRepairer: MarkupRewriter {
+    let relativeTo: String
+
+    func visitLink(_ link: Link) -> (any Markup)? {
+        if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
+           !dest.hasPrefix("https://"),
+           dest.hasSuffix(".md") {
+            /// It's relative .md link like "0400-init-accessors.md".
+            /// We make it absolute.
+            var link = link
+            link.destination = "\(relativeTo)/\(dest)"
+            return link
+        }
+        return link
+    }
+}
+
+// MARK: - ReviewLinksFinder
+
+/// Finds the review links of a proposal.
+struct ReviewLinksFinder: MarkupWalker {
+
+    struct SimpleLink: Equatable {
+        let description: String
+        let destination: String
+    }
+
+    private struct LinksFinder: MarkupWalker {
+        var links = [SimpleLink]()
+
+        mutating func visitLink(_ link: Link) {
+            guard let destination = link.destination?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  destination.hasPrefix("https"),
+                  let text = link.children.first(where: { _ in true }) as? Text else {
+                return
+            }
+            self.links.append(SimpleLink(
+                description: text.string.trimmingCharacters(in: .whitespacesAndNewlines),
+                destination: destination
+            ))
+        }
+    }
+
+    var links = [SimpleLink]()
+
+    mutating func visitParagraph(_ paragraph: Paragraph) {
+        guard let text = paragraph.children.first(where: { _ in true }) as? Text,
+              text.string.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("Review:")
+        else { return }
+        var linkFinder = LinksFinder()
+        linkFinder.visitParagraph(paragraph)
+        self.links = linkFinder.links
+    }
+}
+
+// MARK: - QueuedProposal
 struct QueuedProposal: Codable {
     let uuid: UUID
     let firstKnownStateBeforeQueue: Proposal.Status.State?
@@ -376,16 +434,19 @@ struct QueuedProposal: Codable {
     }
 }
 
+// MARK: - +Proposal
 private extension Proposal.Status.State {
     var color: DiscordColor {
         switch self {
         case .accepted: return .green
         case .activeReview: return .orange
+        case .scheduledForReview: return .yellow
         case .implemented: return .blue
-        case .previewing: return .lightGreen
+        case .previewing: return .teal
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
+        case .unknown: return .gray(level: .level6, scheme: .dark)
         }
     }
 
@@ -393,11 +454,13 @@ private extension Proposal.Status.State {
         switch self {
         case .accepted: return "Accepted"
         case .activeReview: return "Active Review"
+        case .scheduledForReview: return "Scheduled For Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
+        case let .unknown(unknown): return String(unknown.dropFirst().capitalized)
         }
     }
 
@@ -407,4 +470,190 @@ private extension Proposal.Status.State {
         default: return self.UIDescription
         }
     }
+}
+
+// MARK: - Proposal
+struct Proposal: Sendable, Codable {
+
+    struct User: Sendable, Codable {
+        let link: String
+        let name: String
+    }
+
+    struct Status: Sendable, Codable {
+
+        enum State: RawRepresentable, Equatable, Sendable, Codable {
+            case accepted
+            case activeReview
+            case scheduledForReview
+            case implemented
+            case previewing
+            case rejected
+            case returnedForRevision
+            case withdrawn
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .accepted: return ".accepted"
+                case .activeReview: return ".activeReview"
+                case .scheduledForReview: return ".scheduledForReview"
+                case .implemented: return ".implemented"
+                case .previewing: return ".previewing"
+                case .rejected: return ".rejected"
+                case .returnedForRevision: return ".returnedForRevision"
+                case .withdrawn: return ".withdrawn"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case ".accepted": self = .accepted
+                case ".activeReview": self = .activeReview
+                case ".scheduledForReview": self = .scheduledForReview
+                case ".implemented": self = .implemented
+                case ".previewing": self = .previewing
+                case ".rejected": self = .rejected
+                case ".returnedForRevision": self = .returnedForRevision
+                case ".withdrawn": self = .withdrawn
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        let state: State
+        let version: String?
+        let end: String?
+        let start: String?
+    }
+
+    struct TrackingBug: Sendable, Codable {
+        let assignee: String
+        let id: String
+        let link: String
+        let radar: String
+        let resolution: String
+        let status: String
+        let title: String
+        let updated: String
+    }
+
+    struct Warning: Sendable, Codable {
+        let kind: String
+        let message: String
+        let stage: String
+    }
+
+    struct Implementation: Sendable, Codable {
+
+        enum Account: RawRepresentable, Sendable, Codable {
+            case apple
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .apple: return "apple"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case "apple": self = .apple
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        enum Repository: RawRepresentable, Sendable, Codable {
+            case swift
+            case swiftSyntax
+            case swiftCorelibsFoundation
+            case swiftPackageManager
+            case swiftXcodePlaygroundSupport
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .swift: return "swift"
+                case .swiftSyntax: return "swift-syntax"
+                case .swiftCorelibsFoundation: return "swift-corelibs-foundation"
+                case .swiftPackageManager: return "swift-package-manager"
+                case .swiftXcodePlaygroundSupport: return "swift-xcode-playground-support"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case "swift": self = .swift
+                case "swift-syntax": self = .swiftSyntax
+                case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
+                case "swift-package-manager": self = .swiftPackageManager
+                case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        enum Kind: RawRepresentable, Sendable, Codable {
+            case commit
+            case pull
+            case unknown(String)
+
+            var rawValue: String {
+                switch self {
+                case .commit: return "commit"
+                case .pull: return "pull"
+                case let .unknown(unknown): return unknown
+                }
+            }
+
+            init? (rawValue: String) {
+                switch rawValue {
+                case "commit": self = .commit
+                case "pull": self = .pull
+                default:
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
+                    self = .unknown(rawValue)
+                }
+            }
+        }
+
+        let account: Account
+        let id: String
+        let repository: Repository
+        let type: Kind
+    }
+
+    let authors: [User]
+    let id: String
+    let link: String
+    let reviewManager: User
+    let sha: String
+    let status: Status
+    let summary: String
+    let title: String
+    let trackingBugs: [TrackingBug]?
+    let warnings: [Warning]?
+    let implementation: [Implementation]?
 }

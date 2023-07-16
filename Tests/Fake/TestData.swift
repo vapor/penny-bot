@@ -1,6 +1,6 @@
 import Foundation
 import DiscordModels
-import Models
+@testable import Penny
 
 public enum TestData {
     
@@ -36,18 +36,39 @@ public enum TestData {
         encoding: .utf8
     )!
 
-    private static let testData: [String: Any] = {
-        let data = resource(named: "test_data.json")
+    private static let gatewayEvents: [String: Data] = {
+        let data = resource(named: "gatewayEvents.json")
         let object = try! JSONSerialization.jsonObject(with: data, options: [])
-        return object as! [String: Any]
+        let dict = object as! [String: Any]
+        let dataDict = dict.mapValues { try! JSONSerialization.data(withJSONObject: $0) }
+        return dataDict
     }()
-    
-    /// Probably could be more efficient than encoding then decoding again?!
-    static func `for`(key: String) -> Data? {
-        if let object = testData[key] {
-            return try! JSONSerialization.data(withJSONObject: object)
-        } else {
-            return nil
-        }
+
+    static func `for`(gatewayEventKey key: String) -> Data? {
+        return gatewayEvents[key]
+    }
+
+    private static let ghHooksEvents: [String: Data] = {
+        let data = resource(named: "ghHooksEvents.json")
+        let object = try! JSONSerialization.jsonObject(with: data, options: [])
+        let dict = object as! [String: Any]
+        let dataDict = dict.mapValues { try! JSONSerialization.data(withJSONObject: $0) }
+        return dataDict
+    }()
+
+    public static func `for`(ghEventKey key: String) -> Data? {
+        return ghHooksEvents[key]
+    }
+
+    private static let ghRestOperations: [String: Data] = {
+        let data = resource(named: "ghRestOperations.json")
+        let object = try! JSONSerialization.jsonObject(with: data, options: [])
+        let dict = object as! [String: Any]
+        let dataDict = dict.mapValues { try! JSONSerialization.data(withJSONObject: $0) }
+        return dataDict
+    }()
+
+    public static func `for`(ghOperationId key: String) -> Data? {
+        return ghRestOperations[key]
     }
 }

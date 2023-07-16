@@ -47,7 +47,7 @@ actor BotStateManager {
 
     private func cancelIfCachePopulationTakesTooLong() {
         Task {
-            try await Task.sleep(for: .seconds(2 * 60))
+            try await Task.sleep(for: .seconds(60))
             if !canRespond {
                 await startAllowingResponses()
                 logger.error("No CachesStorage-population was done in-time")
@@ -75,9 +75,6 @@ actor BotStateManager {
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             logger.trace("Received 'didShutdown' signal")
             populateCache()
-        } else {
-            logger.error("Unknown signal", metadata: ["signal": .string(message.content)])
-            return
         }
     }
 

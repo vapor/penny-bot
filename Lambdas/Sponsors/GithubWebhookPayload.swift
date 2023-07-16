@@ -1,6 +1,6 @@
 import Foundation
 
-public struct GithubWebhookPayload: Codable {
+public struct GitHubWebhookPayload: Codable {
     let action: String
     let sponsorship: Sponsorship
     let sender: Sender

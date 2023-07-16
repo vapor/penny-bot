@@ -133,7 +133,7 @@ Resources:
       Runtime: provided.al2
       Timeout: 6
 
-  lambdaAddCoinPermission:
+  lambdaCoinsRoutePermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
@@ -141,6 +141,12 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn: 
       - addCoinFunction
+ 
+  coinsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${CoinsFilename}-lambda
+      RetentionInDays: 30
       
   # Sponsors lambda config
       
@@ -182,6 +188,14 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn:
       - sponsorsFunction
+    
+  sponsorsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${SponsorsFilename}-lambda
+      RetentionInDays: 30
+
+  # IAM roles
 
   lambdaIAMRole:
     Type: AWS::IAM::Role
@@ -240,6 +254,8 @@ Resources:
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-oauth-client-secret-hQSGeh
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:release-bot/github-access-token-pJOxYU
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
                   - arn:aws:s3:::penny-auto-pings-lambda/*
                   - arn:aws:s3:::penny-faqs-lambda/*
           PolicyName: lambda
@@ -315,7 +331,7 @@ Resources:
   autoPingsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/AutoPingsLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
       RetentionInDays: 30
 
   # Faqs lambda config
@@ -369,7 +385,7 @@ Resources:
   faqsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/FaqsLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${FaqsFilename}-lambda
       RetentionInDays: 30
 
   # GH-Hooks lambda config
@@ -402,12 +418,14 @@ Resources:
         Variables:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
           WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+          GH_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:release-bot/github-access-token-pJOxYU
+          GH_APP_AUTH_PRIV_KEY: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
           LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}-lambda
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaGHHooksRoutePermission:
     Type: AWS::Lambda::Permission
@@ -421,7 +439,7 @@ Resources:
   ghHooksLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/GHHooksLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${GHHooksFilename}-lambda
       RetentionInDays: 30
 
   # GH-OAuth lambda config
@@ -561,7 +579,3 @@ Outputs:
 
   dynamoDBArn:
     Value: !GetAtt dynamoUserTable.Arn
-
-  
-
-

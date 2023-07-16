@@ -26,7 +26,7 @@ enum DiscordFactory {
             clientConfiguration: clientConfiguration,
             token: token,
             presence: .init(
-                activities: [.init(name: "Showing Appreciation", type: .game)],
+                activities: [.init(name: "you", type: .game)],
                 status: .online,
                 afk: false
             ),
