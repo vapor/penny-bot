@@ -207,6 +207,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .target(name: "Penny"),
             ],
             path: "./Tests/Fake",

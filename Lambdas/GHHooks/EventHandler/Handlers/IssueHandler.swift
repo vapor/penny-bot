@@ -4,15 +4,20 @@ import Markdown
 
 struct IssueHandler {
     let context: HandlerContext
+    var event: GHEvent {
+        context.event
+    }
 
     func handle() async throws {
-        let action = context.event.action.flatMap({ Issue.Action(rawValue: $0) })
+        let action = try event.action
+            .flatMap({ Issue.Action(rawValue: $0) })
+            .requireValue()
         switch action {
         case .opened:
             try await onOpened()
         case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
             try await onEdited()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned, .none:
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned:
             break
         }
     }
@@ -34,8 +39,6 @@ struct IssueHandler {
     }
 
     func createReportEmbed() throws -> Embed {
-        let event = context.event
-
         let issue = try event.issue.requireValue()
 
         let number = try event.issue.requireValue().number
