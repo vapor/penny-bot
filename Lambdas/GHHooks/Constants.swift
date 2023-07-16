@@ -4,6 +4,7 @@ enum Constants {
 
     enum GitHub {
         static let appID = 360798
+        static let installationID = 39698047
     }
 
     enum Channels: ChannelSnowflake {
