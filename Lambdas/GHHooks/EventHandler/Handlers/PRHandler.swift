@@ -2,10 +2,11 @@ import DiscordBM
 import GitHubAPI
 import SwiftSemver
 import Markdown
+import Foundation
 
 struct PRHandler {
 
-    enum PRErrors: Error, CustomStringConvertible {
+    enum PRErrors: Error, CustomStringConvertible, LocalizedError {
         case tagDoesNotFollowSemVer(release: Release, tag: String)
         case cantBumpSemVer(version: SemanticVersion, bump: SemVerBump)
         case cantFindAnyRelease(latest: Release?, releases: [Release])
@@ -19,6 +20,10 @@ struct PRHandler {
             case let .cantFindAnyRelease(latest, releases):
                 return "cantFindAnyRelease(latest: \(String(describing: latest)), releases: \(releases))"
             }
+        }
+
+        var errorDescription: String? {
+            description
         }
     }
 
