@@ -12,7 +12,7 @@ actor Authenticator {
     let logger: Logger
 
     /// The cached access token.
-    private var cachedAccessToken: InstallationToken?
+    private var cachedAccessToken: Secret?
 
     private let lock = ActorLock()
 
@@ -22,51 +22,17 @@ actor Authenticator {
         self.logger = logger
     }
 
-    /// TODO: Actually "refresh" the token if needed and possible,
-    /// instead of just creating a new one.
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> Secret {
         try await lock.withLock {
             if !forceRefreshToken,
                let cachedAccessToken = await cachedAccessToken {
-                return Secret(cachedAccessToken.token)
+                return cachedAccessToken
             } else {
                 let token = try await makeJWTToken()
-                let client = try await makeClient(token: token)
-                let accessToken = try await createAccessToken(client: client)
-                await setCachedAccessToken(to: accessToken)
-                return Secret(accessToken.token)
+                await setCachedAccessToken(to: token)
+                return token
             }
         }
-    }
-
-    private func createAccessToken(client: Client) async throws -> InstallationToken {
-        let response = try await client.apps_create_installation_access_token(.init(
-            path: .init(installation_id: Constants.pennyGitHubAppID)
-        ))
-
-        if case let .created(created) = response,
-           case let .json(json) = created.body {
-            return json
-        } else {
-            throw Errors.httpRequestFailed(response: response)
-        }
-    }
-
-    private func makeClient(token: Secret) throws -> Client {
-        let transport = AsyncHTTPClientTransport(configuration: .init(
-            client: httpClient,
-            timeout: .seconds(3)
-        ))
-        let middleware = GHMiddleware(
-            authorization: .bearer(token),
-            logger: logger
-        )
-        let client = Client(
-            serverURL: try Servers.server1(),
-            transport: transport,
-            middlewares: [middleware]
-        )
-        return client
     }
 
     private func makeJWTToken() async throws -> Secret {
@@ -82,7 +48,7 @@ actor Authenticator {
         try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY")
     }
 
-    private func setCachedAccessToken(to token: InstallationToken) {
+    private func setCachedAccessToken(to token: Secret) {
         self.cachedAccessToken = token
     }
 }
@@ -111,7 +77,7 @@ private struct TokenPayload: JWTPayload, Equatable {
         /// 5 mins into the future. GitHub docs says no more than 10 mins.
         self.expiresAt = .init(value: Date().addingTimeInterval(5 * 60))
         /// The app-id, per GitHub docs.
-        self.issuer = "\(Constants.pennyGitHubAppID)"
+        self.issuer = "\(Constants.GitHub.appID)"
         /// `RS256`, per GitHub docs.
         self.algorithm = "RS256"
     }
