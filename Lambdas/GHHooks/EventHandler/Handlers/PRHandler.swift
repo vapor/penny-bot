@@ -57,13 +57,6 @@ struct PRHandler {
         case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled:
             break
         }
-
-        // For manual tests
-        if action == .edited,
-           event.repository.name == "penny-bot",
-           pr.title.lowercased().contains("test lambda 677592") {
-            try await sendComment(body: "Test!")
-        }
     }
 
     func onEdited() async throws {
@@ -280,12 +273,6 @@ private extension PRHandler {
     }
 
     func sendComment(release: Release) async throws {
-        try await self.sendComment(body: """
-        These changes are now available in [\(release.tag_name)](\(release.html_url))
-        """)
-    }
-
-    func sendComment(body: String) async throws {
         /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
         let response = try await context.githubClient.issues_create_comment(.init(
             path: .init(
@@ -293,7 +280,11 @@ private extension PRHandler {
                 repo: repo.name,
                 issue_number: number
             ),
-            body: .json(.init(body: body))
+            body: .json(.init(
+                body: """
+                These changes are now available in [\(release.tag_name)](\(release.html_url))
+                """
+            ))
         ))
 
         switch response {

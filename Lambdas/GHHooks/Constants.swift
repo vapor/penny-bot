@@ -3,7 +3,9 @@ import DiscordBM
 enum Constants {
 
     enum GitHub {
+        /// The app-id of Penny.
         static let appID = 360798
+        /// The installation-id of Penny for Vapor org.
         static let installationID = 39698047
     }
 
