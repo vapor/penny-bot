@@ -90,7 +90,7 @@ actor Authenticator {
 /// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app#about-json-web-tokens-jwts
 private struct TokenPayload: JWTPayload, Equatable {
     /// When the token was issued.
-    let issuedAt: IssuedAtClaim
+    let issuedAt: IntIssuedAtClaim
     /// When the token will expire.
     let expiresAt: IntExpirationClaim
     /// Penny's GitHub app-id.
@@ -125,6 +125,13 @@ private struct TokenPayload: JWTPayload, Equatable {
     }
 }
 
+/// The "exp" (expiration time) claim identifies the expiration time on
+/// or after which the JWT MUST NOT be accepted for processing.  The
+/// processing of the "exp" claim requires that the current date/time
+/// MUST be before the expiration date/time listed in the "exp" claim.
+/// Implementers MAY provide for some small leeway, usually no more than
+/// a few minutes, to account for clock skew.  Its value MUST be a number
+/// containing a NumericDate value.  Use of this claim is OPTIONAL.
 struct IntExpirationClaim: JWTClaim, Equatable {
     var value: Date
 
@@ -150,5 +157,29 @@ struct IntExpirationClaim: JWTClaim, Equatable {
         case .orderedDescending:
             break
         }
+    }
+}
+
+/// The "iat" (issued at) claim identifies the time at which the JWT was
+/// issued.  This claim can be used to determine the age of the JWT.  Its
+/// value MUST be a number containing a NumericDate value.  Use of this
+/// claim is OPTIONAL.
+struct IntIssuedAtClaim: JWTUnixEpochClaim, Equatable {
+    /// See `JWTClaim`.
+    var value: Date
+
+    /// See `JWTClaim`.
+    init(value: Date) {
+        self.value = value
+    }
+
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        self.value = Date(timeIntervalSince1970: Double(try container.decode(Int.self)))
+    }
+
+    func encode(to encoder: any Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(Int(self.value.timeIntervalSince1970))
     }
 }
