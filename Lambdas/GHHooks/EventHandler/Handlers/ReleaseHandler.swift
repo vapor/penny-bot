@@ -241,7 +241,10 @@ struct ReleaseHandler {
     }
 
     func makeMergerMarkdown(mergedBy: NullableUser) -> String {
-        "###### _This patch was released by @\(mergedBy.name ?? mergedBy.login)._"
+        """
+        ###### _This patch was released by @\(mergedBy.name ?? mergedBy.login)._
+
+        """
     }
 
     func makePRMarkdown(isCodeOwner: Bool) -> String {
@@ -268,7 +271,7 @@ struct ReleaseHandler {
         guard isNewContributor else { return "" }
         return """
         ## New Contributor
-        - @\(pr.user.name ?? pr.user.login) made their first contribution.
+        - @\(pr.user.name ?? pr.user.login) made their first contribution 🎉
         """
     }
 
