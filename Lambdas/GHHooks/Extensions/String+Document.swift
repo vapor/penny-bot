@@ -8,16 +8,17 @@ extension String {
 
         let prefixed = (markup1?.format(options: .forDiscord) ?? "").unicodesPrefix(maxLength)
         let document2 = Document(parsing: prefixed)
-        var counter = ParagraphCounter()
-        counter.visit(document2)
-        let count = counter.count
-        if count == 0 { return prefixed }
+        var paragraphCounter = ParagraphCounter()
+        paragraphCounter.visit(document2)
+        let paragraphCount = paragraphCounter.count
+        if [0, 1].contains(paragraphCount) { return prefixed }
         var paragraphRemover = ParagraphRemover(
-            atCount: count,
+            atCount: paragraphCount,
             ifShorterThan: trailingParagraphMinLength
         )
-        let markup = paragraphRemover.visit(document2)
-        return markup?.format(options: .forDiscord) ?? ""
+        let markup2 = paragraphRemover.visit(document2)
+
+        return markup2?.format(options: .forDiscord) ?? ""
     }
 }
 

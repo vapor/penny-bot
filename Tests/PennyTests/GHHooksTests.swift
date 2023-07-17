@@ -163,6 +163,24 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token…
             """)
         }
+
+        do {
+            let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
+
+            <!-- Describe your changes clearly and use examples if possible -->
+
+            \(scalars_aLot)
+
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+            on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token ...")
+        }
     }
 
     func testEventHandler() async throws {
