@@ -256,8 +256,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
       "state" : {
-        "revision" : "32f3ae2f51e4989d540ce7f46d770f224fe51a28",
-        "version" : "0.1.1"
+        "revision" : "875fecf08b5850f3fe81ae77c2c7566a7c9495bf",
+        "version" : "0.1.2"
       }
     },
     {
@@ -274,8 +274,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "e81f70f2a8b445224dc6b97d0c31ed0d190e04de",
-        "version" : "0.1.4"
+        "revision" : "c5ab4e85a1b86cae78d5e40d845cf3b4b4497cf7",
+        "version" : "0.1.5"
       }
     },
     {

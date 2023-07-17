@@ -36,6 +36,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
     func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output
+    /// List repository contributors
+    ///
+    /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
+    ///
+    /// GitHub identifies contributors by author email address. This endpoint groups contribution counts by GitHub user, which includes all associated email addresses. To improve performance, only the first 500 author email addresses in the repository link to GitHub users. The rest will appear as anonymous contributors without associated GitHub user information.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
+    func repos_list_contributors(_ input: Operations.repos_list_contributors.Input) async throws
+        -> Operations.repos_list_contributors.Output
     /// List repository issues
     ///
     /// List issues in a repository. Only open issues will be listed.
@@ -10755,6 +10765,145 @@ public enum Components {
                 case draft
             }
         }
+        /// Contributor
+        ///
+        /// - Remark: Generated from `#/components/schemas/contributor`.
+        public struct contributor: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/contributor/login`.
+            public var login: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/id`.
+            public var id: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/contributor/node_id`.
+            public var node_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/avatar_url`.
+            public var avatar_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/gravatar_id`.
+            public var gravatar_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/url`.
+            public var url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/html_url`.
+            public var html_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/followers_url`.
+            public var followers_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/following_url`.
+            public var following_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/gists_url`.
+            public var gists_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/starred_url`.
+            public var starred_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/subscriptions_url`.
+            public var subscriptions_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/organizations_url`.
+            public var organizations_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/repos_url`.
+            public var repos_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/events_url`.
+            public var events_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/received_events_url`.
+            public var received_events_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/type`.
+            public var _type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/contributor/site_admin`.
+            public var site_admin: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/contributor/contributions`.
+            public var contributions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/contributor/email`.
+            public var email: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/name`.
+            public var name: Swift.String?
+            /// Creates a new `contributor`.
+            ///
+            /// - Parameters:
+            ///   - login:
+            ///   - id:
+            ///   - node_id:
+            ///   - avatar_url:
+            ///   - gravatar_id:
+            ///   - url:
+            ///   - html_url:
+            ///   - followers_url:
+            ///   - following_url:
+            ///   - gists_url:
+            ///   - starred_url:
+            ///   - subscriptions_url:
+            ///   - organizations_url:
+            ///   - repos_url:
+            ///   - events_url:
+            ///   - received_events_url:
+            ///   - _type:
+            ///   - site_admin:
+            ///   - contributions:
+            ///   - email:
+            ///   - name:
+            public init(
+                login: Swift.String? = nil,
+                id: Swift.Int? = nil,
+                node_id: Swift.String? = nil,
+                avatar_url: Swift.String? = nil,
+                gravatar_id: Swift.String? = nil,
+                url: Swift.String? = nil,
+                html_url: Swift.String? = nil,
+                followers_url: Swift.String? = nil,
+                following_url: Swift.String? = nil,
+                gists_url: Swift.String? = nil,
+                starred_url: Swift.String? = nil,
+                subscriptions_url: Swift.String? = nil,
+                organizations_url: Swift.String? = nil,
+                repos_url: Swift.String? = nil,
+                events_url: Swift.String? = nil,
+                received_events_url: Swift.String? = nil,
+                _type: Swift.String,
+                site_admin: Swift.Bool? = nil,
+                contributions: Swift.Int,
+                email: Swift.String? = nil,
+                name: Swift.String? = nil
+            ) {
+                self.login = login
+                self.id = id
+                self.node_id = node_id
+                self.avatar_url = avatar_url
+                self.gravatar_id = gravatar_id
+                self.url = url
+                self.html_url = html_url
+                self.followers_url = followers_url
+                self.following_url = following_url
+                self.gists_url = gists_url
+                self.starred_url = starred_url
+                self.subscriptions_url = subscriptions_url
+                self.organizations_url = organizations_url
+                self.repos_url = repos_url
+                self.events_url = events_url
+                self.received_events_url = received_events_url
+                self._type = _type
+                self.site_admin = site_admin
+                self.contributions = contributions
+                self.email = email
+                self.name = name
+            }
+            public enum CodingKeys: String, CodingKey {
+                case login
+                case id
+                case node_id
+                case avatar_url
+                case gravatar_id
+                case url
+                case html_url
+                case followers_url
+                case following_url
+                case gists_url
+                case starred_url
+                case subscriptions_url
+                case organizations_url
+                case repos_url
+                case events_url
+                case received_events_url
+                case _type = "type"
+                case site_admin
+                case contributions
+                case email
+                case name
+            }
+        }
         /// Color-coded labels help you categorize and filter your issues (just like labels in Gmail).
         ///
         /// - Remark: Generated from `#/components/schemas/label`.
@@ -15505,6 +15654,169 @@ public enum Operations {
             ///
             /// HTTP response code: `301 movedPermanently`.
             case movedPermanently(Components.Responses.moved_permanently)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List repository contributors
+    ///
+    /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
+    ///
+    /// GitHub identifies contributors by author email address. This endpoint groups contribution counts by GitHub user, which includes all associated email addresses. To improve performance, only the first 500 author email addresses in the repository link to GitHub users. The rest will appear as anonymous contributors without associated GitHub user information.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
+    public enum repos_list_contributors {
+        public static let id: String = "repos/list-contributors"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_list_contributors.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var anon: Swift.String?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - anon:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    anon: Swift.String? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.anon = anon
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_contributors.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_list_contributors.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_list_contributors.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_contributors.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_contributors.Input.Path,
+                query: Operations.repos_list_contributors.Input.Query = .init(),
+                headers: Operations.repos_list_contributors.Input.Headers = .init(),
+                cookies: Operations.repos_list_contributors.Input.Cookies = .init(),
+                body: Operations.repos_list_contributors.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_contributors.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.contributor])
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_list_contributors.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_contributors.Output.Ok.Headers,
+                    body: Operations.repos_list_contributors.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// if repository contains content
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_contributors.Output.Ok)
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_contributors.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.repos_list_contributors.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_contributors.Output.NoContent.Headers = .init(),
+                    body: Operations.repos_list_contributors.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response if repository is empty
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.repos_list_contributors.Output.NoContent)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

@@ -298,6 +298,7 @@ extension PRHandler {
         mergedBy: Components.Schemas.nullable_simple_user
     ) async throws -> String {
         let codeOwners = try await getCodeOwners()
+        let isNewContributor = try await isNewContributor(codeOwners: codeOwners)
 
         let acknowledgment: String
 
@@ -320,6 +321,36 @@ extension PRHandler {
 
         "\(pr.body ?? "Pull Request:") \(pr.html_url)"
         """
+    }
+
+    func isNewContributor(codeOwners: Set<String>) async throws -> Bool {
+        if pr.author_association == .OWNER ||
+            codeOwners.contains(pr.user.login) ||
+            (pr.user.name.map { codeOwners.contains($0) } ?? false) {
+            return false
+        }
+        let contributors = try await getExistingContributorIDs()
+        return !contributors.contains(pr.user.id)
+    }
+
+    func getExistingContributorIDs() async throws -> Set<Int> {
+        let response = try await context.githubClient.repos_list_contributors(
+            .init(path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            ))
+        )
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body
+        else {
+            context.logger.warning("Could not find current contributors", metadata: [
+                "response": "\(response)"
+            ])
+            return []
+        }
+
+        return Set(json.compactMap(\.id))
     }
 
     /// Returns code owners if the repo contains the file or returns `nil`.
