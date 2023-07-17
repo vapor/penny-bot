@@ -4,6 +4,7 @@ import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import SotoCore
 import DiscordHTTP
+import GitHubAPI
 import DiscordUtilities
 import Crypto
 import Logging
@@ -34,7 +35,7 @@ struct GHHooksHandler: LambdaHandler {
 
         self.logger = context.logger
         /// We can remove this if/when the lambda runtime gets support for
-        /// bootstrapping the logging system which it appears to now have.
+        /// bootstrapping the logging system which it appears to not have.
         DiscordGlobalConfiguration.makeLogger = { _ in context.logger }
 
         self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
@@ -42,14 +43,20 @@ struct GHHooksHandler: LambdaHandler {
         let awsClient = AWSClient(httpClientProvider: .shared(self.httpClient))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
+        let authenticator = Authenticator(
+            secretsRetriever: secretsRetriever,
+            httpClient: httpClient,
+            logger: logger
+        )
+        let middleware = GHMiddleware(
+            authorization: .authenticator(authenticator),
+            logger: logger
+        )
+
         let transport = AsyncHTTPClientTransport(configuration: .init(
             client: httpClient,
             timeout: .seconds(3)
         ))
-        let middleware = GHMiddleware(
-            secretsRetriever: secretsRetriever,
-            logger: logger
-        )
         self.githubClient = Client(
             serverURL: try Servers.server1(),
             transport: transport,

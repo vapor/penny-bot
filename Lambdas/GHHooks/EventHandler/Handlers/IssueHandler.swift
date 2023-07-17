@@ -1,24 +1,29 @@
 import DiscordBM
+import GitHubAPI
 import Markdown
 
 struct IssueHandler {
     let context: HandlerContext
+    var event: GHEvent {
+        context.event
+    }
 
     func handle() async throws {
-        let action = context.event.action.map({ Issue.Action(rawValue: $0) })
+        let action = try event.action
+            .flatMap({ Issue.Action(rawValue: $0) })
+            .requireValue()
         switch action {
         case .opened:
             try await onOpened()
-        case .edited:
+        case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
             try await onEdited()
-        default: break
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned:
+            break
         }
     }
 
     func onEdited() async throws {
-        let embed = try createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await editIssueReport()
     }
 
     func onOpened() async throws {
@@ -27,9 +32,13 @@ struct IssueHandler {
         try await reporter.reportNew(embed: embed)
     }
 
-    func createReportEmbed() throws -> Embed {
-        let event = context.event
+    func editIssueReport() async throws {
+        let embed = try createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportEdit(embed: embed)
+    }
 
+    func createReportEmbed() throws -> Embed {
         let issue = try event.issue.requireValue()
 
         let number = try event.issue.requireValue().number
@@ -41,11 +50,12 @@ struct IssueHandler {
 
         let repoName = event.repository.uiName
 
-        let body = issue.body.map { body in
-            let formatted = Document(parsing: body)
-                .filterOutChildren(ofType: HTMLBlock.self)
-                .format()
-            return ">>> \(formatted)".unicodesPrefix(260)
+        let body = issue.body.map { body -> String in
+            let formatted = body.formatForDiscord(
+                maxLength: 256,
+                trailingParagraphMinLength: 128
+            )
+            return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
         let description = """
@@ -54,15 +64,53 @@ struct IssueHandler {
         \(body)
         """
 
-        return .init(
-            title: "[\(repoName)] Issue #\(number)".unicodesPrefix(256),
+        let status = Status(issue: issue)
+        let statusString = status.titleDescription.map { " - \($0)" } ?? ""
+        let maxCount = 256 - statusString.unicodeScalars.count
+        let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
+
+        let embed = Embed(
+            title: title,
             description: description,
             url: issueLink,
-            color: .yellow,
+            color: status.color,
             footer: .init(
                 text: "By \(authorName)",
                 icon_url: .exact(authorAvatarLink)
             )
         )
+
+        return embed
+    }
+}
+
+private enum Status: String {
+    case closed = "Closed"
+    case opened = "Opened"
+
+    var color: DiscordColor {
+        switch self {
+        case .closed:
+            return .brown
+        case .opened:
+            return .yellow
+        }
+    }
+
+    var titleDescription: String? {
+        switch self {
+        case .closed:
+            return self.rawValue
+        case .opened:
+            return nil
+        }
+    }
+
+    init(issue: Issue) {
+        if issue.closed_at != nil {
+            self = .closed
+        } else {
+            self = .opened
+        }
     }
 }

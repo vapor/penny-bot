@@ -1,26 +1,21 @@
 import DiscordBM
 import AsyncHTTPClient
-import SwiftSemver
-import Markdown
 import NIOCore
 import NIOFoundationCompat
+import GitHubAPI
+import SwiftSemver
+import Markdown
 import Foundation
 
 struct PRHandler {
 
-    enum Errors: Error, CustomStringConvertible {
-        case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
-        case tagDoesNotFollowSemVer(release: Components.Schemas.release, tag: String)
+    enum PRErrors: Error, CustomStringConvertible, LocalizedError {
+        case tagDoesNotFollowSemVer(release: Release, tag: String)
         case cantBumpSemVer(version: SemanticVersion, bump: SemVerBump)
-        case cantFindAnyRelease(
-            latest: Components.Schemas.release?,
-            releases: [Components.Schemas.release]
-        )
+        case cantFindAnyRelease(latest: Release?, releases: [Release])
 
         var description: String {
             switch self {
-            case let .httpRequestFailed(response, file, line):
-                return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
             case let .tagDoesNotFollowSemVer(release, tag):
                 return "tagDoesNotFollowSemVer(release: \(release), tag: \(tag))"
             case let .cantBumpSemVer(version, bump):
@@ -28,6 +23,10 @@ struct PRHandler {
             case let .cantFindAnyRelease(latest, releases):
                 return "cantFindAnyRelease(latest: \(String(describing: latest)), releases: \(releases))"
             }
+        }
+
+        var errorDescription: String? {
+            description
         }
     }
 
@@ -48,22 +47,23 @@ struct PRHandler {
     }
 
     func handle() async throws {
-        let action = context.event.action.map({ PullRequest.Action(rawValue: $0) })
+        let action = try event.action
+            .flatMap({ PullRequest.Action(rawValue: $0) })
+            .requireValue()
         switch action {
         case .opened:
             try await onOpened()
         case .closed:
             try await onClosed()
-        case .edited:
+        case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
             try await onEdited()
-        default: break
+        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled:
+            break
         }
     }
 
     func onEdited() async throws {
-        let embed = createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await editPRReport()
     }
 
     func onOpened() async throws {
@@ -72,38 +72,12 @@ struct PRHandler {
         try await reporter.reportNew(embed: embed)
     }
 
-    func createReportEmbed() -> Embed {
-        let authorName = pr.user.login
-        let authorAvatarLink = pr.user.avatar_url
-
-        let prLink = pr.html_url
-
-        let body = pr.body.map { body in
-            let formatted = Document(parsing: body)
-                .filterOutChildren(ofType: HTMLBlock.self)
-                .format()
-            return ">>> \(formatted)".unicodesPrefix(260)
-        } ?? ""
-
-        let description = """
-        ### \(pr.title)
-
-        \(body)
-        """
-
-        return .init(
-            title: "[\(repo.uiName)] PR #\(number)".unicodesPrefix(256),
-            description: description,
-            url: prLink,
-            color: .green,
-            footer: .init(
-                text: "By \(authorName)",
-                icon_url: .exact(authorAvatarLink)
-            )
-        )
+    func onClosed() async throws {
+        try await makeReleaseForMergedPR()
+        try await editPRReport()
     }
 
-    func onClosed() async throws {
+    func makeReleaseForMergedPR() async throws {
         guard pr.base.ref == "main",
               let mergedBy = pr.merged_by,
               let bump = pr.knownLabels.first?.toBump()
@@ -112,12 +86,12 @@ struct PRHandler {
         let previousRelease = try await getLastRelease()
 
         let tag = previousRelease.tag_name
-        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGithubTag(tag) else {
-            throw Errors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
+        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(tag) else {
+            throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
         }
 
         guard let version = previousVersion.next(bump) else {
-            throw Errors.cantBumpSemVer(version: previousVersion, bump: bump)
+            throw PRErrors.cantBumpSemVer(version: previousVersion, bump: bump)
         }
         let versionDescription = tagPrefix + version.description
 
@@ -131,17 +105,63 @@ struct PRHandler {
 
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
-            payload: .init(content: """
-            [\(repo.uiName)] \(version.description): \(pr.title)
-            \(release.html_url)
-            """
+            payload: .init(
+                content: """
+                [\(repo.uiName)] \(version.description): \(pr.title)
+                \(release.html_url)
+                """
             )
         ).guardSuccess()
+    }
+
+    func editPRReport() async throws {
+        let embed = createReportEmbed()
+        let reporter = Reporter(context: context)
+        try await reporter.reportEdit(embed: embed)
+    }
+
+    func createReportEmbed() -> Embed {
+        let authorName = pr.user.login
+        let authorAvatarLink = pr.user.avatar_url
+
+        let prLink = pr.html_url
+
+        let body = pr.body.map { body -> String in
+            let formatted = body.formatForDiscord(
+                maxLength: 256,
+                trailingParagraphMinLength: 128
+            )
+            return formatted.isEmpty ? "" : ">>> \(formatted)"
+        } ?? ""
+
+        let description = """
+        ### \(pr.title)
+
+        \(body)
+        """
+
+        let status = Status(pr: pr)
+        let statusString = status.titleDescription.map { " - \($0)" } ?? ""
+        let maxCount = 256 - statusString.unicodeScalars.count
+        let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
+
+        let embed = Embed(
+            title: title,
+            description: description,
+            url: prLink,
+            color: status.color,
+            footer: .init(
+                text: "By \(authorName)",
+                icon_url: .exact(authorAvatarLink)
+            )
+        )
+
+        return embed
     }
 }
 
 extension PRHandler {
-    func getLastRelease() async throws -> Components.Schemas.release {
+    func getLastRelease() async throws -> Release {
         let latest = try await self.getLatestRelease()
 
         let response = try await context.githubClient.repos_list_releases(.init(
@@ -157,16 +177,16 @@ extension PRHandler {
             throw Errors.httpRequestFailed(response: response)
         }
 
-        let filteredReleases: [Components.Schemas.release] = releases.compactMap {
-            release -> (Components.Schemas.release, SemanticVersion)? in
-            if let (_, version) = SemanticVersion.fromGithubTag(release.tag_name) {
+        let filteredReleases: [Release] = releases.compactMap {
+            release -> (Release, SemanticVersion)? in
+            if let (_, version) = SemanticVersion.fromGitHubTag(release.tag_name) {
                 return (release, version)
             }
             return nil
         }.filter { release, version -> Bool in
             if let majorVersion = Int(pr.base.ref) {
-                // If the branch name is an integer, only include releases
-                // for that major version.
+                /// If the branch name is an integer, only include releases
+                /// for that major version.
                 return version.major == majorVersion
             }
             return true
@@ -180,13 +200,13 @@ extension PRHandler {
         }.map(\.0)
 
         guard let release = filteredReleases.first else {
-            throw Errors.cantFindAnyRelease(latest: latest, releases: releases)
+            throw PRErrors.cantFindAnyRelease(latest: latest, releases: releases)
         }
 
         return release
     }
 
-    private func getLatestRelease() async throws -> Components.Schemas.release? {
+    private func getLatestRelease() async throws -> Release? {
         let response = try await context.githubClient.repos_get_latest_release(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -214,9 +234,9 @@ extension PRHandler {
 
     func makeNewRelease(
         version: String,
-        mergedBy: Components.Schemas.nullable_simple_user,
+        mergedBy: NullableUser,
         isPrerelease: Bool
-    ) async throws -> Components.Schemas.release {
+    ) async throws -> Release {
         let body = try await makeReleaseBody(mergedBy: mergedBy)
         let response = try await context.githubClient.repos_create_release(.init(
             path: .init(
@@ -246,7 +266,7 @@ extension PRHandler {
         throw Errors.httpRequestFailed(response: response)
     }
 
-    func sendComment(release: Components.Schemas.release) async throws {
+    func sendComment(release: Release) async throws {
         /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
         let response = try await context.githubClient.issues_create_comment(.init(
             path: .init(
@@ -345,5 +365,46 @@ extension PRHandler {
             }.map(String.init)
 
         return Set(codeOwners)
+    }
+}
+
+private enum Status: String {
+    case merged = "Merged"
+    case closed = "Closed"
+    case draft = "Draft"
+    case opened = "Opened"
+
+    var color: DiscordColor {
+        switch self {
+        case .merged:
+            return .purple
+        case .closed:
+            return .red
+        case .draft:
+            return .gray
+        case .opened:
+            return .green
+        }
+    }
+
+    var titleDescription: String? {
+        switch self {
+        case .opened:
+            return nil
+        case .merged, .closed, .draft:
+            return self.rawValue
+        }
+    }
+
+    init(pr: PullRequest) {
+        if pr.merged_by != nil {
+            self = .merged
+        } else if pr.closed_at != nil {
+            self = .closed
+        } else if pr.draft == true {
+            self = .draft
+        } else {
+            self = .opened
+        }
     }
 }

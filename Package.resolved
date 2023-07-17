@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "c6c68bc6d3e93de23018e9a882359d0561d42f1e"
+        "revision" : "10dc0b916a9e40404a0b9d9603500b6d4a9e1015"
       }
     },
     {
@@ -34,6 +34,15 @@
       "state" : {
         "revision" : "4513d319c4aaa6c3b2ac18e1e6566a803515ad91",
         "version" : "1.0.2"
+      }
+    },
+    {
+      "identity" : "jwt-kit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/vapor/jwt-kit.git",
+      "state" : {
+        "revision" : "dd3fe317f826d43bcefbe20d86f0f787927d05d8",
+        "version" : "4.12.0"
       }
     },
     {
@@ -176,7 +185,7 @@
       "location" : "https://github.com/apple/swift-markdown.git",
       "state" : {
         "branch" : "main",
-        "revision" : "6b9aadeea23b9bbfe031e94d70ca98c543495619"
+        "revision" : "07da205e1fc488d88609fea5da1ca227efc6c000"
       }
     },
     {
@@ -193,8 +202,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "324bc65a28323660fad8a36a7a37f0c2c78eeb9a",
-        "version" : "2.55.0"
+        "revision" : "5f542894dd8efbd766d8adf73ef2f947b0cd5e21",
+        "version" : "2.56.0"
       }
     },
     {
@@ -257,7 +266,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "ef1de07904dd249d5be36e17d5dc1b98f99bbe05"
+        "revision" : "691776a55ebf854b71751f21865800427cb6d9c2"
       }
     },
     {
@@ -310,8 +319,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams.git",
       "state" : {
-        "revision" : "9ff1cc9327586db4e0c8f46f064b6a82ec1566fa",
-        "version" : "4.0.6"
+        "revision" : "0d9ee7ea8c4ebd4a489ad7a73d5c6cad55d6fed3",
+        "version" : "5.0.6"
       }
     }
   ],

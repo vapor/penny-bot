@@ -46,6 +46,8 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
+        .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
@@ -87,6 +89,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
                 .target(name: "Models")
             ],
@@ -149,19 +152,29 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "SwiftSemver", package: "swift-semver"),
+                .product(name: "JWTKit", package: "jwt-kit"),
+                .product(name: "Atomics", package: "swift-atomics"),
+                .product(name: "Markdown", package: "swift-markdown"),
+                .target(name: "GitHubAPI"),
+                .target(name: "Extensions"),
+            ],
+            path: "./Lambdas/GHHooks",
+            swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "GitHubAPI",
+            dependencies: [
                 .product(
                     name: "OpenAPIAsyncHTTPClient",
                     package: "swift-openapi-async-http-client"
                 ),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .product(name: "SotoSecretsManager", package: "soto"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "SwiftSemver", package: "swift-semver"),
-                .product(name: "Markdown", package: "swift-markdown"),
-                .target(name: "Extensions"),
             ],
-            path: "./Lambdas/GHHooks",
             resources: [
                 .copy("openapi-generator-config.yml"),
                 .copy("openapi.yaml"),
@@ -194,6 +207,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .target(name: "Penny"),
             ],
             path: "./Tests/Fake",

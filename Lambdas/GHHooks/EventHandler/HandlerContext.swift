@@ -1,5 +1,6 @@
 import AsyncHTTPClient
 import DiscordBM
+import GitHubAPI
 import OpenAPIRuntime
 import Logging
 

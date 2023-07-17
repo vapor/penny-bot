@@ -39,10 +39,9 @@ struct ReactionHandler {
               await cache.canGiveCoin(
                 fromSender: user.id,
                 toAuthorOfMessage: event.message_id
-              ), let receiverId = await cache.getAuthorId(
-                channelId: event.channel_id,
-                messageId: event.message_id
-              ), user.id != receiverId
+              ),
+              let receiverId = event.message_author_id,
+              user.id != receiverId
         else { return }
         let sender = "<@\(user.id.rawValue)>"
         let receiver = "<@\(receiverId.rawValue)>"

@@ -12,7 +12,7 @@ public struct FakeDiscordClient: DiscordClient {
             to: request.endpoint,
             with: AnyBox(Optional<Never>.none as Any)
         )
-        
+
         return DiscordHTTPResponse(
             host: "discord.com",
             status: .ok,

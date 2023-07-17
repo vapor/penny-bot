@@ -242,7 +242,8 @@
             },
             "channel_id": "684159753189982218",
             "burst": false,
-            "guild_id": "808638139785936919"
+            "guild_id": "808638139785936919",
+            "message_author_id": "1030118727418646629"
         }
     },
     "thanksReaction2": {
@@ -284,7 +285,8 @@
             },
             "channel_id": "684159753189982218",
             "burst": false,
-            "guild_id": "808638139785936919"
+            "guild_id": "808638139785936919",
+            "message_author_id": "1030118727418646629"
         }
     },
     "thanksReaction3": {
@@ -326,7 +328,8 @@
             },
             "channel_id": "431926479752921098",
             "burst": false,
-            "guild_id": "808638139785936919"
+            "guild_id": "808638139785936919",
+            "message_author_id": "1030118727418646629"
         }
     },
     "thanksReaction4": {
@@ -367,7 +370,8 @@
             },
             "channel_id": "431926479752921098",
             "burst": false,
-            "guild_id": "808638139785936919"
+            "guild_id": "808638139785936919",
+            "message_author_id": "1030118727418646629"
         }
     },
     "POST-https://discord.com/api/v10/channels/684159753189982218/messages": {
@@ -1347,5 +1351,6 @@
             "application_id": "1016612301262041098",
             "app_permissions": "140737488355327"
         }
-    }
+    },
+    "GET-https://discord.com/api/v10/channels/1123702585006768228/messages": []
 }

@@ -23,17 +23,17 @@ struct CachesStorage: Sendable, Codable {
             await ProposalsChecker.shared.consumeCachesStorageData(proposalsCheckerData)
         }
 
-        let reactionCacheDataCounts = reactionCacheData == nil ? [] : [
-            reactionCacheData!.cachedAuthorIds.count,
-            reactionCacheData!.givenCoins.count,
-            reactionCacheData!.channelWithLastThanksMessage.count,
-            reactionCacheData!.thanksChannelForcedMessages.count,
-        ]
-        let proposalsCheckerDataCounts = proposalsCheckerData == nil ? [] : [
-            proposalsCheckerData!.previousProposals.count,
-            proposalsCheckerData!.queuedProposals.count,
-        ]
-        Logger(label: "CachesStorage").notice("Recovered some cached stuff", metadata: [
+        let reactionCacheDataCounts = reactionCacheData.map { data in
+            [data.givenCoins.count,
+             data.channelWithLastThanksMessage.count,
+             data.thanksChannelForcedMessages.count]
+        } ?? []
+        let proposalsCheckerDataCounts = proposalsCheckerData.map { data in
+            [data.previousProposals.count,
+             data.queuedProposals.count]
+        } ?? []
+
+        Logger(label: "CachesStorage").notice("Recovered the cached stuff", metadata: [
             "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
             "proposalsChecker_counts": .stringConvertible(proposalsCheckerDataCounts),
         ])

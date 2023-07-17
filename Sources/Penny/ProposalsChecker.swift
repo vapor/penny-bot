@@ -1,4 +1,5 @@
 import Logging
+import Markdown
 import DiscordModels
 import Models
 import Foundation
@@ -143,8 +144,7 @@ actor ProposalsChecker {
         )
         guard let message = try? response?.decode() else { return }
         /// Create a thread on top of the message
-        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())"
-            .truncate(ifLongerThan: 100)
+        let name = "Discuss \(proposal.id): \(proposal.title.sanitized())".unicodesPrefix(100)
         await discordService.createThreadFromMessage(
             channelId: message.channel_id,
             messageId: message.id,
@@ -165,10 +165,7 @@ actor ProposalsChecker {
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
-        let summary = proposal.summary
-            .replacingOccurrences(of: "\n", with: " ")
-            .sanitized()
-            .truncate(ifLongerThan: 2_048)
+        let summary = makeSummary(proposal: proposal)
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -183,7 +180,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -206,10 +203,7 @@ actor ProposalsChecker {
         let descriptionState = proposal.status.state.UIDescription
         let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
 
-        let summary = proposal.summary
-            .replacingOccurrences(of: "\n", with: " ")
-            .sanitized()
-            .truncate(ifLongerThan: 2_048)
+        let summary = makeSummary(proposal: proposal)
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -224,7 +218,7 @@ actor ProposalsChecker {
 
         return .init(
             embeds: [.init(
-                title: title.truncate(ifLongerThan: 256),
+                title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
 
@@ -242,28 +236,28 @@ actor ProposalsChecker {
         let link = proposal.link.sanitized()
         if link.count < 4 { return [] }
         let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
-        let fullGithubLink = githubProposalsPrefix + link
+        let fullGitHubLink = githubProposalsPrefix + link
         
         var buttons: [Interaction.ActionRow] = [[
-            .button(.init(label: "Proposal", url: fullGithubLink)),
+            .button(.init(label: "Proposal", url: fullGitHubLink)),
         ]]
         
-        if let forumPostLink = await findForumPostLink(link: fullGithubLink) {
+        if let link = await findForumPostLink(link: fullGitHubLink) {
             buttons[0].components.append(
-                .button(.init(label: "Forum Post", url: forumPostLink))
+                .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
             )
         }
         
-        if let searchLink = makeForumSearchLink(proposal: proposal) {
+        if let link = makeForumSearchLink(proposal: proposal) {
             buttons[0].components.append(
-                .button(.init(label: "Related Posts", url: searchLink))
+                .button(.init(label: "Related Posts", url: link))
             )
         }
         
         return buttons
     }
 
-    private func findForumPostLink(link: String) async -> String? {
+    private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
         let content: String
         do {
             content = try await self.proposalsService.getProposalContent(link: link)
@@ -274,22 +268,19 @@ actor ProposalsChecker {
             ])
             return nil
         }
-        if let latestLink = content
-            .split(whereSeparator: \.isNewline)
-            .first(where: { $0.hasPrefix("* Review:") })?
-            .split(separator: "(")
-            .flatMap({ $0.split(separator: ")") })
-            .reversed()
-            .first(where: { $0.starts(with: "https://") })
-            .map(String.init) {
-            return latestLink
-        } else {
+
+        let document = Document(parsing: content)
+        var finder = ReviewLinksFinder()
+        finder.visit(document)
+
+        guard let lastLink = finder.links.last else {
             logger.warning("Couldn't find forums link for proposal", metadata: [
                 "link": .string(link),
                 "content": .string(content)
             ])
             return nil
         }
+        return lastLink
     }
 
     private func makeForumSearchLink(proposal: Proposal) -> String? {
@@ -306,6 +297,23 @@ actor ProposalsChecker {
         }
         let link = "https://forums.swift.org/search?q=\(query)"
         return link
+    }
+
+    func makeSummary(proposal: Proposal) -> String {
+        let document = Document(parsing: proposal.summary)
+        var repairer = LinkRepairer(
+            relativeTo: "https://github.com/apple/swift-evolution/blob/main/proposals"
+        )
+        let newMarkup = repairer.visit(document)
+        /// Won't be `nil`, but just in case.
+        if newMarkup == nil {
+            logger.warning("Edited Markup was nil", metadata: ["proposal": "\(proposal)"])
+        }
+        let newSummary = newMarkup?.format() ?? proposal.summary
+        return newSummary
+            .replacingOccurrences(of: "\n", with: " ")
+            .sanitized()
+            .unicodesPrefix(2_048)
     }
 
     func consumeCachesStorageData(_ storage: Storage) {
@@ -329,17 +337,6 @@ private extension String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
             .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
     }
-
-    func truncate(ifLongerThan max: Int) -> String {
-        let scalars = self.unicodeScalars
-        if scalars.count > max {
-            /// `scalars.count - max` makes the text as long as the limit.
-            /// `+ 3` is for the extra `...` that is added.
-            return String(scalars.dropLast(scalars.count - max + 3)) + "..."
-        } else {
-            return self
-        }
-    }
 }
 
 private extension Proposal.User {
@@ -358,6 +355,66 @@ private extension Proposal.User {
     }
 }
 
+// MARK: - LinkRepairer
+
+/// Edits relative proposal links to absolute links so they look correct on Discord.
+struct LinkRepairer: MarkupRewriter {
+    let relativeTo: String
+
+    func visitLink(_ link: Link) -> (any Markup)? {
+        if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
+           !dest.hasPrefix("https://"),
+           dest.hasSuffix(".md") {
+            /// It's relative .md link like "0400-init-accessors.md".
+            /// We make it absolute.
+            var link = link
+            link.destination = "\(relativeTo)/\(dest)"
+            return link
+        }
+        return link
+    }
+}
+
+// MARK: - ReviewLinksFinder
+
+/// Finds the review links of a proposal.
+struct ReviewLinksFinder: MarkupWalker {
+
+    struct SimpleLink: Equatable {
+        let description: String
+        let destination: String
+    }
+
+    private struct LinksFinder: MarkupWalker {
+        var links = [SimpleLink]()
+
+        mutating func visitLink(_ link: Link) {
+            guard let destination = link.destination?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  destination.hasPrefix("https"),
+                  let text = link.children.first(where: { _ in true }) as? Text else {
+                return
+            }
+            self.links.append(SimpleLink(
+                description: text.string.trimmingCharacters(in: .whitespacesAndNewlines),
+                destination: destination
+            ))
+        }
+    }
+
+    var links = [SimpleLink]()
+
+    mutating func visitParagraph(_ paragraph: Paragraph) {
+        guard let text = paragraph.children.first(where: { _ in true }) as? Text,
+              text.string.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("Review:")
+        else { return }
+        var linkFinder = LinksFinder()
+        linkFinder.visitParagraph(paragraph)
+        self.links = linkFinder.links
+    }
+}
+
+// MARK: - QueuedProposal
 struct QueuedProposal: Codable {
     let uuid: UUID
     let firstKnownStateBeforeQueue: Proposal.Status.State?
@@ -383,12 +440,13 @@ private extension Proposal.Status.State {
         switch self {
         case .accepted: return .green
         case .activeReview: return .orange
+        case .scheduledForReview: return .yellow
         case .implemented: return .blue
-        case .previewing: return .lightGreen
+        case .previewing: return .teal
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
-        case .unknown: return .init(value: 0)!
+        case .unknown: return .gray(level: .level6, scheme: .dark)
         }
     }
 
@@ -396,6 +454,7 @@ private extension Proposal.Status.State {
         switch self {
         case .accepted: return "Accepted"
         case .activeReview: return "Active Review"
+        case .scheduledForReview: return "Scheduled For Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
@@ -426,6 +485,7 @@ struct Proposal: Sendable, Codable {
         enum State: RawRepresentable, Equatable, Sendable, Codable {
             case accepted
             case activeReview
+            case scheduledForReview
             case implemented
             case previewing
             case rejected
@@ -437,6 +497,7 @@ struct Proposal: Sendable, Codable {
                 switch self {
                 case .accepted: return ".accepted"
                 case .activeReview: return ".activeReview"
+                case .scheduledForReview: return ".scheduledForReview"
                 case .implemented: return ".implemented"
                 case .previewing: return ".previewing"
                 case .rejected: return ".rejected"
@@ -450,6 +511,7 @@ struct Proposal: Sendable, Codable {
                 switch rawValue {
                 case ".accepted": self = .accepted
                 case ".activeReview": self = .activeReview
+                case ".scheduledForReview": self = .scheduledForReview
                 case ".implemented": self = .implemented
                 case ".previewing": self = .previewing
                 case ".rejected": self = .rejected

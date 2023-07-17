@@ -1,5 +1,6 @@
 @testable import GHHooksLambda
 import AsyncHTTPClient
+import GitHubAPI
 import SotoCore
 import DiscordModels
 import OpenAPIRuntime
@@ -129,33 +130,64 @@ class GHHooksTests: XCTestCase {
         }
     }
 
-    func testMarkdown() async throws {
-        let text = """
-        <!-- 🚀 Thank you for contributing! -->
+    func testMarkdownFormatting() async throws {
+        do {
+            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
 
-        <!-- Describe your changes clearly and use examples if possible -->
+            <!-- Describe your changes clearly and use examples if possible -->
 
-        Add dark mode support using Material for MkDocs theme standard color schemas.
+            \(scalars_206)
 
-        <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
 
-        <img width="1265" alt="Vapor_docs_light" src="https://github.com/vapor/docs/assets/54376466/f6006cca-bbd2-45ce-a7ae-8e749d98ec05">
+            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
 
-        <!-- When this PR is merged, the title and body will be -->
+            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, scalars_206)
+        }
 
-        Add dark mode support
+        do {
+            let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
 
-        <!-- used to generate a release automatically. -->
-        """
+            <!-- Describe your changes clearly and use examples if possible -->
 
-        let doc = Document(parsing: text)
-        let docNoHTML = doc.filterOutChildren(ofType: HTMLBlock.self)
+            \(scalars_190)
 
-        XCTAssertEqual(docNoHTML.format(), """
-        Add dark mode support using Material for MkDocs theme standard color schemas.
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
 
-        Add dark mode support
-        """)
+            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, scalars_190 + """
+
+
+            Custom coders specified for a single `JWTSigner` affect token…
+            """)
+        }
+
+        do {
+            let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
+
+            <!-- Describe your changes clearly and use examples if possible -->
+
+            \(scalars_aLot)
+
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+            on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token ...")
+        }
     }
 
     func testParseCodeOwners() async throws {
