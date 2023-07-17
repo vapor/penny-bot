@@ -85,9 +85,9 @@ struct PRHandler {
 
         let previousRelease = try await getLastRelease()
 
-        let tag = previousRelease.tag_name
-        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(tag) else {
-            throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: tag)
+        let previousTag = previousRelease.tag_name
+        guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(previousTag) else {
+            throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: previousTag)
         }
 
         guard let version = previousVersion.next(bump) else {
@@ -96,7 +96,8 @@ struct PRHandler {
         let versionDescription = tagPrefix + version.description
 
         let release = try await makeNewRelease(
-            version: versionDescription,
+            previousVersion: previousTag,
+            newVersion: versionDescription,
             mergedBy: mergedBy,
             isPrerelease: !version.prereleaseIdentifiers.isEmpty
         )
@@ -233,20 +234,25 @@ extension PRHandler {
     }
 
     func makeNewRelease(
-        version: String,
+        previousVersion: String,
+        newVersion: String,
         mergedBy: NullableUser,
         isPrerelease: Bool
     ) async throws -> Release {
-        let body = try await makeReleaseBody(mergedBy: mergedBy)
+        let body = try await makeReleaseBody(
+            mergedBy: mergedBy,
+            previousVersion: previousVersion,
+            newVersion: newVersion
+        )
         let response = try await context.githubClient.repos_create_release(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             ),
             body: .json(.init(
-                tag_name: version,
+                tag_name: newVersion,
                 target_commitish: pr.base.ref,
-                name: "\(version) - \(pr.title)",
+                name: "\(newVersion) - \(pr.title)",
                 body: body,
                 draft: false,
                 prerelease: isPrerelease,
@@ -294,7 +300,11 @@ extension PRHandler {
      - Any users who reviewed the PR (even if they requested changes or did a comments-only review without approving) should also be credited unless they are code owners. Such a credit should be less prominent than the author credit, something like a "thanks to ... for helping to review this release"
      - The release author (user who merged the PR) should always be credited in a release, even if they're a code owner. This credit should be the least prominent, maybe even just a footnote (since it will pretty much always be a owner/maintainer).
      */
-    func makeReleaseBody(mergedBy: NullableUser) async throws -> String {
+    func makeReleaseBody(
+        mergedBy: NullableUser,
+        previousVersion: String,
+        newVersion: String
+    ) async throws -> String {
         let codeOwners = try await getCodeOwners()
         let contributors = try await getExistingContributorIDs()
         let isNewContributor = isNewContributor(
@@ -302,27 +312,15 @@ extension PRHandler {
             existingContributors: contributors
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners)
-
-        let acknowledgment: String
-
-        let author = pr.user.login
-        let merger = mergedBy.login
-
-        /// If author is a code owner, skip crediting them as the author.
-        if codeOwners.contains(author) {
-            acknowledgment = "This patch was released by @\(author)."
-        } else {
-            if author == merger {
-                acknowledgment = "This patch was authored and released by @\(author)."
-            } else {
-                acknowledgment = "This patch was authored by @\(author) and released by @\(merger)."
-            }
-        }
+        let isCodeOwner = codeOwners.contains(pr.user.login) ||
+        (pr.user.name.map { codeOwners.contains($0) } ?? false)
 
         return """
-        ###### _\(acknowledgment)_
-
-        "\(pr.body ?? "Pull Request:") \(pr.html_url)"
+        \(makeMergerMarkdown(mergedBy: mergedBy))
+        \(makePRMarkdown(isCodeOwner: isCodeOwner))
+        \(makeContributorMarkdown(isNewContributor: isNewContributor))
+        \(makeReviewersMarkdown(reviewers: reviewers))
+        \(makeChangeLogMarkdown(previousVersion: previousVersion, newVersion: newVersion))
         """
     }
 
