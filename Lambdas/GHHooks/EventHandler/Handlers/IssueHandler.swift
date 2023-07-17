@@ -53,7 +53,7 @@ struct IssueHandler {
         let body = issue.body.map { body -> String in
             let formatted = body.formatForDiscord(
                 maxLength: 256,
-                trailingParagraphMinLength: 96
+                trailingParagraphMinLength: 128
             )
             return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
