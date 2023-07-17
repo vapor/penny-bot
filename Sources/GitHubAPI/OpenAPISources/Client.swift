@@ -770,6 +770,83 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List review comments on a pull request
+    ///
+    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
+    public func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
+        async throws -> Operations.pulls_list_review_comments.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.pulls_list_review_comments.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/pulls/{}/comments",
+                    parameters: [input.path.owner, input.path.repo, input.path.pull_number]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "sort",
+                    value: input.query.sort
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "direction",
+                    value: input.query.direction
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "since",
+                    value: input.query.since
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.pulls_list_review_comments.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.pulls_list_review_comments.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.pull_request_review_comment].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).

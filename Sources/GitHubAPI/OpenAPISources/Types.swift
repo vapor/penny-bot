@@ -82,6 +82,14 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
     func pulls_list(_ input: Operations.pulls_list.Input) async throws
         -> Operations.pulls_list.Output
+    /// List review comments on a pull request
+    ///
+    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
+    func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
+        async throws -> Operations.pulls_list_review_comments.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -10965,6 +10973,385 @@ public enum Components {
                 case _default = "default"
             }
         }
+        /// Pull Request Review Comments are comments on a portion of the Pull Request's diff.
+        ///
+        /// - Remark: Generated from `#/components/schemas/pull-request-review-comment`.
+        public struct pull_request_review_comment: Codable, Equatable, Hashable, Sendable {
+            /// URL for the pull request review comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/url`.
+            public var url: Swift.String
+            /// The ID of the pull request review to which the comment belongs.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/pull_request_review_id`.
+            public var pull_request_review_id: Swift.Int
+            /// The ID of the pull request review comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/id`.
+            public var id: Swift.Int
+            /// The node ID of the pull request review comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/node_id`.
+            public var node_id: Swift.String
+            /// The diff of the line that the comment refers to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/diff_hunk`.
+            public var diff_hunk: Swift.String
+            /// The relative path of the file to which the comment applies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/path`.
+            public var path: Swift.String
+            /// The line index in the diff to which the comment applies. This field is deprecated; use `line` instead.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/position`.
+            public var position: Swift.Int?
+            /// The index of the original line in the diff to which the comment applies. This field is deprecated; use `original_line` instead.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_position`.
+            public var original_position: Swift.Int?
+            /// The SHA of the commit to which the comment applies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/commit_id`.
+            public var commit_id: Swift.String
+            /// The SHA of the original commit to which the comment applies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_commit_id`.
+            public var original_commit_id: Swift.String
+            /// The comment ID to reply to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/in_reply_to_id`.
+            public var in_reply_to_id: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/user`.
+            public var user: Components.Schemas.simple_user
+            /// The text of the comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body`.
+            public var body: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/updated_at`.
+            public var updated_at: Foundation.Date
+            /// HTML URL for the pull request review comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/html_url`.
+            public var html_url: Swift.String
+            /// URL for the pull request that the review comment belongs to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/pull_request_url`.
+            public var pull_request_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links`.
+            public struct _linksPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
+                public struct _selfPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self/href`.
+                    public var href: Swift.String
+                    /// Creates a new `_selfPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
+                public var _self:
+                    Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
+                public struct htmlPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html/href`.
+                    public var href: Swift.String
+                    /// Creates a new `htmlPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
+                public var html:
+                    Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
+                public struct pull_requestPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request/href`.
+                    public var href: Swift.String
+                    /// Creates a new `pull_requestPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
+                public var pull_request:
+                    Components.Schemas.pull_request_review_comment._linksPayload.pull_requestPayload
+                /// Creates a new `_linksPayload`.
+                ///
+                /// - Parameters:
+                ///   - _self:
+                ///   - html:
+                ///   - pull_request:
+                public init(
+                    _self: Components.Schemas.pull_request_review_comment._linksPayload
+                        ._selfPayload,
+                    html: Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload,
+                    pull_request: Components.Schemas.pull_request_review_comment._linksPayload
+                        .pull_requestPayload
+                ) {
+                    self._self = _self
+                    self.html = html
+                    self.pull_request = pull_request
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case _self = "self"
+                    case html
+                    case pull_request
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links`.
+            public var _links: Components.Schemas.pull_request_review_comment._linksPayload
+            /// The first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_line`.
+            public var start_line: Swift.Int?
+            /// The first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_start_line`.
+            public var original_start_line: Swift.Int?
+            /// The side of the first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
+            @frozen
+            public enum start_sidePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case LEFT
+                case RIGHT
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "LEFT": self = .LEFT
+                    case "RIGHT": self = .RIGHT
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .LEFT: return "LEFT"
+                    case .RIGHT: return "RIGHT"
+                    }
+                }
+                public static var allCases: [start_sidePayload] { [.LEFT, .RIGHT] }
+            }
+            /// The side of the first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
+            public var start_side: Components.Schemas.pull_request_review_comment.start_sidePayload?
+            /// The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/line`.
+            public var line: Swift.Int?
+            /// The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_line`.
+            public var original_line: Swift.Int?
+            /// The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/side`.
+            @frozen
+            public enum sidePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case LEFT
+                case RIGHT
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "LEFT": self = .LEFT
+                    case "RIGHT": self = .RIGHT
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .LEFT: return "LEFT"
+                    case .RIGHT: return "RIGHT"
+                    }
+                }
+                public static var allCases: [sidePayload] { [.LEFT, .RIGHT] }
+            }
+            /// The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/side`.
+            public var side: Components.Schemas.pull_request_review_comment.sidePayload?
+            /// The level at which the comment is targeted, can be a diff line or a file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
+            @frozen
+            public enum subject_typePayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case line
+                case file
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "line": self = .line
+                    case "file": self = .file
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .line: return "line"
+                    case .file: return "file"
+                    }
+                }
+                public static var allCases: [subject_typePayload] { [.line, .file] }
+            }
+            /// The level at which the comment is targeted, can be a diff line or a file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
+            public var subject_type:
+                Components.Schemas.pull_request_review_comment.subject_typePayload?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/reactions`.
+            public var reactions: Components.Schemas.reaction_rollup?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body_html`.
+            public var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body_text`.
+            public var body_text: Swift.String?
+            /// Creates a new `pull_request_review_comment`.
+            ///
+            /// - Parameters:
+            ///   - url: URL for the pull request review comment
+            ///   - pull_request_review_id: The ID of the pull request review to which the comment belongs.
+            ///   - id: The ID of the pull request review comment.
+            ///   - node_id: The node ID of the pull request review comment.
+            ///   - diff_hunk: The diff of the line that the comment refers to.
+            ///   - path: The relative path of the file to which the comment applies.
+            ///   - position: The line index in the diff to which the comment applies. This field is deprecated; use `line` instead.
+            ///   - original_position: The index of the original line in the diff to which the comment applies. This field is deprecated; use `original_line` instead.
+            ///   - commit_id: The SHA of the commit to which the comment applies.
+            ///   - original_commit_id: The SHA of the original commit to which the comment applies.
+            ///   - in_reply_to_id: The comment ID to reply to.
+            ///   - user:
+            ///   - body: The text of the comment.
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - html_url: HTML URL for the pull request review comment.
+            ///   - pull_request_url: URL for the pull request that the review comment belongs to.
+            ///   - author_association:
+            ///   - _links:
+            ///   - start_line: The first line of the range for a multi-line comment.
+            ///   - original_start_line: The first line of the range for a multi-line comment.
+            ///   - start_side: The side of the first line of the range for a multi-line comment.
+            ///   - line: The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///   - original_line: The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///   - side: The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
+            ///   - subject_type: The level at which the comment is targeted, can be a diff line or a file.
+            ///   - reactions:
+            ///   - body_html:
+            ///   - body_text:
+            public init(
+                url: Swift.String,
+                pull_request_review_id: Swift.Int,
+                id: Swift.Int,
+                node_id: Swift.String,
+                diff_hunk: Swift.String,
+                path: Swift.String,
+                position: Swift.Int? = nil,
+                original_position: Swift.Int? = nil,
+                commit_id: Swift.String,
+                original_commit_id: Swift.String,
+                in_reply_to_id: Swift.Int? = nil,
+                user: Components.Schemas.simple_user,
+                body: Swift.String,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                html_url: Swift.String,
+                pull_request_url: Swift.String,
+                author_association: Components.Schemas.author_association,
+                _links: Components.Schemas.pull_request_review_comment._linksPayload,
+                start_line: Swift.Int? = nil,
+                original_start_line: Swift.Int? = nil,
+                start_side: Components.Schemas.pull_request_review_comment.start_sidePayload? = nil,
+                line: Swift.Int? = nil,
+                original_line: Swift.Int? = nil,
+                side: Components.Schemas.pull_request_review_comment.sidePayload? = nil,
+                subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload? =
+                    nil,
+                reactions: Components.Schemas.reaction_rollup? = nil,
+                body_html: Swift.String? = nil,
+                body_text: Swift.String? = nil
+            ) {
+                self.url = url
+                self.pull_request_review_id = pull_request_review_id
+                self.id = id
+                self.node_id = node_id
+                self.diff_hunk = diff_hunk
+                self.path = path
+                self.position = position
+                self.original_position = original_position
+                self.commit_id = commit_id
+                self.original_commit_id = original_commit_id
+                self.in_reply_to_id = in_reply_to_id
+                self.user = user
+                self.body = body
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.html_url = html_url
+                self.pull_request_url = pull_request_url
+                self.author_association = author_association
+                self._links = _links
+                self.start_line = start_line
+                self.original_start_line = original_start_line
+                self.start_side = start_side
+                self.line = line
+                self.original_line = original_line
+                self.side = side
+                self.subject_type = subject_type
+                self.reactions = reactions
+                self.body_html = body_html
+                self.body_text = body_text
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case pull_request_review_id
+                case id
+                case node_id
+                case diff_hunk
+                case path
+                case position
+                case original_position
+                case commit_id
+                case original_commit_id
+                case in_reply_to_id
+                case user
+                case body
+                case created_at
+                case updated_at
+                case html_url
+                case pull_request_url
+                case author_association
+                case _links
+                case start_line
+                case original_start_line
+                case start_side
+                case line
+                case original_line
+                case side
+                case subject_type
+                case reactions
+                case body_html
+                case body_text
+            }
+        }
         /// Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
         ///
         /// - Remark: Generated from `#/components/schemas/pull-request`.
@@ -16464,6 +16851,193 @@ public enum Operations {
             ///
             /// HTTP response code: `422 unprocessableEntity`.
             case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List review comments on a pull request
+    ///
+    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
+    public enum pulls_list_review_comments {
+        public static let id: String = "pulls/list-review-comments"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var pull_number: Components.Parameters.pull_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - pull_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    pull_number: Components.Parameters.pull_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.pull_number = pull_number
+                }
+            }
+            public var path: Operations.pulls_list_review_comments.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/components/parameters/sort`.
+                @frozen
+                public enum sort: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                    _AutoLosslessStringConvertible, CaseIterable
+                {
+                    case created
+                    case updated
+                    /// Parsed a raw value that was not defined in the OpenAPI document.
+                    case undocumented(String)
+                    public init?(rawValue: String) {
+                        switch rawValue {
+                        case "created": self = .created
+                        case "updated": self = .updated
+                        default: self = .undocumented(rawValue)
+                        }
+                    }
+                    public var rawValue: String {
+                        switch self {
+                        case let .undocumented(string): return string
+                        case .created: return "created"
+                        case .updated: return "updated"
+                        }
+                    }
+                    public static var allCases: [sort] { [.created, .updated] }
+                }
+                public var sort: Components.Parameters.sort?
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
+                @frozen
+                public enum directionPayload: RawRepresentable, Codable, Equatable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                {
+                    case asc
+                    case desc
+                    /// Parsed a raw value that was not defined in the OpenAPI document.
+                    case undocumented(String)
+                    public init?(rawValue: String) {
+                        switch rawValue {
+                        case "asc": self = .asc
+                        case "desc": self = .desc
+                        default: self = .undocumented(rawValue)
+                        }
+                    }
+                    public var rawValue: String {
+                        switch self {
+                        case let .undocumented(string): return string
+                        case .asc: return "asc"
+                        case .desc: return "desc"
+                        }
+                    }
+                    public static var allCases: [directionPayload] { [.asc, .desc] }
+                }
+                public var direction:
+                    Operations.pulls_list_review_comments.Input.Query.directionPayload?
+                public var since: Components.Parameters.since?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - sort:
+                ///   - direction:
+                ///   - since:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    sort: Components.Parameters.sort? = nil,
+                    direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? =
+                        nil,
+                    since: Components.Parameters.since? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.sort = sort
+                    self.direction = direction
+                    self.since = since
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.pulls_list_review_comments.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.pulls_list_review_comments.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.pulls_list_review_comments.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.pulls_list_review_comments.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.pulls_list_review_comments.Input.Path,
+                query: Operations.pulls_list_review_comments.Input.Query = .init(),
+                headers: Operations.pulls_list_review_comments.Input.Headers = .init(),
+                cookies: Operations.pulls_list_review_comments.Input.Cookies = .init(),
+                body: Operations.pulls_list_review_comments.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.pulls_list_review_comments.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.pull_request_review_comment])
+                }
+                /// Received HTTP response body
+                public var body: Operations.pulls_list_review_comments.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.pulls_list_review_comments.Output.Ok.Headers,
+                    body: Operations.pulls_list_review_comments.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.pulls_list_review_comments.Output.Ok)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

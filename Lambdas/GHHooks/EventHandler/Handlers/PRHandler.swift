@@ -294,11 +294,14 @@ extension PRHandler {
      - Any users who reviewed the PR (even if they requested changes or did a comments-only review without approving) should also be credited unless they are code owners. Such a credit should be less prominent than the author credit, something like a "thanks to ... for helping to review this release"
      - The release author (user who merged the PR) should always be credited in a release, even if they're a code owner. This credit should be the least prominent, maybe even just a footnote (since it will pretty much always be a owner/maintainer).
      */
-    func makeReleaseBody(
-        mergedBy: Components.Schemas.nullable_simple_user
-    ) async throws -> String {
+    func makeReleaseBody(mergedBy: NullableUser) async throws -> String {
         let codeOwners = try await getCodeOwners()
-        let isNewContributor = try await isNewContributor(codeOwners: codeOwners)
+        let contributors = try await getExistingContributorIDs()
+        let isNewContributor = isNewContributor(
+            codeOwners: codeOwners,
+            existingContributors: contributors
+        )
+        let reviewers = try await getReviewersToCredit(codeOwners: codeOwners)
 
         let acknowledgment: String
 
@@ -323,14 +326,46 @@ extension PRHandler {
         """
     }
 
-    func isNewContributor(codeOwners: Set<String>) async throws -> Bool {
+    func getReviewersToCredit(codeOwners: Set<String>) async throws -> [User] {
+        let reviewComments = try await getReviewComments()
+        let reviewers = reviewComments.map(\.user).filter { user in
+            !codeOwners.contains(user.login) &&
+            !(user.name.map { codeOwners.contains($0) } ?? false)
+        }
+        let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
+        let withCounts = groupedReviewers.map { (count: $0.value.count, user: $0.value[0]) }
+        let sorted = withCounts.sorted(by: { $0.count > $1.count }).map(\.user)
+        return sorted
+    }
+
+    func isNewContributor(codeOwners: Set<String>, existingContributors: Set<Int>) -> Bool {
         if pr.author_association == .OWNER ||
             codeOwners.contains(pr.user.login) ||
             (pr.user.name.map { codeOwners.contains($0) } ?? false) {
             return false
         }
-        let contributors = try await getExistingContributorIDs()
-        return !contributors.contains(pr.user.id)
+        return !existingContributors.contains(pr.user.id)
+    }
+
+    func getReviewComments() async throws -> [PullRequestReviewComment] {
+        let response = try await context.githubClient.pulls_list_review_comments(
+            .init(path: .init(
+                owner: repo.owner.login,
+                repo: repo.name,
+                pull_number: number
+            ))
+        )
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body
+        else {
+            context.logger.warning("Could not find review comments", metadata: [
+                "response": "\(response)"
+            ])
+            return []
+        }
+
+        return json
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
@@ -362,13 +397,21 @@ extension PRHandler {
         let url = "https://raw.githubusercontent.com/\(fullName)/main/.github/CODEOWNERS"
         let request = HTTPClientRequest(url: url)
         let response = try await context.httpClient.execute(request, timeout: .seconds(3))
+        let body = try await response.body.collect(upTo: 1 << 16)
         guard response.status == .ok else {
-            context.logger.debug("Can't find code owners of repo")
+            context.logger.warning("Can't find code owners of repo", metadata: [
+                "responseBody": "\(body)",
+                "response": "\(response)"
+            ])
             return []
         }
-        let body = try await response.body.collect(upTo: 1 << 16)
         let text = String(buffer: body)
-        return parseCodeOwners(text: text)
+        let parsed = parseCodeOwners(text: text)
+        context.logger.debug("Parsed code owners", metadata: [
+            "text": .string(text),
+            "parsed": .stringConvertible(parsed)
+        ])
+        return parsed
     }
 
     func parseCodeOwners(text: String) -> Set<String> {
