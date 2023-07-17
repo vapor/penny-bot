@@ -59,12 +59,19 @@ struct GHOAuthHandler: LambdaHandler {
             return .init(statusCode: .badRequest, body: "Error getting user")
         }
 
+        do {
+            let jwt = try await verifyState(state: String(event.queryStringParameters?["state"] ?? ""))
+        } catch {
+            logger.error("Error verifying state: \(error)")
+            return .init(statusCode: .badRequest, body: "Error verifying state")
+        }
+
         // TODO: Link id to Discord user
 
         return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
     }
 
-    func verifyState(state: String) async throws {
+    func verifyState(state: String) async throws -> GHOAuthPayload {
         logger.trace("Verifying state parameter...")
 
         logger.trace("Retrieving JWT signer secrets")
@@ -78,19 +85,13 @@ struct GHOAuthHandler: LambdaHandler {
             throw OAuthLambdaError.invalidPublicKey
         }
 
-        let privateKeyString = try await secretsRetriever.getSecret(arnEnvVarKey: "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
-        guard let privateKey = try? ECDSAKey.private(pem: privateKeyString.value) else {
-            throw OAuthLambdaError.invalidPublicKey
-        }
+        let signer = JWTSigner.es256(key: publicKey)
 
-        let signers = JWTSigners()
-        signers.use(.es256(key: privateKey))
-        signers.use(.es256(key: publicKey))
-
-        guard (try? signers.verify(state, as: GHOAuthPayload.self)) != nil else {
-            logger.trace("State parameter verification failed")
+        guard let payload = try? signer.verify(state, as: GHOAuthPayload.self) else {
             throw OAuthLambdaError.invalidState
         }
+
+        return payload
     }
 
     func getAccessToken(code: String) async throws -> String {

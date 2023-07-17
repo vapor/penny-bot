@@ -20,6 +20,5 @@ enum OAuthLambdaError: Error, CustomStringConvertible {
         case .invalidState:
             return "Invalid state parameter"
         }
-
     }
 }

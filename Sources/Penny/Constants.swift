@@ -12,7 +12,6 @@ enum Constants {
     static var loggingWebhookUrl: String! = env("LOGGING_WEBHOOK_URL")
     static var apiBaseUrl: String! = env("API_BASE_URL")
     static var ghOAuthClientId: String! = env("GH_OAUTH_CLIENT_ID")
-    static var accountLinkOAuthPubKey: String! = env("ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
     static var accountLinkOAuthPrivKey: String! = env("ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY")
 
     enum ServerEmojis {

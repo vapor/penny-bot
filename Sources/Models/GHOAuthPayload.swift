@@ -7,12 +7,12 @@ import JWTKit
 /// and that the request is not forged.
 public struct GHOAuthPayload: JWTPayload {
     public let discordID: UserSnowflake
-    public let interactionID: InteractionSnowflake
+    public let interactionToken: String
     public let expiration: ExpirationClaim
 
-    public init(discordID: UserSnowflake, interactionID: InteractionSnowflake) {
+    public init(discordID: UserSnowflake, interactionToken: String) {
         self.discordID = discordID
-        self.interactionID = interactionID
+        self.interactionToken = interactionToken
         self.expiration = .init(value: Date().addingTimeInterval(10 * 60)) // 10 minutes
     }
 

@@ -30,37 +30,27 @@ struct InteractionHandler {
     
     typealias InteractionOption = Interaction.ApplicationCommand.Option
 
-    private let ghOAuthJWTsigners: JWTSigners
     
     init(event: Interaction) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
-        self.ghOAuthJWTsigners = .init()
-        setupJWTSigners()
     }
 
-    private func setupJWTSigners() {
-        guard let publicKeyString = Constants.accountLinkOAuthPubKey else {
-            fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY env var")
-        }
-        guard let data = Data(base64Encoded: publicKeyString) else {
-            fatalError("JWT signer private key is not base64 encoded")
-        }
-        guard let publicKey = try? ECDSAKey.public(pem: data) else {
-            fatalError("JWT signer private key is not a valid PEM string")
-        }
-
-        ghOAuthJWTsigners.use(.es256(key: publicKey))
+    private func makeJWTSigners() -> JWTSigner? {
+        let signer: JWTSigner
 
         guard let privateKeyString = Constants.accountLinkOAuthPrivKey else {
             fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY env var")
         }
 
         guard let privateKey = try? ECDSAKey.private(pem: privateKeyString) else {
-            fatalError("JWT signer private key is not a valid PEM string")
+            logger.warning("JWT signer private key is not a valid PEM string")
+            return nil
         }
 
-        ghOAuthJWTsigners.use(.es256(key: privateKey))
+        signer = .es256(key: privateKey)
+
+        return signer
     }
     
     func handle() async {
@@ -533,7 +523,11 @@ private extension InteractionHandler {
                 discordID: discordID, 
                 interactionID: event.id
             )
-            let state = try ghOAuthJWTsigners.sign(jwt)
+            guard let signer = makeJWTSigners() else {
+                logger.error("Failed to make JWT signer")
+                return oops
+            }
+            let state = try signer.sign(jwt)
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return Payloads.EditWebhookMessage(
                 embeds: [.init(

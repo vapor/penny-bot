@@ -32,10 +32,6 @@
                 {
                     "name": "GH_OAUTH_CLIENT_ID",
                     "value": "5c544fca6b43f1bf31a3"
-                },
-                {
-                    "name": "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY",
-                    "value": "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg=="
                 }
             ],
             "secrets": [
