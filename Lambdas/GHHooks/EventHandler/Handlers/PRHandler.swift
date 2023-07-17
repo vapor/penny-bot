@@ -326,6 +326,49 @@ extension PRHandler {
         """
     }
 
+    func makeMergerMarkdown(mergedBy: NullableUser) -> String {
+        "###### _This patch was released by @\(mergedBy.name ?? mergedBy.login)._"
+    }
+
+    func makePRMarkdown(isCodeOwner: Bool) -> String {
+        if isCodeOwner { return "" }
+        return """
+        ## What's Changed
+        "\(pr.title) by @\(pr.user.name ?? pr.user.login) in #\(number)"
+
+        \(pr.body.map { ">>> \($0)" } ?? "")
+
+
+        """
+    }
+
+    func makeContributorMarkdown(isNewContributor: Bool) -> String {
+        guard isNewContributor else { return "" }
+        return """
+        ## New Contributor
+        - @\(pr.user.name ?? pr.user.login) made their first contribution in #\(number)
+        """
+    }
+
+    func makeReviewersMarkdown(reviewers: [User]) -> String {
+        if reviewers.isEmpty { return "" }
+        let reviewersText = reviewers.map { user in
+            "- @\(user.name ?? user.login)"
+        }
+        return """
+        ## Reviewers
+        Thanks to the reviewers:
+        \(reviewersText)
+        """
+    }
+
+    func makeChangeLogMarkdown(previousVersion: String, newVersion: String) -> String {
+        let fullName = repo.full_name.addingPercentEncoding(
+            withAllowedCharacters: .urlPathAllowed
+        ) ?? repo.full_name
+        return "https://github.com/\(fullName)/compare/\(previousVersion)...\(newVersion)"
+    }
+
     func getReviewersToCredit(codeOwners: Set<String>) async throws -> [User] {
         let reviewComments = try await getReviewComments()
         let reviewers = reviewComments.map(\.user).filter { user in
