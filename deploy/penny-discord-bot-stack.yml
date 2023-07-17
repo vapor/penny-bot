@@ -256,6 +256,7 @@ Resources:
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-oauth-client-secret-hQSGeh
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:release-bot/github-access-token-pJOxYU
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
+                  - !Sub arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/account-linking-oauth-flow-priv-key-49J2PL
                   - arn:aws:s3:::penny-auto-pings-lambda/*
                   - arn:aws:s3:::penny-faqs-lambda/*
           PolicyName: lambda
@@ -473,6 +474,8 @@ Resources:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
           GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-oauth-client-secret-hQSGeh
           GH_CLIENT_ID: 5c544fca6b43f1bf31a3
+          ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+          ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/account-linking-oauth-flow-priv-key-49J2PL
           LOG_LEVEL: trace # TODO: change to info
       FunctionName: !Sub ${GHOAuthFilename}-lambda
       Handler: handler

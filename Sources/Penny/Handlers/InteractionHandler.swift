@@ -1,6 +1,8 @@
 import DiscordBM
 import Logging
 import Models
+import JWTKit
+import Foundation
 
 private enum Configuration {
     static let faqsNameMaxLength = 100
@@ -27,10 +29,38 @@ struct InteractionHandler {
     private let oops = "Oopsie Woopsie... Something went wrong :("
     
     typealias InteractionOption = Interaction.ApplicationCommand.Option
+
+    private let ghOAuthJWTsigners: JWTSigners
     
     init(event: Interaction) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
+        self.ghOAuthJWTsigners = .init()
+        setupJWTSigners()
+    }
+
+    private func setupJWTSigners() {
+        guard let publicKeyString = Constants.accountLinkOAuthPubKey else {
+            fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY env var")
+        }
+        guard let data = Data(base64Encoded: publicKeyString) else {
+            fatalError("JWT signer private key is not base64 encoded")
+        }
+        guard let publicKey = try? ECDSAKey.public(pem: data) else {
+            fatalError("JWT signer private key is not a valid PEM string")
+        }
+
+        ghOAuthJWTsigners.use(.es256(key: publicKey))
+
+        guard let privateKeyString = Constants.accountLinkOAuthPrivKey else {
+            fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY env var")
+        }
+
+        guard let privateKey = try? ECDSAKey.private(pem: privateKeyString) else {
+            fatalError("JWT signer private key is not a valid PEM string")
+        }
+
+        ghOAuthJWTsigners.use(.es256(key: privateKey))
     }
     
     func handle() async {
@@ -487,7 +517,7 @@ private extension InteractionHandler {
     }
     
     func handleGitHubCommand(options: [InteractionOption]) throws -> (any Response)? {
-        let discordId = try (event.member?.user).requireValue().id
+        let discordID = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
         let subcommand = try GitHubSubCommand(rawValue: first.name).requireValue()
         let githubUsername = first.options?.first?.value
@@ -499,7 +529,12 @@ private extension InteractionHandler {
         switch subcommand {
         case GitHubSubCommand.link:
             let clientID = Constants.ghOAuthClientId!
-            let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)"
+            let jwt = GHOAuthPayload(
+                discordID: discordID, 
+                interactionID: event.id
+            )
+            let state = try ghOAuthJWTsigners.sign(jwt)
+            let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return Payloads.EditWebhookMessage(
                 embeds: [.init(
                     description: "Click the link below to authorize Vapor",
@@ -510,7 +545,7 @@ private extension InteractionHandler {
                 ]]
             )
         case GitHubSubCommand.unlink:
-            return "This command is still a WIP. Unlinking discordId: \(discordId) from GitHub account: \(String(describing: githubUsername))"
+            return "This command is still a WIP. Unlinking discordId: \(discordID) from GitHub account: \(String(describing: githubUsername))"
         case GitHubSubCommand.help:
             return "This command is still a WIP."
         }

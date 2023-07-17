@@ -6,6 +6,7 @@ import Foundation
 import SotoSecretsManager
 import GHHooksLambda
 import Models
+import JWTKit
 
 @main
 struct GHOAuthHandler: LambdaHandler {
@@ -63,10 +64,37 @@ struct GHOAuthHandler: LambdaHandler {
         return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
     }
 
-    // write two functions to abstract the two requests from the above method
+    func verifyState(state: String) async throws {
+        logger.trace("Verifying state parameter...")
+
+        logger.trace("Retrieving JWT signer secrets")
+        guard let publicKeyString = ProcessInfo.processInfo.environment["ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY"] else {
+            throw OAuthLambdaError.envVarNotFound(name: "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
+        }
+        guard let publicKeyData = Data(base64Encoded: publicKeyString) else {
+            throw OAuthLambdaError.invalidPublicKey
+        }
+        guard let publicKey = try? ECDSAKey.public(pem: publicKeyData) else {
+            throw OAuthLambdaError.invalidPublicKey
+        }
+
+        let privateKeyString = try await secretsRetriever.getSecret(arnEnvVarKey: "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
+        guard let privateKey = try? ECDSAKey.private(pem: privateKeyString.value) else {
+            throw OAuthLambdaError.invalidPublicKey
+        }
+
+        let signers = JWTSigners()
+        signers.use(.es256(key: privateKey))
+        signers.use(.es256(key: publicKey))
+
+        guard (try? signers.verify(state, as: GHOAuthPayload.self)) != nil else {
+            logger.trace("State parameter verification failed")
+            throw OAuthLambdaError.invalidState
+        }
+    }
 
     func getAccessToken(code: String) async throws -> String {
-        logger.trace("Retrieving secrets")
+        logger.trace("Retrieving GitHub client secrets")
 
         let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
         guard let clientID = ProcessInfo.processInfo.environment["GH_CLIENT_ID"] else {
@@ -84,7 +112,7 @@ struct GHOAuthHandler: LambdaHandler {
         ]
         let requestBody = try jsonEncoder.encode([
             "client_id": clientID,
-            "client_secret": clientSecret,
+            "client_secret": clientSecret.value,
             "code": code
         ])
         request.body = .bytes(requestBody)
