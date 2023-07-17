@@ -1,7 +1,7 @@
 import Markdown
 
 extension String {
-    func formatForDiscord(maxLength: Int, trailingParagraphMinLength: Int) -> String {
+    func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLBlocksRemover()
         let markup1 = htmlRemover.visit(document1)

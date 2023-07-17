@@ -145,7 +145,7 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
             XCTAssertEqual(formatted, scalars_206)
         }
 
@@ -163,7 +163,7 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
             XCTAssertEqual(formatted, scalars_190 + """
 
 
@@ -185,7 +185,7 @@ class GHHooksTests: XCTestCase {
             on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatForDiscord(maxLength: 256, trailingParagraphMinLength: 64)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
             XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token ...")
         }
     }
@@ -220,16 +220,39 @@ class GHHooksTests: XCTestCase {
         """
         let data = TestData.for(ghEventKey: "pr1")!
         let event = try decoder.decode(GHEvent.self, from: data)
-        let handler = try PRHandler(
-            context: makeContext(
-                eventName: .pull_request,
-                event: event
-            )
+        let context = try makeContext(
+            eventName: .pull_request,
+            event: event
+        )
+        let handler = ReleaseHandler(
+            context: context,
+            pr: context.event.pull_request!,
+            number: context.event.number!
         )
         XCTAssertEqual(
             handler.parseCodeOwners(text: text).sorted(),
             ["@doctocat", "@global-owner1", "@global-owner2", "@js-owner", "@octo-org/octocats", "@octocat", "docs@example.com"]
         )
+    }
+
+    func testMakeReleaseBody() async throws {
+        let data = TestData.for(ghEventKey: "pr4")!
+        let event = try decoder.decode(GHEvent.self, from: data)
+        let context = try makeContext(
+            eventName: .pull_request,
+            event: event
+        )
+        let handler = ReleaseHandler(
+            context: context,
+            pr: context.event.pull_request!,
+            number: context.event.number!
+        )
+        let body = try await handler.makeReleaseBody(
+            mergedBy: context.event.pull_request!.merged_by!,
+            previousVersion: "v2.3.1",
+            newVersion: "v2.4.5"
+        )
+        XCTAssertEqual(body, "")
     }
 
     func testEventHandler() async throws {

@@ -221,5 +221,7 @@
             "body": "###### _This patch was authored by @grahamburgsma and released by @0xTim._\n\nAs `EncodingError` and `DecodingError` both conform to `LocalizedError`, error reporting uses their `localizedDescription` which is just a generic error message.\r\n\r\nSo this changes the error reporting from:\r\n> The operation could not be completed. The data isn’t in the correct format.\r\n\r\nTo a description much more useful (for example):\r\n> invalidValue(inf, Swift.EncodingError.Context(codingPath: [...], debugDescription: \"Unable to encode Double.inf directly in JSON.\", underlyingError: nil))",
             "mentions_count": 2
         }
-    ]
+    ],
+    "repos/list-contributors": [],
+    "pulls/list-review-comments": []
 }
