@@ -272,6 +272,7 @@ struct ReleaseHandler {
         return """
         ## New Contributor
         - @\(pr.user.name ?? pr.user.login) made their first contribution 🎉
+        
         """
     }
 
@@ -279,11 +280,12 @@ struct ReleaseHandler {
         if reviewers.isEmpty { return "" }
         let reviewersText = reviewers.map { user in
             "- @\(user.name ?? user.login)"
-        }
+        }.joined(separator: "\n")
         return """
         ## Reviewers
         Thanks to the reviewers:
         \(reviewersText)
+
         """
     }
 

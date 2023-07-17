@@ -223,5 +223,2048 @@
         }
     ],
     "repos/list-contributors": [],
-    "pulls/list-review-comments": []
+    "pulls/list-review-comments": [
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170039770",
+            "pull_request_review_id": 1390123809,
+            "id": 1170039770,
+            "node_id": "PRRC_kwDOAvmRT85FvWPa",
+            "diff_hunk": "@@ -210,7 +210,7 @@ public final class BCryptDigest {\n     }\n }\n \n-public enum BcryptError: Swift.Error, CustomStringConvertible, LocalizedError {\n+public enum BcryptError: Swift.Error, CustomStringConvertible, LocalizedError, Sendable {",
+            "path": "Sources/Vapor/Bcrypt/Bcrypt.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "36655b5f2cd6356f0edb4d114b84e2f245753675",
+            "user": {
+                "login": "dnadoba",
+                "id": 5688874,
+                "node_id": "MDQ6VXNlcjU2ODg4NzQ=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/5688874?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/dnadoba",
+                "html_url": "https://github.com/dnadoba",
+                "followers_url": "https://api.github.com/users/dnadoba/followers",
+                "following_url": "https://api.github.com/users/dnadoba/following{/other_user}",
+                "gists_url": "https://api.github.com/users/dnadoba/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/dnadoba/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/dnadoba/subscriptions",
+                "organizations_url": "https://api.github.com/users/dnadoba/orgs",
+                "repos_url": "https://api.github.com/users/dnadoba/repos",
+                "events_url": "https://api.github.com/users/dnadoba/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/dnadoba/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Swift.Error` already requires `Sendable` conformance. No need to the conformance again. This is applies to all custom error types in this PR. ",
+            "created_at": "2023-04-18T13:26:46Z",
+            "updated_at": "2023-04-18T13:48:49Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1170039770",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170039770"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1170039770"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170039770/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": null,
+            "original_line": 213,
+            "side": "RIGHT",
+            "original_position": 14,
+            "position": null,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170048765",
+            "pull_request_review_id": 1390123809,
+            "id": 1170048765,
+            "node_id": "PRRC_kwDOAvmRT85FvYb9",
+            "diff_hunk": "@@ -56,22 +58,33 @@ extension Request.Authentication {\n         return self.get(A.self) != nil\n     }\n \n-    private final class Cache {\n+    // Internal `storage` is behind a lock so this can be unchecked Sendable\n+    private final class Cache: @unchecked Sendable {\n         private var storage: [ObjectIdentifier: Any]\n-\n+        private let storageLock: NIOLock",
+            "path": "Sources/Vapor/Authentication/AuthenticationCache.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "36655b5f2cd6356f0edb4d114b84e2f245753675",
+            "user": {
+                "login": "dnadoba",
+                "id": 5688874,
+                "node_id": "MDQ6VXNlcjU2ODg4NzQ=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/5688874?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/dnadoba",
+                "html_url": "https://github.com/dnadoba",
+                "followers_url": "https://api.github.com/users/dnadoba/followers",
+                "following_url": "https://api.github.com/users/dnadoba/following{/other_user}",
+                "gists_url": "https://api.github.com/users/dnadoba/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/dnadoba/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/dnadoba/subscriptions",
+                "organizations_url": "https://api.github.com/users/dnadoba/orgs",
+                "repos_url": "https://api.github.com/users/dnadoba/repos",
+                "events_url": "https://api.github.com/users/dnadoba/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/dnadoba/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Use `NIOLockedValueBox` instead of `storageLock` and separate `storage`. The compiler can then infere the `Sendable` conformance and you can drop `@unchecked`. This will also allow you to make this a struct instead of a class as `NIOLockedValueBox` is already a reference type. Document that the struct has reference semantics now.",
+            "created_at": "2023-04-18T13:33:04Z",
+            "updated_at": "2023-04-18T13:48:49Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1170048765",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170048765"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1170048765"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170048765/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": 62,
+            "original_start_line": 62,
+            "start_side": "RIGHT",
+            "line": 64,
+            "original_line": 64,
+            "side": "RIGHT",
+            "original_position": 24,
+            "position": 24,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170050270",
+            "pull_request_review_id": 1390123809,
+            "id": 1170050270,
+            "node_id": "PRRC_kwDOAvmRT85FvYze",
+            "diff_hunk": "@@ -180,7 +180,7 @@ public final class BCryptDigest {\n     }\n \n     /// Specific BCrypt algorithm.\n-    private enum Algorithm: String, RawRepresentable {\n+    private enum Algorithm: String, RawRepresentable, Sendable {",
+            "path": "Sources/Vapor/Bcrypt/Bcrypt.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "36655b5f2cd6356f0edb4d114b84e2f245753675",
+            "user": {
+                "login": "dnadoba",
+                "id": 5688874,
+                "node_id": "MDQ6VXNlcjU2ODg4NzQ=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/5688874?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/dnadoba",
+                "html_url": "https://github.com/dnadoba",
+                "followers_url": "https://api.github.com/users/dnadoba/followers",
+                "following_url": "https://api.github.com/users/dnadoba/following{/other_user}",
+                "gists_url": "https://api.github.com/users/dnadoba/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/dnadoba/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/dnadoba/subscriptions",
+                "organizations_url": "https://api.github.com/users/dnadoba/orgs",
+                "repos_url": "https://api.github.com/users/dnadoba/repos",
+                "events_url": "https://api.github.com/users/dnadoba/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/dnadoba/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Sendable` should be automatically inferred for internal and lower visibility types. If not, please fill an issue.",
+            "created_at": "2023-04-18T13:34:15Z",
+            "updated_at": "2023-04-18T13:48:49Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1170050270",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170050270"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1170050270"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1170050270/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": null,
+            "original_line": 183,
+            "side": "RIGHT",
+            "original_position": 5,
+            "position": null,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1210060841",
+            "pull_request_review_id": 1450604883,
+            "id": 1210060841,
+            "node_id": "PRRC_kwDOAvmRT85IIBAp",
+            "diff_hunk": "@@ -56,22 +58,33 @@ extension Request.Authentication {\n         return self.get(A.self) != nil\n     }\n \n-    private final class Cache {\n+    // Internal `storage` is behind a lock so this can be unchecked Sendable\n+    private final class Cache: @unchecked Sendable {\n         private var storage: [ObjectIdentifier: Any]\n-\n+        private let storageLock: NIOLock",
+            "path": "Sources/Vapor/Authentication/AuthenticationCache.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "36655b5f2cd6356f0edb4d114b84e2f245753675",
+            "user": {
+                "login": "0xTim",
+                "id": 9938337,
+                "node_id": "MDQ6VXNlcjk5MzgzMzc=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/9938337?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/0xTim",
+                "html_url": "https://github.com/0xTim",
+                "followers_url": "https://api.github.com/users/0xTim/followers",
+                "following_url": "https://api.github.com/users/0xTim/following{/other_user}",
+                "gists_url": "https://api.github.com/users/0xTim/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/0xTim/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/0xTim/subscriptions",
+                "organizations_url": "https://api.github.com/users/0xTim/orgs",
+                "repos_url": "https://api.github.com/users/0xTim/repos",
+                "events_url": "https://api.github.com/users/0xTim/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/0xTim/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "I can't use `NIOLockedValueBox` though because of the use of `Any` right? I can't guarantee that anything being inserted into the storage is `Sendable` at which point `NIOLockedValueBox` is _not_ `Sendable`",
+            "created_at": "2023-05-30T10:19:32Z",
+            "updated_at": "2023-05-30T10:19:33Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1210060841",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "MEMBER",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1210060841"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1210060841"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1210060841/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": 62,
+            "original_start_line": 62,
+            "start_side": "RIGHT",
+            "line": 64,
+            "original_line": 64,
+            "side": "RIGHT",
+            "in_reply_to_id": 1170048765,
+            "original_position": 24,
+            "position": 24,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243232659",
+            "pull_request_review_id": 1500080457,
+            "id": 1243232659,
+            "node_id": "PRRC_kwDOAvmRT85KGjmT",
+            "diff_hunk": "@@ -26,54 +61,80 @@ public final class Application {\n         }\n     }\n \n-    public var lifecycle: Lifecycle\n+    public var lifecycle: Lifecycle {\n+        get {\n+            return _lifecycle.withLockedValue { $0 }\n+        }\n+        set {\n+            _lifecycle.withLockedValue { $0 = newValue }\n+        }\n+    }\n \n-    public final class Locks {\n+    // This does not have value semantics due to the use or `NIOLockedValueBox`\n+    public struct Locks: Sendable {\n         public let main: NIOLock\n-        var storage: [ObjectIdentifier: NIOLock]\n+        let storage: NIOLockedValueBox<[ObjectIdentifier: NIOLock]>",
+            "path": "Sources/Vapor/Application.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Won't this introduce double-locking? Accessing `storage` will lock `main` and the lock contained in `NIOLockedValueBox`.\r\nI'm not sure the `NIOLockedValueBox` is necessary here.",
+            "created_at": "2023-06-27T07:01:31Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243232659",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243232659"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243232659"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243232659/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 76,
+            "original_line": 76,
+            "side": "RIGHT",
+            "original_position": 78,
+            "position": 78,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243237619",
+            "pull_request_review_id": 1500080457,
+            "id": 1243237619,
+            "node_id": "PRRC_kwDOAvmRT85KGkzz",
+            "diff_hunk": "@@ -26,54 +61,80 @@ public final class Application {\n         }\n     }\n \n-    public var lifecycle: Lifecycle\n+    public var lifecycle: Lifecycle {\n+        get {\n+            return _lifecycle.withLockedValue { $0 }\n+        }\n+        set {\n+            _lifecycle.withLockedValue { $0 = newValue }\n+        }\n+    }\n \n-    public final class Locks {\n+    // This does not have value semantics due to the use or `NIOLockedValueBox`\n+    public struct Locks: Sendable {",
+            "path": "Sources/Vapor/Application.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Changing this to a `struct` is theoretically semver-breaking:\r\n\r\n```swift\r\nfunc useClass<C: AnyObject>(_ c: C) {}\r\n\r\nuseClass(Application().locks) // now fails\r\n```\r\n\r\nCould be acceptable, though, since I don't see a reasonable use-case for such a function.",
+            "created_at": "2023-06-27T07:06:19Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243237619",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243237619"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243237619"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243237619/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 74,
+            "original_line": 74,
+            "side": "RIGHT",
+            "original_position": 75,
+            "position": 75,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243242359",
+            "pull_request_review_id": 1500080457,
+            "id": 1243242359,
+            "node_id": "PRRC_kwDOAvmRT85KGl93",
+            "diff_hunk": "@@ -26,54 +61,80 @@ public final class Application {\n         }\n     }\n \n-    public var lifecycle: Lifecycle\n+    public var lifecycle: Lifecycle {\n+        get {\n+            return _lifecycle.withLockedValue { $0 }\n+        }\n+        set {\n+            _lifecycle.withLockedValue { $0 = newValue }\n+        }\n+    }\n \n-    public final class Locks {\n+    // This does not have value semantics due to the use or `NIOLockedValueBox`\n+    public struct Locks: Sendable {\n         public let main: NIOLock\n-        var storage: [ObjectIdentifier: NIOLock]\n+        let storage: NIOLockedValueBox<[ObjectIdentifier: NIOLock]>\n \n         init() {\n             self.main = .init()\n-            self.storage = [:]\n+            self.storage = .init([:])\n         }\n \n         public func lock<Key>(for key: Key.Type) -> NIOLock\n             where Key: LockKey\n         {\n-            self.main.withLock { self.storage.insertOrReturn(.init(), at: .init(Key.self)) }\n+            self.main.withLock {\n+                self.storage.withLockedValue { $0.insertOrReturn(.init(), at: .init(Key.self)) }\n+            }\n         }\n     }\n \n-    public var locks: Locks\n+    public var locks: Locks {\n+        get {\n+            return _locks.withLockedValue { $0 }\n+        }\n+        set {\n+            _locks.withLockedValue { $0 = newValue }",
+            "path": "Sources/Vapor/Application.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Feels a bit weird to have to close a lock to access locks. The only reason for this is `locks` being settable, right?. I know it's a breaking change to remove the setter, but it might be possible to mark it as `@available(*, noasync)`.",
+            "created_at": "2023-06-27T07:10:45Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243242359",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243242359"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243242359"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243242359/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 97,
+            "original_line": 97,
+            "side": "RIGHT",
+            "original_position": 102,
+            "position": 102,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243243999",
+            "pull_request_review_id": 1500080457,
+            "id": 1243243999,
+            "node_id": "PRRC_kwDOAvmRT85KGmXf",
+            "diff_hunk": "@@ -56,22 +58,33 @@ extension Request.Authentication {\n         return self.get(A.self) != nil\n     }\n \n-    private final class Cache {\n+    // Internal `storage` is behind a lock so this can be unchecked Sendable\n+    private final class Cache: @unchecked Sendable {\n         private var storage: [ObjectIdentifier: Any]\n-\n+        private let storageLock: NIOLock",
+            "path": "Sources/Vapor/Authentication/AuthenticationCache.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "36655b5f2cd6356f0edb4d114b84e2f245753675",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "True, but given that `Cache` is anyways `@unchecked Sendable` due to `storage` not being `Sendable`, it wouldn't matter if the `NIOLockedValueBox` isn't `Sendable` either, right?",
+            "created_at": "2023-06-27T07:12:26Z",
+            "updated_at": "2023-06-27T08:04:46Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243243999",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243243999"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243243999"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243243999/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": 62,
+            "original_start_line": 62,
+            "start_side": "RIGHT",
+            "line": 64,
+            "original_line": 64,
+            "side": "RIGHT",
+            "in_reply_to_id": 1170048765,
+            "original_position": 24,
+            "position": 24,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243245285",
+            "pull_request_review_id": 1500080457,
+            "id": 1243245285,
+            "node_id": "PRRC_kwDOAvmRT85KGmrl",
+            "diff_hunk": "@@ -12,19 +12,20 @@ extension Application {\n \n     public struct Clients {\n         public struct Provider {",
+            "path": "Sources/Vapor/Client/Application+Clients.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Shouldn't `Provider` become `Sendable`?",
+            "created_at": "2023-06-27T07:13:46Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243245285",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243245285"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243245285"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243245285/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 14,
+            "original_line": 14,
+            "side": "RIGHT",
+            "original_position": 3,
+            "position": 3,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243246063",
+            "pull_request_review_id": 1500080457,
+            "id": 1243246063,
+            "node_id": "PRRC_kwDOAvmRT85KGm3v",
+            "diff_hunk": "@@ -12,19 +12,20 @@ extension Application {\n \n     public struct Clients {",
+            "path": "Sources/Vapor/Client/Application+Clients.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Clients` could become `Sendable`",
+            "created_at": "2023-06-27T07:14:28Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243246063",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243246063"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243246063"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243246063/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 13,
+            "original_line": 13,
+            "side": "RIGHT",
+            "original_position": 2,
+            "position": 2,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243248311",
+            "pull_request_review_id": 1500080457,
+            "id": 1243248311,
+            "node_id": "PRRC_kwDOAvmRT85KGna3",
+            "diff_hunk": "@@ -32,7 +32,7 @@ import NIOCore\n ///         }\n ///     }\n ///\n-public struct AnyAsyncResponse: AsyncResponseEncodable {\n+public struct AnyAsyncResponse: Sendable, AsyncResponseEncodable {",
+            "path": "Sources/Vapor/Concurrency/AnyResponse+Concurrency.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Given that `AsyncResponseEncodable` requires `Sendable`, this requirement here is not needed.",
+            "created_at": "2023-06-27T07:16:32Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243248311",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243248311"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243248311"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243248311/reactions",
+                "total_count": 1,
+                "+1": 1,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 35,
+            "original_line": 35,
+            "side": "RIGHT",
+            "original_position": 5,
+            "position": 5,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243251159",
+            "pull_request_review_id": 1500080457,
+            "id": 1243251159,
+            "node_id": "PRRC_kwDOAvmRT85KGoHX",
+            "diff_hunk": "@@ -1,7 +1,7 @@\n import NIOCore\n \n extension Application {\n-    public struct Running {\n+    public struct Running: Sendable {\n         final class Storage {",
+            "path": "Sources/Vapor/Core/Running.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "This can be `Sendable` as well",
+            "created_at": "2023-06-27T07:19:15Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243251159",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243251159"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243251159"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243251159/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 5,
+            "original_line": 5,
+            "side": "RIGHT",
+            "original_position": 6,
+            "position": 6,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243258672",
+            "pull_request_review_id": 1500080457,
+            "id": 1243258672,
+            "node_id": "PRRC_kwDOAvmRT85KGp8w",
+            "diff_hunk": "@@ -35,27 +38,29 @@ final class HTTPServerHandler: ChannelInboundHandler, RemovableChannelHandler {\n     }\n     \n     func serialize(_ response: Response, for request: Request, context: ChannelHandlerContext) {\n+        let contextBox = NIOLoopBound(context, eventLoop: context.eventLoop)\n         switch request.version.major {\n         case 2:\n             context.write(self.wrapOutboundOut(response), promise: nil)\n         default:\n-            let keepAlive = !self.isShuttingDown && request.isKeepAlive\n-            if self.isShuttingDown {\n+            let keepAlive = !self.isShuttingDown.withLockedValue({ $0 }) && request.isKeepAlive.withLockedValue { $0 }",
+            "path": "Sources/Vapor/HTTP/Server/HTTPServerHandler.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Would it make sense to only lock `isShuttingDown` once here - and lock `isKeepAlive` inside it?\r\n\r\ne.g.\r\n```swift\r\nlet keepAlive = self.isShuttingDown.withLockedValue {\r\n   if $0 { self.logger.debug(\"In-flight request has completed\") }\r\n   return !$0 && request.isKeepAlive.withLockedValue { $0 }\r\n}\r\n",
+            "created_at": "2023-06-27T07:25:15Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243258672",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243258672"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243258672"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243258672/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 46,
+            "original_line": 46,
+            "side": "RIGHT",
+            "original_position": 42,
+            "position": 42,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243259807",
+            "pull_request_review_id": 1500080457,
+            "id": 1243259807,
+            "node_id": "PRRC_kwDOAvmRT85KGqOf",
+            "diff_hunk": "@@ -81,18 +82,18 @@ final class HTTPServerResponseEncoder: ChannelOutboundHandler, RemovableChannelH\n }\n \n private final class ChannelResponseBodyStream: BodyStreamWriter {\n-    let context: ChannelHandlerContext\n+    let contextBox: NIOLoopBound<ChannelHandlerContext>\n     let handler: HTTPServerResponseEncoder\n     let promise: EventLoopPromise<Void>?\n     let count: Int?\n-    var currentCount: Int\n-    var isComplete: Bool\n+    let currentCount: NIOLockedValueBox<Int>\n+    let isComplete: NIOLockedValueBox<Bool>\n \n     var eventLoop: EventLoop {\n-        return self.context.eventLoop\n+        return self.contextBox.value.eventLoop\n     }\n \n-    enum Error: Swift.Error {\n+    enum Error: Swift.Error, Sendable {",
+            "path": "Sources/Vapor/HTTP/Server/HTTPServerResponseEncoder.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Swift.Error` already requires `Sendable`. So this wouldn't be necessary here.",
+            "created_at": "2023-06-27T07:26:15Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243259807",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243259807"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243259807"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243259807/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 96,
+            "original_line": 96,
+            "side": "RIGHT",
+            "original_position": 39,
+            "position": 39,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243261165",
+            "pull_request_review_id": 1500080457,
+            "id": 1243261165,
+            "node_id": "PRRC_kwDOAvmRT85KGqjt",
+            "diff_hunk": "@@ -4,7 +4,7 @@ import NIOCore\n /// Serves static files from a public directory.\n ///\n /// `FileMiddleware` will default to `DirectoryConfig`'s working directory with `\"/Public\"` appended.\n-public final class FileMiddleware: Middleware {\n+public final class FileMiddleware: Sendable, Middleware {",
+            "path": "Sources/Vapor/Middleware/FileMiddleware.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Middleware` already requires `Sendable`. So it wouldn't be necessary to add the requirement here as well.",
+            "created_at": "2023-06-27T07:27:26Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243261165",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243261165"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243261165"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243261165/reactions",
+                "total_count": 1,
+                "+1": 1,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 7,
+            "original_line": 7,
+            "side": "RIGHT",
+            "original_position": 5,
+            "position": 5,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243261988",
+            "pull_request_review_id": 1500080457,
+            "id": 1243261988,
+            "node_id": "PRRC_kwDOAvmRT85KGqwk",
+            "diff_hunk": "@@ -3,9 +3,9 @@ import NIOCore\n import NIOHTTP1\n \n /// Captures all errors and transforms them into an internal server error HTTP response.\n-public final class ErrorMiddleware: Middleware {\n+public final class ErrorMiddleware: Middleware, Sendable {",
+            "path": "Sources/Vapor/Middleware/ErrorMiddleware.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Middleware` already includes the `Sendable` requirement. `ErrorMiddleware` wouldn't need to declare it separately.",
+            "created_at": "2023-06-27T07:28:07Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243261988",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243261988"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243261988"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243261988/reactions",
+                "total_count": 1,
+                "+1": 1,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 6,
+            "original_line": 6,
+            "side": "RIGHT",
+            "original_position": 5,
+            "position": 5,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243265569",
+            "pull_request_review_id": 1500080457,
+            "id": 1243265569,
+            "node_id": "PRRC_kwDOAvmRT85KGroh",
+            "diff_hunk": "@@ -1,14 +1,90 @@\n import NIOHTTP1\n import RoutingKit\n+import NIOConcurrencyHelpers\n \n-public final class Route: CustomStringConvertible {\n-    public var method: HTTPMethod\n-    public var path: [PathComponent]\n-    public var responder: Responder\n-    public var requestType: Any.Type\n-    public var responseType: Any.Type\n+// This needs to be unchecked because of the use of `Any` throughout which means we can't use\n+// helpers like NIOLockedValueBox",
+            "path": "Sources/Vapor/Routing/Route.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "You could still use `NIOLockedValueBox`. `@unchecked Sendable` should allow non-Sendable members.",
+            "created_at": "2023-06-27T07:31:05Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243265569",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243265569"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243265569"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243265569/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 6,
+            "original_line": 6,
+            "side": "RIGHT",
+            "original_position": 12,
+            "position": 12,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243266633",
+            "pull_request_review_id": 1500080457,
+            "id": 1243266633,
+            "node_id": "PRRC_kwDOAvmRT85KGr5J",
+            "diff_hunk": "@@ -1,34 +1,37 @@\n+import NIOConcurrencyHelpers\n+\n extension Application {\n     public var servers: Servers {\n         .init(application: self)\n     }\n \n     public var server: Server {\n-        guard let makeServer = self.servers.storage.makeServer else {\n+        let closure = self.servers.storage.makeServer\n+        guard let makeServer = closure else {\n             fatalError(\"No server configured. Configure with app.servers.use(...)\")\n         }\n         return makeServer(self)\n     }\n \n     public struct Servers {\n         public struct Provider {\n-            let run: (Application) -> ()\n+            let run: @Sendable (Application) -> ()\n \n-            public init(_ run: @escaping (Application) -> ()) {\n+            public init(_ run: @Sendable @escaping (Application) -> ()) {\n                 self.run = run\n             }\n         }\n \n-        struct CommandKey: StorageKey {\n+        struct CommandKey: Sendable, StorageKey {\n             typealias Value = ServeCommand\n         }\n \n         final class Storage {",
+            "path": "Sources/Vapor/Server/Application+Servers.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Could also become `Sendable`",
+            "created_at": "2023-06-27T07:31:49Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243266633",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243266633"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243266633"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243266633/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 29,
+            "original_line": 29,
+            "side": "RIGHT",
+            "original_position": 33,
+            "position": 33,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243269393",
+            "pull_request_review_id": 1500080457,
+            "id": 1243269393,
+            "node_id": "PRRC_kwDOAvmRT85KGskR",
+            "diff_hunk": "@@ -26,7 +26,7 @@ struct URLEncodedFormSerializer {\n         return entries.joined(separator: String(splitVariablesOn))\n     }\n     \n-    struct _CodingKey: CodingKey {\n+    struct _CodingKey: CodingKey, Sendable {",
+            "path": "Sources/Vapor/URLEncodedForm/URLEncodedFormSerializer.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`CodingKey` already requires `Sendable` - so it wouldn't need to be explicitly required here as well.",
+            "created_at": "2023-06-27T07:33:37Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243269393",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243269393"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243269393"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243269393/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 29,
+            "original_line": 29,
+            "side": "RIGHT",
+            "original_position": 13,
+            "position": 13,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243269932",
+            "pull_request_review_id": 1500080457,
+            "id": 1243269932,
+            "node_id": "PRRC_kwDOAvmRT85KGsss",
+            "diff_hunk": "@@ -32,7 +32,7 @@ import NIOCore\n ///         }\n ///     }\n ///\n-public struct AnyResponse: ResponseEncodable {\n+public struct AnyResponse: ResponseEncodable, Sendable {",
+            "path": "Sources/Vapor/Utilities/AnyResponse.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`ResponseEncodable` already includes the `Sendable` requirement. It could be left out here.",
+            "created_at": "2023-06-27T07:34:00Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243269932",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243269932"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243269932"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243269932/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 35,
+            "original_line": 35,
+            "side": "RIGHT",
+            "original_position": 5,
+            "position": 5,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243271526",
+            "pull_request_review_id": 1500080457,
+            "id": 1243271526,
+            "node_id": "PRRC_kwDOAvmRT85KGtFm",
+            "diff_hunk": "@@ -1,16 +1,21 @@\n import Logging\n+import NIOConcurrencyHelpers\n \n /// A container providing arbitrary storage for extensions of an existing type, designed to obviate\n /// the problem of being unable to add stored properties to a type in an extension. Each stored item\n /// is keyed by a type conforming to ``StorageKey`` protocol.\n-public struct Storage {\n+// This is unchecked because of the lock - we can't guarantee that anything stored\n+// is Sendable\n+public struct Storage: @unchecked Sendable {\n     /// The internal storage area.\n-    var storage: [ObjectIdentifier: AnyStorageValue]\n+    private var storage: [ObjectIdentifier: AnyStorageValue]\n+    // In a concurrency world, we need to protect access with locks\n+    private let lock: NIOLock",
+            "path": "Sources/Vapor/Utilities/Storage.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "This could also use `NIOLockedValueBox`",
+            "created_at": "2023-06-27T07:35:02Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243271526",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243271526"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243271526"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243271526/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 13,
+            "original_line": 13,
+            "side": "RIGHT",
+            "original_position": 15,
+            "position": 15,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243272780",
+            "pull_request_review_id": 1500080457,
+            "id": 1243272780,
+            "node_id": "PRRC_kwDOAvmRT85KGtZM",
+            "diff_hunk": "@@ -1,5 +1,5 @@\n /// Type used by `Range` and `Count` validators to indicate where a value fell within a range.\n-public enum RangeResult<T>: Equatable where T: Comparable {\n+public enum RangeResult<T>: Equatable, Sendable where T: Comparable & Sendable {",
+            "path": "Sources/Vapor/Validation/RangeResult.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Instead of requiring it, this could be made an extension:\r\n```swift\r\nextension RangeResult: Sendable where T: Sendable {}\r\n```\r\n\r\nOr is there a specific reason for `RangeResult` to require it?",
+            "created_at": "2023-06-27T07:35:50Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243272780",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243272780"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243272780"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243272780/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 2,
+            "original_line": 2,
+            "side": "RIGHT",
+            "original_position": 3,
+            "position": 3,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243273465",
+            "pull_request_review_id": 1500080457,
+            "id": 1243273465,
+            "node_id": "PRRC_kwDOAvmRT85KGtj5",
+            "diff_hunk": "@@ -63,6 +63,6 @@ public enum RangeResult<T>: Equatable where T: Comparable {\n     }\n }\n \n-enum RangeResultError: Error {\n+enum RangeResultError: Error, Sendable {",
+            "path": "Sources/Vapor/Validation/RangeResult.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Swift.Error` already includes the `Sendable` requirement. It wouldn't need to be stated again here.",
+            "created_at": "2023-06-27T07:36:17Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243273465",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243273465"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243273465"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243273465/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 66,
+            "original_line": 66,
+            "side": "RIGHT",
+            "original_position": 12,
+            "position": 12,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243275940",
+            "pull_request_review_id": 1500080457,
+            "id": 1243275940,
+            "node_id": "PRRC_kwDOAvmRT85KGuKk",
+            "diff_hunk": "@@ -17,15 +17,16 @@ extension Application {\n \n     public struct Caches {\n         public struct Provider {\n-            let run: (Application) -> ()\n+            let run: @Sendable (Application) -> ()\n \n-            public init(_ run: @escaping (Application) -> ()) {\n+            public init(_ run: @Sendable @escaping (Application) -> ()) {\n                 self.run = run\n             }\n         }\n         \n+        // This doesn't need a lock as it's only mutated during app configuration\n         final class Storage {",
+            "path": "Sources/Vapor/Cache/Application+Cache.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "This could also become `Sendable.",
+            "created_at": "2023-06-27T07:37:58Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243275940",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243275940"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243275940"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243275940/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 28,
+            "original_line": 28,
+            "side": "RIGHT",
+            "original_position": 14,
+            "position": 14,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243276835",
+            "pull_request_review_id": 1500080457,
+            "id": 1243276835,
+            "node_id": "PRRC_kwDOAvmRT85KGuYj",
+            "diff_hunk": "@@ -12,19 +12,20 @@ extension Application {\n \n     public struct Clients {\n         public struct Provider {\n-            let run: (Application) -> ()\n+            let run: @Sendable (Application) -> ()\n \n-            public init(_ run: @escaping (Application) -> ()) {\n+            public init(_ run: @Sendable @escaping (Application) -> ()) {\n                 self.run = run\n             }\n         }\n         \n+        // This doesn't need a lock as it's only mutated during app configuration\n         final class Storage {",
+            "path": "Sources/Vapor/Client/Application+Clients.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "This might become `Sendable` as well.",
+            "created_at": "2023-06-27T07:38:35Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243276835",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243276835"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243276835"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243276835/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 23,
+            "original_line": 23,
+            "side": "RIGHT",
+            "original_position": 14,
+            "position": 14,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243278005",
+            "pull_request_review_id": 1500080457,
+            "id": 1243278005,
+            "node_id": "PRRC_kwDOAvmRT85KGuq1",
+            "diff_hunk": "@@ -12,19 +12,20 @@ extension Application {\n \n     public struct Clients {\n         public struct Provider {\n-            let run: (Application) -> ()\n+            let run: @Sendable (Application) -> ()\n \n-            public init(_ run: @escaping (Application) -> ()) {\n+            public init(_ run: @Sendable @escaping (Application) -> ()) {\n                 self.run = run\n             }\n         }\n         \n+        // This doesn't need a lock as it's only mutated during app configuration\n         final class Storage {\n             var makeClient: ((Application) -> Client)?",
+            "path": "Sources/Vapor/Client/Application+Clients.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Other `Storage`s made the closure `@Sendable`. Was this forgotten here, or is it intentional?",
+            "created_at": "2023-06-27T07:39:28Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243278005",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243278005"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243278005"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243278005/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 24,
+            "original_line": 24,
+            "side": "RIGHT",
+            "original_position": 15,
+            "position": 15,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243279169",
+            "pull_request_review_id": 1500080457,
+            "id": 1243279169,
+            "node_id": "PRRC_kwDOAvmRT85KGu9B",
+            "diff_hunk": "@@ -99,7 +99,7 @@ extension ClientResponse: ResponseEncodable {\n }\n \n extension ClientResponse: Codable {\n-    private enum CodingKeys: String, CodingKey {\n+    private enum CodingKeys: String, Sendable, CodingKey {",
+            "path": "Sources/Vapor/Client/ClientResponse.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Swift.CodingKey` already includes the `Sendable` requirement. Not strictly necessary here again.",
+            "created_at": "2023-06-27T07:40:26Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243279169",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243279169"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243279169"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243279169/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 102,
+            "original_line": 102,
+            "side": "RIGHT",
+            "original_position": 23,
+            "position": 23,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243280856",
+            "pull_request_review_id": 1500080457,
+            "id": 1243280856,
+            "node_id": "PRRC_kwDOAvmRT85KGvXY",
+            "diff_hunk": "@@ -60,34 +61,109 @@ extension Application {\n         .init(application: self)\n     }\n \n-    public struct Core {\n+    public struct Core: Sendable {\n         final class Storage {",
+            "path": "Sources/Vapor/Core/Core.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Could also become `Sendable` (potentially `@unchecked`), now that all values are protected by a lock.",
+            "created_at": "2023-06-27T07:41:57Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243280856",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243280856"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243280856"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243280856/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 65,
+            "original_line": 65,
+            "side": "RIGHT",
+            "original_position": 14,
+            "position": 14,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243284982",
+            "pull_request_review_id": 1500080457,
+            "id": 1243284982,
+            "node_id": "PRRC_kwDOAvmRT85KGwX2",
+            "diff_hunk": "@@ -14,7 +14,7 @@ extension HTTPClient {\n     }\n }\n \n-private struct EventLoopHTTPClient: Client {\n+private struct EventLoopHTTPClient: Sendable, Client {",
+            "path": "Sources/Vapor/HTTP/Client/EventLoopHTTPClient.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "`Client` already requires `Sendable`. Not strictly needed here again.",
+            "created_at": "2023-06-27T07:45:34Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243284982",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243284982"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243284982"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243284982/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 17,
+            "original_line": 17,
+            "side": "RIGHT",
+            "original_position": 5,
+            "position": 5,
+            "subject_type": "line"
+        },
+        {
+            "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243286786",
+            "pull_request_review_id": 1500080457,
+            "id": 1243286786,
+            "node_id": "PRRC_kwDOAvmRT85KGw0C",
+            "diff_hunk": "@@ -81,18 +82,18 @@ final class HTTPServerResponseEncoder: ChannelOutboundHandler, RemovableChannelH\n }\n \n private final class ChannelResponseBodyStream: BodyStreamWriter {",
+            "path": "Sources/Vapor/HTTP/Server/HTTPServerResponseEncoder.swift",
+            "commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "original_commit_id": "4ba0ce63e07d59d2c20f02fc64e2f12f39f79322",
+            "user": {
+                "login": "ffried",
+                "id": 1689782,
+                "node_id": "MDQ6VXNlcjE2ODk3ODI=",
+                "avatar_url": "https://avatars.githubusercontent.com/u/1689782?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/ffried",
+                "html_url": "https://github.com/ffried",
+                "followers_url": "https://api.github.com/users/ffried/followers",
+                "following_url": "https://api.github.com/users/ffried/following{/other_user}",
+                "gists_url": "https://api.github.com/users/ffried/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/ffried/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/ffried/subscriptions",
+                "organizations_url": "https://api.github.com/users/ffried/orgs",
+                "repos_url": "https://api.github.com/users/ffried/repos",
+                "events_url": "https://api.github.com/users/ffried/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/ffried/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "body": "Could this be come `Sendable` as well with all the locks now?",
+            "created_at": "2023-06-27T07:47:07Z",
+            "updated_at": "2023-06-27T08:04:45Z",
+            "html_url": "https://github.com/vapor/vapor/pull/3000#discussion_r1243286786",
+            "pull_request_url": "https://api.github.com/repos/vapor/vapor/pulls/3000",
+            "author_association": "NONE",
+            "_links": {
+                "self": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243286786"
+                },
+                "html": {
+                    "href": "https://github.com/vapor/vapor/pull/3000#discussion_r1243286786"
+                },
+                "pull_request": {
+                    "href": "https://api.github.com/repos/vapor/vapor/pulls/3000"
+                }
+            },
+            "reactions": {
+                "url": "https://api.github.com/repos/vapor/vapor/pulls/comments/1243286786/reactions",
+                "total_count": 0,
+                "+1": 0,
+                "-1": 0,
+                "laugh": 0,
+                "hooray": 0,
+                "confused": 0,
+                "heart": 0,
+                "rocket": 0,
+                "eyes": 0
+            },
+            "start_line": null,
+            "original_start_line": null,
+            "start_side": null,
+            "line": 84,
+            "original_line": 84,
+            "side": "RIGHT",
+            "original_position": 22,
+            "position": 22,
+            "subject_type": "line"
+        }
+    ]
 }
