@@ -131,10 +131,11 @@ struct PRHandler {
         let prLink = pr.html_url
 
         let body = pr.body.map { body -> String in
-            let formatted = Document(parsing: body)
-                .removeHTMLBlocks()?
-                .format() ?? ""
-            return formatted.isEmpty ? "" : ">>> \(formatted)".unicodesPrefix(260)
+            let formatted = body.formatForDiscord(
+                maxLength: 256,
+                trailingParagraphMinLength: 96
+            )
+            return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
         let description = """
