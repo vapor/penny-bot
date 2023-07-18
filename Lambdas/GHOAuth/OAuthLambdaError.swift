@@ -5,7 +5,6 @@ enum OAuthLambdaError: Error, CustomStringConvertible {
     case secretNotFound(arn: String)
     case badResponse(status: Int)
     case invalidPublicKey
-    case invalidState
 
     var description: String {
         switch self {
@@ -17,8 +16,6 @@ enum OAuthLambdaError: Error, CustomStringConvertible {
             return "Bad response from GitHub: \(status)"
         case .invalidPublicKey:
             return "Invalid JWT signer public key"
-        case .invalidState:
-            return "Invalid state parameter"
         }
     }
 }

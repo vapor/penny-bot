@@ -62,7 +62,7 @@ struct GHOAuthHandler: LambdaHandler {
         do {
             let jwt = try await verifyState(state: String(event.queryStringParameters?["state"] ?? ""))
         } catch {
-            logger.error("Error verifying state: \(error)")
+            logger.error("Error during state verification: error: \(error), state: \(event.queryStringParameters?["state"] ?? "")")
             return .init(statusCode: .badRequest, body: "Error verifying state")
         }
 
@@ -87,9 +87,7 @@ struct GHOAuthHandler: LambdaHandler {
 
         let signer = JWTSigner.es256(key: publicKey)
 
-        guard let payload = try? signer.verify(state, as: GHOAuthPayload.self) else {
-            throw OAuthLambdaError.invalidState
-        }
+        let payload = try signer.verify(state, as: GHOAuthPayload.self)
 
         return payload
     }
