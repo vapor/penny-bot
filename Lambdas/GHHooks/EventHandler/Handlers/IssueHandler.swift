@@ -92,7 +92,7 @@ private enum Status: String {
     var color: DiscordColor {
         switch self {
         case .done:
-            return .mint
+            return .teal
         case .notPlanned:
             return .gray(level: .level2, scheme: .dark)
         case .opened:
