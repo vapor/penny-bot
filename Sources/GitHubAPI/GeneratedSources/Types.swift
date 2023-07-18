@@ -13313,7 +13313,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/draft`.
             public var draft: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged`.
-            public var merged: Swift.Bool
+            public var merged: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/mergeable`.
             public var mergeable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/rebaseable`.
@@ -13426,7 +13426,7 @@ public enum Components {
                 author_association: Components.Schemas.author_association,
                 auto_merge: Components.Schemas.auto_merge? = nil,
                 draft: Swift.Bool? = nil,
-                merged: Swift.Bool,
+                merged: Swift.Bool? = nil,
                 mergeable: Swift.Bool? = nil,
                 rebaseable: Swift.Bool? = nil,
                 mergeable_state: Swift.String,

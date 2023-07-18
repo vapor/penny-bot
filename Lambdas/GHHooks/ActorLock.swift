@@ -15,7 +15,7 @@ actor SerialProcessor {
         isRunning = true
         defer {
             isRunning = false
-            queue.popLast()?.resume()
+            queue.popFirst()?.resume()
         }
 
         return try await block()
