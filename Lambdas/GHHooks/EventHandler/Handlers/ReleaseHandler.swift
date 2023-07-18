@@ -432,11 +432,7 @@ struct ReleaseHandler {
                     description: description,
                     url: release.html_url,
                     color: .cyan,
-                    thumbnail: .init(
-                        url: .exact(thumbnail),
-                        height: 600,
-                        width: 1200
-                    )
+                    thumbnail: .init(url: .exact(thumbnail))
                 )]
             )
         ).guardSuccess()
