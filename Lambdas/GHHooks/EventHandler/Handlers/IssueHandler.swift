@@ -85,13 +85,16 @@ struct IssueHandler {
 }
 
 private enum Status: String {
-    case closed = "Closed"
+    case done = "Done"
+    case notPlanned = "Not Planned"
     case opened = "Opened"
 
     var color: DiscordColor {
         switch self {
-        case .closed:
-            return .brown
+        case .done:
+            return .mint
+        case .notPlanned:
+            return .gray(level: .level5, scheme: .dark)
         case .opened:
             return .yellow
         }
@@ -99,7 +102,7 @@ private enum Status: String {
 
     var titleDescription: String? {
         switch self {
-        case .closed:
+        case .done, .notPlanned:
             return self.rawValue
         case .opened:
             return nil
@@ -107,8 +110,10 @@ private enum Status: String {
     }
 
     init(issue: Issue) {
-        if issue.closed_at != nil {
-            self = .closed
+        if issue.state_reason == .not_planned {
+            self = .notPlanned
+        } else if issue.closed_at != nil {
+            self = .done
         } else {
             self = .opened
         }
