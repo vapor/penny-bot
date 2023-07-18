@@ -1,7 +1,7 @@
 import Markdown
 
 extension String {
-    func formatForDiscord(maxLength: Int, trailingParagraphMinLength: Int) -> String {
+    func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLBlocksRemover()
         let markup1 = htmlRemover.visit(document1)
@@ -19,17 +19,6 @@ extension String {
         let markup2 = paragraphRemover.visit(document2)
 
         return markup2?.format(options: .forDiscord) ?? ""
-    }
-}
-
-private extension Document {
-    func lastIndexOfBlockMarkupChild(ofType: (some BlockMarkup).Type) -> Int? {
-        guard let idx = self.blockChildren.reversed().firstIndex(
-            where: { type(of: $0) == ofType }
-        ) else {
-            return nil
-        }
-        return self.blockChildren.underestimatedCount - idx
     }
 }
 

@@ -51,7 +51,7 @@ struct IssueHandler {
         let repoName = event.repository.uiName
 
         let body = issue.body.map { body -> String in
-            let formatted = body.formatForDiscord(
+            let formatted = body.formatMarkdown(
                 maxLength: 256,
                 trailingParagraphMinLength: 128
             )

@@ -294,6 +294,105 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List repository contributors
+    ///
+    /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
+    ///
+    /// GitHub identifies contributors by author email address. This endpoint groups contribution counts by GitHub user, which includes all associated email addresses. To improve performance, only the first 500 author email addresses in the repository link to GitHub users. The rest will appear as anonymous contributors without associated GitHub user information.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
+    public func repos_list_contributors(_ input: Operations.repos_list_contributors.Input)
+        async throws -> Operations.repos_list_contributors.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.repos_list_contributors.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/contributors",
+                    parameters: [input.path.owner, input.path.repo]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "anon",
+                    value: input.query.anon
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.repos_list_contributors.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.repos_list_contributors.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.contributor].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
+                case 204:
+                    let headers: Operations.repos_list_contributors.Output.NoContent.Headers =
+                        .init()
+                    return .noContent(.init(headers: headers, body: nil))
+                case 403:
+                    let headers: Components.Responses.forbidden.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.forbidden.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .forbidden(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.not_found.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .notFound(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// List repository issues
     ///
     /// List issues in a repository. Only open issues will be listed.
@@ -666,6 +765,83 @@ public struct Client: APIProtocol {
                             transforming: { value in .json(value) }
                         )
                     return .unprocessableEntity(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
+    /// List review comments on a pull request
+    ///
+    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
+    public func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
+        async throws -> Operations.pulls_list_review_comments.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.pulls_list_review_comments.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/pulls/{}/comments",
+                    parameters: [input.path.owner, input.path.repo, input.path.pull_number]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "sort",
+                    value: input.query.sort
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "direction",
+                    value: input.query.direction
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "since",
+                    value: input.query.since
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.pulls_list_review_comments.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.pulls_list_review_comments.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.pull_request_review_comment].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
                 default: return .undocumented(statusCode: response.statusCode, .init())
                 }
             }

@@ -129,6 +129,7 @@ struct GHHooksHandler: LambdaHandler {
             context: .init(
                 eventName: eventName,
                 event: event,
+                httpClient: httpClient,
                 discordClient: discordClient,
                 githubClient: githubClient,
                 logger: logger

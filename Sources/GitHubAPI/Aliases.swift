@@ -7,3 +7,6 @@ public typealias Issue = Components.Schemas.issue
 public typealias Label = Components.Schemas.label
 public typealias Release = Components.Schemas.release
 public typealias InstallationToken = Components.Schemas.installation_token
+public typealias NullableUser = Components.Schemas.nullable_simple_user
+public typealias Contributor = Components.Schemas.contributor
+public typealias PullRequestReviewComment = Components.Schemas.pull_request_review_comment
