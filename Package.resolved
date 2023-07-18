@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/jwt-kit.git",
       "state" : {
-        "revision" : "dd3fe317f826d43bcefbe20d86f0f787927d05d8",
-        "version" : "4.12.0"
+        "revision" : "9e929d925434b91857661bcd455d1bd53f00bf22",
+        "version" : "4.13.0"
       }
     },
     {
@@ -266,7 +266,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "691776a55ebf854b71751f21865800427cb6d9c2"
+        "revision" : "5dbc8e51507b44bc64a53a8d65546376062d1d6c"
       }
     },
     {

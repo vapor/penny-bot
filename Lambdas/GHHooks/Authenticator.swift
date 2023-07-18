@@ -4,6 +4,7 @@ import OpenAPIRuntime
 import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import Logging
+import Foundation
 import struct DiscordModels.Secret
 
 actor Authenticator {
@@ -70,7 +71,14 @@ actor Authenticator {
     }
 
     private func makeJWTToken() async throws -> Secret {
-        let signers = JWTSigners()
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .integerSecondsSince1970
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .integerSecondsSince1970
+        let signers = JWTSigners(
+            defaultJSONEncoder: encoder,
+            defaultJSONDecoder: decoder
+        )
         let key = try await getPrivKey()
         try signers.use(.rs256(key: .private(pem: key.value)))
         let payload = TokenPayload()
@@ -90,9 +98,9 @@ actor Authenticator {
 /// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app#about-json-web-tokens-jwts
 private struct TokenPayload: JWTPayload, Equatable {
     /// When the token was issued.
-    let issuedAt: IntIssuedAtClaim
+    let issuedAt: IssuedAtClaim
     /// When the token will expire.
-    let expiresAt: IntExpirationClaim
+    let expiresAt: ExpirationClaim
     /// Penny's GitHub app-id.
     let issuer: String
     /// The algorithm. GitHub says `RS256`.
@@ -122,64 +130,5 @@ private struct TokenPayload: JWTPayload, Equatable {
     // call its verify method.
     func verify(using signer: JWTSigner) throws {
         try self.expiresAt.verifyNotExpired()
-    }
-}
-
-/// The "exp" (expiration time) claim identifies the expiration time on
-/// or after which the JWT MUST NOT be accepted for processing.  The
-/// processing of the "exp" claim requires that the current date/time
-/// MUST be before the expiration date/time listed in the "exp" claim.
-/// Implementers MAY provide for some small leeway, usually no more than
-/// a few minutes, to account for clock skew.  Its value MUST be a number
-/// containing a NumericDate value.  Use of this claim is OPTIONAL.
-struct IntExpirationClaim: JWTClaim, Equatable {
-    var value: Date
-
-    init(value: Date) {
-        self.value = value
-    }
-
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.value = Date(timeIntervalSince1970: Double(try container.decode(Int.self)))
-    }
-
-    func encode(to encoder: any Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(Int(self.value.timeIntervalSince1970))
-    }
-
-    /// Throws an error if the claim's date is later than current date.
-    func verifyNotExpired(currentDate: Date = .init()) throws {
-        switch self.value.compare(currentDate) {
-        case .orderedAscending, .orderedSame:
-            throw JWTError.claimVerificationFailure(name: "exp", reason: "expired")
-        case .orderedDescending:
-            break
-        }
-    }
-}
-
-/// The "iat" (issued at) claim identifies the time at which the JWT was
-/// issued.  This claim can be used to determine the age of the JWT.  Its
-/// value MUST be a number containing a NumericDate value.  Use of this
-/// claim is OPTIONAL.
-struct IntIssuedAtClaim: JWTUnixEpochClaim, Equatable {
-    /// See `JWTClaim`.
-    var value: Date
-
-    /// See `JWTClaim`.
-    init(value: Date) {
-        self.value = value
-    }
-
-    init(from decoder: any Decoder) throws {
-        let container = try decoder.singleValueContainer()
-        self.value = Date(timeIntervalSince1970: Double(try container.decode(Int.self)))
-    }
-
-    func encode(to encoder: any Encoder) throws {
-        var container = encoder.singleValueContainer()
-        try container.encode(Int(self.value.timeIntervalSince1970))
     }
 }
