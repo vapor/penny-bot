@@ -219,8 +219,7 @@ struct ReleaseHandler {
             existingContributors: contributors
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners)
-        let isCodeOwner = codeOwners.contains(pr.user.login) ||
-        (pr.user.name.map { codeOwners.contains($0) } ?? false)
+        let isCodeOwner = codeOwners.codeOwnersContains(user: pr.user)
 
         return """
         \(makeMergerMarkdown(mergedBy: mergedBy))
@@ -239,7 +238,6 @@ struct ReleaseHandler {
     }
 
     func makePRMarkdown(isCodeOwner: Bool) -> String {
-        if isCodeOwner { return "" }
         let body = pr.body.map {
             "> " + $0.formatMarkdown(
                 maxLength: 512,
@@ -274,7 +272,7 @@ struct ReleaseHandler {
         }.joined(separator: "\n")
         return """
         ## Reviewers
-        Thanks to the reviewers:
+        Thanks to the reviewers for their help:
         \(reviewersText)
 
         """
@@ -291,19 +289,16 @@ struct ReleaseHandler {
     func getReviewersToCredit(codeOwners: Set<String>) async throws -> [User] {
         let reviewComments = try await getReviewComments()
         let reviewers = reviewComments.map(\.user).filter { user in
-            !codeOwners.contains(user.login) &&
-            !(user.name.map { codeOwners.contains($0) } ?? false)
+            !codeOwners.codeOwnersContains(user: user)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
-        let withCounts = groupedReviewers.map { (count: $0.value.count, user: $0.value[0]) }
-        let sorted = withCounts.sorted(by: { $0.count > $1.count }).map(\.user)
+        let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
         return sorted
     }
 
     func isNewContributor(codeOwners: Set<String>, existingContributors: Set<Int>) -> Bool {
         if pr.author_association == .OWNER ||
-            codeOwners.contains(pr.user.login) ||
-            (pr.user.name.map { codeOwners.contains($0) } ?? false) {
+            codeOwners.codeOwnersContains(user: pr.user) {
             return false
         }
         return !existingContributors.contains(pr.user.id)
@@ -392,12 +387,19 @@ struct ReleaseHandler {
                     omittingEmptySubsequences: true
                 ).first
             }
-        /// split lines on whitespace, dropping first word, and combine to single list
-            .flatMap {
-                $0.split(
+        /// split lines on whitespace, dropping first character, and combine to single list
+            .flatMap { line -> [Substring] in
+                line.split(
                     omittingEmptySubsequences: true,
                     whereSeparator: \.isWhitespace
-                ).dropFirst()
+                ).dropFirst().map { (user: Substring) -> Substring in
+                    /// Drop the first character of each code-owner which is an `@`.
+                    if user.first == "@" {
+                        return user.dropFirst()
+                    } else {
+                        return user
+                    }
+                }
             }.map(String.init)
 
         return Set(codeOwners)
@@ -431,5 +433,15 @@ struct ReleaseHandler {
                 )]
             )
         ).guardSuccess()
+    }
+}
+
+private extension Set<String> {
+    func codeOwnersContains(user: User) -> Bool {
+        if let name = user.name {
+            return !self.intersection([user.login, name]).isEmpty
+        } else {
+            return self.contains(user.login)
+        }
     }
 }

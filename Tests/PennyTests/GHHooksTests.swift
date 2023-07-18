@@ -231,7 +231,7 @@ class GHHooksTests: XCTestCase {
         )
         XCTAssertEqual(
             handler.parseCodeOwners(text: text).sorted(),
-            ["@doctocat", "@global-owner1", "@global-owner2", "@js-owner", "@octo-org/octocats", "@octocat", "docs@example.com"]
+            ["docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner", "octo-org/octocats", "octocat"]
         )
     }
 
@@ -252,7 +252,7 @@ class GHHooksTests: XCTestCase {
             previousVersion: "v2.3.1",
             newVersion: "v2.4.5"
         )
-        XCTAssertEqual(body, "###### _This patch was released by @MahdiBM._\n\n## What\'s Changed\nUse GH OpenAPI spec + swift-oapi-generator to generate GHHooks models by @MahdiBM in #61\n\n> Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\n> \n> The downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\n> The upside is we won’t need to make these models / api-endpoints in the future.\n\n## New Contributor\n- @MahdiBM made their first contribution 🎉\n\n## Reviewers\nThanks to the reviewers:\n- @ffried\n- @dnadoba\n- @0xTim\n\n**Full Changelog**: https://github.com/vapor/penny-bot/compare/v2.3.1...v2.4.5")
+        XCTAssertEqual(body, "###### _This patch was released by @MahdiBM._\n\n## What\'s Changed\nUse GH OpenAPI spec + swift-oapi-generator to generate GHHooks models by @MahdiBM in #61\n\n> Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\n> \n> The downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\n> The upside is we won’t need to make these models / api-endpoints in the future.\n\n\n## Reviewers\nThanks to the reviewers for their help:\n- @ffried\n- @dnadoba\n\n**Full Changelog**: https://github.com/vapor/penny-bot/compare/v2.3.1...v2.4.5")
     }
 
     func testEventHandler() async throws {
