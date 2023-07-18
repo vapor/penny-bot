@@ -1,20 +1,21 @@
+import Collections
 
-actor ActorLock {
-    private var isLocked = false
-    private var lockWaiters: [CheckedContinuation<Void, Never>] = []
+actor SerialProcessor {
+    private var isRunning = false
+    private var queue: Deque<CheckedContinuation<Void, Never>> = []
 
-    /// Acquires a lock and performs the async work, then releases the lock.
-    func withLock<T>(block: @Sendable () async throws -> T) async rethrows -> T {
-        while isLocked {
+    func process<T>(block: @Sendable () async throws -> T) async rethrows -> T {
+        if isRunning {
             await withCheckedContinuation { continuation in
-                lockWaiters.append(continuation)
+                queue.append(continuation)
             }
         }
 
-        isLocked = true
+        precondition(!isRunning)
+        isRunning = true
         defer {
-            isLocked = false
-            lockWaiters.popLast()?.resume()
+            isRunning = false
+            queue.popLast()?.resume()
         }
 
         return try await block()

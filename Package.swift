@@ -163,6 +163,7 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Markdown", package: "swift-markdown"),
+                .product(name: "Collections", package: "swift-collections"),
                 .target(name: "GitHubAPI"),
                 .target(name: "Extensions"),
             ],

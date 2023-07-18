@@ -261,15 +261,6 @@
       }
     },
     {
-      "identity" : "swift-openapi-generator",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mahdibm/swift-openapi-generator",
-      "state" : {
-        "branch" : "generator-command-plugin",
-        "revision" : "5dbc8e51507b44bc64a53a8d65546376062d1d6c"
-      }
-    },
-    {
       "identity" : "swift-openapi-runtime",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",

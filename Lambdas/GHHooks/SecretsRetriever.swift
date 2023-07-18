@@ -10,7 +10,7 @@ actor SecretsRetriever {
     private var cache: [String: Secret] = [:]
     let logger: Logger
 
-    private let lock = ActorLock()
+    private let queue = SerialProcessor()
 
     init(awsClient: AWSClient, logger: Logger) {
         self.secretsManager = SecretsManager(client: awsClient)
@@ -18,7 +18,7 @@ actor SecretsRetriever {
     }
 
     func getSecret(arnEnvVarKey: String) async throws -> Secret {
-        return try await lock.withLock {
+        return try await queue.process {
             if let cached = await getCache(key: arnEnvVarKey) {
                 return cached
             } else {

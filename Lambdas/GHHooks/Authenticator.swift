@@ -15,7 +15,7 @@ actor Authenticator {
     /// The cached access token.
     private var cachedAccessToken: InstallationToken?
 
-    private let lock = ActorLock()
+    private let queue = SerialProcessor()
 
     init(secretsRetriever: SecretsRetriever, httpClient: HTTPClient, logger: Logger) {
         self.secretsRetriever = secretsRetriever
@@ -25,8 +25,11 @@ actor Authenticator {
 
     /// TODO: Actually "refresh" the token if needed and possible,
     /// instead of just creating a new one.
+    /// This requires having a more persistent caching mechanism to cache the token
+    /// across different lambda processes, so it is possible for the installation token to
+    /// live long enough to be expired in the first place, so then we can think of refreshing it.
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> Secret {
-        try await lock.withLock {
+        try await queue.process {
             if !forceRefreshToken,
                let cachedAccessToken = await cachedAccessToken {
                 return Secret(cachedAccessToken.token)
@@ -87,7 +90,7 @@ actor Authenticator {
     }
 
     private func getPrivKey() async throws -> Secret {
-        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY")
+        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY_ARN")
     }
 
     private func setCachedAccessToken(to token: InstallationToken) {
