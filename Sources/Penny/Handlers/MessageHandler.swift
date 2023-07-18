@@ -1,4 +1,5 @@
 import DiscordModels
+import DiscordHTTP
 import Logging
 import Models
 
@@ -137,12 +138,10 @@ struct MessageHandler {
     func checkForPings() async {
         let content = event.content
         if content.isEmpty { return }
-        /// Check guild-id too, just to make sure / future-proofing.
-        guard event.guild_id == Constants.vaporGuildId,
+        guard let guildId = event.guild_id,
               let author = event.author,
               let member = event.member
         else { return }
-        let authorId = author.id
 
         let expUsersDict: [S3AutoPingItems.Expression: Set<String>]
         do {
@@ -188,14 +187,25 @@ struct MessageHandler {
             
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.
-                if userId == authorId.rawValue { continue }
+                if userId == author.id.rawValue { continue }
             }
             let authorName = makeAuthorName(
                 nick: member.nick,
                 user: author,
                 id: author.id.rawValue
             )
-            let avatarPrefix = "https://cdn.discordapp.com/avatars"
+            let iconUrlEndpoint = member.avatar.map { avatar in
+                CDNEndpoint.guildMemberAvatar(
+                    guildId: guildId,
+                    userId: author.id,
+                    avatar: avatar
+                )
+            } ?? author.avatar.map { avatar in
+                CDNEndpoint.userAvatar(
+                    userId: author.id,
+                    avatar: avatar
+                )
+            }
             await discordService.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
@@ -211,9 +221,7 @@ struct MessageHandler {
                         color: .blue,
                         footer: .init(
                             text: "By \(authorName)",
-                            icon_url: (member.avatar ?? author.avatar).map { avatar in
-                                .exact("\(avatarPrefix)/\(author.id.rawValue)/\(avatar).png")
-                            }
+                            icon_url: (iconUrlEndpoint?.url).map { .exact($0) }
                         )
                     )],
                     components: [[.button(.init(label: "Open Message", url: messageLink))]]
