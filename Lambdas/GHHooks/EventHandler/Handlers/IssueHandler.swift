@@ -94,7 +94,7 @@ private enum Status: String {
         case .done:
             return .mint
         case .notPlanned:
-            return .gray(level: .level5, scheme: .dark)
+            return .gray(level: .level2, scheme: .dark)
         case .opened:
             return .yellow
         }
