@@ -13319,25 +13319,25 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/rebaseable`.
             public var rebaseable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/mergeable_state`.
-            public var mergeable_state: Swift.String
+            public var mergeable_state: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged_by`.
             public var merged_by: Components.Schemas.nullable_simple_user?
             /// - Remark: Generated from `#/components/schemas/pull-request/comments`.
-            public var comments: Swift.Int
+            public var comments: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/review_comments`.
-            public var review_comments: Swift.Int
+            public var review_comments: Swift.Int?
             /// Indicates whether maintainers can modify the pull request.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request/maintainer_can_modify`.
-            public var maintainer_can_modify: Swift.Bool
+            public var maintainer_can_modify: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/commits`.
-            public var commits: Swift.Int
+            public var commits: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/additions`.
-            public var additions: Swift.Int
+            public var additions: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/deletions`.
-            public var deletions: Swift.Int
+            public var deletions: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/changed_files`.
-            public var changed_files: Swift.Int
+            public var changed_files: Swift.Int?
             /// Creates a new `pull_request`.
             ///
             /// - Parameters:
@@ -13429,15 +13429,15 @@ public enum Components {
                 merged: Swift.Bool? = nil,
                 mergeable: Swift.Bool? = nil,
                 rebaseable: Swift.Bool? = nil,
-                mergeable_state: Swift.String,
+                mergeable_state: Swift.String? = nil,
                 merged_by: Components.Schemas.nullable_simple_user? = nil,
-                comments: Swift.Int,
-                review_comments: Swift.Int,
-                maintainer_can_modify: Swift.Bool,
-                commits: Swift.Int,
-                additions: Swift.Int,
-                deletions: Swift.Int,
-                changed_files: Swift.Int
+                comments: Swift.Int? = nil,
+                review_comments: Swift.Int? = nil,
+                maintainer_can_modify: Swift.Bool? = nil,
+                commits: Swift.Int? = nil,
+                additions: Swift.Int? = nil,
+                deletions: Swift.Int? = nil,
+                changed_files: Swift.Int? = nil
             ) {
                 self.url = url
                 self.id = id

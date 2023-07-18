@@ -10,7 +10,6 @@ import Foundation
 struct PRHandler {
     let context: HandlerContext
     let pr: PullRequest
-    let number: Int
     var event: GHEvent {
         context.event
     }
@@ -21,7 +20,6 @@ struct PRHandler {
     init(context: HandlerContext) throws {
         self.context = context
         self.pr = try context.event.pull_request.requireValue()
-        self.number = try context.event.number.requireValue()
     }
 
     func handle() async throws {
@@ -35,7 +33,7 @@ struct PRHandler {
             try await onClosed()
         case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
             try await onEdited()
-        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled:
+        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .submitted:
             break
         }
     }
@@ -45,7 +43,7 @@ struct PRHandler {
     }
 
     func onOpened() async throws {
-        let embed = createReportEmbed()
+        let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportNew(embed: embed)
     }
@@ -54,18 +52,18 @@ struct PRHandler {
         try await ReleaseHandler(
             context: context,
             pr: pr,
-            number: number
+            number: try context.event.number.requireValue()
         ).handle()
         try await editPRReport()
     }
 
     func editPRReport() async throws {
-        let embed = createReportEmbed()
+        let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
         try await reporter.reportEdit(embed: embed)
     }
 
-    func createReportEmbed() -> Embed {
+    func createReportEmbed() throws -> Embed {
         let authorName = pr.user.login
         let authorAvatarLink = pr.user.avatar_url
 
@@ -88,6 +86,7 @@ struct PRHandler {
         let status = Status(pr: pr)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
+        let number = try context.event.number.requireValue()
         let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
 
         let embed = Embed(
