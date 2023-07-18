@@ -6,6 +6,9 @@ import PackageDescription
 /// Bug alert! Don't move this constant to the end of the file, or it won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 let swiftSettings: [SwiftSetting] = [
+    /// https://github.com/apple/swift/issues/67214
+        .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
+    
     /// `minimal` / `targeted` / `complete`
     /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
         .unsafeFlags(["-strict-concurrency=targeted"]),
@@ -51,7 +54,7 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
-        .package(url: "https://github.com/apple/swift-markdown.git", .branch("main")),
+        .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
         .package(
             url: "https://github.com/gwynne/swift-semver",
             from: "0.1.0-alpha.3"
