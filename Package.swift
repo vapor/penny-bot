@@ -96,6 +96,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
+                .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Models")
             ],
             swiftSettings: swiftSettings
@@ -184,7 +185,6 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "GHHooksLambda"),
                 .target(name: "Extensions"),
-                .target(name: "Models"),
                 .target(name: "SharedServices")
             ],
             path: "./Lambdas/GHOAuth",
@@ -215,10 +215,6 @@ let package = Package(
         ),
         .target(
             name: "Models",
-            dependencies: [
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "JWTKit", package: "jwt-kit"),
-            ],
             swiftSettings: swiftSettings
         ),
         .target(

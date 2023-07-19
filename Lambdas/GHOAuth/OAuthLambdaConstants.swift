@@ -1,6 +1,6 @@
 import DiscordBM
 
-enum OAuthLambdaConstants {
+enum Constants {
     enum Channels: ChannelSnowflake {
         case logs = "1067060193982156880"
         

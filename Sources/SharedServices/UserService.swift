@@ -35,9 +35,9 @@ public struct UserService {
         do {
             switch coinEntry.source {
             case .discord:
-                localUser = try await userRepo.getUser(discord: user.discordID!)
+                localUser = try await userRepo.getUser(discordID: user.discordID!)
             case .github:
-                localUser = try await userRepo.getUser(github: user.githubID!)
+                localUser = try await userRepo.getUser(githubID: user.githubID!)
             case .penny:
                 throw ServiceError.unimplemented()
             }
@@ -73,9 +73,9 @@ public struct UserService {
         do {
             switch source {
             case .discord:
-                localUser = try await userRepo.getUser(discord: user.discordID!)
+                localUser = try await userRepo.getUser(discordID: user.discordID!)
             case .github:
-                localUser = try await userRepo.getUser(github: user.githubID!)
+                localUser = try await userRepo.getUser(githubID: user.githubID!)
             case .penny:
                 throw ServiceError.unimplemented()
             }
@@ -89,17 +89,17 @@ public struct UserService {
     
     /// Returns nil if user does not exist.
     public func getUserWith(discordID id: String) async throws -> DynamoUser? {
-        try await userRepo.getUser(discord: id)
+        try await userRepo.getUser(discordID: id)
     }
     
     /// Returns nil if user does not exist.
     public func getUserWith(githubID id: String) async throws -> DynamoUser? {
-        try await userRepo.getUser(github: id)
+        try await userRepo.getUser(githubID: id)
     }
 
     /// Links an existing discord user to a github account.
-    public func linkGithubID(to discordID: String, githubID: String) async throws {
-        try await userRepo.linkGithubID(to: discordID, githubID)
+    public func linkGithubID(discordID: String, githubID: String) async throws {
+        try await userRepo.linkGithubID(discordID: discordID, githubID: githubID)
     }
     
     private func insertIntoDB(user account: DynamoUser, with coinEntry: CoinEntry) async throws -> DynamoUser {

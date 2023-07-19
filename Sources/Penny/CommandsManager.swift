@@ -118,12 +118,7 @@ enum GitHubSubCommand: String, CaseIterable {
         case .help:
             return []
         case .link:
-            return [.init(
-                type: .string,
-                name: "username",
-                description: "Your GitHub username",
-                required: true
-            )]
+            return []
         case .unlink:
             return []
         }

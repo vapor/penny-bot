@@ -1,3 +1,5 @@
+/// This file is duplicated in Sources/Penny, so make sure to edit both copies.
+
 import DiscordBM
 import JWTKit
 

@@ -4,10 +4,10 @@ import Models
 import Extensions
 
 struct DynamoUserRepository {
-    enum Error: Swift.Error {
+    enum Errors: Error, CustomStringConvertible {
         case discordUserNotFound(id: String)
 
-        var localizedDescription: String {
+        var description: String {
             switch self {
             case .discordUserNotFound(let id):
                 return "Discord user with ID \(id) not found"
@@ -45,9 +45,9 @@ struct DynamoUserRepository {
     }
     
     // MARK: - Retrieve
-    func getUser(discord id: String) async throws -> DynamoUser? {
+    func getUser(discordID: String) async throws -> DynamoUser? {
         let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s("DISCORD-\(id)")],
+            expressionAttributeValues: [":v1": .s("DISCORD-\(discordID)")],
             indexName: discordIndex,
             keyConditionExpression: "data1 = :v1",
             limit: 1,
@@ -57,9 +57,9 @@ struct DynamoUserRepository {
         return try await queryUser(with: query)
     }
     
-    func getUser(github id: String) async throws -> DynamoUser? {
+    func getUser(githubID: String) async throws -> DynamoUser? {
         let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s(id)],
+            expressionAttributeValues: [":v1": .s(githubID)],
             indexName: githubIndex,
             keyConditionExpression: "data2 = :v1",
             limit: 1,
@@ -95,8 +95,11 @@ struct DynamoUserRepository {
     
     // MARK: - Link users
 
-    func linkGithubID(to discordID: String, _ githubID: String) async throws {
-        logger.trace("Linking Github ID \(githubID) with Discord ID \(discordID)")
+    func linkGithubID(discordID: String, githubID: String) async throws {
+        logger.debug("Linking account to GitHub", metadata: [
+            "discordID": .string(discordID),
+            "githubID": .string(githubID)
+        ])
 
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s("DISCORD-\(discordID)")],
@@ -107,7 +110,7 @@ struct DynamoUserRepository {
         )
 
         guard let user = try await queryUser(with: query) else {
-            throw Error.discordUserNotFound(id: discordID)
+            throw Errors.discordUserNotFound(id: discordID)
         }
 
         let updatedUser = DynamoUser(

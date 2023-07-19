@@ -1,6 +1,6 @@
 import AWSLambdaEvents
 
-enum OAuthLambdaError: Error, CustomStringConvertible {
+enum Errors: Error, CustomStringConvertible {
     case envVarNotFound(name: String)
     case secretNotFound(arn: String)
     case badResponse(status: Int)

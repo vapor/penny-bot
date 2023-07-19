@@ -36,21 +36,14 @@ struct InteractionHandler {
         self.logger[metadataKey: "event"] = "\(event)"
     }
 
-    private func makeJWTSigners() -> JWTSigner? {
-        let signer: JWTSigner
-
+    private func makeJWTSigners() throws -> JWTSigner? {
         guard let privateKeyString = Constants.accountLinkOAuthPrivKey else {
             fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY env var")
         }
 
-        guard let privateKey = try? ECDSAKey.private(pem: privateKeyString) else {
-            logger.warning("JWT signer private key is not a valid PEM string")
-            return nil
-        }
+        let privateKey = try ECDSAKey.private(pem: privateKeyString)
 
-        signer = .es256(key: privateKey)
-
-        return signer
+        return JWTSigner.es256(key: privateKey)
     }
     
     func handle() async {
@@ -510,11 +503,6 @@ private extension InteractionHandler {
         let discordID = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
         let subcommand = try GitHubSubCommand(rawValue: first.name).requireValue()
-        let githubUsername = first.options?.first?.value
-
-        if subcommand == .link, githubUsername == nil {
-            return "You need to provide a GitHub username to link your account."
-        }
 
         switch subcommand {
         case GitHubSubCommand.link:
@@ -523,7 +511,7 @@ private extension InteractionHandler {
                 discordID: discordID, 
                 interactionToken: event.token
             )
-            guard let signer = makeJWTSigners() else {
+            guard let signer = try makeJWTSigners() else {
                 logger.error("Failed to make JWT signer")
                 return oops
             }
@@ -539,7 +527,7 @@ private extension InteractionHandler {
                 ]]
             )
         case GitHubSubCommand.unlink:
-            return "This command is still a WIP. Unlinking discordId: \(discordID) from GitHub account: \(String(describing: githubUsername))"
+            return "This command is still a WIP. Unlinking discordId: \(discordID)"
         case GitHubSubCommand.help:
             return "This command is still a WIP."
         }

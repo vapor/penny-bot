@@ -32,7 +32,7 @@ actor SecretsRetriever {
     /// Gets a secret directly from AWS.
     private func getSecretFromAWS(arnEnvVarKey: String) async throws -> Secret {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
-            throw OAuthLambdaError.envVarNotFound(name: arnEnvVarKey)
+            throw Errors.envVarNotFound(name: arnEnvVarKey)
         }
         logger.trace("Retrieving secret from AWS", metadata: [
             "arnEnvVarKey": .string(arnEnvVarKey)
@@ -42,7 +42,7 @@ actor SecretsRetriever {
             logger: logger
         )
         guard let secret = secret.secretString else {
-            throw OAuthLambdaError.secretNotFound(arn: arn)
+            throw Errors.secretNotFound(arn: arn)
         }
         return Secret(secret)
     }
