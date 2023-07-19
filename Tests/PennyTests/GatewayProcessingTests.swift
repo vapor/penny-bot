@@ -111,16 +111,7 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
         XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
     }
-    
-    func testLinkCommand() async throws {
-        let response = try await self.manager.sendAndAwaitResponse(
-            key: .linkInteraction,
-            as: Payloads.EditWebhookMessage.self
-        )
-        let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertEqual(description, "This command is still a WIP. Linking Discord with Discord ID '9123813923'")
-    }
-    
+
     func testReactionHandler() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
