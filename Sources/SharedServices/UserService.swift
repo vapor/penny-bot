@@ -96,6 +96,11 @@ public struct UserService {
     public func getUserWith(githubID id: String) async throws -> DynamoUser? {
         try await userRepo.getUser(github: id)
     }
+
+    /// Links an existing discord user to a github account.
+    public func linkUser(discordID: String, githubID: String) async throws {
+        try await userRepo.linkGithub(with: discordID, githubID)
+    }
     
     private func insertIntoDB(user account: DynamoUser, with coinEntry: CoinEntry) async throws -> DynamoUser {
         var localUser = account

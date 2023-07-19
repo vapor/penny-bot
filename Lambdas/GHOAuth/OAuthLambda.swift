@@ -7,6 +7,7 @@ import SotoSecretsManager
 import GHHooksLambda
 import Models
 import JWTKit
+import SharedServices
 
 @main
 struct GHOAuthHandler: LambdaHandler {
@@ -19,6 +20,7 @@ struct GHOAuthHandler: LambdaHandler {
     let discordClient: any DiscordClient
     let jsonDecoder: JSONDecoder
     let jsonEncoder: JSONEncoder
+    let userService: UserService
 
     init(context: LambdaInitializationContext) async throws {
         self.client = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
@@ -29,6 +31,8 @@ struct GHOAuthHandler: LambdaHandler {
 
         let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
         self.discordClient = await DefaultDiscordClient(httpClient: client, token: botToken)
+
+        self.userService = UserService(awsClient, logger)
 
         self.jsonDecoder = JSONDecoder()
         self.jsonEncoder = JSONEncoder()
@@ -44,7 +48,7 @@ struct GHOAuthHandler: LambdaHandler {
         let accessToken: String
 
         do {
-            accessToken = try await getAccessToken(code: code)
+            accessToken = try await getGHAccessToken(code: code)
         } catch {
             logger.error("Error getting access token: \(error)")
             return .init(statusCode: .badRequest, body: "Error getting access token")
@@ -53,20 +57,27 @@ struct GHOAuthHandler: LambdaHandler {
         let userID: Int
 
         do {
-            userID = try await getUserID(accessToken: accessToken)
+            userID = try await getGHUserID(accessToken: accessToken)
         } catch {
             logger.error("Error getting user ID: \(error)")
             return .init(statusCode: .badRequest, body: "Error getting user")
         }
 
+        let jwt: GHOAuthPayload
+
         do {
-            let jwt = try await verifyState(state: String(event.queryStringParameters?["state"] ?? ""))
+            jwt = try await verifyState(state: String(event.queryStringParameters?["state"] ?? ""))
         } catch {
             logger.error("Error during state verification: error: \(error), state: \(event.queryStringParameters?["state"] ?? "")")
             return .init(statusCode: .badRequest, body: "Error verifying state")
         }
 
-        // TODO: Link id to Discord user
+        do {
+            try await userService.linkUser(discordID: jwt.discordID.rawValue, githubID: userID.description)
+        } catch {
+            logger.error("Error linking user with Discord ID \(jwt.discordID) and GitHub ID \(userID): \(error)")
+            return .init(statusCode: .badRequest, body: "Error linking user")
+        }
 
         return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
     }
@@ -92,7 +103,7 @@ struct GHOAuthHandler: LambdaHandler {
         return payload
     }
 
-    func getAccessToken(code: String) async throws -> String {
+    func getGHAccessToken(code: String) async throws -> String {
         logger.trace("Retrieving GitHub client secrets")
 
         let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
@@ -129,7 +140,7 @@ struct GHOAuthHandler: LambdaHandler {
         return accessToken
     }
 
-    func getUserID(accessToken: String) async throws -> Int {
+    func getGHUserID(accessToken: String) async throws -> Int {
         logger.trace("Requesting GitHub user info")
 
         // https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user

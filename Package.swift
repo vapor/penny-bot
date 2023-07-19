@@ -178,6 +178,7 @@ let package = Package(
                 .target(name: "GHHooksLambda"),
                 .target(name: "Extensions"),
                 .target(name: "Models"),
+                .target(name: "SharedServices")
             ],
             path: "./Lambdas/GHOAuth",
             swiftSettings: swiftSettings

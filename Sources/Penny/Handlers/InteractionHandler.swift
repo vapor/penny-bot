@@ -521,7 +521,7 @@ private extension InteractionHandler {
             let clientID = Constants.ghOAuthClientId!
             let jwt = GHOAuthPayload(
                 discordID: discordID, 
-                interactionID: event.id
+                interactionToken: event.token
             )
             guard let signer = makeJWTSigners() else {
                 logger.error("Failed to make JWT signer")

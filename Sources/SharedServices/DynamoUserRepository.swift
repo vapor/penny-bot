@@ -85,18 +85,33 @@ struct DynamoUserRepository {
     
     // MARK: - Link users
 
-    func linkGithub(with discordId: String, _ githubId: String) async throws -> String {
-        // TODO: Wip
+    func linkGithub(with discordID: String, _ githubID: String) async throws {
+        logger.trace("Linking Github ID \(githubID) with Discord ID \(discordID)")
+        enum Error: Swift.Error {
+            case discordUserNotFound(id: String)
+
+            var localizedDescription: String {
+                switch self {
+                case .discordUserNotFound(let id):
+                    return "Discord user with ID \(id) not found"
+                }
+            }
+        }
         let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s("DISCORD-\(discordId)")],
+            expressionAttributeValues: [":v1": .s("DISCORD-\(discordID)")],
             indexName: discordIndex,
             keyConditionExpression: "data1 = :v1",
             limit: 1,
             tableName: self.tableName
         )
-        
 
+        guard let user = try await queryUser(with: query) else {
+            throw Error.discordUserNotFound(id: discordID)
+        }
 
-        abort()
+        let updatedUser = DynamoDBUser(user: user)
+            .updateGithubID(with: githubID)
+
+        try await updateUser(updatedUser)
     }
 }
