@@ -11436,7 +11436,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/name`.
                 public var name: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/description`.
-                public var description: Swift.String
+                public var description: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/color`.
                 public var color: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/default`.
@@ -11456,7 +11456,7 @@ public enum Components {
                     node_id: Swift.String,
                     url: Swift.String,
                     name: Swift.String,
-                    description: Swift.String,
+                    description: Swift.String? = nil,
                     color: Swift.String,
                     _default: Swift.Bool
                 ) {

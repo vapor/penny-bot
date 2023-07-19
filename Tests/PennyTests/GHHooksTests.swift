@@ -306,6 +306,11 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "pr11",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
     }
 
     func handleEvent(

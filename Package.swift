@@ -41,7 +41,9 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "Penny", targets: ["Penny"])
+        .executable(name: "Penny", targets: ["Penny"]),
+        /// For Xcode's command-plugin UI to show `GitHubAPI` as an option.
+        .library(name: "GitHubAPI", targets: ["GitHubAPI"])
     ],
     dependencies: [
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
