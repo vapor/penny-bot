@@ -37,9 +37,6 @@ struct GHOAuthHandler: LambdaHandler {
         let awsClient = AWSClient(httpClientProvider: .shared(client))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
-        let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-        self.discordClient = await DefaultDiscordClient(httpClient: client, token: botToken)
-
         self.userService = UserService(awsClient, logger)
 
         self.jsonDecoder = JSONDecoder()
