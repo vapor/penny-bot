@@ -1,4 +1,5 @@
 @testable import GHHooksLambda
+import AsyncHTTPClient
 import GitHubAPI
 import SotoCore
 import DiscordModels
@@ -17,8 +18,14 @@ class GHHooksTests: XCTestCase {
         return decoder
     }()
 
+    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
+    }
+
+    override func tearDown() {
+        try! httpClient.syncShutdown()
     }
 
     func testUnicodesPrefix() throws {
@@ -123,33 +130,129 @@ class GHHooksTests: XCTestCase {
         }
     }
 
-    func testMarkdown() async throws {
+    func testMarkdownFormatting() async throws {
+        do {
+            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
+
+            <!-- Describe your changes clearly and use examples if possible -->
+
+            \(scalars_206)
+
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, scalars_206)
+        }
+
+        do {
+            let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
+
+            <!-- Describe your changes clearly and use examples if possible -->
+
+            \(scalars_190)
+
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, scalars_190 + """
+
+
+            Custom coders specified for a single `JWTSigner` affect token…
+            """)
+        }
+
+        do {
+            let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
+
+            <!-- Describe your changes clearly and use examples if possible -->
+
+            \(scalars_aLot)
+
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+            on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
+            XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token ...")
+        }
+    }
+
+    func testParseCodeOwners() async throws {
         let text = """
-        <!-- 🚀 Thank you for contributing! -->
+        # This is a comment.
+        # Each line is a file pattern followed by one or more owners.
 
-        <!-- Describe your changes clearly and use examples if possible -->
+        # These owners will be the default owners for everything in
+        *       @global-owner1 @global-owner2
 
-        Add dark mode support using Material for MkDocs theme standard color schemas.
+        *.js    @js-owner #This is an inline comment.
 
-        <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+        *.go docs@example.com
 
-        <img width="1265" alt="Vapor_docs_light" src="https://github.com/vapor/docs/assets/54376466/f6006cca-bbd2-45ce-a7ae-8e749d98ec05">
+        *.txt @octo-org/octocats
+        /build/logs/ @doctocat
 
-        <!-- When this PR is merged, the title and body will be -->
+        # The `docs/*` pattern will match files like
+        # `docs/getting-started.md` but not further nested files like
+        # `docs/build-app/troubleshooting.md`.
+        docs/*  docs@example.com
 
-        Add dark mode support
+        apps/ @octocat
+        /docs/ @doctocat
+        /scripts/ @doctocat @octocat
+        **/logs @octocat
 
-        <!-- used to generate a release automatically. -->
+        /apps/ @octocat
+        /apps/github
         """
+        let data = TestData.for(ghEventKey: "pr1")!
+        let event = try decoder.decode(GHEvent.self, from: data)
+        let context = try makeContext(
+            eventName: .pull_request,
+            event: event
+        )
+        let handler = try ReleaseHandler(
+            context: context,
+            pr: context.event.pull_request!,
+            number: context.event.number!
+        )
+        XCTAssertEqual(
+            handler.parseCodeOwners(text: text).sorted(),
+            ["docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner", "octo-org/octocats", "octocat"]
+        )
+    }
 
-        let doc = Document(parsing: text)
-        let docNoHTML = doc.removeHTMLBlocks()
-
-        XCTAssertEqual(docNoHTML?.format(), """
-        Add dark mode support using Material for MkDocs theme standard color schemas.
-
-        Add dark mode support
-        """)
+    func testMakeReleaseBody() async throws {
+        let data = TestData.for(ghEventKey: "pr4")!
+        let event = try decoder.decode(GHEvent.self, from: data)
+        let context = try makeContext(
+            eventName: .pull_request,
+            event: event
+        )
+        let handler = try ReleaseHandler(
+            context: context,
+            pr: context.event.pull_request!,
+            number: context.event.number!
+        )
+        let body = try await handler.makeReleaseBody(
+            mergedBy: context.event.pull_request!.merged_by!,
+            previousVersion: "v2.3.1",
+            newVersion: "v2.4.5"
+        )
+        XCTAssertEqual(body, "###### _This patch was released by @MahdiBM._\n\n## What\'s Changed\nUse GH OpenAPI spec + swift-oapi-generator to generate GHHooks models by @MahdiBM in #61\n\n> Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\n> \n> The downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\n> The upside is we won’t need to make these models / api-endpoints in the future.\n\n\n## Reviewers\nThanks to the reviewers for their help:\n- @ffried\n- @dnadoba\n\n**Full Changelog**: https://github.com/vapor/penny-bot/compare/v2.3.1...v2.4.5")
     }
 
     func testEventHandler() async throws {
@@ -193,6 +296,27 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "pr9",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "pr10",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "pr11",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
+
+        try await handleEvent(
+            key: "projects_v2_item1",
+            eventName: .projects_v2_item,
+            expect: .noResponse
+        )
     }
 
     func handleEvent(
@@ -205,15 +329,9 @@ class GHHooksTests: XCTestCase {
         do {
             let event = try decoder.decode(GHEvent.self, from: data)
             try await EventHandler(
-                context: .init(
+                context: makeContext(
                     eventName: eventName,
-                    event: event,
-                    discordClient: FakeDiscordClient(),
-                    githubClient: Client(
-                        serverURL: try Servers.server1(),
-                        transport: FakeClientTransport()
-                    ),
-                    logger: Logger(label: "GHHooksTests")
+                    event: event
                 )
             ).handle()
             if case let .response(channel, responseType) = expect {
@@ -262,7 +380,22 @@ class GHHooksTests: XCTestCase {
         }
     }
 
+    func makeContext(eventName: GHEvent.Kind, event: GHEvent) throws -> HandlerContext {
+        HandlerContext(
+            eventName: eventName,
+            event: event,
+            httpClient: httpClient,
+            discordClient: FakeDiscordClient(),
+            githubClient: Client(
+                serverURL: try Servers.server1(),
+                transport: FakeClientTransport()
+            ),
+            logger: Logger(label: "GHHooksTests")
+        )
+    }
+
     enum Expectation {
+
         enum ResponseKind {
             case create
             case edit(messageId: MessageSnowflake)

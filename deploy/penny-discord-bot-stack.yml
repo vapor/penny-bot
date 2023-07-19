@@ -419,7 +419,7 @@ Resources:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
           WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           GH_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:release-bot/github-access-token-pJOxYU
-          GH_APP_AUTH_PRIV_KEY: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
+          GH_APP_AUTH_PRIV_KEY_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
           LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}-lambda
       Handler: handler

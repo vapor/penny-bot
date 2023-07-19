@@ -6,6 +6,9 @@ import PackageDescription
 /// Bug alert! Don't move this constant to the end of the file, or it won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 let swiftSettings: [SwiftSetting] = [
+    /// https://github.com/apple/swift/issues/67214
+        .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
+    
     /// `minimal` / `targeted` / `complete`
     /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
         .unsafeFlags(["-strict-concurrency=targeted"]),
@@ -38,7 +41,9 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "Penny", targets: ["Penny"])
+        .executable(name: "Penny", targets: ["Penny"]),
+        /// For Xcode's command-plugin UI to show `GitHubAPI` as an option.
+        .library(name: "GitHubAPI", targets: ["GitHubAPI"])
     ],
     dependencies: [
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
@@ -51,7 +56,7 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
-        .package(url: "https://github.com/apple/swift-markdown.git", .branch("main")),
+        .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
         .package(
             url: "https://github.com/gwynne/swift-semver",
             from: "0.1.0-alpha.3"
@@ -160,6 +165,7 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Markdown", package: "swift-markdown"),
+                .product(name: "Collections", package: "swift-collections"),
                 .target(name: "GitHubAPI"),
                 .target(name: "Extensions"),
             ],
@@ -228,6 +234,7 @@ let package = Package(
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .target(name: "Penny"),
             ],
             path: "./Tests/Fake",

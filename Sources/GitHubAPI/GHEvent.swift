@@ -3,7 +3,7 @@ import Foundation
 public struct GHEvent: Codable {
     public let action: String?
     public let sender: User
-    public let repository: Repository
+    public let repository: Repository?
     public let organization: Organization
 
     public let issue: Issue?

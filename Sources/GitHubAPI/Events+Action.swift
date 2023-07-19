@@ -22,6 +22,7 @@ extension PullRequest {
         case unassigned
         case unlabeled
         case unlocked
+        case submitted
     }
 }
 

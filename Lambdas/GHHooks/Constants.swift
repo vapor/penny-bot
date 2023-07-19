@@ -2,7 +2,12 @@ import DiscordBM
 
 enum Constants {
 
-    static let pennyGitHubAppID = 360798
+    enum GitHub {
+        /// The app-id of Penny.
+        static let appID = 360798
+        /// The installation-id of Penny for Vapor org.
+        static let installationID = 39698047
+    }
 
     enum Channels: ChannelSnowflake {
         case logs = "1067060193982156880"

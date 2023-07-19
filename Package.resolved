@@ -41,8 +41,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/jwt-kit.git",
       "state" : {
-        "revision" : "dd3fe317f826d43bcefbe20d86f0f787927d05d8",
-        "version" : "4.12.0"
+        "revision" : "9e929d925434b91857661bcd455d1bd53f00bf22",
+        "version" : "4.13.0"
       }
     },
     {
@@ -256,8 +256,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
       "state" : {
-        "revision" : "32f3ae2f51e4989d540ce7f46d770f224fe51a28",
-        "version" : "0.1.1"
+        "revision" : "875fecf08b5850f3fe81ae77c2c7566a7c9495bf",
+        "version" : "0.1.2"
       }
     },
     {
@@ -266,7 +266,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "94f110c6ce6704728d294c37af185f3540044d81"
+        "revision" : "a97bc8ed6bacc14c22cea968ca7942622f398e13"
       }
     },
     {
@@ -274,8 +274,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "e81f70f2a8b445224dc6b97d0c31ed0d190e04de",
-        "version" : "0.1.4"
+        "revision" : "c5ab4e85a1b86cae78d5e40d845cf3b4b4497cf7",
+        "version" : "0.1.5"
       }
     },
     {

@@ -4,6 +4,7 @@ import OpenAPIRuntime
 import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import Logging
+import Foundation
 import struct DiscordModels.Secret
 
 actor Authenticator {
@@ -14,7 +15,7 @@ actor Authenticator {
     /// The cached access token.
     private var cachedAccessToken: InstallationToken?
 
-    private let lock = ActorLock()
+    private let queue = SerialProcessor()
 
     init(secretsRetriever: SecretsRetriever, httpClient: HTTPClient, logger: Logger) {
         self.secretsRetriever = secretsRetriever
@@ -24,8 +25,11 @@ actor Authenticator {
 
     /// TODO: Actually "refresh" the token if needed and possible,
     /// instead of just creating a new one.
+    /// This requires having a more persistent caching mechanism to cache the token
+    /// across different lambda processes, so it is possible for the installation token to
+    /// live long enough to be expired in the first place, so then we can think of refreshing it.
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> Secret {
-        try await lock.withLock {
+        try await queue.process {
             if !forceRefreshToken,
                let cachedAccessToken = await cachedAccessToken {
                 return Secret(cachedAccessToken.token)
@@ -41,7 +45,7 @@ actor Authenticator {
 
     private func createAccessToken(client: Client) async throws -> InstallationToken {
         let response = try await client.apps_create_installation_access_token(.init(
-            path: .init(installation_id: Constants.pennyGitHubAppID)
+            path: .init(installation_id: Constants.GitHub.installationID)
         ))
 
         if case let .created(created) = response,
@@ -70,7 +74,14 @@ actor Authenticator {
     }
 
     private func makeJWTToken() async throws -> Secret {
-        let signers = JWTSigners()
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .integerSecondsSince1970
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .integerSecondsSince1970
+        let signers = JWTSigners(
+            defaultJSONEncoder: encoder,
+            defaultJSONDecoder: decoder
+        )
         let key = try await getPrivKey()
         try signers.use(.rs256(key: .private(pem: key.value)))
         let payload = TokenPayload()
@@ -79,7 +90,7 @@ actor Authenticator {
     }
 
     private func getPrivKey() async throws -> Secret {
-        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY")
+        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY_ARN")
     }
 
     private func setCachedAccessToken(to token: InstallationToken) {
@@ -111,7 +122,7 @@ private struct TokenPayload: JWTPayload, Equatable {
         /// 5 mins into the future. GitHub docs says no more than 10 mins.
         self.expiresAt = .init(value: Date().addingTimeInterval(5 * 60))
         /// The app-id, per GitHub docs.
-        self.issuer = "\(Constants.pennyGitHubAppID)"
+        self.issuer = "\(Constants.GitHub.appID)"
         /// `RS256`, per GitHub docs.
         self.algorithm = "RS256"
     }

@@ -4,15 +4,20 @@ import Markdown
 
 struct IssueHandler {
     let context: HandlerContext
+    var event: GHEvent {
+        context.event
+    }
 
     func handle() async throws {
-        let action = context.event.action.flatMap({ Issue.Action(rawValue: $0) })
+        let action = try event.action
+            .flatMap({ Issue.Action(rawValue: $0) })
+            .requireValue()
         switch action {
         case .opened:
             try await onOpened()
         case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
             try await onEdited()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned, .none:
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned:
             break
         }
     }
@@ -34,8 +39,6 @@ struct IssueHandler {
     }
 
     func createReportEmbed() throws -> Embed {
-        let event = context.event
-
         let issue = try event.issue.requireValue()
 
         let number = try event.issue.requireValue().number
@@ -45,13 +48,14 @@ struct IssueHandler {
 
         let issueLink = issue.html_url
 
-        let repoName = event.repository.uiName
+        let repoName = try event.repository.requireValue().uiName
 
         let body = issue.body.map { body -> String in
-            let formatted = Document(parsing: body)
-                .removeHTMLBlocks()?
-                .format() ?? ""
-            return formatted.isEmpty ? "" : ">>> \(formatted)".unicodesPrefix(260)
+            let formatted = body.formatMarkdown(
+                maxLength: 256,
+                trailingParagraphMinLength: 128
+            )
+            return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
         let description = """
@@ -81,13 +85,16 @@ struct IssueHandler {
 }
 
 private enum Status: String {
-    case closed = "Closed"
+    case done = "Done"
+    case notPlanned = "Not Planned"
     case opened = "Opened"
 
     var color: DiscordColor {
         switch self {
-        case .closed:
-            return .brown
+        case .done:
+            return .teal
+        case .notPlanned:
+            return .gray(level: .level2, scheme: .dark)
         case .opened:
             return .yellow
         }
@@ -95,7 +102,7 @@ private enum Status: String {
 
     var titleDescription: String? {
         switch self {
-        case .closed:
+        case .done, .notPlanned:
             return self.rawValue
         case .opened:
             return nil
@@ -103,8 +110,10 @@ private enum Status: String {
     }
 
     init(issue: Issue) {
-        if issue.closed_at != nil {
-            self = .closed
+        if issue.state_reason == .not_planned {
+            self = .notPlanned
+        } else if issue.closed_at != nil {
+            self = .done
         } else {
             self = .opened
         }

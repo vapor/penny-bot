@@ -36,6 +36,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
     func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output
+    /// List repository contributors
+    ///
+    /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
+    ///
+    /// GitHub identifies contributors by author email address. This endpoint groups contribution counts by GitHub user, which includes all associated email addresses. To improve performance, only the first 500 author email addresses in the repository link to GitHub users. The rest will appear as anonymous contributors without associated GitHub user information.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
+    func repos_list_contributors(_ input: Operations.repos_list_contributors.Input) async throws
+        -> Operations.repos_list_contributors.Output
     /// List repository issues
     ///
     /// List issues in a repository. Only open issues will be listed.
@@ -72,6 +82,14 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
     func pulls_list(_ input: Operations.pulls_list.Input) async throws
         -> Operations.pulls_list.Output
+    /// List review comments on a pull request
+    ///
+    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
+    func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
+        async throws -> Operations.pulls_list_review_comments.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -10755,6 +10773,145 @@ public enum Components {
                 case draft
             }
         }
+        /// Contributor
+        ///
+        /// - Remark: Generated from `#/components/schemas/contributor`.
+        public struct contributor: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/contributor/login`.
+            public var login: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/id`.
+            public var id: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/contributor/node_id`.
+            public var node_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/avatar_url`.
+            public var avatar_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/gravatar_id`.
+            public var gravatar_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/url`.
+            public var url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/html_url`.
+            public var html_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/followers_url`.
+            public var followers_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/following_url`.
+            public var following_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/gists_url`.
+            public var gists_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/starred_url`.
+            public var starred_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/subscriptions_url`.
+            public var subscriptions_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/organizations_url`.
+            public var organizations_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/repos_url`.
+            public var repos_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/events_url`.
+            public var events_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/received_events_url`.
+            public var received_events_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/type`.
+            public var _type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/contributor/site_admin`.
+            public var site_admin: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/contributor/contributions`.
+            public var contributions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/contributor/email`.
+            public var email: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/contributor/name`.
+            public var name: Swift.String?
+            /// Creates a new `contributor`.
+            ///
+            /// - Parameters:
+            ///   - login:
+            ///   - id:
+            ///   - node_id:
+            ///   - avatar_url:
+            ///   - gravatar_id:
+            ///   - url:
+            ///   - html_url:
+            ///   - followers_url:
+            ///   - following_url:
+            ///   - gists_url:
+            ///   - starred_url:
+            ///   - subscriptions_url:
+            ///   - organizations_url:
+            ///   - repos_url:
+            ///   - events_url:
+            ///   - received_events_url:
+            ///   - _type:
+            ///   - site_admin:
+            ///   - contributions:
+            ///   - email:
+            ///   - name:
+            public init(
+                login: Swift.String? = nil,
+                id: Swift.Int? = nil,
+                node_id: Swift.String? = nil,
+                avatar_url: Swift.String? = nil,
+                gravatar_id: Swift.String? = nil,
+                url: Swift.String? = nil,
+                html_url: Swift.String? = nil,
+                followers_url: Swift.String? = nil,
+                following_url: Swift.String? = nil,
+                gists_url: Swift.String? = nil,
+                starred_url: Swift.String? = nil,
+                subscriptions_url: Swift.String? = nil,
+                organizations_url: Swift.String? = nil,
+                repos_url: Swift.String? = nil,
+                events_url: Swift.String? = nil,
+                received_events_url: Swift.String? = nil,
+                _type: Swift.String,
+                site_admin: Swift.Bool? = nil,
+                contributions: Swift.Int,
+                email: Swift.String? = nil,
+                name: Swift.String? = nil
+            ) {
+                self.login = login
+                self.id = id
+                self.node_id = node_id
+                self.avatar_url = avatar_url
+                self.gravatar_id = gravatar_id
+                self.url = url
+                self.html_url = html_url
+                self.followers_url = followers_url
+                self.following_url = following_url
+                self.gists_url = gists_url
+                self.starred_url = starred_url
+                self.subscriptions_url = subscriptions_url
+                self.organizations_url = organizations_url
+                self.repos_url = repos_url
+                self.events_url = events_url
+                self.received_events_url = received_events_url
+                self._type = _type
+                self.site_admin = site_admin
+                self.contributions = contributions
+                self.email = email
+                self.name = name
+            }
+            public enum CodingKeys: String, CodingKey {
+                case login
+                case id
+                case node_id
+                case avatar_url
+                case gravatar_id
+                case url
+                case html_url
+                case followers_url
+                case following_url
+                case gists_url
+                case starred_url
+                case subscriptions_url
+                case organizations_url
+                case repos_url
+                case events_url
+                case received_events_url
+                case _type = "type"
+                case site_admin
+                case contributions
+                case email
+                case name
+            }
+        }
         /// Color-coded labels help you categorize and filter your issues (just like labels in Gmail).
         ///
         /// - Remark: Generated from `#/components/schemas/label`.
@@ -10814,6 +10971,385 @@ public enum Components {
                 case description
                 case color
                 case _default = "default"
+            }
+        }
+        /// Pull Request Review Comments are comments on a portion of the Pull Request's diff.
+        ///
+        /// - Remark: Generated from `#/components/schemas/pull-request-review-comment`.
+        public struct pull_request_review_comment: Codable, Equatable, Hashable, Sendable {
+            /// URL for the pull request review comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/url`.
+            public var url: Swift.String
+            /// The ID of the pull request review to which the comment belongs.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/pull_request_review_id`.
+            public var pull_request_review_id: Swift.Int
+            /// The ID of the pull request review comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/id`.
+            public var id: Swift.Int
+            /// The node ID of the pull request review comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/node_id`.
+            public var node_id: Swift.String
+            /// The diff of the line that the comment refers to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/diff_hunk`.
+            public var diff_hunk: Swift.String
+            /// The relative path of the file to which the comment applies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/path`.
+            public var path: Swift.String
+            /// The line index in the diff to which the comment applies. This field is deprecated; use `line` instead.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/position`.
+            public var position: Swift.Int?
+            /// The index of the original line in the diff to which the comment applies. This field is deprecated; use `original_line` instead.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_position`.
+            public var original_position: Swift.Int?
+            /// The SHA of the commit to which the comment applies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/commit_id`.
+            public var commit_id: Swift.String
+            /// The SHA of the original commit to which the comment applies.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_commit_id`.
+            public var original_commit_id: Swift.String
+            /// The comment ID to reply to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/in_reply_to_id`.
+            public var in_reply_to_id: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/user`.
+            public var user: Components.Schemas.simple_user
+            /// The text of the comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body`.
+            public var body: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/updated_at`.
+            public var updated_at: Foundation.Date
+            /// HTML URL for the pull request review comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/html_url`.
+            public var html_url: Swift.String
+            /// URL for the pull request that the review comment belongs to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/pull_request_url`.
+            public var pull_request_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links`.
+            public struct _linksPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
+                public struct _selfPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self/href`.
+                    public var href: Swift.String
+                    /// Creates a new `_selfPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
+                public var _self:
+                    Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
+                public struct htmlPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html/href`.
+                    public var href: Swift.String
+                    /// Creates a new `htmlPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
+                public var html:
+                    Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
+                public struct pull_requestPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request/href`.
+                    public var href: Swift.String
+                    /// Creates a new `pull_requestPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
+                public var pull_request:
+                    Components.Schemas.pull_request_review_comment._linksPayload.pull_requestPayload
+                /// Creates a new `_linksPayload`.
+                ///
+                /// - Parameters:
+                ///   - _self:
+                ///   - html:
+                ///   - pull_request:
+                public init(
+                    _self: Components.Schemas.pull_request_review_comment._linksPayload
+                        ._selfPayload,
+                    html: Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload,
+                    pull_request: Components.Schemas.pull_request_review_comment._linksPayload
+                        .pull_requestPayload
+                ) {
+                    self._self = _self
+                    self.html = html
+                    self.pull_request = pull_request
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case _self = "self"
+                    case html
+                    case pull_request
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links`.
+            public var _links: Components.Schemas.pull_request_review_comment._linksPayload
+            /// The first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_line`.
+            public var start_line: Swift.Int?
+            /// The first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_start_line`.
+            public var original_start_line: Swift.Int?
+            /// The side of the first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
+            @frozen
+            public enum start_sidePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case LEFT
+                case RIGHT
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "LEFT": self = .LEFT
+                    case "RIGHT": self = .RIGHT
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .LEFT: return "LEFT"
+                    case .RIGHT: return "RIGHT"
+                    }
+                }
+                public static var allCases: [start_sidePayload] { [.LEFT, .RIGHT] }
+            }
+            /// The side of the first line of the range for a multi-line comment.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
+            public var start_side: Components.Schemas.pull_request_review_comment.start_sidePayload?
+            /// The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/line`.
+            public var line: Swift.Int?
+            /// The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/original_line`.
+            public var original_line: Swift.Int?
+            /// The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/side`.
+            @frozen
+            public enum sidePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case LEFT
+                case RIGHT
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "LEFT": self = .LEFT
+                    case "RIGHT": self = .RIGHT
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .LEFT: return "LEFT"
+                    case .RIGHT: return "RIGHT"
+                    }
+                }
+                public static var allCases: [sidePayload] { [.LEFT, .RIGHT] }
+            }
+            /// The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/side`.
+            public var side: Components.Schemas.pull_request_review_comment.sidePayload?
+            /// The level at which the comment is targeted, can be a diff line or a file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
+            @frozen
+            public enum subject_typePayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case line
+                case file
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "line": self = .line
+                    case "file": self = .file
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .line: return "line"
+                    case .file: return "file"
+                    }
+                }
+                public static var allCases: [subject_typePayload] { [.line, .file] }
+            }
+            /// The level at which the comment is targeted, can be a diff line or a file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
+            public var subject_type:
+                Components.Schemas.pull_request_review_comment.subject_typePayload?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/reactions`.
+            public var reactions: Components.Schemas.reaction_rollup?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body_html`.
+            public var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body_text`.
+            public var body_text: Swift.String?
+            /// Creates a new `pull_request_review_comment`.
+            ///
+            /// - Parameters:
+            ///   - url: URL for the pull request review comment
+            ///   - pull_request_review_id: The ID of the pull request review to which the comment belongs.
+            ///   - id: The ID of the pull request review comment.
+            ///   - node_id: The node ID of the pull request review comment.
+            ///   - diff_hunk: The diff of the line that the comment refers to.
+            ///   - path: The relative path of the file to which the comment applies.
+            ///   - position: The line index in the diff to which the comment applies. This field is deprecated; use `line` instead.
+            ///   - original_position: The index of the original line in the diff to which the comment applies. This field is deprecated; use `original_line` instead.
+            ///   - commit_id: The SHA of the commit to which the comment applies.
+            ///   - original_commit_id: The SHA of the original commit to which the comment applies.
+            ///   - in_reply_to_id: The comment ID to reply to.
+            ///   - user:
+            ///   - body: The text of the comment.
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - html_url: HTML URL for the pull request review comment.
+            ///   - pull_request_url: URL for the pull request that the review comment belongs to.
+            ///   - author_association:
+            ///   - _links:
+            ///   - start_line: The first line of the range for a multi-line comment.
+            ///   - original_start_line: The first line of the range for a multi-line comment.
+            ///   - start_side: The side of the first line of the range for a multi-line comment.
+            ///   - line: The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///   - original_line: The line of the blob to which the comment applies. The last line of the range for a multi-line comment
+            ///   - side: The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
+            ///   - subject_type: The level at which the comment is targeted, can be a diff line or a file.
+            ///   - reactions:
+            ///   - body_html:
+            ///   - body_text:
+            public init(
+                url: Swift.String,
+                pull_request_review_id: Swift.Int,
+                id: Swift.Int,
+                node_id: Swift.String,
+                diff_hunk: Swift.String,
+                path: Swift.String,
+                position: Swift.Int? = nil,
+                original_position: Swift.Int? = nil,
+                commit_id: Swift.String,
+                original_commit_id: Swift.String,
+                in_reply_to_id: Swift.Int? = nil,
+                user: Components.Schemas.simple_user,
+                body: Swift.String,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                html_url: Swift.String,
+                pull_request_url: Swift.String,
+                author_association: Components.Schemas.author_association,
+                _links: Components.Schemas.pull_request_review_comment._linksPayload,
+                start_line: Swift.Int? = nil,
+                original_start_line: Swift.Int? = nil,
+                start_side: Components.Schemas.pull_request_review_comment.start_sidePayload? = nil,
+                line: Swift.Int? = nil,
+                original_line: Swift.Int? = nil,
+                side: Components.Schemas.pull_request_review_comment.sidePayload? = nil,
+                subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload? =
+                    nil,
+                reactions: Components.Schemas.reaction_rollup? = nil,
+                body_html: Swift.String? = nil,
+                body_text: Swift.String? = nil
+            ) {
+                self.url = url
+                self.pull_request_review_id = pull_request_review_id
+                self.id = id
+                self.node_id = node_id
+                self.diff_hunk = diff_hunk
+                self.path = path
+                self.position = position
+                self.original_position = original_position
+                self.commit_id = commit_id
+                self.original_commit_id = original_commit_id
+                self.in_reply_to_id = in_reply_to_id
+                self.user = user
+                self.body = body
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.html_url = html_url
+                self.pull_request_url = pull_request_url
+                self.author_association = author_association
+                self._links = _links
+                self.start_line = start_line
+                self.original_start_line = original_start_line
+                self.start_side = start_side
+                self.line = line
+                self.original_line = original_line
+                self.side = side
+                self.subject_type = subject_type
+                self.reactions = reactions
+                self.body_html = body_html
+                self.body_text = body_text
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case pull_request_review_id
+                case id
+                case node_id
+                case diff_hunk
+                case path
+                case position
+                case original_position
+                case commit_id
+                case original_commit_id
+                case in_reply_to_id
+                case user
+                case body
+                case created_at
+                case updated_at
+                case html_url
+                case pull_request_url
+                case author_association
+                case _links
+                case start_line
+                case original_start_line
+                case start_side
+                case line
+                case original_line
+                case side
+                case subject_type
+                case reactions
+                case body_html
+                case body_text
             }
         }
         /// Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
@@ -10900,7 +11436,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/name`.
                 public var name: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/description`.
-                public var description: Swift.String
+                public var description: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/color`.
                 public var color: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/default`.
@@ -10920,7 +11456,7 @@ public enum Components {
                     node_id: Swift.String,
                     url: Swift.String,
                     name: Swift.String,
-                    description: Swift.String,
+                    description: Swift.String? = nil,
                     color: Swift.String,
                     _default: Swift.Bool
                 ) {
@@ -12777,31 +13313,31 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/draft`.
             public var draft: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged`.
-            public var merged: Swift.Bool
+            public var merged: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/mergeable`.
             public var mergeable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/rebaseable`.
             public var rebaseable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/mergeable_state`.
-            public var mergeable_state: Swift.String
+            public var mergeable_state: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged_by`.
             public var merged_by: Components.Schemas.nullable_simple_user?
             /// - Remark: Generated from `#/components/schemas/pull-request/comments`.
-            public var comments: Swift.Int
+            public var comments: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/review_comments`.
-            public var review_comments: Swift.Int
+            public var review_comments: Swift.Int?
             /// Indicates whether maintainers can modify the pull request.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request/maintainer_can_modify`.
-            public var maintainer_can_modify: Swift.Bool
+            public var maintainer_can_modify: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/commits`.
-            public var commits: Swift.Int
+            public var commits: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/additions`.
-            public var additions: Swift.Int
+            public var additions: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/deletions`.
-            public var deletions: Swift.Int
+            public var deletions: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/changed_files`.
-            public var changed_files: Swift.Int
+            public var changed_files: Swift.Int?
             /// Creates a new `pull_request`.
             ///
             /// - Parameters:
@@ -12890,18 +13426,18 @@ public enum Components {
                 author_association: Components.Schemas.author_association,
                 auto_merge: Components.Schemas.auto_merge? = nil,
                 draft: Swift.Bool? = nil,
-                merged: Swift.Bool,
+                merged: Swift.Bool? = nil,
                 mergeable: Swift.Bool? = nil,
                 rebaseable: Swift.Bool? = nil,
-                mergeable_state: Swift.String,
+                mergeable_state: Swift.String? = nil,
                 merged_by: Components.Schemas.nullable_simple_user? = nil,
-                comments: Swift.Int,
-                review_comments: Swift.Int,
-                maintainer_can_modify: Swift.Bool,
-                commits: Swift.Int,
-                additions: Swift.Int,
-                deletions: Swift.Int,
-                changed_files: Swift.Int
+                comments: Swift.Int? = nil,
+                review_comments: Swift.Int? = nil,
+                maintainer_can_modify: Swift.Bool? = nil,
+                commits: Swift.Int? = nil,
+                additions: Swift.Int? = nil,
+                deletions: Swift.Int? = nil,
+                changed_files: Swift.Int? = nil
             ) {
                 self.url = url
                 self.id = id
@@ -15511,6 +16047,169 @@ public enum Operations {
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
     }
+    /// List repository contributors
+    ///
+    /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
+    ///
+    /// GitHub identifies contributors by author email address. This endpoint groups contribution counts by GitHub user, which includes all associated email addresses. To improve performance, only the first 500 author email addresses in the repository link to GitHub users. The rest will appear as anonymous contributors without associated GitHub user information.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
+    public enum repos_list_contributors {
+        public static let id: String = "repos/list-contributors"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_list_contributors.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var anon: Swift.String?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - anon:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    anon: Swift.String? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.anon = anon
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_contributors.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_list_contributors.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_list_contributors.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_contributors.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_contributors.Input.Path,
+                query: Operations.repos_list_contributors.Input.Query = .init(),
+                headers: Operations.repos_list_contributors.Input.Headers = .init(),
+                cookies: Operations.repos_list_contributors.Input.Cookies = .init(),
+                body: Operations.repos_list_contributors.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_contributors.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.contributor])
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_list_contributors.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_contributors.Output.Ok.Headers,
+                    body: Operations.repos_list_contributors.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// if repository contains content
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_contributors.Output.Ok)
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_contributors.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.repos_list_contributors.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_contributors.Output.NoContent.Headers = .init(),
+                    body: Operations.repos_list_contributors.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response if repository is empty
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.repos_list_contributors.Output.NoContent)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
     /// List repository issues
     ///
     /// List issues in a repository. Only open issues will be listed.
@@ -16152,6 +16851,193 @@ public enum Operations {
             ///
             /// HTTP response code: `422 unprocessableEntity`.
             case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List review comments on a pull request
+    ///
+    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
+    public enum pulls_list_review_comments {
+        public static let id: String = "pulls/list-review-comments"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var pull_number: Components.Parameters.pull_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - pull_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    pull_number: Components.Parameters.pull_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.pull_number = pull_number
+                }
+            }
+            public var path: Operations.pulls_list_review_comments.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/components/parameters/sort`.
+                @frozen
+                public enum sort: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                    _AutoLosslessStringConvertible, CaseIterable
+                {
+                    case created
+                    case updated
+                    /// Parsed a raw value that was not defined in the OpenAPI document.
+                    case undocumented(String)
+                    public init?(rawValue: String) {
+                        switch rawValue {
+                        case "created": self = .created
+                        case "updated": self = .updated
+                        default: self = .undocumented(rawValue)
+                        }
+                    }
+                    public var rawValue: String {
+                        switch self {
+                        case let .undocumented(string): return string
+                        case .created: return "created"
+                        case .updated: return "updated"
+                        }
+                    }
+                    public static var allCases: [sort] { [.created, .updated] }
+                }
+                public var sort: Components.Parameters.sort?
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
+                @frozen
+                public enum directionPayload: RawRepresentable, Codable, Equatable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                {
+                    case asc
+                    case desc
+                    /// Parsed a raw value that was not defined in the OpenAPI document.
+                    case undocumented(String)
+                    public init?(rawValue: String) {
+                        switch rawValue {
+                        case "asc": self = .asc
+                        case "desc": self = .desc
+                        default: self = .undocumented(rawValue)
+                        }
+                    }
+                    public var rawValue: String {
+                        switch self {
+                        case let .undocumented(string): return string
+                        case .asc: return "asc"
+                        case .desc: return "desc"
+                        }
+                    }
+                    public static var allCases: [directionPayload] { [.asc, .desc] }
+                }
+                public var direction:
+                    Operations.pulls_list_review_comments.Input.Query.directionPayload?
+                public var since: Components.Parameters.since?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - sort:
+                ///   - direction:
+                ///   - since:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    sort: Components.Parameters.sort? = nil,
+                    direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? =
+                        nil,
+                    since: Components.Parameters.since? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.sort = sort
+                    self.direction = direction
+                    self.since = since
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.pulls_list_review_comments.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.pulls_list_review_comments.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.pulls_list_review_comments.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.pulls_list_review_comments.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.pulls_list_review_comments.Input.Path,
+                query: Operations.pulls_list_review_comments.Input.Query = .init(),
+                headers: Operations.pulls_list_review_comments.Input.Headers = .init(),
+                cookies: Operations.pulls_list_review_comments.Input.Cookies = .init(),
+                body: Operations.pulls_list_review_comments.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.pulls_list_review_comments.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.pull_request_review_comment])
+                }
+                /// Received HTTP response body
+                public var body: Operations.pulls_list_review_comments.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.pulls_list_review_comments.Output.Ok.Headers,
+                    body: Operations.pulls_list_review_comments.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.pulls_list_review_comments.Output.Ok)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

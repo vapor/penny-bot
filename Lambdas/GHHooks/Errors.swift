@@ -1,6 +1,7 @@
 import AWSLambdaEvents
+import Foundation
 
-enum Errors: Error, CustomStringConvertible {
+enum Errors: Error, CustomStringConvertible, LocalizedError {
     case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
     case envVarNotFound(name: String)
     case secretNotFound(arn: String)
@@ -20,5 +21,9 @@ enum Errors: Error, CustomStringConvertible {
         case let .headerNotFound(name, headers):
             return "headerNotFound(name: \(name), headers: \(headers))"
         }
+    }
+
+    var errorDescription: String? {
+        description
     }
 }
