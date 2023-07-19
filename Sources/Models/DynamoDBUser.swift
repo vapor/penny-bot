@@ -40,17 +40,4 @@ public struct DynamoDBUser: Sendable, Codable {
         self.coinEntries = user.coinEntries
         self.createdAt = user.createdAt
     }
-
-    // Write a method that updates the user's data2 field to the githubID
-    public func updateGithubID(with githubID: String) -> DynamoDBUser {
-        DynamoDBUser(
-            pk: self.pk,
-            sk: self.sk,
-            data1: self.data1,
-            data2: githubID,
-            amountOfCoins: self.amountOfCoins,
-            coinEntries: self.coinEntries,
-            createdAt: self.createdAt
-        )
-    }
 }

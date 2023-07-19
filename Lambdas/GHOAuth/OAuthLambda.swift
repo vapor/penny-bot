@@ -68,12 +68,14 @@ struct GHOAuthHandler: LambdaHandler {
         do {
             jwt = try await verifyState(state: String(event.queryStringParameters?["state"] ?? ""))
         } catch {
-            logger.error("Error during state verification: error: \(error), state: \(event.queryStringParameters?["state"] ?? "")")
+            logger.error("Error during state verification: error: \(error)", metadata: [
+                "state": .string(event.queryStringParameters?["state"] ?? "")
+            ])
             return .init(statusCode: .badRequest, body: "Error verifying state")
         }
 
         do {
-            try await userService.linkUser(discordID: jwt.discordID.rawValue, githubID: userID.description)
+            try await userService.linkGithubID(to: jwt.discordID.rawValue, githubID: "\(userID)")
         } catch {
             logger.error("Error linking user with Discord ID \(jwt.discordID) and GitHub ID \(userID): \(error)")
             return .init(statusCode: .badRequest, body: "Error linking user")

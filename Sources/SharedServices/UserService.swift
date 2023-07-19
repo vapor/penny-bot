@@ -98,8 +98,8 @@ public struct UserService {
     }
 
     /// Links an existing discord user to a github account.
-    public func linkUser(discordID: String, githubID: String) async throws {
-        try await userRepo.linkGithub(with: discordID, githubID)
+    public func linkGithubID(to discordID: String, githubID: String) async throws {
+        try await userRepo.linkGithubID(to: discordID, githubID)
     }
     
     private func insertIntoDB(user account: DynamoUser, with coinEntry: CoinEntry) async throws -> DynamoUser {
