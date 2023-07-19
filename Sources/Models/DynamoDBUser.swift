@@ -8,24 +8,6 @@ public struct DynamoDBUser: Sendable, Codable {
     public let amountOfCoins: Int?
     public let coinEntries: [CoinEntry]?
     public let createdAt: Date
-
-    public init(
-        pk: String,
-        sk: String,
-        data1: String?,
-        data2: String?,
-        amountOfCoins: Int?,
-        coinEntries: [CoinEntry]?,
-        createdAt: Date
-    ) {
-        self.pk = pk
-        self.sk = sk
-        self.data1 = data1
-        self.data2 = data2
-        self.amountOfCoins = amountOfCoins
-        self.coinEntries = coinEntries
-        self.createdAt = createdAt
-    }
     
     public init(user: DynamoUser) {
         self.pk = "USER-\(user.id.uuidString)"

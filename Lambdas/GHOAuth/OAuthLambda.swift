@@ -88,8 +88,8 @@ struct GHOAuthHandler: LambdaHandler {
             try await userService.linkGithubID(discordID: jwt.discordID.rawValue, githubID: "\(user.id)")
         } catch {
             logger.error("Error linking user to GitHub account", metadata: [
-                "discordID": .string(jwt.discordID.rawValue),
-                "githubID": .string("\(user.id)")
+                "discordID": .stringConvertible(jwt.discordID),
+                "githubID": .stringConvertible(user.id),
             ])
             return .init(statusCode: .badRequest, body: "Error linking user")
         }
@@ -99,7 +99,7 @@ struct GHOAuthHandler: LambdaHandler {
                 token: jwt.interactionToken,
                 payload: .init(
                     embeds: [.init(
-                        description: "Successfully linked your Discord account to GitHub account with username: \(user.id)",
+                        description: "Successfully linked your Discord account to GitHub account with username: \(user.login)",
                         color: .green
                     )]
                 )
@@ -173,7 +173,6 @@ struct GHOAuthHandler: LambdaHandler {
         // https://docs.github.com/en/rest/users/users?apiVersion=2022-11-28#get-the-authenticated-user
 
         var request = HTTPClientRequest(url: "https://api.github.com/user")
-        request.method = .GET
         request.headers = [
             "Accept": "application/vnd.github+json",
             "Authorization": "Bearer \(accessToken)",

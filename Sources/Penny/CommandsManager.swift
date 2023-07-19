@@ -115,11 +115,7 @@ enum GitHubSubCommand: String, CaseIterable {
 
     var options: [ApplicationCommand.Option] {
         switch self {
-        case .help:
-            return []
-        case .link:
-            return []
-        case .unlink:
+        case .help, .link, .unlink:
             return []
         }
     }
