@@ -48,7 +48,7 @@ struct IssueHandler {
 
         let issueLink = issue.html_url
 
-        let repoName = event.repository.uiName
+        let repoName = try event.repository.requireValue().uiName
 
         let body = issue.body.map { body -> String in
             let formatted = body.formatMarkdown(

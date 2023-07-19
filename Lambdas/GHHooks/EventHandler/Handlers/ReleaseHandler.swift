@@ -36,8 +36,13 @@ struct ReleaseHandler {
     var event: GHEvent {
         context.event
     }
-    var repo: Repository {
-        event.repository
+    let repo: Repository
+
+    init(context: HandlerContext, pr: PullRequest, number: Int) throws {
+        self.context = context
+        self.pr = pr
+        self.number = number
+        self.repo = try context.event.repository.requireValue()
     }
 
     func handle() async throws {

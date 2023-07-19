@@ -224,7 +224,7 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             event: event
         )
-        let handler = ReleaseHandler(
+        let handler = try ReleaseHandler(
             context: context,
             pr: context.event.pull_request!,
             number: context.event.number!
@@ -242,7 +242,7 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             event: event
         )
-        let handler = ReleaseHandler(
+        let handler = try ReleaseHandler(
             context: context,
             pr: context.event.pull_request!,
             number: context.event.number!
@@ -309,6 +309,12 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "pr11",
             eventName: .pull_request,
+            expect: .noResponse
+        )
+
+        try await handleEvent(
+            key: "projects_v2_item1",
+            eventName: .projects_v2_item,
             expect: .noResponse
         )
     }

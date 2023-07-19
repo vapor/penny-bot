@@ -14,7 +14,9 @@ struct PRHandler {
         context.event
     }
     var repo: Repository {
-        event.repository
+        get throws {
+            try event.repository.requireValue()
+        }
     }
 
     init(context: HandlerContext) throws {
@@ -87,7 +89,7 @@ struct PRHandler {
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
         let number = try context.event.number.requireValue()
-        let title = "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
+        let title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
 
         let embed = Embed(
             title: title,

@@ -11,6 +11,8 @@ struct EventHandler {
             try await PRHandler(context: context).handle()
         case .ping:
             try await onPing()
+        case .pull_request_review:
+            break
         default:
             try await onDefault()
         }
@@ -24,7 +26,7 @@ struct EventHandler {
                 description: """
                 Ping events must be handled immediately, even before any body-decoding happens.
                 Action: \(context.event.action ?? "null")
-                Repo: \(context.event.repository.name)
+                Repo: \(context.event.repository?.name ?? "null")
                 """,
                 color: .red
             )])
@@ -38,7 +40,7 @@ struct EventHandler {
                 title: "Received UNHANDLED event \(context.eventName)",
                 description: """
                 Action: \(context.event.action ?? "null")
-                Repo: \(context.event.repository.name)
+                Repo: \(context.event.repository?.name ?? "null")
                 """,
                 color: .red
             )])
