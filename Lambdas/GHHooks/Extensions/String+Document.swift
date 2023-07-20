@@ -3,10 +3,12 @@ import Markdown
 extension String {
     func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
         let document1 = Document(parsing: self)
-        var htmlRemover = HTMLBlocksRemover()
+        var htmlRemover = HTMLAndImageRemover()
         let markup1 = htmlRemover.visit(document1)
 
-        let prefixed = (markup1?.format(options: .forDiscord) ?? "").unicodesPrefix(maxLength)
+        let prefixed = (markup1?.format(options: .default) ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .unicodesPrefix(maxLength)
         let document2 = Document(parsing: prefixed)
         var paragraphCounter = ParagraphCounter()
         paragraphCounter.visit(document2)
@@ -18,16 +20,23 @@ extension String {
         )
         let markup2 = paragraphRemover.visit(document2)
 
-        return markup2?.format(options: .forDiscord) ?? ""
+        let formatted = markup2?.format(options: .default)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return formatted ?? ""
     }
 }
 
 private extension MarkupFormatter.Options {
-    static let forDiscord = MarkupFormatter.Options()
+    static let `default` = Self()
 }
 
-private struct HTMLBlocksRemover: MarkupRewriter {
+private struct HTMLAndImageRemover: MarkupRewriter {
     func visitHTMLBlock(_ html: HTMLBlock) -> (any Markup)? {
+        return nil
+    }
+
+    func visitImage(_ image: Image) -> (any Markup)? {
         return nil
     }
 }

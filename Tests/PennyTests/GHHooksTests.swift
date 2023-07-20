@@ -136,6 +136,8 @@ class GHHooksTests: XCTestCase {
             let text = """
             <!-- 🚀 Thank you for contributing! -->
 
+            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+
             <!-- Describe your changes clearly and use examples if possible -->
 
             \(scalars_206)
@@ -153,6 +155,8 @@ class GHHooksTests: XCTestCase {
             let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
             let text = """
             <!-- 🚀 Thank you for contributing! -->
+
+            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
 
             <!-- Describe your changes clearly and use examples if possible -->
 
@@ -175,6 +179,8 @@ class GHHooksTests: XCTestCase {
             let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
             let text = """
             <!-- 🚀 Thank you for contributing! -->
+
+            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
 
             <!-- Describe your changes clearly and use examples if possible -->
 
