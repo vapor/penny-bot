@@ -22,12 +22,24 @@ extension String {
             atCount: paragraphCount,
             ifShorterThan: trailingParagraphMinLength
         )
-        let markup3 = paragraphRemover.visit(document2)
+        guard let markup3 = paragraphRemover.visit(document2)
+        else { return "" }
 
-        let formatted = markup3?.format(options: .default)
+        var formattedLines = markup3.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
 
-        return formatted ?? ""
+        while let first = formattedLines.first,
+              first.isWorthlessLineForTrim {
+            formattedLines.removeFirst()
+        }
+
+        while let last = formattedLines.last,
+              last.isWorthlessLineForTrim {
+            formattedLines.removeLast()
+        }
+
+        return formattedLines.joined(separator: "\n")
     }
 }
 
@@ -80,5 +92,12 @@ private struct ParagraphRemover: MarkupRewriter {
             count += 1
             return paragraph
         }
+    }
+}
+
+extension StringProtocol {
+    /// The line is worthless and can be trimmed.
+    var isWorthlessLineForTrim: Bool {
+        self.allSatisfy({ $0.isWhitespace || $0.isPunctuation })
     }
 }
