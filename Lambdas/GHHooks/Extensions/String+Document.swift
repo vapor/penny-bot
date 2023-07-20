@@ -4,9 +4,13 @@ extension String {
     func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
-        let markup1 = htmlRemover.visit(document1)
+        guard let markup1 = htmlRemover.visit(document1)
+        else { return "" }
+        var emptyLinksRemover = EmptyLinksRemover()
+        guard let markup2 = emptyLinksRemover.visit(markup1)
+        else { return "" }
 
-        let prefixed = (markup1?.format(options: .default) ?? "")
+        let prefixed = markup2.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .unicodesPrefix(maxLength)
         let document2 = Document(parsing: prefixed)
@@ -18,9 +22,9 @@ extension String {
             atCount: paragraphCount,
             ifShorterThan: trailingParagraphMinLength
         )
-        let markup2 = paragraphRemover.visit(document2)
+        let markup3 = paragraphRemover.visit(document2)
 
-        let formatted = markup2?.format(options: .default)
+        let formatted = markup3?.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         return formatted ?? ""
@@ -38,6 +42,12 @@ private struct HTMLAndImageRemover: MarkupRewriter {
 
     func visitImage(_ image: Image) -> (any Markup)? {
         return nil
+    }
+}
+
+private struct EmptyLinksRemover: MarkupRewriter {
+    func visitLink(_ link: Link) -> (any Markup)? {
+        link.isEmpty ? nil : link
     }
 }
 
