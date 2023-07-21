@@ -42,9 +42,11 @@ jobs:
             swift package archive \
               --output-path ./zips \
               --products "${name}"
-            aws s3 sync \ 
-              ./zips/${name}/${name}.zip \
-              s3://penny-lambdas-store/${name}.zip
+            aws s3api put-object \
+              --acl public-read \
+              --bucket penny-lambdas-store \
+              --key "${name}.zip" \
+              --body ./zips/${name}/${name}.zip
             aws lambda update-function-code \
               --function-name "${name}-lambda" \
               --s3-bucket "penny-lambdas-store" \

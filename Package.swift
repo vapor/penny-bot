@@ -71,7 +71,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
-            // Use the apple repo when command plugin is merged
+            // Use the apple repo when command plugin is merged and tagged
             branch: "generator-command-plugin"
         ),
         .package(
