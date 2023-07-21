@@ -37,8 +37,11 @@ jobs:
             swift package archive \
               --output-path ./zips \
               --products "${name}"
+            aws s3 sync \ 
+              ./zips/${name}/${name}.zip \
+              s3://penny-lambdas-store/${name}.zip
             aws lambda update-function-code \
               --function-name "${name}-lambda" \
-              --zip-file "fileb://./zips/${name}/${name}.zip" \
-              --s3-bucket "penny-lambdas-store"
+              --s3-bucket "penny-lambdas-store" \
+              --s3-key "${name}.zip"
           done

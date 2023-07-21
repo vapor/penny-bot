@@ -2,8 +2,15 @@ import SotoDynamoDB
 
 struct DynamoMessageRepo: MessageLookupRepo {
 
-    enum Errors: Error {
+    enum Errors: Error, CustomStringConvertible {
         case notFound
+
+        var description: String {
+            switch self {
+            case .notFound:
+                return "notFound"
+            }
+        }
     }
 
     struct Item: Codable {
