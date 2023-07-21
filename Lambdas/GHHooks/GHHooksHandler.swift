@@ -20,6 +20,7 @@ struct GHHooksHandler: LambdaHandler {
     let httpClient: HTTPClient
     let githubClient: Client
     let secretsRetriever: SecretsRetriever
+    let messageLookupRepo: any MessageLookupRepo
     let logger: Logger
 
     /// We don't do this in the initializer to avoid a possible unnecessary
@@ -62,6 +63,11 @@ struct GHHooksHandler: LambdaHandler {
             serverURL: try Servers.server1(),
             transport: transport,
             middlewares: [middleware]
+        )
+
+        self.messageLookupRepo = DynamoMessageRepo(
+            awsClient: awsClient,
+            logger: logger
         )
 
         context.logger.trace("Handler did initialize")
@@ -133,6 +139,7 @@ struct GHHooksHandler: LambdaHandler {
                 httpClient: httpClient,
                 discordClient: discordClient,
                 githubClient: githubClient,
+                messageLookupRepo: self.messageLookupRepo,
                 logger: logger
             )
         ).handle()

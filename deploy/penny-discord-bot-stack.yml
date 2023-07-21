@@ -497,22 +497,45 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
+  # DynamoDB ghhooks-message-lookup table
+
+  dynamoUserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "penny-bot-table"
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+        - 
+          AttributeName: "messageID"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
 
 Outputs:
-  ghHooksLambdaArn:
+  ghHooksLambdaARN:
     Value: !GetAtt ghHooksFunction.Arn
 
-  faqsLambdaArn:
+  faqsLambdaARN:
     Value: !GetAtt faqsFunction.Arn
 
-  autoPingsLambdaArn:
+  autoPingsLambdaARN:
     Value: !GetAtt autoPingsFunction.Arn
 
-  sponsorsLambdaArn:
+  sponsorsLambdaARN:
     Value: !GetAtt sponsorsFunction.Arn
 
-  addCoinLambdaArn:
+  addCoinLambdaARN:
     Value: !GetAtt addCoinFunction.Arn
 
-  dynamoDBArn:
+  pennyBotDynamoDBARN:
+    Value: !GetAtt dynamoUserTable.Arn
+  
+  ghhooksMessageLookupDynamoDBARN:
     Value: !GetAtt dynamoUserTable.Arn

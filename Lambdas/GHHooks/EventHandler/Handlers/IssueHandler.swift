@@ -7,6 +7,14 @@ struct IssueHandler {
     var event: GHEvent {
         context.event
     }
+    let repoID: Int
+    let number: Int
+
+    init(context: HandlerContext) throws {
+        self.context = context
+        self.repoID = try (context.event.issue?.repository).requireValue().id
+        self.number = try context.event.issue.requireValue().number
+    }
 
     func handle() async throws {
         let action = try event.action
@@ -29,13 +37,13 @@ struct IssueHandler {
     func onOpened() async throws {
         let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportNew(embed: embed)
+        try await reporter.reportNew(embed: embed, repoID: repoID, number: number)
     }
 
     func editIssueReport() async throws {
         let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed)
+        try await reporter.reportEdit(embed: embed, repoID: repoID, number: number)
     }
 
     func createReportEmbed() throws -> Embed {

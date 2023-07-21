@@ -10,5 +10,6 @@ struct HandlerContext {
     let httpClient: HTTPClient
     let discordClient: any DiscordClient
     let githubClient: Client
+    let messageLookupRepo: any MessageLookupRepo
     let logger: Logger
 }
