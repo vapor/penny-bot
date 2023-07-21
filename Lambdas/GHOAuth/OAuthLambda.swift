@@ -1,13 +1,14 @@
 import AsyncHTTPClient
 import AWSLambdaRuntime
 import AWSLambdaEvents
+import SotoCore
 import DiscordBM
-import Foundation
-import SotoSecretsManager
-import GHHooksLambda
 import Models
 import JWTKit
+import LambdasShared
 import SharedServices
+import Logging
+import Foundation
 
 @main
 struct GHOAuthHandler: LambdaHandler {
@@ -17,9 +18,10 @@ struct GHOAuthHandler: LambdaHandler {
     let client: HTTPClient
     let logger: Logger
     let secretsRetriever: SecretsRetriever
-    let jsonDecoder: JSONDecoder
-    let jsonEncoder: JSONEncoder
     let userService: UserService
+
+    let jsonDecoder = JSONDecoder()
+    let jsonEncoder = JSONEncoder()
 
     /// We don't do this in the initializer to avoid a possible unnecessary
     /// `secretsRetriever.getSecret()` call which costs $$$.
@@ -38,9 +40,6 @@ struct GHOAuthHandler: LambdaHandler {
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         self.userService = UserService(awsClient, logger)
-
-        self.jsonDecoder = JSONDecoder()
-        self.jsonEncoder = JSONEncoder()
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
@@ -149,7 +148,7 @@ struct GHOAuthHandler: LambdaHandler {
         ]
         let requestBody = try jsonEncoder.encode([
             "client_id": clientID,
-            "client_secret": clientSecret.value,
+            "client_secret": clientSecret,
             "code": code
         ])
         request.body = .bytes(requestBody)

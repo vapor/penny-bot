@@ -180,13 +180,11 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "SotoSecretsManager", package: "soto"),
-                .product(name: "Collections", package: "swift-collections"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "JWTKit", package: "jwt-kit"),
-                .target(name: "GHHooksLambda"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices")
+                .target(name: "SharedServices"),
+                .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHOAuth",
             swiftSettings: swiftSettings
