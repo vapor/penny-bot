@@ -10,7 +10,6 @@ import Foundation
 struct PRHandler {
     let context: HandlerContext
     let pr: PullRequest
-    let number: Int
     var event: GHEvent {
         context.event
     }
@@ -23,7 +22,6 @@ struct PRHandler {
     init(context: HandlerContext) throws {
         self.context = context
         self.pr = try context.event.pull_request.requireValue()
-        self.number = try context.event.number.requireValue()
     }
 
     func handle() async throws {
@@ -49,14 +47,18 @@ struct PRHandler {
     func onOpened() async throws {
         let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportNew(embed: embed, repoID: repo.id, number: number)
+        try await reporter.reportNew(
+            embed: embed,
+            repoID: repo.id,
+            number: event.number.requireValue()
+        )
     }
 
     func onClosed() async throws {
         try await ReleaseMaker(
             context: context,
             pr: pr,
-            number: number
+            number: event.number.requireValue()
         ).handle()
         try await editPRReport()
     }
@@ -64,7 +66,11 @@ struct PRHandler {
     func editPRReport() async throws {
         let embed = try createReportEmbed()
         let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed, repoID: repo.id, number: number)
+        try await reporter.reportEdit(
+            embed: embed,
+            repoID: repo.id,
+            number: event.number.requireValue()
+        )
     }
 
     func createReportEmbed() throws -> Embed {
@@ -90,6 +96,7 @@ struct PRHandler {
         let status = Status(pr: pr)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let maxCount = 256 - statusString.unicodeScalars.count
+        let number = try event.number.requireValue()
         let title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
 
         let embed = Embed(

@@ -12,7 +12,7 @@ struct IssueHandler {
 
     init(context: HandlerContext) throws {
         self.context = context
-        self.repoID = try (context.event.issue?.repository).requireValue().id
+        self.repoID = try context.event.repository.requireValue().id
         self.number = try context.event.issue.requireValue().number
     }
 

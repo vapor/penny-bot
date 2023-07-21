@@ -499,7 +499,7 @@ Resources:
 
   # DynamoDB ghhooks-message-lookup table
 
-  dynamoUserTable:
+  dynamoGHHooksMessageLookupTable:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: "penny-bot-table"
@@ -538,4 +538,4 @@ Outputs:
     Value: !GetAtt dynamoUserTable.Arn
   
   ghhooksMessageLookupDynamoDBARN:
-    Value: !GetAtt dynamoUserTable.Arn
+    Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
