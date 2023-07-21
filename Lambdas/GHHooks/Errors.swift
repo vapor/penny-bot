@@ -1,7 +1,7 @@
 import AWSLambdaEvents
 import Foundation
 
-enum Errors: Error, CustomStringConvertible, LocalizedError {
+enum Errors: Error, CustomStringConvertible {
     case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
     case signaturesDoNotMatch(found: String, expected: String)
     case headerNotFound(name: String, headers: AWSLambdaEvents.HTTPHeaders)
@@ -15,9 +15,5 @@ enum Errors: Error, CustomStringConvertible, LocalizedError {
         case let .headerNotFound(name, headers):
             return "headerNotFound(name: \(name), headers: \(headers))"
         }
-    }
-
-    var errorDescription: String? {
-        description
     }
 }

@@ -51,7 +51,7 @@ struct PRHandler {
     }
 
     func onClosed() async throws {
-        try await ReleaseHandler(
+        try await ReleaseMaker(
             context: context,
             pr: pr,
             number: try context.event.number.requireValue()
