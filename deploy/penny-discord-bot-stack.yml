@@ -518,23 +518,23 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
 Outputs:
-  ghHooksLambdaARN:
+  ghHooksLambdaArn:
     Value: !GetAtt ghHooksFunction.Arn
 
-  faqsLambdaARN:
+  faqsLambdaArn:
     Value: !GetAtt faqsFunction.Arn
 
-  autoPingsLambdaARN:
+  autoPingsLambdaArn:
     Value: !GetAtt autoPingsFunction.Arn
 
-  sponsorsLambdaARN:
+  sponsorsLambdaArn:
     Value: !GetAtt sponsorsFunction.Arn
 
-  addCoinLambdaARN:
+  addCoinLambdaArn:
     Value: !GetAtt addCoinFunction.Arn
 
-  pennyBotDynamoDBARN:
+  pennyBotDynamoDBArn:
     Value: !GetAtt dynamoUserTable.Arn
   
-  ghHooksMessageLookupDynamoDBARN:
+  ghHooksMessageLookupDynamoDBArn:
     Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
