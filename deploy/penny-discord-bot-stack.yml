@@ -233,6 +233,7 @@ Resources:
                 Effect: Allow 
                 Resource: 
                   - !GetAtt dynamoUserTable.Arn
+                  - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}-lambda
@@ -506,9 +507,6 @@ Resources:
       AttributeDefinitions:
         -
           AttributeName: "id"
-          AttributeType: "S"
-        - 
-          AttributeName: "messageID"
           AttributeType: "S"
       KeySchema:
         - 
