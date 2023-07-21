@@ -20,7 +20,7 @@ jobs:
           echo "::add_mask::$AWS_SECRET_ACCESS_KEY"
           yum -y install \
             {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
-            libtool jq zip awscli
+            libtool jq zip awscliv2
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Build, package, and deploy
