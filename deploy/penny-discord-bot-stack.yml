@@ -497,12 +497,12 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
-  # DynamoDB ghhooks-message-lookup table
+  # DynamoDB ghHooks-message-lookup table
 
   dynamoGHHooksMessageLookupTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: "penny-bot-table"
+      TableName: "ghHooks-message-lookup-table"
       AttributeDefinitions:
         -
           AttributeName: "id"
@@ -537,5 +537,5 @@ Outputs:
   pennyBotDynamoDBARN:
     Value: !GetAtt dynamoUserTable.Arn
   
-  ghhooksMessageLookupDynamoDBARN:
+  ghHooksMessageLookupDynamoDBARN:
     Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn

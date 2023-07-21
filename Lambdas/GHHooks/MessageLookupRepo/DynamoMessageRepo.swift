@@ -14,7 +14,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
     let db: DynamoDB
     let logger: Logger
 
-    let tableName = "ghhooks-message-lookup-table"
+    let tableName = "ghHooks-message-lookup-table"
 
     init(awsClient: AWSClient, logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
