@@ -4,6 +4,7 @@ import OpenAPIRuntime
 import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import Logging
+import LambdasShared
 import Foundation
 import struct DiscordModels.Secret
 
@@ -83,13 +84,13 @@ actor Authenticator {
             defaultJSONDecoder: decoder
         )
         let key = try await getPrivKey()
-        try signers.use(.rs256(key: .private(pem: key.value)))
+        try signers.use(.rs256(key: .private(pem: key)))
         let payload = TokenPayload()
         let token = try signers.sign(payload)
         return Secret(token)
     }
 
-    private func getPrivKey() async throws -> Secret {
+    private func getPrivKey() async throws -> String {
         try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY_ARN")
     }
 

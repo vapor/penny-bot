@@ -55,7 +55,7 @@ struct GHMiddleware: ClientMiddleware {
         )
         request.headerFields.addOrReplace(
             name: "User-Agent",
-            value: "Penny - 1.0.0 (https://github.com/vapor/penny-bot)"
+            value: "Penny - GHHooksLambda - 1.0.0 (https://github.com/vapor/penny-bot)"
         )
 
         return try await intercept(
