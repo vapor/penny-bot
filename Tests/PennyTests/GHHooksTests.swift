@@ -262,7 +262,7 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             event: event
         )
-        let handler = try ReleaseHandler(
+        let handler = try ReleaseMaker(
             context: context,
             pr: context.event.pull_request!,
             number: context.event.number!
@@ -280,7 +280,7 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             event: event
         )
-        let handler = try ReleaseHandler(
+        let handler = try ReleaseMaker(
             context: context,
             pr: context.event.pull_request!,
             number: context.event.number!

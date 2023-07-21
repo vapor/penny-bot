@@ -1,5 +1,6 @@
 
 extension PullRequest {
+    /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request
     public enum Action: String, Codable {
         case assigned
         case auto_merge_disabled
@@ -27,6 +28,7 @@ extension PullRequest {
 }
 
 extension Issue {
+    /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#issues
     public enum Action: String, Codable {
         case assigned
         case closed
@@ -47,3 +49,15 @@ extension Issue {
     }
 }
 
+extension Release {
+    /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#release
+    public enum Action: String, Codable {
+        case created
+        case deleted
+        case edited
+        case prereleased
+        case published
+        case released
+        case unpublished
+    }
+}
