@@ -7,6 +7,11 @@ import SwiftSemver
 import Markdown
 import Foundation
 
+private enum Configuration {
+    /// `150622661` == `postgres-nio`
+    static let repositoryDenyListIDs = [150622661]
+}
+
 struct ReleaseHandler {
 
     enum PRErrors: Error, CustomStringConvertible, LocalizedError {
@@ -46,7 +51,8 @@ struct ReleaseHandler {
     }
 
     func handle() async throws {
-        guard pr.base.ref == "main",
+        guard !Configuration.repositoryDenyListIDs.contains(repo.id),
+              pr.base.ref == "main",
               let mergedBy = pr.merged_by,
               let bump = pr.knownLabels.first?.toBump()
         else { return }
