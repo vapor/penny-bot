@@ -53,6 +53,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
+        .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
@@ -121,10 +122,10 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
                 .target(name: "SharedServices"),
+                .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/Sponsors",
             swiftSettings: swiftSettings
@@ -160,7 +161,6 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SwiftSemver", package: "swift-semver"),
                 .product(name: "JWTKit", package: "jwt-kit"),
@@ -169,6 +169,7 @@ let package = Package(
                 .product(name: "Collections", package: "swift-collections"),
                 .target(name: "GitHubAPI"),
                 .target(name: "Extensions"),
+                .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHHooks",
             swiftSettings: swiftSettings
@@ -188,6 +189,15 @@ let package = Package(
                 .target(name: "SharedServices")
             ],
             path: "./Lambdas/GHOAuth",
+            swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "LambdasShared",
+            dependencies: [
+                .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "Logging", package: "swift-log"),
+            ],
+            path: "./Lambdas/LambdasShared",
             swiftSettings: swiftSettings
         ),
         .target(

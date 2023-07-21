@@ -1,23 +1,22 @@
-import struct DiscordModels.Secret
 import SotoCore
 import SotoSecretsManager
 import Logging
 import Foundation
 
-actor SecretsRetriever {
+public actor SecretsRetriever {
     private let secretsManager: SecretsManager
     /// `[arnEnvVarKey: secret]`
-    private var cache: [String: Secret] = [:]
+    private var cache: [String: String] = [:]
     let logger: Logger
 
     private let queue = SerialProcessor()
 
-    init(awsClient: AWSClient, logger: Logger) {
+    public init(awsClient: AWSClient, logger: Logger) {
         self.secretsManager = SecretsManager(client: awsClient)
         self.logger = logger
     }
 
-    func getSecret(arnEnvVarKey: String) async throws -> Secret {
+    public func getSecret(arnEnvVarKey: String) async throws -> String {
         return try await queue.process {
             if let cached = await getCache(key: arnEnvVarKey) {
                 return cached
@@ -30,7 +29,7 @@ actor SecretsRetriever {
     }
 
     /// Gets a secret directly from AWS.
-    private func getSecretFromAWS(arnEnvVarKey: String) async throws -> Secret {
+    private func getSecretFromAWS(arnEnvVarKey: String) async throws -> String {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
             throw Errors.envVarNotFound(name: arnEnvVarKey)
         }
@@ -44,16 +43,16 @@ actor SecretsRetriever {
         guard let secret = secret.secretString else {
             throw Errors.secretNotFound(arn: arn)
         }
-        return Secret(secret)
+        return secret
     }
 
     /// Sets a value in the cache.
-    private func setCache(key: String, value: Secret) {
+    private func setCache(key: String, value: String) {
         self.cache[key] = value
     }
 
     /// Gets a value from the cache.
-    private func getCache(key: String) -> Secret? {
+    private func getCache(key: String) -> String? {
         self.cache[key]
     }
 }

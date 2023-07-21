@@ -1,13 +1,13 @@
 import AsyncHTTPClient
 import AWSLambdaRuntime
 import AWSLambdaEvents
-import DiscordBM
-import Foundation
-import NIOHTTP1
-import Extensions
-import SharedServices
 import SotoCore
-import SotoSecretsManager
+import NIOHTTP1
+import DiscordBM
+import LambdasShared
+import SharedServices
+import Extensions
+import Foundation
 
 enum GitHubRequestError: Error, CustomStringConvertible {
     case runWorkflowError(message: String)
@@ -45,34 +45,27 @@ struct AddSponsorHandler: LambdaHandler {
 
     let httpClient: HTTPClient
     let awsClient: AWSClient
-    let secretsManager: SecretsManager
+    let secretsRetriever: SecretsRetriever
     let logger: Logger
 
-    struct Constants {
+    /// We don't do this in the initializer to avoid a possible unnecessary
+    /// `secretsRetriever.getSecret()` call which costs $$$.
+    var discordClient: any DiscordClient {
+        get async throws {
+            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+        }
+    }
+
+    enum Constants {
         static let guildID: GuildSnowflake = "431917998102675485"
     }
 
     init(context: LambdaInitializationContext) async throws {
         self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
         self.awsClient = AWSClient(httpClientProvider: .shared(httpClient))
-        self.secretsManager = SecretsManager(client: awsClient)
+        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: context.logger)
         self.logger = context.logger
-    }
-    
-    private func setupDiscordClient() async throws -> any DiscordClient {
-        // Get the ARN to retrieve the appID stored inside of the secrets manager
-        guard let tokenArn = ProcessInfo.processInfo.environment["BOT_TOKEN"] else {
-            fatalError("Couldn't retrieve BOT_TOKEN env var")
-        }
-        // Request the appID secret from the secrets manager
-        logger.debug("Retrieving secrets...")
-        let tokenRequest = SecretsManager.GetSecretValueRequest(secretId: tokenArn)
-        let tokenResponse = try await secretsManager.getSecretValue(tokenRequest)
-        guard let token = tokenResponse.secretString else {
-            fatalError("Couldn't retrieve Bot Token Secret")
-        }
-        logger.debug("Secrets retrieved")
-        return await DefaultDiscordClient(httpClient: httpClient, token: token)
     }
 
     func handle(
@@ -82,9 +75,7 @@ struct AddSponsorHandler: LambdaHandler {
         // Only accept sponsorship events
         context.logger.debug("Headers are: \(event.headers.description)")
         context.logger.debug("Body is: \(event.body ?? "empty")")
-        guard event.headers["X-Github-Event"] == "sponsorship"
-                || event.headers["x-github-event"] == "sponsorship"
-        else {
+        guard event.headers.first(name: "x-github-event") == "sponsorship" else {
             context.logger.debug("Did not get sponsorship event, exiting with code 200")
             return APIGatewayV2Response(statusCode: .ok)
         }
@@ -128,21 +119,19 @@ struct AddSponsorHandler: LambdaHandler {
             
             context.logger.debug("Managing Discord roles")
 
-            let discordClient = try await setupDiscordClient()
-
             switch actionType {
             case .created:
                 // Add roles to new sponsor
-                try await addRole(to: userDiscordID, discordClient: discordClient, role: role)
+                try await addRole(to: userDiscordID, role: role)
                 // If it's a sponsor, we need to add the backer role too
                 if role == .sponsor {
-                    try await addRole(to: userDiscordID, discordClient: discordClient, role: .backer)
+                    try await addRole(to: userDiscordID, role: .backer)
                 }
                 // Send message to new sponsor
-                try await sendMessage(to: userDiscordID, discordClient: discordClient, role: role)
+                try await sendMessage(to: userDiscordID, role: role)
             case .cancelled:
-                try await removeRole(from: userDiscordID, discordClient: discordClient, role: .sponsor)
-                try await removeRole(from: userDiscordID, discordClient: discordClient, role: .backer)
+                try await removeRole(from: userDiscordID, role: .sponsor)
+                try await removeRole(from: userDiscordID, role: .backer)
             case .edited:
                 break
             case .tierChanged:
@@ -156,7 +145,7 @@ struct AddSponsorHandler: LambdaHandler {
                 // This means that the user downgraded from a sponsor role to a backer role
                 if try SponsorType.for(sponsorshipAmount: changes.tier.from.monthlyPriceInCents) == .sponsor,
                    role == .backer {
-                    try await removeRole(from: userDiscordID, discordClient: discordClient, role: .sponsor)
+                    try await removeRole(from: userDiscordID, role: .sponsor)
                 }
             case .pendingCancellation:
                 break
@@ -177,11 +166,7 @@ struct AddSponsorHandler: LambdaHandler {
     /**
      Removes a role from the selected Discord user.
      */
-    private func removeRole(
-        from userDiscordID: String,
-        discordClient: any DiscordClient,
-        role: SponsorType
-    ) async throws {
+    private func removeRole(from userDiscordID: String, role: SponsorType) async throws {
         // Try removing role from user
         do {
             let error = try await discordClient.deleteGuildMemberRole(
@@ -214,11 +199,7 @@ struct AddSponsorHandler: LambdaHandler {
     /**
      Adds a new Discord role to the selected user, depending on the sponsorship tier they selected (**sponsor**, **backer**).
      */
-    private func addRole(
-        to userDiscordID: String,
-        discordClient: any DiscordClient,
-        role: SponsorType
-    ) async throws {
+    private func addRole(to userDiscordID: String, role: SponsorType) async throws {
         do {
             // Try adding role to new sponsor
             try await discordClient.addGuildMemberRole(
@@ -238,11 +219,7 @@ struct AddSponsorHandler: LambdaHandler {
     /**
      Sends a message welcoming the user in the new channel and giving them a coin.
      */
-    private func sendMessage(
-        to userDiscordID: String,
-        discordClient: any DiscordClient,
-        role: SponsorType
-    ) async throws {
+    private func sendMessage(to userDiscordID: String, role: SponsorType) async throws {
         do {
             // Try sending message to new sponsor
             try await discordClient.createMessage(
@@ -263,17 +240,7 @@ struct AddSponsorHandler: LambdaHandler {
     }
 
     private func getWorkflowToken() async throws -> String {
-        // Retrieve GH token from AWS Secrets Manager
-        guard let workflowTokenArn = ProcessInfo.processInfo
-            .environment["GH_WORKFLOW_TOKEN_ARN"] else {
-            fatalError("Couldn't retrieve GH_WORKFLOW_TOKEN_ARN env var")
-        }
-        let workflowTokenRequest = SecretsManager.GetSecretValueRequest(secretId: workflowTokenArn)
-        let workflowToken = try await secretsManager.getSecretValue(workflowTokenRequest)
-        guard let workflowTokenString = workflowToken.secretString else {
-            fatalError("Couldn't retrieve GitHub token from AWS Secrets Manager")
-        }
-        return workflowTokenString
+        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
     }
 
     /**
@@ -291,7 +258,7 @@ struct AddSponsorHandler: LambdaHandler {
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
             "Authorization": "Bearer \(workflowToken)",
-            "User-Agent": "penny-bot"
+            "User-Agent": "Penny - SponsorsLambda - 1.0.0 (https://github.com/vapor/penny-bot)"
         ])
         
         triggerActionRequest.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))

@@ -131,6 +131,7 @@ class GHHooksTests: XCTestCase {
     }
 
     func testMarkdownFormatting() async throws {
+        /// Remove html and images + length limits.
         do {
             let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let text = """
@@ -151,6 +152,7 @@ class GHHooksTests: XCTestCase {
             XCTAssertEqual(formatted, scalars_206)
         }
 
+        /// Remove html and images + length limits.
         do {
             let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
             let text = """
@@ -175,6 +177,7 @@ class GHHooksTests: XCTestCase {
             """)
         }
 
+        /// Remove html and images + length limits.
         do {
             let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
             let text = """
@@ -193,6 +196,35 @@ class GHHooksTests: XCTestCase {
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
             XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token ...")
+        }
+
+        /// Remove empty links
+        do {
+            let text = """
+            Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
+            
+            [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=sass&package-manager=npm_and_yarn&previous-version=1.63.6&new-version=1.64.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+            Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+            [//]: # (dependabot-automerge-start)
+            [//]: # (dependabot-automerge-end)
+
+            ---
+
+            <details>
+            <summary>Dependabot commands and options</summary>
+            <br />
+
+            You can trigger Dependabot actions by commenting on this PR:
+            """
+
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 128)
+            XCTAssertEqual(formatted, """
+            Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
+
+            Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+            """)
         }
     }
 

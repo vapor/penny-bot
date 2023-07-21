@@ -1,10 +1,12 @@
 import Collections
 
-actor SerialProcessor {
+public actor SerialProcessor {
     private var isRunning = false
     private var queue: Deque<CheckedContinuation<Void, Never>> = []
 
-    func process<T>(block: @Sendable () async throws -> T) async rethrows -> T {
+    public init() { }
+
+    public func process<T>(block: @Sendable () async throws -> T) async rethrows -> T {
         if isRunning {
             await withCheckedContinuation { continuation in
                 queue.append(continuation)
