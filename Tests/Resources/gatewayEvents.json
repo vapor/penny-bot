@@ -478,32 +478,6 @@
         "flags": 0,
         "components": []
     },
-    "GET-https://discord.com/api/v10/channels/431926479752921098/messages/1031112115928442034": {
-        "id": "1031112115928449034",
-        "type": 0,
-        "content": "Testing! 684866",
-        "channel_id": "684159753189982218",
-        "author": {
-            "id": "1030118727418646629",
-            "username": "DisBMLibTestBot",
-            "avatar": null,
-            "avatar_decoration": null,
-            "discriminator": "0",
-            "public_flags": 0,
-            "bot": false
-        },
-        "attachments": [],
-        "embeds": [],
-        "mentions": [],
-        "mention_roles": [],
-        "pinned": false,
-        "mention_everyone": false,
-        "tts": false,
-        "timestamp": "2100-10-14T08:35:48.061000+00:00",
-        "edited_timestamp": null,
-        "flags": 0,
-        "components": []
-    },
     "GET-https://discord.com/api/v10/channels/431917998102675487/messages/1029637770005717042": {
         "id": "1031112115928449034",
         "type": 0,

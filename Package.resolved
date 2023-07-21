@@ -185,7 +185,7 @@
       "location" : "https://github.com/apple/swift-markdown.git",
       "state" : {
         "branch" : "main",
-        "revision" : "07da205e1fc488d88609fea5da1ca227efc6c000"
+        "revision" : "3d4b36cff09f785adf5efb190d458a3d44e6df87"
       }
     },
     {
@@ -266,7 +266,7 @@
       "location" : "https://github.com/mahdibm/swift-openapi-generator",
       "state" : {
         "branch" : "generator-command-plugin",
-        "revision" : "d8e5a478b03d15265bc233132e7aace88b0c9106"
+        "revision" : "1b5286fab1f256d9536f998f76bdb916a42e948f"
       }
     },
     {

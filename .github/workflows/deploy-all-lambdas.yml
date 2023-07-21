@@ -1,4 +1,4 @@
-name: Deploy lambda functions
+name: deploy lambda functions
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -26,11 +26,18 @@ jobs:
       - name: Build, package, and deploy
         run: |
           mkdir zips
-          for name in $(\ls ./Lambdas); do
+          for name in $(
+            swift package dump-package | \
+              jq '.targets' | \
+              jq 'map(select(.type == "executable"))' | \
+              jq 'map(select(.path != null))' | \
+              jq 'map(select(.path | startswith("./Lambdas")))' | \
+              jq -r '.[].name'
+            ); do
             swift package archive \
               --output-path ./zips \
-              --products "${name}Lambda"
+              --products "${name}"
             aws lambda update-function-code \
-              --function-name "${name}Lambda-lambda" \
-              --zip-file "fileb://./zips/${name}Lambda/${name}Lambda.zip"
+              --function-name "${name}-lambda" \
+              --zip-file "fileb://./zips/${name}/${name}.zip"
           done

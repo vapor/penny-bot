@@ -11,7 +11,7 @@ struct EventHandler {
             try await PRHandler(context: context).handle()
         case .ping:
             try await onPing()
-        case .pull_request_review, .projects_v2_item, .project_card:
+        case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories:
             break
         default:
             try await onDefault()
