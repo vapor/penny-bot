@@ -20,7 +20,12 @@ jobs:
           echo "::add_mask::$AWS_SECRET_ACCESS_KEY"
           yum -y install \
             {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
-            libtool jq zip awscliv2
+            libtool jq zip
+      - name: Install awscliv2
+        run: |
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
       - name: Check out repository
         uses: actions/checkout@v3
       - name: Build, package, and deploy
