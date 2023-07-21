@@ -101,7 +101,7 @@ Resources:
       ApiId: !Ref apiGateway
       StageName: !Ref apiGatewayStage
 
-  # Coins lambda config
+  # Coins lambda config
 
   addCoinIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -125,7 +125,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${CoinsFilename}.zip
       FunctionName: !Sub ${CoinsFilename}-lambda
       Handler: handler 
@@ -148,7 +148,7 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${CoinsFilename}-lambda
       RetentionInDays: 30
       
-  # Sponsors lambda config
+  # Sponsors lambda config
       
   sponsorsIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -172,7 +172,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${SponsorsFilename}.zip
       FunctionName: !Sub ${SponsorsFilename}-lambda
       Handler: handler
@@ -237,7 +237,9 @@ Resources:
                 Effect: Allow 
                 Resource: 
                   - !GetAtt dynamoUserTable.Arn
+                  - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}-lambda
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}-lambda:*
@@ -304,7 +306,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoPingsFilename}.zip
       FunctionName: !Sub ${AutoPingsFilename}-lambda
       Handler: handler
@@ -358,7 +360,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${FaqsFilename}.zip
       FunctionName: !Sub ${FaqsFilename}-lambda
       Handler: handler
@@ -412,7 +414,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${GHHooksFilename}.zip
       Environment:
         Variables:
@@ -466,7 +468,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${GHOAuthFilename}.zip
       Environment:
         Variables:
@@ -558,25 +560,45 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
+  # DynamoDB ghHooks-message-lookup table
+
+  dynamoGHHooksMessageLookupTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "ghHooks-message-lookup-table"
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
 
 Outputs:
-  ghHooksLambdaArn:
-    Value: !GetAtt ghHooksFunction.Arn
-
-  faqsLambdaArn:
-    Value: !GetAtt faqsFunction.Arn
-
-  autoPingsLambdaArn:
-    Value: !GetAtt autoPingsFunction.Arn
-
-  sponsorsLambdaArn:
-    Value: !GetAtt sponsorsFunction.Arn
-
-  addCoinLambdaArn:
-    Value: !GetAtt addCoinFunction.Arn
-
   ghOAuthLambdaArn:
     Value: !GetAtt ghOAuthFunction.Arn
 
-  dynamoDBArn:
+  ghHooksLambdaARN:
+    Value: !GetAtt ghHooksFunction.Arn
+
+  faqsLambdaARN:
+    Value: !GetAtt faqsFunction.Arn
+
+  autoPingsLambdaARN:
+    Value: !GetAtt autoPingsFunction.Arn
+
+  sponsorsLambdaARN:
+    Value: !GetAtt sponsorsFunction.Arn
+
+  addCoinLambdaARN:
+    Value: !GetAtt addCoinFunction.Arn
+
+  pennyBotDynamoDBARN:
     Value: !GetAtt dynamoUserTable.Arn
+  
+  ghHooksMessageLookupDynamoDBARN:
+    Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn

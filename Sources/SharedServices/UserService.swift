@@ -11,7 +11,6 @@ public struct UserService {
     
     let logger: Logger
     let userRepo: DynamoUserRepository
-    let tableName = "penny-bot-table"
 
     public init(_ awsClient: AWSClient, _ logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
@@ -19,7 +18,6 @@ public struct UserService {
         self.logger = logger
         self.userRepo = DynamoUserRepository(
             db: dynamoDB,
-            tableName: tableName,
             eventLoop: awsClient.eventLoopGroup.any(),
             logger: logger
         )

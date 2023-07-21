@@ -434,6 +434,7 @@ class GHHooksTests: XCTestCase {
                 serverURL: try Servers.server1(),
                 transport: FakeClientTransport()
             ),
+            messageLookupRepo: FakeMessageLookupRepo(),
             logger: Logger(label: "GHHooksTests")
         )
     }

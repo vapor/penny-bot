@@ -706,15 +706,17 @@
         "type": 1,
         "last_message_id": "1040523601310392370",
         "flags": 0,
-        "recipients": [{
-            "username": "0xTim",
-            "public_flags": 0,
-            "id": "432065887202181142",
-            "display_name": null,
-            "discriminator": "0",
-            "avatar_decoration": null,
-            "avatar": "800bfcd31ae4a77f61646226df46c204"
-        }]
+        "recipients": [
+            {
+                "username": "0xTim",
+                "public_flags": 0,
+                "id": "432065887202181142",
+                "display_name": null,
+                "discriminator": "0",
+                "avatar_decoration": null,
+                "avatar": "800bfcd31ae4a77f61646226df46c204"
+            }
+        ]
     },
     "howManyCoins1": {
         "t": "INTERACTION_CREATE",
@@ -1326,5 +1328,51 @@
             "app_permissions": "140737488355327"
         }
     },
-    "GET-https://discord.com/api/v10/channels/1123702585006768228/messages": []
+    "GET-https://discord.com/api/v10/channels/1123702585006768228/messages": [],
+    "POST-https://discord.com/api/v10/channels/1123702585006768228/messages": {
+        "id": "1131967444370608148",
+        "type": 0,
+        "content": "",
+        "channel_id": "1123702585006768228",
+        "author": {
+            "id": "950695294906007573",
+            "username": "Penny",
+            "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367",
+            "discriminator": "9194",
+            "public_flags": 0,
+            "flags": 0,
+            "bot": true,
+            "banner": null,
+            "accent_color": null,
+            "global_name": null,
+            "avatar_decoration": null,
+            "display_name": null,
+            "banner_color": null
+        },
+        "attachments": [],
+        "embeds": [
+            {
+                "type": "rich",
+                "url": "https://github.com/vapor/vapor/pull/3040",
+                "title": "[vapor] PR #3040",
+                "description": "### Remove unnecessary efficiency bottleneck from server channel configuration\n\n>>> We have been setting `ChannelOption.maxMessagesPerRead` to `1` throughout Vapor 4’s lifetime, for no apparent reason. Let’s stop doing that.",
+                "color": 3458905,
+                "footer": {
+                    "text": "By gwynne",
+                    "icon_url": "https://avatars.githubusercontent.com/u/1130717?v=4",
+                    "proxy_icon_url": "https://images-ext-1.discordapp.net/external/94y_3PNpPNBfSp78FYvSmhMa2zLrSSUM2MX1MfJzIfI/%3Fv%3D4/https/avatars.githubusercontent.com/u/1130717"
+                }
+            }
+        ],
+        "mentions": [],
+        "mention_roles": [],
+        "pinned": false,
+        "mention_everyone": false,
+        "tts": false,
+        "timestamp": "2023-07-21T15:14:29.676000+00:00",
+        "edited_timestamp": null,
+        "flags": 0,
+        "components": [],
+        "referenced_message": null
+    }
 }

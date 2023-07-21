@@ -71,7 +71,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/mahdibm/swift-openapi-generator",
-            // Use the apple repo when command plugin is merged
+            // Use the apple repo when command plugin is merged and tagged
             branch: "generator-command-plugin"
         ),
         .package(
@@ -158,6 +158,7 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "Crypto", package: "swift-crypto"),
+                .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SwiftSemver", package: "swift-semver"),
@@ -239,6 +240,7 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .target(name: "GHHooksLambda"),
                 .target(name: "Penny"),
             ],
             path: "./Tests/Fake",
