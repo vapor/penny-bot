@@ -1,4 +1,4 @@
-name: Deploy bot stack
+name: deploy bot stack
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
