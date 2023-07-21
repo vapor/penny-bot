@@ -9,7 +9,7 @@ import Foundation
 
 private enum Configuration {
     /// `150622661` == `postgres-nio`
-    static let repositoryDenyListIDs = [150622661]
+    static let repositoryDenyListIDs: Set<Int> = [150622661]
 }
 
 struct ReleaseHandler {
