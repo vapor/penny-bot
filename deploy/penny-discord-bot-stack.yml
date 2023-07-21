@@ -533,7 +533,7 @@ Outputs:
   addCoinLambdaArn:
     Value: !GetAtt addCoinFunction.Arn
 
-  pennyBotDynamoDBArn:
+  dynamoDBArn:
     Value: !GetAtt dynamoUserTable.Arn
   
   ghHooksMessageLookupDynamoDBArn:
