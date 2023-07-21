@@ -1,14 +1,15 @@
 import Markdown
 
 extension String {
+    /// Formats markdown in a way that looks nice on Discord, but still good on GitHub.
+    ///
+    /// If you want to know why something is being done, comment out those lines and run the tests.
     func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
-        guard let markup1 = htmlRemover.visit(document1)
-        else { return "" }
+        guard let markup1 = htmlRemover.visit(document1) else { return "" }
         var emptyLinksRemover = EmptyLinksRemover()
-        guard let markup2 = emptyLinksRemover.visit(markup1)
-        else { return "" }
+        guard let markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
         let prefixed = markup2.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -22,8 +23,7 @@ extension String {
             atCount: paragraphCount,
             ifShorterThan: trailingParagraphMinLength
         )
-        guard let markup3 = paragraphRemover.visit(document2)
-        else { return "" }
+        guard let markup3 = paragraphRemover.visit(document2) else { return "" }
 
         var formattedLines = markup3.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -95,7 +95,7 @@ private struct ParagraphRemover: MarkupRewriter {
     }
 }
 
-extension StringProtocol {
+private extension StringProtocol {
     /// The line is worthless and can be trimmed.
     var isWorthlessLineForTrim: Bool {
         self.allSatisfy({ $0.isWhitespace || $0.isPunctuation })

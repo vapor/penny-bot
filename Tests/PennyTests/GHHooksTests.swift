@@ -355,6 +355,12 @@ class GHHooksTests: XCTestCase {
             eventName: .projects_v2_item,
             expect: .noResponse
         )
+
+        try await handleEvent(
+            key: "installation_repos1",
+            eventName: .installation_repositories,
+            expect: .noResponse
+        )
     }
 
     func handleEvent(

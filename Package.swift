@@ -41,9 +41,7 @@ let package = Package(
         .macOS(.v13)
     ],
     products: [
-        .executable(name: "Penny", targets: ["Penny"]),
-        /// For Xcode's command-plugin UI to show `GitHubAPI` as an option.
-        .library(name: "GitHubAPI", targets: ["GitHubAPI"])
+        .executable(name: "Penny", targets: ["Penny"])
     ],
     dependencies: [
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
@@ -191,6 +189,7 @@ let package = Package(
                 ),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
             ],
+            path: "./Lambdas/GitHubAPI",
             resources: [
                 .copy("openapi-generator-config.yml"),
                 .copy("openapi.yaml"),

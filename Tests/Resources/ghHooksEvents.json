@@ -6827,5 +6827,284 @@
             "id": 39698047,
             "node_id": "MDIzOkludGVncmF0aW9uSW5zdGFsbGF0aW9uMzk2OTgwNDc="
         }
+    },
+    "installation_repos1": {
+        "action": "removed",
+        "installation": {
+            "id": 39698047,
+            "account": {
+                "login": "vapor",
+                "id": 17364220,
+                "node_id": "MDEyOk9yZ2FuaXphdGlvbjE3MzY0MjIw",
+                "avatar_url": "https://avatars.githubusercontent.com/u/17364220?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/vapor",
+                "html_url": "https://github.com/vapor",
+                "followers_url": "https://api.github.com/users/vapor/followers",
+                "following_url": "https://api.github.com/users/vapor/following{/other_user}",
+                "gists_url": "https://api.github.com/users/vapor/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/vapor/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/vapor/subscriptions",
+                "organizations_url": "https://api.github.com/users/vapor/orgs",
+                "repos_url": "https://api.github.com/users/vapor/repos",
+                "events_url": "https://api.github.com/users/vapor/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/vapor/received_events",
+                "type": "Organization",
+                "site_admin": false
+            },
+            "repository_selection": "selected",
+            "access_tokens_url": "https://api.github.com/app/installations/39698047/access_tokens",
+            "repositories_url": "https://api.github.com/installation/repositories",
+            "html_url": "https://github.com/organizations/vapor/settings/installations/39698047",
+            "app_id": 360798,
+            "app_slug": "penny-for-vapor",
+            "target_id": 17364220,
+            "target_type": "Organization",
+            "permissions": {
+                "issues": "write",
+                "members": "read",
+                "contents": "write",
+                "metadata": "read",
+                "statuses": "read",
+                "pull_requests": "write",
+                "organization_projects": "write"
+            },
+            "events": [
+                "issues",
+                "label",
+                "projects_v2_item",
+                "project_card",
+                "pull_request",
+                "pull_request_review"
+            ],
+            "created_at": "2023-07-16T16:30:59.000Z",
+            "updated_at": "2023-07-21T08:33:13.000Z",
+            "single_file_name": null,
+            "has_multiple_single_files": false,
+            "single_file_paths": [],
+            "suspended_by": null,
+            "suspended_at": null
+        },
+        "repository_selection": "selected",
+        "repositories_added": [],
+        "repositories_removed": [
+            {
+                "id": 62755830,
+                "node_id": "MDEwOlJlcG9zaXRvcnk2Mjc1NTgzMA==",
+                "name": "http",
+                "full_name": "vapor/http",
+                "private": false
+            },
+            {
+                "id": 63438372,
+                "node_id": "MDEwOlJlcG9zaXRvcnk2MzQzODM3Mg==",
+                "name": "university",
+                "full_name": "vapor/university",
+                "private": false
+            },
+            {
+                "id": 63797234,
+                "node_id": "MDEwOlJlcG9zaXRvcnk2Mzc5NzIzNA==",
+                "name": "core",
+                "full_name": "vapor/core",
+                "private": false
+            },
+            {
+                "id": 64560805,
+                "node_id": "MDEwOlJlcG9zaXRvcnk2NDU2MDgwNQ==",
+                "name": "docs",
+                "full_name": "vapor/docs",
+                "private": false
+            },
+            {
+                "id": 65051723,
+                "node_id": "MDEwOlJlcG9zaXRvcnk2NTA1MTcyMw==",
+                "name": "open-crypto",
+                "full_name": "vapor/open-crypto",
+                "private": false
+            },
+            {
+                "id": 67753641,
+                "node_id": "MDEwOlJlcG9zaXRvcnk2Nzc1MzY0MQ==",
+                "name": "homebrew-tap",
+                "full_name": "vapor/homebrew-tap",
+                "private": false
+            },
+            {
+                "id": 82072407,
+                "node_id": "MDEwOlJlcG9zaXRvcnk4MjA3MjQwNw==",
+                "name": "auth",
+                "full_name": "vapor/auth",
+                "private": false
+            },
+            {
+                "id": 85735267,
+                "node_id": "MDEwOlJlcG9zaXRvcnk4NTczNTI2Nw==",
+                "name": "validation",
+                "full_name": "vapor/validation",
+                "private": false
+            },
+            {
+                "id": 86448843,
+                "node_id": "MDEwOlJlcG9zaXRvcnk4NjQ0ODg0Mw==",
+                "name": "web-template",
+                "full_name": "vapor/web-template",
+                "private": false
+            },
+            {
+                "id": 93523378,
+                "node_id": "MDEwOlJlcG9zaXRvcnk5MzUyMzM3OA==",
+                "name": "auth-template",
+                "full_name": "vapor/auth-template",
+                "private": false
+            },
+            {
+                "id": 99865196,
+                "node_id": "MDEwOlJlcG9zaXRvcnk5OTg2NTE5Ng==",
+                "name": "service",
+                "full_name": "vapor/service",
+                "private": false
+            },
+            {
+                "id": 105304191,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxMDUzMDQxOTE=",
+                "name": "apt",
+                "full_name": "vapor/apt",
+                "private": false
+            },
+            {
+                "id": 111242551,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxMTEyNDI1NTE=",
+                "name": "kafka",
+                "full_name": "vapor/kafka",
+                "private": false
+            },
+            {
+                "id": 116777606,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxMTY3Nzc2MDY=",
+                "name": "database-kit",
+                "full_name": "vapor/database-kit",
+                "private": false
+            },
+            {
+                "id": 116907695,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxMTY5MDc2OTU=",
+                "name": "template-kit",
+                "full_name": "vapor/template-kit",
+                "private": false
+            },
+            {
+                "id": 125303314,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxMjUzMDMzMTQ=",
+                "name": "docker-swift",
+                "full_name": "vapor/docker-swift",
+                "private": false
+            },
+            {
+                "id": 129792643,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxMjk3OTI2NDM=",
+                "name": "url-encoded-form",
+                "full_name": "vapor/url-encoded-form",
+                "private": false
+            },
+            {
+                "id": 150622661,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxNTA2MjI2NjE=",
+                "name": "postgres-nio",
+                "full_name": "vapor/postgres-nio",
+                "private": false
+            },
+            {
+                "id": 156300635,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxNTYzMDA2MzU=",
+                "name": "codable-kit",
+                "full_name": "vapor/codable-kit",
+                "private": false
+            },
+            {
+                "id": 171774614,
+                "node_id": "MDEwOlJlcG9zaXRvcnkxNzE3NzQ2MTQ=",
+                "name": "bot-github",
+                "full_name": "vapor/bot-github",
+                "private": false
+            },
+            {
+                "id": 214666571,
+                "node_id": "MDEwOlJlcG9zaXRvcnkyMTQ2NjY1NzE=",
+                "name": "docker",
+                "full_name": "vapor/docker",
+                "private": false
+            },
+            {
+                "id": 227953821,
+                "node_id": "MDEwOlJlcG9zaXRvcnkyMjc5NTM4MjE=",
+                "name": "release-bot",
+                "full_name": "vapor/release-bot",
+                "private": false
+            },
+            {
+                "id": 233996874,
+                "node_id": "MDEwOlJlcG9zaXRvcnkyMzM5OTY4NzQ=",
+                "name": "jobs-api",
+                "full_name": "vapor/jobs-api",
+                "private": true
+            },
+            {
+                "id": 233996973,
+                "node_id": "MDEwOlJlcG9zaXRvcnkyMzM5OTY5NzM=",
+                "name": "users-api",
+                "full_name": "vapor/users-api",
+                "private": true
+            },
+            {
+                "id": 256531538,
+                "node_id": "MDEwOlJlcG9zaXRvcnkyNTY1MzE1Mzg=",
+                "name": "docs-cn",
+                "full_name": "vapor/docs-cn",
+                "private": false
+            },
+            {
+                "id": 313626511,
+                "node_id": "MDEwOlJlcG9zaXRvcnkzMTM2MjY1MTE=",
+                "name": "homebrew-core",
+                "full_name": "vapor/homebrew-core",
+                "private": false
+            },
+            {
+                "id": 462001571,
+                "node_id": "R_kgDOG4mVow",
+                "name": "docs-de",
+                "full_name": "vapor/docs-de",
+                "private": false
+            },
+            {
+                "id": 488254342,
+                "node_id": "R_kgDOHRorhg",
+                "name": "docs-legacy",
+                "full_name": "vapor/docs-legacy",
+                "private": false
+            }
+        ],
+        "requester": null,
+        "sender": {
+            "login": "gwynne",
+            "id": 1130717,
+            "node_id": "MDQ6VXNlcjExMzA3MTc=",
+            "avatar_url": "https://avatars.githubusercontent.com/u/1130717?v=4",
+            "gravatar_id": "",
+            "url": "https://api.github.com/users/gwynne",
+            "html_url": "https://github.com/gwynne",
+            "followers_url": "https://api.github.com/users/gwynne/followers",
+            "following_url": "https://api.github.com/users/gwynne/following{/other_user}",
+            "gists_url": "https://api.github.com/users/gwynne/gists{/gist_id}",
+            "starred_url": "https://api.github.com/users/gwynne/starred{/owner}{/repo}",
+            "subscriptions_url": "https://api.github.com/users/gwynne/subscriptions",
+            "organizations_url": "https://api.github.com/users/gwynne/orgs",
+            "repos_url": "https://api.github.com/users/gwynne/repos",
+            "events_url": "https://api.github.com/users/gwynne/events{/privacy}",
+            "received_events_url": "https://api.github.com/users/gwynne/received_events",
+            "type": "User",
+            "site_admin": false
+        }
     }
 }
