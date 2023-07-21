@@ -121,7 +121,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${CoinsFilename}.zip
       FunctionName: !Sub ${CoinsFilename}-lambda
       Handler: handler 
@@ -168,7 +168,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${SponsorsFilename}.zip
       FunctionName: !Sub ${SponsorsFilename}-lambda
       Handler: handler
@@ -299,7 +299,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoPingsFilename}.zip
       FunctionName: !Sub ${AutoPingsFilename}-lambda
       Handler: handler
@@ -353,7 +353,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${FaqsFilename}.zip
       FunctionName: !Sub ${FaqsFilename}-lambda
       Handler: handler
@@ -407,7 +407,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       Code:
-        S3Bucket: penny-discord-bot
+        S3Bucket: penny-lambdas-store
         S3Key: !Sub ${GHHooksFilename}.zip
       Environment:
         Variables:
