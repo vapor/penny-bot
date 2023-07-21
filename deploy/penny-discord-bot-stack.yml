@@ -97,7 +97,7 @@ Resources:
       ApiId: !Ref apiGateway
       StageName: !Ref apiGatewayStage
 
-  # Coins lambda config
+  # Coins lambda config
 
   addCoinIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -144,7 +144,7 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${CoinsFilename}-lambda
       RetentionInDays: 30
       
-  # Sponsors lambda config
+  # Sponsors lambda config
       
   sponsorsIntegration:
     Type: AWS::ApiGatewayV2::Integration
@@ -233,7 +233,7 @@ Resources:
                 Effect: Allow 
                 Resource: 
                   - !GetAtt dynamoUserTable.Arn
-                  # - !GetAtt dynamoGHHooksMessageLookupTable.Arn
+                  - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}-lambda:*
@@ -501,40 +501,40 @@ Resources:
 
   # DynamoDB ghHooks-message-lookup table
 
-  # dynamoGHHooksMessageLookupTable:
-  #   Type: AWS::DynamoDB::Table
-  #   Properties:
-  #     TableName: "ghHooks-message-lookup-table"
-  #     AttributeDefinitions:
-  #       -
-  #         AttributeName: "id"
-  #         AttributeType: "S"
-  #     KeySchema:
-  #       - 
-  #         AttributeName: "id"
-  #         KeyType: "HASH"
-  #     BillingMode: PAY_PER_REQUEST
-  #     PointInTimeRecoverySpecification:
-  #       PointInTimeRecoveryEnabled: true
+  dynamoGHHooksMessageLookupTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "ghHooks-message-lookup-table"
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
 
 Outputs:
-  ghHooksLambdaArn:
+  ghHooksLambdaARN:
     Value: !GetAtt ghHooksFunction.Arn
 
-  faqsLambdaArn:
+  faqsLambdaARN:
     Value: !GetAtt faqsFunction.Arn
 
-  autoPingsLambdaArn:
+  autoPingsLambdaARN:
     Value: !GetAtt autoPingsFunction.Arn
 
-  sponsorsLambdaArn:
+  sponsorsLambdaARN:
     Value: !GetAtt sponsorsFunction.Arn
 
-  addCoinLambdaArn:
+  addCoinLambdaARN:
     Value: !GetAtt addCoinFunction.Arn
 
-  dynamoDBArn:
+  pennyBotDynamoDBARN:
     Value: !GetAtt dynamoUserTable.Arn
   
-  # ghHooksMessageLookupDynamoDBArn:
-  #   Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
+  ghHooksMessageLookupDynamoDBARN:
+    Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
