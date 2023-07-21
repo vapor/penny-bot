@@ -224,6 +224,7 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .target(name: "GHHooksLambda"),
                 .target(name: "Penny"),
             ],
             path: "./Tests/Fake",
