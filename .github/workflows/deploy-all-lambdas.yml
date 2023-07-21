@@ -39,5 +39,6 @@ jobs:
               --products "${name}"
             aws lambda update-function-code \
               --function-name "${name}-lambda" \
-              --zip-file "fileb://./zips/${name}/${name}.zip"
+              --zip-file "fileb://./zips/${name}/${name}.zip" \
+              --s3-bucket "penny-lambdas-store"
           done
