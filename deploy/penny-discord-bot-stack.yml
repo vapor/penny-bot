@@ -233,7 +233,7 @@ Resources:
                 Effect: Allow 
                 Resource: 
                   - !GetAtt dynamoUserTable.Arn
-                  - !GetAtt dynamoGHHooksMessageLookupTable.Arn
+                  # - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}-lambda:*
@@ -501,21 +501,21 @@ Resources:
 
   # DynamoDB ghHooks-message-lookup table
 
-  dynamoGHHooksMessageLookupTable:
-    Type: AWS::DynamoDB::Table
-    Properties:
-      TableName: "ghHooks-message-lookup-table"
-      AttributeDefinitions:
-        -
-          AttributeName: "id"
-          AttributeType: "S"
-      KeySchema:
-        - 
-          AttributeName: "id"
-          KeyType: "HASH"
-      BillingMode: PAY_PER_REQUEST
-      PointInTimeRecoverySpecification:
-        PointInTimeRecoveryEnabled: true
+  # dynamoGHHooksMessageLookupTable:
+  #   Type: AWS::DynamoDB::Table
+  #   Properties:
+  #     TableName: "ghHooks-message-lookup-table"
+  #     AttributeDefinitions:
+  #       -
+  #         AttributeName: "id"
+  #         AttributeType: "S"
+  #     KeySchema:
+  #       - 
+  #         AttributeName: "id"
+  #         KeyType: "HASH"
+  #     BillingMode: PAY_PER_REQUEST
+  #     PointInTimeRecoverySpecification:
+  #       PointInTimeRecoveryEnabled: true
 
 Outputs:
   ghHooksLambdaArn:
@@ -536,5 +536,5 @@ Outputs:
   dynamoDBArn:
     Value: !GetAtt dynamoUserTable.Arn
   
-  ghHooksMessageLookupDynamoDBArn:
-    Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
+  # ghHooksMessageLookupDynamoDBArn:
+  #   Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
