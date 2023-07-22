@@ -519,20 +519,15 @@ private extension InteractionHandler {
             }
             let state = try signers.sign(jwt)
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
-            return Payloads.EditWebhookMessage(
-                embeds: [.init(
-                    description: """
-                    Click the link below to authorize Vapor:
+            return """
+            Click the link below to authorize Vapor:
 
-                    > This is a one-time authorization so Penny can confirm you own the Github account.
-                    > Penny doesn't do anything else with it's authorization, and immediately discards its access token.
-                    > Feel free to revoke Penny's access from your GitHub account afterwards.
+            > This is a one-time authorization so Penny can confirm you own the Github account.
+            > Penny doesn't do anything else with it's authorization, and immediately discards its access token.
+            > Feel free to revoke Penny's access from your GitHub account afterwards.
 
-                    [**Authorize**](\(url))
-                    """,
-                    color: .vaporPurple
-                )]
-            )
+            [**Authorize**](\(url))
+            """
         case .unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordID)"
         case .whoAmI:

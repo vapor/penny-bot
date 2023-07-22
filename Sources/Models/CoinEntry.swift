@@ -1,4 +1,8 @@
+#if canImport(Darwin)
+import Foundation
+#else
 @preconcurrency import Foundation
+#endif
 
 public struct CoinEntry: Sendable, Codable {
     public let id: UUID

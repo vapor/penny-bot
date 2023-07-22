@@ -1,6 +1,10 @@
+#if canImport(Darwin)
+import Foundation
+#else
+@preconcurrency import Foundation
+#endif
 import Models
 import AsyncHTTPClient
-@preconcurrency import Foundation
 import Logging
 import NIOHTTP1
 

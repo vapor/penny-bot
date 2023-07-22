@@ -1,7 +1,11 @@
+#if canImport(Darwin)
+import Foundation
+#else
+@preconcurrency import Foundation
+#endif
 import OpenAPIRuntime
 import Atomics
 import Logging
-@preconcurrency import Foundation
 
 /// Adds some headers to all requests.
 public struct GHMiddleware: ClientMiddleware {

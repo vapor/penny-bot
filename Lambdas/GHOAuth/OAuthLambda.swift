@@ -1,3 +1,8 @@
+#if canImport(Darwin)
+import Foundation
+#else
+@preconcurrency import Foundation
+#endif
 import AsyncHTTPClient
 import AWSLambdaRuntime
 import AWSLambdaEvents
@@ -8,7 +13,6 @@ import JWTKit
 import LambdasShared
 import SharedServices
 import Logging
-@preconcurrency import Foundation
 
 @main
 struct GHOAuthHandler: LambdaHandler {

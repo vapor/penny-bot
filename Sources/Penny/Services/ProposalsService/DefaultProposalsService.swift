@@ -1,12 +1,23 @@
+#if canImport(Darwin)
+import Foundation
+#else
+@preconcurrency import Foundation
+#endif
 import AsyncHTTPClient
 import Models
 import NIOCore
-@preconcurrency import Foundation
 
 struct DefaultProposalsService: ProposalsService {
     
-    enum Error: Swift.Error {
+    enum Errors: Error, CustomStringConvertible {
         case emptyProposals
+
+        var description: String {
+            switch self {
+            case .emptyProposals:
+                return "emptyProposals"
+            }
+        }
     }
 
     let httpClient: HTTPClient
@@ -20,7 +31,7 @@ struct DefaultProposalsService: ProposalsService {
         let buffer = try await response.body.collect(upTo: 1 << 23) /// 8 MB
         let proposals = try decoder.decode([Proposal].self, from: buffer)
         if proposals.isEmpty {
-            throw Error.emptyProposals
+            throw Errors.emptyProposals
         }
         return proposals
     }

@@ -46,8 +46,8 @@ jobs:
               --bucket penny-lambdas-store \
               --key "${name}.zip" \
               --body ./zips/${name}/${name}.zip
-            aws lambda update-function-code \
-              --function-name "${name}" \
-              --s3-bucket "penny-lambdas-store" \
-              --s3-key "${name}.zip"
+            # aws lambda update-function-code \
+            #   --function-name "${name}-lambda" \
+            #   --s3-bucket "penny-lambdas-store" \
+            #   --s3-key "${name}.zip"
           done
