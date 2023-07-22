@@ -100,7 +100,10 @@ public struct UserService {
         try await userRepo.linkGithubID(discordID: discordID, githubID: githubID)
     }
     
-    private func insertIntoDB(user account: DynamoUser, with coinEntry: CoinEntry) async throws -> DynamoUser {
+    private func insertIntoDB(
+        user account: DynamoUser,
+        with coinEntry: CoinEntry
+    ) async throws -> DynamoUser {
         var localUser = account
         
         localUser.addCoinEntry(coinEntry)

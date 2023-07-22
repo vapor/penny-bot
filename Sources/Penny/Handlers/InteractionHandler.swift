@@ -535,7 +535,7 @@ private extension InteractionHandler {
         case .unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordID)"
         case .whoAmI:
-            let user = "<@\(discordID)>"
+            let user = "<@\(discordID.rawValue)>"
             let response = try await coinService.getGitHubID(of: user)
             switch response {
             case .notLinked:

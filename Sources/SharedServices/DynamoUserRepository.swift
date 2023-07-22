@@ -31,7 +31,7 @@ struct DynamoUserRepository {
     }
     
     // MARK: - Insert & Update
-    func insertUser(_ user: DynamoDBUser) async throws -> Void {
+    func insertUser(_ user: DynamoDBUser) async throws {
         let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
         
         _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)

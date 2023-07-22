@@ -25,8 +25,8 @@ actor DefaultCoinService: CoinService {
         let data = try encoder.encode(CoinRequest.addCoin(coinRequest))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
-        logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
-        
+        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
+
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
@@ -50,8 +50,8 @@ actor DefaultCoinService: CoinService {
         let data = try encoder.encode(CoinRequest.getCoinCount(user: user))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
-        logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
-        
+        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
+
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
@@ -75,7 +75,7 @@ actor DefaultCoinService: CoinService {
         let data = try encoder.encode(CoinRequest.getGitHubID(user: user))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
-        logger.trace("Received HTTP Head", metadata: ["response": "\(response)"])
+        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
