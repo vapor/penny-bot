@@ -6,7 +6,6 @@ import OpenAPIAsyncHTTPClient
 import Logging
 import LambdasShared
 import Foundation
-import struct DiscordModels.Secret
 
 actor Authenticator {
     private let secretsRetriever: SecretsRetriever
@@ -29,17 +28,17 @@ actor Authenticator {
     /// This requires having a more persistent caching mechanism to cache the token
     /// across different lambda processes, so it is possible for the installation token to
     /// live long enough to be expired in the first place, so then we can think of refreshing it.
-    func generateAccessToken(forceRefreshToken: Bool = false) async throws -> Secret {
+    func generateAccessToken(forceRefreshToken: Bool = false) async throws -> String {
         try await queue.process {
             if !forceRefreshToken,
                let cachedAccessToken = await cachedAccessToken {
-                return Secret(cachedAccessToken.token)
+                return cachedAccessToken.token
             } else {
                 let token = try await makeJWTToken()
                 let client = try await makeClient(token: token)
                 let accessToken = try await createAccessToken(client: client)
                 await setCachedAccessToken(to: accessToken)
-                return Secret(accessToken.token)
+                return accessToken.token
             }
         }
     }
@@ -57,24 +56,15 @@ actor Authenticator {
         }
     }
 
-    private func makeClient(token: Secret) throws -> Client {
-        let transport = AsyncHTTPClientTransport(configuration: .init(
-            client: httpClient,
-            timeout: .seconds(3)
-        ))
-        let middleware = GHMiddleware(
-            authorization: .bearer(token.value),
+    private func makeClient(token: String) throws -> Client {
+        try .makeForGitHub(
+            httpClient: httpClient,
+            authorization: .bearer(token),
             logger: logger
         )
-        let client = Client(
-            serverURL: try Servers.server1(),
-            transport: transport,
-            middlewares: [middleware]
-        )
-        return client
     }
 
-    private func makeJWTToken() async throws -> Secret {
+    private func makeJWTToken() async throws -> String {
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .integerSecondsSince1970
         let decoder = JSONDecoder()
@@ -87,7 +77,7 @@ actor Authenticator {
         try signers.use(.rs256(key: .private(pem: key)))
         let payload = TokenPayload()
         let token = try signers.sign(payload)
-        return Secret(token)
+        return token
     }
 
     private func getPrivKey() async throws -> String {

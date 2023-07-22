@@ -193,7 +193,7 @@ struct GHOAuthHandler: LambdaHandler {
             "Accept": "application/vnd.github+json",
             "Authorization": "Bearer \(accessToken)",
             "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "Penny - GHOAuthLambda - 1.0.0 (https://github.com/vapor/penny-bot)"
+            "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
         ]
 
         let response = try await client.execute(request, timeout: .seconds(5))

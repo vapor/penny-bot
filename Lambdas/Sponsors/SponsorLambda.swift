@@ -258,7 +258,7 @@ struct AddSponsorHandler: LambdaHandler {
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
             "Authorization": "Bearer \(workflowToken)",
-            "User-Agent": "Penny - SponsorsLambda - 1.0.0 (https://github.com/vapor/penny-bot)"
+            "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
         ])
         
         triggerActionRequest.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))

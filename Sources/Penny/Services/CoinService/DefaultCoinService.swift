@@ -110,7 +110,7 @@ actor DefaultCoinService: CoinService {
             request.headers = [
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
-                "User-Agent": "Penny - DiscordPart - 1.0.0 (https://github.com/vapor/penny-bot)"
+                "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
             ]
 
             let response = try await httpClient.execute(request, timeout: .seconds(5))

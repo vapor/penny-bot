@@ -8,51 +8,20 @@ import Atomics
 import Logging
 
 /// Adds some headers to all requests.
-public struct GHMiddleware: ClientMiddleware {
-
-    public enum Authorization: Sendable {
-        /// The `Bool` is `isRetry`.
-        public typealias CustomHeaderCalculation = @Sendable (Bool) async throws -> String
-
-        case bearer(String)
-        case custom(CustomHeaderCalculation)
-        case none
-
-        var isRetriable: Bool {
-            switch self {
-            case .bearer, .none:
-                return false
-            case .custom:
-                return true
-            }
-        }
-
-        func makeHeader(isRetry: Bool = false) async throws -> String? {
-            switch self {
-            case let .bearer(token):
-                return "Bearer \(token)"
-            case let .custom(customBlock):
-                let token = try await customBlock(isRetry)
-                return "Bearer \(token)"
-            case .none:
-                return nil
-            }
-        }
-    }
-
-    let authorization: Authorization
+struct GHMiddleware: ClientMiddleware {
+    let authorization: AuthorizationHeader
     let logger: Logger
 
     static let idGenerator = ManagedAtomic(UInt(0))
 
-    public init(authorization: Authorization, logger: Logger) {
+    init(authorization: AuthorizationHeader, logger: Logger) {
         self.authorization = authorization
         self.logger = logger
     }
 
     /// Intercepts, modifies and makes the request and
     /// retries it if it seems like a invalid-auth-header problem.
-    public func intercept(
+    func intercept(
         _ request: Request,
         baseURL: URL,
         operationID: String,
@@ -71,7 +40,7 @@ public struct GHMiddleware: ClientMiddleware {
         )
         request.headerFields.addOrReplace(
             name: "User-Agent",
-            value: "Penny - GHHooksLambda - 1.0.0 (https://github.com/vapor/penny-bot)"
+            value: "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
         )
 
         return try await intercept(

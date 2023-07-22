@@ -55,7 +55,7 @@ struct GHHooksHandler: LambdaHandler {
             authorization: .custom { isRetry in
                 try await authenticator.generateAccessToken(
                     forceRefreshToken: isRetry
-                ).value
+                )
             },
             logger: logger
         )
