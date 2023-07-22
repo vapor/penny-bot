@@ -63,7 +63,7 @@ actor Authenticator {
             timeout: .seconds(3)
         ))
         let middleware = GHMiddleware(
-            authorization: .bearer(token),
+            authorization: .bearer(token.value),
             logger: logger
         )
         let client = Client(

@@ -98,24 +98,24 @@ enum SlashCommand: String, CaseIterable {
 }
 
 enum GitHubSubCommand: String, CaseIterable {
-    case help
     case link
     case unlink
+    case whoAmI = "who-am-i"
 
     var description: String {
         switch self {
-        case .help:
-            return "Help about how GitHub linking works"
         case .link:
             return "Link your GitHub account to Penny"
         case .unlink:
             return "Unlink your GitHub account from Penny"
+        case .whoAmI:
+            return "See what GitHub account is linked to your Discord user"
         }
     }
 
     var options: [ApplicationCommand.Option] {
         switch self {
-        case .help, .link, .unlink:
+        case .link, .unlink, .whoAmI:
             return []
         }
     }

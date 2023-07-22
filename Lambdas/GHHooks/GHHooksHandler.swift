@@ -1,7 +1,6 @@
 import AWSLambdaRuntime
 import AWSLambdaEvents
 import AsyncHTTPClient
-import OpenAPIAsyncHTTPClient
 import SotoCore
 import DiscordHTTP
 import GitHubAPI
@@ -50,19 +49,15 @@ struct GHHooksHandler: LambdaHandler {
             httpClient: httpClient,
             logger: logger
         )
-        let middleware = GHMiddleware(
-            authorization: .authenticator(authenticator),
-            logger: logger
-        )
 
-        let transport = AsyncHTTPClientTransport(configuration: .init(
-            client: httpClient,
-            timeout: .seconds(3)
-        ))
-        self.githubClient = Client(
-            serverURL: try Servers.server1(),
-            transport: transport,
-            middlewares: [middleware]
+        self.githubClient = try .makeForGitHub(
+            httpClient: httpClient,
+            authorization: .custom { isRetry in
+                try await authenticator.generateAccessToken(
+                    forceRefreshToken: isRetry
+                ).value
+            },
+            logger: logger
         )
 
         self.messageLookupRepo = DynamoMessageRepo(

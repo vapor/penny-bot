@@ -16,4 +16,8 @@ public struct FakeCoinService: CoinService {
     public func getCoinCount(of user: String) async throws -> Int {
         2591
     }
+
+    public func getGitHubID(of user: String) async throws -> GitHubUserResponse {
+        .userName("fake-username")
+    }
 }

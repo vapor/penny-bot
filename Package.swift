@@ -96,7 +96,7 @@ let package = Package(
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "JWTKit", package: "jwt-kit"),
-                .target(name: "Models")
+                .target(name: "Models"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -204,7 +204,10 @@ let package = Package(
                     name: "OpenAPIAsyncHTTPClient",
                     package: "swift-openapi-async-http-client"
                 ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "Atomics", package: "swift-atomics"),
             ],
             path: "./Lambdas/GitHubAPI",
             resources: [

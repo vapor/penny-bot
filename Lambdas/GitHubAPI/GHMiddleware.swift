@@ -2,24 +2,36 @@ import OpenAPIRuntime
 import Atomics
 import Logging
 import Foundation
-import struct DiscordModels.Secret
 
 /// Adds some headers to all requests.
-struct GHMiddleware: ClientMiddleware {
+public struct GHMiddleware: ClientMiddleware {
 
-    enum Authorization {
-        case bearer(Secret)
-        case authenticator(Authenticator)
+    public enum Authorization: Sendable {
+        /// The `Bool` is `isRetry`.
+        public typealias CustomHeaderCalculation = @Sendable (Bool) async throws -> String
 
-        func makeHeader(forceRefreshToken: Bool = false) async throws -> String {
+        case bearer(String)
+        case custom(CustomHeaderCalculation)
+        case none
+
+        var isRetriable: Bool {
+            switch self {
+            case .bearer, .none:
+                return false
+            case .custom:
+                return true
+            }
+        }
+
+        func makeHeader(isRetry: Bool = false) async throws -> String? {
             switch self {
             case let .bearer(token):
-                return "Bearer \(token.value)"
-            case let .authenticator(authenticator):
-                let token = try await authenticator.generateAccessToken(
-                    forceRefreshToken: forceRefreshToken
-                )
-                return "Bearer \(token.value)"
+                return "Bearer \(token)"
+            case let .custom(customBlock):
+                let token = try await customBlock(isRetry)
+                return "Bearer \(token)"
+            case .none:
+                return nil
             }
         }
     }
@@ -29,14 +41,14 @@ struct GHMiddleware: ClientMiddleware {
 
     static let idGenerator = ManagedAtomic(UInt(0))
 
-    init(authorization: Authorization, logger: Logger) {
+    public init(authorization: Authorization, logger: Logger) {
         self.authorization = authorization
         self.logger = logger
     }
 
     /// Intercepts, modifies and makes the request and
     /// retries it if it seems like a invalid-auth-header problem.
-    func intercept(
+    public func intercept(
         _ request: Request,
         baseURL: URL,
         operationID: String,
@@ -74,8 +86,9 @@ struct GHMiddleware: ClientMiddleware {
         isRetry: Bool,
         next: @Sendable (Request, URL) async throws -> Response
     ) async throws -> Response {
-        let authHeader = try await authorization.makeHeader(forceRefreshToken: isRetry)
-        request.headerFields.addOrReplace(name: "Authorization", value: authHeader)
+        if let authHeader = try await authorization.makeHeader(isRetry: isRetry) {
+            request.headerFields.addOrReplace(name: "Authorization", value: authHeader)
+        }
 
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
 
@@ -95,11 +108,11 @@ struct GHMiddleware: ClientMiddleware {
             ])
 
             /// If this is not _the_ retry,
-            /// and if the authorization is set to use an authenticator,
+            /// and if the authorization is retriable,
             /// and if the response status is `401 Unauthorized`,
             /// then retry the request with a force-refreshed token.
             if !isRetry,
-               case .authenticator = authorization,
+               authorization.isRetriable,
                response.statusCode == 401 {
                 logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
                 return try await intercept(

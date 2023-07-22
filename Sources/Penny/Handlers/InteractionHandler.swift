@@ -485,7 +485,7 @@ private extension InteractionHandler {
         do {
             switch command {
             case .github:
-                return try handleGitHubCommand(options: options)
+                return try await handleGitHubCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
             case .faqs:
@@ -501,13 +501,13 @@ private extension InteractionHandler {
         }
     }
     
-    func handleGitHubCommand(options: [InteractionOption]) throws -> (any Response)? {
+    func handleGitHubCommand(options: [InteractionOption]) async throws -> (any Response)? {
         let discordID = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
         let subcommand = try GitHubSubCommand(rawValue: first.name).requireValue()
 
         switch subcommand {
-        case GitHubSubCommand.link:
+        case .link:
             let clientID = Constants.ghOAuthClientId!
             let jwt = GHOAuthPayload(
                 discordID: discordID, 
@@ -532,10 +532,21 @@ private extension InteractionHandler {
                     color: .vaporPurple
                 )]
             )
-        case GitHubSubCommand.unlink:
+        case .unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordID)"
-        case GitHubSubCommand.help:
-            return "This command is still a WIP."
+        case .whoAmI:
+            let user = "<@\(discordID)>"
+            let response = try await coinService.getGitHubID(of: user)
+            switch response {
+            case .notLinked:
+                return "You don't have any linked GitHub accounts."
+            case .userName(let username):
+                let encodedUsername = username.addingPercentEncoding(
+                    withAllowedCharacters: .urlPathAllowed
+                ) ?? username
+                let url = "https://github.com/\(encodedUsername)"
+                return "Your linked GitHub account is: [\(username)](\(url))"
+            }
         }
     }
     

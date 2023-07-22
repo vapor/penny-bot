@@ -31,6 +31,8 @@ struct CoinsHandler: LambdaHandler {
                 return await handleAddCoinRequest(request: addCoin, logger: context.logger)
             case .getCoinCount(let user):
                 return await handleGetCoinCountRequest(id: user, logger: context.logger)
+            case .getGitHubID(let user):
+                return await handleGetGitHubID(id: user, logger: context.logger)
             }
         } catch {
             context.logger.error("Received a bad request", metadata: [
@@ -102,6 +104,22 @@ struct CoinsHandler: LambdaHandler {
             return APIGatewayV2Response(statusCode: .ok, body: "\(coinCount)")
         } catch {
             logger.error("Can't retrieve coin-count", metadata: [
+                "id": .string(id)
+            ])
+            return APIGatewayV2Response(
+                status: .expectationFailed,
+                content: GatewayFailure(reason: "Error: \(error)")
+            )
+        }
+    }
+
+    func handleGetGitHubID(id: String, logger: Logger) async -> APIGatewayV2Response {
+        do {
+            let gitHubID = try await userService.getUserWith(discordID: id)?.githubID
+            let response: GitHubIDResponse = gitHubID.map { .id($0) } ?? .notLinked
+            return APIGatewayV2Response(status: .ok, content: response)
+        } catch {
+            logger.error("Can't retrieve github id", metadata: [
                 "id": .string(id)
             ])
             return APIGatewayV2Response(

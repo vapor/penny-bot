@@ -113,12 +113,16 @@ struct GHOAuthHandler: LambdaHandler {
         }
 
         do {
+            let encodedLogin = user.login.addingPercentEncoding(
+                withAllowedCharacters: .urlPathAllowed
+            ) ?? user.login
+            let url = "https://github.com/\(encodedLogin)"
             try await discordClient.updateOriginalInteractionResponse(
                 token: jwt.interactionToken,
                 payload: .init(
                     embeds: [.init(
                         description: """
-                        Successfully linked your GitHub account with username: \(user.login)
+                        Successfully linked your GitHub account with username: [\(user.login)](\(url))
                         """,
                         color: .green
                     )]
@@ -157,7 +161,7 @@ struct GHOAuthHandler: LambdaHandler {
         ])
         request.body = .bytes(requestBody)
 
-        let response = try await client.execute(request, timeout: .seconds(30))
+        let response = try await client.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1 << 22)
 
         logger.debug("Got access token response", metadata: [

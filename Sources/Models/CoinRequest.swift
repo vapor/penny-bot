@@ -2,7 +2,8 @@
 public enum CoinRequest: Sendable, Codable {
     case addCoin(AddCoin)
     case getCoinCount(user: String)
-    
+    case getGitHubID(user: String)
+
     public struct AddCoin: Sendable, Codable {
         public let amount: Int
         public let from: String
