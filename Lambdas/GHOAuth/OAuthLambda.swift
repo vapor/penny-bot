@@ -42,9 +42,6 @@ struct GHOAuthHandler: LambdaHandler {
 
         self.userService = UserService(awsClient, logger)
 
-        self.jsonDecoder = JSONDecoder()
-        self.jsonEncoder = JSONEncoder()
-
         signers = JWTSigners()
         signers.use(.es256(key: try getJWTSignersPublicKey()))
     }
