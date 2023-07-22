@@ -1,4 +1,5 @@
 import DiscordBM
+import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
 struct Reporter {
@@ -15,8 +16,15 @@ struct Reporter {
     }
     
     let context: HandlerContext
+    let embed: Embed
+    let repoID: Int
+    let number: Int
+    /// A ticket could be a PR/Issue or stuff like that.
+    let ticketCreatedAt: Date
 
-    func reportNew(embed: Embed, repoID: Int, number: Int) async throws {
+    let firstReportDate = Date(timeIntervalSince1970: 1688436000)
+
+    func reportCreation() async throws {
         let response = try await context.discordClient.createMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             payload: .init(embeds: [embed])
@@ -28,7 +36,7 @@ struct Reporter {
         )
     }
 
-    func reportEdit(embed: Embed, repoID: Int, number: Int) async throws {
+    func reportEdition() async throws {
         let messageID: MessageSnowflake
 
         do {
@@ -41,10 +49,39 @@ struct Reporter {
                 "messageID": "\(messageID)"
             ])
         } catch let error as DynamoMessageRepo.Errors where error == .notFound {
-            context.logger.warning("Didn't find a message id from the lookup repo", metadata: [
-                "repoID": .stringConvertible(repoID),
-                "number": .stringConvertible(number),
-            ])
+            context.logger.debug(
+                "Didn't find a message id from the lookup repo, will send a new message",
+                metadata: [
+                    "repoID": .stringConvertible(repoID),
+                    "number": .stringConvertible(number),
+                ]
+            )
+
+            /// Report to Discord since this is unexpected.
+            if ticketCreatedAt > firstReportDate {
+                try await context.discordClient.createMessage(
+                    channelId: Constants.Channels.logs.id,
+                    payload: .init(
+                        content: DiscordUtils.mention(id: Constants.botDevUserID),
+                        embeds: [.init(
+                            title: """
+                            GHHooks lambda couldn't find a message to edit for a ticket younger than \(firstReportDate)
+                            """,
+                            color: .red
+                        )]
+                    )
+                )
+            }
+
+            let response = try await context.discordClient.createMessage(
+                channelId: Constants.Channels.issueAndPRs.id,
+                payload: .init(embeds: [embed])
+            ).decode()
+            try await context.messageLookupRepo.saveMessageID(
+                messageID: response.id.rawValue,
+                repoID: repoID,
+                number: number
+            )
             return
         }
 

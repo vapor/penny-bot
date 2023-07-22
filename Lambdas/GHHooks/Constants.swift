@@ -2,6 +2,8 @@ import DiscordBM
 
 enum Constants {
 
+    static let botDevUserID = UserSnowflake("290483761559240704")
+
     enum GitHub {
         /// The app-id of Penny.
         static let appID = 360798

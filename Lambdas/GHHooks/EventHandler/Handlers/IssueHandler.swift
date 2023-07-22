@@ -4,16 +4,14 @@ import Markdown
 
 struct IssueHandler {
     let context: HandlerContext
+    let issue: Issue
     var event: GHEvent {
         context.event
     }
-    let repoID: Int
-    let number: Int
 
     init(context: HandlerContext) throws {
         self.context = context
-        self.repoID = try context.event.repository.requireValue().id
-        self.number = try context.event.issue.requireValue().number
+        self.issue = try context.event.issue.requireValue()
     }
 
     func handle() async throws {
@@ -31,25 +29,25 @@ struct IssueHandler {
     }
 
     func onEdited() async throws {
-        try await editIssueReport()
+        try await makeReporter().reportEdition()
     }
 
     func onOpened() async throws {
-        let embed = try createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportNew(embed: embed, repoID: repoID, number: number)
+        try await makeReporter().reportCreation()
     }
 
-    func editIssueReport() async throws {
-        let embed = try createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportEdit(embed: embed, repoID: repoID, number: number)
+    func makeReporter() throws -> Reporter {
+        Reporter(
+            context: context,
+            embed: try createReportEmbed(),
+            repoID: try context.event.repository.requireValue().id,
+            number: issue.number,
+            ticketCreatedAt: issue.created_at
+        )
     }
 
     func createReportEmbed() throws -> Embed {
-        let issue = try event.issue.requireValue()
-
-        let number = try event.issue.requireValue().number
+        let number = issue.number
 
         let authorName = issue.user.login
         let authorAvatarLink = issue.user.avatar_url

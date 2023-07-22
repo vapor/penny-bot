@@ -85,7 +85,7 @@ struct GHHooksHandler: LambdaHandler {
                 try await discordClient.createMessage(
                     channelId: Constants.Channels.logs.id,
                     payload: .init(
-                        content: DiscordUtils.mention(id: UserSnowflake("290483761559240704")),
+                        content: DiscordUtils.mention(id: Constants.botDevUserID),
                         embeds: [.init(
                             title: "GHHooks lambda top-level error",
                             description: "\(error)".unicodesPrefix(4_000),

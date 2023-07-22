@@ -50,4 +50,7 @@ jobs:
               --function-name "${name}-lambda" \
               --s3-bucket "penny-lambdas-store" \
               --s3-key "${name}.zip"
+            aws s3api delete-object \
+              --bucket penny-lambdas-store \
+              --key "${name}.zip"
           done

@@ -45,13 +45,7 @@ struct PRHandler {
     }
 
     func onOpened() async throws {
-        let embed = try createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportNew(
-            embed: embed,
-            repoID: repo.id,
-            number: event.number.requireValue()
-        )
+        try await makeReporter().reportCreation()
     }
 
     func onClosed() async throws {
@@ -64,12 +58,16 @@ struct PRHandler {
     }
 
     func editPRReport() async throws {
-        let embed = try createReportEmbed()
-        let reporter = Reporter(context: context)
-        try await reporter.reportEdit(
-            embed: embed,
-            repoID: repo.id,
-            number: event.number.requireValue()
+        try await makeReporter().reportEdition()
+    }
+
+    func makeReporter() throws -> Reporter {
+        Reporter(
+            context: context,
+            embed: try createReportEmbed(),
+            repoID: try repo.id,
+            number: try event.number.requireValue(),
+            ticketCreatedAt: pr.created_at
         )
     }
 

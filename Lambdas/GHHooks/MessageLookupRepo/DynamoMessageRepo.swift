@@ -29,12 +29,12 @@ struct DynamoMessageRepo: MessageLookupRepo {
         self.logger = logger
     }
 
-    private func makeOperationID(repoID: Int, number: Int) -> String {
+    private func makeTicketID(repoID: Int, number: Int) -> String {
         "\(repoID)_\(number)"
     }
 
     func getMessageID(repoID: Int, number: Int) async throws -> String {
-        let id = makeOperationID(repoID: repoID, number: number)
+        let id = makeTicketID(repoID: repoID, number: number)
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s(id)],
             keyConditionExpression: "id = :v1",
@@ -54,7 +54,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
     }
 
     func saveMessageID(messageID: String, repoID: Int, number: Int) async throws {
-        let id = makeOperationID(repoID: repoID, number: number)
+        let id = makeTicketID(repoID: repoID, number: number)
         let item = Item(id: id, messageID: messageID)
         let input = DynamoDB.UpdateItemCodableInput(
             key: ["id"],
