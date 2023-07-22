@@ -100,12 +100,14 @@ struct GHOAuthHandler: LambdaHandler {
             return .init(statusCode: .badRequest, body: "Error verifying state")
         }
 
+        let tableDiscordID = "<@\(jwt.discordID.rawValue)>"
         do {
-            try await userService.linkGithubID(discordID: jwt.discordID.rawValue, githubID: "\(user.id)")
+            try await userService.linkGithubID(discordID: tableDiscordID, githubID: "\(user.id)")
         } catch {
             logger.error("Error linking user to GitHub account", metadata: [
-                "discordID": .stringConvertible(jwt.discordID),
+                "discordID": .stringConvertible(tableDiscordID),
                 "githubID": .stringConvertible(user.id),
+                "error": .string(String(reflecting: error))
             ])
             return .init(statusCode: .badRequest, body: "Error linking user")
         }
