@@ -36,14 +36,16 @@ struct InteractionHandler {
         self.logger[metadataKey: "event"] = "\(event)"
     }
 
-    private func makeJWTSigners() throws -> JWTSigner? {
+    private func makeJWTSigners() throws -> JWTSigners? {
         guard let privateKeyString = Constants.accountLinkOAuthPrivKey else {
             fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY env var")
         }
 
         let privateKey = try ECDSAKey.private(pem: privateKeyString)
 
-        return JWTSigner.es256(key: privateKey)
+        let signers = JWTSigners()
+        signers.use(.es256(key: privateKey))
+        return signers
     }
     
     func handle() async {
@@ -511,11 +513,11 @@ private extension InteractionHandler {
                 discordID: discordID, 
                 interactionToken: event.token
             )
-            guard let signer = try makeJWTSigners() else {
+            guard let signers = try makeJWTSigners() else {
                 logger.error("Failed to make JWT signer")
                 return oops
             }
-            let state = try signer.sign(jwt)
+            let state = try signers.sign(jwt)
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return Payloads.EditWebhookMessage(
                 embeds: [.init(

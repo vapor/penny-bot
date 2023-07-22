@@ -19,6 +19,7 @@ struct GHOAuthHandler: LambdaHandler {
     let logger: Logger
     let secretsRetriever: SecretsRetriever
     let userService: UserService
+    let signers: JWTSigners
 
     let jsonDecoder = JSONDecoder()
     let jsonEncoder = JSONEncoder()
@@ -40,6 +41,23 @@ struct GHOAuthHandler: LambdaHandler {
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         self.userService = UserService(awsClient, logger)
+
+        self.jsonDecoder = JSONDecoder()
+        self.jsonEncoder = JSONEncoder()
+
+        signers = JWTSigners()
+        signers.use(.es256(key: try getJWTSignersPublicKey()))
+    }
+
+    private func getJWTSignersPublicKey() throws -> ECDSAKey {
+        logger.debug("Retrieving JWT signer secrets")
+        guard let publicKeyString = ProcessInfo.processInfo.environment["ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY"] else {
+            throw Errors.envVarNotFound(name: "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
+        }
+        guard let publicKeyData = Data(base64Encoded: publicKeyString) else {
+            throw Errors.invalidPublicKey
+        }
+        return try ECDSAKey.public(pem: publicKeyData)
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
@@ -55,7 +73,7 @@ struct GHOAuthHandler: LambdaHandler {
             accessToken = try await getGHAccessToken(code: code)
         } catch {
             logger.error("Error getting access token", metadata: [
-                "error": "\(error)"
+                "error": "\(String(reflecting: error))"
             ])
             return .init(statusCode: .badRequest, body: "Error getting access token")
         }
@@ -66,18 +84,19 @@ struct GHOAuthHandler: LambdaHandler {
             user = try await getGHUser(accessToken: accessToken)
         } catch {
             logger.error("Error getting user ID", metadata: [
-                "error": "\(error)"
+                "error": "\(String(reflecting: error))"
             ])
             return .init(statusCode: .badRequest, body: "Error getting user")
         }
 
         let jwt: GHOAuthPayload
 
+        logger.debug("Verifying state")
         do {
-            jwt = try await verifyState(state: String(event.queryStringParameters?["state"] ?? ""))
+            jwt = try signers.verify(String(event.queryStringParameters?["state"] ?? ""), as: GHOAuthPayload.self)
         } catch {
             logger.error("Error during state verification", metadata: [
-                "error": "\(error)",
+                "error": "\(String(reflecting: error))",
                 "state": .string(event.queryStringParameters?["state"] ?? "")
             ])
             return .init(statusCode: .badRequest, body: "Error verifying state")
@@ -105,28 +124,11 @@ struct GHOAuthHandler: LambdaHandler {
             ).guardSuccess()
         } catch {
             logger.warning("Received Discord error while updating interaction", metadata: [
-                "error": "\(error)"
+                "error": "\(String(reflecting: error))"
             ])
         }
 
         return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
-    }
-
-    func verifyState(state: String) async throws -> GHOAuthPayload {
-        logger.debug("Retrieving JWT signer secrets to verify state parameter")
-        guard let publicKeyString = ProcessInfo.processInfo.environment["ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY"] else {
-            throw Errors.envVarNotFound(name: "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
-        }
-        guard let publicKeyData = Data(base64Encoded: publicKeyString) else {
-            throw Errors.invalidPublicKey
-        }
-        let publicKey = try ECDSAKey.public(pem: publicKeyData)
-
-        let signer = JWTSigner.es256(key: publicKey)
-
-        let payload = try signer.verify(state, as: GHOAuthPayload.self)
-
-        return payload
     }
 
     func getGHAccessToken(code: String) async throws -> String {
