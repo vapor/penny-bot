@@ -95,6 +95,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
+                .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Models")
             ],
             swiftSettings: swiftSettings
@@ -170,6 +171,21 @@ let package = Package(
                 .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHHooks",
+            swiftSettings: swiftSettings
+        ),
+        .executableTarget(
+            name: "GHOAuthLambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "JWTKit", package: "jwt-kit"),
+                .target(name: "Extensions"),
+                .target(name: "SharedServices"),
+                .target(name: "LambdasShared"),
+            ],
+            path: "./Lambdas/GHOAuth",
             swiftSettings: swiftSettings
         ),
         .target(

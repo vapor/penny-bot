@@ -24,6 +24,10 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed for gh-hooks
     Default: GHHooksLambda
+  GHOAuthFilename:
+    Type: String
+    Description: Filename containing the code to be executed for gh-oauth
+    Default: GHOAuthLambda
   VPC:
     Description: VPC for the app
     Type: AWS::EC2::VPC::Id
@@ -246,9 +250,12 @@ Resources:
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FaqsFilename}-lambda
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHHooksFilename}-lambda:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHHooksFilename}-lambda
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHOAuthFilename}-lambda:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHOAuthFilename}-lambda
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-oauth-client-secret-hQSGeh
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:release-bot/github-access-token-pJOxYU
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
                   - arn:aws:s3:::penny-auto-pings-lambda/*
@@ -437,6 +444,60 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${GHHooksFilename}-lambda
       RetentionInDays: 30
 
+  # GH-OAuth lambda config
+
+  ghOAuthIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda GHOAuth Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt ghOAuthFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  ghOAuthRoutePost:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'GET /gh-oauth'
+      Target: !Sub "integrations/${ghOAuthIntegration}"
+
+  ghOAuthFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-lambdas-store
+        S3Key: !Sub ${GHOAuthFilename}.zip
+      Environment:
+        Variables:
+          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-oauth-client-secret-hQSGeh
+          GH_CLIENT_ID: 5c544fca6b43f1bf31a3
+          ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+          LOG_LEVEL: trace # TODO: change to info
+      FunctionName: !Sub ${GHOAuthFilename}-lambda
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+      Timeout: 6
+
+  lambdaGHOAuthRoutePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub ${GHOAuthFilename}-lambda
+      Principal: apigateway.amazonaws.com
+    DependsOn:
+      - ghOAuthFunction
+
+  ghOAuthLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: /aws/lambda/GHOAuthLambda-lambda
+      RetentionInDays: 30
+
   # Caches S3 bucket
 
   cachesS3Bucket:
@@ -518,6 +579,9 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
 Outputs:
+  ghOAuthLambdaArn:
+    Value: !GetAtt ghOAuthFunction.Arn
+
   ghHooksLambdaARN:
     Value: !GetAtt ghHooksFunction.Arn
 

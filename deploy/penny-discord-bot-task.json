@@ -1,16 +1,16 @@
 {
-    "family": "penny-bot", 
-    "networkMode": "awsvpc", 
+    "family": "penny-bot",
+    "networkMode": "awsvpc",
     "containerDefinitions": [
         {
-            "name": "penny-bot", 
-            "image": "177420307256.dkr.ecr.eu-west-1.amazonaws.com/penny-bot-discord-image:latest", 
+            "name": "penny-bot",
+            "image": "177420307256.dkr.ecr.eu-west-1.amazonaws.com/penny-bot-discord-image:latest",
             "portMappings": [
                 {
-                    "containerPort": 8080, 
+                    "containerPort": 8080,
                     "protocol": "tcp"
                 }
-            ], 
+            ],
             "essential": true,
             "logConfiguration": {
                 "logDriver": "awslogs",
@@ -18,7 +18,7 @@
                     "awslogs-group": "/ecs/penny-bot-api",
                     "awslogs-region": "eu-west-1",
                     "awslogs-stream-prefix": "ecs"
-                  }
+                }
             },
             "environment": [
                 {
@@ -28,6 +28,10 @@
                 {
                     "name": "BOT_APP_ID",
                     "value": "950695294906007573"
+                },
+                {
+                    "name": "GH_OAUTH_CLIENT_ID",
+                    "value": "5c544fca6b43f1bf31a3"
                 }
             ],
             "secrets": [
@@ -38,14 +42,18 @@
                 {
                     "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/logs-webhook-url-4WnJwm",
                     "name": "LOGGING_WEBHOOK_URL"
+                },
+                {
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/account-linking-oauth-flow-priv-key-49J2PL",
+                    "name": "ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY"
                 }
             ]
         }
-    ], 
+    ],
     "requiresCompatibilities": [
         "FARGATE"
-    ], 
-    "cpu": "256", 
+    ],
+    "cpu": "256",
     "memory": "512",
     "executionRoleArn": "arn:aws:iam::177420307256:role/ecsTaskExecutionRole",
     "taskRoleArn": "arn:aws:iam::177420307256:role/ecsTaskIAMRole"

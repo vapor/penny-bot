@@ -1,6 +1,8 @@
 import DiscordBM
 import Logging
 import Models
+import JWTKit
+import Foundation
 
 private enum Configuration {
     static let faqsNameMaxLength = 100
@@ -27,10 +29,23 @@ struct InteractionHandler {
     private let oops = "Oopsie Woopsie... Something went wrong :("
     
     typealias InteractionOption = Interaction.ApplicationCommand.Option
+
     
     init(event: Interaction) {
         self.event = event
         self.logger[metadataKey: "event"] = "\(event)"
+    }
+
+    private func makeJWTSigners() throws -> JWTSigners? {
+        guard let privateKeyString = Constants.accountLinkOAuthPrivKey else {
+            fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY env var")
+        }
+
+        let privateKey = try ECDSAKey.private(pem: privateKeyString)
+
+        let signers = JWTSigners()
+        signers.use(.es256(key: privateKey))
+        return signers
     }
     
     func handle() async {
@@ -469,8 +484,8 @@ private extension InteractionHandler {
         let options = data.options ?? []
         do {
             switch command {
-            case .link:
-                return try handleLinkCommand(options: options)
+            case .github:
+                return try handleGitHubCommand(options: options)
             case .autoPings:
                 return try await handlePingsCommand(options: options)
             case .faqs:
@@ -486,17 +501,37 @@ private extension InteractionHandler {
         }
     }
     
-    func handleLinkCommand(options: [InteractionOption]) throws -> String {
+    func handleGitHubCommand(options: [InteractionOption]) throws -> (any Response)? {
+        let discordID = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
-        let subCommand = try LinkSubCommand(rawValue: first.name).requireValue()
-        let id = try (first.options?.first).requireValue().requireString()
-        switch subCommand {
-        case .discord:
-            return "This command is still a WIP. Linking Discord with Discord ID '\(id)'"
-        case .github:
-            return "This command is still a WIP. Linking Discord with GitHub ID '\(id)'"
-        case .slack:
-            return "This command is still a WIP. Linking Discord with Slack ID '\(id)'"
+        let subcommand = try GitHubSubCommand(rawValue: first.name).requireValue()
+
+        switch subcommand {
+        case GitHubSubCommand.link:
+            let clientID = Constants.ghOAuthClientId!
+            let jwt = GHOAuthPayload(
+                discordID: discordID, 
+                interactionToken: event.token
+            )
+            guard let signers = try makeJWTSigners() else {
+                logger.error("Failed to make JWT signer")
+                return oops
+            }
+            let state = try signers.sign(jwt)
+            let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
+            return Payloads.EditWebhookMessage(
+                embeds: [.init(
+                    description: "Click the link below to authorize Vapor",
+                    color: .vaporPurple
+                )],
+                components: [[
+                    .button(.init(label: "Authorize", url: url))
+                ]]
+            )
+        case GitHubSubCommand.unlink:
+            return "This command is still a WIP. Unlinking discordId: \(discordID)"
+        case GitHubSubCommand.help:
+            return "This command is still a WIP."
         }
     }
     
@@ -689,7 +724,7 @@ private extension InteractionHandler {
                 return try await handleAutoPingsAutocomplete(data: data)
             case .faqs:
                 return try await handleFaqsAutocomplete(data: data)
-            case .link, .howManyCoins, .howManyCoinsApp:
+            case .github, .howManyCoins, .howManyCoinsApp:
                 logger.error("Unrecognized command with autocomplete")
                 return Payloads.InteractionResponse.Autocomplete(
                     choices: [.init(name: "Failure", value: .string(self.oops))]
@@ -853,7 +888,7 @@ extension SlashCommand {
     /// Ephemeral means the interaction will only be visible to the user, not the whole guild.
     var isEphemeral: Bool {
         switch self {
-        case .link, .autoPings, .howManyCoins, .howManyCoinsApp: return true
+        case .github, .autoPings, .howManyCoins, .howManyCoinsApp: return true
         case .faqs: return false
         }
     }
@@ -861,7 +896,7 @@ extension SlashCommand {
     var shouldSendAcknowledgment: Bool {
         switch self {
         case .autoPings, .faqs: return false
-        case .link, .howManyCoins, .howManyCoinsApp: return true
+        case .github, .howManyCoins, .howManyCoinsApp: return true
         }
     }
 }
@@ -1133,6 +1168,23 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
 
     /// Responses containing a modal can't be an edit to another message.
     var isEditable: Bool { false }
+}
+
+extension Payloads.EditWebhookMessage: Response {
+    func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
+        Logger(label: "Payloads.EditWebhookMessage.makeResponse").error(
+            "This method is unimplemented and must not be called"
+        )
+        return .channelMessageWithSource(
+            .init(content: "Oops, something went wrong")
+        )
+    }
+
+    func makeEditPayload() -> Payloads.EditWebhookMessage {
+        self
+    }
+
+    var isEditable: Bool { true }
 }
 
 // MARK: - Auto-pings help

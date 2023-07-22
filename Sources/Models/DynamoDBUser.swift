@@ -17,11 +17,7 @@ public struct DynamoDBUser: Sendable, Codable {
         } else {
             self.data1 = nil
         }
-        if let githubID = user.githubID {
-            self.data2 = "GITHUB-\(githubID)"
-        } else {
-            self.data2 = nil
-        }
+        self.data2 = user.githubID
         self.amountOfCoins = user.numberOfCoins
         self.coinEntries = user.coinEntries
         self.createdAt = user.createdAt
