@@ -45,6 +45,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
+        .package(url: "https://github.com/soto-project/soto-core.git", branch: "main"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
@@ -95,6 +96,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Models"),
             ],
@@ -105,6 +107,7 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "Collections", package: "swift-collections"),
                 .target(name: "Extensions"),
@@ -134,6 +137,7 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .target(name: "Extensions"),
                 .target(name: "Models"),
             ],
@@ -146,6 +150,7 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .target(name: "Extensions"),
                 .target(name: "Models"),
             ],
@@ -159,6 +164,7 @@ let package = Package(
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SwiftSemver", package: "swift-semver"),
@@ -192,6 +198,7 @@ let package = Package(
             name: "LambdasShared",
             dependencies: [
                 .product(name: "SotoSecretsManager", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
             ],
             path: "./Lambdas/LambdasShared",
@@ -232,6 +239,7 @@ let package = Package(
             name: "SharedServices",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .target(name: "Models"),
                 .target(name: "Extensions"),
             ],
@@ -241,6 +249,7 @@ let package = Package(
             name: "Fake",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .target(name: "GHHooksLambda"),
@@ -253,6 +262,7 @@ let package = Package(
             name: "PennyTests",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
                 .target(name: "Penny"),
                 .target(name: "GHHooksLambda"),
                 .target(name: "Fake"),

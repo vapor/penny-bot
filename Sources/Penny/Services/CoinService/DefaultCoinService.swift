@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 import AsyncHTTPClient
 import Logging
 import Models

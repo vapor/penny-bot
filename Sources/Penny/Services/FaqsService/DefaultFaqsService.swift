@@ -1,6 +1,6 @@
 import Models
 import AsyncHTTPClient
-import Foundation
+@preconcurrency import Foundation
 import Logging
 import NIOHTTP1
 

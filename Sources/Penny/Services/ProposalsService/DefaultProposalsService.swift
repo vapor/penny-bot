@@ -1,7 +1,7 @@
 import AsyncHTTPClient
 import Models
 import NIOCore
-import Foundation
+@preconcurrency import Foundation
 
 struct DefaultProposalsService: ProposalsService {
     

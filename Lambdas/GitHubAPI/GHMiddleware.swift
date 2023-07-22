@@ -1,7 +1,7 @@
 import OpenAPIRuntime
 import Atomics
 import Logging
-import Foundation
+@preconcurrency import Foundation
 
 /// Adds some headers to all requests.
 public struct GHMiddleware: ClientMiddleware {
