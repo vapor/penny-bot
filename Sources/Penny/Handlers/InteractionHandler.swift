@@ -524,6 +524,9 @@ private extension InteractionHandler {
                     description: """
                     Click the link below to authorize Vapor:
 
+                    > This is a one-time authorization to your public info in a read-only manner as GitHub mentions, so Penny can confirm you own the Github account.
+                    > Feel free to revoke Penny's access from your GitHub account afterwards.
+
                     [**Authorize**](\(url))
                     """,
                     color: .vaporPurple

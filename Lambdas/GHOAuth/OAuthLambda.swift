@@ -81,7 +81,8 @@ struct GHOAuthHandler: LambdaHandler {
             user = try await getGHUser(accessToken: accessToken)
         } catch {
             logger.error("Error getting user ID", metadata: [
-                "error": "\(String(reflecting: error))"
+                "error": "\(String(reflecting: error))",
+                "accessToken": .string(accessToken)
             ])
             return .init(statusCode: .badRequest, body: "Error getting user")
         }
@@ -153,14 +154,19 @@ struct GHOAuthHandler: LambdaHandler {
         request.body = .bytes(requestBody)
 
         let response = try await client.execute(request, timeout: .seconds(30))
-        let responseBody = try await response.body.collect(upTo: 1 << 22)
-        logger.debug("Got response \(response.status): headers: \(response.headers), body: \(responseBody)")
+        let body = try await response.body.collect(upTo: 1 << 22)
+
+        logger.debug("Got access token response", metadata: [
+            "status": .stringConvertible(response.status),
+            "headers": .stringConvertible(response.headers),
+            "body": .string(String(buffer: body))
+        ])
 
         guard response.status == .ok else {
-            throw Errors.badResponse(status: Int(response.status.code))
+            throw Errors.httpRequestFailed(response: response, body: String(buffer: body))
         }
 
-        let accessToken = try jsonDecoder.decode(AccessTokenResponse.self, from: responseBody).accessToken
+        let accessToken = try jsonDecoder.decode(AccessTokenResponse.self, from: body).accessToken
 
         return accessToken
     }
@@ -177,16 +183,22 @@ struct GHOAuthHandler: LambdaHandler {
             "X-GitHub-Api-Version": "2022-11-28"
         ]
 
-        let response = try await client.execute(request, timeout: .seconds(30))
+        let response = try await client.execute(request, timeout: .seconds(5))
+        let body = try await response.body.collect(upTo: 1024 * 1024)
+
+        logger.debug("Got user with access token response", metadata: [
+            "status": .stringConvertible(response.status),
+            "headers": .stringConvertible(response.headers),
+            "body": .string(String(buffer: body))
+        ])
 
         guard response.status == .ok else {
-            throw Errors.badResponse(status: Int(response.status.code))
+            throw Errors.httpRequestFailed(response: response, body: String(buffer: body))
         }
 
-        let userResponseBody = try await response.body.collect(upTo: 1024 * 1024)
-        let user = try jsonDecoder.decode(User.self, from: userResponseBody)
-        
-        logger.info("Got user with id: \(user.id)")
+        let user = try jsonDecoder.decode(User.self, from: body)
+
+        logger.info("Got user: \(user)")
 
         return user
     }

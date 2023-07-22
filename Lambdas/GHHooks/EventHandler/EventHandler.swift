@@ -14,7 +14,7 @@ struct EventHandler {
             try await ReleaseHandler(context: context).handle()
         case .ping:
             try await onPing()
-        case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories:
+        case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories, .push:
             break
         default:
             try await onDefault()

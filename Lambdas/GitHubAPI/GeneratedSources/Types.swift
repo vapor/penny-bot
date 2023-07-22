@@ -131,6 +131,8 @@ public enum Servers {
 public enum Components {
     /// Types generated from the `#/components/schemas` section of the OpenAPI document.
     public enum Schemas {
+        /// - Remark: Generated from `#/components/schemas/simple-user-nameonly`.
+        public typealias simple_user_nameonly = Swift.String
         /// A GitHub user.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-simple-user`.
@@ -2148,7 +2150,36 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/license`.
             public var license: Components.Schemas.nullable_license_simple?
             /// - Remark: Generated from `#/components/schemas/repository/organization`.
-            public var organization: Components.Schemas.nullable_simple_user?
+            @frozen public enum organizationPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/repository/organization/case1`.
+                case nullable_simple_user(Components.Schemas.nullable_simple_user)
+                /// - Remark: Generated from `#/components/schemas/repository/organization/case2`.
+                case simple_user_nameonly(Components.Schemas.simple_user_nameonly)
+                /// Parsed a case that was not defined in the OpenAPI document.
+                case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                public init(from decoder: any Decoder) throws {
+                    do {
+                        self = .nullable_simple_user(try .init(from: decoder))
+                        return
+                    } catch {}
+                    do {
+                        self = .simple_user_nameonly(try .init(from: decoder))
+                        return
+                    } catch {}
+                    let container = try decoder.singleValueContainer()
+                    let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
+                    self = .undocumented(value)
+                }
+                public func encode(to encoder: any Encoder) throws {
+                    switch self {
+                    case let .nullable_simple_user(value): try value.encode(to: encoder)
+                    case let .simple_user_nameonly(value): try value.encode(to: encoder)
+                    case let .undocumented(value): try value.encode(to: encoder)
+                    }
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/repository/organization`.
+            public var organization: Components.Schemas.repository.organizationPayload?
             /// - Remark: Generated from `#/components/schemas/repository/forks`.
             public var forks: Swift.Int
             /// - Remark: Generated from `#/components/schemas/repository/permissions`.
@@ -2351,11 +2382,11 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/visibility`.
             public var visibility: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/pushed_at`.
-            public var pushed_at: Foundation.Date
+            public var pushed_at: Components.Schemas.string_or_int_date
             /// - Remark: Generated from `#/components/schemas/repository/created_at`.
-            public var created_at: Foundation.Date
+            public var created_at: Components.Schemas.string_or_int_date
             /// - Remark: Generated from `#/components/schemas/repository/updated_at`.
-            public var updated_at: Foundation.Date
+            public var updated_at: Components.Schemas.string_or_int_date
             /// Whether to allow rebase merges for pull requests.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/allow_rebase_merge`.
@@ -3557,7 +3588,7 @@ public enum Components {
                 name: Swift.String,
                 full_name: Swift.String,
                 license: Components.Schemas.nullable_license_simple? = nil,
-                organization: Components.Schemas.nullable_simple_user? = nil,
+                organization: Components.Schemas.repository.organizationPayload? = nil,
                 forks: Swift.Int,
                 permissions: Components.Schemas.repository.permissionsPayload? = nil,
                 owner: Components.Schemas.simple_user,
@@ -3626,9 +3657,9 @@ public enum Components {
                 archived: Swift.Bool,
                 disabled: Swift.Bool,
                 visibility: Swift.String? = nil,
-                pushed_at: Foundation.Date,
-                created_at: Foundation.Date,
-                updated_at: Foundation.Date,
+                pushed_at: Components.Schemas.string_or_int_date,
+                created_at: Components.Schemas.string_or_int_date,
+                updated_at: Components.Schemas.string_or_int_date,
                 allow_rebase_merge: Swift.Bool? = nil,
                 template_repository: Components.Schemas.repository.template_repositoryPayload? =
                     nil,
@@ -3858,6 +3889,39 @@ public enum Components {
                 case anonymous_access_enabled
             }
         }
+        /// - Remark: Generated from `#/components/schemas/string-or-int-date`.
+        @frozen public enum string_or_int_date: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/string-or-int-date/case1`.
+            case string_date(Components.Schemas.string_date)
+            /// - Remark: Generated from `#/components/schemas/string-or-int-date/case2`.
+            case int_date(Components.Schemas.int_date)
+            /// Parsed a case that was not defined in the OpenAPI document.
+            case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+            public init(from decoder: any Decoder) throws {
+                do {
+                    self = .string_date(try .init(from: decoder))
+                    return
+                } catch {}
+                do {
+                    self = .int_date(try .init(from: decoder))
+                    return
+                } catch {}
+                let container = try decoder.singleValueContainer()
+                let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
+                self = .undocumented(value)
+            }
+            public func encode(to encoder: any Encoder) throws {
+                switch self {
+                case let .string_date(value): try value.encode(to: encoder)
+                case let .int_date(value): try value.encode(to: encoder)
+                case let .undocumented(value): try value.encode(to: encoder)
+                }
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/string-date`.
+        public typealias string_date = Foundation.Date
+        /// - Remark: Generated from `#/components/schemas/int-date`.
+        public typealias int_date = Swift.Int
         /// Authentication token for a GitHub App installed on a user or org.
         ///
         /// - Remark: Generated from `#/components/schemas/installation-token`.
