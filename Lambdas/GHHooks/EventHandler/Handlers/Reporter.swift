@@ -70,7 +70,7 @@ struct Reporter {
                             color: .red
                         )]
                     )
-                )
+                ).guardSuccess()
             }
 
             let response = try await context.discordClient.createMessage(

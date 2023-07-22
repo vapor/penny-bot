@@ -521,12 +521,13 @@ private extension InteractionHandler {
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return Payloads.EditWebhookMessage(
                 embeds: [.init(
-                    description: "Click the link below to authorize Vapor",
+                    description: """
+                    Click the link below to authorize Vapor:
+
+                    [**Authorize**](\(url))
+                    """,
                     color: .vaporPurple
-                )],
-                components: [[
-                    .button(.init(label: "Authorize", url: url))
-                ]]
+                )]
             )
         case GitHubSubCommand.unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordID)"
