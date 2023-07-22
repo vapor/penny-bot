@@ -116,7 +116,9 @@ struct CoinsHandler: LambdaHandler {
     func handleGetGitHubID(id: String, logger: Logger) async -> APIGatewayV2Response {
         do {
             let gitHubID = try await userService.getUserWith(discordID: id)?.githubID
-            let response: GitHubIDResponse = gitHubID.map { .id($0) } ?? .notLinked
+            let response: GitHubIDResponse = gitHubID.map {
+                $0.isEmpty ? .notLinked : .id($0)
+            } ?? .notLinked
             return APIGatewayV2Response(status: .ok, content: response)
         } catch {
             logger.error("Can't retrieve github id", metadata: [
