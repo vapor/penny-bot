@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 public struct CoinEntry: Sendable, Codable {
     public let id: UUID

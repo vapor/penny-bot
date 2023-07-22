@@ -8,7 +8,7 @@ import JWTKit
 import LambdasShared
 import SharedServices
 import Logging
-import Foundation
+@preconcurrency import Foundation
 
 @main
 struct GHOAuthHandler: LambdaHandler {

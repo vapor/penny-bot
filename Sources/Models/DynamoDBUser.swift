@@ -1,4 +1,4 @@
-import Foundation
+@preconcurrency import Foundation
 
 public struct DynamoDBUser: Sendable, Codable {
     public let pk: String
