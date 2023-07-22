@@ -80,7 +80,12 @@ struct CoinsHandler: LambdaHandler {
                 fromDiscordID: request.from,
                 to: user
             )
-            
+
+            logger.debug("Added coins", metadata: [
+                "add-coin-request": "\(request)",
+                "coinResponse": "\(coinResponse)",
+            ])
+
             return APIGatewayV2Response(status: .ok, content: coinResponse)
         } catch UserService.ServiceError.failedToUpdate {
             return APIGatewayV2Response(
@@ -101,6 +106,10 @@ struct CoinsHandler: LambdaHandler {
     func handleGetCoinCountRequest(id: String, logger: Logger) async -> APIGatewayV2Response {
         do {
             let coinCount = try await userService.getUserWith(discordID: id)?.numberOfCoins ?? 0
+            logger.debug("Got GitHubID", metadata: [
+                "id": .string(id),
+                "count": .stringConvertible(coinCount)
+            ])
             return APIGatewayV2Response(statusCode: .ok, body: "\(coinCount)")
         } catch {
             logger.error("Can't retrieve coin-count", metadata: [
@@ -116,8 +125,12 @@ struct CoinsHandler: LambdaHandler {
     func handleGetGitHubID(id: String, logger: Logger) async -> APIGatewayV2Response {
         do {
             let gitHubID = try await userService.getUserWith(discordID: id)?.githubID
+            logger.debug("Got GitHubID", metadata: [
+                "id": .string(id),
+                "github-id": .string(gitHubID ?? "<null>"),
+            ])
             let response: GitHubIDResponse = gitHubID.map {
-                $0.isEmpty ? .notLinked : .id($0)
+                $0.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .notLinked : .id($0)
             } ?? .notLinked
             return APIGatewayV2Response(status: .ok, content: response)
         } catch {
