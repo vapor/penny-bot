@@ -95,7 +95,14 @@ actor DefaultCoinService: CoinService {
         case .notLinked:
             return .notLinked
         case .id(let id):
-            var request = HTTPClientRequest(url: "https://api.github.com/user/\(id)")
+            let encodedID = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? id
+            let url = "https://api.github.com/user/\(encodedID)"
+            logger.debug("Will make a request to get GitHub user name", metadata: [
+                "user": .string(user),
+                "got-github-id": .string(id),
+                "url": .string(url),
+            ])
+            var request = HTTPClientRequest(url: url)
             request.headers = [
                 "Accept": "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
