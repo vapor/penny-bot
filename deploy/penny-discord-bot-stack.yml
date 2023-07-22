@@ -127,7 +127,7 @@ Resources:
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${CoinsFilename}.zip
-      FunctionName: !Sub ${CoinsFilename}-lambda
+      FunctionName: !Sub ${CoinsFilename}
       Handler: handler 
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -137,7 +137,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${CoinsFilename}-lambda
+      FunctionName: !Sub ${CoinsFilename}
       Principal: apigateway.amazonaws.com
     DependsOn: 
       - addCoinFunction
@@ -145,7 +145,7 @@ Resources:
   coinsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: !Sub /aws/lambda/${CoinsFilename}-lambda
+      LogGroupName: !Sub /aws/lambda/${CoinsFilename}
       RetentionInDays: 30
       
   # Sponsors lambda config
@@ -174,7 +174,7 @@ Resources:
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${SponsorsFilename}.zip
-      FunctionName: !Sub ${SponsorsFilename}-lambda
+      FunctionName: !Sub ${SponsorsFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -184,7 +184,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${SponsorsFilename}-lambda
+      FunctionName: !Sub ${SponsorsFilename}
       Principal: apigateway.amazonaws.com
     DependsOn:
       - sponsorsFunction
@@ -192,7 +192,7 @@ Resources:
   sponsorsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: !Sub /aws/lambda/${SponsorsFilename}-lambda
+      LogGroupName: !Sub /aws/lambda/${SponsorsFilename}
       RetentionInDays: 30
 
   # IAM roles
@@ -240,18 +240,18 @@ Resources:
                   - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}-lambda:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}-lambda
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}-lambda:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}-lambda
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoPingsFilename}-lambda:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoPingsFilename}-lambda
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FaqsFilename}-lambda:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FaqsFilename}-lambda
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHHooksFilename}-lambda:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHHooksFilename}-lambda
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHOAuthFilename}-lambda:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHOAuthFilename}-lambda
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoPingsFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoPingsFilename}
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FaqsFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FaqsFilename}
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHHooksFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHHooksFilename}
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHOAuthFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHOAuthFilename}
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
@@ -307,7 +307,7 @@ Resources:
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoPingsFilename}.zip
-      FunctionName: !Sub ${AutoPingsFilename}-lambda
+      FunctionName: !Sub ${AutoPingsFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -317,7 +317,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${AutoPingsFilename}-lambda
+      FunctionName: !Sub ${AutoPingsFilename}
       Principal: apigateway.amazonaws.com
     DependsOn:
       - autoPingsFunction
@@ -332,7 +332,7 @@ Resources:
   autoPingsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}-lambda
+      LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}
       RetentionInDays: 30
 
   # Faqs lambda config
@@ -361,7 +361,7 @@ Resources:
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${FaqsFilename}.zip
-      FunctionName: !Sub ${FaqsFilename}-lambda
+      FunctionName: !Sub ${FaqsFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -371,7 +371,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${FaqsFilename}-lambda
+      FunctionName: !Sub ${FaqsFilename}
       Principal: apigateway.amazonaws.com
     DependsOn:
       - faqsFunction
@@ -386,7 +386,7 @@ Resources:
   faqsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: !Sub /aws/lambda/${FaqsFilename}-lambda
+      LogGroupName: !Sub /aws/lambda/${FaqsFilename}
       RetentionInDays: 30
 
   # GH-Hooks lambda config
@@ -421,7 +421,7 @@ Resources:
           WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           GH_APP_AUTH_PRIV_KEY_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
           LOG_LEVEL: trace
-      FunctionName: !Sub ${GHHooksFilename}-lambda
+      FunctionName: !Sub ${GHHooksFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -431,7 +431,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${GHHooksFilename}-lambda
+      FunctionName: !Sub ${GHHooksFilename}
       Principal: apigateway.amazonaws.com
     DependsOn:
       - ghHooksFunction
@@ -439,7 +439,7 @@ Resources:
   ghHooksLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: !Sub /aws/lambda/${GHHooksFilename}-lambda
+      LogGroupName: !Sub /aws/lambda/${GHHooksFilename}
       RetentionInDays: 30
 
   # GH-OAuth lambda config
@@ -474,8 +474,8 @@ Resources:
           GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
           GH_CLIENT_ID: Iv1.683ea075648a5cd2
           ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
-          LOG_LEVEL: trace # TODO: change to info
-      FunctionName: !Sub ${GHOAuthFilename}-lambda
+          LOG_LEVEL: trace
+      FunctionName: !Sub ${GHOAuthFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -485,7 +485,7 @@ Resources:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${GHOAuthFilename}-lambda
+      FunctionName: !Sub ${GHOAuthFilename}
       Principal: apigateway.amazonaws.com
     DependsOn:
       - ghOAuthFunction
@@ -493,7 +493,7 @@ Resources:
   ghOAuthLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: /aws/lambda/GHOAuthLambda-lambda
+      LogGroupName: !Sub /aws/lambda/${GHOAuthFilename}
       RetentionInDays: 30
 
   # Caches S3 bucket
