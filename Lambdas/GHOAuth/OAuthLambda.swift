@@ -117,7 +117,9 @@ struct GHOAuthHandler: LambdaHandler {
                 token: jwt.interactionToken,
                 payload: .init(
                     embeds: [.init(
-                        description: "Successfully linked your Discord account to GitHub account with username: \(user.login)",
+                        description: """
+                        Successfully linked your GitHub account with username: \(user.login)
+                        """,
                         color: .green
                     )]
                 )
