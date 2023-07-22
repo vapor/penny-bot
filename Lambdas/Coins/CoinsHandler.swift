@@ -106,7 +106,7 @@ struct CoinsHandler: LambdaHandler {
     func handleGetCoinCountRequest(id: String, logger: Logger) async -> APIGatewayV2Response {
         do {
             let coinCount = try await userService.getUserWith(discordID: id)?.numberOfCoins ?? 0
-            logger.debug("Got GitHubID", metadata: [
+            logger.debug("Got coin count", metadata: [
                 "id": .string(id),
                 "count": .stringConvertible(coinCount)
             ])
