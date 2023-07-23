@@ -20,10 +20,10 @@ struct GHOAuthHandler: LambdaHandler {
     typealias Output = APIGatewayV2Response
 
     let client: HTTPClient
-    let logger: Logger
     let secretsRetriever: SecretsRetriever
     let userService: UserService
     let signers: JWTSigners
+    let logger: Logger
 
     let jsonDecoder = JSONDecoder()
     let jsonEncoder = JSONEncoder()
@@ -44,7 +44,7 @@ struct GHOAuthHandler: LambdaHandler {
         let awsClient = AWSClient(httpClientProvider: .shared(client))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
-        self.userService = UserService(awsClient, logger)
+        self.userService = UserService(awsClient: awsClient, logger: logger)
 
         signers = JWTSigners()
         signers.use(.es256(key: try getJWTSignersPublicKey()))
@@ -104,12 +104,11 @@ struct GHOAuthHandler: LambdaHandler {
             return .init(statusCode: .badRequest, body: "Error verifying state")
         }
 
-        let tableDiscordID = "<@\(jwt.discordID.rawValue)>"
         do {
-            try await userService.linkGithubID(discordID: tableDiscordID, githubID: "\(user.id)")
+            try await userService.linkGithubID(discordID: jwt.discordID, githubID: "\(user.id)")
         } catch {
             logger.error("Error linking user to GitHub account", metadata: [
-                "discordID": .stringConvertible(tableDiscordID),
+                "jwt": "\(jwt)",
                 "githubID": .stringConvertible(user.id),
                 "error": .string(String(reflecting: error))
             ])

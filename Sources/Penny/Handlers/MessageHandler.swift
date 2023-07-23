@@ -1,5 +1,4 @@
-import DiscordModels
-import DiscordHTTP
+import DiscordBM
 import Logging
 import Models
 
@@ -35,34 +34,40 @@ struct MessageHandler {
             logger.error("Cannot find author of the message")
             return
         }
-        
-        let sender = "<@\(author.id.rawValue)>"
-        let repliedUser = event.referenced_message?.value.author.map({ "<@\($0.id.rawValue)>" })
+
         let coinHandler = CoinFinder(
             text: event.content,
-            repliedUser: repliedUser,
-            mentionedUsers: event.mentions.map(\.id).map({ "<@\($0.rawValue)>" }),
-            excludedUsers: [sender] // Can't give yourself a coin
+            repliedUser: event.referenced_message?.value.author?.id,
+            mentionedUsers: event.mentions.map(\.id),
+            excludedUsers: [author.id] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
         // Return if there are no coins to be granted
         if usersWithNewCoins.isEmpty { return }
-        
+        await discordService.sendThanksResponse(
+            channelId: event.channel_id,
+            replyingToMessageId: event.id,
+            isFailureMessage: true,
+            userToExplicitlyMention: nil,
+            response: "Under Maintenance; be back soon!"
+        )
+        return
+#warning("revert")
+
         var successfulResponses = [String]()
         successfulResponses.reserveCapacity(usersWithNewCoins.count)
         
         for receiver in usersWithNewCoins {
-            let coinRequest = CoinRequest.AddCoin(
-                // Possible to make this a variable later to include in the thanks message
+            let coinRequest = CoinRequest.DiscordCoinEntry(
                 amount: 1,
-                from: sender,
-                receiver: receiver,
+                fromDiscordID: author.id,
+                toDiscordID: receiver,
                 source: .discord,
                 reason: .userProvided
             )
             do {
                 let response = try await self.coinService.postCoin(with: coinRequest)
-                let responseString = "\(response.receiver) now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!"
+                let responseString = "\(DiscordUtils.mention(id: response.receiver)) now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!"
                 successfulResponses.append(responseString)
             } catch {
                 logger.report("CoinService failed", error: error, metadata: [
@@ -104,15 +109,13 @@ struct MessageHandler {
             logger.error("Cannot find author of the message")
             return
         }
-        
-        let authorId = "<@\(author.id.rawValue)>"
+
         let amount = 10
-        let coinRequest = CoinRequest.AddCoin(
-            // Possible to make this a variable later to include in the thanks message
+        let coinRequest = CoinRequest.DiscordCoinEntry(
             amount: amount,
-            /// `from: GuildID` because it's not an actual user who gave the coins.
-            from: "<@\(Constants.vaporGuildId.rawValue)>",
-            receiver: authorId,
+            /// Guild-id because it's not an actual user who gave the coins.
+            fromDiscordID: UserSnowflake(Constants.vaporGuildId),
+            toDiscordID: author.id,
             source: .discord,
             reason: .automationProvided
         )
@@ -120,8 +123,8 @@ struct MessageHandler {
             let response = try await self.coinService.postCoin(with: coinRequest)
             await self.respondToThanks(
                 with: """
-                \(authorId) Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
-                You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.coins) \(Constants.ServerEmojis.coin.emoji)!
+                \(DiscordUtils.mention(id: author.id)) Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
+                You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
                 """,
                 overrideChannelId: Constants.Channels.thanks.id,
                 isFailureMessage: false,
@@ -143,7 +146,7 @@ struct MessageHandler {
               let member = event.member
         else { return }
 
-        let expUsersDict: [S3AutoPingItems.Expression: Set<String>]
+        let expUsersDict: [S3AutoPingItems.Expression: Set<UserSnowflake>]
         do {
             expUsersDict = try await pingsService.getAll().items
         } catch {
@@ -153,7 +156,7 @@ struct MessageHandler {
         let divided = content.divideForPingCommandExactMatchChecking()
         let folded = content.foldedForPingCommandContainmentChecking()
         /// `[UserID: [Expression]]`
-        var usersToPing: [String: Set<S3AutoPingItems.Expression>] = [:]
+        var usersToPing: [UserSnowflake: Set<S3AutoPingItems.Expression>] = [:]
         for exp in expUsersDict.keys {
             if Self.triggersPing(
                 dividedForExactMatchChecking: divided,
@@ -182,18 +185,14 @@ struct MessageHandler {
         /// we can just wait 1-2s before sending each message.
         for (userId, words) in usersToPing {
             /// Identify if this could be a test message by the bot-dev.
-            let mightBeATestMessage = userId == Constants.botDevUserId.rawValue
+            let mightBeATestMessage = userId == Constants.botDevUserId
             && event.channel_id == Constants.Channels.logs.id
             
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.
-                if userId == author.id.rawValue { continue }
+                if userId == author.id { continue }
             }
-            let authorName = makeAuthorName(
-                nick: member.nick,
-                user: author,
-                id: author.id.rawValue
-            )
+            let authorName = makeAuthorName(nick: member.nick, user: author)
             let iconUrlEndpoint = member.avatar.map { avatar in
                 CDNEndpoint.guildMemberAvatar(
                     guildId: guildId,
@@ -230,7 +229,7 @@ struct MessageHandler {
         }
     }
 
-    func makeAuthorName(nick: String?, user: DiscordUser, id: String) -> String {
+    func makeAuthorName(nick: String?, user: DiscordUser) -> String {
         let username = user.global_name ?? user.username
         if let nick, nick != username {
             return "\(username) (aka \(nick))"

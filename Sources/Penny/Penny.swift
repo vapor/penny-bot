@@ -44,8 +44,20 @@ struct Penny {
             await ServiceFactory.initiateProposalsChecker(client)
         })
 
+        Task {
+            await performMigration(awsClient: awsClient)
+        }
+#warning("remove")
+
         for await event in stream {
             EventHandler(event: event).handle()
         }
     }
+}
+
+#warning("remove")
+import SharedServices
+func performMigration(awsClient: AWSClient) async {
+    let userService = UserService(awsClient: awsClient, logger: Logger(label: "migration"))
+    await userService.performMigration()
 }

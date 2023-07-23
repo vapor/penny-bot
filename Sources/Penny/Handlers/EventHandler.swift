@@ -24,6 +24,8 @@ struct EventHandler: GatewayEventHandler {
     }
     
     func onMessageReactionAdd(_ reaction: Gateway.MessageReactionAdd) async {
+        #warning("revert")
+        return
         await ReactionHandler(event: reaction).handle()
     }
 }

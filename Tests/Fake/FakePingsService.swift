@@ -38,7 +38,7 @@ public struct FakePingsService: AutoPingsService {
     ) async throws { }
 
     public func get(discordID id: UserSnowflake) async throws -> [Expression] {
-        self.all.items.filter({ $0.value.contains(id.rawValue) }).map(\.key)
+        self.all.items.filter({ $0.value.contains(id) }).map(\.key)
     }
 
     public func getExpression(hash: Int) async throws -> Expression? {

@@ -72,11 +72,10 @@ public struct S3AutoPingItems: Sendable, Codable {
             }
         }
     }
-    
-    /// `[Expression: Set<UserID>]`
-    public var items: [Expression: Set<String>]
-    
-    public init(items: [Expression: Set<String>] = [:]) {
+
+    public var items: [Expression: Set<UserSnowflake>]
+
+    public init(items: [Expression: Set<UserSnowflake>] = [:]) {
         self.items = items
     }
 }

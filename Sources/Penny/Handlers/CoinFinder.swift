@@ -1,4 +1,5 @@
 import Foundation
+import DiscordBM
 
 /// All coin signs must be lowercased.
 /// Add a test when you add a coin sign.
@@ -23,17 +24,17 @@ struct CoinFinder {
     /// The content of the message.
     let text: String
     /// User that was replied to, if any.
-    let repliedUser: String?
+    let repliedUser: UserSnowflake?
     /// Users that are mentioned and able to get coins. These are validated by Discord.
     /// Using this is to prevent giving coins to normal texts that look like user-ids.
-    let mentionedUsers: [String]
+    let mentionedUsers: [UserSnowflake]
     /// Users to not be able to get a coin. Such as the author of the message.
-    let excludedUsers: [String]
+    let excludedUsers: [UserSnowflake]
     /// Maximum users allowed to get a new coin in one message.
     static let maxUsers = 10
     
     /// Finds users that need to get a coin, if anyone at all.
-    func findUsers() -> [String] {
+    func findUsers() -> [UserSnowflake] {
         // If there are no mentioned users or replied users,
         // then there is no way that anyone will get any coins.
         if mentionedUsers.isEmpty && (repliedUser == nil) {
@@ -53,13 +54,14 @@ struct CoinFinder {
             // or behind it, the logic below won't be able to catch the mention since
             // it relies on spaces to find meaningful components of each line.
             // These extra spaces are filtered later.
-            text = text.replacingOccurrences(of: mentionedUser, with: " \(mentionedUser) ")
+            let mention = DiscordUtils.mention(id: mentionedUser)
+            text = text.replacingOccurrences(of: mention, with: " \(mention) ")
         }
         
         let lines = text.split(whereSeparator: \.isNewline)
         
-        var finalUsers = [String]()
-        
+        var finalUsers = [UserSnowflake]()
+
         // Start trying to find the users that should get a coin.
         for line in lines {
             if finalUsers.count == Self.maxUsers { break }
@@ -69,14 +71,16 @@ struct CoinFinder {
                 .filter({ !$0.isIgnorable })
             let enumeratedComponents = components.enumerated()
             let allMentions = enumeratedComponents.filter({ isUserMention($0.element) })
-            
-            var usersWithNewCoins = [String]()
+
+            var usersWithNewCoins = [UserSnowflake]()
             // Not using `Set` to keep order. Will look nicer to users.
             func append(user: Substring) {
-                if !usersWithNewCoins.contains(where: { $0.elementsEqual(user) }),
-                    !excludedUsers.contains(where: { $0.elementsEqual(user) }),
-                    !finalUsers.contains(where: { $0.elementsEqual(user) }) {
-                    usersWithNewCoins.append(String(user))
+                /// Turns `<@ID>`s to `ID`.
+                let user = user.dropFirst(2).dropLast()
+                if !usersWithNewCoins.contains(where: { $0.rawValue.elementsEqual(user) }),
+                   !excludedUsers.contains(where: { $0.rawValue.elementsEqual(user) }),
+                   !finalUsers.contains(where: { $0.rawValue.elementsEqual(user) }) {
+                    usersWithNewCoins.append(UserSnowflake(String(user)))
                 }
             }
             
@@ -162,10 +166,12 @@ struct CoinFinder {
     }
     
     private func isUserMention(_ string: Substring) -> Bool {
+        let stringNoSurroundings = string.dropFirst(2).dropLast()
         /// `.hasPrefix()` is for a better performance.
         /// Should remove a lot of no-match strings, much faster than the containment check.
-        string.hasPrefix("<") &&
-        mentionedUsers.contains(where: { $0.elementsEqual(string) })
+        return string.hasPrefix("<@") &&
+        string.hasSuffix(">") &&
+        mentionedUsers.contains(where: { $0.rawValue.elementsEqual(stringNoSurroundings) })
     }
 }
 

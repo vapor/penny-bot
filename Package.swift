@@ -99,6 +99,7 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Models"),
+                .target(name: "SharedServices"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -233,6 +234,9 @@ let package = Package(
         ),
         .target(
             name: "Models",
+            dependencies: [
+                .product(name: "DiscordModels", package: "DiscordBM")
+            ],
             swiftSettings: swiftSettings
         ),
         .target(

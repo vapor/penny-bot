@@ -49,6 +49,19 @@ struct InteractionHandler {
     }
     
     func handle() async {
+        await discordService.respondToInteraction(
+            id: event.id,
+            token: event.token,
+            payload: .channelMessageWithSource(.init(
+                embeds: [.init(
+                    title: "Under Maintenance",
+                    description: "Be back soon!",
+                    color: .purple
+                )]
+            ))
+        )
+        return
+#warning("revert")
         switch event.data {
         case let .applicationCommand(data) where event.type == .applicationCommand:
             guard let command = SlashCommand(rawValue: data.name) else {
@@ -531,8 +544,7 @@ private extension InteractionHandler {
         case .unlink:
             return "This command is still a WIP. Unlinking discordId: \(discordID)"
         case .whoAmI:
-            let user = "<@\(discordID.rawValue)>"
-            let response = try await coinService.getGitHubID(of: user)
+            let response = try await coinService.getGitHubName(of: discordID)
             switch response {
             case .notLinked:
                 return "You don't have any linked GitHub accounts."
@@ -827,29 +839,28 @@ private extension InteractionHandler {
     
     func handleHowManyCoinsAppCommand() async throws -> String {
         guard case let .applicationCommand(data) = event.data,
-              let userId = data.target_id else {
+              let userID = data.target_id else {
             logger.error("Coin-count command could not find appropriate data")
             return oops
         }
-        let user = "<@\(userId.rawValue)>"
-        return try await getCoinCount(of: user)
+        return try await getCoinCount(of: UserSnowflake(userID))
     }
     
     func handleHowManyCoinsCommand(options: [InteractionOption]) async throws -> String {
-        let user: String
+        let userID: String
         if let userOption = options.first?.value?.asString {
-            user = "<@\(userOption)>"
+            userID = userOption
         } else {
             let author = event.member?.user ?? event.user
             let id = try (author?.id).requireValue()
-            user = "<@\(id.rawValue)>"
+            userID = id.rawValue
         }
-        return try await getCoinCount(of: user)
+        return try await getCoinCount(of: UserSnowflake(userID))
     }
     
-    func getCoinCount(of user: String) async throws -> String {
-        let coinCount = try await coinService.getCoinCount(of: user)
-        return "\(user) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
+    func getCoinCount(of discordID: UserSnowflake) async throws -> String {
+        let coinCount = try await coinService.getCoinCount(of: discordID)
+        return "\(DiscordUtils.mention(id: discordID)) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
     }
     
     /// Returns `true` if the acknowledgement was successfully sent
