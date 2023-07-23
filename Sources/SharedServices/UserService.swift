@@ -124,9 +124,13 @@ public struct UserService {
             }
 
             var githubID: String? = item.data2?.trimmingCharacters(in: .whitespacesAndNewlines)
-            if let id = githubID, Int(id) == nil {
-                logger.warning("Bad Github ID: \(githubID ?? "<null>"), item: \(item)")
-                githubID = nil
+            if let id = githubID {
+                if id.isEmpty {
+                    githubID = nil
+                } else if Int(id) == nil {
+                    logger.warning("Bad Github ID: \(githubID ?? "<null>"), item: \(item)")
+                    githubID = nil
+                }
             }
 
             let _existingUser: DynamoDBUser?
