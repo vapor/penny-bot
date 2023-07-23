@@ -34,6 +34,11 @@ struct Penny {
         await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
 
+        Task {
+            await performMigration(awsClient: awsClient)
+        }
+#warning("remove")
+
         await bot.connect()
         let stream = await bot.makeEventsStream()
 
@@ -43,11 +48,6 @@ struct Penny {
             /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
             await ServiceFactory.initiateProposalsChecker(client)
         })
-
-        Task {
-            await performMigration(awsClient: awsClient)
-        }
-#warning("remove")
 
         for await event in stream {
             EventHandler(event: event).handle()
