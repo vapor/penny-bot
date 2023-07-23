@@ -44,6 +44,15 @@ struct MessageHandler {
         let usersWithNewCoins = coinHandler.findUsers()
         // Return if there are no coins to be granted
         if usersWithNewCoins.isEmpty { return }
+        await discordService.sendThanksResponse(
+            channelId: event.channel_id,
+            replyingToMessageId: event.id,
+            isFailureMessage: true,
+            userToExplicitlyMention: nil,
+            response: "Under Maintenance; be back soon!"
+        )
+        return
+#warning("revert")
 
         var successfulResponses = [String]()
         successfulResponses.reserveCapacity(usersWithNewCoins.count)

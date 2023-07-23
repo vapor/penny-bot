@@ -237,6 +237,7 @@ Resources:
                   - s3:GetObject
                 Effect: Allow 
                 Resource: 
+                  - !GetAtt dynamoUserTable.Arn
                   - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !GetAtt dynamoPennyUserTable.Arn
                   - !GetAtt dynamoPennyCoinTable.Arn
@@ -507,6 +508,59 @@ Resources:
     Properties:
       BucketName: penny-caches
 
+  # DynamoDB penny-bot table
+
+  dynamoUserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "penny-bot-table"
+      AttributeDefinitions:
+        -
+          AttributeName: "pk"
+          AttributeType: "S"
+        - 
+          AttributeName: "sk"
+          AttributeType: "S"
+        -
+          AttributeName: "data1"
+          AttributeType: "S"
+        -
+          AttributeName: "data2"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "pk"
+          KeyType: "HASH"
+        - 
+          AttributeName: "sk"
+          KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        -
+          IndexName: "GSI-1"
+          KeySchema:
+            -
+              AttributeName: "data1"
+              KeyType: "HASH"
+            -
+              AttributeName: "pk"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+        -
+          IndexName: "GSI-2"
+          KeySchema:
+            - 
+              AttributeName: "data2"
+              KeyType: "HASH"
+            -
+              AttributeName: "pk"
+              KeyType: "RANGE"
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
   # DynamoDB user table
   
   dynamoPennyUserTable:
@@ -631,6 +685,9 @@ Outputs:
 
   addCoinLambdaARN:
     Value: !GetAtt addCoinFunction.Arn
+
+  pennyBotDynamoDBARN:
+    Value: !GetAtt dynamoUserTable.Arn
   
   pennyUserTableARN:
     Value: !GetAtt dynamoPennyUserTable.Arn
