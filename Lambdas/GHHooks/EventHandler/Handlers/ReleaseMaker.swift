@@ -231,7 +231,7 @@ struct ReleaseMaker {
             existingContributors: contributors
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners)
-        let isCodeOwner = codeOwners.codeOwnersContains(user: pr.user)
+        let isCodeOwner = codeOwners.usernamesContain(user: pr.user)
 
         return """
         \(makeMergerMarkdown(mergedBy: mergedBy))
@@ -299,9 +299,10 @@ struct ReleaseMaker {
     }
 
     func getReviewersToCredit(codeOwners: Set<String>) async throws -> [User] {
+        let usernames = codeOwners.union([pr.user.login])
         let reviewComments = try await getReviewComments()
         let reviewers = reviewComments.map(\.user).filter { user in
-            !codeOwners.codeOwnersContains(user: user)
+            !usernames.usernamesContain(user: user)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
         let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
@@ -310,7 +311,7 @@ struct ReleaseMaker {
 
     func isNewContributor(codeOwners: Set<String>, existingContributors: Set<Int>) -> Bool {
         if pr.author_association == .OWNER ||
-            codeOwners.codeOwnersContains(user: pr.user) {
+            codeOwners.usernamesContain(user: pr.user) {
             return false
         }
         return !existingContributors.contains(pr.user.id)
@@ -451,7 +452,8 @@ struct ReleaseMaker {
 }
 
 private extension Set<String> {
-    func codeOwnersContains(user: User) -> Bool {
+    /// Only supports names, and not emails.
+    func usernamesContain(user: User) -> Bool {
         if let name = user.name {
             return !self.intersection([user.login, name]).isEmpty
         } else {
