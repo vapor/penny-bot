@@ -129,7 +129,15 @@ public struct UserService {
                 githubID = nil
             }
 
-            var user = DynamoDBUser(
+            let _existingUser: DynamoDBUser?
+            do {
+                _existingUser = try await userRepo.getUser(discordID: UserSnowflake(discordID))
+            } catch {
+                logger.warning("Error when getting existing user: \(error), item: \(item)")
+                continue
+            }
+
+            var user = _existingUser ?? DynamoDBUser(
                 id: uuid,
                 discordID: UserSnowflake(discordID),
                 githubID: githubID,
