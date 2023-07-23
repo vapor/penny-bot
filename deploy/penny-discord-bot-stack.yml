@@ -518,9 +518,6 @@ Resources:
           AttributeName: "id"
           AttributeType: "S"
         -
-          AttributeName: "createdAt"
-          AttributeType: "N"
-        -
           AttributeName: "discordID"
           AttributeType: "S"
         -
@@ -530,9 +527,6 @@ Resources:
         - 
           AttributeName: "id"
           KeyType: "HASH"
-        - 
-          AttributeName: "createdAt"
-          KeyType: "RANGE"
       GlobalSecondaryIndexes:
         -
           IndexName: "D-ID-GSI"

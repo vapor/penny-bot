@@ -42,7 +42,7 @@ struct MessageHandler {
             excludedUsers: [author.id] // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
-        // Return if there are no coins to be granted
+
         if usersWithNewCoins.isEmpty { return }
 
         var successfulResponses = [String]()
