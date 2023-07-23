@@ -171,7 +171,7 @@ struct AddSponsorHandler: LambdaHandler {
         do {
             let error = try await discordClient.deleteGuildMemberRole(
                 guildId: Constants.guildID,
-                userId: Snowflake(discordID),
+                userId: discordID,
                 roleId: role.roleID
             ).asError()
 
@@ -204,7 +204,7 @@ struct AddSponsorHandler: LambdaHandler {
             // Try adding role to new sponsor
             try await discordClient.addGuildMemberRole(
                 guildId: Constants.guildID,
-                userId: Snowflake(discordID),
+                userId: discordID,
                 roleId: role.roleID
             ).guardSuccess()
             logger.info("Successfully added \(role) role to user \(discordID).")
