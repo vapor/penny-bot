@@ -240,7 +240,9 @@ Resources:
                   - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !GetAtt dynamoPennyUserTable.Arn
                   - !GetAtt dynamoPennyCoinTable.Arn
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-user-table
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-coin-table
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-user-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-coin-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
