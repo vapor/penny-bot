@@ -1,8 +1,8 @@
 import AsyncHTTPClient
 
 enum ServiceFactory {
-    static var makeCoinService: () -> any CoinService = {
-        DefaultCoinService.shared
+    static var makeUsersService: () -> any UsersService = {
+        DefaultUsersService.shared
     }
 
     static var makePingsService: () -> any AutoPingsService = {

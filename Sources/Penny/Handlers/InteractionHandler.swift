@@ -15,8 +15,8 @@ private typealias Expression = S3AutoPingItems.Expression
 struct InteractionHandler {
     let event: Interaction
     var logger = Logger(label: "InteractionHandler")
-    var coinService: any CoinService {
-        ServiceFactory.makeCoinService()
+    var coinService: any UsersService {
+        ServiceFactory.makeUsersService()
     }
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()

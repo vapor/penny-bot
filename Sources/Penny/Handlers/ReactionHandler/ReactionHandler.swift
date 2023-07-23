@@ -20,8 +20,8 @@ private let coinSignEmojis = [
 struct ReactionHandler {
     let event: Gateway.MessageReactionAdd
     var logger = Logger(label: "ReactionHandler")
-    var coinService: any CoinService {
-        ServiceFactory.makeCoinService()
+    var coinService: any UsersService {
+        ServiceFactory.makeUsersService()
     }
     private var cache: ReactionCache { .shared }
     

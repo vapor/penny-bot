@@ -2,7 +2,7 @@
 import DiscordModels
 import Models
 
-public struct FakeCoinService: CoinService {
+public struct FakeUsersService: UsersService {
     
     public init() { }
     

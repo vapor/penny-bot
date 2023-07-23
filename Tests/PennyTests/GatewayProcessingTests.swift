@@ -22,7 +22,7 @@ class GatewayProcessingTests: XCTestCase {
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
         Constants.botId = "950695294906007573"
         Constants.apiBaseUrl = "https://fake.com"
-        ServiceFactory.makeCoinService = { FakeCoinService() }
+        ServiceFactory.makeUsersService = { FakeUsersService() }
         ServiceFactory.makePingsService = { FakePingsService() }
         ServiceFactory.makeFaqsService = { FakeFaqsService() }
         ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }

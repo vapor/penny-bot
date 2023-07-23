@@ -8,14 +8,14 @@ import Logging
 import DiscordModels
 import Models
 
-actor DefaultCoinService: CoinService {
+actor DefaultUsersService: UsersService {
     var httpClient: HTTPClient!
-    let logger = Logger(label: "DefaultCoinService")
+    let logger = Logger(label: "DefaultUsersService")
     
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
     
-    static let shared = DefaultCoinService()
+    static let shared = DefaultUsersService()
     
     private init() { }
     

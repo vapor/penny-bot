@@ -30,7 +30,7 @@ struct Penny {
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
         await ServiceFactory.makePingsService().initialize(httpClient: client)
         await ServiceFactory.makeFaqsService().initialize(httpClient: client)
-        try await DefaultCoinService.shared.initialize(httpClient: client)
+        try await DefaultUsersService.shared.initialize(httpClient: client)
         await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
 

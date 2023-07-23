@@ -101,7 +101,7 @@ Resources:
       ApiId: !Ref apiGateway
       StageName: !Ref apiGatewayStage
 
-  # Coins lambda config
+  # Users lambda config
 
   usersIntegration:
     Type: AWS::ApiGatewayV2::Integration

@@ -5,8 +5,8 @@ import Models
 struct MessageHandler {
     let event: Gateway.MessageCreate
     var logger = Logger(label: "MessageHandler")
-    var coinService: any CoinService {
-        ServiceFactory.makeCoinService()
+    var coinService: any UsersService {
+        ServiceFactory.makeUsersService()
     }
     var pingsService: any AutoPingsService {
         ServiceFactory.makePingsService()
@@ -61,7 +61,7 @@ struct MessageHandler {
                 let responseString = "\(DiscordUtils.mention(id: response.receiver)) now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!"
                 successfulResponses.append(responseString)
             } catch {
-                logger.report("CoinService failed", error: error, metadata: [
+                logger.report("UsersService failed", error: error, metadata: [
                     "request": "\(coinRequest)"
                 ])
             }
@@ -122,7 +122,7 @@ struct MessageHandler {
                 userToExplicitlyMention: author.id
             )
         } catch {
-            logger.report("CoinService failed for server boost thanks", error: error, metadata: [
+            logger.report("UsersService failed for server boost thanks", error: error, metadata: [
                 "request": "\(coinRequest)"
             ])
             /// Don't send a message at all in case of failure
