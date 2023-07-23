@@ -123,61 +123,22 @@ public struct UserService {
                 logger.warning("Bad Discord ID: \(discordID), item: \(item)")
             }
 
-            var githubID: String? = item.data2?.trimmingCharacters(in: .whitespacesAndNewlines)
-            if let id = githubID {
-                if id.isEmpty {
-                    githubID = nil
-                } else if Int(id) == nil {
-                    logger.warning("Bad Github ID: \(githubID ?? "<null>"), item: \(item)")
-                    githubID = nil
-                }
-            }
-
-            let _existingUser: DynamoDBUser?
+            var user: DynamoDBUser
             do {
-                _existingUser = try await userRepo.getUser(discordID: UserSnowflake(discordID))
+                user = try await userRepo.getUser(
+                    discordID: UserSnowflake(discordID)
+                ).requireValue()
             } catch {
                 logger.warning("Error when getting existing user: \(error), item: \(item)")
                 continue
             }
 
-            var user = _existingUser ?? DynamoDBUser(
-                id: uuid,
-                discordID: UserSnowflake(discordID),
-                githubID: githubID,
-                coinCount: item.amountOfCoins ?? 0,
-                createdAt: item.createdAt
-            )
-
-            let entries = (item.coinEntries ?? []).compactMap {
-                entry -> CoinEntry? in
-                guard let from = entry.from else {
-                    logger.warning("entry.from is nil. entry: \(entry), item: \(item)")
-                    return nil
-                }
-                return CoinEntry(
-                    id: entry.id,
-                    fromUserID: from,
-                    toUserID: user.id,
-                    createdAt: entry.createdAt,
-                    amount: entry.amount,
-                    source: entry.source,
-                    reason: entry.reason
-                )
-            }
+            user.coinCount = item.amountOfCoins ?? 0
 
             do {
-                try await self.userRepo.createUser(user)
+                try await self.userRepo.updateUser(user)
             } catch {
                 logger.warning("could not create user: \(error), item: \(item), user: \(user)")
-            }
-
-            for entry in entries {
-                do {
-                    user = try await self.addCoinEntry(entry, freshUser: user)
-                } catch {
-                    logger.warning("could not add error \(error), entry: \(entry), item: \(item), user: \(user)")
-                }
             }
         }
 
