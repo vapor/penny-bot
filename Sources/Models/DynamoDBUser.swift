@@ -17,6 +17,10 @@ public struct DynamoDBUser: Sendable, Codable {
         case githubID
         case coinCount
         case createdAt
+
+        public var description: String {
+            self.rawValue
+        }
     }
 
     #warning("make private")

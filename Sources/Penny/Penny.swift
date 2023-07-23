@@ -59,7 +59,5 @@ struct Penny {
 import SharedServices
 func performMigration(awsClient: AWSClient) async {
     let userService = UserService(awsClient: awsClient, logger: Logger(label: "migration"))
-    Logger(label: "migration").warning("will start migration in 10 mins")
-    try? await Task.sleep(for: .seconds(600))
     await userService.performMigration()
 }
