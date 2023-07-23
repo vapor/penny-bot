@@ -23,8 +23,7 @@ public struct DynamoDBUser: Sendable, Codable {
         }
     }
 
-    #warning("make private")
-    public init(
+    private init(
         id: UUID,
         discordID: UserSnowflake?,
         githubID: String?,

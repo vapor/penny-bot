@@ -7,14 +7,9 @@ public struct UserService {
     private let coinEntryRepo: DynamoCoinEntryRepository
     let logger: Logger
 
-    #warning("remove")
-    let dynamoDB: DynamoDB
-
     public init(awsClient: AWSClient, logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
         let dynamoDB = DynamoDB(client: awsClient, region: euWest)
-        #warning("remove")
-        self.dynamoDB = dynamoDB
         self.userRepo = DynamoUserRepository(
             db: dynamoDB,
             logger: logger
@@ -66,103 +61,4 @@ public struct UserService {
 
         try await userRepo.updateUser(user)
     }
-
-    #warning("remove")
-    public func performMigration() async {
-        logger.warning("Starting Migration. Getting all users")
-        let scan = DynamoDB.ScanInput(
-            limit: nil,
-            tableName: "penny-bot-table"
-        )
-        let items: [OldDynamoDBUser]?
-        do {
-            items = try await dynamoDB.scan(
-                scan,
-                type: OldDynamoDBUser.self,
-                logger: self.logger,
-                on: dynamoDB.eventLoopGroup.any()
-            ).items
-        } catch {
-            logger.warning("query failed will retry in 10s, \(error)")
-            try? await Task.sleep(for: .seconds(10))
-            await self.performMigration()
-            return
-        }
-
-        guard let items = items, !items.isEmpty else {
-            logger.warning("Migration Stopped. Query is empty")
-            return
-        }
-        logger.warning("Got \(items.count) items")
-
-        for (idx, item) in items.enumerated() {
-            if idx % 20 == 0 {
-                logger.warning("At index \(idx) of \(items.count)")
-            }
-
-            let id = item.pk
-            /// `USER-C07AAD42-1DB5-441F-BBC9-0B50DD7372D3`
-            guard id.hasPrefix("USER-") else {
-                logger.warning("bad user id: \(item)")
-                continue
-            }
-            guard let uuid = UUID(uuidString: String(id.dropFirst(5))) else {
-                logger.warning("Couldn't convert to uuid: \(item)")
-                continue
-            }
-
-            guard var discordID = item.data1 else {
-                logger.warning("No discord id for item with pk \(item.pk), item: \(item)")
-                continue
-            }
-            /// `DISCORD-<@135838305873952778>`
-            if discordID.hasPrefix("DISCORD-<@"), discordID.hasSuffix(">") {
-                discordID = String(discordID.dropFirst(10).dropLast())
-            }
-            if UInt(discordID) == nil || UserSnowflake(discordID).parse() == nil {
-                logger.warning("Bad Discord ID: \(discordID), item: \(item)")
-            }
-
-            var user: DynamoDBUser
-            do {
-                user = try await userRepo.getUser(
-                    discordID: UserSnowflake(discordID)
-                ).requireValue()
-            } catch {
-                logger.warning("Error when getting existing user: \(error), item: \(item)")
-                continue
-            }
-
-            user.coinCount = item.amountOfCoins ?? 0
-
-            do {
-                try await self.userRepo.updateUser(user)
-            } catch {
-                logger.warning("could not create user: \(error), item: \(item), user: \(user)")
-            }
-        }
-
-        logger.warning("Done")
-    }
-}
-
-#warning("remove")
-private struct OldDynamoDBUser: Sendable, Codable {
-
-    public struct CoinEntry: Sendable, Codable {
-        public let id: UUID
-        public let createdAt: Date
-        public let amount: Int
-        public let from: UUID?
-        public let source: CoinEntrySource
-        public let reason: CoinEntryReason
-    }
-
-    public let pk: String
-    public let sk: String
-    public let data1: String?
-    public let data2: String?
-    public let amountOfCoins: Int?
-    public let coinEntries: [CoinEntry]?
-    public let createdAt: Date
 }
