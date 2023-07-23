@@ -71,7 +71,7 @@ public struct UserService {
     public func performMigration() async {
         logger.warning("Starting Migration. Getting all users")
         let query = DynamoDB.QueryInput(
-            limit: 1_000_000,
+            limit: nil,
             tableName: "penny-bot-table"
         )
 
@@ -84,7 +84,7 @@ public struct UserService {
                 on: dynamoDB.eventLoopGroup.any()
             ).items
         } catch {
-            logger.warning("query failed will retry in 10s")
+            logger.warning("query failed will retry in 10s, \(error)")
             try? await Task.sleep(for: .seconds(10))
             await self.performMigration()
             return
