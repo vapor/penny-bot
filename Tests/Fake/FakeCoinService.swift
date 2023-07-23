@@ -6,7 +6,7 @@ public struct FakeCoinService: CoinService {
     
     public init() { }
     
-    public func postCoin(with coinRequest: CoinRequest.DiscordCoinEntry) async throws -> CoinResponse {
+    public func postCoin(with coinRequest: UserRequest.DiscordCoinEntry) async throws -> CoinResponse {
         CoinResponse(
             sender: coinRequest.fromDiscordID,
             receiver: coinRequest.toDiscordID,

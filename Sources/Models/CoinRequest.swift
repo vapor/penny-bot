@@ -1,5 +1,5 @@
 
-public enum CoinRequest: Sendable, Codable {
+public enum UserRequest: Sendable, Codable {
     case addCoin(DiscordCoinEntry)
     case getUser(discordID: UserSnowflake)
 

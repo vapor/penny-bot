@@ -4,10 +4,10 @@ Parameters:
   apiGatewayName:
     Type: String
     Default: penny-bot-api
-  CoinsFilename:
+  UsersFilename:
     Type: String
-    Description: Filename of the code function for the adding of coins uploaded to S3
-    Default: CoinsLambda
+    Description: Filename containing the code to be executed for users
+    Default: UsersLambda
   SponsorsFilename:
     Type: String
     Description: Filename containing the code to be executed when a new sponsor joins
@@ -18,7 +18,7 @@ Parameters:
     Default: AutoPingsLambda
   FaqsFilename:
     Type: String
-    Description: Filename containing the code to be executed for Faqs
+    Description: Filename containing the code to be executed for faqs
     Default: FaqsLambda
   GHHooksFilename:
     Type: String
@@ -103,49 +103,49 @@ Resources:
 
   # Coins lambda config
 
-  addCoinIntegration:
+  usersIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
-      Description: Lambda Add Coin Integration
+      Description: Lambda Users Integration
       ApiId: !Ref apiGateway
       ConnectionType: INTERNET 
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
-      IntegrationUri: !GetAtt addCoinFunction.Arn
+      IntegrationUri: !GetAtt usersFunction.Arn
       PayloadFormatVersion: '2.0'
 
-  addCoinRoute:
+  usersRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'POST /coin'
-      Target: !Sub "integrations/${addCoinIntegration}"
+      RouteKey: 'POST /users'
+      Target: !Sub "integrations/${usersIntegration}"
 
-  addCoinFunction:
+  usersFunction:
     Type: AWS::Lambda::Function
     Properties:
       Code:
         S3Bucket: penny-lambdas-store
-        S3Key: !Sub ${CoinsFilename}.zip
-      FunctionName: !Sub ${CoinsFilename}
+        S3Key: !Sub ${UsersFilename}.zip
+      FunctionName: !Sub ${UsersFilename}
       Handler: handler 
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
       Timeout: 6
 
-  lambdaCoinsRoutePermission:
+  lambdaUsersRoutePermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Sub ${CoinsFilename}
+      FunctionName: !Sub ${UsersFilename}
       Principal: apigateway.amazonaws.com
     DependsOn: 
-      - addCoinFunction
+      - usersFunction
  
-  coinsLogGroup:
+  usersLogGroup:
     Type: AWS::Logs::LogGroup
     Properties: 
-      LogGroupName: !Sub /aws/lambda/${CoinsFilename}
+      LogGroupName: !Sub /aws/lambda/${UsersFilename}
       RetentionInDays: 30
       
   # Sponsors lambda config
@@ -241,9 +241,11 @@ Resources:
                   - !GetAtt dynamoPennyUserTable.Arn
                   - !GetAtt dynamoPennyCoinTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-user-table/*
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-coin-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${CoinsFilename}
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${UsersFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${UsersFilename}
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoPingsFilename}:*
@@ -629,8 +631,8 @@ Outputs:
   sponsorsLambdaARN:
     Value: !GetAtt sponsorsFunction.Arn
 
-  addCoinLambdaARN:
-    Value: !GetAtt addCoinFunction.Arn
+  usersLambdaARN:
+    Value: !GetAtt usersFunction.Arn
   
   pennyUserTableARN:
     Value: !GetAtt dynamoPennyUserTable.Arn

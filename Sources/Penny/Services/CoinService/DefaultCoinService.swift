@@ -24,11 +24,11 @@ actor DefaultCoinService: CoinService {
     }
 
     private func getUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/coin")
+        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
 
-        let requestContent = CoinRequest.getUser(discordID: discordID)
+        let requestContent = UserRequest.getUser(discordID: discordID)
         let data = try encoder.encode(requestContent)
         request.body = .bytes(data)
 
@@ -55,11 +55,11 @@ actor DefaultCoinService: CoinService {
         return try decoder.decode(DynamoDBUser.self, from: body)
     }
 
-    func postCoin(with coinRequest: CoinRequest.DiscordCoinEntry) async throws -> CoinResponse {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/coin")
+    func postCoin(with coinRequest: UserRequest.DiscordCoinEntry) async throws -> CoinResponse {
+        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try encoder.encode(CoinRequest.addCoin(coinRequest))
+        let data = try encoder.encode(UserRequest.addCoin(coinRequest))
         request.body = .bytes(data)
         let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])

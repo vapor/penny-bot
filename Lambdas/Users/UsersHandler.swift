@@ -7,7 +7,7 @@ import Models
 import Extensions
 
 @main
-struct CoinsHandler: LambdaHandler {
+struct UsersHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
@@ -24,10 +24,10 @@ struct CoinsHandler: LambdaHandler {
     
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         do {
-            let request = try event.decode(as: CoinRequest.self)
+            let request = try event.decode(as: UserRequest.self)
             switch request {
             case .addCoin(let entry):
-                return try await handleAddCoinRequest(entry: entry)
+                return try await handleAddUserRequest(entry: entry)
             case .getUser(let discordID):
                 return try await handleGetUserRequest(discordID: discordID)
             }
@@ -43,8 +43,8 @@ struct CoinsHandler: LambdaHandler {
         }
     }
     
-    func handleAddCoinRequest(
-        entry: CoinRequest.DiscordCoinEntry
+    func handleAddUserRequest(
+        entry: UserRequest.DiscordCoinEntry
     ) async throws -> APIGatewayV2Response {
         let fromUserID = try await userService.getOrCreateUser(discordID: entry.fromDiscordID).id
         let toUser = try await userService.getOrCreateUser(discordID: entry.toDiscordID)

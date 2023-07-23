@@ -47,7 +47,7 @@ struct ReactionHandler {
         /// Super reactions give more coins, otherwise only 1 coin
         let amount = event.type == .super ? 3 : 1
 
-        let coinRequest = CoinRequest.DiscordCoinEntry(
+        let coinRequest = UserRequest.DiscordCoinEntry(
             amount: amount,
             fromDiscordID: user.id,
             toDiscordID: receiverId,

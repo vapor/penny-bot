@@ -104,7 +104,7 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
         .executableTarget(
-            name: "CoinsLambda",
+            name: "UsersLambda",
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
@@ -115,7 +115,7 @@ let package = Package(
                 .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
-            path: "./Lambdas/Coins",
+            path: "./Lambdas/Users",
             swiftSettings: swiftSettings
         ),
         .executableTarget(

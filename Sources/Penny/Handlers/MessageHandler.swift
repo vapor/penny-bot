@@ -49,7 +49,7 @@ struct MessageHandler {
         successfulResponses.reserveCapacity(usersWithNewCoins.count)
         
         for receiver in usersWithNewCoins {
-            let coinRequest = CoinRequest.DiscordCoinEntry(
+            let coinRequest = UserRequest.DiscordCoinEntry(
                 amount: 1,
                 fromDiscordID: author.id,
                 toDiscordID: receiver,
@@ -102,7 +102,7 @@ struct MessageHandler {
         }
 
         let amount = 10
-        let coinRequest = CoinRequest.DiscordCoinEntry(
+        let coinRequest = UserRequest.DiscordCoinEntry(
             amount: amount,
             /// Guild-id because it's not an actual user who gave the coins.
             fromDiscordID: UserSnowflake(Constants.vaporGuildId),
