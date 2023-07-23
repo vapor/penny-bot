@@ -240,7 +240,7 @@ Resources:
                   - !GetAtt dynamoUserTable.Arn
                   - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !GetAtt dynamoPennyUserTable.Arn
-                  - !GetAtt dynamoPennyCoinEntryTable.Arn
+                  - !GetAtt dynamoPennyCoinTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}:*
@@ -604,10 +604,10 @@ Resources:
 
   # DynamoDB coin-entry table
   
-  dynamoPennyCoinEntryTable:
+  dynamoPennyCoinTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: "penny-coin-entry-table"
+      TableName: "penny-coin-table"
       AttributeDefinitions:
         -
           AttributeName: "id"
@@ -691,6 +691,9 @@ Outputs:
   
   pennyUserTableARN:
     Value: !GetAtt dynamoPennyUserTable.Arn
+
+  pennyCoinTableARN:
+    Value: !GetAtt dynamoPennyCoinTable.Arn
   
   ghHooksMessageLookupDynamoDBARN:
     Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn

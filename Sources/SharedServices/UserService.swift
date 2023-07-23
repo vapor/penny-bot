@@ -120,7 +120,7 @@ public struct UserService {
                 discordID = String(discordID.dropFirst(10).dropLast())
             }
             if UInt(discordID) == nil || UserSnowflake(discordID).parse() == nil {
-                logger.warning("Bad Discord ID Int: \(discordID), item: \(item)")
+                logger.warning("Bad Discord ID: \(discordID), item: \(item)")
             }
 
             var githubID: String? = item.data2?.trimmingCharacters(in: .whitespacesAndNewlines)
