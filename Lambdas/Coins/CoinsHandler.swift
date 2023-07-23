@@ -55,7 +55,7 @@ struct CoinsHandler: LambdaHandler {
             source: entry.source,
             reason: entry.reason
         )
-        let newUser = try await userService.addCoinEntry(coinEntry, to: toUser)
+        let newUser = try await userService.addCoinEntry(coinEntry, freshUser: toUser)
 
         let coinResponse = CoinResponse(
             sender: entry.fromDiscordID,
