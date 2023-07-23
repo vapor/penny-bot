@@ -434,17 +434,16 @@ struct ReleaseMaker {
         let fullName = repo.full_name.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
         ) ?? repo.full_name
-        let thumbnail = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+        let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
             payload: .init(
                 embeds: [.init(
                     title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
-                    type: .article,
                     description: description,
                     url: release.html_url,
                     color: .cyan,
-                    thumbnail: .init(url: .exact(thumbnail))
+                    image: .init(url: .exact(image))
                 )]
             )
         ).guardSuccess()
