@@ -34,11 +34,6 @@ struct Penny {
         await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
 
-        Task {
-            await performMigration(awsClient: awsClient)
-        }
-#warning("remove")
-
         await bot.connect()
         let stream = await bot.makeEventsStream()
 
@@ -53,11 +48,4 @@ struct Penny {
             EventHandler(event: event).handle()
         }
     }
-}
-
-#warning("remove")
-import SharedServices
-func performMigration(awsClient: AWSClient) async {
-    let userService = UserService(awsClient: awsClient, logger: Logger(label: "migration"))
-    await userService.performMigration()
 }

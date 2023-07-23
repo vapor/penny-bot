@@ -49,19 +49,6 @@ struct InteractionHandler {
     }
     
     func handle() async {
-        await discordService.respondToInteraction(
-            id: event.id,
-            token: event.token,
-            payload: .channelMessageWithSource(.init(
-                embeds: [.init(
-                    title: "Under Maintenance",
-                    description: "Be back soon!",
-                    color: .purple
-                )]
-            ))
-        )
-        return
-#warning("revert")
         switch event.data {
         case let .applicationCommand(data) where event.type == .applicationCommand:
             guard let command = SlashCommand(rawValue: data.name) else {
