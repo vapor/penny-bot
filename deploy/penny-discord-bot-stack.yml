@@ -601,7 +601,7 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
-  # DynamoDB user table
+  # DynamoDB coin-entry table
   
   dynamoPennyCoinEntryTable:
     Type: AWS::DynamoDB::Table
