@@ -70,15 +70,14 @@ public struct UserService {
     #warning("remove")
     public func performMigration() async {
         logger.warning("Starting Migration. Getting all users")
-        let query = DynamoDB.QueryInput(
+        let scan = DynamoDB.ScanInput(
             limit: nil,
             tableName: "penny-bot-table"
         )
-
         let items: [OldDynamoDBUser]?
         do {
-            items = try await dynamoDB.query(
-                query,
+            items = try await dynamoDB.scan(
+                scan,
                 type: OldDynamoDBUser.self,
                 logger: self.logger,
                 on: dynamoDB.eventLoopGroup.any()
@@ -165,13 +164,12 @@ public struct UserService {
                 do {
                     user = try await self.addCoinEntry(entry, freshUser: user)
                 } catch {
-                    logger.warning("could not add entry: \(entry), item: \(item), user: \(user)")
+                    logger.warning("could not add error \(error), entry: \(entry), item: \(item), user: \(user)")
                 }
             }
         }
 
-        logger.warning("will perform another round")
-        await self.performMigration()
+        logger.warning("Done")
     }
 }
 
