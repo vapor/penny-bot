@@ -224,6 +224,7 @@ Resources:
                   - dynamodb:PutItem
                   - dynamodb:UpdateItem
                   - dynamodb:BatchGetItem
+                  - dynamodb:BatchWriteItem
                   - dynamodb:DeleteItem
                   - dynamodb:Attributes
                   - dynamodb:LeadingKeys
@@ -238,6 +239,7 @@ Resources:
                 Resource: 
                   - !GetAtt dynamoUserTable.Arn
                   - !GetAtt dynamoGHHooksMessageLookupTable.Arn
+                  - !GetAtt dynamoPennyUserTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-bot-table/*
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${CoinsFilename}:*
@@ -558,6 +560,94 @@ Resources:
       PointInTimeRecoverySpecification:
         PointInTimeRecoveryEnabled: true
 
+  # DynamoDB user table
+  
+  dynamoPennyUserTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "penny-user-table"
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+        -
+          AttributeName: "discordID"
+          AttributeType: "S"
+        -
+          AttributeName: "githubID"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+      GlobalSecondaryIndexes:
+        -
+          IndexName: "D-ID-GSI"
+          KeySchema:
+            -
+              AttributeName: "discordID"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: ALL
+        -
+          IndexName: "GH-ID-GSI"
+          KeySchema:
+            - 
+              AttributeName: "githubID"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
+  # DynamoDB user table
+  
+  dynamoPennyCoinEntryTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: "penny-coin-entry-table"
+      AttributeDefinitions:
+        -
+          AttributeName: "id"
+          AttributeType: "S"
+        -
+          AttributeName: "createdAt"
+          AttributeType: "S"
+        -
+          AttributeName: "fromUserID"
+          AttributeType: "S"
+        -
+          AttributeName: "toUserID"
+          AttributeType: "S"
+      KeySchema:
+        - 
+          AttributeName: "id"
+          KeyType: "HASH"
+        - 
+          AttributeName: "createdAt"
+          KeyType: "RANGE"
+      GlobalSecondaryIndexes:
+        -
+          IndexName: "FU-ID-GSI"
+          KeySchema:
+            -
+              AttributeName: "fromUserID"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: ALL
+        -
+          IndexName: "TU-ID-GSI"
+          KeySchema:
+            -
+              AttributeName: "toUserID"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: ALL
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification:
+        PointInTimeRecoveryEnabled: true
+
   # DynamoDB ghHooks-message-lookup table
 
   dynamoGHHooksMessageLookupTable:
@@ -597,6 +687,9 @@ Outputs:
 
   pennyBotDynamoDBARN:
     Value: !GetAtt dynamoUserTable.Arn
+  
+  pennyUserTableARN:
+    Value: !GetAtt dynamoPennyUserTable.Arn
   
   ghHooksMessageLookupDynamoDBARN:
     Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn

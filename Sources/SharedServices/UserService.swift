@@ -3,114 +3,61 @@ import Foundation
 import Models
 
 public struct UserService {
-    
-    public enum ServiceError: Error {
-        case failedToUpdate
-        case unimplemented(line: UInt = #line)
-    }
-    
+    private let userRepo: DynamoUserRepository
+    private let coinEntryRepo: DynamoCoinEntryRepository
     let logger: Logger
-    let userRepo: DynamoUserRepository
 
-    public init(_ awsClient: AWSClient, _ logger: Logger) {
+    public init(awsClient: AWSClient, logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
         let dynamoDB = DynamoDB(client: awsClient, region: euWest)
-        self.logger = logger
         self.userRepo = DynamoUserRepository(
             db: dynamoDB,
-            eventLoop: awsClient.eventLoopGroup.any(),
             logger: logger
         )
+        self.coinEntryRepo = DynamoCoinEntryRepository(
+            db: dynamoDB,
+            logger: logger
+        )
+        self.logger = logger
     }
     
-    public func addCoins(
-        with coinEntry: CoinEntry,
-        fromDiscordID: String,
-        to user: DynamoUser
-    ) async throws -> CoinResponse {
-        var localUser: DynamoUser?
+    public func addCoinEntry(
+        _ coinEntry: CoinEntry,
+        to user: DynamoDBUser
+    ) async throws -> DynamoDBUser {
+        try await coinEntryRepo.createCoinEntry(coinEntry)
         
-        do {
-            switch coinEntry.source {
-            case .discord:
-                localUser = try await userRepo.getUser(discordID: user.discordID!)
-            case .github:
-                localUser = try await userRepo.getUser(githubID: user.githubID!)
-            case .penny:
-                throw ServiceError.unimplemented()
-            }
-        }
-        catch let error {
-            logger.error("Can't add coins", metadata: ["error": "\(error)"])
-            throw ServiceError.failedToUpdate
-        }
-        
-        if var localUser {
-            localUser.addCoinEntry(coinEntry)
-            let dbUser = DynamoDBUser(user: localUser)
-            
-            try await userRepo.updateUser(dbUser)
-            return CoinResponse(
-                sender: fromDiscordID,
-                receiver: localUser.discordID!,
-                coins: localUser.numberOfCoins
-            )
-        } else {
-            let localUser = try await insertIntoDB(user: user, with: coinEntry)
-            return CoinResponse(
-                sender: fromDiscordID,
-                receiver: localUser.discordID!,
-                coins: localUser.numberOfCoins
-            )
-        }
-    }
-    
-    public func getUserUUID(from user: DynamoUser, with source: CoinEntrySource) async throws -> UUID {
-        var localUser: DynamoUser?
-        
-        do {
-            switch source {
-            case .discord:
-                localUser = try await userRepo.getUser(discordID: user.discordID!)
-            case .github:
-                localUser = try await userRepo.getUser(githubID: user.githubID!)
-            case .penny:
-                throw ServiceError.unimplemented()
-            }
-            
-            return localUser?.id ?? UUID()
-        }
-        catch {
-            return UUID()
-        }
-    }
-    
-    /// Returns nil if user does not exist.
-    public func getUserWith(discordID id: String) async throws -> DynamoUser? {
-        try await userRepo.getUser(discordID: id)
-    }
-    
-    /// Returns nil if user does not exist.
-    public func getUserWith(githubID id: String) async throws -> DynamoUser? {
-        try await userRepo.getUser(githubID: id)
+        var user = user
+        user.coinCount += coinEntry.amount
+        try await userRepo.updateUser(user)
+
+        return user
     }
 
-    /// Links an existing discord user to a github account.
-    public func linkGithubID(discordID: String, githubID: String) async throws {
-        try await userRepo.linkGithubID(discordID: discordID, githubID: githubID)
+    /// Returns nil if user does not exist.
+    func getUser(discordID: UserSnowflake) async throws -> DynamoDBUser? {
+        try await userRepo.getUser(discordID: discordID)
+    }
+
+    public func getOrCreateUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
+        if let existing = try await self.getUser(discordID: discordID) {
+            return existing
+        } else {
+            let newUser = DynamoDBUser.createNew(forDiscordID: discordID)
+            try await userRepo.createUser(newUser)
+            return newUser
+        }
     }
     
-    private func insertIntoDB(
-        user account: DynamoUser,
-        with coinEntry: CoinEntry
-    ) async throws -> DynamoUser {
-        var localUser = account
-        
-        localUser.addCoinEntry(coinEntry)
-        
-        let dbUser = DynamoDBUser(user: localUser)
-        try await userRepo.insertUser(dbUser)
-        
-        return localUser
+    /// Returns nil if user does not exist.
+    public func getUser(githubID: String) async throws -> DynamoDBUser? {
+        try await userRepo.getUser(githubID: githubID)
+    }
+
+    public func linkGithubID(discordID: UserSnowflake, githubID: String) async throws {
+        var user = try await self.getOrCreateUser(discordID: discordID)
+        user.githubID = githubID
+
+        try await userRepo.updateUser(user)
     }
 }

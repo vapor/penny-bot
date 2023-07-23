@@ -92,8 +92,8 @@ struct AddSponsorHandler: LambdaHandler {
             // Look for the user in the DB
             context.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
-            let userService = UserService(awsClient, context.logger)
-            let user = try await userService.getUserWith(githubID: String(newSponsorID))
+            let userService = UserService(awsClient: awsClient, logger: context.logger)
+            let user = try await userService.getUser(githubID: "\(newSponsorID)")
             guard let user = user else {
                 context.logger.error("No user found with GitHub ID \(newSponsorID)")
                 return APIGatewayV2Response(
@@ -103,7 +103,7 @@ struct AddSponsorHandler: LambdaHandler {
             }
             
             // TODO: Create gh user
-            guard let userDiscordID = user.discordID?.makePlainID() else {
+            guard let discordID = user.discordID else {
                 context.logger.error("User \(newSponsorID) did not link a Discord account")
                 return APIGatewayV2Response(
                     statusCode: .ok,
@@ -122,16 +122,16 @@ struct AddSponsorHandler: LambdaHandler {
             switch actionType {
             case .created:
                 // Add roles to new sponsor
-                try await addRole(to: userDiscordID, role: role)
+                try await addRole(to: discordID, role: role)
                 // If it's a sponsor, we need to add the backer role too
                 if role == .sponsor {
-                    try await addRole(to: userDiscordID, role: .backer)
+                    try await addRole(to: discordID, role: .backer)
                 }
                 // Send message to new sponsor
-                try await sendMessage(to: userDiscordID, role: role)
+                try await sendMessage(to: discordID, role: role)
             case .cancelled:
-                try await removeRole(from: userDiscordID, role: .sponsor)
-                try await removeRole(from: userDiscordID, role: .backer)
+                try await removeRole(from: discordID, role: .sponsor)
+                try await removeRole(from: discordID, role: .backer)
             case .edited:
                 break
             case .tierChanged:
@@ -145,7 +145,7 @@ struct AddSponsorHandler: LambdaHandler {
                 // This means that the user downgraded from a sponsor role to a backer role
                 if try SponsorType.for(sponsorshipAmount: changes.tier.from.monthlyPriceInCents) == .sponsor,
                    role == .backer {
-                    try await removeRole(from: userDiscordID, role: .sponsor)
+                    try await removeRole(from: discordID, role: .sponsor)
                 }
             case .pendingCancellation:
                 break
@@ -166,12 +166,12 @@ struct AddSponsorHandler: LambdaHandler {
     /**
      Removes a role from the selected Discord user.
      */
-    private func removeRole(from userDiscordID: String, role: SponsorType) async throws {
+    private func removeRole(from discordID: UserSnowflake, role: SponsorType) async throws {
         // Try removing role from user
         do {
             let error = try await discordClient.deleteGuildMemberRole(
                 guildId: Constants.guildID,
-                userId: Snowflake(userDiscordID),
+                userId: Snowflake(discordID),
                 roleId: role.roleID
             ).asError()
 
@@ -181,17 +181,17 @@ struct AddSponsorHandler: LambdaHandler {
                 case let .jsonError(jsonError)
                     where [.invalidRole, .unknownRole].contains(jsonError.code):
                     /// This is fine
-                    logger.debug("User \(userDiscordID) probably didn't have the \(role.rawValue) role in the first place, to be deleted")
+                    logger.debug("User \(discordID) probably didn't have the \(role.rawValue) role in the first place, to be deleted")
                 default:
                     throw error
                 }
             case .none:
-                logger.info("Successfully removed \(role.rawValue) role from user \(userDiscordID)")
+                logger.info("Successfully removed \(role.rawValue) role from user \(discordID)")
             }
         } catch {
-            logger.error("Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(error)")
+            logger.error("Failed to remove \(role.rawValue) role from user \(discordID) with error: \(error)")
             throw DiscordRequestError.addMemberRoleError(
-                message: "Failed to remove \(role.rawValue) role from user \(userDiscordID) with error: \(error)"
+                message: "Failed to remove \(role.rawValue) role from user \(discordID) with error: \(error)"
             )
         }
     }
@@ -199,19 +199,19 @@ struct AddSponsorHandler: LambdaHandler {
     /**
      Adds a new Discord role to the selected user, depending on the sponsorship tier they selected (**sponsor**, **backer**).
      */
-    private func addRole(to userDiscordID: String, role: SponsorType) async throws {
+    private func addRole(to discordID: UserSnowflake, role: SponsorType) async throws {
         do {
             // Try adding role to new sponsor
             try await discordClient.addGuildMemberRole(
                 guildId: Constants.guildID,
-                userId: Snowflake(userDiscordID),
+                userId: Snowflake(discordID),
                 roleId: role.roleID
             ).guardSuccess()
-            logger.info("Successfully added \(role.rawValue) role to user \(userDiscordID).")
+            logger.info("Successfully added \(role) role to user \(discordID).")
         } catch {
-            logger.error("Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(error)")
+            logger.error("Failed to add \(role) role to member \(discordID) with error: \(error)")
             throw DiscordRequestError.addMemberRoleError(
-                message: "Failed to add \(role.rawValue) role to member \(userDiscordID) with error: \(error)"
+                message: "Failed to add \(role) role to member \(discordID) with error: \(error)"
             )
         }
     }
@@ -219,18 +219,18 @@ struct AddSponsorHandler: LambdaHandler {
     /**
      Sends a message welcoming the user in the new channel and giving them a coin.
      */
-    private func sendMessage(to userDiscordID: String, role: SponsorType) async throws {
+    private func sendMessage(to discordID: UserSnowflake, role: SponsorType) async throws {
         do {
             // Try sending message to new sponsor
             try await discordClient.createMessage(
                 // Always send message to backer channel only
                 channelId: SponsorType.backer.channelID,
                 payload: .init(embeds: [.init(
-                    description: "Welcome <@\(userDiscordID)>, our new \(role.rawValue) ++",
+                    description: "Welcome \(DiscordUtils.mention(id: discordID)), our new \(DiscordUtils.mention(id: role.roleID))",
                     color: role.discordColor
                 )])
             ).guardSuccess()
-            logger.info("Successfully sent message to user \(userDiscordID).")
+            logger.info("Successfully sent message to user \(discordID).")
         } catch {
             logger.error("Failed to send message with error: \(error)")
             throw DiscordRequestError.sendWelcomeMessageError(
@@ -283,16 +283,5 @@ extension ByteBuffer? {
             return "empty"
         }
         return String(buffer: self)
-    }
-}
-
-private extension String {
-    /// Turns IDs like `<@231391239>` to `231391239` like Discord expects.
-    func makePlainID() -> String {
-        if self.hasPrefix("<") && self.hasSuffix(">") {
-            return String(self.dropFirst(2).dropLast())
-        } else {
-            return self
-        }
     }
 }

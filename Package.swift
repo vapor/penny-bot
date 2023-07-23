@@ -233,6 +233,9 @@ let package = Package(
         ),
         .target(
             name: "Models",
+            dependencies: [
+                .product(name: "DiscordModels", package: "DiscordBM")
+            ],
             swiftSettings: swiftSettings
         ),
         .target(

@@ -1,26 +1,25 @@
 
 public enum CoinRequest: Sendable, Codable {
-    case addCoin(AddCoin)
-    case getCoinCount(user: String)
-    case getGitHubID(user: String)
+    case addCoin(DiscordCoinEntry)
+    case getUser(discordID: UserSnowflake)
 
-    public struct AddCoin: Sendable, Codable {
+    public struct DiscordCoinEntry: Sendable, Codable {
         public let amount: Int
-        public let from: String
-        public let receiver: String
+        public let fromDiscordID: UserSnowflake
+        public let toDiscordID: UserSnowflake
         public let source: CoinEntrySource
         public let reason: CoinEntryReason
         
         public init(
             amount: Int,
-            from: String,
-            receiver: String,
+            fromDiscordID: UserSnowflake,
+            toDiscordID: UserSnowflake,
             source: CoinEntrySource,
             reason: CoinEntryReason
         ) {
             self.amount = amount
-            self.from = from
-            self.receiver = receiver
+            self.fromDiscordID = fromDiscordID
+            self.toDiscordID = toDiscordID
             self.source = source
             self.reason = reason
         }

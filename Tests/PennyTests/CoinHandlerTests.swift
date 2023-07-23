@@ -1,11 +1,15 @@
 @testable import Penny
+import DiscordBM
 import XCTest
 
 class CoinHandlerTests: XCTestCase {
     
     let user1 = "<@21939123912932193>"
     let user2 = "<@49123000123984550>"
-    
+
+    let user1Snowflake: UserSnowflake = "21939123912932193"
+    let user2Snowflake: UserSnowflake = "49123000123984550"
+
     /// Pattern `@mahdi thanks!`
     func testUserAndCoinSignTheWholeMessage() throws {
         do {
@@ -13,10 +17,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) thanks!
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -24,10 +28,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) thank you!
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
     }
     
@@ -37,10 +41,10 @@ class CoinHandlerTests: XCTestCase {
             text: """
             \(user1) xxxx xxxx \(user2) xxxx thank you so MUCH!
             """,
-            mentionedUsers: [user1, user2]
+            mentionedUsers: [user1Snowflake, user2Snowflake]
         )
         let users = coinHandler.findUsers()
-        XCTAssertEqual(users, [user1])
+        XCTAssertEqual(users, [user1Snowflake])
     }
     
     /// Pattern `thank you xxxx @mahdi!`
@@ -49,10 +53,10 @@ class CoinHandlerTests: XCTestCase {
             text: """
             thaNk you xxxx xxxx \(user2) xxxx xxxx \(user1)!
             """,
-            mentionedUsers: [user2, user1]
+            mentionedUsers: [user2Snowflake, user1Snowflake]
         )
         let users = coinHandler.findUsers()
-        XCTAssertEqual(users, [user1])
+        XCTAssertEqual(users, [user1Snowflake])
     }
     
     /// Patterns `xxxx @mahdi thanks!`
@@ -63,10 +67,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx \(user1) 🪙
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -74,10 +78,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx \(user1) \(user2) 🚀
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -85,10 +89,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx ++++++++++++++++++++++++++++++ \(user1)
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -96,10 +100,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx Thanks for your help \(user1) \(user2)
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
     }
     
@@ -111,10 +115,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx \(user1) thanks a bunch! xxx
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -122,10 +126,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx \(user1) \(user2) thank you A bunch! xxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -133,10 +137,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx thank you. \(user1) xxx
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -144,10 +148,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx thank you!\(user1)  \(user2)   xxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -155,10 +159,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx thanks for the help\(user1)  \(user2) xxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
     }
     
@@ -169,7 +173,7 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) +
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -181,7 +185,7 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) xxxx ++ xxxx
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -202,10 +206,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.ServerEmojis.coin.emoji) xxxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         /// `@mahdi thanks! xxxx @benny thanks! xxxx`
@@ -214,10 +218,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) thanks xxxx \(user2) & 🙌🏽 xxxx xxxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         /// `thanks! @mahdi xxxx thanks! @benny xxxx`
@@ -226,10 +230,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 thanks a bunch!  \(user1) xxxx thanks a LOT  \(user2)   xxxx xxxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         /// `xxxx @mahdi thanks! xxxx @benny thanks!`
@@ -238,10 +242,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx xxxx \(user1) thanks xxxx xxxx \(user2)  thanks for the help!
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         /// `@mahdi thanks! xxxx @benny thanks!`
@@ -250,10 +254,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx \(user1)thanks xxxx \(user2) += 1 xxxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         /// `@mahdi thanks! @benny thanks!`
@@ -262,10 +266,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1)THANK YOU!  \(user2) and 👍🏼
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         /// `thanks! @mahdi thanks! @benny`
@@ -274,10 +278,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 thanks!  \(user1) ++ , \(user2)
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
     }
     
@@ -288,10 +292,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 thanks!
                 """,
-                replied: user1
+                replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         /// thanks! @tim xxxx xxxx
@@ -300,11 +304,11 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 Thanks \(user1) xxxx xxxx
                 """,
-                replied: user1,
-                mentionedUsers: [user1]
+                replied: user1Snowflake,
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         /// xxxx xxxx thanks!
@@ -313,10 +317,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx xxxx ++
                 """,
-                replied: user1
+                replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         /// xxxx xxxx \n xxxx xxxx thanks!
@@ -326,10 +330,10 @@ class CoinHandlerTests: XCTestCase {
                 xxxx xxxx
                 xxxx xxxx 🪙
                 """,
-                replied: user1
+                replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         /// thanks!
@@ -339,8 +343,8 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 thanks!
                 """,
-                replied: user1,
-                excludedUsers: [user1]
+                replied: user1Snowflake,
+                excludedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -379,7 +383,7 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) thANKs!
                 """,
-                excludedUsers: [user1]
+                excludedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -390,7 +394,7 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 👍🏼
                 """,
-                excludedUsers: [user1, user2]
+                excludedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
             XCTAssertEqual(users, [])
@@ -403,10 +407,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) thank you! \(user1) +++
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -414,10 +418,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 \(user1) \(user1) xxxx +++++
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
         
         do {
@@ -425,10 +429,10 @@ class CoinHandlerTests: XCTestCase {
                 text: """
                 xxxx xxxx \(user1) thanks xxxx \(user1) 👌🏻 xxxx
                 """,
-                mentionedUsers: [user1]
+                mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1])
+            XCTAssertEqual(users, [user1Snowflake])
         }
     }
     
@@ -439,10 +443,10 @@ class CoinHandlerTests: XCTestCase {
                 \(user1) ThAnK yOu!
                 \(user2) ++
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -451,19 +455,21 @@ class CoinHandlerTests: XCTestCase {
                 \(user1) xxxx xxxx thanks!
                 xxxx \(user2) thanks xxxx
                 """,
-                mentionedUsers: [user1, user2]
+                mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1, user2])
+            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
         }
     }
     
     func testMaxUserCount() throws {
         let count = 55
-        let coinedUsers = (0..<count).map { _ in
-            "<@\(Int.random(in: 1_000_000_000_000..<1_000_000_000_000_000))>"
+        let coinedUsers = try (0..<count).map { _ in
+            try UserSnowflake.makeFake(
+                date: Date(timeIntervalSince1970: .random(in: 1_420_070_400...4_398_046_511))
+            )
         }
-        let coinStrings = coinedUsers.map { "\($0) ++" }
+        let coinStrings = coinedUsers.map { "\(DiscordUtils.mention(id: $0)) ++" }
         do {
             let coinHandler = CoinFinder(
                 text: coinStrings.joined(separator: "\n"),
@@ -509,9 +515,9 @@ class CoinHandlerTests: XCTestCase {
 private extension CoinFinder {
     init(
         text: String,
-        replied repliedUser: String? = nil,
-        mentionedUsers: [String] = [],
-        excludedUsers: [String] = []
+        replied repliedUser: UserSnowflake? = nil,
+        mentionedUsers: [UserSnowflake] = [],
+        excludedUsers: [UserSnowflake] = []
     ) {
         self.init(
             text: text,

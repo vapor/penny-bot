@@ -1,13 +1,10 @@
 
 public struct AutoPingsRequest: Codable {
-    /// The plain id. like `1021219291291`. NOT `<@1021219291291>`.
-    public let discordID: String
+    public let discordID: UserSnowflake
     public let expressions: [S3AutoPingItems.Expression]
     
-    /// - Parameters:
-    ///   - discordID: The plain id. like `1021219291291`. NOT `<@1021219291291>`.
     public init(
-        discordID: String,
+        discordID: UserSnowflake,
         expressions: [S3AutoPingItems.Expression]
     ) {
         self.discordID = discordID

@@ -20,7 +20,7 @@ public struct S3AutoPingsRepository {
     
     public func insert(
         expressions: [S3AutoPingItems.Expression],
-        forDiscordID id: String
+        forDiscordID id: UserSnowflake
     ) async throws -> S3AutoPingItems {
         var all = try await self.getAll()
         for expression in expressions {
@@ -32,7 +32,7 @@ public struct S3AutoPingsRepository {
 
     public func remove(
         expressions: [S3AutoPingItems.Expression],
-        forDiscordID id: String
+        forDiscordID id: UserSnowflake
     ) async throws -> S3AutoPingItems {
         var all = try await self.getAll()
         for expression in expressions {

@@ -43,16 +43,14 @@ struct ReactionHandler {
               let receiverId = event.message_author_id,
               user.id != receiverId
         else { return }
-        let sender = "<@\(user.id.rawValue)>"
-        let receiver = "<@\(receiverId.rawValue)>"
 
         /// Super reactions give more coins, otherwise only 1 coin
         let amount = event.type == .super ? 3 : 1
 
-        let coinRequest = CoinRequest.AddCoin(
+        let coinRequest = CoinRequest.DiscordCoinEntry(
             amount: amount,
-            from: sender,
-            receiver: receiver,
+            fromDiscordID: user.id,
+            toDiscordID: receiverId,
             source: .discord,
             reason: .userProvided
         )
@@ -91,7 +89,7 @@ struct ReactionHandler {
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
-                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!",
+                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!",
                     forcedInThanksChannel: false,
                     amount: amount,
                     senderName: senderName
@@ -102,7 +100,7 @@ struct ReactionHandler {
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
-                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)! (\(link))",
+                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)! (\(link))",
                     forcedInThanksChannel: true,
                     amount: amount,
                     senderName: senderName
@@ -113,7 +111,7 @@ struct ReactionHandler {
             "a \(Constants.ServerEmojis.coin.emoji)" :
             "\(amount) \(Constants.ServerEmojis.coin.emoji)"
             await respond(
-                with: "\(senderName) gave \(coinCountDescription) to \(response.receiver), who now has \(response.coins) \(Constants.ServerEmojis.coin.emoji)!",
+                with: "\(senderName) gave \(coinCountDescription) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!",
                 amount: amount,
                 senderName: senderName,
                 isFailureMessage: false

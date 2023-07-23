@@ -1,12 +1,12 @@
 
 public struct CoinResponse: Sendable, Codable {
-    public let sender: String
-    public let receiver: String
-    public let coins: Int
-    
-    public init(sender: String, receiver: String, coins: Int) {
+    public let sender: UserSnowflake
+    public let receiver: UserSnowflake
+    public let newCoinCount: Int
+
+    public init(sender: UserSnowflake, receiver: UserSnowflake, newCoinCount: Int) {
         self.sender = sender
         self.receiver = receiver
-        self.coins = coins
+        self.newCoinCount = newCoinCount
     }
 }

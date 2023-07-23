@@ -108,8 +108,8 @@ class GatewayProcessingTests: XCTestCase {
         )
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
-        XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
+        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "), description)
+        XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"), description)
     }
 
     func testReactionHandler() async throws {
@@ -122,7 +122,7 @@ class GatewayProcessingTests: XCTestCase {
             let description = try XCTUnwrap(response.embeds?.first?.description)
             XCTAssertTrue(description.hasPrefix(
                 "Mahdi BM gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has "
-            ))
+            ), description)
             XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
         }
         
@@ -191,10 +191,10 @@ class GatewayProcessingTests: XCTestCase {
         
         let description = try XCTUnwrap(response.embeds?.first?.description)
 
-        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "))
+        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "), description)
         XCTAssertTrue(description.hasSuffix("""
         \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042)
-        """))
+        """), description)
     }
     
     func testBotStateManagerReceivesSignal() async throws {
