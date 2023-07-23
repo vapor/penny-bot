@@ -7,7 +7,7 @@ struct DynamoCoinEntryRepository {
     let eventLoop: any EventLoop
     let logger: Logger
 
-    let tableName = "penny-coin-entry-table"
+    let tableName = "penny-coin-table"
     let toUserIDIndex = "TU-ID-GSI"
     let fromUserIDIndex = "FU-ID-GSI"
 

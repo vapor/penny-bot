@@ -112,7 +112,7 @@ public struct UserService {
             }
 
             guard var discordID = item.data1 else {
-                logger.warning("No discord id for item with pk \(item.pk)")
+                logger.warning("No discord id for item with pk \(item.pk), item: \(item)")
                 continue
             }
             /// `DISCORD-<@135838305873952778>`
