@@ -123,7 +123,7 @@ public struct UserService {
                 logger.warning("Bad Discord ID Int: \(discordID), item: \(item)")
             }
 
-            var githubID: String? = item.data2
+            var githubID: String? = item.data2?.trimmingCharacters(in: .whitespacesAndNewlines)
             if let id = githubID, Int(id) == nil {
                 logger.warning("Bad Github ID: \(githubID ?? "<null>"), item: \(item)")
                 githubID = nil
