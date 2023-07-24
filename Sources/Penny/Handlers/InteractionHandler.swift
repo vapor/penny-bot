@@ -4,15 +4,16 @@ import Models
 import JWTKit
 import Foundation
 
-private enum Configuration {
-    static let faqsNameMaxLength = 100
-    static let autoPingsMaxLimit = 100
-    static let autoPingsLowLimit = 20
-}
-
 private typealias Expression = S3AutoPingItems.Expression
 
 struct InteractionHandler {
+
+    enum Configuration {
+        static let faqsNameMaxLength = 100
+        static let autoPingsMaxLimit = 100
+        static let autoPingsLowLimit = 20
+    }
+
     let event: Interaction
     let context: HandlerContext
     var logger = Logger(label: "InteractionHandler")
@@ -1035,7 +1036,7 @@ private enum ModalID {
                     style: .short,
                     label: "The name of the FAQ",
                     min_length: 3,
-                    max_length: Configuration.faqsNameMaxLength,
+                    max_length: InteractionHandler.Configuration.faqsNameMaxLength,
                     required: true,
                     placeholder: "Example: Setting working directory in Xcode"
                 )
@@ -1071,7 +1072,7 @@ private enum ModalID {
                     style: .short,
                     label: "The name of the FAQ",
                     min_length: 3,
-                    max_length: Configuration.faqsNameMaxLength,
+                    max_length: InteractionHandler.Configuration.faqsNameMaxLength,
                     required: true,
                     value: name,
                     placeholder: name == nil ? "Example: Setting working directory in Xcode" : nil
