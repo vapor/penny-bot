@@ -4,19 +4,12 @@ import Models
 
 struct MessageHandler {
     let event: Gateway.MessageCreate
+    let context: HandlerContext
     var logger = Logger(label: "MessageHandler")
-    var coinService: any UsersService {
-        ServiceFactory.makeUsersService()
-    }
-    var pingsService: any AutoPingsService {
-        ServiceFactory.makePingsService()
-    }
-    var discordService: DiscordService {
-        DiscordService.shared
-    }
 
-    init(event: Gateway.MessageCreate) {
+    init(event: Gateway.MessageCreate, context: HandlerContext) {
         self.event = event
+        self.context = context
         self.logger[metadataKey: "event"] = "\(event)"
     }
     
@@ -57,7 +50,7 @@ struct MessageHandler {
                 reason: .userProvided
             )
             do {
-                let response = try await self.coinService.postCoin(with: coinRequest)
+                let response = try await context.services.usersService.postCoin(with: coinRequest)
                 let responseString = "\(DiscordUtils.mention(id: response.receiver)) now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!"
                 successfulResponses.append(responseString)
             } catch {
@@ -111,7 +104,7 @@ struct MessageHandler {
             reason: .automationProvided
         )
         do {
-            let response = try await self.coinService.postCoin(with: coinRequest)
+            let response = try await context.services.usersService.postCoin(with: coinRequest)
             await self.respondToThanks(
                 with: """
                 \(DiscordUtils.mention(id: author.id)) Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
@@ -139,7 +132,7 @@ struct MessageHandler {
 
         let expUsersDict: [S3AutoPingItems.Expression: Set<UserSnowflake>]
         do {
-            expUsersDict = try await pingsService.getAll().items
+            expUsersDict = try await context.services.pingsService.getAll().items
         } catch {
             logger.report("Can't retrieve ping-words", error: error)
             return
@@ -157,7 +150,7 @@ struct MessageHandler {
                 for userId in users {
                     /// Checks if the user is in the guild at all,
                     /// + if the user has read access of the channel.
-                    if (try? await discordService.userHasReadAccess(
+                    if (try? await context.services.discordService.userHasReadAccess(
                         userId: Snowflake(userId),
                         channelId: event.channel_id
                     )) == true {
@@ -196,7 +189,7 @@ struct MessageHandler {
                     avatar: avatar
                 )
             }
-            await discordService.sendDM(
+            await context.services.discordService.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
                     embeds: [.init(
@@ -249,7 +242,7 @@ struct MessageHandler {
         isFailureMessage: Bool,
         userToExplicitlyMention: UserSnowflake? = nil
     ) async {
-        await discordService.sendThanksResponse(
+        await context.services.discordService.sendThanksResponse(
             channelId: channelId ?? event.channel_id,
             replyingToMessageId: event.id,
             isFailureMessage: isFailureMessage,

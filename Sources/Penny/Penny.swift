@@ -28,8 +28,8 @@ struct Penny {
         let cache = await DiscordFactory.makeCache(bot)
 
         await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
-        await ServiceFactory.makePingsService().initialize(httpClient: client)
-        await ServiceFactory.makeFaqsService().initialize(httpClient: client)
+        await ServiceFactory.initializePingsService(client)
+        await ServiceFactory.initializeFaqsService(client)
         try await DefaultUsersService.shared.initialize(httpClient: client)
         await DefaultCachesService.shared.initialize(awsClient: awsClient)
         await CommandsManager().registerCommands()
@@ -37,15 +37,17 @@ struct Penny {
         await bot.connect()
         let stream = await bot.makeEventsStream()
 
+        let context = ServiceFactory.makeHandlerContext(client)
+
         /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
         /// since it communicates through Discord and will need the Gateway connection.
-        await BotStateManager.shared.initialize(onStart: {
+        await BotStateManager.shared.initialize(context: context, onStart: {
             /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
-            await ServiceFactory.initiateProposalsChecker(client)
+            await ServiceFactory.initiateProposalsChecker(context)
         })
 
         for await event in stream {
-            EventHandler(event: event).handle()
+            EventHandler(event: event, context: context).handle()
         }
     }
 }

@@ -22,11 +22,16 @@ class GatewayProcessingTests: XCTestCase {
         Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
         Constants.botId = "950695294906007573"
         Constants.apiBaseUrl = "https://fake.com"
-        ServiceFactory.makeUsersService = { FakeUsersService() }
-        ServiceFactory.makePingsService = { FakePingsService() }
-        ServiceFactory.makeFaqsService = { FakeFaqsService() }
-        ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
-        ServiceFactory.makeCachesService = { FakeCachesService() }
+        ServiceFactory.makeHandlerContext = { _ in
+            HandlerContext(services: .init(
+                usersService: FakeUsersService(),
+                pingsService: FakePingsService(),
+                faqsService: FakeFaqsService(),
+                proposalsService: FakeProposalsService(),
+                cachesService: FakeCachesService(),
+                discordService: DiscordService.shared
+            ))
+        }
         ServiceFactory.initiateProposalsChecker = { _ in }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()

@@ -25,12 +25,6 @@ actor ReactionCache {
                 totalCoinCount: 0
             )
         }
-
-        mutating func addSender(name: String) {
-            if !senderUsers.contains(name) {
-                senderUsers.append(name)
-            }
-        }
     }
 
     struct ChannelForcedThanksMessage: Sendable, Codable {
@@ -157,10 +151,10 @@ actor ReactionCache {
             )
         } else {
             let id = [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
-            var previous = storage.normalThanksMessages[id] ?? .for(responseMessageId)
-            previous.totalCoinCount += amount
-            previous.addSender(name: senderName)
-            storage.normalThanksMessages[id] = previous
+            var item = storage.normalThanksMessages[id] ?? .for(responseMessageId)
+            item.senderUsers.appendUnique(senderName)
+            item.totalCoinCount += amount
+            storage.normalThanksMessages[id] = item
         }
     }
 

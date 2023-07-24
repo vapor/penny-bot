@@ -24,21 +24,22 @@ import Logging
 actor BotStateManager {
 
     let id = Int(Date().timeIntervalSince1970)
+    var context: HandlerContext!
     var logger = Logger(label: "BotStateManager")
 
     var canRespond = false
     var disableDuration = Duration.seconds(3 * 60)
     var onStart: (() async -> Void)?
 
-    var cachesService: any CachesService {
-        ServiceFactory.makeCachesService()
-    }
-
     static private(set) var shared = BotStateManager()
     
     private init() { }
     
-    func initialize(onStart: @Sendable @escaping () async -> Void) async {
+    func initialize(
+        context: HandlerContext,
+        onStart: @Sendable @escaping () async -> Void
+    ) async {
+        self.context = context
         self.logger[metadataKey: "id"] = "\(self.id)"
         self.onStart = onStart
         Task { await send(.shutdown) }
@@ -80,7 +81,7 @@ actor BotStateManager {
 
     private func shutdown() {
         Task {
-            await cachesService.gatherCachedInfoAndSaveToRepository()
+            await context.services.cachesService.gatherCachedInfoAndSaveToRepository()
             await send(.didShutdown)
             self.canRespond = false
 
@@ -95,7 +96,7 @@ actor BotStateManager {
             if canRespond {
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
-                await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
+                await context.services.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
                 await startAllowingResponses()
             }
         }

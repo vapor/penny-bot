@@ -23,14 +23,13 @@ struct ReactionHandler {
     }
 
     let event: Gateway.MessageReactionAdd
+    let context: HandlerContext
     var logger = Logger(label: "ReactionHandler")
-    var coinService: any UsersService {
-        ServiceFactory.makeUsersService()
-    }
     private var cache: ReactionCache { .shared }
     
-    init(event: Gateway.MessageReactionAdd) {
+    init(event: Gateway.MessageReactionAdd, context: HandlerContext) {
         self.event = event
+        self.context = context
         self.logger[metadataKey: "event"] = "\(event)"
     }
     
@@ -63,7 +62,7 @@ struct ReactionHandler {
         
         var response: CoinResponse?
         do {
-            response = try await self.coinService.postCoin(with: coinRequest)
+            response = try await context.services.usersService.postCoin(with: coinRequest)
         } catch {
             logger.report("Error when posting coins", error: error)
             response = nil
@@ -92,9 +91,7 @@ struct ReactionHandler {
             switch toEdit {
             case let .normal(info):
                 var newNames = info.senderUsers
-                if !newNames.contains(senderName) {
-                    newNames.append(senderName)
-                }
+                newNames.appendUnique(senderName)
                 let names = newNames.joined(separator: ", ", lastSeparator: " & ")
                 let count = info.totalCoinCount + amount
                 await editResponse(
@@ -106,9 +103,7 @@ struct ReactionHandler {
                 )
             case let .forcedInThanksChannel(info):
                 var newNames = info.senderUsers
-                if !newNames.contains(senderName) {
-                    newNames.append(senderName)
-                }
+                newNames.appendUnique(senderName)
                 let names = newNames.joined(separator: ", ", lastSeparator: " & ")
                 let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(info.originalChannelId.rawValue)/\(event.message_id.rawValue)"
                 let count = info.totalCoinCount + amount

@@ -3,6 +3,7 @@ import Logging
 
 struct EventHandler: GatewayEventHandler {
     let event: Gateway.Event
+    let context: HandlerContext
     let logger = Logger(label: "EventHandler")
     
     func onEventHandlerStart() async -> Bool {
@@ -16,14 +17,14 @@ struct EventHandler: GatewayEventHandler {
     }
     
     func onMessageCreate(_ message: Gateway.MessageCreate) async {
-        await MessageHandler(event: message).handle()
+        await MessageHandler(event: message, context: context).handle()
     }
     
     func onInteractionCreate(_ interaction: Interaction) async {
-        await InteractionHandler(event: interaction).handle()
+        await InteractionHandler(event: interaction, context: context).handle()
     }
     
     func onMessageReactionAdd(_ reaction: Gateway.MessageReactionAdd) async {
-        await ReactionHandler(event: reaction).handle()
+        await ReactionHandler(event: reaction, context: context).handle()
     }
 }

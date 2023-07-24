@@ -302,7 +302,7 @@ struct ReleaseMaker {
         let usernames = codeOwners.union([pr.user.login])
         let reviewComments = try await getReviewComments()
         let reviewers = reviewComments.map(\.user).filter { user in
-            !usernames.usernamesContain(user: user)
+            !(usernames.usernamesContain(user: user) || user.isBot)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
         let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
@@ -311,6 +311,7 @@ struct ReleaseMaker {
 
     func isNewContributor(codeOwners: Set<String>, existingContributors: Set<Int>) -> Bool {
         if pr.author_association == .OWNER ||
+            pr.user.isBot ||
             codeOwners.usernamesContain(user: pr.user) {
             return false
         }
