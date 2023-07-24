@@ -234,10 +234,10 @@ struct ReleaseMaker {
         let isCodeOwner = codeOwners.usernamesContain(user: pr.user)
 
         return """
-        \(makeMergerMarkdown(mergedBy: mergedBy))
         \(makePRMarkdown(isCodeOwner: isCodeOwner))
         \(makeContributorMarkdown(isNewContributor: isNewContributor))
         \(makeReviewersMarkdown(reviewers: reviewers))
+        \(makeMergerMarkdown(mergedBy: mergedBy))
         \(makeChangeLogMarkdown(previousVersion: previousVersion, newVersion: newVersion))
         """
     }
