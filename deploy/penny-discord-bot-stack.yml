@@ -59,7 +59,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Join ['/', [/ecs, !Ref apiGatewayName]]
-      RetentionInDays: 1
+      RetentionInDays: 2
   Service:
     Type: AWS::ECS::Service
     Properties: 
@@ -272,7 +272,7 @@ Resources:
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
-                  
+
                   - arn:aws:s3:::penny-auto-pings-lambda/*
                   - arn:aws:s3:::penny-faqs-lambda/*
           PolicyName: lambda
@@ -436,7 +436,7 @@ Resources:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
           WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           GH_APP_AUTH_PRIV_KEY_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
-          LOG_LEVEL: trace
+          LOG_LEVEL: debug
       FunctionName: !Sub ${GHHooksFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
@@ -490,7 +490,7 @@ Resources:
           GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
           GH_CLIENT_ID: Iv1.683ea075648a5cd2
           ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
-          LOG_LEVEL: trace
+          LOG_LEVEL: debug
       FunctionName: !Sub ${GHOAuthFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn

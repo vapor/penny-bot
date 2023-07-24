@@ -476,7 +476,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
         }
         
         do {
@@ -485,7 +485,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
         }
         
         do {
@@ -496,7 +496,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
         }
         
         do {
@@ -507,7 +507,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.maxUsers)
+            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
         }
     }
 }

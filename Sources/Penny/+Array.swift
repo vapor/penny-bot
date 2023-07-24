@@ -26,3 +26,12 @@ extension Array {
         return (copy[firstOfRhs ..< copy.endIndex], copy[copy.startIndex ..< firstOfRhs])
     }
 }
+
+extension Array<String> {
+    func joined(separator: String, lastSeparator: String) -> String {
+        guard count > 1 else {
+            return self.joined(separator: separator)
+        }
+        return "\(self.dropLast().joined(separator: separator))\(lastSeparator)\(self.last!)"
+    }
+}

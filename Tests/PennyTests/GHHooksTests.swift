@@ -367,6 +367,27 @@ class GHHooksTests: XCTestCase {
             eventName: .push,
             expect: .noResponse
         )
+
+        try await handleEvent(
+            key: "release1",
+            eventName: .release,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "release2",
+            eventName: .release,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "release3",
+            eventName: .release,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "release4",
+            eventName: .release,
+            expect: .noResponse
+        )
     }
 
     func handleEvent(

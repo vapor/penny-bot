@@ -1,27 +1,33 @@
 import Foundation
 import DiscordBM
 
-/// All coin signs must be lowercased.
-/// Add a test when you add a coin sign.
-private let coinSigns = [
-    "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
-    "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
-    "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
-    "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
-    "🪙",
-    Constants.ServerEmojis.coin.emoji,
-    "🚀", "🎉", "💯",
-    "thx", "thanks", "thank you",
-    "thanks a lot", "thanks a bunch", "thanks so much",
-    "thank you a lot", "thank you a bunch", "thank you so much",
-    "thanks for the help", "thanks for your help",
-    "+= 1", "+ 1"
-]
-
-/// Two or more of these characters, like `++` or `++++++++++++`.
-private let twoOrMore_coinSigns: [Character] = ["+"]
-
 struct CoinFinder {
+
+    enum Configuration {
+        /// All coin signs must be lowercased.
+        /// Add a test when you add a coin sign.
+        static let coinSigns = [
+            "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
+            "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
+            "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
+            "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
+            "🪙",
+            Constants.ServerEmojis.coin.emoji,
+            "🚀", "🎉", "💯",
+            "thx", "thanks", "thank you",
+            "thanks a lot", "thanks a bunch", "thanks so much",
+            "thank you a lot", "thank you a bunch", "thank you so much",
+            "thanks for the help", "thanks for your help",
+            "+= 1", "+ 1"
+        ]
+
+        /// Two or more of these characters, like `++` or `++++++++++++`.
+        static let twoOrMore_coinSigns: [Character] = ["+"]
+
+        /// Maximum users allowed to get a new coin in one message.
+        static let maxUsers = 10
+    }
+
     /// The content of the message.
     let text: String
     /// User that was replied to, if any.
@@ -31,8 +37,6 @@ struct CoinFinder {
     let mentionedUsers: [UserSnowflake]
     /// Users to not be able to get a coin. Such as the author of the message.
     let excludedUsers: [UserSnowflake]
-    /// Maximum users allowed to get a new coin in one message.
-    static let maxUsers = 10
     
     /// Finds users that need to get a coin, if anyone at all.
     func findUsers() -> [UserSnowflake] {
@@ -65,8 +69,8 @@ struct CoinFinder {
 
         // Start trying to find the users that should get a coin.
         for line in lines {
-            if finalUsers.count == Self.maxUsers { break }
-            
+            if finalUsers.count == Configuration.maxUsers { break }
+
             let components = line
                 .split(whereSeparator: \.isWhitespace)
                 .filter({ !$0.isIgnorable })
@@ -129,8 +133,9 @@ struct CoinFinder {
                     }
                 }
             }
-            
-            let remainingCapacity = min(Self.maxUsers - finalUsers.count, usersWithNewCoins.count)
+
+            let minLhs = Configuration.maxUsers - finalUsers.count
+            let remainingCapacity = min(minLhs, usersWithNewCoins.count)
             let dropCount = usersWithNewCoins.count - remainingCapacity
             finalUsers.append(contentsOf: usersWithNewCoins.dropLast(dropCount))
         }
@@ -177,7 +182,9 @@ struct CoinFinder {
 }
 
 private let undesiredCharacterSet = CharacterSet.punctuationCharacters.subtracting(["@", ":"])
-private let splitSigns = coinSigns.map { $0.split(whereSeparator: \.isWhitespace) }
+private let splitSigns = CoinFinder.Configuration.coinSigns.map {
+    $0.split(whereSeparator: \.isWhitespace)
+}
 private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
 private extension Sequence<Substring> {
@@ -197,7 +204,7 @@ private extension Sequence<Substring> {
     /// Coins signs that accept two or more of the same character.
     private var isPrefixedWithOtherCoinSigns: Bool {
         self.first(where: { _ in true }).map { element in
-            twoOrMore_coinSigns.contains { sign in
+            CoinFinder.Configuration.twoOrMore_coinSigns.contains { sign in
                 element.underestimatedCount > 1 &&
                 element.allSatisfy({ sign == $0 })
             }

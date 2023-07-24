@@ -3,22 +3,25 @@ import Logging
 import Models
 import Foundation
 
-private let coinSignEmojis = [
-    Constants.ServerEmojis.love.name,
-    Constants.ServerEmojis.vapor.name,
-    Constants.ServerEmojis.coin.name,
-    "🪙",
-    "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
-    "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",
-    "😍", "😻",
-    "🚀", "🎉", "💯",
-    "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
-    "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
-    "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
-    "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
-]
-
 struct ReactionHandler {
+
+    enum Configuration {
+        static let coinSignEmojis = [
+            Constants.ServerEmojis.love.name,
+            Constants.ServerEmojis.vapor.name,
+            Constants.ServerEmojis.coin.name,
+            "🪙",
+            "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
+            "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",
+            "😍", "😻",
+            "🚀", "🎉", "💯",
+            "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
+            "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
+            "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
+            "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
+        ]
+    }
+
     let event: Gateway.MessageReactionAdd
     var logger = Logger(label: "ReactionHandler")
     var coinService: any UsersService {
@@ -36,7 +39,7 @@ struct ReactionHandler {
               let user = member.user,
               user.bot != true,
               let emojiName = event.emoji.name,
-              coinSignEmojis.contains(emojiName),
+              Configuration.coinSignEmojis.contains(emojiName),
               await cache.canGiveCoin(
                 fromSender: user.id,
                 toAuthorOfMessage: event.message_id,
@@ -88,7 +91,11 @@ struct ReactionHandler {
         ) {
             switch toEdit {
             case let .normal(info):
-                let names = info.senderUsers.joined(separator: ", ") + " & \(senderName)"
+                var newNames = info.senderUsers
+                if !newNames.contains(senderName) {
+                    newNames.append(senderName)
+                }
+                let names = newNames.joined(separator: ", ", lastSeparator: " & ")
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
