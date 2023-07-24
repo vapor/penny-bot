@@ -241,28 +241,38 @@ Resources:
                   - !GetAtt dynamoPennyUserTable.Arn
                   - !GetAtt dynamoPennyCoinTable.Arn
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-user-table
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-coin-table
-                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-user-table/*
+
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-coin-table
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/penny-coin-table/*
+
+                  - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table
                   - !Sub arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/ghHooks-message-lookup-table/*
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${UsersFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${UsersFilename}
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoPingsFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoPingsFilename}
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FaqsFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FaqsFilename}
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHHooksFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHHooksFilename}
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHOAuthFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHOAuthFilename}
+
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
+                  
                   - arn:aws:s3:::penny-auto-pings-lambda/*
                   - arn:aws:s3:::penny-faqs-lambda/*
           PolicyName: lambda
