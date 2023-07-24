@@ -25,8 +25,8 @@ struct CachesStorage: Sendable, Codable {
 
         let reactionCacheDataCounts = reactionCacheData.map { data in
             [data.givenCoins.count,
-             data.channelWithLastThanksMessage.count,
-             data.thanksChannelForcedMessages.count]
+             data.normalThanksMessages.count,
+             data.forcedInThanksChannelMessages.count]
         } ?? []
         let proposalsCheckerDataCounts = proposalsCheckerData.map { data in
             [data.previousProposals.count,

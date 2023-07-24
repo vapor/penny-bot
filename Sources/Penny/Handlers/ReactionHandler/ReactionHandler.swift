@@ -34,11 +34,13 @@ struct ReactionHandler {
         guard let member = event.member,
               let user = member.user,
               user.bot != true,
-              let emoji = event.emoji.name,
-              coinSignEmojis.contains(emoji),
+              let emojiName = event.emoji.name,
+              coinSignEmojis.contains(emojiName),
               await cache.canGiveCoin(
                 fromSender: user.id,
-                toAuthorOfMessage: event.message_id
+                toAuthorOfMessage: event.message_id,
+                emoji: event.emoji,
+                reactionKind: event.type
               ),
               let receiverId = event.message_author_id,
               user.id != receiverId

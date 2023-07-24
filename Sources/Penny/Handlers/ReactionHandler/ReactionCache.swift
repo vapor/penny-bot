@@ -6,8 +6,14 @@ import Foundation
 /// Cache for reactions-related stuff.
 actor ReactionCache {
 
-    struct ChannelLastThanksMessage: Sendable, Codable {
-        var receiverMessageId: MessageSnowflake
+    struct GivenReactionCoinID: Sendable, Codable, Hashable {
+        var senderID: UserSnowflake
+        var authorOfMessageWithID: MessageSnowflake
+        var emoji: Emoji
+        var reactionKind: Gateway.ReactionKind
+    }
+
+    struct ChannelThanksMessage: Sendable, Codable {
         var pennyResponseMessageId: MessageSnowflake
         var senderUsers: [String]
         var totalCoinCount: Int
@@ -22,20 +28,26 @@ actor ReactionCache {
 
     struct Storage: Sendable, Codable {
         /// `Set<[SenderID, MessageID]>`
-        var givenCoins: OrderedSet<[AnySnowflake]> = [] {
+        var givenCoins: OrderedSet<GivenReactionCoinID> = [] {
             didSet {
                 if givenCoins.count > 200 {
                     givenCoins.removeFirst()
                 }
             }
         }
-        /// Channel's last message id if it's a thanks message to another message.
-        var channelWithLastThanksMessage = [ChannelSnowflake: ChannelLastThanksMessage]()
-        /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
-        var thanksChannelForcedMessages = OrderedDictionary<MessageSnowflake, ChannelForcedThanksMessage>() {
+        /// `[[ChannelSnowflake, Receiver-MessageSnowflake]: ChannelThanksMessage]`
+        var normalThanksMessages = OrderedDictionary<[AnySnowflake], ChannelThanksMessage>() {
             didSet {
-                if thanksChannelForcedMessages.count > 200 {
-                    thanksChannelForcedMessages.removeFirst()
+                if forcedInThanksChannelMessages.count > 200 {
+                    forcedInThanksChannelMessages.removeFirst()
+                }
+            }
+        }
+        /// `[ReceiverMessageID: ChannelForcedThanksMessage]`
+        var forcedInThanksChannelMessages = OrderedDictionary<MessageSnowflake, ChannelForcedThanksMessage>() {
+            didSet {
+                if forcedInThanksChannelMessages.count > 200 {
+                    forcedInThanksChannelMessages.removeFirst()
                 }
             }
         }
@@ -52,9 +64,17 @@ actor ReactionCache {
     /// reacts again, we should not give coins to message's author anymore.
     func canGiveCoin(
         fromSender senderId: UserSnowflake,
-        toAuthorOfMessage messageId: MessageSnowflake
+        toAuthorOfMessage messageId: MessageSnowflake,
+        emoji: Emoji,
+        reactionKind: Gateway.ReactionKind
     ) -> Bool {
-        storage.givenCoins.append([AnySnowflake(senderId), AnySnowflake(messageId)]).inserted
+        let givenReactionCoinID = GivenReactionCoinID(
+            senderID: senderId,
+            authorOfMessageWithID: messageId,
+            emoji: emoji,
+            reactionKind: reactionKind
+        )
+        return storage.givenCoins.append(givenReactionCoinID).inserted
     }
 
     /// Message have been created within last week,
@@ -112,21 +132,21 @@ actor ReactionCache {
         senderName: String
     ) {
         if sentToThanksChannelInstead {
-            let previous = storage.thanksChannelForcedMessages[receiverMessageId]
+            let previous = storage.forcedInThanksChannelMessages[receiverMessageId]
             let names = (previous?.senderUsers ?? []) + [senderName]
             let amount = (previous?.totalCoinCount ?? 0) + amount
-            storage.thanksChannelForcedMessages[receiverMessageId] = .init(
+            storage.forcedInThanksChannelMessages[receiverMessageId] = .init(
                 originalChannelId: channelId,
                 pennyResponseMessageId: responseMessageId,
                 senderUsers: names,
                 totalCoinCount: amount
             )
         } else {
-            let previous = storage.channelWithLastThanksMessage[channelId]
+            let id = [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
+            let previous = storage.normalThanksMessages[id]
             let names = (previous?.senderUsers ?? []) + [senderName]
             let amount = (previous?.totalCoinCount ?? 0) + amount
-            storage.channelWithLastThanksMessage[channelId] = .init(
-                receiverMessageId: receiverMessageId,
+            storage.normalThanksMessages[id] = .init(
                 pennyResponseMessageId: responseMessageId,
                 senderUsers: names,
                 totalCoinCount: amount
@@ -135,7 +155,7 @@ actor ReactionCache {
     }
 
     enum MessageToEditResponse {
-        case normal(ChannelLastThanksMessage)
+        case normal(ChannelThanksMessage)
         case forcedInThanksChannel(ChannelForcedThanksMessage)
     }
 
@@ -143,15 +163,12 @@ actor ReactionCache {
         in channelId: ChannelSnowflake,
         receiverMessageId: MessageSnowflake
     ) -> MessageToEditResponse? {
-        if let existing = storage.thanksChannelForcedMessages[receiverMessageId] {
+        if let existing = storage.forcedInThanksChannelMessages[receiverMessageId] {
             return .forcedInThanksChannel(existing)
-        } else if let existing = storage.channelWithLastThanksMessage[channelId] {
-            if existing.receiverMessageId == receiverMessageId {
-                return .normal(existing)
-            } else {
-                storage.channelWithLastThanksMessage[channelId] = nil
-                return nil
-            }
+        } else if let existing = storage.normalThanksMessages[
+           [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
+        ] {
+            return .normal(existing)
         } else {
             return nil
         }
@@ -178,4 +195,45 @@ private extension Calendar {
         calendar.timeZone = .init(identifier: "UTC")!
         return calendar
     }()
+}
+
+// MARK: +Emoji
+extension Emoji: Hashable {
+    public static func == (lhs: Emoji, rhs: Emoji) -> Bool {
+        switch (lhs.id, rhs.id) {
+        case let (.some(id1), .some(id2)):
+            return id1 == id2
+        case (.none, .none):
+            switch (lhs.name, rhs.name) {
+            case let (.some(name1), .some(name2)):
+                return name1 == name2
+            default:
+                Logger(label: "Emoji:Hashable.==").warning(
+                    "Emojis didn't have id and name!", metadata: [
+                        "lhs": "\(lhs)",
+                        "rhs": "\(rhs)"
+                    ]
+                )
+                return false
+            }
+        default:
+            return false
+        }
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        if let id = self.id {
+            hasher.combine(0)
+            hasher.combine(id)
+        } else if let name = self.name {
+            hasher.combine(1)
+            hasher.combine(name)
+        } else {
+            Logger(label: "Emoji:Hashable.hash(into:)").warning(
+                "Emoji didn't have id and name!", metadata: [
+                    "emoji": "\(self)"
+                ]
+            )
+        }
+    }
 }
