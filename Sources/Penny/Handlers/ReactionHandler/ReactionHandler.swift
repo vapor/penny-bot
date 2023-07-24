@@ -172,7 +172,7 @@ struct ReactionHandler {
             payload: .init(
                 embeds: [.init(
                     description: response,
-                    color: .vaporPurple
+                    color: .purple
                 )]
             )
         )

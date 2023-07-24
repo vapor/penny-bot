@@ -866,7 +866,7 @@ private extension InteractionHandler {
             payload: .channelMessageWithSource(.init(
                 embeds: [.init(
                     description: "Failed to resolve the interaction :(",
-                    color: .vaporPurple
+                    color: .purple
                 )],
                 flags: [.ephemeral]
             ))
@@ -1133,14 +1133,14 @@ extension String: Response {
     func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
         .channelMessageWithSource(.init(embeds: [.init(
             description: String(self.unicodesPrefix(4_000)),
-            color: .vaporPurple
+            color: .purple
         )], flags: isEphemeral ? [.ephemeral] : nil))
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
         .init(embeds: [.init(
             description: String(self.unicodesPrefix(4_000)),
-            color: .vaporPurple
+            color: .purple
         )])
     }
 
