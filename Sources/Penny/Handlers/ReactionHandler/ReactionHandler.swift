@@ -105,8 +105,12 @@ struct ReactionHandler {
                     senderName: senderName
                 )
             case let .forcedInThanksChannel(info):
+                var newNames = info.senderUsers
+                if !newNames.contains(senderName) {
+                    newNames.append(senderName)
+                }
+                let names = newNames.joined(separator: ", ", lastSeparator: " & ")
                 let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(info.originalChannelId.rawValue)/\(event.message_id.rawValue)"
-                let names = info.senderUsers.joined(separator: ", ") + " & \(senderName)"
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
