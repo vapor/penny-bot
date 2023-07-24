@@ -81,7 +81,7 @@ public actor FakeResponseStorage {
             let id = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
             Task {
-                try await Task.sleep(nanoseconds: 3_000_000_000)
+                try await Task.sleep(for: .seconds(3))
                 if continuations.retrieve(id: id) != nil {
                     if !expectFailure {
                         XCTFail(

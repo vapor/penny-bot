@@ -350,6 +350,13 @@ class GHHooksTests: XCTestCase {
             expect: .noResponse
         )
 
+        /// From `dependabot[bot]` so should be ignored
+        try await handleEvent(
+            key: "pr12",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
+
         try await handleEvent(
             key: "projects_v2_item1",
             eventName: .projects_v2_item,
@@ -405,7 +412,8 @@ class GHHooksTests: XCTestCase {
                     event: event
                 )
             ).handle()
-            if case let .response(channel, responseType) = expect {
+            switch expect {
+            case let .response(channel, responseType):
                 switch responseType {
                 case .create:
                     let response = await FakeResponseStorage.shared.awaitResponse(
@@ -426,6 +434,31 @@ class GHHooksTests: XCTestCase {
                         line: line
                     )
                 }
+            case let .failure(channel, responseType):
+                switch responseType {
+                case .create:
+                    let response = await FakeResponseStorage.shared.awaitResponse(
+                        at: .createMessage(channelId: channel.id),
+                        expectFailure: true,
+                        line: line
+                    ).value
+                    XCTAssertEqual(
+                        "\(type(of: response))", "Optional<Never>",
+                        line: line
+                    )
+                case let .edit(messageID):
+                    let response = await FakeResponseStorage.shared.awaitResponse(
+                        at: .updateMessage(channelId: channel.id, messageId: messageID),
+                        expectFailure: true,
+                        line: line
+                    ).value
+                    XCTAssertEqual(
+                        "\(type(of: response))", "Optional<Never>",
+                        line: line
+                    )
+                }
+            case .error:
+                break
             }
         } catch {
             if case let .error(description) = expect,
@@ -473,8 +506,24 @@ class GHHooksTests: XCTestCase {
             case edit(messageId: MessageSnowflake)
         }
 
-        case noResponse
         case response(at: Constants.Channels, type: ResponseKind = .create)
+        case failure(at: Constants.Channels, type: ResponseKind = .create)
         case error(description: String)
+
+        static var noResponse: Self {
+            .failure(at: .issueAndPRs)
+        }
+    }
+
+    func XCTAssertThrowsErrorAsync(
+        _ block: () async throws -> Void,
+        line: UInt = #line
+    ) async {
+        do {
+            try await block()
+            XCTFail("Did not throw error", line: line)
+        } catch {
+            /// Good
+        }
     }
 }

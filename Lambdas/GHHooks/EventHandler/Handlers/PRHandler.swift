@@ -8,6 +8,12 @@ import Markdown
 import Foundation
 
 struct PRHandler {
+
+    enum Configuration {
+        /// `49699333` == `dependabot[bot]`.
+        static let usersDenyListIDs: Set<Int> = [49699333]
+    }
+
     let context: HandlerContext
     let pr: PullRequest
     var event: GHEvent {
@@ -28,6 +34,9 @@ struct PRHandler {
         let action = try event.action
             .flatMap({ PullRequest.Action(rawValue: $0) })
             .requireValue()
+        guard !Configuration.usersDenyListIDs.contains(pr.user.id) else {
+            return
+        }
         switch action {
         case .opened:
             try await onOpened()
