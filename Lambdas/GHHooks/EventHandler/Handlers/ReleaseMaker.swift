@@ -5,18 +5,19 @@ import NIOFoundationCompat
 import GitHubAPI
 import SwiftSemver
 import Markdown
+import Logging
 import Foundation
 
-private enum Configuration {
-    /// `150622661` == `postgres-nio`
-    static let repositoryDenyListIDs: Set<Int> = [150622661]
-    /// `17364220` == `vapor`
-    /// Needs the Penny installation to be installed on the org,
-    /// which is not possible without making Penny app public.
-    static let organizationAllowListIDs: Set<Int> = [17364220]
-}
-
 struct ReleaseMaker {
+
+    enum Configuration {
+        /// `150622661` == `postgres-nio`
+        static let repositoryDenyListIDs: Set<Int> = [150622661]
+        /// `17364220` == `vapor`
+        /// Needs the Penny installation to be installed on the org,
+        /// which is not possible without making Penny app public.
+        static let organizationAllowListIDs: Set<Int> = [17364220]
+    }
 
     enum PRErrors: Error, CustomStringConvertible {
         case tagDoesNotFollowSemVer(release: Release, tag: String)
@@ -38,10 +39,13 @@ struct ReleaseMaker {
     let context: HandlerContext
     let pr: PullRequest
     let number: Int
+    let repo: Repository
     var event: GHEvent {
         context.event
     }
-    let repo: Repository
+    var logger: Logger {
+        context.logger
+    }
 
     init(context: HandlerContext, pr: PullRequest, number: Int) throws {
         self.context = context
@@ -143,7 +147,7 @@ struct ReleaseMaker {
         default: break
         }
 
-        context.logger.warning("Could not find a 'latest' release", metadata: [
+        logger.warning("Could not find a 'latest' release", metadata: [
             "owner": .string(repo.owner.login),
             "name": .string(repo.name),
             "response": "\(response)",
@@ -330,7 +334,7 @@ struct ReleaseMaker {
         guard case let .ok(ok) = response,
               case let .json(json) = ok.body
         else {
-            context.logger.warning("Could not find review comments", metadata: [
+            logger.warning("Could not find review comments", metadata: [
                 "response": "\(response)"
             ])
             return []
@@ -350,7 +354,7 @@ struct ReleaseMaker {
         guard case let .ok(ok) = response,
               case let .json(json) = ok.body
         else {
-            context.logger.warning("Could not find current contributors", metadata: [
+            logger.warning("Could not find current contributors", metadata: [
                 "response": "\(response)"
             ])
             return []
@@ -370,7 +374,7 @@ struct ReleaseMaker {
         let response = try await context.httpClient.execute(request, timeout: .seconds(3))
         let body = try await response.body.collect(upTo: 1 << 16)
         guard response.status == .ok else {
-            context.logger.warning("Can't find code owners of repo", metadata: [
+            logger.warning("Can't find code owners of repo", metadata: [
                 "responseBody": "\(body)",
                 "response": "\(response)"
             ])
@@ -378,7 +382,7 @@ struct ReleaseMaker {
         }
         let text = String(buffer: body)
         let parsed = parseCodeOwners(text: text)
-        context.logger.debug("Parsed code owners", metadata: [
+        logger.debug("Parsed code owners", metadata: [
             "text": .string(text),
             "parsed": .stringConvertible(parsed)
         ])
