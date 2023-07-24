@@ -59,7 +59,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Join ['/', [/ecs, !Ref apiGatewayName]]
-      RetentionInDays: 2
+      RetentionInDays: 3
   Service:
     Type: AWS::ECS::Service
     Properties: 
