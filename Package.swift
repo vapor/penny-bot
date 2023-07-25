@@ -5,10 +5,7 @@ import PackageDescription
 
 /// Bug alert! Don't move this constant to the end of the file, or it won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
-let baseSwiftSettings: [SwiftSetting] = [
-    /// https://github.com/apple/swift/issues/67214
-        .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
-
+let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// `-enable-upcoming-feature` flags will get removed in the future
     /// and we'll need to remove them from here too.
 
@@ -31,13 +28,16 @@ let baseSwiftSettings: [SwiftSetting] = [
     /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
 ]
 
-let swiftSettings: [SwiftSetting] = baseSwiftSettings + [
+let swiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
+    /// https://github.com/apple/swift/issues/67214
+    .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
+
     /// `minimal` / `targeted` / `complete`
     /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
     .unsafeFlags(["-strict-concurrency=complete"]),
 ]
 
-let testsSwiftSettings: [SwiftSetting] = baseSwiftSettings + [
+let testsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// `minimal` / `targeted` / `complete`
     /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
     .unsafeFlags(["-strict-concurrency=targeted"]),
