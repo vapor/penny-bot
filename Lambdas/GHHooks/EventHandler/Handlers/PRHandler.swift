@@ -57,7 +57,7 @@ struct PRHandler {
         try await DocsIssuer(
             context: context,
             pr: pr
-        )
+        ).handle()
     }
 
     func onClosed() async throws {

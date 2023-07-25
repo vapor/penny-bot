@@ -22,11 +22,13 @@ struct DocsIssuer {
 
     func handle() async throws {
         guard repo.id == Configuration.docsRepoID,
-              Set(pr.knownLabels).intersection([.translationUpdate, .noTranslationNeeded]).isEmpty
-        else {
-            return
-        }
+              isNotExemptFromNewIssues()
+        else { return }
         try await fileIssue()
+    }
+
+    func isNotExemptFromNewIssues() -> Bool {
+        Set(pr.knownLabels).intersection([.translationUpdate, .noTranslationNeeded]).isEmpty
     }
 
     func fileIssue() async throws {
