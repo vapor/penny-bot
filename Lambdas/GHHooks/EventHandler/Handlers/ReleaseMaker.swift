@@ -11,12 +11,10 @@ import Foundation
 struct ReleaseMaker {
 
     enum Configuration {
-        /// `150622661` == `postgres-nio`
-        static let repositoryDenyListIDs: Set<Int> = [150622661]
-        /// `17364220` == `vapor`
+        static let repositoryIDDenyList: Set<Int> = [/*postgres-nio:*/ 150622661]
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
-        static let organizationAllowListIDs: Set<Int> = [17364220]
+        static let organizationIDAllowList: Set<Int> = [/*vapor:*/ 17364220]
     }
 
     enum PRErrors: Error, CustomStringConvertible {
@@ -55,8 +53,8 @@ struct ReleaseMaker {
     }
 
     func handle() async throws {
-        guard !Configuration.repositoryDenyListIDs.contains(repo.id),
-              Configuration.organizationAllowListIDs.contains(repo.owner.id),
+        guard !Configuration.repositoryIDDenyList.contains(repo.id),
+              Configuration.organizationIDAllowList.contains(repo.owner.id),
               let mergedBy = pr.merged_by,
               pr.base.ref == "main",
               let bump = pr.knownLabels.first?.toBump()
