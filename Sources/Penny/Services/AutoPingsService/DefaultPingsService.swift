@@ -11,7 +11,7 @@ import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
     
-    var httpClient: HTTPClient!
+    let httpClient: HTTPClient
     var logger = Logger(label: "DefaultPingsService")
     
     /// Use `getAll()` to retrieve.
@@ -23,16 +23,15 @@ actor DefaultPingsService: AutoPingsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    private init() { }
-    
-    static let shared = DefaultPingsService()
-    
-    func initialize(httpClient: HTTPClient) {
+    init(httpClient: HTTPClient) {
         self.httpClient = httpClient
+    }
+
+    func onStart() {
         self.setUpResetItemsTask()
         self.getFreshItemsForCache()
     }
-    
+
     func exists(
         expression: Expression,
         forDiscordID id: UserSnowflake

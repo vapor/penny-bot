@@ -1,9 +1,13 @@
 @testable import Penny
 
 public struct FakeCachesService: CachesService {
-    public func getCachedInfoFromRepositoryAndPopulateServices(
-        workers: HandlerContext.Workers
-    ) async {
+    let workers: HandlerContext.Workers
+
+    public init(workers: HandlerContext.Workers) {
+        self.workers = workers
+    }
+
+    public func getCachedInfoFromRepositoryAndPopulateServices() async {
         var storage = CachesStorage()
         storage.proposalsCheckerData = .init(
             previousProposals: TestData.proposals,
@@ -12,7 +16,5 @@ public struct FakeCachesService: CachesService {
         await storage.populateServicesAndReport(workers: workers)
     }
 
-    public func gatherCachedInfoAndSaveToRepository(workers: HandlerContext.Workers) async { }
-
-    public init() { }
+    public func gatherCachedInfoAndSaveToRepository() async { }
 }

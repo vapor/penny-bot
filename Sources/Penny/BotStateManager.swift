@@ -86,9 +86,7 @@ actor BotStateManager {
 
     private func shutdown() {
         Task {
-            await services.cachesService.gatherCachedInfoAndSaveToRepository(
-                workers: workers
-            )
+            await services.cachesService.gatherCachedInfoAndSaveToRepository()
             await send(.didShutdown)
             self.canRespond = false
 
@@ -103,9 +101,7 @@ actor BotStateManager {
             if canRespond {
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
-                await services.cachesService.getCachedInfoFromRepositoryAndPopulateServices(
-                    workers: workers
-                )
+                await services.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
                 await startAllowingResponses()
             }
         }

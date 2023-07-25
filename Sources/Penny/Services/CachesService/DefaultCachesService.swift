@@ -3,19 +3,17 @@ import AsyncHTTPClient
 import SotoS3
 
 actor DefaultCachesService: CachesService {
-    var cachesRepo: S3CachesRepository!
+    let cachesRepo: S3CachesRepository
+    let workers: HandlerContext.Workers
     let logger = Logger(label: "DefaultCachesService")
 
-    private init() { }
-
-    static let shared = DefaultCachesService()
-
-    func initialize(awsClient: AWSClient) {
+    init(awsClient: AWSClient, workers: HandlerContext.Workers) {
         self.cachesRepo = .init(awsClient: awsClient, logger: self.logger)
+        self.workers = workers
     }
 
     /// Get the storage from the repository and then delete it from the repository.
-    func getCachedInfoFromRepositoryAndPopulateServices(workers: HandlerContext.Workers) async {
+    func getCachedInfoFromRepositoryAndPopulateServices() async {
         do {
             let storage = try await self.cachesRepo.get()
             await storage.populateServicesAndReport(workers: workers)
@@ -38,7 +36,7 @@ actor DefaultCachesService: CachesService {
     }
 
     /// Save the storage to the repository.
-    func gatherCachedInfoAndSaveToRepository(workers: HandlerContext.Workers) async {
+    func gatherCachedInfoAndSaveToRepository() async {
         do {
             let storage = await CachesStorage.makeFromCachedData(workers: workers)
             try await self.cachesRepo.save(storage: storage)

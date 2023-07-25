@@ -88,25 +88,28 @@ struct PennyService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        await DefaultPingsService.shared.initialize(httpClient: httpClient)
-        await DefaultFaqsService.shared.initialize(httpClient: httpClient)
-        try await DefaultUsersService.shared.initialize(httpClient: httpClient)
-        await DefaultCachesService.shared.initialize(awsClient: awsClient)
+        let usersService = DefaultUsersService(httpClient: httpClient)
+        let pingsService = DefaultPingsService(httpClient: httpClient)
+        await pingsService.onStart()
+        let faqsService = DefaultFaqsService(httpClient: httpClient)
+        await faqsService.onStart()
+        let proposalsService = DefaultProposalsService(httpClient: httpClient)
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
         let proposalsChecker = ProposalsChecker(
-            proposalsService: DefaultProposalsService(httpClient: httpClient),
-            discordService: discordService
-        )
-        let services = HandlerContext.Services(
-            usersService: DefaultUsersService.shared,
-            pingsService: DefaultPingsService.shared,
-            faqsService: DefaultFaqsService.shared,
-            cachesService: DefaultCachesService.shared,
+            proposalsService: proposalsService,
             discordService: discordService
         )
         let workers = HandlerContext.Workers(
             proposalsChecker: proposalsChecker,
             reactionCache: ReactionCache()
+        )
+        let cachesService = DefaultCachesService(awsClient: awsClient, workers: workers)
+        let services = HandlerContext.Services(
+            usersService: usersService,
+            pingsService: pingsService,
+            faqsService: faqsService,
+            cachesService: cachesService,
+            discordService: discordService
         )
         let context = HandlerContext(
             services: services,
@@ -116,7 +119,9 @@ struct PennyService: MainService {
                 workers: workers
             )
         )
+
         await CommandsManager().registerCommands(context: context)
+
         return context
     }
 

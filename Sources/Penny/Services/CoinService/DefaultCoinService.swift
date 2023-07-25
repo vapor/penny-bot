@@ -9,17 +9,13 @@ import DiscordModels
 import Models
 
 actor DefaultUsersService: UsersService {
-    var httpClient: HTTPClient!
+    let httpClient: HTTPClient
     let logger = Logger(label: "DefaultUsersService")
     
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
     
-    static let shared = DefaultUsersService()
-    
-    private init() { }
-    
-    func initialize(httpClient: HTTPClient) throws {
+    init(httpClient: HTTPClient) {
         self.httpClient = httpClient
     }
 

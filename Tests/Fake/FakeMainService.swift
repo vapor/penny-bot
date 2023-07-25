@@ -62,16 +62,16 @@ public actor FakeMainService: MainService {
             proposalsService: FakeProposalsService(),
             discordService: discordService
         )
+        let workers = HandlerContext.Workers(
+            proposalsChecker: proposalsChecker,
+            reactionCache: ReactionCache()
+        )
         let services = HandlerContext.Services(
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
-            cachesService: FakeCachesService(),
+            cachesService: FakeCachesService(workers: workers),
             discordService: discordService
-        )
-        let workers = HandlerContext.Workers(
-            proposalsChecker: proposalsChecker,
-            reactionCache: ReactionCache()
         )
         return HandlerContext(
             services: services,
