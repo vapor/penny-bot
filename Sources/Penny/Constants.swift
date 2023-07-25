@@ -7,7 +7,7 @@ enum Constants {
             return value
         } else {
             fatalError("""
-            Please set an env value for key '\(key)'.
+            Set an environment value for key '\(key)'.
             In tests you usually can set dummy values.
             """)
         }
