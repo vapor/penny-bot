@@ -107,6 +107,7 @@ public actor FakeResponseStorage {
     
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: any Endpoint, with payload: AnyBox) {
+
         if let continuation = continuations.retrieve(endpoint: endpoint) {
             continuation.resume(returning: payload)
         } else {

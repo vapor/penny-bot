@@ -6,45 +6,45 @@ import Backtrace
 @main
 struct Penny {
     static func main() async throws {
+        try await start(mainService: PennyService())
+    }
+
+    static func start(mainService: any MainService) async throws {
         Backtrace.install()
 
         /// Use `1` instead of `System.coreCount`.
-        /// This is preferred for apps that primarily use structured concurrency
+        /// This is preferred for apps that primarily use structured concurrency.
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        let client = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
-        let awsClient = AWSClient(httpClientProvider: .shared(client))
+        let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         defer {
-            /// Shutdown in reverse order (clients first, then the ELG)
+            /// Shutdown in reverse order of dependance.
             try! awsClient.syncShutdown()
-            try! client.syncShutdown()
+            try! httpClient.syncShutdown()
             try! eventLoopGroup.syncShutdownGracefully()
         }
 
-        await DiscordFactory.bootstrapLoggingSystem(client)
+        try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
 
-        let bot = await DiscordFactory.makeBot(eventLoopGroup, client)
-        let cache = await DiscordFactory.makeCache(bot)
+        let bot = try await mainService.makeBot(
+            eventLoopGroup: eventLoopGroup,
+            httpClient: httpClient
+        )
+        let cache = try await mainService.makeCache(bot: bot)
 
-        await DiscordService.shared.initialize(discordClient: bot.client, cache: cache)
-        await ServiceFactory.initializePingsService(client)
-        await ServiceFactory.initializeFaqsService(client)
-        try await DefaultUsersService.shared.initialize(httpClient: client)
-        await DefaultCachesService.shared.initialize(awsClient: awsClient)
-        await CommandsManager().registerCommands()
+        let context = try await mainService.beforeConnectCall(
+            bot: bot,
+            cache: cache,
+            httpClient: httpClient,
+            awsClient: awsClient
+        )
 
         await bot.connect()
         let stream = await bot.makeEventsStream()
 
-        let context = ServiceFactory.makeHandlerContext(client)
-
-        /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
-        /// since it communicates through Discord and will need the Gateway connection.
-        await BotStateManager.shared.initialize(context: context, onStart: {
-            /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
-            await ServiceFactory.initiateProposalsChecker(context)
-        })
+        try await mainService.afterConnectCall(context: context)
 
         for await event in stream {
             EventHandler(event: event, context: context).handle()

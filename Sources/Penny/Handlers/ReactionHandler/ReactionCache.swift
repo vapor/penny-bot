@@ -90,9 +90,14 @@ actor ReactionCache {
     /// Also message author must not be a bot.
     func messageCanBeRespondedTo(
         channelId: ChannelSnowflake,
-        messageId: MessageSnowflake
+        messageId: MessageSnowflake,
+        context: HandlerContext
     ) async -> Bool {
-        guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
+        guard let message = await self.getMessage(
+            channelId: channelId,
+            messageId: messageId,
+            discordService: context.services.discordService
+        ) else {
             return false
         }
         if message.author?.bot ?? false { return false }
@@ -116,9 +121,10 @@ actor ReactionCache {
 
     func getMessage(
         channelId: ChannelSnowflake,
-        messageId: MessageSnowflake
+        messageId: MessageSnowflake,
+        discordService: DiscordService
     ) async -> DiscordChannel.Message? {
-        guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
+        guard let message = await discordService.getPossiblyCachedChannelMessage(
             channelId: channelId,
             messageId: messageId
         ) else {

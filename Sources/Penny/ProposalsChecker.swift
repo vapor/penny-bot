@@ -16,23 +16,17 @@ actor ProposalsChecker {
     /// The minimum time to wait before sending a queued-proposal
     var queuedProposalsWaitTime: Double = 29 * 60
 
+    let proposalsService: any ProposalsService
+    let discordService: DiscordService
     let logger = Logger(label: "ProposalsChecker")
 
-    var proposalsService: (any ProposalsService)!
-    var discordService: DiscordService {
-        DiscordService.shared
-    }
-
-    static let shared = ProposalsChecker()
-
-    private init() { }
-
-    func initialize(proposalsService: any ProposalsService) {
+    init(proposalsService: any ProposalsService, discordService: DiscordService) {
         self.proposalsService = proposalsService
+        self.discordService = discordService
     }
 
     nonisolated func run() {
-        Task {
+        Task { [self] in
             do {
                 try await self.check()
                 try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
@@ -45,7 +39,7 @@ actor ProposalsChecker {
     }
 
     func check() async throws {
-        let proposals = try await self.proposalsService.list()
+        let proposals = try await proposalsService.list()
 
         if self.storage.previousProposals.isEmpty {
             self.storage.previousProposals = proposals
@@ -260,7 +254,7 @@ actor ProposalsChecker {
     private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
         let content: String
         do {
-            content = try await self.proposalsService.getProposalContent(link: link)
+            content = try await proposalsService.getProposalContent(link: link)
         } catch {
             logger.error("Could not fetch proposal content", metadata: [
                 "link": .string(link),

@@ -1,16 +1,18 @@
 @testable import Penny
 
 public struct FakeCachesService: CachesService {
-    public func getCachedInfoFromRepositoryAndPopulateServices() async {
+    public func getCachedInfoFromRepositoryAndPopulateServices(
+        proposalsChecker: ProposalsChecker
+    ) async {
         var storage = CachesStorage()
         storage.proposalsCheckerData = .init(
             previousProposals: TestData.proposals,
             queuedProposals: []
         )
-        await storage.populateServicesAndReport()
+        await storage.populateServicesAndReport(proposalsChecker: proposalsChecker)
     }
 
-    public func gatherCachedInfoAndSaveToRepository() async { }
+    public func gatherCachedInfoAndSaveToRepository(proposalsChecker: ProposalsChecker) async { }
 
     public init() { }
 }

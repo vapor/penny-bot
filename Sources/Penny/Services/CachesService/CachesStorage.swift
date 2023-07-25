@@ -8,19 +8,19 @@ struct CachesStorage: Sendable, Codable {
 
     init() { }
 
-    static func makeFromCachedData() async -> CachesStorage {
+    static func makeFromCachedData(proposalsChecker: ProposalsChecker) async -> CachesStorage {
         var storage = CachesStorage()
         storage.reactionCacheData = await ReactionCache.shared.getCachedDataForCachesStorage()
-        storage.proposalsCheckerData = await ProposalsChecker.shared.getCachedDataForCachesStorage()
+        storage.proposalsCheckerData = await proposalsChecker.getCachedDataForCachesStorage()
         return storage
     }
 
-    func populateServicesAndReport() async {
+    func populateServicesAndReport(proposalsChecker: ProposalsChecker) async {
         if let reactionCacheData = self.reactionCacheData {
             await ReactionCache.shared.consumeCachesStorageData(reactionCacheData)
         }
         if let proposalsCheckerData = proposalsCheckerData {
-            await ProposalsChecker.shared.consumeCachesStorageData(proposalsCheckerData)
+            await proposalsChecker.consumeCachesStorageData(proposalsCheckerData)
         }
 
         let reactionCacheDataCounts = reactionCacheData.map { data in

@@ -70,7 +70,8 @@ struct ReactionHandler {
         
         guard await cache.messageCanBeRespondedTo(
             channelId: event.channel_id,
-            messageId: event.message_id
+            messageId: event.message_id,
+            context: context
         ) else { return }
         
         guard let response = response else {
@@ -135,7 +136,7 @@ struct ReactionHandler {
         senderName: String?,
         isFailureMessage: Bool
     ) async {
-        let apiResponse = await DiscordService.shared.sendThanksResponse(
+        let apiResponse = await context.services.discordService.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.message_id,
             isFailureMessage: isFailureMessage,
@@ -175,7 +176,7 @@ struct ReactionHandler {
         amount: Int,
         senderName: String?
     ) async {
-        let apiResponse = await DiscordService.shared.editMessage(
+        let apiResponse = await context.services.discordService.editMessage(
             messageId: messageId,
             channelId: forcedInThanksChannel ? Constants.Channels.thanks.id : event.channel_id,
             payload: .init(

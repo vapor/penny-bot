@@ -7,7 +7,8 @@ struct EventHandler: GatewayEventHandler {
     let logger = Logger(label: "EventHandler")
     
     func onEventHandlerStart() async -> Bool {
-        let canRespond = await BotStateManager.shared.canRespond(to: event)
+
+        let canRespond = await context.botStateManager.canRespond(to: event)
         if !canRespond {
             logger.debug("BotStateManager doesn't allow responding to event", metadata: [
                 "event": "\(event)"
