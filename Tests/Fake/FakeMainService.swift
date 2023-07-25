@@ -60,7 +60,8 @@ public actor FakeMainService: MainService {
         )
         let proposalsChecker = ProposalsChecker(
             proposalsService: FakeProposalsService(),
-            discordService: discordService
+            discordService: discordService,
+            queuedProposalsWaitTime: -1
         )
         let workers = HandlerContext.Workers(
             proposalsChecker: proposalsChecker,

@@ -14,15 +14,20 @@ actor ProposalsChecker {
     var storage = Storage()
 
     /// The minimum time to wait before sending a queued-proposal
-    var queuedProposalsWaitTime: Double = 29 * 60
+    let queuedProposalsWaitTime: Double
 
     let proposalsService: any ProposalsService
     let discordService: DiscordService
     let logger = Logger(label: "ProposalsChecker")
 
-    init(proposalsService: any ProposalsService, discordService: DiscordService) {
+    init(
+        proposalsService: any ProposalsService,
+        discordService: DiscordService,
+        queuedProposalsWaitTime: Double = 29 * 60
+    ) {
         self.proposalsService = proposalsService
         self.discordService = discordService
+        self.queuedProposalsWaitTime = queuedProposalsWaitTime
     }
 
     nonisolated func run() {
@@ -318,12 +323,6 @@ actor ProposalsChecker {
     func getCachedDataForCachesStorage() -> Storage {
         return self.storage
     }
-
-#if DEBUG
-    func _tests_setQueuedProposalsWaitTime(to amount: Double) {
-        self.queuedProposalsWaitTime = amount
-    }
-#endif
 }
 
 private extension String {

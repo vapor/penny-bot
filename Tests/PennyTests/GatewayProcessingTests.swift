@@ -32,7 +32,7 @@ class GatewayProcessingTests: XCTestCase {
     }
 
     func testCommandsRegisterOnStartup() async throws {
-        await CommandsManager().registerCommands(context: context)
+        await CommandsManager(context: context).registerCommands()
 
         let response = await responseStorage.awaitResponse(
             at: .bulkSetApplicationCommands(applicationId: "11111111")
@@ -278,81 +278,79 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertTrue(message.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
     }
 
-//    func testProposalsChecker() async throws {
-//        /// This tests expects the `CachesStorage` population to have worked correctly
-//        /// and have already populated `ProposalsChecker.previousProposals`.
-//
-//        /// This is so the proposals are send as soon as they're queued, in tests.
-//        await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
-//        await ProposalsChecker.shared.initialize(context: FakeMainService.makeContext())
-//        ProposalsChecker.shared.run()
-//
-//        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
-//        let _messages = await [
-//            responseStorage.awaitResponse(at: endpoint).value,
-//            responseStorage.awaitResponse(at: endpoint).value
-//        ]
-//        let messages = try _messages.map {
-//            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
-//        }
-//
-//        /// New proposal message
-//        do {
-//            let message = try XCTUnwrap(messages.first(where: {
-//                $0.embeds?.first?.title?.contains("stride") == true
-//            }), "\(messages)")
-//
-//            let buttons = try XCTUnwrap(message.components?.first?.components, "\(message)")
-//            XCTAssertEqual(buttons.count, 3, "\(buttons)")
-//            let expectedLinks = [
-//                "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md",
-//                "https://forums.swift.org/t/se-0400-init-accessors/65583",
-//                "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
-//            ]
-//            for (idx, buttonComponent) in buttons.enumerated() {
-//                if case let .button(button) = buttonComponent,
-//                   let url = button.url {
-//                    XCTAssertEqual(expectedLinks[idx], url)
-//                } else {
-//                    XCTFail("\(buttonComponent) was not a button")
-//                }
-//            }
-//
-//            let embed = try XCTUnwrap(message.embeds?.first)
-//            XCTAssertEqual(embed.title, "[SE-0051] Withdrawn: Conventionalizing stride semantics")
-//            XCTAssertEqual(embed.description, "> \n\n**Status: Withdrawn**\n\n**Authors:** [Erica Sadun](http://github.com/erica)\n")
-//            XCTAssertEqual(embed.color, .brown)
-//        }
-//
-//        /// Updated proposal message
-//        do {
-//            let message = try XCTUnwrap(messages.first(where: {
-//                $0.embeds?.first?.title?.contains("(most)") == true
-//            }), "\(messages)")
-//
-//            let buttons = try XCTUnwrap(message.components?.first?.components)
-//            XCTAssertEqual(buttons.count, 3, "\(buttons)")
-//            let expectedLinks = [
-//                "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md",
-//                "https://forums.swift.org/t/se-0400-init-accessors/65583",
-//                "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
-//            ]
-//            for (idx, buttonComponent) in buttons.enumerated() {
-//                if case let .button(button) = buttonComponent,
-//                   let url = button.url {
-//                    XCTAssertEqual(expectedLinks[idx], url)
-//                } else {
-//                    XCTFail("\(buttonComponent) was not a button")
-//                }
-//            }
-//
-//
-//            let embed = try XCTUnwrap(message.embeds?.first)
-//            XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
-//            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n**Authors:** [Doug Gregor](https://github.com/DougGregor)\n")
-//            XCTAssertEqual(embed.color, .orange)
-//        }
-//    }
+    func testProposalsChecker() async throws {
+        /// This tests expects the `CachesStorage` population to have worked correctly
+        /// and have already populated `ProposalsChecker.previousProposals`.
+
+        /// This is so the proposals are send as soon as they're queued, in tests.
+        context.workers.proposalsChecker.run()
+
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
+        let _messages = await [
+            responseStorage.awaitResponse(at: endpoint).value,
+            responseStorage.awaitResponse(at: endpoint).value
+        ]
+        let messages = try _messages.map {
+            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
+        }
+
+        /// New proposal message
+        do {
+            let message = try XCTUnwrap(messages.first(where: {
+                $0.embeds?.first?.title?.contains("stride") == true
+            }), "\(messages)")
+
+            let buttons = try XCTUnwrap(message.components?.first?.components, "\(message)")
+            XCTAssertEqual(buttons.count, 3, "\(buttons)")
+            let expectedLinks = [
+                "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md",
+                "https://forums.swift.org/t/se-0400-init-accessors/65583",
+                "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
+            ]
+            for (idx, buttonComponent) in buttons.enumerated() {
+                if case let .button(button) = buttonComponent,
+                   let url = button.url {
+                    XCTAssertEqual(expectedLinks[idx], url)
+                } else {
+                    XCTFail("\(buttonComponent) was not a button")
+                }
+            }
+
+            let embed = try XCTUnwrap(message.embeds?.first)
+            XCTAssertEqual(embed.title, "[SE-0051] Withdrawn: Conventionalizing stride semantics")
+            XCTAssertEqual(embed.description, "> \n\n**Status: Withdrawn**\n\n**Authors:** [Erica Sadun](http://github.com/erica)\n")
+            XCTAssertEqual(embed.color, .brown)
+        }
+
+        /// Updated proposal message
+        do {
+            let message = try XCTUnwrap(messages.first(where: {
+                $0.embeds?.first?.title?.contains("(most)") == true
+            }), "\(messages)")
+
+            let buttons = try XCTUnwrap(message.components?.first?.components)
+            XCTAssertEqual(buttons.count, 3, "\(buttons)")
+            let expectedLinks = [
+                "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md",
+                "https://forums.swift.org/t/se-0400-init-accessors/65583",
+                "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
+            ]
+            for (idx, buttonComponent) in buttons.enumerated() {
+                if case let .button(button) = buttonComponent,
+                   let url = button.url {
+                    XCTAssertEqual(expectedLinks[idx], url)
+                } else {
+                    XCTFail("\(buttonComponent) was not a button")
+                }
+            }
+
+
+            let embed = try XCTUnwrap(message.embeds?.first)
+            XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
+            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n**Authors:** [Doug Gregor](https://github.com/DougGregor)\n")
+            XCTAssertEqual(embed.color, .orange)
+        }
+    }
 
     func testFaqsCommand() async throws {
         do {

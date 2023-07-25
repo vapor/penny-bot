@@ -120,7 +120,7 @@ struct PennyService: MainService {
             )
         )
 
-        await CommandsManager().registerCommands(context: context)
+        await CommandsManager(context: context).registerCommands()
 
         return context
     }

@@ -3,7 +3,9 @@ import Models
 import Logging
 
 struct CommandsManager {
-    func registerCommands(context: HandlerContext) async {
+    let context: HandlerContext
+
+    func registerCommands() async {
         let commands = makeCommands()
         await context.services.discordService.overwriteCommands(commands)
     }
