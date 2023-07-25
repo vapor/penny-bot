@@ -11,21 +11,10 @@ struct ReleaseHandler {
     }
 
     func handle() async throws {
-        let action = try context.event.action
+        let /*action*/ _ = try context.event.action
             .flatMap({ Release.Action(rawValue: $0) })
             .requireValue()
-        let release = try context.event.release.requireValue()
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.logs.id,
-            payload: .init(
-                embeds: [.init(
-                    title: "Got sample release. Check the logs now.",
-                    description: """
-                    Action: \(action)
-                    URL: \(release.html_url)
-                    """,
-                    color: .yellow
-                )])
-        ).guardSuccess()
+        let /*release*/ _ = try context.event.release.requireValue()
+        /// Does nothing for now
     }
 }
