@@ -27,13 +27,7 @@ extension Array {
     }
 }
 
-extension Array<String> {
-    mutating func appendUnique(_ element: String) {
-        if !self.contains(element) {
-            self.append(element)
-        }
-    }
-
+extension RandomAccessCollection<String> {
     func joined(separator: String, lastSeparator: String) -> String {
         guard count > 1 else {
             return self.joined(separator: separator)

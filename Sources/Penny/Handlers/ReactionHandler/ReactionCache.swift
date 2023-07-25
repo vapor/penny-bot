@@ -15,7 +15,7 @@ actor ReactionCache {
 
     struct ChannelThanksMessage: Sendable, Codable {
         var pennyResponseMessageId: MessageSnowflake
-        var senderUsers: [String]
+        var senderUsers: OrderedSet<String>
         var totalCoinCount: Int
 
         static func `for`(_ pennyResponseMessageId: MessageSnowflake) -> Self {
@@ -30,7 +30,7 @@ actor ReactionCache {
     struct ChannelForcedThanksMessage: Sendable, Codable {
         var originalChannelId: ChannelSnowflake
         var pennyResponseMessageId: MessageSnowflake
-        var senderUsers: [String]
+        var senderUsers: OrderedSet<String>
         var totalCoinCount: Int
     }
 
@@ -145,7 +145,8 @@ actor ReactionCache {
     ) {
         if sentToThanksChannelInstead {
             let previous = storage.forcedInThanksChannelMessages[receiverMessageId]
-            let names = (previous?.senderUsers ?? []) + [senderName]
+            var names = previous?.senderUsers ?? []
+            names.append(senderName)
             let amount = (previous?.totalCoinCount ?? 0) + amount
             storage.forcedInThanksChannelMessages[receiverMessageId] = .init(
                 originalChannelId: channelId,
@@ -156,7 +157,7 @@ actor ReactionCache {
         } else {
             let id = [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
             var item = storage.normalThanksMessages[id] ?? .for(responseMessageId)
-            item.senderUsers.appendUnique(senderName)
+            item.senderUsers.append(senderName)
             item.totalCoinCount += amount
             storage.normalThanksMessages[id] = item
         }

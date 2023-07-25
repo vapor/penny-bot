@@ -12,9 +12,7 @@ struct PennyService: MainService {
         // so we can just use an invalid url
         let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 #else
-        guard let webhookUrl = Constants.loggingWebhookUrl else {
-            fatalError("Missing 'LOGGING_WEBHOOK_URL' env var")
-        }
+        let webhookUrl = Constants.loggingWebhookUrl
 #endif
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
             httpClient: httpClient,
