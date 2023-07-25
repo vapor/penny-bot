@@ -22,7 +22,9 @@ struct DocsIssuer {
 
     func handle() async throws {
         guard repo.id == Configuration.docsRepoID,
-              !pr.knownLabels.contains(.translationUpdate) else {
+              !pr.knownLabels.contains(
+                where: { [.translationUpdate, .noTranslationNeeded].contains($0) }
+              ) else {
             return
         }
         try await fileIssue()
