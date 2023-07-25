@@ -283,8 +283,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/gwynne/swift-semver",
       "state" : {
-        "revision" : "cfed59ed4485a68d87700c2a40297f7786f7ae9e",
-        "version" : "0.1.0-alpha.3"
+        "revision" : "2be090a869475ce818a8ecc17093505485e3ccb8",
+        "version" : "0.2.0-alpha.1"
       }
     },
     {

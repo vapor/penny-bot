@@ -67,7 +67,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
         .package(
             url: "https://github.com/gwynne/swift-semver",
-            from: "0.1.0-alpha.3"
+            from: "0.2.0-alpha.1"
         ),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
