@@ -64,9 +64,7 @@ actor ReactionCache {
     private var storage = Storage()
     let logger = Logger(label: "ReactionCache")
 
-    private init() { }
-
-    static var shared = ReactionCache()
+    init() { }
 
     /// This is to prevent spams. In case someone removes their reaction and
     /// reacts again, we should not give coins to message's author anymore.
@@ -191,12 +189,6 @@ actor ReactionCache {
     func getCachedDataForCachesStorage() -> Storage {
         self.storage
     }
-
-#if DEBUG
-    static func _tests_reset() {
-        shared = .init()
-    }
-#endif
 }
 
 private extension Calendar {

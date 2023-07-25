@@ -47,7 +47,6 @@ public actor FakeMainService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        ReactionCache._tests_reset()
         await context.botStateManager.start(onStarted: { })
         return context
     }
@@ -68,13 +67,18 @@ public actor FakeMainService: MainService {
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
             cachesService: FakeCachesService(),
-            discordService: discordService,
-            proposalsChecker: proposalsChecker
+            discordService: discordService
+        )
+        let workers = HandlerContext.Workers(
+            proposalsChecker: proposalsChecker,
+            reactionCache: ReactionCache()
         )
         return HandlerContext(
             services: services,
+            workers: workers,
             botStateManager: BotStateManager(
                 services: services,
+                workers: workers,
                 disabledDuration: .seconds(3)
             )
         )

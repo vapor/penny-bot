@@ -25,8 +25,10 @@ struct ReactionHandler {
     let event: Gateway.MessageReactionAdd
     let context: HandlerContext
     var logger = Logger(label: "ReactionHandler")
-    private var cache: ReactionCache { .shared }
-    
+    var cache: ReactionCache {
+        context.workers.reactionCache
+    }
+
     init(event: Gateway.MessageReactionAdd, context: HandlerContext) {
         self.event = event
         self.context = context

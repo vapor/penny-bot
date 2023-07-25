@@ -15,12 +15,10 @@ actor DefaultCachesService: CachesService {
     }
 
     /// Get the storage from the repository and then delete it from the repository.
-    func getCachedInfoFromRepositoryAndPopulateServices(
-        proposalsChecker: ProposalsChecker
-    ) async {
+    func getCachedInfoFromRepositoryAndPopulateServices(workers: HandlerContext.Workers) async {
         do {
             let storage = try await self.cachesRepo.get()
-            await storage.populateServicesAndReport(proposalsChecker: proposalsChecker)
+            await storage.populateServicesAndReport(workers: workers)
             self.delete()
         } catch {
             logger.report("Couldn't get CachesStorage", error: error)
@@ -40,11 +38,9 @@ actor DefaultCachesService: CachesService {
     }
 
     /// Save the storage to the repository.
-    func gatherCachedInfoAndSaveToRepository(proposalsChecker: ProposalsChecker) async {
+    func gatherCachedInfoAndSaveToRepository(workers: HandlerContext.Workers) async {
         do {
-            let storage = await CachesStorage.makeFromCachedData(
-                proposalsChecker: proposalsChecker
-            )
+            let storage = await CachesStorage.makeFromCachedData(workers: workers)
             try await self.cachesRepo.save(storage: storage)
         } catch {
             logger.report("Couldn't save CachesStorage", error: error)

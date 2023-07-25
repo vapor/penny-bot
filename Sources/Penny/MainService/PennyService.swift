@@ -102,12 +102,19 @@ struct PennyService: MainService {
             pingsService: DefaultPingsService.shared,
             faqsService: DefaultFaqsService.shared,
             cachesService: DefaultCachesService.shared,
-            discordService: discordService,
-            proposalsChecker: proposalsChecker
+            discordService: discordService
+        )
+        let workers = HandlerContext.Workers(
+            proposalsChecker: proposalsChecker,
+            reactionCache: ReactionCache()
         )
         let context = HandlerContext(
             services: services,
-            botStateManager: BotStateManager(services: services)
+            workers: workers,
+            botStateManager: BotStateManager(
+                services: services,
+                workers: workers
+            )
         )
         await CommandsManager().registerCommands(context: context)
         return context
@@ -118,7 +125,7 @@ struct PennyService: MainService {
         /// since it communicates through Discord and will need the Gateway connection.
         await context.botStateManager.start {
             /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
-            context.services.proposalsChecker.run()
+            context.workers.proposalsChecker.run()
         }
     }
 }

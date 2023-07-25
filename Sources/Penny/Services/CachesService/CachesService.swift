@@ -1,5 +1,5 @@
 
 protocol CachesService: Sendable {
-    func getCachedInfoFromRepositoryAndPopulateServices(proposalsChecker: ProposalsChecker) async
-    func gatherCachedInfoAndSaveToRepository(proposalsChecker: ProposalsChecker) async
+    func getCachedInfoFromRepositoryAndPopulateServices(workers: HandlerContext.Workers) async
+    func gatherCachedInfoAndSaveToRepository(workers: HandlerContext.Workers) async
 }
