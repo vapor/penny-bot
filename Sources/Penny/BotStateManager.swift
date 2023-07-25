@@ -70,7 +70,7 @@ actor BotStateManager {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.logs.id,
               let author = message.author,
-              author.id.rawValue == Constants.botId,
+              author.id == Constants.botId,
               let otherId = message.content.split(whereSeparator: \.isWhitespace).last
         else { return }
         if otherId == "\(self.id)" { return }

@@ -164,7 +164,7 @@ actor DiscordService {
         if canSendToChannel {
             do {
                 canSendToChannel = try await vaporGuild.userHasPermissions(
-                    userId: Snowflake(Constants.botId),
+                    userId: Constants.botId,
                     channelId: channelId,
                     permissions: [.sendMessages]
                 )

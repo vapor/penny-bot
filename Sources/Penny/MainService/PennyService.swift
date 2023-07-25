@@ -48,9 +48,6 @@ struct PennyService: MainService {
         eventLoopGroup: any EventLoopGroup,
         httpClient: HTTPClient
     ) async throws -> any GatewayManager {
-        guard let token = Constants.botToken else {
-            fatalError("Missing 'BOT_TOKEN' env var")
-        }
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
@@ -64,7 +61,7 @@ struct PennyService: MainService {
             eventLoopGroup: eventLoopGroup,
             httpClient: httpClient,
             clientConfiguration: clientConfiguration,
-            token: token,
+            token: Constants.botToken,
             presence: .init(
                 activities: [.init(name: "you", type: .game)],
                 status: .online,

@@ -20,7 +20,7 @@ actor DefaultUsersService: UsersService {
     }
 
     private func getUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/users")
+        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
 
@@ -52,7 +52,7 @@ actor DefaultUsersService: UsersService {
     }
 
     func postCoin(with coinRequest: UserRequest.DiscordCoinEntry) async throws -> CoinResponse {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/users")
+        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
         let data = try encoder.encode(UserRequest.addCoin(coinRequest))

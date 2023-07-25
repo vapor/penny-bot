@@ -30,12 +30,8 @@ struct InteractionHandler {
     }
 
     private func makeJWTSigners() throws -> JWTSigners? {
-        guard let privateKeyString = Constants.accountLinkOAuthPrivKey else {
-            fatalError("Missing ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY env var")
-        }
-
+        let privateKeyString = Constants.accountLinkOAuthPrivKey
         let privateKey = try ECDSAKey.private(pem: privateKeyString)
-
         let signers = JWTSigners()
         signers.use(.es256(key: privateKey))
         return signers
@@ -513,7 +509,6 @@ private extension InteractionHandler {
 
         switch subcommand {
         case .link:
-            let clientID = Constants.ghOAuthClientId!
             let jwt = GHOAuthPayload(
                 discordID: discordID, 
                 interactionToken: event.token
@@ -522,6 +517,7 @@ private extension InteractionHandler {
                 logger.error("Failed to make JWT signer")
                 return oops
             }
+            let clientID = Constants.ghOAuthClientId
             let state = try signers.sign(jwt)
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return """

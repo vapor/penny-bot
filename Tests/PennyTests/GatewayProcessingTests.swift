@@ -17,12 +17,6 @@ class GatewayProcessingTests: XCTestCase {
         LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
-        /// Fake webhook url
-        Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
-        Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
-        Constants.botId = "950695294906007573"
-        Constants.apiBaseUrl = "https://fake.com"
-
         let fakeMainService = await FakeMainService(manager: self.manager)
         self.context = await fakeMainService.context
         Task {
