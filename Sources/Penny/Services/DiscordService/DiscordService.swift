@@ -8,8 +8,8 @@ actor DiscordService {
         case cantFindChannel
     }
     
-    private var discordClient: (any DiscordClient)!
-    private var cache: DiscordCache!
+    private let discordClient: any DiscordClient
+    private let cache: DiscordCache
     private var logger = Logger(label: "DiscordService")
     private var dmChannels: [UserSnowflake: ChannelSnowflake] = [:]
     private var usersAlreadyWarnedAboutClosedDMS: Set<UserSnowflake> = []
@@ -35,11 +35,7 @@ actor DiscordService {
         }
     }
     
-    private init () { }
-    
-    static let shared = DiscordService()
-    
-    func initialize(discordClient: any DiscordClient, cache: DiscordCache) {
+    init(discordClient: any DiscordClient, cache: DiscordCache) {
         self.discordClient = discordClient
         self.cache = cache
     }
@@ -168,7 +164,7 @@ actor DiscordService {
         if canSendToChannel {
             do {
                 canSendToChannel = try await vaporGuild.userHasPermissions(
-                    userId: Snowflake(Constants.botId),
+                    userId: Constants.botId,
                     channelId: channelId,
                     permissions: [.sendMessages]
                 )

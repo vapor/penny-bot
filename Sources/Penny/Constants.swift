@@ -2,17 +2,24 @@ import Foundation
 import DiscordBM
 
 enum Constants {
-    static func env(_ key: String) -> String? {
-        ProcessInfo.processInfo.environment[key]
+    static func env(_ key: String) -> String {
+        if let value = ProcessInfo.processInfo.environment[key] {
+            return value
+        } else {
+            fatalError("""
+            Please set an env value for key '\(key)'.
+            In tests you usually can set dummy values.
+            """)
+        }
     }
     static let vaporGuildId: GuildSnowflake = "431917998102675485"
     static let botDevUserId: UserSnowflake = "290483761559240704"
-    static var botToken: String! = env("BOT_TOKEN")
-    static var botId: String! = env("BOT_APP_ID")
-    static var loggingWebhookUrl: String! = env("LOGGING_WEBHOOK_URL")
-    static var apiBaseUrl: String! = env("API_BASE_URL")
-    static var ghOAuthClientId: String! = env("GH_OAUTH_CLIENT_ID")
-    static var accountLinkOAuthPrivKey: String! = env("ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY")
+    static let botId: UserSnowflake = "950695294906007573"
+    static let botToken = env("BOT_TOKEN")
+    static let loggingWebhookUrl = env("LOGGING_WEBHOOK_URL")
+    static let apiBaseUrl = env("API_BASE_URL")
+    static let ghOAuthClientId = env("GH_OAUTH_CLIENT_ID")
+    static let accountLinkOAuthPrivKey = env("ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY")
 
     enum ServerEmojis {
         case coin
@@ -47,7 +54,6 @@ enum Constants {
         case release = "431926479752921098"
         case jobs = "442420282292961282"
         case status = "459521920241500220"
-
         case logs = "1067060193982156880"
         case proposals = "1104650517549953094"
         case thanks = "443074453719744522"
@@ -58,7 +64,7 @@ enum Constants {
 
         /// Must not send thanks-responses to these channels.
         /// Instead send to the #thanks channel.
-        static var thanksResponseDenyList: Set<ChannelSnowflake> = Set([
+        static let thanksResponseDenyList: Set<ChannelSnowflake> = Set([
             Channels.welcome,
             Channels.news,
             Channels.publications,

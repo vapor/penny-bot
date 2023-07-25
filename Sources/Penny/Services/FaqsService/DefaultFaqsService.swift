@@ -23,16 +23,15 @@ actor DefaultFaqsService: FaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    private init() { }
-
-    static let shared = DefaultFaqsService()
-
-    func initialize(httpClient: HTTPClient) {
+    init(httpClient: HTTPClient) {
         self.httpClient = httpClient
+    }
+
+    func onStart() {
         self.setUpResetItemsTask()
         self.getFreshItemsForCache()
     }
-    
+
     func insert(name: String, value: String) async throws {
         try await self.send(request: .add(name: name, value: value))
     }

@@ -2,7 +2,7 @@ import AWSLambdaEvents
 import Foundation
 
 enum Errors: Error, CustomStringConvertible {
-    case httpRequestFailed(response: Any, file: String = #filePath, line: UInt = #line)
+    case httpRequestFailed(response: any Sendable, file: String = #filePath, line: UInt = #line)
     case signaturesDoNotMatch(found: String, expected: String)
     case headerNotFound(name: String, headers: AWSLambdaEvents.HTTPHeaders)
 

@@ -9,89 +9,25 @@ import XCTest
 class GatewayProcessingTests: XCTestCase {
 
     var responseStorage: FakeResponseStorage { .shared }
-    var manager: FakeManager!
-    
+    let manager = FakeManager()
+    var context: HandlerContext!
+
     override func setUp() async throws {
         /// Disable logging
         LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-        DiscordFactory.bootstrapLoggingSystem = { _ in
-            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-        }
-        /// Fake webhook url
-        Constants.loggingWebhookUrl = "https://discord.com/api/webhooks/106628736/dS7kgaOyaiZE5wl_"
-        Constants.botToken = "afniasdfosdnfoasdifnasdffnpidsanfpiasdfipnsdfpsadfnspif"
-        Constants.botId = "950695294906007573"
-        Constants.apiBaseUrl = "https://fake.com"
-        ServiceFactory.makeUsersService = { FakeUsersService() }
-        ServiceFactory.makePingsService = { FakePingsService() }
-        ServiceFactory.makeFaqsService = { FakeFaqsService() }
-        ServiceFactory.makeProposalsService = { _ in FakeProposalsService() }
-        ServiceFactory.makeCachesService = { FakeCachesService() }
-        ServiceFactory.initiateProposalsChecker = { _ in }
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
-        ReactionCache._tests_reset()
-        self.manager = FakeManager()
-        DiscordFactory.makeBot = { _, _ in self.manager! }
-        DiscordFactory.makeCache = {
-            var storage = DiscordCache.Storage()
-            storage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
-            return await DiscordCache(
-                gatewayManager: $0,
-                intents: [.guilds, .guildMembers],
-                requestAllMembers: .enabled,
-                storage: storage
-            )
+        let fakeMainService = await FakeMainService(manager: self.manager)
+        self.context = await fakeMainService.context
+        Task {
+            try await Penny.start(mainService: fakeMainService)
         }
-        await BotStateManager.shared._tests_reset()
-        Task { try await Penny.main() }
-        await waitForStateManagerShutdownAndDidShutdownSignals()
-    }
-
-    func waitForStateManagerShutdownAndDidShutdownSignals() async {
-        /// Wait for the shutdown signal, then send a `didShutdown` signal.
-        /// in practice, the `didShutdown` signal is sent by another Penny that is online.
-        while let possibleSignal = await responseStorage.awaitResponse(
-            at: .createMessage(channelId: Constants.Channels.logs.id)
-        ).value as? Payloads.CreateMessage {
-            if let signal = possibleSignal.content,
-               StateManagerSignal.shutdown.isInMessage(signal) {
-                let content = await BotStateManager.shared._tests_didShutdownSignalEventContent()
-                await manager.send(event: .init(
-                    opcode: .dispatch,
-                    data: .messageCreate(.init(
-                        id: try! .makeFake(),
-                        channel_id: Constants.Channels.logs.id,
-                        author: .init(
-                            id: Snowflake(Constants.botId),
-                            username: "Penny",
-                            discriminator: "#0"
-                        ),
-                        content: content,
-                        timestamp: .fake,
-                        tts: false,
-                        mention_everyone: false,
-                        mention_roles: [],
-                        attachments: [],
-                        embeds: [],
-                        pinned: false,
-                        type: .default,
-                        mentions: []
-                    ))
-                ))
-                break
-            }
-        }
-
-        /// Wait to make sure the `BotStateManager` cache is already populated.
-        for _ in 1...100 where !(await BotStateManager.shared.canRespond) {
-            try? await Task.sleep(for: .milliseconds(50))
-        }
-        let canRespond = await BotStateManager.shared.canRespond
-        XCTAssert(canRespond, "BotStateManager cache was too late to populate and enable responding")
+        await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
     }
 
     func testCommandsRegisterOnStartup() async throws {
+        await CommandsManager(context: context).registerCommands()
+
         let response = await responseStorage.awaitResponse(
             at: .bulkSetApplicationCommands(applicationId: "11111111")
         ).value
@@ -198,8 +134,6 @@ class GatewayProcessingTests: XCTestCase {
     }
     
     func testBotStateManagerReceivesSignal() async throws {
-        await BotStateManager.shared._tests_setDisableDuration(to: .seconds(3))
-        
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
             as: Payloads.CreateMessage.self
@@ -211,7 +145,7 @@ class GatewayProcessingTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(800))
         let testEvent = Gateway.Event(opcode: .dispatch)
         do {
-            let canRespond = await BotStateManager.shared.canRespond(to: testEvent)
+            let canRespond = await context.botStateManager.canRespond(to: testEvent)
             XCTAssertEqual(canRespond, false)
         }
         
@@ -219,7 +153,7 @@ class GatewayProcessingTests: XCTestCase {
         // `BotBotStateManager.shared.disableDuration` has already been passed
         try await Task.sleep(for: .milliseconds(2600))
         do {
-            let canRespond = await BotStateManager.shared.canRespond(to: testEvent)
+            let canRespond = await context.botStateManager.canRespond(to: testEvent)
             XCTAssertEqual(canRespond, true)
         }
     }
@@ -343,9 +277,7 @@ class GatewayProcessingTests: XCTestCase {
         /// and have already populated `ProposalsChecker.previousProposals`.
 
         /// This is so the proposals are send as soon as they're queued, in tests.
-        await ProposalsChecker.shared._tests_setQueuedProposalsWaitTime(to: -1)
-        await ProposalsChecker.shared.initialize(proposalsService: FakeProposalsService())
-        ProposalsChecker.shared.run()
+        context.workers.proposalsChecker.run()
 
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
         let _messages = await [
@@ -474,18 +406,4 @@ class GatewayProcessingTests: XCTestCase {
             }
         }
     }
-}
-
-private extension DiscordTimestamp {
-    static let fake: DiscordTimestamp = {
-        let string = #""2022-11-23T09:59:04.037259+00:00""#
-        let data = Data(string.utf8)
-        return try! JSONDecoder().decode(DiscordTimestamp.self, from: data)
-    }()
-    
-    static let inFutureFake: DiscordTimestamp = {
-        let string = #""2100-11-23T09:59:04.037259+00:00""#
-        let data = Data(string.utf8)
-        return try! JSONDecoder().decode(DiscordTimestamp.self, from: data)
-    }()
 }

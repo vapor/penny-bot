@@ -31,6 +31,7 @@ extension String {
         return "\(trimmed)\(dots)"
     }
 }
+
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
     /// trims whitespaces and makes the string case, diacritic and punctuation insensitive.

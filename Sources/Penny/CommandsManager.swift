@@ -3,9 +3,11 @@ import Models
 import Logging
 
 struct CommandsManager {
+    let context: HandlerContext
+
     func registerCommands() async {
         let commands = makeCommands()
-        await DiscordService.shared.overwriteCommands(commands)
+        await context.services.discordService.overwriteCommands(commands)
     }
 
     private func makeCommands() -> [Payloads.ApplicationCommandCreate] {

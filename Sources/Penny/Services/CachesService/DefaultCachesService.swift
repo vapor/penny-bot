@@ -3,22 +3,20 @@ import AsyncHTTPClient
 import SotoS3
 
 actor DefaultCachesService: CachesService {
-    var cacheRepo: S3CachesRepository!
+    let cachesRepo: S3CachesRepository
+    let workers: HandlerContext.Workers
     let logger = Logger(label: "DefaultCachesService")
 
-    private init() { }
-
-    static let shared = DefaultCachesService()
-
-    func initialize(awsClient: AWSClient) {
-        self.cacheRepo = .init(awsClient: awsClient, logger: self.logger)
+    init(awsClient: AWSClient, workers: HandlerContext.Workers) {
+        self.cachesRepo = .init(awsClient: awsClient, logger: self.logger)
+        self.workers = workers
     }
 
     /// Get the storage from the repository and then delete it from the repository.
     func getCachedInfoFromRepositoryAndPopulateServices() async {
         do {
-            let storage = try await self.cacheRepo.get()
-            await storage.populateServicesAndReport()
+            let storage = try await self.cachesRepo.get()
+            await storage.populateServicesAndReport(workers: workers)
             self.delete()
         } catch {
             logger.report("Couldn't get CachesStorage", error: error)
@@ -30,7 +28,7 @@ actor DefaultCachesService: CachesService {
     private func delete() {
         Task {
             do {
-                try await self.cacheRepo.delete()
+                try await self.cachesRepo.delete()
             } catch {
                 logger.report("Couldn't delete CachesStorage", error: error)
             }
@@ -40,8 +38,8 @@ actor DefaultCachesService: CachesService {
     /// Save the storage to the repository.
     func gatherCachedInfoAndSaveToRepository() async {
         do {
-            let storage = await CachesStorage.makeFromCachedData()
-            try await self.cacheRepo.save(storage: storage)
+            let storage = await CachesStorage.makeFromCachedData(workers: workers)
+            try await self.cachesRepo.save(storage: storage)
         } catch {
             logger.report("Couldn't save CachesStorage", error: error)
         }

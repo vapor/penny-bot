@@ -25,12 +25,6 @@ actor ReactionCache {
                 totalCoinCount: 0
             )
         }
-
-        mutating func addSender(name: String) {
-            if !senderUsers.contains(name) {
-                senderUsers.append(name)
-            }
-        }
     }
 
     struct ChannelForcedThanksMessage: Sendable, Codable {
@@ -70,9 +64,7 @@ actor ReactionCache {
     private var storage = Storage()
     let logger = Logger(label: "ReactionCache")
 
-    private init() { }
-
-    static var shared = ReactionCache()
+    init() { }
 
     /// This is to prevent spams. In case someone removes their reaction and
     /// reacts again, we should not give coins to message's author anymore.
@@ -96,9 +88,14 @@ actor ReactionCache {
     /// Also message author must not be a bot.
     func messageCanBeRespondedTo(
         channelId: ChannelSnowflake,
-        messageId: MessageSnowflake
+        messageId: MessageSnowflake,
+        context: HandlerContext
     ) async -> Bool {
-        guard let message = await self.getMessage(channelId: channelId, messageId: messageId) else {
+        guard let message = await self.getMessage(
+            channelId: channelId,
+            messageId: messageId,
+            discordService: context.services.discordService
+        ) else {
             return false
         }
         if message.author?.bot ?? false { return false }
@@ -122,9 +119,10 @@ actor ReactionCache {
 
     func getMessage(
         channelId: ChannelSnowflake,
-        messageId: MessageSnowflake
+        messageId: MessageSnowflake,
+        discordService: DiscordService
     ) async -> DiscordChannel.Message? {
-        guard let message = await DiscordService.shared.getPossiblyCachedChannelMessage(
+        guard let message = await discordService.getPossiblyCachedChannelMessage(
             channelId: channelId,
             messageId: messageId
         ) else {
@@ -157,10 +155,10 @@ actor ReactionCache {
             )
         } else {
             let id = [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
-            var previous = storage.normalThanksMessages[id] ?? .for(responseMessageId)
-            previous.totalCoinCount += amount
-            previous.addSender(name: senderName)
-            storage.normalThanksMessages[id] = previous
+            var item = storage.normalThanksMessages[id] ?? .for(responseMessageId)
+            item.senderUsers.appendUnique(senderName)
+            item.totalCoinCount += amount
+            storage.normalThanksMessages[id] = item
         }
     }
 
@@ -191,12 +189,6 @@ actor ReactionCache {
     func getCachedDataForCachesStorage() -> Storage {
         self.storage
     }
-
-#if DEBUG
-    static func _tests_reset() {
-        shared = .init()
-    }
-#endif
 }
 
 private extension Calendar {

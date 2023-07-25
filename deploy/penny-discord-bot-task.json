@@ -26,10 +26,6 @@
                     "value": "https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod"
                 },
                 {
-                    "name": "BOT_APP_ID",
-                    "value": "950695294906007573"
-                },
-                {
                     "name": "GH_OAUTH_CLIENT_ID",
                     "value": "Iv1.683ea075648a5cd2"
                 }

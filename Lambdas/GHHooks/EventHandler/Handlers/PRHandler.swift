@@ -10,8 +10,7 @@ import Foundation
 struct PRHandler {
 
     enum Configuration {
-        /// `49699333` == `dependabot[bot]`.
-        static let usersDenyListIDs: Set<Int> = [49699333]
+        static let userIDDenyList: Set<Int> = [/*dependabot[bot]:*/ 49699333]
     }
 
     let context: HandlerContext
@@ -34,7 +33,7 @@ struct PRHandler {
         let action = try event.action
             .flatMap({ PullRequest.Action(rawValue: $0) })
             .requireValue()
-        guard !Configuration.usersDenyListIDs.contains(pr.user.id) else {
+        guard !Configuration.userIDDenyList.contains(pr.user.id) else {
             return
         }
         switch action {

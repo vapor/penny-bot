@@ -24,23 +24,29 @@ import Logging
 actor BotStateManager {
 
     let id = Int(Date().timeIntervalSince1970)
-    var logger = Logger(label: "BotStateManager")
+    let services: HandlerContext.Services
+    let workers: HandlerContext.Workers
+    let disableDuration: Duration
+    let logger: Logger
 
     var canRespond = false
-    var disableDuration = Duration.seconds(3 * 60)
-    var onStart: (() async -> Void)?
+    var onStarted: (() async -> Void)?
 
-    var cachesService: any CachesService {
-        ServiceFactory.makeCachesService()
+    init(
+        services: HandlerContext.Services,
+        workers: HandlerContext.Workers,
+        disabledDuration: Duration = .seconds(3 * 60)
+    ) {
+        self.services = services
+        self.workers = workers
+        self.disableDuration = disabledDuration
+        var logger = Logger(label: "BotStateManager")
+        logger[metadataKey: "id"] = "\(self.id)"
+        self.logger = logger
     }
 
-    static private(set) var shared = BotStateManager()
-    
-    private init() { }
-    
-    func initialize(onStart: @Sendable @escaping () async -> Void) async {
-        self.logger[metadataKey: "id"] = "\(self.id)"
-        self.onStart = onStart
+    func start(onStarted: @Sendable @escaping () async -> Void) async {
+        self.onStarted = onStarted
         Task { await send(.shutdown) }
         cancelIfCachePopulationTakesTooLong()
     }
@@ -64,7 +70,7 @@ actor BotStateManager {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.logs.id,
               let author = message.author,
-              author.id.rawValue == Constants.botId,
+              author.id == Constants.botId,
               let otherId = message.content.split(whereSeparator: \.isWhitespace).last
         else { return }
         if otherId == "\(self.id)" { return }
@@ -80,7 +86,7 @@ actor BotStateManager {
 
     private func shutdown() {
         Task {
-            await cachesService.gatherCachedInfoAndSaveToRepository()
+            await services.cachesService.gatherCachedInfoAndSaveToRepository()
             await send(.didShutdown)
             self.canRespond = false
 
@@ -95,7 +101,7 @@ actor BotStateManager {
             if canRespond {
                 logger.warning("Received a did-shutdown signal but Cache is already populated")
             } else {
-                await cachesService.getCachedInfoFromRepositoryAndPopulateServices()
+                await services.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
                 await startAllowingResponses()
             }
         }
@@ -103,12 +109,12 @@ actor BotStateManager {
 
     private func startAllowingResponses() async {
         canRespond = true
-        await onStart?()
+        await onStarted?()
     }
 
     private func send(_ signal: StateManagerSignal) async {
         let content = makeSignalMessage(text: signal.rawValue, id: self.id)
-        await DiscordService.shared.sendMessage(
+        await services.discordService.sendMessage(
             channelId: Constants.Channels.logs.id,
             payload: .init(content: content)
         )
@@ -119,14 +125,6 @@ actor BotStateManager {
     }
 
 #if DEBUG
-    func _tests_reset() {
-        BotStateManager.shared = BotStateManager()
-    }
-    
-    func _tests_setDisableDuration(to duration: Duration) {
-        self.disableDuration = duration
-    }
-
     func _tests_didShutdownSignalEventContent() -> String {
         makeSignalMessage(text: StateManagerSignal.didShutdown.rawValue, id: self.id - 10)
     }

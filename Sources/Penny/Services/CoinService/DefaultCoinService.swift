@@ -9,22 +9,18 @@ import DiscordModels
 import Models
 
 actor DefaultUsersService: UsersService {
-    var httpClient: HTTPClient!
+    let httpClient: HTTPClient
     let logger = Logger(label: "DefaultUsersService")
     
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
     
-    static let shared = DefaultUsersService()
-    
-    private init() { }
-    
-    func initialize(httpClient: HTTPClient) throws {
+    init(httpClient: HTTPClient) {
         self.httpClient = httpClient
     }
 
     private func getUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/users")
+        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
 
@@ -56,7 +52,7 @@ actor DefaultUsersService: UsersService {
     }
 
     func postCoin(with coinRequest: UserRequest.DiscordCoinEntry) async throws -> CoinResponse {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl!)/users")
+        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
         let data = try encoder.encode(UserRequest.addCoin(coinRequest))

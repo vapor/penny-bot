@@ -1,8 +1,7 @@
 import Models
 import AsyncHTTPClient
 
-protocol FaqsService {
-    func initialize(httpClient: HTTPClient) async
+protocol FaqsService: Sendable {
     func insert(name: String, value: String) async throws
     func remove(name: String) async throws
     func get(name: String) async throws -> String?

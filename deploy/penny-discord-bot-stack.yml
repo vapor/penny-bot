@@ -652,5 +652,5 @@ Outputs:
   pennyCoinTableARN:
     Value: !GetAtt dynamoPennyCoinTable.Arn
   
-  ghHooksMessageLookupDynamoDBARN:
+  ghHooksMessageLookupTableARN:
     Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn
