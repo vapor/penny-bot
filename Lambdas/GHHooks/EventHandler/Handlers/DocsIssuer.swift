@@ -31,6 +31,41 @@ struct DocsIssuer {
         Set(pr.knownLabels).intersection([.translationUpdate, .noTranslationNeeded]).isEmpty
     }
 
+    func getPRsRelatedToCommit(commitSha: String) async throws -> [SimplePullRequest] {
+        let response = try await context.githubClient.
+        repos_list_pull_requests_associated_with_commit(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name,
+                commit_sha: commitSha
+            )
+        ))
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+
+        return json
+    }
+
+    func getPRFiles(number: Int) async throws -> [DiffEntry] {
+        let response = try await context.githubClient.pulls_list_files(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name,
+                pull_number: number
+            )
+        ))
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+
+        return json
+    }
+
     func fileIssue() async throws {
         let response = try await context.githubClient.issues_create(.init(
             path: .init(

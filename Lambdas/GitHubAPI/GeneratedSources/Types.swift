@@ -36,6 +36,17 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
     func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output
+    /// List pull requests associated with a commit
+    ///
+    /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
+    ///
+    /// To list the open or merged pull requests associated with a branch, you can set the `commit_sha` parameter to the branch name.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
+    func repos_list_pull_requests_associated_with_commit(
+        _ input: Operations.repos_list_pull_requests_associated_with_commit.Input
+    ) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -100,6 +111,14 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
     func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
         async throws -> Operations.pulls_list_review_comments.Output
+    /// List pull requests files
+    ///
+    /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
+    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws
+        -> Operations.pulls_list_files.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -10333,6 +10352,127 @@ public enum Components {
                 case security_and_analysis
             }
         }
+        /// Diff Entry
+        ///
+        /// - Remark: Generated from `#/components/schemas/diff-entry`.
+        public struct diff_entry: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/diff-entry/sha`.
+            public var sha: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/filename`.
+            public var filename: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/status`.
+            @frozen
+            public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case added
+                case removed
+                case modified
+                case renamed
+                case copied
+                case changed
+                case unchanged
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "added": self = .added
+                    case "removed": self = .removed
+                    case "modified": self = .modified
+                    case "renamed": self = .renamed
+                    case "copied": self = .copied
+                    case "changed": self = .changed
+                    case "unchanged": self = .unchanged
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .added: return "added"
+                    case .removed: return "removed"
+                    case .modified: return "modified"
+                    case .renamed: return "renamed"
+                    case .copied: return "copied"
+                    case .changed: return "changed"
+                    case .unchanged: return "unchanged"
+                    }
+                }
+                public static var allCases: [statusPayload] {
+                    [.added, .removed, .modified, .renamed, .copied, .changed, .unchanged]
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/diff-entry/status`.
+            public var status: Components.Schemas.diff_entry.statusPayload
+            /// - Remark: Generated from `#/components/schemas/diff-entry/additions`.
+            public var additions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/diff-entry/deletions`.
+            public var deletions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/diff-entry/changes`.
+            public var changes: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/diff-entry/blob_url`.
+            public var blob_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/raw_url`.
+            public var raw_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/contents_url`.
+            public var contents_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/patch`.
+            public var patch: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/diff-entry/previous_filename`.
+            public var previous_filename: Swift.String?
+            /// Creates a new `diff_entry`.
+            ///
+            /// - Parameters:
+            ///   - sha:
+            ///   - filename:
+            ///   - status:
+            ///   - additions:
+            ///   - deletions:
+            ///   - changes:
+            ///   - blob_url:
+            ///   - raw_url:
+            ///   - contents_url:
+            ///   - patch:
+            ///   - previous_filename:
+            public init(
+                sha: Swift.String,
+                filename: Swift.String,
+                status: Components.Schemas.diff_entry.statusPayload,
+                additions: Swift.Int,
+                deletions: Swift.Int,
+                changes: Swift.Int,
+                blob_url: Swift.String,
+                raw_url: Swift.String,
+                contents_url: Swift.String,
+                patch: Swift.String? = nil,
+                previous_filename: Swift.String? = nil
+            ) {
+                self.sha = sha
+                self.filename = filename
+                self.status = status
+                self.additions = additions
+                self.deletions = deletions
+                self.changes = changes
+                self.blob_url = blob_url
+                self.raw_url = raw_url
+                self.contents_url = contents_url
+                self.patch = patch
+                self.previous_filename = previous_filename
+            }
+            public enum CodingKeys: String, CodingKey {
+                case sha
+                case filename
+                case status
+                case additions
+                case deletions
+                case changes
+                case blob_url
+                case raw_url
+                case contents_url
+                case patch
+                case previous_filename
+            }
+        }
         /// Hypermedia Link
         ///
         /// - Remark: Generated from `#/components/schemas/link`.
@@ -16121,6 +16261,139 @@ public enum Operations {
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
     }
+    /// List pull requests associated with a commit
+    ///
+    /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
+    ///
+    /// To list the open or merged pull requests associated with a branch, you can set the `commit_sha` parameter to the branch name.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
+    public enum repos_list_pull_requests_associated_with_commit {
+        public static let id: String = "repos/list-pull-requests-associated-with-commit"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var commit_sha: Components.Parameters.commit_sha
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - commit_sha:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    commit_sha: Components.Parameters.commit_sha
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.commit_sha = commit_sha
+                }
+            }
+            public var path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers:
+                Operations.repos_list_pull_requests_associated_with_commit.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies:
+                Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path,
+                query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query =
+                    .init(),
+                headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers =
+                    .init(),
+                cookies: Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies =
+                    .init(),
+                body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers:
+                    Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.pull_request_simple])
+                }
+                /// Received HTTP response body
+                public var body:
+                    Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok
+                        .Headers,
+                    body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_pull_requests_associated_with_commit.Output.Ok)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -17458,6 +17731,147 @@ public enum Operations {
             ///
             /// HTTP response code: `200 ok`.
             case ok(Operations.pulls_list_review_comments.Output.Ok)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List pull requests files
+    ///
+    /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
+    public enum pulls_list_files {
+        public static let id: String = "pulls/list-files"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var pull_number: Components.Parameters.pull_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - pull_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    pull_number: Components.Parameters.pull_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.pull_number = pull_number
+                }
+            }
+            public var path: Operations.pulls_list_files.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.pulls_list_files.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.pulls_list_files.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.pulls_list_files.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.pulls_list_files.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.pulls_list_files.Input.Path,
+                query: Operations.pulls_list_files.Input.Query = .init(),
+                headers: Operations.pulls_list_files.Input.Headers = .init(),
+                cookies: Operations.pulls_list_files.Input.Cookies = .init(),
+                body: Operations.pulls_list_files.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.pulls_list_files.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.diff_entry])
+                }
+                /// Received HTTP response body
+                public var body: Operations.pulls_list_files.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.pulls_list_files.Output.Ok.Headers,
+                    body: Operations.pulls_list_files.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.pulls_list_files.Output.Ok)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Internal Error
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/500`.
+            ///
+            /// HTTP response code: `500 internalServerError`.
+            case internalServerError(Components.Responses.internal_error)
+            /// Service unavailable
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Components.Responses.service_unavailable)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

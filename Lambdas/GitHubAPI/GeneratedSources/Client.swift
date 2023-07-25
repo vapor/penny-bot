@@ -294,6 +294,73 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List pull requests associated with a commit
+    ///
+    /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
+    ///
+    /// To list the open or merged pull requests associated with a branch, you can set the `commit_sha` parameter to the branch name.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
+    public func repos_list_pull_requests_associated_with_commit(
+        _ input: Operations.repos_list_pull_requests_associated_with_commit.Input
+    ) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output {
+        try await client.send(
+            input: input,
+            forOperation: Operations.repos_list_pull_requests_associated_with_commit.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/commits/{}/pulls",
+                    parameters: [input.path.owner, input.path.repo, input.path.commit_sha]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers:
+                        Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers =
+                            .init(
+                                Link: try converter.getOptionalHeaderFieldAsText(
+                                    in: response.headerFields,
+                                    name: "Link",
+                                    as: Components.Headers.link.self
+                                )
+                            )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body:
+                        Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body =
+                            try converter.getResponseBodyAsJSON(
+                                [Components.Schemas.pull_request_simple].self,
+                                from: response.body,
+                                transforming: { value in .json(value) }
+                            )
+                    return .ok(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -986,6 +1053,107 @@ public struct Client: APIProtocol {
                             transforming: { value in .json(value) }
                         )
                     return .ok(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
+    /// List pull requests files
+    ///
+    /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
+    public func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws
+        -> Operations.pulls_list_files.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.pulls_list_files.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/pulls/{}/files",
+                    parameters: [input.path.owner, input.path.repo, input.path.pull_number]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.pulls_list_files.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.pulls_list_files.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.diff_entry].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
+                case 422:
+                    let headers: Components.Responses.validation_failed.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.validation_failed.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.validation_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .unprocessableEntity(.init(headers: headers, body: body))
+                case 500:
+                    let headers: Components.Responses.internal_error.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.internal_error.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .internalServerError(.init(headers: headers, body: body))
+                case 503:
+                    let headers: Components.Responses.service_unavailable.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.service_unavailable.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Responses.service_unavailable.Body.jsonPayload.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .serviceUnavailable(.init(headers: headers, body: body))
                 default: return .undocumented(statusCode: response.statusCode, .init())
                 }
             }
