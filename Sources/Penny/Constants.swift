@@ -54,7 +54,6 @@ enum Constants {
         case release = "431926479752921098"
         case jobs = "442420282292961282"
         case status = "459521920241500220"
-
         case logs = "1067060193982156880"
         case proposals = "1104650517549953094"
         case thanks = "443074453719744522"
@@ -65,7 +64,7 @@ enum Constants {
 
         /// Must not send thanks-responses to these channels.
         /// Instead send to the #thanks channel.
-        static var thanksResponseDenyList: Set<ChannelSnowflake> = Set([
+        static let thanksResponseDenyList: Set<ChannelSnowflake> = Set([
             Channels.welcome,
             Channels.news,
             Channels.publications,

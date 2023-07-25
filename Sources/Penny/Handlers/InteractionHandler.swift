@@ -461,7 +461,7 @@ private extension InteractionHandler {
     /// This is because Discord expects us to answer in 3 seconds,
     /// and waiting for auto-pings lambda makes us too slow.
     private func discardingResult(
-        _ operation: @escaping () async throws -> Void,
+        _ operation: @Sendable @escaping () async throws -> Void,
         function: String = #function,
         line: UInt = #line
     ) {

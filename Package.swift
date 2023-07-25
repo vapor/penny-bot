@@ -5,13 +5,9 @@ import PackageDescription
 
 /// Bug alert! Don't move this constant to the end of the file, or it won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
-let swiftSettings: [SwiftSetting] = [
+let baseSwiftSettings: [SwiftSetting] = [
     /// https://github.com/apple/swift/issues/67214
         .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
-    
-    /// `minimal` / `targeted` / `complete`
-    /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
-        .unsafeFlags(["-strict-concurrency=targeted"]),
 
     /// `-enable-upcoming-feature` flags will get removed in the future
     /// and we'll need to remove them from here too.
@@ -33,6 +29,18 @@ let swiftSettings: [SwiftSetting] = [
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
     /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
+]
+
+let swiftSettings: [SwiftSetting] = baseSwiftSettings + [
+    /// `minimal` / `targeted` / `complete`
+    /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
+    .unsafeFlags(["-strict-concurrency=complete"]),
+]
+
+let testsSwiftSettings: [SwiftSetting] = baseSwiftSettings + [
+    /// `minimal` / `targeted` / `complete`
+    /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
+    .unsafeFlags(["-strict-concurrency=targeted"]),
 ]
 
 let package = Package(
@@ -260,7 +268,7 @@ let package = Package(
                 .target(name: "Penny"),
             ],
             path: "./Tests/Fake",
-            swiftSettings: swiftSettings
+            swiftSettings: testsSwiftSettings
         ),
         .testTarget(
             name: "PennyTests",
@@ -271,7 +279,7 @@ let package = Package(
                 .target(name: "GHHooksLambda"),
                 .target(name: "Fake"),
             ],
-            swiftSettings: swiftSettings
+            swiftSettings: testsSwiftSettings
         ),
     ]
 )

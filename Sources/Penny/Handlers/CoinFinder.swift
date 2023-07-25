@@ -213,7 +213,7 @@ private extension Sequence<Substring> {
 }
 
 private extension Substring {
-    private static var ignorable = Set(["", "and", "&"])
+    private static let ignorable = Set(["", "and", "&"])
 
     /// These strings are considered neutral, and in the logic above we can ignore them.
     ///
