@@ -59,6 +59,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
     func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input) async throws
         -> Operations.issues_list_for_repo.Output
+    /// Create an issue
+    ///
+    /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
+    func issues_create(_ input: Operations.issues_create.Input) async throws
+        -> Operations.issues_create.Output
     /// Create an issue comment
     ///
     ///
@@ -16524,6 +16534,352 @@ public enum Operations {
             ///
             /// HTTP response code: `404 notFound`.
             case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Create an issue
+    ///
+    /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
+    public enum issues_create {
+        public static let id: String = "issues/create"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.issues_create.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.issues_create.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.issues_create.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.issues_create.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The title of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title`.
+                    @frozen public enum titlePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title/case2`.
+                        case case2(Swift.Int)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// The title of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title`.
+                    public var title: Operations.issues_create.Input.Body.jsonPayload.titlePayload
+                    /// The contents of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/body`.
+                    public var body: Swift.String?
+                    /// Login for the user that this issue should be assigned to. _NOTE: Only users with push access can set the assignee for new issues. The assignee is silently dropped otherwise. **This field is deprecated.**_
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/assignee`.
+                    public var assignee: Swift.String?
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone`.
+                    @frozen public enum milestonePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone/case1`.
+                        case case1(Swift.String)
+                        /// The `number` of the milestone to associate this issue with. _NOTE: Only users with push access can set the milestone for new issues. The milestone is silently dropped otherwise._
+                        ///
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone/case2`.
+                        case case2(Swift.Int)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone`.
+                    public var milestone:
+                        Operations.issues_create.Input.Body.jsonPayload.milestonePayload?
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload`.
+                    @frozen public enum labelsPayloadPayload: Codable, Equatable, Hashable, Sendable
+                    {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2`.
+                        public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/id`.
+                            public var id: Swift.Int?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/name`.
+                            public var name: Swift.String?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/description`.
+                            public var description: Swift.String?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/color`.
+                            public var color: Swift.String?
+                            /// Creates a new `Case2Payload`.
+                            ///
+                            /// - Parameters:
+                            ///   - id:
+                            ///   - name:
+                            ///   - description:
+                            ///   - color:
+                            public init(
+                                id: Swift.Int? = nil,
+                                name: Swift.String? = nil,
+                                description: Swift.String? = nil,
+                                color: Swift.String? = nil
+                            ) {
+                                self.id = id
+                                self.name = name
+                                self.description = description
+                                self.color = color
+                            }
+                            public enum CodingKeys: String, CodingKey {
+                                case id
+                                case name
+                                case description
+                                case color
+                            }
+                        }
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2`.
+                        case case2(
+                            Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload
+                                .Case2Payload
+                        )
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labels`.
+                    public typealias labelsPayload = [Operations.issues_create.Input.Body
+                        .jsonPayload.labelsPayloadPayload]
+                    /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labels`.
+                    public var labels:
+                        Operations.issues_create.Input.Body.jsonPayload.labelsPayload?
+                    /// Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/assignees`.
+                    public var assignees: [Swift.String]?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - title: The title of the issue.
+                    ///   - body: The contents of the issue.
+                    ///   - assignee: Login for the user that this issue should be assigned to. _NOTE: Only users with push access can set the assignee for new issues. The assignee is silently dropped otherwise. **This field is deprecated.**_
+                    ///   - milestone:
+                    ///   - labels: Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
+                    ///   - assignees: Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
+                    public init(
+                        title: Operations.issues_create.Input.Body.jsonPayload.titlePayload,
+                        body: Swift.String? = nil,
+                        assignee: Swift.String? = nil,
+                        milestone: Operations.issues_create.Input.Body.jsonPayload
+                            .milestonePayload? = nil,
+                        labels: Operations.issues_create.Input.Body.jsonPayload.labelsPayload? =
+                            nil,
+                        assignees: [Swift.String]? = nil
+                    ) {
+                        self.title = title
+                        self.body = body
+                        self.assignee = assignee
+                        self.milestone = milestone
+                        self.labels = labels
+                        self.assignees = assignees
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case title
+                        case body
+                        case assignee
+                        case milestone
+                        case labels
+                        case assignees
+                    }
+                }
+                case json(Operations.issues_create.Input.Body.jsonPayload)
+            }
+            public var body: Operations.issues_create.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.issues_create.Input.Path,
+                query: Operations.issues_create.Input.Query = .init(),
+                headers: Operations.issues_create.Input.Headers = .init(),
+                cookies: Operations.issues_create.Input.Cookies = .init(),
+                body: Operations.issues_create.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Location: Swift.String?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Location:
+                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.issues_create.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.issue)
+                }
+                /// Received HTTP response body
+                public var body: Operations.issues_create.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.issues_create.Output.Created.Headers,
+                    body: Operations.issues_create.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.issues_create.Output.Created)
+            /// Bad Request
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/400`.
+            ///
+            /// HTTP response code: `400 badRequest`.
+            case badRequest(Components.Responses.bad_request)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Service unavailable
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Components.Responses.service_unavailable)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

@@ -54,6 +54,10 @@ struct PRHandler {
 
     func onOpened() async throws {
         try await makeReporter().reportCreation()
+        try await DocsIssuer(
+            context: context,
+            pr: pr
+        )
     }
 
     func onClosed() async throws {
