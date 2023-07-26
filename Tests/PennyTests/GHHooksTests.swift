@@ -374,6 +374,11 @@ class GHHooksTests: XCTestCase {
             eventName: .push,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "push2",
+            eventName: .push,
+            expect: .noResponse
+        )
 
         try await handleEvent(
             key: "release1",

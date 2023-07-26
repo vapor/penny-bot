@@ -17,7 +17,11 @@ struct EventHandler {
         case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories:
             break
         case .push:
-            try await onPush()
+            #warning("fix")
+//            try await DocsIssuer(
+//                context: context,
+//                pr: pr
+//            ).handle()
         default:
             try await onDefault()
         }
@@ -35,21 +39,6 @@ struct EventHandler {
                 """,
                 color: .red
             )])
-        ).guardSuccess()
-    }
-
-    func onPush() async throws {
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.logs.id,
-            payload: .init(
-                embeds: [.init(
-                    title: "Got sample push. Check the logs now.",
-                    description: """
-                    Action: \(context.event.action ?? "null")
-                    Repo: \(context.event.repository?.name ?? "null")
-                    """,
-                    color: .yellow
-                )])
         ).guardSuccess()
     }
 

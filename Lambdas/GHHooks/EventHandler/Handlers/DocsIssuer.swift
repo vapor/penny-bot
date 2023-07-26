@@ -32,14 +32,13 @@ struct DocsIssuer {
     }
 
     func getPRsRelatedToCommit(commitSha: String) async throws -> [SimplePullRequest] {
-        let response = try await context.githubClient.
-        repos_list_pull_requests_associated_with_commit(.init(
-            path: .init(
+        let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+            .init(path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 commit_sha: commitSha
-            )
-        ))
+            ))
+        )
 
         guard case let .ok(ok) = response,
               case let .json(json) = ok.body else {

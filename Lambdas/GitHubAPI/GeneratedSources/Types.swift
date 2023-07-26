@@ -862,6 +862,166 @@ public enum Components {
                 case starred_at
             }
         }
+        /// An enterprise on GitHub.
+        ///
+        /// - Remark: Generated from `#/components/schemas/enterprise`.
+        public struct enterprise: Codable, Equatable, Hashable, Sendable {
+            /// A short description of the enterprise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/description`.
+            public var description: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/enterprise/html_url`.
+            public var html_url: Swift.String
+            /// The enterprise's website URL.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/website_url`.
+            public var website_url: Swift.String?
+            /// Unique identifier of the enterprise
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/enterprise/node_id`.
+            public var node_id: Swift.String
+            /// The name of the enterprise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/name`.
+            public var name: Swift.String
+            /// The slug url identifier for the enterprise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/slug`.
+            public var slug: Swift.String
+            /// - Remark: Generated from `#/components/schemas/enterprise/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/enterprise/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/enterprise/avatar_url`.
+            public var avatar_url: Swift.String
+            /// Creates a new `enterprise`.
+            ///
+            /// - Parameters:
+            ///   - description: A short description of the enterprise.
+            ///   - html_url:
+            ///   - website_url: The enterprise's website URL.
+            ///   - id: Unique identifier of the enterprise
+            ///   - node_id:
+            ///   - name: The name of the enterprise.
+            ///   - slug: The slug url identifier for the enterprise.
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - avatar_url:
+            public init(
+                description: Swift.String? = nil,
+                html_url: Swift.String,
+                website_url: Swift.String? = nil,
+                id: Swift.Int,
+                node_id: Swift.String,
+                name: Swift.String,
+                slug: Swift.String,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                avatar_url: Swift.String
+            ) {
+                self.description = description
+                self.html_url = html_url
+                self.website_url = website_url
+                self.id = id
+                self.node_id = node_id
+                self.name = name
+                self.slug = slug
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.avatar_url = avatar_url
+            }
+            public enum CodingKeys: String, CodingKey {
+                case description
+                case html_url
+                case website_url
+                case id
+                case node_id
+                case name
+                case slug
+                case created_at
+                case updated_at
+                case avatar_url
+            }
+        }
+        /// Request to install an integration on a target
+        ///
+        /// - Remark: Generated from `#/components/schemas/integration-installation-request`.
+        public struct integration_installation_request: Codable, Equatable, Hashable, Sendable {
+            /// Unique identifier of the request installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/node_id`.
+            public var node_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/account`.
+            public struct accountPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/integration-installation-request/account/value1`.
+                public var value1: Components.Schemas.simple_user?
+                /// - Remark: Generated from `#/components/schemas/integration-installation-request/account/value2`.
+                public var value2: Components.Schemas.enterprise?
+                /// Creates a new `accountPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                ///   - value2:
+                public init(
+                    value1: Components.Schemas.simple_user? = nil,
+                    value2: Components.Schemas.enterprise? = nil
+                ) {
+                    self.value1 = value1
+                    self.value2 = value2
+                }
+                public init(from decoder: any Decoder) throws {
+                    value1 = try? .init(from: decoder)
+                    value2 = try? .init(from: decoder)
+                    try DecodingError.verifyAtLeastOneSchemaIsNotNil(
+                        [value1, value2],
+                        type: Self.self,
+                        codingPath: decoder.codingPath
+                    )
+                }
+                public func encode(to encoder: any Encoder) throws {
+                    try value1?.encode(to: encoder)
+                    try value2?.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/account`.
+            public var account: Components.Schemas.integration_installation_request.accountPayload
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/requester`.
+            public var requester: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/created_at`.
+            public var created_at: Foundation.Date
+            /// Creates a new `integration_installation_request`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the request installation.
+            ///   - node_id:
+            ///   - account:
+            ///   - requester:
+            ///   - created_at:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String? = nil,
+                account: Components.Schemas.integration_installation_request.accountPayload,
+                requester: Components.Schemas.simple_user,
+                created_at: Foundation.Date
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.account = account
+                self.requester = requester
+                self.created_at = created_at
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case account
+                case requester
+                case created_at
+            }
+        }
         /// The permissions granted to the user access token.
         ///
         /// - Remark: Generated from `#/components/schemas/app-permissions`.
@@ -2109,6 +2269,205 @@ public enum Components {
                 case organization_self_hosted_runners
                 case organization_user_blocking
                 case team_discussions
+            }
+        }
+        /// Installation
+        ///
+        /// - Remark: Generated from `#/components/schemas/installation`.
+        public struct installation: Codable, Equatable, Hashable, Sendable {
+            /// The ID of the installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/installation/account`.
+            public struct accountPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/installation/account/value1`.
+                public var value1: Components.Schemas.simple_user?
+                /// - Remark: Generated from `#/components/schemas/installation/account/value2`.
+                public var value2: Components.Schemas.enterprise?
+                /// Creates a new `accountPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                ///   - value2:
+                public init(
+                    value1: Components.Schemas.simple_user? = nil,
+                    value2: Components.Schemas.enterprise? = nil
+                ) {
+                    self.value1 = value1
+                    self.value2 = value2
+                }
+                public init(from decoder: any Decoder) throws {
+                    value1 = try? .init(from: decoder)
+                    value2 = try? .init(from: decoder)
+                    try DecodingError.verifyAtLeastOneSchemaIsNotNil(
+                        [value1, value2],
+                        type: Self.self,
+                        codingPath: decoder.codingPath
+                    )
+                }
+                public func encode(to encoder: any Encoder) throws {
+                    try value1?.encode(to: encoder)
+                    try value2?.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/installation/account`.
+            public var account: Components.Schemas.installation.accountPayload
+            /// Describe whether all repositories have been selected or there's a selection involved
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
+            @frozen
+            public enum repository_selectionPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case all
+                case selected
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "all": self = .all
+                    case "selected": self = .selected
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .all: return "all"
+                    case .selected: return "selected"
+                    }
+                }
+                public static var allCases: [repository_selectionPayload] { [.all, .selected] }
+            }
+            /// Describe whether all repositories have been selected or there's a selection involved
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
+            public var repository_selection:
+                Components.Schemas.installation.repository_selectionPayload
+            /// - Remark: Generated from `#/components/schemas/installation/access_tokens_url`.
+            public var access_tokens_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/repositories_url`.
+            public var repositories_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/app_id`.
+            public var app_id: Swift.Int
+            /// The ID of the user or organization this token is being scoped to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/target_id`.
+            public var target_id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/installation/target_type`.
+            public var target_type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/permissions`.
+            public var permissions: Components.Schemas.app_permissions
+            /// - Remark: Generated from `#/components/schemas/installation/events`.
+            public var events: [Swift.String]
+            /// - Remark: Generated from `#/components/schemas/installation/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/installation/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/installation/single_file_name`.
+            public var single_file_name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/has_multiple_single_files`.
+            public var has_multiple_single_files: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/installation/single_file_paths`.
+            public var single_file_paths: [Swift.String]?
+            /// - Remark: Generated from `#/components/schemas/installation/app_slug`.
+            public var app_slug: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/suspended_by`.
+            public var suspended_by: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/installation/suspended_at`.
+            public var suspended_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/installation/contact_email`.
+            public var contact_email: Swift.String?
+            /// Creates a new `installation`.
+            ///
+            /// - Parameters:
+            ///   - id: The ID of the installation.
+            ///   - account:
+            ///   - repository_selection: Describe whether all repositories have been selected or there's a selection involved
+            ///   - access_tokens_url:
+            ///   - repositories_url:
+            ///   - html_url:
+            ///   - app_id:
+            ///   - target_id: The ID of the user or organization this token is being scoped to.
+            ///   - target_type:
+            ///   - permissions:
+            ///   - events:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - single_file_name:
+            ///   - has_multiple_single_files:
+            ///   - single_file_paths:
+            ///   - app_slug:
+            ///   - suspended_by:
+            ///   - suspended_at:
+            ///   - contact_email:
+            public init(
+                id: Swift.Int,
+                account: Components.Schemas.installation.accountPayload,
+                repository_selection: Components.Schemas.installation.repository_selectionPayload,
+                access_tokens_url: Swift.String,
+                repositories_url: Swift.String,
+                html_url: Swift.String,
+                app_id: Swift.Int,
+                target_id: Swift.Int,
+                target_type: Swift.String,
+                permissions: Components.Schemas.app_permissions,
+                events: [Swift.String],
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                single_file_name: Swift.String,
+                has_multiple_single_files: Swift.Bool? = nil,
+                single_file_paths: [Swift.String]? = nil,
+                app_slug: Swift.String,
+                suspended_by: Components.Schemas.nullable_simple_user,
+                suspended_at: Foundation.Date,
+                contact_email: Swift.String? = nil
+            ) {
+                self.id = id
+                self.account = account
+                self.repository_selection = repository_selection
+                self.access_tokens_url = access_tokens_url
+                self.repositories_url = repositories_url
+                self.html_url = html_url
+                self.app_id = app_id
+                self.target_id = target_id
+                self.target_type = target_type
+                self.permissions = permissions
+                self.events = events
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.single_file_name = single_file_name
+                self.has_multiple_single_files = has_multiple_single_files
+                self.single_file_paths = single_file_paths
+                self.app_slug = app_slug
+                self.suspended_by = suspended_by
+                self.suspended_at = suspended_at
+                self.contact_email = contact_email
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case account
+                case repository_selection
+                case access_tokens_url
+                case repositories_url
+                case html_url
+                case app_id
+                case target_id
+                case target_type
+                case permissions
+                case events
+                case created_at
+                case updated_at
+                case single_file_name
+                case has_multiple_single_files
+                case single_file_paths
+                case app_slug
+                case suspended_by
+                case suspended_at
+                case contact_email
             }
         }
         /// License Simple
@@ -10473,6 +10832,119 @@ public enum Components {
                 case previous_filename
             }
         }
+        /// A commit.
+        ///
+        /// - Remark: Generated from `#/components/schemas/simple-commit`.
+        public struct simple_commit: Codable, Equatable, Hashable, Sendable {
+            /// SHA for the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/id`.
+            public var id: Swift.String
+            /// SHA for the commit's tree
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/tree_id`.
+            public var tree_id: Swift.String
+            /// Message describing the purpose of the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/message`.
+            public var message: Swift.String
+            /// Timestamp of the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/timestamp`.
+            public var timestamp: Foundation.Date
+            /// Information about the Git author
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
+            public struct authorPayload: Codable, Equatable, Hashable, Sendable {
+                /// Name of the commit's author
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/author/name`.
+                public var name: Swift.String
+                /// Git email address of the commit's author
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/author/email`.
+                public var email: Swift.String
+                /// Creates a new `authorPayload`.
+                ///
+                /// - Parameters:
+                ///   - name: Name of the commit's author
+                ///   - email: Git email address of the commit's author
+                public init(name: Swift.String, email: Swift.String) {
+                    self.name = name
+                    self.email = email
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case name
+                    case email
+                }
+            }
+            /// Information about the Git author
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
+            public var author: Components.Schemas.simple_commit.authorPayload
+            /// Information about the Git committer
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/committer`.
+            public struct committerPayload: Codable, Equatable, Hashable, Sendable {
+                /// Name of the commit's committer
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/committer/name`.
+                public var name: Swift.String
+                /// Git email address of the commit's committer
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/committer/email`.
+                public var email: Swift.String
+                /// Creates a new `committerPayload`.
+                ///
+                /// - Parameters:
+                ///   - name: Name of the commit's committer
+                ///   - email: Git email address of the commit's committer
+                public init(name: Swift.String, email: Swift.String) {
+                    self.name = name
+                    self.email = email
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case name
+                    case email
+                }
+            }
+            /// Information about the Git committer
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/committer`.
+            public var committer: Components.Schemas.simple_commit.committerPayload
+            /// Creates a new `simple_commit`.
+            ///
+            /// - Parameters:
+            ///   - id: SHA for the commit
+            ///   - tree_id: SHA for the commit's tree
+            ///   - message: Message describing the purpose of the commit
+            ///   - timestamp: Timestamp of the commit
+            ///   - author: Information about the Git author
+            ///   - committer: Information about the Git committer
+            public init(
+                id: Swift.String,
+                tree_id: Swift.String,
+                message: Swift.String,
+                timestamp: Foundation.Date,
+                author: Components.Schemas.simple_commit.authorPayload,
+                committer: Components.Schemas.simple_commit.committerPayload
+            ) {
+                self.id = id
+                self.tree_id = tree_id
+                self.message = message
+                self.timestamp = timestamp
+                self.author = author
+                self.committer = committer
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case tree_id
+                case message
+                case timestamp
+                case author
+                case committer
+            }
+        }
         /// Hypermedia Link
         ///
         /// - Remark: Generated from `#/components/schemas/link`.
@@ -14034,6 +14506,32 @@ public enum Components {
                 case mentions_count
                 case discussion_url
                 case reactions
+            }
+        }
+        /// The GitHub App installation. This property is included when the event is configured for and sent to a GitHub App.
+        ///
+        /// - Remark: Generated from `#/components/schemas/simple-installation`.
+        public struct simple_installation: Codable, Equatable, Hashable, Sendable {
+            /// The ID of the installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-installation/id`.
+            public var id: Swift.Int
+            /// The global node ID of the installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-installation/node_id`.
+            public var node_id: Swift.String?
+            /// Creates a new `simple_installation`.
+            ///
+            /// - Parameters:
+            ///   - id: The ID of the installation.
+            ///   - node_id: The global node ID of the installation.
+            public init(id: Swift.Int, node_id: Swift.String? = nil) {
+                self.id = id
+                self.node_id = node_id
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
             }
         }
     }
