@@ -27,8 +27,8 @@ struct DocsIssuer {
             return
         }
         for pr in try await getPRsRelatedToCommit() {
-            guard isNotExemptFromNewIssue(pr: pr) else {
-                logger.warning(
+            guard needsNewIssue(pr: pr) else {
+                logger.debug(
                     "Will not file issue for docs push PR because it's exempt from new issues",
                     metadata: ["number": .stringConvertible(pr.number)]
                 )
@@ -41,7 +41,7 @@ struct DocsIssuer {
                 file.filename.hasPrefix("docs/") &&
                 [.added, .modified].contains(file.status)
             }) else {
-                logger.warning(
+                logger.debug(
                     "Will not file issue for docs push PR because no docs files are added or modified",
                     metadata: ["number": .stringConvertible(pr.number)]
                 )
@@ -52,7 +52,7 @@ struct DocsIssuer {
     }
 
     /// Should not contain any labels that indicate no need for a new issue.
-    func isNotExemptFromNewIssue(pr: SimplePullRequest) -> Bool {
+    func needsNewIssue(pr: SimplePullRequest) -> Bool {
         Set(pr.knownLabels).intersection([.translationUpdate, .noTranslationNeeded]).isEmpty
     }
 
