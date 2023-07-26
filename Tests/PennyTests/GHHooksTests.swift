@@ -506,6 +506,7 @@ class GHHooksTests: XCTestCase {
                 transport: FakeClientTransport()
             ),
             messageLookupRepo: FakeMessageLookupRepo(),
+            leafRenderer: .forGHHooks(eventLoop: httpClient.eventLoopGroup.next()),
             logger: Logger(label: "GHHooksTests")
         )
     }
