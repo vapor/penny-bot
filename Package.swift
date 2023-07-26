@@ -171,7 +171,6 @@ let package = Package(
             dependencies: [
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .product(name: "Crypto", package: "swift-crypto"),
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
@@ -224,6 +223,7 @@ let package = Package(
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Atomics", package: "swift-atomics"),
+                .product(name: "Crypto", package: "swift-crypto"),
             ],
             path: "./Lambdas/GitHubAPI",
             resources: [

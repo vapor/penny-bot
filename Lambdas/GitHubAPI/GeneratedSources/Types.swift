@@ -2622,7 +2622,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/html_url`.
             public var html_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/repository/description`.
-            public var description: Swift.String
+            public var description: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/fork`.
             public var fork: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/repository/url`.
@@ -2710,7 +2710,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/svn_url`.
             public var svn_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/repository/homepage`.
-            public var homepage: Swift.String
+            public var homepage: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/language`.
             public var language: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/forks_count`.
@@ -3982,7 +3982,7 @@ public enum Components {
                 owner: Components.Schemas.simple_user,
                 _private: Swift.Bool,
                 html_url: Swift.String,
-                description: Swift.String,
+                description: Swift.String? = nil,
                 fork: Swift.Bool,
                 url: Swift.String,
                 archive_url: Swift.String,
@@ -4026,7 +4026,7 @@ public enum Components {
                 mirror_url: Swift.String? = nil,
                 hooks_url: Swift.String,
                 svn_url: Swift.String,
-                homepage: Swift.String,
+                homepage: Swift.String? = nil,
                 language: Swift.String? = nil,
                 forks_count: Swift.Int,
                 stargazers_count: Swift.Int,
@@ -12221,7 +12221,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/deployments_url`.
                     public var deployments_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/description`.
-                    public var description: Swift.String
+                    public var description: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/downloads_url`.
                     public var downloads_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/events_url`.
@@ -12433,7 +12433,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_discussions`.
                     public var has_discussions: Swift.Bool
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/homepage`.
-                    public var homepage: Swift.String
+                    public var homepage: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/language`.
                     public var language: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/master_branch`.
@@ -12674,7 +12674,7 @@ public enum Components {
                         contents_url: Swift.String,
                         contributors_url: Swift.String,
                         deployments_url: Swift.String,
-                        description: Swift.String,
+                        description: Swift.String? = nil,
                         downloads_url: Swift.String,
                         events_url: Swift.String,
                         fork: Swift.Bool,
@@ -12720,7 +12720,7 @@ public enum Components {
                         has_wiki: Swift.Bool,
                         has_pages: Swift.Bool,
                         has_discussions: Swift.Bool,
-                        homepage: Swift.String,
+                        homepage: Swift.String? = nil,
                         language: Swift.String? = nil,
                         master_branch: Swift.String? = nil,
                         archived: Swift.Bool,
@@ -13112,7 +13112,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/deployments_url`.
                     public var deployments_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/description`.
-                    public var description: Swift.String
+                    public var description: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/downloads_url`.
                     public var downloads_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/events_url`.
@@ -13326,9 +13326,9 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_discussions`.
                     public var has_discussions: Swift.Bool
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/homepage`.
-                    public var homepage: Swift.String
+                    public var homepage: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/language`.
-                    public var language: Swift.String
+                    public var language: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/master_branch`.
                     public var master_branch: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/archived`.
@@ -13523,7 +13523,7 @@ public enum Components {
                         contents_url: Swift.String,
                         contributors_url: Swift.String,
                         deployments_url: Swift.String,
-                        description: Swift.String,
+                        description: Swift.String? = nil,
                         downloads_url: Swift.String,
                         events_url: Swift.String,
                         fork: Swift.Bool,
@@ -13570,8 +13570,8 @@ public enum Components {
                         has_wiki: Swift.Bool,
                         has_pages: Swift.Bool,
                         has_discussions: Swift.Bool,
-                        homepage: Swift.String,
-                        language: Swift.String,
+                        homepage: Swift.String? = nil,
+                        language: Swift.String? = nil,
                         master_branch: Swift.String? = nil,
                         archived: Swift.Bool,
                         disabled: Swift.Bool,

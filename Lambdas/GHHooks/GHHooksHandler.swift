@@ -5,7 +5,6 @@ import SotoCore
 import DiscordHTTP
 import GitHubAPI
 import DiscordUtilities
-import Crypto
 import Logging
 import Extensions
 import LambdasShared
@@ -32,8 +31,6 @@ struct GHHooksHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
-        context.logger.trace("Handler will initialize")
-
         self.logger = context.logger
         /// We can remove this if/when the lambda runtime gets support for
         /// bootstrapping the logging system which it appears to not have.
@@ -148,20 +145,12 @@ struct GHHooksHandler: LambdaHandler {
         guard let signature = request.headers.first(name: "x-hub-signature-256") else {
             throw Errors.headerNotFound(name: "x-hub-signature-256", headers: request.headers)
         }
-        let hmacMessageData = Data((request.body ?? "").utf8)
-        let secret = try await getWebhookSecret()
-        var hmac = HMAC<SHA256>.init(key: secret)
-        hmac.update(data: hmacMessageData)
-        let mac = hmac.finalize()
-        let expectedSignature = "sha256=" + mac.hexDigest()
-        guard signature == expectedSignature else {
-            throw Errors.signaturesDoNotMatch(found: signature, expected: expectedSignature)
-        }
-    }
-
-    func getWebhookSecret() async throws -> SymmetricKey {
+        let body = Data((request.body ?? "").utf8)
         let secret = try await secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
-        let data = Data(secret.utf8)
-        return SymmetricKey(data: data)
+        try Verifier.verifyWebhookSignature(
+            signatureHeader: signature,
+            requestBody: body,
+            secret: secret
+        )
     }
 }

@@ -349,13 +349,18 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             expect: .noResponse
         )
-
         /// From `dependabot[bot]` so should be ignored
         try await handleEvent(
             key: "pr12",
             eventName: .pull_request,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "pr13",
+            eventName: .pull_request,
+            expect: .response(at: .issueAndPRs, type: .create)
+        )
+
 
         try await handleEvent(
             key: "projects_v2_item1",
