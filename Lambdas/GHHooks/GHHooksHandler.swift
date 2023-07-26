@@ -132,7 +132,10 @@ struct GHHooksHandler: LambdaHandler {
                 discordClient: discordClient,
                 githubClient: githubClient,
                 messageLookupRepo: self.messageLookupRepo,
-                leafRenderer: .forGHHooks(eventLoop: context.eventLoop),
+                leafRenderer: try .forGHHooks(
+                    httpClient: httpClient,
+                    logger: logger
+                ),
                 logger: logger
             )
         ).handle()

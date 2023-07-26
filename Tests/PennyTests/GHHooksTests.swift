@@ -513,6 +513,14 @@ class GHHooksTests: XCTestCase {
     func makeContext(eventName: GHEvent.Kind, eventKey: String) throws -> HandlerContext {
         let data = TestData.for(ghEventKey: eventKey)!
         let event = try decoder.decode(GHEvent.self, from: data)
+        return try makeContext(
+            eventName: eventName,
+            event: event
+        )
+    }
+
+    func makeContext(eventName: GHEvent.Kind, event: GHEvent) throws -> HandlerContext {
+        let logger = Logger(label: "GHHooksTests")
         return HandlerContext(
             eventName: eventName,
             event: event,
@@ -523,24 +531,11 @@ class GHHooksTests: XCTestCase {
                 transport: FakeClientTransport()
             ),
             messageLookupRepo: FakeMessageLookupRepo(),
-            leafRenderer: .forGHHooks(eventLoop: httpClient.eventLoopGroup.next()),
-            logger: Logger(label: "GHHooksTests")
-        )
-    }
-
-    func makeContext(eventName: GHEvent.Kind, event: GHEvent) throws -> HandlerContext {
-        HandlerContext(
-            eventName: eventName,
-            event: event,
-            httpClient: httpClient,
-            discordClient: FakeDiscordClient(),
-            githubClient: Client(
-                serverURL: try Servers.server1(),
-                transport: FakeClientTransport()
+            leafRenderer: try .forGHHooks(
+                httpClient: httpClient,
+                logger: logger
             ),
-            messageLookupRepo: FakeMessageLookupRepo(),
-            leafRenderer: .forGHHooks(eventLoop: httpClient.eventLoopGroup.next()),
-            logger: Logger(label: "GHHooksTests")
+            logger: logger
         )
     }
 
