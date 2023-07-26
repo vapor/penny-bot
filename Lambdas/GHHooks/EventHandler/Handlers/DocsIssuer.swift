@@ -91,14 +91,16 @@ struct DocsIssuer {
     }
 
     func fileIssue(number: Int) async throws {
+        let title = try await self.renderIssueTitle(number: number)
+        let description = try await self.renderIssueDescription(number: number)
         let response = try await context.githubClient.issues_create(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             ),
             body: .json(.init(
-                title: .case1(self.makeIssueTitle(number: number)),
-                body: self.makeIssueDescription(number: number)
+                title: .case1(title),
+                body: description
             ))
         ))
 
@@ -107,29 +109,17 @@ struct DocsIssuer {
         }
     }
 
-    func makeIssueTitle(number: Int) -> String {
-        "Translation needed for #\(number)"
+    func renderIssueTitle(number: Int) async throws -> String {
+        try await context.leafRenderer.render(
+            path: "translation_needed.title",
+            context: ["number": .int(number)]
+        )
     }
 
-    func makeIssueDescription(number: Int) -> String {
-        return """
-        ---
-        title: Translation needed for #\(number)
-        ---
-
-        The docs have been updated in PR #\(number). The translations should be updated if required.
-
-        Languages:
-        - [ ] English
-        - [ ] Chinese
-        - [ ] German
-        - [ ] Dutch
-        - [ ] Italian
-        - [ ] Spanish
-        - [ ] Polish
-        - [ ] Korean
-
-        Assigned to @vapor/translators - please submit a PR with the relevant updates and check the box once merged. Please ensure you tag your PR with the `translation-update` so it doesn't create a new issue!
-        """
+    func renderIssueDescription(number: Int) async throws -> String {
+        try await context.leafRenderer.render(
+            path: "translation_needed.description",
+            context: ["number": .int(number)]
+        )
     }
 }

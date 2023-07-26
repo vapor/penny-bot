@@ -256,11 +256,9 @@ class GHHooksTests: XCTestCase {
         /apps/ @octocat
         /apps/github
         """
-        let data = TestData.for(ghEventKey: "pr1")!
-        let event = try decoder.decode(GHEvent.self, from: data)
         let context = try makeContext(
             eventName: .pull_request,
-            event: event
+            eventKey: "pr1"
         )
         let handler = try ReleaseMaker(
             context: context,
@@ -274,11 +272,9 @@ class GHHooksTests: XCTestCase {
     }
 
     func testMakeReleaseBody() async throws {
-        let data = TestData.for(ghEventKey: "pr4")!
-        let event = try decoder.decode(GHEvent.self, from: data)
         let context = try makeContext(
             eventName: .pull_request,
-            event: event
+            eventKey: "pr4"
         )
         let handler = try ReleaseMaker(
             context: context,
@@ -291,6 +287,24 @@ class GHHooksTests: XCTestCase {
             newVersion: "v2.4.5"
         )
         XCTAssertEqual(body, "## What\'s Changed\nUse GH OpenAPI spec + swift-oapi-generator to generate GHHooks models by @MahdiBM in #61\n\n> Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\n> \n> The downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\n> The upside is we won’t need to make these models / api-endpoints in the future.\n\n\n## Reviewers\nThanks to the reviewers for their help:\n- @ffried\n- @dnadoba\n\n###### _This patch was released by @MahdiBM._\n\n**Full Changelog**: https://github.com/vapor/penny-bot/compare/v2.3.1...v2.4.5")
+    }
+
+    func testLeafRenders() async throws {
+        let context = try makeContext(
+            eventName: .push,
+            eventKey: "push2"
+        )
+        let issuer = try DocsIssuer(context: context)
+
+        do {
+            let rendered = try await issuer.renderIssueTitle(number: 1)
+            XCTAssertGreaterThan(rendered.count, 5)
+        }
+
+        do {
+            let rendered = try await issuer.renderIssueDescription(number: 2999)
+            XCTAssertGreaterThan(rendered.count, 5)
+        }
     }
 
     func testEventHandler() async throws {
@@ -493,6 +507,24 @@ class GHHooksTests: XCTestCase {
                 line: line
             )
         }
+    }
+
+    func makeContext(eventName: GHEvent.Kind, eventKey: String) throws -> HandlerContext {
+        let data = TestData.for(ghEventKey: eventKey)!
+        let event = try decoder.decode(GHEvent.self, from: data)
+        return HandlerContext(
+            eventName: eventName,
+            event: event,
+            httpClient: httpClient,
+            discordClient: FakeDiscordClient(),
+            githubClient: Client(
+                serverURL: try Servers.server1(),
+                transport: FakeClientTransport()
+            ),
+            messageLookupRepo: FakeMessageLookupRepo(),
+            leafRenderer: .forGHHooks(eventLoop: httpClient.eventLoopGroup.next()),
+            logger: Logger(label: "GHHooksTests")
+        )
     }
 
     func makeContext(eventName: GHEvent.Kind, event: GHEvent) throws -> HandlerContext {
