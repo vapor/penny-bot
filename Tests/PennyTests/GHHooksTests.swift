@@ -298,7 +298,8 @@ class GHHooksTests: XCTestCase {
 
         do {
             let rendered = try await issuer.renderIssueTitle(number: 1)
-            XCTAssertGreaterThan(rendered.count, 5)
+            /// First test, assert if the string conversion stuff works at all.
+            XCTAssertEqual(rendered, "Translation needed for 1")
         }
 
         do {
