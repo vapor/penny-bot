@@ -1,7 +1,8 @@
 import GitHubAPI
 import DiscordBM
+import Logging
 
-/// Sends a "Need translation" message for pull requests that don't have the ""
+/// Sends a "Need translation" message for each PR in a push-commit that needs that.
 struct DocsIssuer {
 
     enum Configuration {
@@ -9,34 +10,58 @@ struct DocsIssuer {
     }
 
     let context: HandlerContext
-    let pr: PullRequest
-    let number: Int
+    let commitSHA: String
     let repo: Repository
+    var logger: Logger {
+        context.logger
+    }
 
-    init(context: HandlerContext, pr: PullRequest) throws {
+    init(context: HandlerContext) throws {
         self.context = context
-        self.pr = pr
-        self.number = try context.event.number.requireValue()
+        self.commitSHA = try context.event.after.requireValue()
         self.repo = try context.event.repository.requireValue()
     }
 
     func handle() async throws {
-        guard repo.id == Configuration.docsRepoID,
-              isNotExemptFromNewIssues()
-        else { return }
-        try await fileIssue()
+        guard repo.id == Configuration.docsRepoID else {
+            return
+        }
+        for pr in try await getPRsRelatedToCommit() {
+            guard isNotExemptFromNewIssue(pr: pr) else {
+                logger.warning(
+                    "Will not file issue for docs push PR because it's exempt from new issues",
+                    metadata: ["number": .stringConvertible(pr.number)]
+                )
+                continue
+            }
+            let files = try await getPRFiles(number: pr.number)
+            /// PR must contain file changes for files that are in the `docs` directory.
+            /// Otherwise there is nothing to be translated and there is no need for a new issue.
+            guard files.contains(where: { file in
+                file.filename.hasPrefix("docs/") &&
+                [.added, .modified].contains(file.status)
+            }) else {
+                logger.warning(
+                    "Will not file issue for docs push PR because no docs files are added or modified",
+                    metadata: ["number": .stringConvertible(pr.number)]
+                )
+                continue
+            }
+            try await fileIssue(number: pr.number)
+        }
     }
 
-    func isNotExemptFromNewIssues() -> Bool {
+    /// Should not contain any labels that indicate no need for a new issue.
+    func isNotExemptFromNewIssue(pr: SimplePullRequest) -> Bool {
         Set(pr.knownLabels).intersection([.translationUpdate, .noTranslationNeeded]).isEmpty
     }
 
-    func getPRsRelatedToCommit(commitSha: String) async throws -> [SimplePullRequest] {
+    func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
         let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
             .init(path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                commit_sha: commitSha
+                commit_sha: commitSHA
             ))
         )
 
@@ -65,15 +90,15 @@ struct DocsIssuer {
         return json
     }
 
-    func fileIssue() async throws {
+    func fileIssue(number: Int) async throws {
         let response = try await context.githubClient.issues_create(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             ),
             body: .json(.init(
-                title: .case1(self.makeIssueTitle()),
-                body: self.makeIssueDescription()
+                title: .case1(self.makeIssueTitle(number: number)),
+                body: self.makeIssueDescription(number: number)
             ))
         ))
 
@@ -82,11 +107,11 @@ struct DocsIssuer {
         }
     }
 
-    func makeIssueTitle() -> String {
+    func makeIssueTitle(number: Int) -> String {
         "Translation needed for #\(number)"
     }
 
-    func makeIssueDescription() -> String {
+    func makeIssueDescription(number: Int) -> String {
         return """
         ---
         title: Translation needed for #\(number)

@@ -14,14 +14,10 @@ struct EventHandler {
             try await ReleaseHandler(context: context).handle()
         case .ping:
             try await onPing()
+        case .push:
+            try await DocsIssuer(context: context).handle()
         case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories:
             break
-        case .push:
-            #warning("fix")
-//            try await DocsIssuer(
-//                context: context,
-//                pr: pr
-//            ).handle()
         default:
             try await onDefault()
         }

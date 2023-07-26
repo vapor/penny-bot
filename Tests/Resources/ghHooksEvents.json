@@ -8621,12 +8621,12 @@
     "push2": {
         "ref": "refs/heads/mmbm-replace-docs-issuer",
         "before": "e27518c0ee0a3b11fbab87bdd3a546b796161ba4",
-        "after": "f3f3b887eb83888a6a4d509ef9476c3141e3d5b4",
+        "after": "de38fa822a0a5f3c20367f877b6366b040a9ba70",
         "repository": {
             "id": 466160112,
             "node_id": "R_kgDOG8kJ8A",
-            "name": "penny-bot",
-            "full_name": "vapor/penny-bot",
+            "name": "docs",
+            "full_name": "vapor/docs",
             "private": false,
             "owner": {
                 "name": "vapor",

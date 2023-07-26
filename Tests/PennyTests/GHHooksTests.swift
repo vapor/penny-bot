@@ -374,6 +374,7 @@ class GHHooksTests: XCTestCase {
             eventName: .push,
             expect: .noResponse
         )
+        // TODO: Should assert that `create_issue` endpoint is called after this.
         try await handleEvent(
             key: "push2",
             eventName: .push,
