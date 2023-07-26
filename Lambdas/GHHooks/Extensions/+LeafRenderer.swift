@@ -80,9 +80,9 @@ private struct DocsLeafSource: LeafSource {
         }) else {
             return eventLoop.makeFailedFuture(Errors.unsupportedTemplate(template))
         }
-        #warning("change")
-        let repoURL = "https://raw.githubusercontent.com/vapor/docs/main"
-        let url = "\(repoURL)/.github/workflows/translation-issue-template.md"
+        #warning("change to main branch")
+        let repoURL = "https://raw.githubusercontent.com/vapor/docs/mmbm-update-translation-needed-ci"
+        let url = "\(repoURL)/.github/templates/\(template)"
         let request = try HTTPClient.Request(url: url)
         return httpClient.execute(request: request).flatMapThrowing { response in
             guard response.status == .ok else {
