@@ -61,6 +61,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
+        .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
@@ -181,6 +182,8 @@ let package = Package(
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "Collections", package: "swift-collections"),
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "GitHubAPI"),
                 .target(name: "Extensions"),
                 .target(name: "LambdasShared"),
@@ -224,8 +227,7 @@ let package = Package(
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Atomics", package: "swift-atomics"),
-                .product(name: "Crypto", package: "swift-crypto"),
-                .product(name: "LeafKit", package: "leaf-kit")
+                .product(name: "Crypto", package: "swift-crypto")
             ],
             path: "./Lambdas/GitHubAPI",
             resources: [

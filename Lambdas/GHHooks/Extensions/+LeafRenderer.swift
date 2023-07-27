@@ -35,11 +35,6 @@ extension LeafRenderer {
             eventLoop: httpClient.eventLoopGroup.any()
         )
     }
-
-    func render(path: String, context: [String: LeafData]) async throws -> String {
-        let buffer = try await self.render(path: "\(path).leaf", context: context).get()
-        return String(buffer: buffer)
-    }
 }
 
 private struct DocsLeafSource: LeafSource {
