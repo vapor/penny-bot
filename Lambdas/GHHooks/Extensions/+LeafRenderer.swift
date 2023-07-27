@@ -45,8 +45,8 @@ extension LeafRenderer {
 private struct DocsLeafSource: LeafSource {
 
     enum Configuration {
-        static var supportedFileNamePrefixes: Set<String> {
-            ["translation_needed"]
+        static var supportedFileNames: Set<String> {
+            ["translation_needed.description.leaf"]
         }
     }
 
@@ -75,17 +75,14 @@ private struct DocsLeafSource: LeafSource {
         escape: Bool,
         on eventLoop: any EventLoop
     ) throws -> EventLoopFuture<ByteBuffer> {
-        guard Configuration.supportedFileNamePrefixes.contains(where: {
-            template.hasPrefix($0)
-        }) else {
+        guard Configuration.supportedFileNames.contains(template) else {
             return eventLoop.makeFailedFuture(Errors.unsupportedTemplate(template))
         }
-        #warning("change to main branch")
-        let repoURL = "https://raw.githubusercontent.com/vapor/docs/mmbm-update-translation-needed-ci"
-        let url = "\(repoURL)/.github/templates/\(template)"
+        let repoURL = "https://raw.githubusercontent.com/vapor/docs/main"
+        let url = "\(repoURL)/.github/\(template)"
         let request = try HTTPClient.Request(url: url)
         return httpClient.execute(request: request).flatMapThrowing { response in
-            guard response.status == .ok else {
+            guard (200..<300) ~= response.status.code else {
                 throw Errors.badStatusCode(response: response)
             }
             guard let body = response.body else {

@@ -289,21 +289,21 @@ class GHHooksTests: XCTestCase {
         XCTAssertEqual(body, "## What\'s Changed\nUse GH OpenAPI spec + swift-oapi-generator to generate GHHooks models by @MahdiBM in #61\n\n> Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\n> \n> The downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\n> The upside is we won’t need to make these models / api-endpoints in the future.\n\n\n## Reviewers\nThanks to the reviewers for their help:\n- @ffried\n- @dnadoba\n\n###### _This patch was released by @MahdiBM._\n\n**Full Changelog**: https://github.com/vapor/penny-bot/compare/v2.3.1...v2.4.5")
     }
 
-    func testLeafRendersDocsIssuerTemplates() async throws {
+    func testLeafRenders() async throws {
         let context = try makeContext(
             eventName: .push,
             eventKey: "push2"
         )
-        let issuer = try DocsIssuer(context: context)
+        let client = context.renderClient
 
         do {
-            let rendered = try await issuer.renderIssueTitle(number: 1)
+            let rendered = try await client.translationNeededTitle(number: 1)
             /// First test, assert if the string conversion stuff works at all.
             XCTAssertEqual(rendered, "Translation needed for 1")
         }
 
         do {
-            let rendered = try await issuer.renderIssueDescription(number: 2999)
+            let rendered = try await client.translationNeededDescription(number: 1)
             XCTAssertGreaterThan(rendered.count, 5)
         }
     }
@@ -530,11 +530,13 @@ class GHHooksTests: XCTestCase {
                 serverURL: try Servers.server1(),
                 transport: FakeClientTransport()
             ),
-            messageLookupRepo: FakeMessageLookupRepo(),
-            leafRenderer: try .forGHHooks(
-                httpClient: httpClient,
-                logger: logger
+            renderClient: RenderClient(
+                renderer: try .forGHHooks(
+                    httpClient: httpClient,
+                    logger: logger
+                )
             ),
+            messageLookupRepo: FakeMessageLookupRepo(),
             logger: logger
         )
     }

@@ -91,8 +91,8 @@ struct DocsIssuer {
     }
 
     func fileIssue(number: Int) async throws {
-        let title = try await self.renderIssueTitle(number: number)
-        let description = try await self.renderIssueDescription(number: number)
+        let title = try await context.renderClient.translationNeededTitle(number: number)
+        let description = try await context.renderClient.translationNeededDescription(number: number)
         let response = try await context.githubClient.issues_create(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -107,19 +107,5 @@ struct DocsIssuer {
         guard case .created = response else {
             throw Errors.httpRequestFailed(response: response)
         }
-    }
-
-    func renderIssueTitle(number: Int) async throws -> String {
-        try await context.leafRenderer.render(
-            path: "translation_needed.title",
-            context: ["number": .int(number)]
-        )
-    }
-
-    func renderIssueDescription(number: Int) async throws -> String {
-        try await context.leafRenderer.render(
-            path: "translation_needed.description",
-            context: ["number": .int(number)]
-        )
     }
 }
