@@ -227,7 +227,7 @@ let package = Package(
                 .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Atomics", package: "swift-atomics"),
-                .product(name: "Crypto", package: "swift-crypto")
+                .product(name: "Crypto", package: "swift-crypto"),
             ],
             path: "./Lambdas/GitHubAPI",
             resources: [
