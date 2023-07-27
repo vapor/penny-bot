@@ -22,12 +22,6 @@ class GHHooksLeafRenders: XCTestCase {
         try! httpClient.syncShutdown()
     }
 
-    func testTranslationNeededTitle() async throws {
-        let rendered = try await renderClient.translationNeededTitle(number: 1)
-        /// First test, assert if the string conversion stuff works at all.
-        XCTAssertEqual(rendered, "Translation needed for #1")
-    }
-
     func testTranslationNeededDescription() async throws {
         let rendered = try await renderClient.translationNeededDescription(number: 1)
         XCTAssertGreaterThan(rendered.count, 5)
@@ -39,6 +33,10 @@ class GHHooksLeafRenders: XCTestCase {
                 context: .init(
                     pr: .init(
                         title: "PR title right here",
+                        body: """
+                        > This PR is really good!
+                        > pls accept!
+                        """,
                         author: "0xTim",
                         number: 833
                     ),
@@ -55,24 +53,16 @@ class GHHooksLeafRenders: XCTestCase {
             ## What's Changed
             PR title right here by @0xTim in #833
 
-
-
+            > This PR is really good!
+            > pls accept!
 
             ## New Contributor
-            - @0xTim made their first contribution 🎉 in #833
-
-
-
+            - @0xTim made their first contribution in #833 🎉
 
             ## Reviewers
             Thanks to the reviewers for their help:
-
             - @joannis
-
             - @vzsg
-
-
-
 
             ###### _This patch was released by @MahdiBM_
 
@@ -85,6 +75,10 @@ class GHHooksLeafRenders: XCTestCase {
                 context: .init(
                     pr: .init(
                         title: "PR title right here",
+                        body: """
+                        > This PR is really good!
+                        > pls accept!
+                        """,
                         author: "0xTim",
                         number: 833
                     ),
@@ -101,14 +95,8 @@ class GHHooksLeafRenders: XCTestCase {
             ## What's Changed
             PR title right here by @0xTim in #833
 
-
-
-
-
-
-            ## Reviewers
-            Thanks to the reviewers for their help:
-
+            > This PR is really good!
+            > pls accept!
 
 
 

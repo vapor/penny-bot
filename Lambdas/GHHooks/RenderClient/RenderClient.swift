@@ -19,13 +19,6 @@ struct RenderClient {
 }
 
 extension RenderClient {
-    func translationNeededTitle(number: Int) async throws -> String {
-        try await render(
-            path: "translation_needed.title",
-            context: ["number": .int(number)]
-        )
-    }
-
     func translationNeededDescription(number: Int) async throws -> String {
         try await render(
             path: "translation_needed.description",

@@ -4,6 +4,7 @@ struct NewReleaseContext: Codable {
 
     struct PR: Codable {
         let title: String
+        let body: String
         let author: String
         let number: Int
     }

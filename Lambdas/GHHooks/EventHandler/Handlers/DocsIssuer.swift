@@ -91,7 +91,6 @@ struct DocsIssuer {
     }
 
     func fileIssue(number: Int) async throws {
-        let title = try await context.renderClient.translationNeededTitle(number: number)
         let description = try await context.renderClient.translationNeededDescription(number: number)
         let response = try await context.githubClient.issues_create(.init(
             path: .init(
@@ -99,7 +98,7 @@ struct DocsIssuer {
                 repo: repo.name
             ),
             body: .json(.init(
-                title: .case1(title),
+                title: .case1("Translation needed for #\(number)"),
                 body: description
             ))
         ))

@@ -1,22 +1,14 @@
 ## What's Changed
 #(pr.title) by @#(pr.author) in ##(pr.number)
 
-#(pr.body)
-
+#unsafeHTML(pr.body)
 #if(isNewContributor):
 ## New Contributor
-- @#(pr.author) made their first contribution 🎉 in ##(pr.number)
-
-#endif
-
-#if(reviewers):
+- @#(pr.author) made their first contribution in ##(pr.number) 🎉#endif
+#if(count(reviewers) > 0):
 ## Reviewers
-Thanks to the reviewers for their help:
-#for(user in reviewers):
-- @#(user)
-#endfor
-
-#endif
+Thanks to the reviewers for their help:#for(user in reviewers):
+- @#(user)#endfor#endif
 
 ###### _This patch was released by @#(merged_by)_
 
