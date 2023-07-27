@@ -14,6 +14,17 @@ public struct GHEvent: Codable {
     public let release: Release?
     public let before: String?
     public let after: String?
+    public let base_ref: String?
+    public let compare: String?
+    public let created: Bool?
+    public let deleted: Bool?
+    public let forced: Bool?
+    public let commits: [Commit]?
+    public let head_commit: Commit?
+    public let installation: Installation?
+    public let pusher: Committer?
+    public let ref: String?
+    public let enterprise: Enterprise?
 }
 
 extension GHEvent {

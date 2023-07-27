@@ -36,6 +36,17 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
     func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output
+    /// List pull requests associated with a commit
+    ///
+    /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
+    ///
+    /// To list the open or merged pull requests associated with a branch, you can set the `commit_sha` parameter to the branch name.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
+    func repos_list_pull_requests_associated_with_commit(
+        _ input: Operations.repos_list_pull_requests_associated_with_commit.Input
+    ) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -59,6 +70,16 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
     func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input) async throws
         -> Operations.issues_list_for_repo.Output
+    /// Create an issue
+    ///
+    /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
+    func issues_create(_ input: Operations.issues_create.Input) async throws
+        -> Operations.issues_create.Output
     /// Create an issue comment
     ///
     ///
@@ -90,6 +111,14 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
     func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
         async throws -> Operations.pulls_list_review_comments.Output
+    /// List pull requests files
+    ///
+    /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
+    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws
+        -> Operations.pulls_list_files.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -831,6 +860,166 @@ public enum Components {
                 case _type = "type"
                 case site_admin
                 case starred_at
+            }
+        }
+        /// An enterprise on GitHub.
+        ///
+        /// - Remark: Generated from `#/components/schemas/enterprise`.
+        public struct enterprise: Codable, Equatable, Hashable, Sendable {
+            /// A short description of the enterprise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/description`.
+            public var description: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/enterprise/html_url`.
+            public var html_url: Swift.String
+            /// The enterprise's website URL.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/website_url`.
+            public var website_url: Swift.String?
+            /// Unique identifier of the enterprise
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/enterprise/node_id`.
+            public var node_id: Swift.String
+            /// The name of the enterprise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/name`.
+            public var name: Swift.String
+            /// The slug url identifier for the enterprise.
+            ///
+            /// - Remark: Generated from `#/components/schemas/enterprise/slug`.
+            public var slug: Swift.String
+            /// - Remark: Generated from `#/components/schemas/enterprise/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/enterprise/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/enterprise/avatar_url`.
+            public var avatar_url: Swift.String
+            /// Creates a new `enterprise`.
+            ///
+            /// - Parameters:
+            ///   - description: A short description of the enterprise.
+            ///   - html_url:
+            ///   - website_url: The enterprise's website URL.
+            ///   - id: Unique identifier of the enterprise
+            ///   - node_id:
+            ///   - name: The name of the enterprise.
+            ///   - slug: The slug url identifier for the enterprise.
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - avatar_url:
+            public init(
+                description: Swift.String? = nil,
+                html_url: Swift.String,
+                website_url: Swift.String? = nil,
+                id: Swift.Int,
+                node_id: Swift.String,
+                name: Swift.String,
+                slug: Swift.String,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                avatar_url: Swift.String
+            ) {
+                self.description = description
+                self.html_url = html_url
+                self.website_url = website_url
+                self.id = id
+                self.node_id = node_id
+                self.name = name
+                self.slug = slug
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.avatar_url = avatar_url
+            }
+            public enum CodingKeys: String, CodingKey {
+                case description
+                case html_url
+                case website_url
+                case id
+                case node_id
+                case name
+                case slug
+                case created_at
+                case updated_at
+                case avatar_url
+            }
+        }
+        /// Request to install an integration on a target
+        ///
+        /// - Remark: Generated from `#/components/schemas/integration-installation-request`.
+        public struct integration_installation_request: Codable, Equatable, Hashable, Sendable {
+            /// Unique identifier of the request installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/node_id`.
+            public var node_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/account`.
+            public struct accountPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/integration-installation-request/account/value1`.
+                public var value1: Components.Schemas.simple_user?
+                /// - Remark: Generated from `#/components/schemas/integration-installation-request/account/value2`.
+                public var value2: Components.Schemas.enterprise?
+                /// Creates a new `accountPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                ///   - value2:
+                public init(
+                    value1: Components.Schemas.simple_user? = nil,
+                    value2: Components.Schemas.enterprise? = nil
+                ) {
+                    self.value1 = value1
+                    self.value2 = value2
+                }
+                public init(from decoder: any Decoder) throws {
+                    value1 = try? .init(from: decoder)
+                    value2 = try? .init(from: decoder)
+                    try DecodingError.verifyAtLeastOneSchemaIsNotNil(
+                        [value1, value2],
+                        type: Self.self,
+                        codingPath: decoder.codingPath
+                    )
+                }
+                public func encode(to encoder: any Encoder) throws {
+                    try value1?.encode(to: encoder)
+                    try value2?.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/account`.
+            public var account: Components.Schemas.integration_installation_request.accountPayload
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/requester`.
+            public var requester: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/integration-installation-request/created_at`.
+            public var created_at: Foundation.Date
+            /// Creates a new `integration_installation_request`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the request installation.
+            ///   - node_id:
+            ///   - account:
+            ///   - requester:
+            ///   - created_at:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String? = nil,
+                account: Components.Schemas.integration_installation_request.accountPayload,
+                requester: Components.Schemas.simple_user,
+                created_at: Foundation.Date
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.account = account
+                self.requester = requester
+                self.created_at = created_at
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case account
+                case requester
+                case created_at
             }
         }
         /// The permissions granted to the user access token.
@@ -2082,6 +2271,205 @@ public enum Components {
                 case team_discussions
             }
         }
+        /// Installation
+        ///
+        /// - Remark: Generated from `#/components/schemas/installation`.
+        public struct installation: Codable, Equatable, Hashable, Sendable {
+            /// The ID of the installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/installation/account`.
+            public struct accountPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/installation/account/value1`.
+                public var value1: Components.Schemas.simple_user?
+                /// - Remark: Generated from `#/components/schemas/installation/account/value2`.
+                public var value2: Components.Schemas.enterprise?
+                /// Creates a new `accountPayload`.
+                ///
+                /// - Parameters:
+                ///   - value1:
+                ///   - value2:
+                public init(
+                    value1: Components.Schemas.simple_user? = nil,
+                    value2: Components.Schemas.enterprise? = nil
+                ) {
+                    self.value1 = value1
+                    self.value2 = value2
+                }
+                public init(from decoder: any Decoder) throws {
+                    value1 = try? .init(from: decoder)
+                    value2 = try? .init(from: decoder)
+                    try DecodingError.verifyAtLeastOneSchemaIsNotNil(
+                        [value1, value2],
+                        type: Self.self,
+                        codingPath: decoder.codingPath
+                    )
+                }
+                public func encode(to encoder: any Encoder) throws {
+                    try value1?.encode(to: encoder)
+                    try value2?.encode(to: encoder)
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/installation/account`.
+            public var account: Components.Schemas.installation.accountPayload
+            /// Describe whether all repositories have been selected or there's a selection involved
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
+            @frozen
+            public enum repository_selectionPayload: RawRepresentable, Codable, Equatable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case all
+                case selected
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "all": self = .all
+                    case "selected": self = .selected
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .all: return "all"
+                    case .selected: return "selected"
+                    }
+                }
+                public static var allCases: [repository_selectionPayload] { [.all, .selected] }
+            }
+            /// Describe whether all repositories have been selected or there's a selection involved
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
+            public var repository_selection:
+                Components.Schemas.installation.repository_selectionPayload
+            /// - Remark: Generated from `#/components/schemas/installation/access_tokens_url`.
+            public var access_tokens_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/repositories_url`.
+            public var repositories_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/app_id`.
+            public var app_id: Swift.Int
+            /// The ID of the user or organization this token is being scoped to.
+            ///
+            /// - Remark: Generated from `#/components/schemas/installation/target_id`.
+            public var target_id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/installation/target_type`.
+            public var target_type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/permissions`.
+            public var permissions: Components.Schemas.app_permissions
+            /// - Remark: Generated from `#/components/schemas/installation/events`.
+            public var events: [Swift.String]
+            /// - Remark: Generated from `#/components/schemas/installation/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/installation/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/installation/single_file_name`.
+            public var single_file_name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/has_multiple_single_files`.
+            public var has_multiple_single_files: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/installation/single_file_paths`.
+            public var single_file_paths: [Swift.String]?
+            /// - Remark: Generated from `#/components/schemas/installation/app_slug`.
+            public var app_slug: Swift.String
+            /// - Remark: Generated from `#/components/schemas/installation/suspended_by`.
+            public var suspended_by: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/installation/suspended_at`.
+            public var suspended_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/installation/contact_email`.
+            public var contact_email: Swift.String?
+            /// Creates a new `installation`.
+            ///
+            /// - Parameters:
+            ///   - id: The ID of the installation.
+            ///   - account:
+            ///   - repository_selection: Describe whether all repositories have been selected or there's a selection involved
+            ///   - access_tokens_url:
+            ///   - repositories_url:
+            ///   - html_url:
+            ///   - app_id:
+            ///   - target_id: The ID of the user or organization this token is being scoped to.
+            ///   - target_type:
+            ///   - permissions:
+            ///   - events:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - single_file_name:
+            ///   - has_multiple_single_files:
+            ///   - single_file_paths:
+            ///   - app_slug:
+            ///   - suspended_by:
+            ///   - suspended_at:
+            ///   - contact_email:
+            public init(
+                id: Swift.Int,
+                account: Components.Schemas.installation.accountPayload,
+                repository_selection: Components.Schemas.installation.repository_selectionPayload,
+                access_tokens_url: Swift.String,
+                repositories_url: Swift.String,
+                html_url: Swift.String,
+                app_id: Swift.Int,
+                target_id: Swift.Int,
+                target_type: Swift.String,
+                permissions: Components.Schemas.app_permissions,
+                events: [Swift.String],
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                single_file_name: Swift.String,
+                has_multiple_single_files: Swift.Bool? = nil,
+                single_file_paths: [Swift.String]? = nil,
+                app_slug: Swift.String,
+                suspended_by: Components.Schemas.nullable_simple_user,
+                suspended_at: Foundation.Date,
+                contact_email: Swift.String? = nil
+            ) {
+                self.id = id
+                self.account = account
+                self.repository_selection = repository_selection
+                self.access_tokens_url = access_tokens_url
+                self.repositories_url = repositories_url
+                self.html_url = html_url
+                self.app_id = app_id
+                self.target_id = target_id
+                self.target_type = target_type
+                self.permissions = permissions
+                self.events = events
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.single_file_name = single_file_name
+                self.has_multiple_single_files = has_multiple_single_files
+                self.single_file_paths = single_file_paths
+                self.app_slug = app_slug
+                self.suspended_by = suspended_by
+                self.suspended_at = suspended_at
+                self.contact_email = contact_email
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case account
+                case repository_selection
+                case access_tokens_url
+                case repositories_url
+                case html_url
+                case app_id
+                case target_id
+                case target_type
+                case permissions
+                case events
+                case created_at
+                case updated_at
+                case single_file_name
+                case has_multiple_single_files
+                case single_file_paths
+                case app_slug
+                case suspended_by
+                case suspended_at
+                case contact_email
+            }
+        }
         /// License Simple
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-license-simple`.
@@ -2234,7 +2622,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/html_url`.
             public var html_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/repository/description`.
-            public var description: Swift.String
+            public var description: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/fork`.
             public var fork: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/repository/url`.
@@ -2322,7 +2710,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/svn_url`.
             public var svn_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/repository/homepage`.
-            public var homepage: Swift.String
+            public var homepage: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/language`.
             public var language: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/forks_count`.
@@ -3594,7 +3982,7 @@ public enum Components {
                 owner: Components.Schemas.simple_user,
                 _private: Swift.Bool,
                 html_url: Swift.String,
-                description: Swift.String,
+                description: Swift.String? = nil,
                 fork: Swift.Bool,
                 url: Swift.String,
                 archive_url: Swift.String,
@@ -3638,7 +4026,7 @@ public enum Components {
                 mirror_url: Swift.String? = nil,
                 hooks_url: Swift.String,
                 svn_url: Swift.String,
-                homepage: Swift.String,
+                homepage: Swift.String? = nil,
                 language: Swift.String? = nil,
                 forks_count: Swift.Int,
                 stargazers_count: Swift.Int,
@@ -10323,6 +10711,240 @@ public enum Components {
                 case security_and_analysis
             }
         }
+        /// Diff Entry
+        ///
+        /// - Remark: Generated from `#/components/schemas/diff-entry`.
+        public struct diff_entry: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/diff-entry/sha`.
+            public var sha: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/filename`.
+            public var filename: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/status`.
+            @frozen
+            public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case added
+                case removed
+                case modified
+                case renamed
+                case copied
+                case changed
+                case unchanged
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "added": self = .added
+                    case "removed": self = .removed
+                    case "modified": self = .modified
+                    case "renamed": self = .renamed
+                    case "copied": self = .copied
+                    case "changed": self = .changed
+                    case "unchanged": self = .unchanged
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .added: return "added"
+                    case .removed: return "removed"
+                    case .modified: return "modified"
+                    case .renamed: return "renamed"
+                    case .copied: return "copied"
+                    case .changed: return "changed"
+                    case .unchanged: return "unchanged"
+                    }
+                }
+                public static var allCases: [statusPayload] {
+                    [.added, .removed, .modified, .renamed, .copied, .changed, .unchanged]
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/diff-entry/status`.
+            public var status: Components.Schemas.diff_entry.statusPayload
+            /// - Remark: Generated from `#/components/schemas/diff-entry/additions`.
+            public var additions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/diff-entry/deletions`.
+            public var deletions: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/diff-entry/changes`.
+            public var changes: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/diff-entry/blob_url`.
+            public var blob_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/raw_url`.
+            public var raw_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/contents_url`.
+            public var contents_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/diff-entry/patch`.
+            public var patch: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/diff-entry/previous_filename`.
+            public var previous_filename: Swift.String?
+            /// Creates a new `diff_entry`.
+            ///
+            /// - Parameters:
+            ///   - sha:
+            ///   - filename:
+            ///   - status:
+            ///   - additions:
+            ///   - deletions:
+            ///   - changes:
+            ///   - blob_url:
+            ///   - raw_url:
+            ///   - contents_url:
+            ///   - patch:
+            ///   - previous_filename:
+            public init(
+                sha: Swift.String,
+                filename: Swift.String,
+                status: Components.Schemas.diff_entry.statusPayload,
+                additions: Swift.Int,
+                deletions: Swift.Int,
+                changes: Swift.Int,
+                blob_url: Swift.String,
+                raw_url: Swift.String,
+                contents_url: Swift.String,
+                patch: Swift.String? = nil,
+                previous_filename: Swift.String? = nil
+            ) {
+                self.sha = sha
+                self.filename = filename
+                self.status = status
+                self.additions = additions
+                self.deletions = deletions
+                self.changes = changes
+                self.blob_url = blob_url
+                self.raw_url = raw_url
+                self.contents_url = contents_url
+                self.patch = patch
+                self.previous_filename = previous_filename
+            }
+            public enum CodingKeys: String, CodingKey {
+                case sha
+                case filename
+                case status
+                case additions
+                case deletions
+                case changes
+                case blob_url
+                case raw_url
+                case contents_url
+                case patch
+                case previous_filename
+            }
+        }
+        /// A commit.
+        ///
+        /// - Remark: Generated from `#/components/schemas/simple-commit`.
+        public struct simple_commit: Codable, Equatable, Hashable, Sendable {
+            /// SHA for the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/id`.
+            public var id: Swift.String
+            /// SHA for the commit's tree
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/tree_id`.
+            public var tree_id: Swift.String
+            /// Message describing the purpose of the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/message`.
+            public var message: Swift.String
+            /// Timestamp of the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/timestamp`.
+            public var timestamp: Foundation.Date
+            /// Information about the Git author
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
+            public struct authorPayload: Codable, Equatable, Hashable, Sendable {
+                /// Name of the commit's author
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/author/name`.
+                public var name: Swift.String
+                /// Git email address of the commit's author
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/author/email`.
+                public var email: Swift.String
+                /// Creates a new `authorPayload`.
+                ///
+                /// - Parameters:
+                ///   - name: Name of the commit's author
+                ///   - email: Git email address of the commit's author
+                public init(name: Swift.String, email: Swift.String) {
+                    self.name = name
+                    self.email = email
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case name
+                    case email
+                }
+            }
+            /// Information about the Git author
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
+            public var author: Components.Schemas.simple_commit.authorPayload
+            /// Information about the Git committer
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/committer`.
+            public struct committerPayload: Codable, Equatable, Hashable, Sendable {
+                /// Name of the commit's committer
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/committer/name`.
+                public var name: Swift.String
+                /// Git email address of the commit's committer
+                ///
+                /// - Remark: Generated from `#/components/schemas/simple-commit/committer/email`.
+                public var email: Swift.String
+                /// Creates a new `committerPayload`.
+                ///
+                /// - Parameters:
+                ///   - name: Name of the commit's committer
+                ///   - email: Git email address of the commit's committer
+                public init(name: Swift.String, email: Swift.String) {
+                    self.name = name
+                    self.email = email
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case name
+                    case email
+                }
+            }
+            /// Information about the Git committer
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-commit/committer`.
+            public var committer: Components.Schemas.simple_commit.committerPayload
+            /// Creates a new `simple_commit`.
+            ///
+            /// - Parameters:
+            ///   - id: SHA for the commit
+            ///   - tree_id: SHA for the commit's tree
+            ///   - message: Message describing the purpose of the commit
+            ///   - timestamp: Timestamp of the commit
+            ///   - author: Information about the Git author
+            ///   - committer: Information about the Git committer
+            public init(
+                id: Swift.String,
+                tree_id: Swift.String,
+                message: Swift.String,
+                timestamp: Foundation.Date,
+                author: Components.Schemas.simple_commit.authorPayload,
+                committer: Components.Schemas.simple_commit.committerPayload
+            ) {
+                self.id = id
+                self.tree_id = tree_id
+                self.message = message
+                self.timestamp = timestamp
+                self.author = author
+                self.committer = committer
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case tree_id
+                case message
+                case timestamp
+                case author
+                case committer
+            }
+        }
         /// Hypermedia Link
         ///
         /// - Remark: Generated from `#/components/schemas/link`.
@@ -11599,7 +12221,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/deployments_url`.
                     public var deployments_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/description`.
-                    public var description: Swift.String
+                    public var description: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/downloads_url`.
                     public var downloads_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/events_url`.
@@ -11811,7 +12433,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/has_discussions`.
                     public var has_discussions: Swift.Bool
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/homepage`.
-                    public var homepage: Swift.String
+                    public var homepage: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/language`.
                     public var language: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/master_branch`.
@@ -12052,7 +12674,7 @@ public enum Components {
                         contents_url: Swift.String,
                         contributors_url: Swift.String,
                         deployments_url: Swift.String,
-                        description: Swift.String,
+                        description: Swift.String? = nil,
                         downloads_url: Swift.String,
                         events_url: Swift.String,
                         fork: Swift.Bool,
@@ -12098,7 +12720,7 @@ public enum Components {
                         has_wiki: Swift.Bool,
                         has_pages: Swift.Bool,
                         has_discussions: Swift.Bool,
-                        homepage: Swift.String,
+                        homepage: Swift.String? = nil,
                         language: Swift.String? = nil,
                         master_branch: Swift.String? = nil,
                         archived: Swift.Bool,
@@ -12490,7 +13112,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/deployments_url`.
                     public var deployments_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/description`.
-                    public var description: Swift.String
+                    public var description: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/downloads_url`.
                     public var downloads_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/events_url`.
@@ -12704,9 +13326,9 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/has_discussions`.
                     public var has_discussions: Swift.Bool
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/homepage`.
-                    public var homepage: Swift.String
+                    public var homepage: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/language`.
-                    public var language: Swift.String
+                    public var language: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/master_branch`.
                     public var master_branch: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/archived`.
@@ -12901,7 +13523,7 @@ public enum Components {
                         contents_url: Swift.String,
                         contributors_url: Swift.String,
                         deployments_url: Swift.String,
-                        description: Swift.String,
+                        description: Swift.String? = nil,
                         downloads_url: Swift.String,
                         events_url: Swift.String,
                         fork: Swift.Bool,
@@ -12948,8 +13570,8 @@ public enum Components {
                         has_wiki: Swift.Bool,
                         has_pages: Swift.Bool,
                         has_discussions: Swift.Bool,
-                        homepage: Swift.String,
-                        language: Swift.String,
+                        homepage: Swift.String? = nil,
+                        language: Swift.String? = nil,
                         master_branch: Swift.String? = nil,
                         archived: Swift.Bool,
                         disabled: Swift.Bool,
@@ -13884,6 +14506,32 @@ public enum Components {
                 case mentions_count
                 case discussion_url
                 case reactions
+            }
+        }
+        /// The GitHub App installation. This property is included when the event is configured for and sent to a GitHub App.
+        ///
+        /// - Remark: Generated from `#/components/schemas/simple-installation`.
+        public struct simple_installation: Codable, Equatable, Hashable, Sendable {
+            /// The ID of the installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-installation/id`.
+            public var id: Swift.Int
+            /// The global node ID of the installation.
+            ///
+            /// - Remark: Generated from `#/components/schemas/simple-installation/node_id`.
+            public var node_id: Swift.String?
+            /// Creates a new `simple_installation`.
+            ///
+            /// - Parameters:
+            ///   - id: The ID of the installation.
+            ///   - node_id: The global node ID of the installation.
+            public init(id: Swift.Int, node_id: Swift.String? = nil) {
+                self.id = id
+                self.node_id = node_id
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
             }
         }
     }
@@ -16111,6 +16759,139 @@ public enum Operations {
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
     }
+    /// List pull requests associated with a commit
+    ///
+    /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
+    ///
+    /// To list the open or merged pull requests associated with a branch, you can set the `commit_sha` parameter to the branch name.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
+    public enum repos_list_pull_requests_associated_with_commit {
+        public static let id: String = "repos/list-pull-requests-associated-with-commit"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var commit_sha: Components.Parameters.commit_sha
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - commit_sha:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    commit_sha: Components.Parameters.commit_sha
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.commit_sha = commit_sha
+                }
+            }
+            public var path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers:
+                Operations.repos_list_pull_requests_associated_with_commit.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies:
+                Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path,
+                query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query =
+                    .init(),
+                headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers =
+                    .init(),
+                cookies: Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies =
+                    .init(),
+                body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers:
+                    Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.pull_request_simple])
+                }
+                /// Received HTTP response body
+                public var body:
+                    Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok
+                        .Headers,
+                    body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_pull_requests_associated_with_commit.Output.Ok)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -16524,6 +17305,352 @@ public enum Operations {
             ///
             /// HTTP response code: `404 notFound`.
             case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Create an issue
+    ///
+    /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
+    public enum issues_create {
+        public static let id: String = "issues/create"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.issues_create.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.issues_create.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.issues_create.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.issues_create.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The title of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title`.
+                    @frozen public enum titlePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title/case2`.
+                        case case2(Swift.Int)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// The title of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title`.
+                    public var title: Operations.issues_create.Input.Body.jsonPayload.titlePayload
+                    /// The contents of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/body`.
+                    public var body: Swift.String?
+                    /// Login for the user that this issue should be assigned to. _NOTE: Only users with push access can set the assignee for new issues. The assignee is silently dropped otherwise. **This field is deprecated.**_
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/assignee`.
+                    public var assignee: Swift.String?
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone`.
+                    @frozen public enum milestonePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone/case1`.
+                        case case1(Swift.String)
+                        /// The `number` of the milestone to associate this issue with. _NOTE: Only users with push access can set the milestone for new issues. The milestone is silently dropped otherwise._
+                        ///
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone/case2`.
+                        case case2(Swift.Int)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone`.
+                    public var milestone:
+                        Operations.issues_create.Input.Body.jsonPayload.milestonePayload?
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload`.
+                    @frozen public enum labelsPayloadPayload: Codable, Equatable, Hashable, Sendable
+                    {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2`.
+                        public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/id`.
+                            public var id: Swift.Int?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/name`.
+                            public var name: Swift.String?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/description`.
+                            public var description: Swift.String?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/color`.
+                            public var color: Swift.String?
+                            /// Creates a new `Case2Payload`.
+                            ///
+                            /// - Parameters:
+                            ///   - id:
+                            ///   - name:
+                            ///   - description:
+                            ///   - color:
+                            public init(
+                                id: Swift.Int? = nil,
+                                name: Swift.String? = nil,
+                                description: Swift.String? = nil,
+                                color: Swift.String? = nil
+                            ) {
+                                self.id = id
+                                self.name = name
+                                self.description = description
+                                self.color = color
+                            }
+                            public enum CodingKeys: String, CodingKey {
+                                case id
+                                case name
+                                case description
+                                case color
+                            }
+                        }
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2`.
+                        case case2(
+                            Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload
+                                .Case2Payload
+                        )
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labels`.
+                    public typealias labelsPayload = [Operations.issues_create.Input.Body
+                        .jsonPayload.labelsPayloadPayload]
+                    /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labels`.
+                    public var labels:
+                        Operations.issues_create.Input.Body.jsonPayload.labelsPayload?
+                    /// Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/assignees`.
+                    public var assignees: [Swift.String]?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - title: The title of the issue.
+                    ///   - body: The contents of the issue.
+                    ///   - assignee: Login for the user that this issue should be assigned to. _NOTE: Only users with push access can set the assignee for new issues. The assignee is silently dropped otherwise. **This field is deprecated.**_
+                    ///   - milestone:
+                    ///   - labels: Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
+                    ///   - assignees: Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
+                    public init(
+                        title: Operations.issues_create.Input.Body.jsonPayload.titlePayload,
+                        body: Swift.String? = nil,
+                        assignee: Swift.String? = nil,
+                        milestone: Operations.issues_create.Input.Body.jsonPayload
+                            .milestonePayload? = nil,
+                        labels: Operations.issues_create.Input.Body.jsonPayload.labelsPayload? =
+                            nil,
+                        assignees: [Swift.String]? = nil
+                    ) {
+                        self.title = title
+                        self.body = body
+                        self.assignee = assignee
+                        self.milestone = milestone
+                        self.labels = labels
+                        self.assignees = assignees
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case title
+                        case body
+                        case assignee
+                        case milestone
+                        case labels
+                        case assignees
+                    }
+                }
+                case json(Operations.issues_create.Input.Body.jsonPayload)
+            }
+            public var body: Operations.issues_create.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.issues_create.Input.Path,
+                query: Operations.issues_create.Input.Query = .init(),
+                headers: Operations.issues_create.Input.Headers = .init(),
+                cookies: Operations.issues_create.Input.Cookies = .init(),
+                body: Operations.issues_create.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Location: Swift.String?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Location:
+                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.issues_create.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.issue)
+                }
+                /// Received HTTP response body
+                public var body: Operations.issues_create.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.issues_create.Output.Created.Headers,
+                    body: Operations.issues_create.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.issues_create.Output.Created)
+            /// Bad Request
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/400`.
+            ///
+            /// HTTP response code: `400 badRequest`.
+            case badRequest(Components.Responses.bad_request)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Service unavailable
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Components.Responses.service_unavailable)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.
@@ -17102,6 +18229,147 @@ public enum Operations {
             ///
             /// HTTP response code: `200 ok`.
             case ok(Operations.pulls_list_review_comments.Output.Ok)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List pull requests files
+    ///
+    /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
+    public enum pulls_list_files {
+        public static let id: String = "pulls/list-files"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var pull_number: Components.Parameters.pull_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - pull_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    pull_number: Components.Parameters.pull_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.pull_number = pull_number
+                }
+            }
+            public var path: Operations.pulls_list_files.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.pulls_list_files.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.pulls_list_files.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.pulls_list_files.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.pulls_list_files.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.pulls_list_files.Input.Path,
+                query: Operations.pulls_list_files.Input.Query = .init(),
+                headers: Operations.pulls_list_files.Input.Headers = .init(),
+                cookies: Operations.pulls_list_files.Input.Cookies = .init(),
+                body: Operations.pulls_list_files.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.pulls_list_files.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.diff_entry])
+                }
+                /// Received HTTP response body
+                public var body: Operations.pulls_list_files.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.pulls_list_files.Output.Ok.Headers,
+                    body: Operations.pulls_list_files.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.pulls_list_files.Output.Ok)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Internal Error
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/500`.
+            ///
+            /// HTTP response code: `500 internalServerError`.
+            case internalServerError(Components.Responses.internal_error)
+            /// Service unavailable
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Components.Responses.service_unavailable)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

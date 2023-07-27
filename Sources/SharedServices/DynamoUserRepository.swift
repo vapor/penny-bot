@@ -4,17 +4,6 @@ import Models
 import Extensions
 
 struct DynamoUserRepository {
-    enum Errors: Error, CustomStringConvertible {
-        case discordUserNotFound(id: String)
-
-        var description: String {
-            switch self {
-            case .discordUserNotFound(let id):
-                return "Discord user with ID \(id) not found"
-            }
-        }
-    }
-
     let db: DynamoDB
     let eventLoop: any EventLoop
     let logger: Logger
@@ -34,7 +23,7 @@ struct DynamoUserRepository {
 
         _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
     }
-    
+
     func updateUser(_ user: DynamoDBUser) async throws -> Void {
         let input = DynamoDB.UpdateItemCodableInput(
             key: ["id"],

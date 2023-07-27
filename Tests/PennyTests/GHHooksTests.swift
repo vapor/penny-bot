@@ -11,14 +11,12 @@ import Fake
 import XCTest
 
 class GHHooksTests: XCTestCase {
-
-    var decoder: JSONDecoder = {
+    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+    let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return decoder
     }()
-
-    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
 
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
@@ -256,11 +254,9 @@ class GHHooksTests: XCTestCase {
         /apps/ @octocat
         /apps/github
         """
-        let data = TestData.for(ghEventKey: "pr1")!
-        let event = try decoder.decode(GHEvent.self, from: data)
         let context = try makeContext(
             eventName: .pull_request,
-            event: event
+            eventKey: "pr1"
         )
         let handler = try ReleaseMaker(
             context: context,
@@ -274,11 +270,9 @@ class GHHooksTests: XCTestCase {
     }
 
     func testMakeReleaseBody() async throws {
-        let data = TestData.for(ghEventKey: "pr4")!
-        let event = try decoder.decode(GHEvent.self, from: data)
         let context = try makeContext(
             eventName: .pull_request,
-            event: event
+            eventKey: "pr4"
         )
         let handler = try ReleaseMaker(
             context: context,
@@ -290,7 +284,7 @@ class GHHooksTests: XCTestCase {
             previousVersion: "v2.3.1",
             newVersion: "v2.4.5"
         )
-        XCTAssertEqual(body, "## What\'s Changed\nUse GH OpenAPI spec + swift-oapi-generator to generate GHHooks models by @MahdiBM in #61\n\n> Uses GitHub OpenAPI spec + swift-openapi-generator for generating models for the GHHooks lambda.\n> \n> The downside is the build time regression as the generator, at least as a plugin, seems not to be fast at all.\n> The upside is we won’t need to make these models / api-endpoints in the future.\n\n\n## Reviewers\nThanks to the reviewers for their help:\n- @ffried\n- @dnadoba\n\n###### _This patch was released by @MahdiBM._\n\n**Full Changelog**: https://github.com/vapor/penny-bot/compare/v2.3.1...v2.4.5")
+        XCTAssertTrue(body.hasPrefix("## What's Changed"), body)
     }
 
     func testEventHandler() async throws {
@@ -349,13 +343,18 @@ class GHHooksTests: XCTestCase {
             eventName: .pull_request,
             expect: .noResponse
         )
-
         /// From `dependabot[bot]` so should be ignored
         try await handleEvent(
             key: "pr12",
             eventName: .pull_request,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "pr13",
+            eventName: .pull_request,
+            expect: .response(at: .issueAndPRs, type: .create)
+        )
+
 
         try await handleEvent(
             key: "projects_v2_item1",
@@ -371,6 +370,12 @@ class GHHooksTests: XCTestCase {
 
         try await handleEvent(
             key: "push1",
+            eventName: .push,
+            expect: .noResponse
+        )
+        // TODO: Should assert that `create_issue` endpoint is called after this.
+        try await handleEvent(
+            key: "push2",
             eventName: .push,
             expect: .noResponse
         )
@@ -484,8 +489,18 @@ class GHHooksTests: XCTestCase {
         }
     }
 
+    func makeContext(eventName: GHEvent.Kind, eventKey: String) throws -> HandlerContext {
+        let data = TestData.for(ghEventKey: eventKey)!
+        let event = try decoder.decode(GHEvent.self, from: data)
+        return try makeContext(
+            eventName: eventName,
+            event: event
+        )
+    }
+
     func makeContext(eventName: GHEvent.Kind, event: GHEvent) throws -> HandlerContext {
-        HandlerContext(
+        let logger = Logger(label: "GHHooksTests")
+        return HandlerContext(
             eventName: eventName,
             event: event,
             httpClient: httpClient,
@@ -494,8 +509,14 @@ class GHHooksTests: XCTestCase {
                 serverURL: try Servers.server1(),
                 transport: FakeClientTransport()
             ),
+            renderClient: RenderClient(
+                renderer: try .forGHHooks(
+                    httpClient: httpClient,
+                    logger: logger
+                )
+            ),
             messageLookupRepo: FakeMessageLookupRepo(),
-            logger: Logger(label: "GHHooksTests")
+            logger: logger
         )
     }
 

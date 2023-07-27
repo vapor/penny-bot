@@ -74,6 +74,7 @@ public actor FakeResponseStorage {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
                 XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
+                continuation.resume(returning: AnyBox(Optional<Never>.none as Any))
             } else {
                 continuation.resume(returning: response)
             }

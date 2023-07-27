@@ -2,6 +2,7 @@ import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
 import OpenAPIRuntime
+import LeafKit
 import Logging
 
 struct HandlerContext {
@@ -10,6 +11,7 @@ struct HandlerContext {
     let httpClient: HTTPClient
     let discordClient: any DiscordClient
     let githubClient: Client
+    let renderClient: RenderClient
     let messageLookupRepo: any MessageLookupRepo
     let logger: Logger
 }

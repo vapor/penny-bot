@@ -232,26 +232,10 @@ struct ReleaseMaker {
             codeOwners: codeOwners,
             existingContributors: contributors
         )
-        let reviewers = try await getReviewersToCredit(codeOwners: codeOwners)
-        let isCodeOwner = codeOwners.usernamesContain(user: pr.user)
+        let reviewers = try await getReviewersToCredit(
+            codeOwners: codeOwners
+        ).map { $0.name ?? $0.login }
 
-        return """
-        \(makePRMarkdown(isCodeOwner: isCodeOwner))
-        \(makeContributorMarkdown(isNewContributor: isNewContributor))
-        \(makeReviewersMarkdown(reviewers: reviewers))
-        \(makeMergerMarkdown(mergedBy: mergedBy))
-        \(makeChangeLogMarkdown(previousVersion: previousVersion, newVersion: newVersion))
-        """
-    }
-
-    func makeMergerMarkdown(mergedBy: NullableUser) -> String {
-        """
-        ###### _This patch was released by @\(mergedBy.name ?? mergedBy.login)._
-
-        """
-    }
-
-    func makePRMarkdown(isCodeOwner: Bool) -> String {
         let body = pr.body.map {
             "> " + $0.formatMarkdown(
                 maxLength: 512,
@@ -261,43 +245,24 @@ struct ReleaseMaker {
                 with: "\n> "
             )
         } ?? ""
-        return """
-        ## What's Changed
-        \(pr.title) by @\(pr.user.name ?? pr.user.login) in #\(number)
 
-        \(body)
-
-        """
-    }
-
-    func makeContributorMarkdown(isNewContributor: Bool) -> String {
-        guard isNewContributor else { return "" }
-        return """
-        ## New Contributor
-        - @\(pr.user.name ?? pr.user.login) made their first contribution 🎉
-        
-        """
-    }
-
-    func makeReviewersMarkdown(reviewers: [User]) -> String {
-        if reviewers.isEmpty { return "" }
-        let reviewersText = reviewers.map { user in
-            "- @\(user.name ?? user.login)"
-        }.joined(separator: "\n")
-        return """
-        ## Reviewers
-        Thanks to the reviewers for their help:
-        \(reviewersText)
-
-        """
-    }
-
-    func makeChangeLogMarkdown(previousVersion: String, newVersion: String) -> String {
-        let fullName = repo.full_name.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
-        ) ?? repo.full_name
-        let url = "https://github.com/\(fullName)/compare/\(previousVersion)...\(newVersion)"
-        return "**Full Changelog**: \(url)"
+        return try await context.renderClient.newReleaseDescription(
+            context: .init(
+                pr: .init(
+                    title: pr.title,
+                    body: body,
+                    author: pr.user.name ?? pr.user.login,
+                    number: number
+                ),
+                isNewContributor: isNewContributor,
+                reviewers: reviewers,
+                merged_by: mergedBy.name ?? mergedBy.login,
+                release: .init(
+                    oldTag: previousVersion,
+                    newTag: newVersion
+                )
+            )
+        )
     }
 
     func getReviewersToCredit(codeOwners: Set<String>) async throws -> [User] {
