@@ -1,38 +1,21 @@
-import LeafKit
-import NIO
-@preconcurrency import AsyncHTTPClient
+import NIOCore
+import Rendering
 import Logging
+@preconcurrency import AsyncHTTPClient
 import Foundation
 
 extension LeafRenderer {
-    private static let leafRendererThreadPool: NIOThreadPool = {
-        let pool = NIOThreadPool(numberOfThreads: 1)
-        pool.start()
-        return pool
-    }()
-
     static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
         let workingDir = FileManager.default.currentDirectoryPath
-        let rootDirectory = "\(workingDir)/templates/GHHooksLambda"
-        let configuration = LeafConfiguration(rootDirectory: rootDirectory)
-        let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
-        let fileIOLeafSource = NIOLeafFiles(
-            fileio: fileIO,
-            limits: .default,
-            sandboxDirectory: rootDirectory,
-            viewDirectory: rootDirectory
-        )
+        let rootDirectory = "\(workingDir)/Lambdas/GHHooks/templates"
         let docsLeafSource = DocsLeafSource(
             httpClient: httpClient,
             logger: logger
         )
-        let sources = LeafSources()
-        try sources.register(source: "default", using: fileIOLeafSource)
-        try sources.register(source: "docs", using: docsLeafSource)
-        return LeafRenderer(
-            configuration: configuration,
-            sources: sources,
-            eventLoop: httpClient.eventLoopGroup.any()
+        return try LeafRenderer(
+            httpClient: httpClient,
+            rootDirectory: rootDirectory,
+            extraSources: [docsLeafSource]
         )
     }
 }

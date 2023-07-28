@@ -1,4 +1,5 @@
 @testable import GHHooksLambda
+import Rendering
 import AsyncHTTPClient
 import GitHubAPI
 import Logging

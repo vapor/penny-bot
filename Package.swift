@@ -52,6 +52,7 @@ let package = Package(
         .executable(name: "Penny", targets: ["Penny"])
     ],
     dependencies: [
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
         .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
         .package(url: "https://github.com/soto-project/soto-core.git", branch: "main"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
@@ -185,6 +186,7 @@ let package = Package(
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "GitHubAPI"),
+                .target(name: "Rendering"),
                 .target(name: "Extensions"),
                 .target(name: "LambdasShared"),
             ],
@@ -258,6 +260,16 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .target(name: "Models"),
                 .target(name: "Extensions"),
+            ],
+            swiftSettings: swiftSettings
+        ),
+        .target(
+            name: "Rendering",
+            dependencies: [
+                .product(name: "NIO", package: "swift-nio"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "LeafKit", package: "leaf-kit"),
             ],
             swiftSettings: swiftSettings
         ),

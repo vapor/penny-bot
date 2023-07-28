@@ -4,6 +4,7 @@ import GitHubAPI
 import SotoCore
 import DiscordModels
 import OpenAPIRuntime
+import Rendering
 import Logging
 import SwiftSemver
 import Markdown

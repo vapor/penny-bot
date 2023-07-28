@@ -21,8 +21,8 @@ public actor SerialProcessor {
         self.limit = queueLimit
     }
 
-    public func process<T>(block: @Sendable () async throws -> T) async throws -> T {
-        guard queue.count < limit else {
+    public func process<T: Sendable>(block: @Sendable () async throws -> T) async throws -> T {
+        guard queue.count <= limit else {
             throw Errors.overloaded(limit: limit)
         }
 

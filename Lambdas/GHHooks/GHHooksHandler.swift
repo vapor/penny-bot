@@ -4,6 +4,7 @@ import AsyncHTTPClient
 import SotoCore
 import DiscordHTTP
 import GitHubAPI
+import Rendering
 import DiscordUtilities
 import Logging
 import Extensions

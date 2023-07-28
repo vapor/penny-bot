@@ -1,7 +1,7 @@
+/// Copy-pasted from `Leaf`.
 import LeafKit
 import Algorithms
 
-/// Copy-pasted from `Leaf`.
 struct LeafEncoder {
     /// Use `Codable` to convert an (almost) arbitrary encodable type to a dictionary of key/``LeafData`` pairs
     /// for use as a rendering context. The type's encoded form must have a dictionary (keyed container) at its

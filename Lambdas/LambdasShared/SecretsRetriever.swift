@@ -4,12 +4,27 @@ import Logging
 import Foundation
 
 public actor SecretsRetriever {
+
+    enum Errors: Error, CustomStringConvertible {
+        case envVarNotFound(name: String)
+        case secretNotFound(arn: String)
+
+        var description: String {
+            switch self {
+            case let .envVarNotFound(name):
+                return "envVarNotFound(name: \(name))"
+            case let .secretNotFound(arn):
+                return "secretNotFound(arn: \(arn))"
+            }
+        }
+    }
+
     private let secretsManager: SecretsManager
     /// `[arnEnvVarKey: secret]`
     private var cache: [String: String] = [:]
     let logger: Logger
 
-    private let queue = SerialProcessor()
+    private let processor = SerialProcessor()
 
     public init(awsClient: AWSClient, logger: Logger) {
         self.secretsManager = SecretsManager(client: awsClient)
@@ -17,7 +32,7 @@ public actor SecretsRetriever {
     }
 
     public func getSecret(arnEnvVarKey: String) async throws -> String {
-        return try await queue.process {
+        return try await processor.process {
             if let cached = await getCache(key: arnEnvVarKey) {
                 return cached
             } else {
