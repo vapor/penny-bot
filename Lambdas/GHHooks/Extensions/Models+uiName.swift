@@ -7,3 +7,15 @@ extension Repository {
         self.owner.login == "vapor" ? self.name : self.full_name
     }
 }
+
+extension User {
+    var uiName: String {
+        self.name ?? self.login
+    }
+}
+
+extension NullableUser {
+    var uiName: String {
+        self.name ?? self.login
+    }
+}

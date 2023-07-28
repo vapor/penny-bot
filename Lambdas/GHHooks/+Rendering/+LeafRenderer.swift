@@ -6,16 +6,13 @@ import Foundation
 
 extension LeafRenderer {
     static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
-        let workingDir = FileManager.default.currentDirectoryPath
-        let rootDirectory = "\(workingDir)/Lambdas/GHHooks/templates"
-        let docsLeafSource = DocsLeafSource(
-            httpClient: httpClient,
-            logger: logger
-        )
-        return try LeafRenderer(
-            httpClient: httpClient,
-            rootDirectory: rootDirectory,
-            extraSources: [docsLeafSource]
+        try LeafRenderer(
+            subDirectory: "GHHooksLambda",
+            extraSources: [DocsLeafSource(
+                httpClient: httpClient,
+                logger: logger
+            )],
+            on: httpClient.eventLoopGroup.next()
         )
     }
 }

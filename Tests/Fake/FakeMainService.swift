@@ -15,7 +15,7 @@ public actor FakeMainService: MainService {
         context.botStateManager
     }
 
-    public init(manager: FakeManager) async {
+    public init(manager: FakeManager) async throws {
         self.manager = manager
         var cacheStorage = DiscordCache.Storage()
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
@@ -25,7 +25,10 @@ public actor FakeMainService: MainService {
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
-        self.context = Self.makeContext(manager: manager, cache: cache)
+        self.context = try Self.makeContext(
+            manager: manager,
+            cache: cache
+        )
     }
 
     public func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
@@ -53,7 +56,10 @@ public actor FakeMainService: MainService {
 
     public func afterConnectCall(context: HandlerContext) async throws { }
 
-    static func makeContext(manager: any GatewayManager, cache: DiscordCache) -> HandlerContext {
+    static func makeContext(
+        manager: any GatewayManager,
+        cache: DiscordCache
+    ) throws -> HandlerContext {
         let discordService = DiscordService(
             discordClient: manager.client,
             cache: cache
@@ -72,7 +78,12 @@ public actor FakeMainService: MainService {
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
             cachesService: FakeCachesService(workers: workers),
-            discordService: discordService
+            discordService: discordService,
+            renderClient: .init(
+                renderer: try .forPenny(
+                    on: (manager.client as! DefaultDiscordClient).client.eventLoopGroup.next()
+                )
+            )
         )
         return HandlerContext(
             services: services,

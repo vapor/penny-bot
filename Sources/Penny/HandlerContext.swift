@@ -1,3 +1,4 @@
+import Rendering
 
 struct HandlerContext: Sendable {
 
@@ -7,6 +8,7 @@ struct HandlerContext: Sendable {
         let faqsService: any FaqsService
         let cachesService: any CachesService
         let discordService: DiscordService
+        let renderClient: RenderClient
     }
 
     struct Workers: Sendable {

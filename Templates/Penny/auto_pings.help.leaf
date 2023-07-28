@@ -1,0 +1,32 @@
+**- Auto-Pings Help**
+
+You can add texts to be pinged for.
+When someone uses those texts, Penny will DM you about the message.
+
+- Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
+
+> All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the #unsafeHTML(isTypingEmoji) indicator.
+
+**Adding Expressions**
+
+You can add multiple texts using #unsafeHTML(commands.add), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+
+- Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '#unsafeHTML(defaultExpression)'.
+
+- All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `“!?-_/\(){}`.
+
+- All texts are **space-sensitive**.
+
+> Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
+
+**Removing Expressions**
+
+You can remove multiple texts using #unsafeHTML(commands.remove), separating the texts using commas (`,`).
+
+**Your Pings List**
+
+You can use #unsafeHTML(commands.list) to see your current expressions.
+
+**Testing Expressions**
+
+You can use #unsafeHTML(commands.test) to test if a message triggers some expressions.

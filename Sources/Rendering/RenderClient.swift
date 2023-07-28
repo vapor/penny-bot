@@ -1,6 +1,6 @@
-import LeafKit
+@preconcurrency import LeafKit
 
-public struct RenderClient {
+public struct RenderClient: Sendable {
     let renderer: LeafRenderer
     private let encoder = LeafEncoder()
 

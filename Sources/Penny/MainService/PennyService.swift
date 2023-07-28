@@ -104,7 +104,12 @@ struct PennyService: MainService {
             pingsService: pingsService,
             faqsService: faqsService,
             cachesService: cachesService,
-            discordService: discordService
+            discordService: discordService,
+            renderClient: .init(
+                renderer: try .forPenny(
+                    on: httpClient.eventLoopGroup.next()
+                )
+            )
         )
         let context = HandlerContext(
             services: services,

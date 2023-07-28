@@ -563,8 +563,30 @@ private extension InteractionHandler {
 
         switch subcommand {
         case .help:
-            let allCommands = await context.services.discordService.getCommands()
-            return makeAutoPingsHelp(commands: allCommands)
+            let commands = await context.services.discordService.getCommands()
+            let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
+            func command(_ subcommand: String) -> String {
+                guard let id = commandId else {
+                    return "`/auto-pings \(subcommand)`"
+                }
+                return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
+            }
+
+            return try await context.services.renderClient.autoPingsHelp(
+                context: .init(
+                    commands: .init(
+                        add: command("add"),
+                        remove: command("remove"),
+                        list: command("list"),
+                        test: command("test")
+                    ),
+                    isTypingEmoji: DiscordUtils.customAnimatedEmoji(
+                        name: "is_typing",
+                        id: "1087429908466253984"
+                    ),
+                    defaultExpression: Expression.Kind.default.UIDescription
+                )
+            )
         case .list:
             let items = try await context.services.pingsService.get(discordID: discordId)
             if items.isEmpty {
@@ -1200,57 +1222,4 @@ extension Payloads.EditWebhookMessage: Response {
     }
 
     var isEditable: Bool { true }
-}
-
-// MARK: - Auto-pings help
-private func makeAutoPingsHelp(commands: [ApplicationCommand]) -> String {
-
-    let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
-
-    func command(_ subcommand: String) -> String {
-        guard let id = commandId else {
-            return "`/auto-pings \(subcommand)`"
-        }
-        return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
-    }
-
-    let isTypingEmoji = DiscordUtils.customAnimatedEmoji(
-        name: "is_typing",
-        id: "1087429908466253984"
-    )
-
-    return """
-    **- Auto-Pings Help**
-
-    You can add texts to be pinged for.
-    When someone uses those texts, Penny will DM you about the message.
-
-    - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
-
-    > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the \(isTypingEmoji) indicator.
-
-    **Adding Expressions**
-
-    You can add multiple texts using \(command("add")), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
-
-    - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '\(Expression.Kind.default.UIDescription)'.
-
-    - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `\(#"“!?-_/\(){}"#)`.
-
-    - All texts are **space-sensitive**.
-
-    > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
-
-    **Removing Expressions**
-
-    You can remove multiple texts using \(command("remove")), separating the texts using commas (`,`).
-
-    **Your Pings List**
-
-    You can use \(command("list")) to see your current expressions.
-
-    **Testing Expressions**
-
-    You can use \(command("test")) to test if a message triggers some expressions.
-    """
 }

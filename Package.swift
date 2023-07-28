@@ -109,6 +109,7 @@ let package = Package(
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "JWTKit", package: "jwt-kit"),
+                .target(name: "Rendering"),
                 .target(name: "Models"),
                 .target(name: "SharedServices"),
             ],
@@ -267,7 +268,6 @@ let package = Package(
             name: "Rendering",
             dependencies: [
                 .product(name: "NIO", package: "swift-nio"),
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "LeafKit", package: "leaf-kit"),
             ],

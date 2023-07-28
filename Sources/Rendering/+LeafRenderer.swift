@@ -1,6 +1,5 @@
 import LeafKit
 import NIO
-import AsyncHTTPClient
 import Foundation
 
 private let leafRendererThreadPool: NIOThreadPool = {
@@ -11,10 +10,12 @@ private let leafRendererThreadPool: NIOThreadPool = {
 
 extension LeafRenderer {
     public convenience init(
-        httpClient: HTTPClient,
-        rootDirectory: String,
-        extraSources: [any LeafSource]
+        subDirectory: String,
+        extraSources: [any LeafSource] = [],
+        on eventLoop: any EventLoop
     ) throws {
+        let workingDir = FileManager.default.currentDirectoryPath
+        let rootDirectory = "\(workingDir)/Templates/\(subDirectory)"
         let configuration = LeafConfiguration(rootDirectory: rootDirectory)
         let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
         let fileIOLeafSource = NIOLeafFiles(
@@ -31,7 +32,7 @@ extension LeafRenderer {
         self.init(
             configuration: configuration,
             sources: sources,
-            eventLoop: httpClient.eventLoopGroup.next()
+            eventLoop: eventLoop
         )
     }
 }

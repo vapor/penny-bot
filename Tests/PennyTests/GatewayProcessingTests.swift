@@ -17,7 +17,7 @@ class GatewayProcessingTests: XCTestCase {
         LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
-        let fakeMainService = await FakeMainService(manager: self.manager)
+        let fakeMainService = try await FakeMainService(manager: self.manager)
         self.context = await fakeMainService.context
         Task {
             try await Penny.start(mainService: fakeMainService)

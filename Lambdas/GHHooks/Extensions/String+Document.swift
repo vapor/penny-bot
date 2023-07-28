@@ -29,13 +29,11 @@ extension String {
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
 
-        while let first = formattedLines.first,
-              first.isWorthlessLineForTrim {
+        while formattedLines.first?.isWorthlessLineForTrim ?? false {
             formattedLines.removeFirst()
         }
 
-        while let last = formattedLines.last,
-              last.isWorthlessLineForTrim {
+        while formattedLines.last?.isWorthlessLineForTrim ?? false {
             formattedLines.removeLast()
         }
 

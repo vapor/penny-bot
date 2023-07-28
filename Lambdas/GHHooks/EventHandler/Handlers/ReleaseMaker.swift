@@ -232,9 +232,7 @@ struct ReleaseMaker {
             codeOwners: codeOwners,
             existingContributors: contributors
         )
-        let reviewers = try await getReviewersToCredit(
-            codeOwners: codeOwners
-        ).map { $0.name ?? $0.login }
+        let reviewers = try await getReviewersToCredit(codeOwners: codeOwners).map(\.uiName)
 
         let body = pr.body.map {
             "> " + $0.formatMarkdown(
@@ -251,12 +249,12 @@ struct ReleaseMaker {
                 pr: .init(
                     title: pr.title,
                     body: body,
-                    author: pr.user.name ?? pr.user.login,
+                    author: pr.user.uiName,
                     number: number
                 ),
                 isNewContributor: isNewContributor,
                 reviewers: reviewers,
-                merged_by: mergedBy.name ?? mergedBy.login,
+                merged_by: mergedBy.uiName,
                 release: .init(
                     oldTag: previousVersion,
                     newTag: newVersion
