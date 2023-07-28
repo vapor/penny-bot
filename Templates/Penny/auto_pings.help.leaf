@@ -5,13 +5,13 @@ When someone uses those texts, Penny will DM you about the message.
 
 - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
 
-> All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the #unsafeHTML(isTypingEmoji) indicator.
+> All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the #raw(isTypingEmoji) indicator.
 
 **Adding Expressions**
 
-You can add multiple texts using #unsafeHTML(commands.add), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+You can add multiple texts using #raw(commands.add), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
 
-- Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '#unsafeHTML(defaultExpression)'.
+- Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to '#raw(defaultExpression)'.
 
 - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `“!?-_/\(){}`.
 
@@ -21,12 +21,12 @@ You can add multiple texts using #unsafeHTML(commands.add), separating the texts
 
 **Removing Expressions**
 
-You can remove multiple texts using #unsafeHTML(commands.remove), separating the texts using commas (`,`).
+You can remove multiple texts using #raw(commands.remove), separating the texts using commas (`,`).
 
 **Your Pings List**
 
-You can use #unsafeHTML(commands.list) to see your current expressions.
+You can use #raw(commands.list) to see your current expressions.
 
 **Testing Expressions**
 
-You can use #unsafeHTML(commands.test) to test if a message triggers some expressions.
+You can use #raw(commands.test) to test if a message triggers some expressions.

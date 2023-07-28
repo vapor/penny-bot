@@ -332,7 +332,7 @@ struct ReleaseMaker {
         ) ?? repo.full_name
         let url = "https://raw.githubusercontent.com/\(fullName)/main/.github/CODEOWNERS"
         let request = HTTPClientRequest(url: url)
-        let response = try await context.httpClient.execute(request, timeout: .seconds(3))
+        let response = try await context.httpClient.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1 << 16)
         guard response.status == .ok else {
             logger.warning("Can't find code owners of repo", metadata: [

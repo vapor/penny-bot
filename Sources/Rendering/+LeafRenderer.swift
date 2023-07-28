@@ -29,8 +29,11 @@ extension LeafRenderer {
         for source in extraSources {
             try sources.register(source: "\(type(of: source))", using: source)
         }
+        var tags: [String: any LeafTag] = defaultTags
+        tags["raw"] = RawTag()
         self.init(
             configuration: configuration,
+            tags: tags,
             sources: sources,
             eventLoop: eventLoop
         )

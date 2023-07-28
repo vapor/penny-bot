@@ -1,15 +1,15 @@
 ## What's Changed
-#unsafeHTML(pr.title) by @#unsafeHTML(pr.author) in ##unsafeHTML(pr.number)
+#raw(pr.title) by @#raw(pr.author) in ##raw(pr.number)
 
-#unsafeHTML(pr.body)
+#raw(pr.body)
 #if(isNewContributor):
 ## New Contributor
-- @#unsafeHTML(pr.author) made their first contribution in ##unsafeHTML(pr.number) 🎉#endif
+- @#raw(pr.author) made their first contribution in ##raw(pr.number) 🎉#endif
 #if(count(reviewers) > 0):
 ## Reviewers
 Thanks to the reviewers for their help:#for(user in reviewers):
-- @#unsafeHTML(user)#endfor#endif
+- @#raw(user)#endfor#endif
 
-###### _This patch was released by @#unsafeHTML(merged_by)_
+###### _This patch was released by @#raw(merged_by)_
 
-**Full Changelog**: https://github.com/#unsafeHTML(repo.fullName)/compare/#unsafeHTML(release.oldTag)...#unsafeHTML(release.newTag)
+**Full Changelog**: https://github.com/#raw(repo.fullName)/compare/#raw(release.oldTag)...#raw(release.newTag)
