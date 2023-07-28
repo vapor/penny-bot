@@ -1,15 +1,17 @@
 @testable import DiscordBM
 @testable import DiscordModels
+@testable import Logging
+@testable import Penny
+import NIO
 import DiscordLogger
 import SotoCore
 import AsyncHTTPClient
-@testable import Logging
-@testable import Penny
 import XCTest
 
 public actor FakeMainService: MainService {
     public let manager: FakeManager
     public let cache: DiscordCache
+    public let eventLoopGroup: any EventLoopGroup
     public let context: HandlerContext
     var botStateManager: BotStateManager {
         context.botStateManager
@@ -25,10 +27,16 @@ public actor FakeMainService: MainService {
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
+        self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         self.context = try Self.makeContext(
             manager: manager,
-            cache: cache
+            cache: cache,
+            eventLoopGroup: eventLoopGroup
         )
+    }
+
+    deinit {
+        try! eventLoopGroup.syncShutdownGracefully()
     }
 
     public func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
@@ -58,7 +66,8 @@ public actor FakeMainService: MainService {
 
     static func makeContext(
         manager: any GatewayManager,
-        cache: DiscordCache
+        cache: DiscordCache,
+        eventLoopGroup: any EventLoopGroup
     ) throws -> HandlerContext {
         let discordService = DiscordService(
             discordClient: manager.client,
@@ -81,7 +90,7 @@ public actor FakeMainService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
-                    on: (manager.client as! DefaultDiscordClient).client.eventLoopGroup.next()
+                    on: eventLoopGroup.next()
                 )
             )
         )

@@ -9,7 +9,7 @@ import Logging
 import Fake
 import XCTest
 
-class LeafRenders: XCTestCase {
+class LeafRenderTests: XCTestCase {
     let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
