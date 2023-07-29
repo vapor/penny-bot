@@ -530,7 +530,18 @@ private extension InteractionHandler {
             [**Authorize**](\(url))
             """
         case .unlink:
-            return "This command is still a WIP. Unlinking discordId: \(discordID)"
+            let response = try await context.services.usersService.getGitHubName(of: discordID)
+            switch response {
+            case .notLinked:
+                return "You don't have any linked GitHub accounts, so there is nothing to unlink."
+            case .userName(let username):
+                let encodedUsername = username.addingPercentEncoding(
+                    withAllowedCharacters: .urlPathAllowed
+                ) ?? username
+                let url = "https://github.com/\(encodedUsername)"
+                try await context.services.usersService.unlinkGitHubID(discordID: discordID)
+                return "Successfully unlinked your GitHub account: [\(username)](\(url))"
+            }
         case .whoAmI:
             let response = try await context.services.usersService.getGitHubName(of: discordID)
             switch response {

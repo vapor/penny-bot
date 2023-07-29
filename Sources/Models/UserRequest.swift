@@ -4,6 +4,7 @@ public enum UserRequest: Sendable, Codable {
     case getOrCreateUser(discordID: UserSnowflake)
     case getUser(githubID: String)
     case linkGitHubID(discordID: UserSnowflake, toGitHubID: String)
+    case unlinkGitHubID(discordID: UserSnowflake)
 
     public struct CoinEntryRequest: Sendable, Codable {
         public let amount: Int

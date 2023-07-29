@@ -19,6 +19,10 @@ public struct FakeUsersService: UsersService {
         2591
     }
 
+    public func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws { }
+
+    public func unlinkGitHubID(discordID: UserSnowflake) async throws { }
+
     public func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {
         .userName("fake-username")
     }
@@ -28,6 +32,4 @@ public struct FakeUsersService: UsersService {
         new.githubID = githubID
         return new
     }
-
-    public func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws { }
 }

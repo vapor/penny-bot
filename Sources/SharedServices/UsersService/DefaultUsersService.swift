@@ -149,6 +149,34 @@ struct DefaultUsersService: UsersService {
         }
     }
 
+    func unlinkGitHubID(discordID: UserSnowflake) async throws {
+        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
+        request.method = .POST
+        request.headers.add(name: "Content-Type", value: "application/json")
+
+        let requestContent = UserRequest.unlinkGitHubID(discordID: discordID)
+        let data = try encoder.encode(requestContent)
+        request.body = .bytes(data)
+
+        let response = try await httpClient.execute(
+            request,
+            timeout: .seconds(30),
+            logger: self.logger
+        )
+        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
+
+        guard (200..<300).contains(response.status.code) else {
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let body = collected.map { String(buffer: $0) } ?? "nil"
+            logger.error("Get-coin-count failed", metadata: [
+                "status": "\(response.status)",
+                "headers": "\(response.headers)",
+                "body": "\(body)",
+            ])
+            throw ServiceError.badStatus(response)
+        }
+    }
+
     func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {
         let user = try await self.getOrCreateUser(discordID: discordID)
 

@@ -2,7 +2,7 @@ import SotoDynamoDB
 import Foundation
 import Models
 
-public struct UserService {
+public struct InternalUsersService {
     private let userRepo: DynamoUserRepository
     private let coinEntryRepo: DynamoCoinEntryRepository
     let logger: Logger
@@ -58,6 +58,13 @@ public struct UserService {
     public func linkGithubID(discordID: UserSnowflake, githubID: String) async throws {
         var user = try await self.getOrCreateUser(discordID: discordID)
         user.githubID = githubID
+
+        try await userRepo.updateUser(user)
+    }
+
+    public func unlinkGithubID(discordID: UserSnowflake) async throws {
+        var user = try await self.getOrCreateUser(discordID: discordID)
+        user.githubID = nil
 
         try await userRepo.updateUser(user)
     }
