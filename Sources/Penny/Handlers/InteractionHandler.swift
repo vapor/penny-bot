@@ -517,7 +517,7 @@ private extension InteractionHandler {
                 logger.error("Failed to make JWT signer")
                 return oops
             }
-            let clientID = Constants.ghOAuthClientId
+            let clientID = Constants.ghOAuthClientID
             let state = try signers.sign(jwt)
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return """

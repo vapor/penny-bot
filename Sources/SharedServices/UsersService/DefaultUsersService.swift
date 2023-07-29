@@ -140,7 +140,7 @@ struct DefaultUsersService: UsersService {
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error("Get-coin-count failed", metadata: [
+            logger.error("Link-GitHub-id failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
                 "body": "\(body)",
@@ -168,7 +168,7 @@ struct DefaultUsersService: UsersService {
         guard (200..<300).contains(response.status.code) else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error("Get-coin-count failed", metadata: [
+            logger.error("Unlink-GitHub-id failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
                 "body": "\(body)",

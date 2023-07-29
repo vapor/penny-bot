@@ -130,6 +130,7 @@ Resources:
       Environment:
         Variables:
           API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
+          LOG_LEVEL: debug
       FunctionName: !Sub ${UsersFilename}
       Handler: handler 
       Role: !GetAtt lambdaIAMRole.Arn
