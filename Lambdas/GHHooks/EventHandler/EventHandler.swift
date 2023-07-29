@@ -16,6 +16,7 @@ struct EventHandler {
             try await onPing()
         case .push:
             try await DocsIssuer(context: context).handle()
+            try await PRCoinGiver(context: context).handle()
         case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories:
             break
         default:

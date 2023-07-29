@@ -16,9 +16,36 @@ enum Constants {
         case logs = "1067060193982156880"
         case issueAndPRs = "1123702585006768228"
         case release = "431926479752921098"
+        case thanks = "443074453719744522"
 
         var id: ChannelSnowflake {
             self.rawValue
+        }
+    }
+
+    enum ServerEmojis {
+        case coin
+        case vapor
+        case love
+
+        var id: EmojiSnowflake {
+            switch self {
+            case .coin: return "473588485962596352"
+            case .vapor: return "431934596121362453"
+            case .love: return "656303356280832062"
+            }
+        }
+
+        var name: String {
+            switch self {
+            case .coin: return "coin"
+            case .vapor: return "vapor"
+            case .love: return "vaporlove"
+            }
+        }
+
+        var emoji: String {
+            DiscordUtils.customEmoji(name: self.name, id: self.id)
         }
     }
 }

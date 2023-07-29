@@ -226,7 +226,7 @@ struct ReleaseMaker {
         previousVersion: String,
         newVersion: String
     ) async throws -> String {
-        let codeOwners = try await getCodeOwners()
+        let codeOwners = try await context.getCodeOwners(repoFullName: repo.full_name)
         let contributors = try await getExistingContributorIDs()
         let isNewContributor = isNewContributor(
             codeOwners: codeOwners,
@@ -324,66 +324,6 @@ struct ReleaseMaker {
         return Set(json.compactMap(\.id))
     }
 
-    /// Returns code owners if the repo contains the file or returns `nil`.
-    /// In form of `["gwynne", "0xTim"]`.
-    func getCodeOwners() async throws -> Set<String> {
-        let fullName = repo.full_name.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
-        ) ?? repo.full_name
-        let url = "https://raw.githubusercontent.com/\(fullName)/main/.github/CODEOWNERS"
-        let request = HTTPClientRequest(url: url)
-        let response = try await context.httpClient.execute(request, timeout: .seconds(5))
-        let body = try await response.body.collect(upTo: 1 << 16)
-        guard response.status == .ok else {
-            logger.warning("Can't find code owners of repo", metadata: [
-                "responseBody": "\(body)",
-                "response": "\(response)"
-            ])
-            return []
-        }
-        let text = String(buffer: body)
-        let parsed = parseCodeOwners(text: text)
-        logger.debug("Parsed code owners", metadata: [
-            "text": .string(text),
-            "parsed": .stringConvertible(parsed)
-        ])
-        return parsed
-    }
-
-    func parseCodeOwners(text: String) -> Set<String> {
-        let codeOwners: [String] = text
-        /// split into lines
-            .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
-        /// trim leading whitespace per line
-            .map { $0.trimmingPrefix(while: \.isWhitespace) }
-        /// remove whole-line comments
-            .filter { !$0.starts(with: "#") }
-        /// remove partial-line comments
-            .compactMap {
-                $0.split(
-                    separator: "#",
-                    maxSplits: 1,
-                    omittingEmptySubsequences: true
-                ).first
-            }
-        /// split lines on whitespace, dropping first character, and combine to single list
-            .flatMap { line -> [Substring] in
-                line.split(
-                    omittingEmptySubsequences: true,
-                    whereSeparator: \.isWhitespace
-                ).dropFirst().map { (user: Substring) -> Substring in
-                    /// Drop the first character of each code-owner which is an `@`.
-                    if user.first == "@" {
-                        return user.dropFirst()
-                    } else {
-                        return user
-                    }
-                }
-            }.map(String.init)
-
-        return Set(codeOwners)
-    }
-
     func sendToDiscord(release: Release) async throws {
         let body = pr.body.map { body -> String in
             let formatted = body.formatMarkdown(
@@ -414,16 +354,5 @@ struct ReleaseMaker {
                 )]
             )
         ).guardSuccess()
-    }
-}
-
-private extension Set<String> {
-    /// Only supports names, and not emails.
-    func usernamesContain(user: User) -> Bool {
-        if let name = user.name {
-            return !self.intersection([user.login, name]).isEmpty
-        } else {
-            return self.contains(user.login)
-        }
     }
 }
