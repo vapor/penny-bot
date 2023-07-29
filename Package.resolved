@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "2ed51291f8c562b4ec09934edc006a76c2180482"
+        "revision" : "3f468590152b99f2ac7accce2b20f1ad9903b434"
       }
     },
     {
@@ -87,7 +87,7 @@
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "1ddc6a9d21fa129e24886a0085e8b6091777f924"
+        "revision" : "630f761959982b83abdd0ac09e8ba3e6ccbccb46"
       }
     },
     {
@@ -272,10 +272,10 @@
     {
       "identity" : "swift-openapi-generator",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/mahdibm/swift-openapi-generator",
+      "location" : "https://github.com/apple/swift-openapi-generator",
       "state" : {
-        "branch" : "generator-command-plugin",
-        "revision" : "a611ae23b4a068e870ff916ffe5a6976e8eb5b74"
+        "branch" : "main",
+        "revision" : "0fc97c53ca497c35aee620135a3f469dda61ae8d"
       }
     },
     {
@@ -283,8 +283,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "c5ab4e85a1b86cae78d5e40d845cf3b4b4497cf7",
-        "version" : "0.1.5"
+        "branch" : "main",
+        "revision" : "e37d38d05c9d3cb8b8fe0cc5bc4b37099c980013"
       }
     },
     {

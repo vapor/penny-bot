@@ -82,17 +82,18 @@ let package = Package(
             revision: "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
         ),
         .package(
-            url: "https://github.com/mahdibm/swift-openapi-generator",
-            // Use the apple repo when command plugin is merged and tagged
-            branch: "generator-command-plugin"
-        ),
-        .package(
             url: "https://github.com/swift-server/swift-openapi-async-http-client",
             .upToNextMinor(from: "0.1.0")
         ),
         .package(
+            url: "https://github.com/apple/swift-openapi-generator",
+            // Use a tag when command plugin is tagged
+            branch: "main"
+        ),
+        .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            .upToNextMinor(from: "0.1.0")
+            // Use a tag when command plugin is tagged
+            branch: "main"
         )
     ],
     targets: [
