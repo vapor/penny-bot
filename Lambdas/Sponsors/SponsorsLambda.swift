@@ -79,13 +79,7 @@ struct SponsorsHandler: LambdaHandler {
             }
             
             // TODO: Create gh user
-            guard let discordID = user.discordID else {
-                context.logger.error("User \(newSponsorID) did not link a Discord account")
-                return APIGatewayV2Response(
-                    statusCode: .ok,
-                    body: "Error: user \(newSponsorID) did not link a Discord account"
-                )
-            }
+            let discordID = user.discordID
             
             // Get role ID based on sponsorship tier
             let role = try SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)

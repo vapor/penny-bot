@@ -24,9 +24,9 @@ public struct FakeUsersService: UsersService {
     }
 
     public func getUser(githubID: String) async throws -> DynamoDBUser? {
-        DynamoDBUser.createNew(
-            forDiscordID: try! .makeFake()
-        )
+        var new = DynamoDBUser.createNew(forDiscordID: "1134810480968204288")
+        new.githubID = githubID
+        return new
     }
 
     public func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws { }

@@ -9,6 +9,7 @@ import DiscordUtilities
 import Logging
 import Extensions
 import LambdasShared
+import SharedServices
 import Foundation
 
 @main
@@ -125,6 +126,9 @@ struct GHHooksHandler: LambdaHandler {
             "event": "\(event)"
         ])
 
+        guard let apiBaseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] else {
+            throw Errors.envVarNotFound(key: "API_BASE_URL")
+        }
         try await EventHandler(
             context: .init(
                 eventName: eventName,
@@ -139,6 +143,10 @@ struct GHHooksHandler: LambdaHandler {
                     )
                 ),
                 messageLookupRepo: self.messageLookupRepo,
+                usersService: ServiceFactory.makeUsersService(
+                    httpClient: httpClient,
+                    apiBaseURL: apiBaseURL
+                ),
                 logger: logger
             )
         ).handle()

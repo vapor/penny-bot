@@ -1374,5 +1374,37 @@
         "flags": 0,
         "components": [],
         "referenced_message": null
+    },
+    "GET-https://discord.com/api/v10/guilds/431917998102675485/members/1134810480968204288": {
+        "avatar": "841e971536c59aff600f0efb6f815015",
+        "communication_disabled_until": null,
+        "flags": 2,
+        "joined_at": "2020-03-04T22:37:33.786000+00:00",
+        "nick": "Gwynne",
+        "pending": false,
+        "premium_since": "2021-09-17T16:03:46.804000+00:00",
+        "roles": [
+            "431920712505098240",
+            "431919254372089857",
+            "530113860129259521",
+            "621412660973535233",
+            "431920836631592980",
+            "1113356659968970844"
+        ],
+        "user": {
+            "id": "684888401719459858",
+            "username": "theseaofchaos",
+            "avatar": "6323f0e86c2a9d8adb2e6b6e47edc088",
+            "discriminator": "0",
+            "public_flags": 128,
+            "flags": 128,
+            "banner": "b8b15afc3741ae891fffe1bf3a78f2fb",
+            "accent_color": 4461621,
+            "global_name": "Gwynne",
+            "avatar_decoration": null,
+            "banner_color": "#441435"
+        },
+        "mute": false,
+        "deaf": false
     }
 }

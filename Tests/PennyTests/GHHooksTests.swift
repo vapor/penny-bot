@@ -517,6 +517,7 @@ class GHHooksTests: XCTestCase {
                 )
             ),
             messageLookupRepo: FakeMessageLookupRepo(),
+            usersService: FakeUsersService(),
             logger: logger
         )
     }

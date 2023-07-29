@@ -4,6 +4,7 @@ import Foundation
 enum Errors: Error, CustomStringConvertible {
     case httpRequestFailed(response: any Sendable, file: String = #filePath, line: UInt = #line)
     case headerNotFound(name: String, headers: AWSLambdaEvents.HTTPHeaders)
+    case envVarNotFound(key: String)
 
     var description: String {
         switch self {
@@ -11,6 +12,8 @@ enum Errors: Error, CustomStringConvertible {
             return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
         case let .headerNotFound(name, headers):
             return "headerNotFound(name: \(name), headers: \(headers))"
+        case let .envVarNotFound(key):
+            return "envVarNotFound(key: \(key))"
         }
     }
 }

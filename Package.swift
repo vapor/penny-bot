@@ -189,6 +189,7 @@ let package = Package(
                 .target(name: "GitHubAPI"),
                 .target(name: "Rendering"),
                 .target(name: "Extensions"),
+                .target(name: "SharedServices"),
                 .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHHooks",

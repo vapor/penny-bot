@@ -6,7 +6,7 @@ import Foundation
 
 public struct DynamoDBUser: Sendable, Codable {
     public let id: UUID
-    public var discordID: UserSnowflake?
+    public var discordID: UserSnowflake
     public var githubID: String?
     public var coinCount: Int
     public let createdAt: Date
@@ -25,7 +25,7 @@ public struct DynamoDBUser: Sendable, Codable {
 
     private init(
         id: UUID,
-        discordID: UserSnowflake?,
+        discordID: UserSnowflake,
         githubID: String?,
         coinCount: Int,
         createdAt: Date

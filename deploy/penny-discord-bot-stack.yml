@@ -439,6 +439,7 @@ Resources:
           BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
           WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           GH_APP_AUTH_PRIV_KEY_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
+          API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${GHHooksFilename}
       Handler: handler
