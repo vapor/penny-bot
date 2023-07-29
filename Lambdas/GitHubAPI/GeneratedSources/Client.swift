@@ -1377,4 +1377,64 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List repository tags
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
+    public func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws
+        -> Operations.repos_list_tags.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.repos_list_tags.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/tags",
+                    parameters: [input.path.owner, input.path.repo]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.repos_list_tags.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.repos_list_tags.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.tag].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
 }

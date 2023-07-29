@@ -149,6 +149,12 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
     func repos_get_latest_release(_ input: Operations.repos_get_latest_release.Input) async throws
         -> Operations.repos_get_latest_release.Output
+    /// List repository tags
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
+    func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws
+        -> Operations.repos_list_tags.Output
 }
 /// Server URLs defined in the OpenAPI document.
 public enum Servers {
@@ -14508,6 +14514,69 @@ public enum Components {
                 case reactions
             }
         }
+        /// Tag
+        ///
+        /// - Remark: Generated from `#/components/schemas/tag`.
+        public struct tag: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/tag/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/tag/commit`.
+            public struct commitPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/tag/commit/sha`.
+                public var sha: Swift.String
+                /// - Remark: Generated from `#/components/schemas/tag/commit/url`.
+                public var url: Swift.String
+                /// Creates a new `commitPayload`.
+                ///
+                /// - Parameters:
+                ///   - sha:
+                ///   - url:
+                public init(sha: Swift.String, url: Swift.String) {
+                    self.sha = sha
+                    self.url = url
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case sha
+                    case url
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/tag/commit`.
+            public var commit: Components.Schemas.tag.commitPayload
+            /// - Remark: Generated from `#/components/schemas/tag/zipball_url`.
+            public var zipball_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/tag/tarball_url`.
+            public var tarball_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/tag/node_id`.
+            public var node_id: Swift.String
+            /// Creates a new `tag`.
+            ///
+            /// - Parameters:
+            ///   - name:
+            ///   - commit:
+            ///   - zipball_url:
+            ///   - tarball_url:
+            ///   - node_id:
+            public init(
+                name: Swift.String,
+                commit: Components.Schemas.tag.commitPayload,
+                zipball_url: Swift.String,
+                tarball_url: Swift.String,
+                node_id: Swift.String
+            ) {
+                self.name = name
+                self.commit = commit
+                self.zipball_url = zipball_url
+                self.tarball_url = tarball_url
+                self.node_id = node_id
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+                case commit
+                case zipball_url
+                case tarball_url
+                case node_id
+            }
+        }
         /// The GitHub App installation. This property is included when the event is configured for and sent to a GitHub App.
         ///
         /// - Remark: Generated from `#/components/schemas/simple-installation`.
@@ -18858,6 +18927,120 @@ public enum Operations {
             ///
             /// HTTP response code: `200 ok`.
             case ok(Operations.repos_get_latest_release.Output.Ok)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List repository tags
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
+    public enum repos_list_tags {
+        public static let id: String = "repos/list-tags"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_list_tags.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_tags.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_list_tags.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_list_tags.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_tags.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_tags.Input.Path,
+                query: Operations.repos_list_tags.Input.Query = .init(),
+                headers: Operations.repos_list_tags.Input.Headers = .init(),
+                cookies: Operations.repos_list_tags.Input.Cookies = .init(),
+                body: Operations.repos_list_tags.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_tags.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.tag])
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_list_tags.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_tags.Output.Ok.Headers,
+                    body: Operations.repos_list_tags.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_tags.Output.Ok)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

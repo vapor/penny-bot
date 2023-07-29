@@ -80,7 +80,6 @@ struct ReleaseMaker {
         )
 
         try await sendComment(release: release)
-        try await sendToDiscord(release: release)
     }
 
     func getLastRelease() async throws -> Release {
@@ -322,37 +321,5 @@ struct ReleaseMaker {
         }
 
         return Set(json.compactMap(\.id))
-    }
-
-    func sendToDiscord(release: Release) async throws {
-        let body = pr.body.map { body -> String in
-            let formatted = body.formatMarkdown(
-                maxLength: 256,
-                trailingParagraphMinLength: 128
-            )
-            return formatted.isEmpty ? "" : ">>> \(formatted)"
-        } ?? ""
-
-        let description = """
-        ### \(pr.title)
-
-        \(body)
-        """
-        let fullName = repo.full_name.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
-        ) ?? repo.full_name
-        let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.release.id,
-            payload: .init(
-                embeds: [.init(
-                    title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
-                    description: description,
-                    url: release.html_url,
-                    color: .cyan,
-                    image: .init(url: .exact(image))
-                )]
-            )
-        ).guardSuccess()
     }
 }
