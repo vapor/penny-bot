@@ -303,12 +303,12 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "pr4",
             eventName: .pull_request,
-            expect: .response(at: .release)
+            expect: .noResponse
         )
         try await handleEvent(
             key: "pr5",
             eventName: .pull_request,
-            expect: .response(at: .release)
+            expect: .noResponse
         )
         try await handleEvent(
             key: "pr6",
@@ -399,7 +399,7 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "release4",
             eventName: .release,
-            expect: .noResponse
+            expect: .response(at: .release, type: .create)
         )
     }
 

@@ -3072,5 +3072,307 @@
             "auto_merge": null,
             "active_lock_reason": null
         }
+    ],
+    "repos/list-tags": [
+        {
+            "name": "1.43.2",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.43.2",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.43.2",
+            "commit": {
+                "sha": "46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQzLjI="
+        },
+        {
+            "name": "1.43.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.43.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.43.1",
+            "commit": {
+                "sha": "cee27b81cbda867642604021cdf01aaee8d2b0f0",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/cee27b81cbda867642604021cdf01aaee8d2b0f0"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQzLjE="
+        },
+        {
+            "name": "1.43.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.43.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.43.0",
+            "commit": {
+                "sha": "763627fbb81f3fdcf5d38db15afae41d7926eee3",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/763627fbb81f3fdcf5d38db15afae41d7926eee3"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQzLjA="
+        },
+        {
+            "name": "1.42.4",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.42.4",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.42.4",
+            "commit": {
+                "sha": "2d7dce5cb04156eecdb17e7349f4eac4206e8a17",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/2d7dce5cb04156eecdb17e7349f4eac4206e8a17"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQyLjQ="
+        },
+        {
+            "name": "1.42.3",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.42.3",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.42.3",
+            "commit": {
+                "sha": "04691f8d523830c49c0bf261c2d48d7bd11ec313",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/04691f8d523830c49c0bf261c2d48d7bd11ec313"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQyLjM="
+        },
+        {
+            "name": "1.42.2",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.42.2",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.42.2",
+            "commit": {
+                "sha": "e53acf986e32c54fe522b2c12f737baa01828c1c",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/e53acf986e32c54fe522b2c12f737baa01828c1c"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQyLjI="
+        },
+        {
+            "name": "1.42.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.42.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.42.1",
+            "commit": {
+                "sha": "0fdeff683d2a09a5e6548fe7ccc48cc177d95155",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/0fdeff683d2a09a5e6548fe7ccc48cc177d95155"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQyLjE="
+        },
+        {
+            "name": "1.42.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.42.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.42.0",
+            "commit": {
+                "sha": "559dc9c730cde77cc9dac76fba73d6e0855f0220",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/559dc9c730cde77cc9dac76fba73d6e0855f0220"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQyLjA="
+        },
+        {
+            "name": "1.41.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.41.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.41.0",
+            "commit": {
+                "sha": "21d99b0c66cf86867a779bac831d800aac22f5e6",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/21d99b0c66cf86867a779bac831d800aac22f5e6"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQxLjA="
+        },
+        {
+            "name": "1.40.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.40.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.40.0",
+            "commit": {
+                "sha": "dd6b7f8fb71b83d832ab88270704a29c63d8bd91",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/dd6b7f8fb71b83d832ab88270704a29c63d8bd91"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjQwLjA="
+        },
+        {
+            "name": "1.39.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.39.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.39.1",
+            "commit": {
+                "sha": "636a59eb1c852ae7eb3ee0e1f8aa23c104772416",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/636a59eb1c852ae7eb3ee0e1f8aa23c104772416"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM5LjE="
+        },
+        {
+            "name": "1.39.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.39.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.39.0",
+            "commit": {
+                "sha": "cc8fed9ed71dd61872b951df707ce5ac122d7365",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/cc8fed9ed71dd61872b951df707ce5ac122d7365"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM5LjA="
+        },
+        {
+            "name": "1.38.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.38.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.38.0",
+            "commit": {
+                "sha": "10f32130a0f7e29de8def48edf69564c36cf3b74",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/10f32130a0f7e29de8def48edf69564c36cf3b74"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM4LjA="
+        },
+        {
+            "name": "1.37.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.37.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.37.0",
+            "commit": {
+                "sha": "d03b0ff5605bd2cfad7ecddabde1947dbaaa3b47",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/d03b0ff5605bd2cfad7ecddabde1947dbaaa3b47"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM3LjA="
+        },
+        {
+            "name": "1.36.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.36.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.36.1",
+            "commit": {
+                "sha": "be7912ee4991bcc8a5390fac0424d1d08221dcc6",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/be7912ee4991bcc8a5390fac0424d1d08221dcc6"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM2LjE="
+        },
+        {
+            "name": "1.36.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.36.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.36.0",
+            "commit": {
+                "sha": "9c79880a6788e3d40d51829bc8c8417e5df859f1",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/9c79880a6788e3d40d51829bc8c8417e5df859f1"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM2LjA="
+        },
+        {
+            "name": "1.35.2",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.35.2",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.35.2",
+            "commit": {
+                "sha": "33d498d9a9323a3562fa380da28a2a17dd5df408",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/33d498d9a9323a3562fa380da28a2a17dd5df408"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM1LjI="
+        },
+        {
+            "name": "1.35.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.35.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.35.1",
+            "commit": {
+                "sha": "38670d2eefcba27530272946d627ac8d4e45f017",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/38670d2eefcba27530272946d627ac8d4e45f017"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM1LjE="
+        },
+        {
+            "name": "1.35.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.35.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.35.0",
+            "commit": {
+                "sha": "7fc64d3ebb1141047828d92a52af85f7446ce37f",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/7fc64d3ebb1141047828d92a52af85f7446ce37f"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM1LjA="
+        },
+        {
+            "name": "1.34.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.34.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.34.0",
+            "commit": {
+                "sha": "a0cae5b53521e7f003a044f3a38aa125be074130",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/a0cae5b53521e7f003a044f3a38aa125be074130"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjM0LjA="
+        },
+        {
+            "name": "1.33.3",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.33.3",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.33.3",
+            "commit": {
+                "sha": "d5c402e6dc5b40ab4ba4e8f97fbd7f5fcfbabca3",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/d5c402e6dc5b40ab4ba4e8f97fbd7f5fcfbabca3"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMzLjM="
+        },
+        {
+            "name": "1.33.2",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.33.2",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.33.2",
+            "commit": {
+                "sha": "64f799f85ca765ce4699d765108eec529d9072c8",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/64f799f85ca765ce4699d765108eec529d9072c8"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMzLjI="
+        },
+        {
+            "name": "1.33.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.33.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.33.1",
+            "commit": {
+                "sha": "a5360d8e500bc73d8f6b007cc0dc39dabd05318c",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/a5360d8e500bc73d8f6b007cc0dc39dabd05318c"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMzLjE="
+        },
+        {
+            "name": "1.33.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.33.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.33.0",
+            "commit": {
+                "sha": "c49398ff06fc293a6a6f897bba4adf43544c7d0a",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/c49398ff06fc293a6a6f897bba4adf43544c7d0a"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMzLjA="
+        },
+        {
+            "name": "1.32.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.32.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.32.0",
+            "commit": {
+                "sha": "11960252cc212a8fc3079c4f4f91cd6adc0bf358",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/11960252cc212a8fc3079c4f4f91cd6adc0bf358"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMyLjA="
+        },
+        {
+            "name": "1.31.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.31.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.31.0",
+            "commit": {
+                "sha": "2676424be0b65d44a88ef3d3f325503fd0f025a8",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/2676424be0b65d44a88ef3d3f325503fd0f025a8"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMxLjA="
+        },
+        {
+            "name": "1.30.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.30.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.30.0",
+            "commit": {
+                "sha": "f5ae02083656d1218cc32ad10c0608c040b4d22c",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/f5ae02083656d1218cc32ad10c0608c040b4d22c"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjMwLjA="
+        },
+        {
+            "name": "1.29.2",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.29.2",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.29.2",
+            "commit": {
+                "sha": "2b3ac0556740ea8d68f8616917daf64338d54c1b",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/2b3ac0556740ea8d68f8616917daf64338d54c1b"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjI5LjI="
+        },
+        {
+            "name": "1.29.1",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.29.1",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.29.1",
+            "commit": {
+                "sha": "d957d0f480c442cf175208faa6f3792c34440dd1",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/d957d0f480c442cf175208faa6f3792c34440dd1"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjI5LjE="
+        },
+        {
+            "name": "1.29.0",
+            "zipball_url": "https://api.github.com/repos/vapor/fluent-kit/zipball/refs/tags/1.29.0",
+            "tarball_url": "https://api.github.com/repos/vapor/fluent-kit/tarball/refs/tags/1.29.0",
+            "commit": {
+                "sha": "05b66e6da34269c413a1595402a9bb23ac11cdcf",
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/05b66e6da34269c413a1595402a9bb23ac11cdcf"
+            },
+            "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjI5LjA="
+        }
     ]
 }

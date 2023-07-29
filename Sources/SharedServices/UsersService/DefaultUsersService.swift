@@ -82,7 +82,7 @@ struct DefaultUsersService: UsersService {
 
         let body = try await response.body.collect(upTo: 1 << 24)
 
-        return try decoder.decode(DynamoDBUser.self, from: body)
+        return try decoder.decode(DynamoDBUser?.self, from: body)
     }
 
     func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse {

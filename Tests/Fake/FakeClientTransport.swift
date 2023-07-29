@@ -10,7 +10,7 @@ public struct FakeClientTransport: ClientTransport {
         baseURL: URL,
         operationID: String
     ) async throws -> Response {
-        let primaryID = "\(request.method)-\(baseURL.absoluteString)\(request.path)"
+        let primaryID = "\(request.method.name)-\(baseURL.absoluteString)\(request.path)"
         guard let data =  TestData.for(ghRequestID: primaryID) ??
                 TestData.for(ghRequestID: operationID) else {
             fatalError("No test GitHub data for primary id: \(primaryID), operation id: \(operationID).")
