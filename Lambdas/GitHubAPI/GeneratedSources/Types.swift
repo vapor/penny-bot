@@ -11070,7 +11070,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/user`.
             public var user: Components.Schemas.nullable_simple_user
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/body`.
-            public var body: Swift.String
+            public var body: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload`.
             public struct labelsPayloadPayload: Codable, Equatable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload/id`.
@@ -11130,7 +11130,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labels`.
             public var labels: Components.Schemas.pull_request_simple.labelsPayload
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/milestone`.
-            public var milestone: Components.Schemas.nullable_milestone
+            public var milestone: Components.Schemas.nullable_milestone?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/active_lock_reason`.
             public var active_lock_reason: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/created_at`.
@@ -11138,13 +11138,13 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/updated_at`.
             public var updated_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/closed_at`.
-            public var closed_at: Foundation.Date
+            public var closed_at: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merged_at`.
-            public var merged_at: Foundation.Date
+            public var merged_at: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merge_commit_sha`.
-            public var merge_commit_sha: Swift.String
+            public var merge_commit_sha: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/assignee`.
-            public var assignee: Components.Schemas.nullable_simple_user
+            public var assignee: Components.Schemas.nullable_simple_user?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/assignees`.
             public var assignees: [Components.Schemas.simple_user]?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/requested_reviewers`.
@@ -11301,7 +11301,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/author_association`.
             public var author_association: Components.Schemas.author_association
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/auto_merge`.
-            public var auto_merge: Components.Schemas.auto_merge
+            public var auto_merge: Components.Schemas.auto_merge?
             /// Indicates whether or not the pull request is a draft.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/draft`.
@@ -11363,16 +11363,16 @@ public enum Components {
                 locked: Swift.Bool,
                 title: Swift.String,
                 user: Components.Schemas.nullable_simple_user,
-                body: Swift.String,
+                body: Swift.String? = nil,
                 labels: Components.Schemas.pull_request_simple.labelsPayload,
-                milestone: Components.Schemas.nullable_milestone,
+                milestone: Components.Schemas.nullable_milestone? = nil,
                 active_lock_reason: Swift.String? = nil,
                 created_at: Foundation.Date,
                 updated_at: Foundation.Date,
-                closed_at: Foundation.Date,
-                merged_at: Foundation.Date,
-                merge_commit_sha: Swift.String,
-                assignee: Components.Schemas.nullable_simple_user,
+                closed_at: Foundation.Date? = nil,
+                merged_at: Foundation.Date? = nil,
+                merge_commit_sha: Swift.String? = nil,
+                assignee: Components.Schemas.nullable_simple_user? = nil,
                 assignees: [Components.Schemas.simple_user]? = nil,
                 requested_reviewers: [Components.Schemas.simple_user]? = nil,
                 requested_teams: [Components.Schemas.team]? = nil,
@@ -11380,7 +11380,7 @@ public enum Components {
                 base: Components.Schemas.pull_request_simple.basePayload,
                 _links: Components.Schemas.pull_request_simple._linksPayload,
                 author_association: Components.Schemas.author_association,
-                auto_merge: Components.Schemas.auto_merge,
+                auto_merge: Components.Schemas.auto_merge? = nil,
                 draft: Swift.Bool? = nil
             ) {
                 self.url = url

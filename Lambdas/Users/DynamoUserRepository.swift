@@ -32,7 +32,7 @@ struct DynamoUserRepository {
     func updateUser(_ user: DynamoDBUser) async throws -> Void {
         var user = user
 
-        if user.githubID == nil {
+        if (user.githubID ?? "").isEmpty {
             /// Can't set this to `nil` or empty string when it's already populated.
             /// So `" "` (a single whitespace) is an equivalent for `nil`.
             user.githubID = Configuration.githubIDNilEquivalent

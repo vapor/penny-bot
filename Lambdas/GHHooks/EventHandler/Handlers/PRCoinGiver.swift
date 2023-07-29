@@ -22,6 +22,7 @@ struct PRCoinGiver {
         if prs.isEmpty { return }
         let codeOwners = try await context.getCodeOwners(repoFullName: repo.full_name)
         for pr in try await getPRsRelatedToCommit() {
+            if pr.merged_at == nil { continue }
             if codeOwners.usernamesContain(user: pr.user) { continue }
             guard let member = try await context.getDiscordMember(githubID: "\(pr.user.id)"),
                   let discordID = member.user?.id else {
@@ -78,5 +79,3 @@ struct PRCoinGiver {
         return json
     }
 }
-
-#warning("file issue in releases should opt out the bot")

@@ -68,7 +68,7 @@ public enum TestData {
         return dataDict
     }()
 
-    public static func `for`(ghOperationId key: String) -> Data? {
+    public static func `for`(ghRequestID key: String) -> Data? {
         return ghRestOperations[key]
     }
 }

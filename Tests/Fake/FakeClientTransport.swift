@@ -10,8 +10,10 @@ public struct FakeClientTransport: ClientTransport {
         baseURL: URL,
         operationID: String
     ) async throws -> Response {
-        guard let data = TestData.for(ghOperationId: operationID) else {
-            fatalError("No test data for operation id: \(operationID), baseURL: \(baseURL), request: \(request)")
+        let primaryID = "\(request.method)-\(baseURL.absoluteString)\(request.path)"
+        guard let data =  TestData.for(ghRequestID: primaryID) ??
+                TestData.for(ghRequestID: operationID) else {
+            fatalError("No test GitHub data for primary id: \(primaryID), operation id: \(operationID).")
         }
         let statusCode = request.method == .post ? 201 : 200
         return Response(statusCode: statusCode, body: data)
