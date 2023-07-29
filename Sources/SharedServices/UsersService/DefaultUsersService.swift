@@ -180,7 +180,8 @@ struct DefaultUsersService: UsersService {
     func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {
         let user = try await self.getOrCreateUser(discordID: discordID)
 
-        guard let id = user.githubID else {
+        guard let id = user.githubID,
+              !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return .notLinked
         }
 

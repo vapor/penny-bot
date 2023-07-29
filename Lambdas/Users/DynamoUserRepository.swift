@@ -4,6 +4,11 @@ import Models
 import Extensions
 
 struct DynamoUserRepository {
+
+    enum Configuration {
+        static let githubIDNilEquivalent = " "
+    }
+
     let db: DynamoDB
     let eventLoop: any EventLoop
     let logger: Logger
@@ -25,6 +30,14 @@ struct DynamoUserRepository {
     }
 
     func updateUser(_ user: DynamoDBUser) async throws -> Void {
+        var user = user
+
+        if user.githubID == nil {
+            /// Can't set this to `nil` or empty string when it's already populated.
+            /// So `" "` (a single whitespace) is an equivalent for `nil`.
+            user.githubID = Configuration.githubIDNilEquivalent
+        }
+
         let input = DynamoDB.UpdateItemCodableInput(
             key: ["id"],
             tableName: self.tableName,
@@ -59,11 +72,19 @@ struct DynamoUserRepository {
 
     /// Returns nil if user does not exist.
     private func queryUser(with query: DynamoDB.QueryInput) async throws -> DynamoDBUser? {
-        try await db.query(
+        var user = try await db.query(
             query,
             type: DynamoDBUser.self,
             logger: self.logger,
             on: self.eventLoop
         ).items?.first
+
+        if user?.githubID == Configuration.githubIDNilEquivalent {
+            /// Can't set this to `nil` or empty string when it's already populated.
+            /// So `" "` (a single whitespace) is an equivalent for `nil`.
+            user?.githubID = nil
+        }
+
+        return user
     }
 }
