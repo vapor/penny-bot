@@ -3,6 +3,7 @@ import DiscordLogger
 import AsyncHTTPClient
 import NIOCore
 import SotoCore
+import SharedServices
 import Logging
 
 struct PennyService: MainService {
@@ -83,7 +84,10 @@ struct PennyService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        let usersService = DefaultUsersService(httpClient: httpClient)
+        let usersService = ServiceFactory.makeUsersService(
+            httpClient: httpClient,
+            apiBaseURL: Constants.apiBaseURL
+        )
         let pingsService = DefaultPingsService(httpClient: httpClient)
         await pingsService.onStart()
         let faqsService = DefaultFaqsService(httpClient: httpClient)

@@ -127,6 +127,9 @@ Resources:
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${UsersFilename}.zip
+      Environment:
+        Variables:
+          API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
       FunctionName: !Sub ${UsersFilename}
       Handler: handler 
       Role: !GetAtt lambdaIAMRole.Arn
@@ -490,6 +493,7 @@ Resources:
           GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
           GH_CLIENT_ID: Iv1.683ea075648a5cd2
           ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
+          API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${GHOAuthFilename}
       Handler: handler

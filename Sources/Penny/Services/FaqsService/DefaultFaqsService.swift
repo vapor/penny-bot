@@ -68,7 +68,7 @@ actor DefaultFaqsService: FaqsService {
 
     /// Must "freshenCache" if it didn't throw an error.
     func send(request faqsRequest: FaqsRequest) async throws {
-        let url = Constants.apiBaseUrl + "/faqs"
+        let url = Constants.apiBaseURL + "/faqs"
         var request = HTTPClientRequest(url: url)
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")

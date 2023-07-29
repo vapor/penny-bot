@@ -14,8 +14,8 @@ extension LeafRenderer {
         extraSources: [any LeafSource] = [],
         on eventLoop: any EventLoop
     ) throws {
-        let workingDir = FileManager.default.currentDirectoryPath
-        let rootDirectory = "\(workingDir)/Templates/\(subDirectory)"
+        let workingDirectory = FileManager.default.currentDirectoryPath
+        let rootDirectory = "\(workingDirectory)/Templates/\(subDirectory)"
         let configuration = LeafConfiguration(rootDirectory: rootDirectory)
         let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
         let fileIOLeafSource = NIOLeafFiles(

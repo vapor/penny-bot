@@ -110,8 +110,8 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Rendering"),
-                .target(name: "Models"),
                 .target(name: "SharedServices"),
+                .target(name: "Models"),
             ],
             swiftSettings: swiftSettings
         ),
@@ -121,10 +121,10 @@ let package = Package(
                 .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoCore", package: "soto-core"),
-                .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "Collections", package: "swift-collections"),
+                .product(name: "Logging", package: "swift-log"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices"),
                 .target(name: "Models"),
             ],
             path: "./Lambdas/Users",
@@ -257,10 +257,11 @@ let package = Package(
         .target(
             name: "SharedServices",
             dependencies: [
-                .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "SotoCore", package: "soto-core"),
-                .target(name: "Models"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "DiscordModels", package: "DiscordBM"),
                 .target(name: "Extensions"),
+                .target(name: "Models"),
             ],
             swiftSettings: swiftSettings
         ),

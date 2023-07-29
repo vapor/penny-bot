@@ -9,37 +9,8 @@ import SharedServices
 import Extensions
 import Foundation
 
-enum GitHubRequestError: Error, CustomStringConvertible {
-    case runWorkflowError(message: String)
-
-    var description: String {
-        switch self {
-        case let .runWorkflowError(message):
-            return "GitHubRequestError.runWorkflowError(\(message))"
-        }
-    }
-}
-
-enum DiscordRequestError: Error, CustomStringConvertible {
-    case addMemberRoleError(message: String)
-    case sendWelcomeMessageError(message: String)
-
-    var description: String {
-        switch self {
-        case let .addMemberRoleError(message):
-            return "DiscordRequestError.addMemberRoleError(\(message))"
-        case let .sendWelcomeMessageError(message):
-            return "DiscordRequestError.sendWelcomeMessageError(\(message))"
-        }
-    }
-}
-
-struct ClientFailedShutdownError: Error {
-    let message = "Failed to shutdown HTTP Client"
-}
-
 @main
-struct AddSponsorHandler: LambdaHandler {
+struct SponsorsHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
@@ -92,9 +63,14 @@ struct AddSponsorHandler: LambdaHandler {
             // Look for the user in the DB
             context.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
-            let userService = UserService(awsClient: awsClient, logger: context.logger)
-            let user = try await userService.getUser(githubID: "\(newSponsorID)")
-            guard let user = user else {
+            guard let apiBaseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] else {
+                throw Errors.envVarNotFound(key: "API_BASE_URL")
+            }
+            let userService = ServiceFactory.makeUsersService(
+                httpClient: httpClient,
+                apiBaseURL: apiBaseURL
+            )
+            guard let user = try await userService.getUser(githubID: "\(newSponsorID)") else {
                 context.logger.error("No user found with GitHub ID \(newSponsorID)")
                 return APIGatewayV2Response(
                     statusCode: .ok,
@@ -190,7 +166,7 @@ struct AddSponsorHandler: LambdaHandler {
             }
         } catch {
             logger.error("Failed to remove \(role.rawValue) role from user \(discordID) with error: \(error)")
-            throw DiscordRequestError.addMemberRoleError(
+            throw Errors.addMemberRoleError(
                 message: "Failed to remove \(role.rawValue) role from user \(discordID) with error: \(error)"
             )
         }
@@ -210,7 +186,7 @@ struct AddSponsorHandler: LambdaHandler {
             logger.info("Successfully added \(role) role to user \(discordID).")
         } catch {
             logger.error("Failed to add \(role) role to member \(discordID) with error: \(error)")
-            throw DiscordRequestError.addMemberRoleError(
+            throw Errors.addMemberRoleError(
                 message: "Failed to add \(role) role to member \(discordID) with error: \(error)"
             )
         }
@@ -233,7 +209,7 @@ struct AddSponsorHandler: LambdaHandler {
             logger.info("Successfully sent message to user \(discordID).")
         } catch {
             logger.error("Failed to send message with error: \(error)")
-            throw DiscordRequestError.sendWelcomeMessageError(
+            throw Errors.sendWelcomeMessageError(
                 message: "Failed to send message with error: \(error)"
             )
         }
@@ -269,7 +245,7 @@ struct AddSponsorHandler: LambdaHandler {
         guard 200...299 ~= githubResponse.status.code else {
             let body = try await githubResponse.body.collect(upTo: 1024 * 1024)
             logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code) and body: \(String(buffer: body))")
-            throw GitHubRequestError.runWorkflowError(
+            throw Errors.runWorkflowError(
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )
         }

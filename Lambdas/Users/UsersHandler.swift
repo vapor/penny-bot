@@ -2,7 +2,6 @@ import AWSLambdaRuntime
 import AWSLambdaEvents
 import Foundation
 import SotoCore
-import SharedServices
 import Models
 import Extensions
 
@@ -26,10 +25,14 @@ struct UsersHandler: LambdaHandler {
         do {
             let request = try event.decode(as: UserRequest.self)
             switch request {
-            case .addCoin(let entry):
+            case let .addCoin(entry):
                 return try await handleAddUserRequest(entry: entry)
-            case .getUser(let discordID):
-                return try await handleGetUserRequest(discordID: discordID)
+            case let .getOrCreateUser(discordID):
+                return try await handleGetOrCreateUserRequest(discordID: discordID)
+            case let .getUser(githubID):
+                return try await handleGetUserRequest(githubID: githubID)
+            case let .linkGitHubID(discordID, toGitHubID):
+                return try await handleLinkGitHubRequest(discordID: discordID, githubID: toGitHubID)
             }
         } catch {
             context.logger.error("Received error while handling request", metadata: [
@@ -44,7 +47,7 @@ struct UsersHandler: LambdaHandler {
     }
     
     func handleAddUserRequest(
-        entry: UserRequest.DiscordCoinEntry
+        entry: UserRequest.CoinEntryRequest
     ) async throws -> APIGatewayV2Response {
         let fromUserID = try await userService.getOrCreateUser(discordID: entry.fromDiscordID).id
         let toUser = try await userService.getOrCreateUser(discordID: entry.toDiscordID)
@@ -71,8 +74,21 @@ struct UsersHandler: LambdaHandler {
         return APIGatewayV2Response(status: .ok, content: coinResponse)
     }
     
-    func handleGetUserRequest(discordID: UserSnowflake) async throws -> APIGatewayV2Response {
+    func handleGetOrCreateUserRequest(discordID: UserSnowflake) async throws -> APIGatewayV2Response {
         let user = try await userService.getOrCreateUser(discordID: discordID)
         return APIGatewayV2Response(status: .ok, content: user)
+    }
+
+    func handleGetUserRequest(githubID: String) async throws -> APIGatewayV2Response {
+        let user = try await userService.getUser(githubID: githubID)
+        return APIGatewayV2Response(status: .ok, content: user)
+    }
+
+    func handleLinkGitHubRequest(
+        discordID: UserSnowflake,
+        githubID: String
+    ) async throws -> APIGatewayV2Response {
+        try await userService.linkGithubID(discordID: discordID, githubID: githubID)
+        return APIGatewayV2Response(statusCode: .ok)
     }
 }

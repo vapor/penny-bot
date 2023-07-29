@@ -8,23 +8,25 @@ import Logging
 import DiscordModels
 import Models
 
-actor DefaultUsersService: UsersService {
+struct DefaultUsersService: UsersService {
     let httpClient: HTTPClient
+    let apiBaseURL: String
     let logger = Logger(label: "DefaultUsersService")
-    
+
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
     
-    init(httpClient: HTTPClient) {
+    init(httpClient: HTTPClient, apiBaseURL: String) {
         self.httpClient = httpClient
+        self.apiBaseURL = apiBaseURL
     }
 
-    private func getUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl)/users")
+    private func getOrCreateUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
+        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
 
-        let requestContent = UserRequest.getUser(discordID: discordID)
+        let requestContent = UserRequest.getOrCreateUser(discordID: discordID)
         let data = try encoder.encode(requestContent)
         request.body = .bytes(data)
 
@@ -43,7 +45,7 @@ actor DefaultUsersService: UsersService {
                 "headers": "\(response.headers)",
                 "body": "\(body)",
             ])
-            throw ServiceError.badStatus(response.status)
+            throw ServiceError.badStatus(response)
         }
 
         let body = try await response.body.collect(upTo: 1 << 24)
@@ -51,13 +53,52 @@ actor DefaultUsersService: UsersService {
         return try decoder.decode(DynamoDBUser.self, from: body)
     }
 
-    func postCoin(with coinRequest: UserRequest.DiscordCoinEntry) async throws -> CoinResponse {
-        var request = HTTPClientRequest(url: "\(Constants.apiBaseUrl)/users")
+    func getUser(githubID: String) async throws -> DynamoDBUser? {
+        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try encoder.encode(UserRequest.addCoin(coinRequest))
+
+        let requestContent = UserRequest.getUser(githubID: githubID)
+        let data = try encoder.encode(requestContent)
         request.body = .bytes(data)
-        let response = try await httpClient.execute(request, timeout: .seconds(30), logger: self.logger)
+
+        let response = try await httpClient.execute(
+            request,
+            timeout: .seconds(30),
+            logger: self.logger
+        )
+        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
+
+        guard (200..<300).contains(response.status.code) else {
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let body = collected.map { String(buffer: $0) } ?? "nil"
+            logger.error("Get-coin-count failed", metadata: [
+                "status": "\(response.status)",
+                "headers": "\(response.headers)",
+                "body": "\(body)",
+            ])
+            throw ServiceError.badStatus(response)
+        }
+
+        let body = try await response.body.collect(upTo: 1 << 24)
+
+        return try decoder.decode(DynamoDBUser.self, from: body)
+    }
+
+    func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse {
+        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
+        request.method = .POST
+        request.headers.add(name: "Content-Type", value: "application/json")
+
+        let requestContent = UserRequest.addCoin(coinRequest)
+        let data = try encoder.encode(requestContent)
+        request.body = .bytes(data)
+
+        let response = try await httpClient.execute(
+            request,
+            timeout: .seconds(30),
+            logger: self.logger
+        )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
         
         guard (200..<300).contains(response.status.code) else {
@@ -68,7 +109,7 @@ actor DefaultUsersService: UsersService {
                 "headers": "\(response.headers)",
                 "body": "\(body)",
             ])
-            throw ServiceError.badStatus(response.status)
+            throw ServiceError.badStatus(response)
         }
         
         let body = try await response.body.collect(upTo: 1 << 24)
@@ -77,11 +118,39 @@ actor DefaultUsersService: UsersService {
     }
 
     func getCoinCount(of discordID: UserSnowflake) async throws -> Int {
-        try await self.getUser(discordID: discordID).coinCount
+        try await self.getOrCreateUser(discordID: discordID).coinCount
+    }
+
+    func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws {
+        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
+        request.method = .POST
+        request.headers.add(name: "Content-Type", value: "application/json")
+
+        let requestContent = UserRequest.linkGitHubID(discordID: discordID, toGitHubID: githubID)
+        let data = try encoder.encode(requestContent)
+        request.body = .bytes(data)
+
+        let response = try await httpClient.execute(
+            request,
+            timeout: .seconds(30),
+            logger: self.logger
+        )
+        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
+
+        guard (200..<300).contains(response.status.code) else {
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let body = collected.map { String(buffer: $0) } ?? "nil"
+            logger.error("Get-coin-count failed", metadata: [
+                "status": "\(response.status)",
+                "headers": "\(response.headers)",
+                "body": "\(body)",
+            ])
+            throw ServiceError.badStatus(response)
+        }
     }
 
     func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {
-        let user = try await self.getUser(discordID: discordID)
+        let user = try await self.getOrCreateUser(discordID: discordID)
 
         guard let id = user.githubID else {
             return .notLinked

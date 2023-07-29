@@ -21,7 +21,7 @@ struct GHOAuthHandler: LambdaHandler {
 
     let client: HTTPClient
     let secretsRetriever: SecretsRetriever
-    let userService: UserService
+    let userService: any UsersService
     let signers: JWTSigners
     let logger: Logger
 
@@ -44,7 +44,13 @@ struct GHOAuthHandler: LambdaHandler {
         let awsClient = AWSClient(httpClientProvider: .shared(client))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
-        self.userService = UserService(awsClient: awsClient, logger: logger)
+        guard let apiBaseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] else {
+            throw Errors.envVarNotFound(name: "API_BASE_URL")
+        }
+        self.userService = ServiceFactory.makeUsersService(
+            httpClient: client,
+            apiBaseURL: apiBaseURL
+        )
 
         signers = JWTSigners()
         signers.use(.es256(key: try getJWTSignersPublicKey()))
@@ -52,8 +58,9 @@ struct GHOAuthHandler: LambdaHandler {
 
     private func getJWTSignersPublicKey() throws -> ECDSAKey {
         logger.debug("Retrieving JWT signer secrets")
-        guard let publicKeyString = ProcessInfo.processInfo.environment["ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY"] else {
-            throw Errors.envVarNotFound(name: "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
+        let pubKeyEnvVarKey = "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY"
+        guard let publicKeyString = ProcessInfo.processInfo.environment[pubKeyEnvVarKey] else {
+            throw Errors.envVarNotFound(name: pubKeyEnvVarKey)
         }
         guard let publicKeyData = Data(base64Encoded: publicKeyString) else {
             throw Errors.invalidPublicKey
@@ -105,7 +112,7 @@ struct GHOAuthHandler: LambdaHandler {
         }
 
         do {
-            try await userService.linkGithubID(discordID: jwt.discordID, githubID: "\(user.id)")
+            try await userService.linkGitHubID(discordID: jwt.discordID, toGitHubID: "\(user.id)")
         } catch {
             logger.error("Error linking user to GitHub account", metadata: [
                 "jwt": "\(jwt)",

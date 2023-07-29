@@ -1,12 +1,13 @@
 @testable import Penny
+@testable import Models
 import DiscordModels
-import Models
+import SharedServices
 
 public struct FakeUsersService: UsersService {
     
     public init() { }
     
-    public func postCoin(with coinRequest: UserRequest.DiscordCoinEntry) async throws -> CoinResponse {
+    public func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse {
         CoinResponse(
             sender: coinRequest.fromDiscordID,
             receiver: coinRequest.toDiscordID,
@@ -21,4 +22,12 @@ public struct FakeUsersService: UsersService {
     public func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {
         .userName("fake-username")
     }
+
+    public func getUser(githubID: String) async throws -> DynamoDBUser? {
+        DynamoDBUser.createNew(
+            forDiscordID: try! .makeFake()
+        )
+    }
+
+    public func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws { }
 }
