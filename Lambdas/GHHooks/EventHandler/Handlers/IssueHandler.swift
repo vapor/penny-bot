@@ -74,7 +74,7 @@ struct IssueHandler {
 
         let member = try await context.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
-        let iconURL = member?.uiAvatarCDNEndpoint?.url ?? issue.user.avatar_url
+        let iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
 
         let embed = Embed(
             title: title,

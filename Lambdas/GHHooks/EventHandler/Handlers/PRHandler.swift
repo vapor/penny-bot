@@ -104,7 +104,7 @@ struct PRHandler {
 
         let member = try await context.getDiscordMember(githubID: "\(pr.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? pr.user.uiName
-        let iconURL = member?.uiAvatarCDNEndpoint?.url ?? pr.user.avatar_url
+        let iconURL = member?.uiAvatarURL ?? pr.user.avatar_url
 
         let embed = Embed(
             title: title,
