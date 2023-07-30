@@ -3374,5 +3374,432 @@
             },
             "node_id": "MDM6UmVmMTcwMjE5NTg0OnJlZnMvdGFncy8xLjI5LjA="
         }
-    ]
+    ],
+    "repos/compare-commits": {
+        "url": "https://api.github.com/repos/vapor/fluent-kit/compare/1.43.2...1.44.0",
+        "html_url": "https://github.com/vapor/fluent-kit/compare/1.43.2...1.44.0",
+        "permalink_url": "https://github.com/vapor/fluent-kit/compare/vapor:46ea401...vapor:e562a10",
+        "diff_url": "https://github.com/vapor/fluent-kit/compare/1.43.2...1.44.0.diff",
+        "patch_url": "https://github.com/vapor/fluent-kit/compare/1.43.2...1.44.0.patch",
+        "base_commit": {
+            "sha": "46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+            "node_id": "C_kwDOCiVYQNoAKDQ2ZWE0MDFmYjc0YWU0OGE0MzNkOTkxZmY2N2Y5ZmRhZTM3OWY3ZTU",
+            "commit": {
+                "author": {
+                    "name": "François Lamboley",
+                    "email": "Frizlab@users.noreply.github.com",
+                    "date": "2023-07-25T09:01:46Z"
+                },
+                "committer": {
+                    "name": "GitHub",
+                    "email": "noreply@github.com",
+                    "date": "2023-07-25T09:01:46Z"
+                },
+                "message": "Add possibility of nested eager load builder to throw (#574)",
+                "tree": {
+                    "sha": "a287be346eb5431da01fb31f73b30399df0f11f1",
+                    "url": "https://api.github.com/repos/vapor/fluent-kit/git/trees/a287be346eb5431da01fb31f73b30399df0f11f1"
+                },
+                "url": "https://api.github.com/repos/vapor/fluent-kit/git/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+                "comment_count": 0,
+                "verification": {
+                    "verified": true,
+                    "reason": "valid",
+                    "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsBcBAABCAAQBQJkv496CRBK7hj4Ov3rIwAAAf4IAJiY5/u4DGAHUxS8jKg+KsvT\n9v/GbK3BAuPdSCWlpVY+yU6a9ovf9ZZQmIPlSQwJmcFu99bWR6hNw4Qvghtesro2\npsFisr2Mi1AimTCD9UgarzR5GAliEk58ZfEeKxlrqW88BFE1gTMyL5O+ExR2jys7\nlTIXFnS0te5Mkr6/Ab1iZbVbiMkHb0qxZVxSdNgz2wVqS0pSPoLpM+GLXRQpXyeU\nFSfqhXkTI+QSE2i7OQ86LDJjcxR2XtpFptuGUdTjGgG4zz5MJ2aH9sIhJOCkQ0ub\n/AZnSalIaI0S1/8BNNKZXTfRWyD1uHT3sx2rvzyE5emHMA4DZ8YzMZruteLmCu4=\n=GL+k\n-----END PGP SIGNATURE-----\n",
+                    "payload": "tree a287be346eb5431da01fb31f73b30399df0f11f1\nparent cee27b81cbda867642604021cdf01aaee8d2b0f0\nauthor François Lamboley <Frizlab@users.noreply.github.com> 1690275706 +0200\ncommitter GitHub <noreply@github.com> 1690275706 -0500\n\nAdd possibility of nested eager load builder to throw (#574)\n\n"
+                }
+            },
+            "url": "https://api.github.com/repos/vapor/fluent-kit/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+            "html_url": "https://github.com/vapor/fluent-kit/commit/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+            "comments_url": "https://api.github.com/repos/vapor/fluent-kit/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5/comments",
+            "author": {
+                "login": "Frizlab",
+                "id": 523041,
+                "node_id": "MDQ6VXNlcjUyMzA0MQ==",
+                "avatar_url": "https://avatars.githubusercontent.com/u/523041?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/Frizlab",
+                "html_url": "https://github.com/Frizlab",
+                "followers_url": "https://api.github.com/users/Frizlab/followers",
+                "following_url": "https://api.github.com/users/Frizlab/following{/other_user}",
+                "gists_url": "https://api.github.com/users/Frizlab/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/Frizlab/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/Frizlab/subscriptions",
+                "organizations_url": "https://api.github.com/users/Frizlab/orgs",
+                "repos_url": "https://api.github.com/users/Frizlab/repos",
+                "events_url": "https://api.github.com/users/Frizlab/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/Frizlab/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "committer": {
+                "login": "web-flow",
+                "id": 19864447,
+                "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+                "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/web-flow",
+                "html_url": "https://github.com/web-flow",
+                "followers_url": "https://api.github.com/users/web-flow/followers",
+                "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+                "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+                "organizations_url": "https://api.github.com/users/web-flow/orgs",
+                "repos_url": "https://api.github.com/users/web-flow/repos",
+                "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/web-flow/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "parents": [
+                {
+                    "sha": "cee27b81cbda867642604021cdf01aaee8d2b0f0",
+                    "url": "https://api.github.com/repos/vapor/fluent-kit/commits/cee27b81cbda867642604021cdf01aaee8d2b0f0",
+                    "html_url": "https://github.com/vapor/fluent-kit/commit/cee27b81cbda867642604021cdf01aaee8d2b0f0"
+                }
+            ]
+        },
+        "merge_base_commit": {
+            "sha": "46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+            "node_id": "C_kwDOCiVYQNoAKDQ2ZWE0MDFmYjc0YWU0OGE0MzNkOTkxZmY2N2Y5ZmRhZTM3OWY3ZTU",
+            "commit": {
+                "author": {
+                    "name": "François Lamboley",
+                    "email": "Frizlab@users.noreply.github.com",
+                    "date": "2023-07-25T09:01:46Z"
+                },
+                "committer": {
+                    "name": "GitHub",
+                    "email": "noreply@github.com",
+                    "date": "2023-07-25T09:01:46Z"
+                },
+                "message": "Add possibility of nested eager load builder to throw (#574)",
+                "tree": {
+                    "sha": "a287be346eb5431da01fb31f73b30399df0f11f1",
+                    "url": "https://api.github.com/repos/vapor/fluent-kit/git/trees/a287be346eb5431da01fb31f73b30399df0f11f1"
+                },
+                "url": "https://api.github.com/repos/vapor/fluent-kit/git/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+                "comment_count": 0,
+                "verification": {
+                    "verified": true,
+                    "reason": "valid",
+                    "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsBcBAABCAAQBQJkv496CRBK7hj4Ov3rIwAAAf4IAJiY5/u4DGAHUxS8jKg+KsvT\n9v/GbK3BAuPdSCWlpVY+yU6a9ovf9ZZQmIPlSQwJmcFu99bWR6hNw4Qvghtesro2\npsFisr2Mi1AimTCD9UgarzR5GAliEk58ZfEeKxlrqW88BFE1gTMyL5O+ExR2jys7\nlTIXFnS0te5Mkr6/Ab1iZbVbiMkHb0qxZVxSdNgz2wVqS0pSPoLpM+GLXRQpXyeU\nFSfqhXkTI+QSE2i7OQ86LDJjcxR2XtpFptuGUdTjGgG4zz5MJ2aH9sIhJOCkQ0ub\n/AZnSalIaI0S1/8BNNKZXTfRWyD1uHT3sx2rvzyE5emHMA4DZ8YzMZruteLmCu4=\n=GL+k\n-----END PGP SIGNATURE-----\n",
+                    "payload": "tree a287be346eb5431da01fb31f73b30399df0f11f1\nparent cee27b81cbda867642604021cdf01aaee8d2b0f0\nauthor François Lamboley <Frizlab@users.noreply.github.com> 1690275706 +0200\ncommitter GitHub <noreply@github.com> 1690275706 -0500\n\nAdd possibility of nested eager load builder to throw (#574)\n\n"
+                }
+            },
+            "url": "https://api.github.com/repos/vapor/fluent-kit/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+            "html_url": "https://github.com/vapor/fluent-kit/commit/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+            "comments_url": "https://api.github.com/repos/vapor/fluent-kit/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5/comments",
+            "author": {
+                "login": "Frizlab",
+                "id": 523041,
+                "node_id": "MDQ6VXNlcjUyMzA0MQ==",
+                "avatar_url": "https://avatars.githubusercontent.com/u/523041?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/Frizlab",
+                "html_url": "https://github.com/Frizlab",
+                "followers_url": "https://api.github.com/users/Frizlab/followers",
+                "following_url": "https://api.github.com/users/Frizlab/following{/other_user}",
+                "gists_url": "https://api.github.com/users/Frizlab/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/Frizlab/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/Frizlab/subscriptions",
+                "organizations_url": "https://api.github.com/users/Frizlab/orgs",
+                "repos_url": "https://api.github.com/users/Frizlab/repos",
+                "events_url": "https://api.github.com/users/Frizlab/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/Frizlab/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "committer": {
+                "login": "web-flow",
+                "id": 19864447,
+                "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+                "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+                "gravatar_id": "",
+                "url": "https://api.github.com/users/web-flow",
+                "html_url": "https://github.com/web-flow",
+                "followers_url": "https://api.github.com/users/web-flow/followers",
+                "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+                "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+                "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+                "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+                "organizations_url": "https://api.github.com/users/web-flow/orgs",
+                "repos_url": "https://api.github.com/users/web-flow/repos",
+                "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+                "received_events_url": "https://api.github.com/users/web-flow/received_events",
+                "type": "User",
+                "site_admin": false
+            },
+            "parents": [
+                {
+                    "sha": "cee27b81cbda867642604021cdf01aaee8d2b0f0",
+                    "url": "https://api.github.com/repos/vapor/fluent-kit/commits/cee27b81cbda867642604021cdf01aaee8d2b0f0",
+                    "html_url": "https://github.com/vapor/fluent-kit/commit/cee27b81cbda867642604021cdf01aaee8d2b0f0"
+                }
+            ]
+        },
+        "status": "ahead",
+        "ahead_by": 2,
+        "behind_by": 0,
+        "total_commits": 2,
+        "commits": [
+            {
+                "sha": "9c0ec5771b9adda9dbef273f0405d68adac133d9",
+                "node_id": "C_kwDOCiVYQNoAKDljMGVjNTc3MWI5YWRkYTlkYmVmMjczZjA0MDVkNjhhZGFjMTMzZDk",
+                "commit": {
+                    "author": {
+                        "name": "Gwynne Raskind",
+                        "email": "gwynne@vapor.codes",
+                        "date": "2023-07-28T04:24:47Z"
+                    },
+                    "committer": {
+                        "name": "Gwynne Raskind",
+                        "email": "gwynne@vapor.codes",
+                        "date": "2023-07-28T04:24:47Z"
+                    },
+                    "message": "Fixup Exports.swift",
+                    "tree": {
+                        "sha": "960d86f3d1bb6d54ff740982e830b28b96196f5b",
+                        "url": "https://api.github.com/repos/vapor/fluent-kit/git/trees/960d86f3d1bb6d54ff740982e830b28b96196f5b"
+                    },
+                    "url": "https://api.github.com/repos/vapor/fluent-kit/git/commits/9c0ec5771b9adda9dbef273f0405d68adac133d9",
+                    "comment_count": 0,
+                    "verification": {
+                        "verified": true,
+                        "reason": "valid",
+                        "signature": "-----BEGIN PGP SIGNATURE-----\n\niQIzBAABCAAdFiEE6fUejordLsF/TVTOM/gyIKoAbUUFAmTDQw8ACgkQM/gyIKoA\nbUU7bBAAtbGX5G7LrCKAHpJ5eHgGyUkV19q5WkjmrJU/mdGqhmS3kHfNMYSO0OpS\nVA+xGEEtKe9vZ3tbuF1cIZ5GRGiX3/4s6RP7qUorxyUwdBGsj6GAjaNHVWkhOIoK\nO1QOPB7XoGw9Hn0GwUyrUATW5f+Op8qE2KUCvr66ezJEJAsJ3I0Bna6FNvDvRk1Y\nrjzbt7VsfumR3/CI7X0b8m0QBzMGpFJ4vWHthZBXUkeYUI1o4G9X281y8WVUsvIl\nAk8QED+l28WizYP3GyQA3DyQg+aIVIngUJCLeWnAzJpZf3dMfYNIPtuGTyI4TwYA\nLMLKMHoeSx6yYds7SPb3nbJyIZ5SPbFxBpig/d12JPaEaqOO85KoVZ3JEo6wy9Fg\n2+TWv5tZrS65e2AafCGRww5N1H+aG9feNlM+NV8VeR3cpzH9UaPO/lUPBCDDOM2c\n8+/rv4h/QiD0NKv1KLexaZLUoxL9Y+jjRZpPuAfD8TF43Yq3CEM4RelRi29VBrGt\nHhH9WWYFT/5XeV2+zJRi+nQD4N77mpN60szmUVExAlKAw+elGw7i9VZl8Qidkbk5\nE0R0hmXxL1hUIySNQZifb+Bz4aVEtVu9Vaq0PrCwJCYpe7B9JGpD3SRWt2DQ/uFb\nZc1pXwvn9K8wQzoiZWuxSQ0RLAK9spJkIksvkCUJSKZGlweIGOc=\n=ysKm\n-----END PGP SIGNATURE-----",
+                        "payload": "tree 960d86f3d1bb6d54ff740982e830b28b96196f5b\nparent 46ea401fb74ae48a433d991ff67f9fdae379f7e5\nauthor Gwynne Raskind <gwynne@vapor.codes> 1690518287 -0500\ncommitter Gwynne Raskind <gwynne@vapor.codes> 1690518287 -0500\n\nFixup Exports.swift\n"
+                    }
+                },
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/9c0ec5771b9adda9dbef273f0405d68adac133d9",
+                "html_url": "https://github.com/vapor/fluent-kit/commit/9c0ec5771b9adda9dbef273f0405d68adac133d9",
+                "comments_url": "https://api.github.com/repos/vapor/fluent-kit/commits/9c0ec5771b9adda9dbef273f0405d68adac133d9/comments",
+                "author": {
+                    "login": "gwynne",
+                    "id": 1130717,
+                    "node_id": "MDQ6VXNlcjExMzA3MTc=",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/1130717?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/gwynne",
+                    "html_url": "https://github.com/gwynne",
+                    "followers_url": "https://api.github.com/users/gwynne/followers",
+                    "following_url": "https://api.github.com/users/gwynne/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/gwynne/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/gwynne/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/gwynne/subscriptions",
+                    "organizations_url": "https://api.github.com/users/gwynne/orgs",
+                    "repos_url": "https://api.github.com/users/gwynne/repos",
+                    "events_url": "https://api.github.com/users/gwynne/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/gwynne/received_events",
+                    "type": "User",
+                    "site_admin": false
+                },
+                "committer": {
+                    "login": "gwynne",
+                    "id": 1130717,
+                    "node_id": "MDQ6VXNlcjExMzA3MTc=",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/1130717?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/gwynne",
+                    "html_url": "https://github.com/gwynne",
+                    "followers_url": "https://api.github.com/users/gwynne/followers",
+                    "following_url": "https://api.github.com/users/gwynne/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/gwynne/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/gwynne/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/gwynne/subscriptions",
+                    "organizations_url": "https://api.github.com/users/gwynne/orgs",
+                    "repos_url": "https://api.github.com/users/gwynne/repos",
+                    "events_url": "https://api.github.com/users/gwynne/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/gwynne/received_events",
+                    "type": "User",
+                    "site_admin": false
+                },
+                "parents": [
+                    {
+                        "sha": "46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+                        "url": "https://api.github.com/repos/vapor/fluent-kit/commits/46ea401fb74ae48a433d991ff67f9fdae379f7e5",
+                        "html_url": "https://github.com/vapor/fluent-kit/commit/46ea401fb74ae48a433d991ff67f9fdae379f7e5"
+                    }
+                ]
+            },
+            {
+                "sha": "e562a1015a814d42582cbccd3e58f03187d6718c",
+                "node_id": "C_kwDOCiVYQNoAKGU1NjJhMTAxNWE4MTRkNDI1ODJjYmNjZDNlNThmMDMxODdkNjcxOGM",
+                "commit": {
+                    "author": {
+                        "name": "Gwynne Raskind",
+                        "email": "gwynne@vapor.codes",
+                        "date": "2023-07-30T01:56:58Z"
+                    },
+                    "committer": {
+                        "name": "GitHub",
+                        "email": "noreply@github.com",
+                        "date": "2023-07-30T01:56:58Z"
+                    },
+                    "message": "Fully work around MySQL 5.7's lack of the DROP CONSTRAINT statement (#575)\n\n* The work done in #522 added the ability to drop foreign keys properly when using a MySQL 5.7 database, enabling Fluent to generate the necessary DROP FOREIGN KEY syntax to make up for the old version's lack of the more standard and more flexible DROP CONSTRAINT statement. However, this still required users to specify the complete and current foreign key constraint definition at the time of deletion so Fluent could work out the correct \"normalized\" constraint identifier. These changes make it possible to also drop a foreign key constraint by name, requiring only the knowledge that it is, in fact, a foreign key.",
+                    "tree": {
+                        "sha": "55ac818c273294bf87a7e6489e994da25d8adfd6",
+                        "url": "https://api.github.com/repos/vapor/fluent-kit/git/trees/55ac818c273294bf87a7e6489e994da25d8adfd6"
+                    },
+                    "url": "https://api.github.com/repos/vapor/fluent-kit/git/commits/e562a1015a814d42582cbccd3e58f03187d6718c",
+                    "comment_count": 0,
+                    "verification": {
+                        "verified": true,
+                        "reason": "valid",
+                        "signature": "-----BEGIN PGP SIGNATURE-----\n\nwsBcBAABCAAQBQJkxcNqCRBK7hj4Ov3rIwAAxYEIAGNleR2Tk/pmcPozJ8Y9m4ma\ni+8SDYhOC5rSMPs0HftXxu3hwSuKKpPgBTlCvrl6eThbUazBJYKje+q7QKHxUWL/\nyZdG80NNrFDxbUPUMH8C7ZpRAZuE2+/1a4Few+RhCAs7IgYk1GFcH24xpfaCVdHQ\ncz4XbhGL761rHNW3T1nUsKwbmPGTiqyerkfLK80JH9dA0eeEYX588HQTAW1xqTtY\nRPAP1e9hSDlsRufkDVXQ9AOOxB0fxIeUpFL9R/LFlXjyM3H9C8W22H1C3wwRcXJW\njDiCf/gqF3ips9DZhaBD2LSeYfe6zARSb1FmE86NXoRLfQB2hTvi4xM++e47u8g=\n=QnPC\n-----END PGP SIGNATURE-----\n",
+                        "payload": "tree 55ac818c273294bf87a7e6489e994da25d8adfd6\nparent 9c0ec5771b9adda9dbef273f0405d68adac133d9\nauthor Gwynne Raskind <gwynne@vapor.codes> 1690682218 -0500\ncommitter GitHub <noreply@github.com> 1690682218 -0500\n\nFully work around MySQL 5.7's lack of the DROP CONSTRAINT statement (#575)\n\n* The work done in #522 added the ability to drop foreign keys properly when using a MySQL 5.7 database, enabling Fluent to generate the necessary DROP FOREIGN KEY syntax to make up for the old version's lack of the more standard and more flexible DROP CONSTRAINT statement. However, this still required users to specify the complete and current foreign key constraint definition at the time of deletion so Fluent could work out the correct \"normalized\" constraint identifier. These changes make it possible to also drop a foreign key constraint by name, requiring only the knowledge that it is, in fact, a foreign key."
+                    }
+                },
+                "url": "https://api.github.com/repos/vapor/fluent-kit/commits/e562a1015a814d42582cbccd3e58f03187d6718c",
+                "html_url": "https://github.com/vapor/fluent-kit/commit/e562a1015a814d42582cbccd3e58f03187d6718c",
+                "comments_url": "https://api.github.com/repos/vapor/fluent-kit/commits/e562a1015a814d42582cbccd3e58f03187d6718c/comments",
+                "author": {
+                    "login": "gwynne",
+                    "id": 1130717,
+                    "node_id": "MDQ6VXNlcjExMzA3MTc=",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/1130717?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/gwynne",
+                    "html_url": "https://github.com/gwynne",
+                    "followers_url": "https://api.github.com/users/gwynne/followers",
+                    "following_url": "https://api.github.com/users/gwynne/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/gwynne/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/gwynne/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/gwynne/subscriptions",
+                    "organizations_url": "https://api.github.com/users/gwynne/orgs",
+                    "repos_url": "https://api.github.com/users/gwynne/repos",
+                    "events_url": "https://api.github.com/users/gwynne/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/gwynne/received_events",
+                    "type": "User",
+                    "site_admin": false
+                },
+                "committer": {
+                    "login": "web-flow",
+                    "id": 19864447,
+                    "node_id": "MDQ6VXNlcjE5ODY0NDQ3",
+                    "avatar_url": "https://avatars.githubusercontent.com/u/19864447?v=4",
+                    "gravatar_id": "",
+                    "url": "https://api.github.com/users/web-flow",
+                    "html_url": "https://github.com/web-flow",
+                    "followers_url": "https://api.github.com/users/web-flow/followers",
+                    "following_url": "https://api.github.com/users/web-flow/following{/other_user}",
+                    "gists_url": "https://api.github.com/users/web-flow/gists{/gist_id}",
+                    "starred_url": "https://api.github.com/users/web-flow/starred{/owner}{/repo}",
+                    "subscriptions_url": "https://api.github.com/users/web-flow/subscriptions",
+                    "organizations_url": "https://api.github.com/users/web-flow/orgs",
+                    "repos_url": "https://api.github.com/users/web-flow/repos",
+                    "events_url": "https://api.github.com/users/web-flow/events{/privacy}",
+                    "received_events_url": "https://api.github.com/users/web-flow/received_events",
+                    "type": "User",
+                    "site_admin": false
+                },
+                "parents": [
+                    {
+                        "sha": "9c0ec5771b9adda9dbef273f0405d68adac133d9",
+                        "url": "https://api.github.com/repos/vapor/fluent-kit/commits/9c0ec5771b9adda9dbef273f0405d68adac133d9",
+                        "html_url": "https://github.com/vapor/fluent-kit/commit/9c0ec5771b9adda9dbef273f0405d68adac133d9"
+                    }
+                ]
+            }
+        ],
+        "files": [
+            {
+                "sha": "1b40272438a429b2c8d959355a88e37aff25071b",
+                "filename": ".github/workflows/api-docs.yml",
+                "status": "modified",
+                "additions": 1,
+                "deletions": 1,
+                "changes": 2,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/.github%2Fworkflows%2Fapi-docs.yml",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/.github%2Fworkflows%2Fapi-docs.yml",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/.github%2Fworkflows%2Fapi-docs.yml?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -11,4 +11,4 @@ jobs:\n      with:\n        package_name: fluent-kit\n        modules: FluentKit\n-       pathsToInvalidate: /fluentkit\n+       pathsToInvalidate: /fluentkit/*"
+            },
+            {
+                "sha": "5c370a2701925ef38a7fda5b644c20e89ab1f56c",
+                "filename": ".github/workflows/test.yml",
+                "status": "modified",
+                "additions": 6,
+                "deletions": 4,
+                "changes": 10,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/.github%2Fworkflows%2Ftest.yml",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/.github%2Fworkflows%2Ftest.yml",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/.github%2Fworkflows%2Ftest.yml?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -85,10 +85,12 @@ jobs:\n           repository: vapor/${{ matrix.dependent }}\n           path: ${{ matrix.dependent }}\n           ref: ${{ matrix.ref }}\n-      - name: Use local package\n-        run: swift package --package-path ${{ matrix.dependent }} edit fluent-kit --path fluent-kit\n-      - name: Run tests\n-        run: swift test --package-path ${{ matrix.dependent }}\n+      - name: Use local package and run tests\n+        env:\n+          DEPENDENT: ${{ matrix.dependent }}\n+        run: |\n+          swift package --package-path ${DEPENDENT} edit fluent-kit --path fluent-kit\n+          swift test --package-path ${DEPENDENT}\n \n   # also serves as code coverage baseline update\n   unit-tests:"
+            },
+            {
+                "sha": "83531ee0a85ee43bf410d1d5d76bd4677d8ae131",
+                "filename": "Sources/FluentBenchmark/Exports.swift",
+                "status": "modified",
+                "additions": 1,
+                "deletions": 1,
+                "changes": 2,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentBenchmark%2FExports.swift",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentBenchmark%2FExports.swift",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/Sources%2FFluentBenchmark%2FExports.swift?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -3,7 +3,7 @@\n @_documentation(visibility: internal) @_exported import FluentKit\n @_documentation(visibility: internal) @_exported import XCTest\n \n-#elseif !BUILDING_DOCC\n+#else\n \n @_exported import FluentKit\n @_exported import XCTest"
+            },
+            {
+                "sha": "f4db51525029e3f6a522fa1e6b4e49caea702442",
+                "filename": "Sources/FluentBenchmark/Tests/SchemaTests.swift",
+                "status": "modified",
+                "additions": 6,
+                "deletions": 0,
+                "changes": 6,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentBenchmark%2FTests%2FSchemaTests.swift",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentBenchmark%2FTests%2FSchemaTests.swift",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/Sources%2FFluentBenchmark%2FTests%2FSchemaTests.swift?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -153,16 +153,22 @@ extension FluentBenchmarker {\n                 \n                 .field(\"catid\", .uuid)\n                 .foreignKey([\"catid\"], references: Category.schema, [.id], onDelete: .noAction, onUpdate: .noAction)\n+                .foreignKey([\"catid\"], references: Category.schema, [.id], onDelete: .noAction, onUpdate: .noAction, name: \"second_fkey\")\n                 .unique(on: \"catid\")\n+                .unique(on: \"id\", name: \"second_ukey\")\n                 \n                 .create().wait()\n             \n             if (self.database as! SQLDatabase).dialect.alterTableSyntax.allowsBatch {\n                 try self.database.schema(\"normal_constraints\")\n                     // Test `DROP FOREIGN KEY` (MySQL) or `DROP CONSTRAINT` (Postgres)\n                     .deleteConstraint(.constraint(.foreignKey([.key(\"catid\")], Category.schema, [.key(.id)], onDelete: .noAction, onUpdate: .noAction)))\n+                    // Test name-based `DROP FOREIGN KEY` (MySQL)\n+                    .deleteForeignKey(name: \"second_fkey\")\n                     // Test `DROP KEY` (MySQL) or `DROP CONSTRAINT` (Postgres)\n                     .deleteUnique(on: \"catid\")\n+                    // Test name-based `DROP KEY` (MySQL) or `DROP CONSTRAINT` (Postgres)\n+                    .deleteConstraint(name: \"second_ukey\")\n                     \n                     .update().wait()\n             }"
+            },
+            {
+                "sha": "410538cd6e57bf8f704025cce07767cb0be886a3",
+                "filename": "Sources/FluentKit/Schema/DatabaseSchema.swift",
+                "status": "modified",
+                "additions": 41,
+                "deletions": 0,
+                "changes": 41,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentKit%2FSchema%2FDatabaseSchema.swift",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentKit%2FSchema%2FDatabaseSchema.swift",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/Sources%2FFluentKit%2FSchema%2FDatabaseSchema.swift?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -143,6 +143,35 @@ public struct DatabaseSchema {\n         case constraint(ConstraintAlgorithm)\n         case name(String)\n         case custom(Any)\n+        \n+        /// Deletion specifier for an explicitly-named constraint known to be a referential constraint.\n+        /// \n+        /// Certain old versions of certain databases (I'm looking at you, MySQL 5.7...) do not support dropping\n+        /// a `FOREIGN KEY` constraint by name without knowing ahead of time that it is a foreign key. When an\n+        /// unfortunate user runs into this, the options are:\n+        ///\n+        /// - Trap the resulting error and retry. This is exceptionally awkward to handle automatically, and can\n+        ///   lead to retry loops if multiple deletions are specified in a single operation.\n+        /// - Force the user to issue a raw SQL query instead. This is obviously undesirable.\n+        /// - Force an upgrade of the underlying database. No one should be using MySQL 5.7 anymore, but Fluent\n+        ///   recognizes that this isn't always under the user's control.\n+        /// - Require the user to specify the deletion with ``constraint(_:)``, providing the complete, accurate,\n+        ///   and current definition of the foreign key. This is information the user may not even know, and\n+        ///   certainly should not be forced to repeat here.\n+        /// - Provide a means for the user to specify that a given constraint to be deleted by name is known to be\n+        ///   a foreign key. For databases which _don't_ suffer from this particular syntactical issue (so, almost\n+        ///   everything), this is exactly the same as specifying ``name(_:)``.\n+        ///\n+        /// In short, this is the marginal best choice from a list of really bad choices - an ugly, backhanded\n+        /// workaround for MySQL 5.7 users.\n+        ///\n+        /// > Note: A static method is provided rather than a new `enum` case because adding new cases to a public\n+        /// > enum without library evolution enabled (which only the stdlib can do) is a source compatibility break\n+        /// > and requires a `semver-major` version bump. This rule is often ignored, but ignoring it doesn't make\n+        /// > the problem moot.\n+        public static func namedForeignKey(_ name: String) -> ConstraintDelete {\n+            self.custom(_ForeignKeyByNameExtension(name: name))\n+        }\n     }\n \n     public var action: Action\n@@ -167,3 +196,15 @@ public struct DatabaseSchema {\n         self.exclusiveCreate = true\n     }\n }\n+\n+extension DatabaseSchema.ConstraintDelete {\n+    /// For internal use only.\n+    ///\n+    /// Do not use this type directly; it's only public because FluentSQL needs to be able to get at it.\n+    /// The use of `@_spi` will be replaced with the `package` modifier once a suitable minimum version\n+    /// of Swift becomes required.\n+    @_spi(FluentSQLSPI)\n+    public/*package*/ struct _ForeignKeyByNameExtension {\n+        public/*package*/ let name: String\n+    }\n+}"
+            },
+            {
+                "sha": "06f9fe351f761199fa59eab729c40eff9f9ac199",
+                "filename": "Sources/FluentKit/Schema/SchemaBuilder.swift",
+                "status": "modified",
+                "additions": 13,
+                "deletions": 7,
+                "changes": 20,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentKit%2FSchema%2FSchemaBuilder.swift",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentKit%2FSchema%2FSchemaBuilder.swift",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/Sources%2FFluentKit%2FSchema%2FSchemaBuilder.swift?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -60,16 +60,22 @@ public final class SchemaBuilder {\n \n     @discardableResult\n     public func deleteUnique(on fields: FieldKey...) -> Self {\n-        self.schema.deleteConstraints.append(.constraint(\n-            .unique(fields: fields.map { .key($0) })\n-        ))\n-        return self\n+        self.deleteConstraint(.constraint(.unique(fields: fields.map { .key($0) })))\n+    }\n+\n+    /// Delete a FOREIGN KEY constraint with the given name.\n+    ///\n+    /// This method allows correctly handling referential constraints with custom names when using MySQL 5.7\n+    /// without being forced to also know the full definition of the constraint at the time of deletion. See\n+    /// ``DatabaseSchema/ConstraintDelete/namedForeignKey(_:)`` for a more complete discussion.\n+    @discardableResult\n+    public func deleteForeignKey(name: String) -> Self {\n+        self.deleteConstraint(.namedForeignKey(name))\n     }\n \n     @discardableResult\n     public func deleteConstraint(name: String) -> Self {\n-        self.schema.deleteConstraints.append(.name(name))\n-        return self\n+        self.deleteConstraint(.name(name))\n     }\n \n     @discardableResult\n@@ -145,7 +151,7 @@ public final class SchemaBuilder {\n \n     @discardableResult\n     public func deleteField(_ name: FieldKey) -> Self {\n-        return self.deleteField(.key(name))\n+        self.deleteField(.key(name))\n     }\n \n     @discardableResult"
+            },
+            {
+                "sha": "220e05559a022361260ac121817679c8f2913f15",
+                "filename": "Sources/FluentSQL/Exports.swift",
+                "status": "modified",
+                "additions": 1,
+                "deletions": 1,
+                "changes": 2,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentSQL%2FExports.swift",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentSQL%2FExports.swift",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/Sources%2FFluentSQL%2FExports.swift?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -3,7 +3,7 @@\n @_documentation(visibility: internal) @_exported import FluentKit\n @_documentation(visibility: internal) @_exported import SQLKit\n \n-#elseif !BUILDING_DOCC\n+#else\n \n @_exported import FluentKit\n @_exported import SQLKit"
+            },
+            {
+                "sha": "8535c5f3d59cfbc2ee24cc0705a04afc4d966fcb",
+                "filename": "Sources/FluentSQL/SQLSchemaConverter.swift",
+                "status": "modified",
+                "additions": 5,
+                "deletions": 2,
+                "changes": 7,
+                "blob_url": "https://github.com/vapor/fluent-kit/blob/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentSQL%2FSQLSchemaConverter.swift",
+                "raw_url": "https://github.com/vapor/fluent-kit/raw/e562a1015a814d42582cbccd3e58f03187d6718c/Sources%2FFluentSQL%2FSQLSchemaConverter.swift",
+                "contents_url": "https://api.github.com/repos/vapor/fluent-kit/contents/Sources%2FFluentSQL%2FSQLSchemaConverter.swift?ref=e562a1015a814d42582cbccd3e58f03187d6718c",
+                "patch": "@@ -1,5 +1,5 @@\n import SQLKit\n-import FluentKit\n+@_spi(FluentSQLSPI) import FluentKit\n \n public protocol SQLConverterDelegate {\n     func customDataType(_ dataType: DatabaseSchema.DataType) -> SQLExpression?\n@@ -112,8 +112,11 @@ public struct SQLSchemaConverter {\n             let name = self.constraintIdentifier(algorithm, table: table)\n             return SQLDropTypedConstraint(name: SQLIdentifier(name), algorithm: algorithm)\n         case .name(let name):\n-            return SQLDropTypedConstraint(name: SQLIdentifier(name), algorithm: .sql(raw: \"\"))\n+            return SQLDropTypedConstraint(name: SQLIdentifier(name), algorithm: .custom(\"\"))\n         case .custom(let any):\n+            if let fkeyExt = any as? DatabaseSchema.ConstraintDelete._ForeignKeyByNameExtension {\n+                return SQLDropTypedConstraint(name: SQLIdentifier(fkeyExt.name), algorithm: .foreignKey([], \"\", [], onDelete: .noAction, onUpdate: .noAction))\n+            }\n             return custom(any)\n         }\n     }"
+            }
+        ]
+    }
 }

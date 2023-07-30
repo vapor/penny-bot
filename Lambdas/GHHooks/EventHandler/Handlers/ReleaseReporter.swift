@@ -6,12 +6,12 @@ import Foundation
 struct ReleaseReporter {
 
     enum Errors: Error, CustomStringConvertible {
-        case noTagFoundMatchingReleaseTag(release: Release)
+        case noTagRangeFound(release: Release, after: String?, upUntil: String?)
 
         var description: String {
             switch self {
-            case let .noTagFoundMatchingReleaseTag(release):
-                return "noTagFoundMatchingReleaseTag(\(release))"
+            case let .noTagRangeFound(release, after, upUntil):
+                return "noTagRangeFound(release: \(release), after: \(after ?? "nil"), upUntil: \(upUntil ?? "nil"))"
             }
         }
     }
@@ -42,18 +42,16 @@ struct ReleaseReporter {
     }
 
     func handleReleaseCreated() async throws {
-        let tag = try await getTag()
-        guard let lastRelatedPR = try await getLastPRRelatedToCommit(sha: tag.commit.sha) else {
-            logger.debug("There were no related PRs for commit", metadata: [
-                "tag": "\(tag)",
-                "release": "\(release)"
-            ])
-            return
+        let relatedPRs = try await self.getPRsRelatedToRelease()
+        if relatedPRs.isEmpty {
+            try await sendToDiscordWithRelease()
+        } else {
+            let pr = relatedPRs[0]
+            try await self.sendToDiscord(pr: pr)
         }
-        try await self.sendToDiscord(pr: lastRelatedPR)
     }
 
-    func getTag() async throws -> Tag {
+    func getTagBefore() async throws -> String {
         let response = try await context.githubClient.repos_list_tags(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -66,14 +64,62 @@ struct ReleaseReporter {
             throw GHHooksLambda.Errors.httpRequestFailed(response: response)
         }
 
-        guard let tag = json.first(where: { $0.name == release.tag_name }) else {
-            throw Errors.noTagFoundMatchingReleaseTag(release: release)
+        var after: String?
+        var upUntil: String?
+
+        for tag in json.reversed() {
+            if tag.name == release.tag_name {
+                upUntil = tag.commit.sha
+            } else if upUntil != nil {
+                after = tag.commit.sha
+                break
+            }
         }
 
-        return tag
+        guard let after, upUntil != nil else {
+            throw Errors.noTagRangeFound(
+                release: release,
+                after: after,
+                upUntil: upUntil
+            )
+        }
+
+        return after
     }
 
-    func getLastPRRelatedToCommit(sha: String) async throws -> SimplePullRequest? {
+
+    func getPRsRelatedToRelease() async throws -> [SimplePullRequest] {
+        let tagBefore = try await getTagBefore()
+        let commits = try await getCommitsInRelease(tagBefore: tagBefore)
+        var prs = [SimplePullRequest]()
+        prs.reserveCapacity(commits.count)
+
+        for commit in commits {
+            let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
+            prs.append(contentsOf: newPRs)
+        }
+
+        return prs
+    }
+
+    func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
+        let response = try await context.githubClient.repos_compare_commits(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name,
+                basehead: "\(tagBefore)...\(release.tag_name)"
+            ))
+        )
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body else {
+            throw GHHooksLambda.Errors.httpRequestFailed(response: response)
+        }
+
+        return json.commits.reversed()
+    }
+
+    func getPRsRelatedToCommit(sha: String) async throws -> [SimplePullRequest] {
         let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
             .init(path: .init(
                 owner: repo.owner.login,
@@ -87,8 +133,10 @@ struct ReleaseReporter {
             throw GHHooksLambda.Errors.httpRequestFailed(response: response)
         }
 
-        return json.first
+        return json
     }
+
+
 
     func sendToDiscord(pr: SimplePullRequest) async throws {
         let body = pr.body.map { body -> String in
@@ -108,16 +156,47 @@ struct ReleaseReporter {
             withAllowedCharacters: .urlPathAllowed
         ) ?? repo.full_name
         let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+
+        try await self.sendToDiscord(embed: .init(
+            title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
+            description: description,
+            url: release.html_url,
+            color: .cyan,
+            image: .init(url: .exact(image))
+        ))
+    }
+
+    func sendToDiscordWithRelease() async throws {
+        let body = release.body.map { body -> String in
+            let formatted = body.formatMarkdown(
+                maxLength: 384,
+                trailingParagraphMinLength: 128
+            )
+            return formatted.isEmpty ? "" : ">>> \(formatted)"
+        } ?? ""
+
+        let description = """
+        \(body)
+        """
+        let fullName = repo.full_name.addingPercentEncoding(
+            withAllowedCharacters: .urlPathAllowed
+        ) ?? repo.full_name
+        let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+
+        try await self.sendToDiscord(embed: .init(
+            title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
+            description: description,
+            url: release.html_url,
+            color: .cyan,
+            image: .init(url: .exact(image))
+        ))
+    }
+
+    func sendToDiscord(embed: Embed) async throws {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
             payload: .init(
-                embeds: [.init(
-                    title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
-                    description: description,
-                    url: release.html_url,
-                    color: .cyan,
-                    image: .init(url: .exact(image))
-                )]
+                embeds: [embed]
             )
         ).guardSuccess()
     }

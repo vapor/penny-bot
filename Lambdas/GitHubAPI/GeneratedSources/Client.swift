@@ -361,6 +361,145 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// Compare two commits
+    ///
+    /// Compares two commits against one another. You can compare branches in the same repository, or you can compare branches that exist in different repositories within the same repository network, including fork branches. For more information about how to view a repository's network, see "[Understanding connections between repositories](https://docs.github.com/repositories/viewing-activity-and-data-for-your-repository/understanding-connections-between-repositories)."
+    ///
+    /// This endpoint is equivalent to running the `git log BASE..HEAD` command, but it returns commits in a different order. The `git log BASE..HEAD` command returns commits in reverse chronological order, whereas the API returns commits in chronological order. You can pass the appropriate [media type](https://docs.github.com/rest/overview/media-types/#commits-commit-comparison-and-pull-requests) to fetch diff and patch formats.
+    ///
+    /// The API response includes details about the files that were changed between the two commits. This includes the status of the change (if a file was added, removed, modified, or renamed), and details of the change itself. For example, files with a `renamed` status have a `previous_filename` field showing the previous filename of the file, and files with a `modified` status have a `patch` field showing the changes made to the file.
+    ///
+    /// When calling this endpoint without any paging parameter (`per_page` or `page`), the returned list is limited to 250 commits, and the last commit in the list is the most recent of the entire comparison.
+    ///
+    /// **Working with large comparisons**
+    ///
+    /// To process a response with a large number of commits, use a query parameter (`per_page` or `page`) to paginate the results. When using pagination:
+    ///
+    /// - The list of changed files is only shown on the first page of results, but it includes all changed files for the entire comparison.
+    /// - The results are returned in chronological order, but the last commit in the returned list may not be the most recent one in the entire set if there are more pages of results.
+    ///
+    /// For more information on working with pagination, see "[Using pagination in the REST API](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api)."
+    ///
+    /// **Signature verification object**
+    ///
+    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The `verification` object includes the following fields:
+    ///
+    /// | Name | Type | Description |
+    /// | ---- | ---- | ----------- |
+    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
+    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
+    /// | `signature` | `string` | The signature that was extracted from the commit. |
+    /// | `payload` | `string` | The value that was signed. |
+    ///
+    /// These are the possible values for `reason` in the `verification` object:
+    ///
+    /// | Value | Description |
+    /// | ----- | ----------- |
+    /// | `expired_key` | The key that made the signature is expired. |
+    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
+    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
+    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
+    /// | `unsigned` | The object does not include a signature. |
+    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
+    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
+    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
+    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
+    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
+    /// | `malformed_signature` | There was an error parsing the signature. |
+    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
+    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/compare/{basehead}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
+    public func repos_compare_commits(_ input: Operations.repos_compare_commits.Input) async throws
+        -> Operations.repos_compare_commits.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.repos_compare_commits.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/compare/{}",
+                    parameters: [input.path.owner, input.path.repo, input.path.basehead]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.repos_compare_commits.Output.Ok.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Operations.repos_compare_commits.Output.Ok.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.commit_comparison.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .ok(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.not_found.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .notFound(.init(headers: headers, body: body))
+                case 500:
+                    let headers: Components.Responses.internal_error.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.internal_error.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .internalServerError(.init(headers: headers, body: body))
+                case 503:
+                    let headers: Components.Responses.service_unavailable.Headers = .init()
+                    try converter.validateContentTypeIfPresent(
+                        in: response.headerFields,
+                        substring: "application/json"
+                    )
+                    let body: Components.Responses.service_unavailable.Body =
+                        try converter.getResponseBodyAsJSON(
+                            Components.Responses.service_unavailable.Body.jsonPayload.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    return .serviceUnavailable(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.

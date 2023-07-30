@@ -47,6 +47,58 @@ public protocol APIProtocol: Sendable {
     func repos_list_pull_requests_associated_with_commit(
         _ input: Operations.repos_list_pull_requests_associated_with_commit.Input
     ) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output
+    /// Compare two commits
+    ///
+    /// Compares two commits against one another. You can compare branches in the same repository, or you can compare branches that exist in different repositories within the same repository network, including fork branches. For more information about how to view a repository's network, see "[Understanding connections between repositories](https://docs.github.com/repositories/viewing-activity-and-data-for-your-repository/understanding-connections-between-repositories)."
+    ///
+    /// This endpoint is equivalent to running the `git log BASE..HEAD` command, but it returns commits in a different order. The `git log BASE..HEAD` command returns commits in reverse chronological order, whereas the API returns commits in chronological order. You can pass the appropriate [media type](https://docs.github.com/rest/overview/media-types/#commits-commit-comparison-and-pull-requests) to fetch diff and patch formats.
+    ///
+    /// The API response includes details about the files that were changed between the two commits. This includes the status of the change (if a file was added, removed, modified, or renamed), and details of the change itself. For example, files with a `renamed` status have a `previous_filename` field showing the previous filename of the file, and files with a `modified` status have a `patch` field showing the changes made to the file.
+    ///
+    /// When calling this endpoint without any paging parameter (`per_page` or `page`), the returned list is limited to 250 commits, and the last commit in the list is the most recent of the entire comparison.
+    ///
+    /// **Working with large comparisons**
+    ///
+    /// To process a response with a large number of commits, use a query parameter (`per_page` or `page`) to paginate the results. When using pagination:
+    ///
+    /// - The list of changed files is only shown on the first page of results, but it includes all changed files for the entire comparison.
+    /// - The results are returned in chronological order, but the last commit in the returned list may not be the most recent one in the entire set if there are more pages of results.
+    ///
+    /// For more information on working with pagination, see "[Using pagination in the REST API](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api)."
+    ///
+    /// **Signature verification object**
+    ///
+    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The `verification` object includes the following fields:
+    ///
+    /// | Name | Type | Description |
+    /// | ---- | ---- | ----------- |
+    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
+    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
+    /// | `signature` | `string` | The signature that was extracted from the commit. |
+    /// | `payload` | `string` | The value that was signed. |
+    ///
+    /// These are the possible values for `reason` in the `verification` object:
+    ///
+    /// | Value | Description |
+    /// | ----- | ----------- |
+    /// | `expired_key` | The key that made the signature is expired. |
+    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
+    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
+    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
+    /// | `unsigned` | The object does not include a signature. |
+    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
+    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
+    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
+    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
+    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
+    /// | `malformed_signature` | There was an error parsing the signature. |
+    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
+    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/compare/{basehead}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
+    func repos_compare_commits(_ input: Operations.repos_compare_commits.Input) async throws
+        -> Operations.repos_compare_commits.Output
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -10717,6 +10769,72 @@ public enum Components {
                 case security_and_analysis
             }
         }
+        /// Metaproperties for Git author/committer information.
+        ///
+        /// - Remark: Generated from `#/components/schemas/nullable-git-user`.
+        public struct nullable_git_user: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/nullable-git-user/name`.
+            public var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/nullable-git-user/email`.
+            public var email: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/nullable-git-user/date`.
+            public var date: Swift.String?
+            /// Creates a new `nullable_git_user`.
+            ///
+            /// - Parameters:
+            ///   - name:
+            ///   - email:
+            ///   - date:
+            public init(
+                name: Swift.String? = nil,
+                email: Swift.String? = nil,
+                date: Swift.String? = nil
+            ) {
+                self.name = name
+                self.email = email
+                self.date = date
+            }
+            public enum CodingKeys: String, CodingKey {
+                case name
+                case email
+                case date
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/verification`.
+        public struct verification: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/verification/verified`.
+            public var verified: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/verification/reason`.
+            public var reason: Swift.String
+            /// - Remark: Generated from `#/components/schemas/verification/payload`.
+            public var payload: Swift.String
+            /// - Remark: Generated from `#/components/schemas/verification/signature`.
+            public var signature: Swift.String
+            /// Creates a new `verification`.
+            ///
+            /// - Parameters:
+            ///   - verified:
+            ///   - reason:
+            ///   - payload:
+            ///   - signature:
+            public init(
+                verified: Swift.Bool,
+                reason: Swift.String,
+                payload: Swift.String,
+                signature: Swift.String
+            ) {
+                self.verified = verified
+                self.reason = reason
+                self.payload = payload
+                self.signature = signature
+            }
+            public enum CodingKeys: String, CodingKey {
+                case verified
+                case reason
+                case payload
+                case signature
+            }
+        }
         /// Diff Entry
         ///
         /// - Remark: Generated from `#/components/schemas/diff-entry`.
@@ -10836,6 +10954,214 @@ public enum Components {
                 case contents_url
                 case patch
                 case previous_filename
+            }
+        }
+        /// Commit
+        ///
+        /// - Remark: Generated from `#/components/schemas/commit`.
+        public struct commit: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/commit/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit/sha`.
+            public var sha: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit/comments_url`.
+            public var comments_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit/commit`.
+            public struct commitPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/commit/commit/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/commit/commit/author`.
+                public var author: Components.Schemas.nullable_git_user
+                /// - Remark: Generated from `#/components/schemas/commit/commit/committer`.
+                public var committer: Components.Schemas.nullable_git_user
+                /// - Remark: Generated from `#/components/schemas/commit/commit/message`.
+                public var message: Swift.String
+                /// - Remark: Generated from `#/components/schemas/commit/commit/comment_count`.
+                public var comment_count: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/commit/commit/tree`.
+                public struct treePayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/commit/commit/tree/sha`.
+                    public var sha: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/commit/commit/tree/url`.
+                    public var url: Swift.String
+                    /// Creates a new `treePayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - sha:
+                    ///   - url:
+                    public init(sha: Swift.String, url: Swift.String) {
+                        self.sha = sha
+                        self.url = url
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case sha
+                        case url
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/commit/commit/tree`.
+                public var tree: Components.Schemas.commit.commitPayload.treePayload
+                /// - Remark: Generated from `#/components/schemas/commit/commit/verification`.
+                public var verification: Components.Schemas.verification?
+                /// Creates a new `commitPayload`.
+                ///
+                /// - Parameters:
+                ///   - url:
+                ///   - author:
+                ///   - committer:
+                ///   - message:
+                ///   - comment_count:
+                ///   - tree:
+                ///   - verification:
+                public init(
+                    url: Swift.String,
+                    author: Components.Schemas.nullable_git_user,
+                    committer: Components.Schemas.nullable_git_user,
+                    message: Swift.String,
+                    comment_count: Swift.Int,
+                    tree: Components.Schemas.commit.commitPayload.treePayload,
+                    verification: Components.Schemas.verification? = nil
+                ) {
+                    self.url = url
+                    self.author = author
+                    self.committer = committer
+                    self.message = message
+                    self.comment_count = comment_count
+                    self.tree = tree
+                    self.verification = verification
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case url
+                    case author
+                    case committer
+                    case message
+                    case comment_count
+                    case tree
+                    case verification
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/commit/commit`.
+            public var commit: Components.Schemas.commit.commitPayload
+            /// - Remark: Generated from `#/components/schemas/commit/author`.
+            public var author: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/commit/committer`.
+            public var committer: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/commit/parentsPayload`.
+            public struct parentsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/commit/parentsPayload/sha`.
+                public var sha: Swift.String
+                /// - Remark: Generated from `#/components/schemas/commit/parentsPayload/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/commit/parentsPayload/html_url`.
+                public var html_url: Swift.String?
+                /// Creates a new `parentsPayloadPayload`.
+                ///
+                /// - Parameters:
+                ///   - sha:
+                ///   - url:
+                ///   - html_url:
+                public init(sha: Swift.String, url: Swift.String, html_url: Swift.String? = nil) {
+                    self.sha = sha
+                    self.url = url
+                    self.html_url = html_url
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case sha
+                    case url
+                    case html_url
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/commit/parents`.
+            public typealias parentsPayload = [Components.Schemas.commit.parentsPayloadPayload]
+            /// - Remark: Generated from `#/components/schemas/commit/parents`.
+            public var parents: Components.Schemas.commit.parentsPayload
+            /// - Remark: Generated from `#/components/schemas/commit/stats`.
+            public struct statsPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/commit/stats/additions`.
+                public var additions: Swift.Int?
+                /// - Remark: Generated from `#/components/schemas/commit/stats/deletions`.
+                public var deletions: Swift.Int?
+                /// - Remark: Generated from `#/components/schemas/commit/stats/total`.
+                public var total: Swift.Int?
+                /// Creates a new `statsPayload`.
+                ///
+                /// - Parameters:
+                ///   - additions:
+                ///   - deletions:
+                ///   - total:
+                public init(
+                    additions: Swift.Int? = nil,
+                    deletions: Swift.Int? = nil,
+                    total: Swift.Int? = nil
+                ) {
+                    self.additions = additions
+                    self.deletions = deletions
+                    self.total = total
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case additions
+                    case deletions
+                    case total
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/commit/stats`.
+            public var stats: Components.Schemas.commit.statsPayload?
+            /// - Remark: Generated from `#/components/schemas/commit/files`.
+            public var files: [Components.Schemas.diff_entry]?
+            /// Creates a new `commit`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - sha:
+            ///   - node_id:
+            ///   - html_url:
+            ///   - comments_url:
+            ///   - commit:
+            ///   - author:
+            ///   - committer:
+            ///   - parents:
+            ///   - stats:
+            ///   - files:
+            public init(
+                url: Swift.String,
+                sha: Swift.String,
+                node_id: Swift.String,
+                html_url: Swift.String,
+                comments_url: Swift.String,
+                commit: Components.Schemas.commit.commitPayload,
+                author: Components.Schemas.nullable_simple_user,
+                committer: Components.Schemas.nullable_simple_user,
+                parents: Components.Schemas.commit.parentsPayload,
+                stats: Components.Schemas.commit.statsPayload? = nil,
+                files: [Components.Schemas.diff_entry]? = nil
+            ) {
+                self.url = url
+                self.sha = sha
+                self.node_id = node_id
+                self.html_url = html_url
+                self.comments_url = comments_url
+                self.commit = commit
+                self.author = author
+                self.committer = committer
+                self.parents = parents
+                self.stats = stats
+                self.files = files
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case sha
+                case node_id
+                case html_url
+                case comments_url
+                case commit
+                case author
+                case committer
+                case parents
+                case stats
+                case files
             }
         }
         /// A commit.
@@ -11463,6 +11789,130 @@ public enum Components {
                 case author_association
                 case auto_merge
                 case draft
+            }
+        }
+        /// Commit Comparison
+        ///
+        /// - Remark: Generated from `#/components/schemas/commit-comparison`.
+        public struct commit_comparison: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/permalink_url`.
+            public var permalink_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/diff_url`.
+            public var diff_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/patch_url`.
+            public var patch_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/base_commit`.
+            public var base_commit: Components.Schemas.commit
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/merge_base_commit`.
+            public var merge_base_commit: Components.Schemas.commit
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/status`.
+            @frozen
+            public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case diverged
+                case ahead
+                case behind
+                case identical
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "diverged": self = .diverged
+                    case "ahead": self = .ahead
+                    case "behind": self = .behind
+                    case "identical": self = .identical
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .diverged: return "diverged"
+                    case .ahead: return "ahead"
+                    case .behind: return "behind"
+                    case .identical: return "identical"
+                    }
+                }
+                public static var allCases: [statusPayload] {
+                    [.diverged, .ahead, .behind, .identical]
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/status`.
+            public var status: Components.Schemas.commit_comparison.statusPayload
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/ahead_by`.
+            public var ahead_by: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/behind_by`.
+            public var behind_by: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/total_commits`.
+            public var total_commits: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/commits`.
+            public var commits: [Components.Schemas.commit]
+            /// - Remark: Generated from `#/components/schemas/commit-comparison/files`.
+            public var files: [Components.Schemas.diff_entry]?
+            /// Creates a new `commit_comparison`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - html_url:
+            ///   - permalink_url:
+            ///   - diff_url:
+            ///   - patch_url:
+            ///   - base_commit:
+            ///   - merge_base_commit:
+            ///   - status:
+            ///   - ahead_by:
+            ///   - behind_by:
+            ///   - total_commits:
+            ///   - commits:
+            ///   - files:
+            public init(
+                url: Swift.String,
+                html_url: Swift.String,
+                permalink_url: Swift.String,
+                diff_url: Swift.String,
+                patch_url: Swift.String,
+                base_commit: Components.Schemas.commit,
+                merge_base_commit: Components.Schemas.commit,
+                status: Components.Schemas.commit_comparison.statusPayload,
+                ahead_by: Swift.Int,
+                behind_by: Swift.Int,
+                total_commits: Swift.Int,
+                commits: [Components.Schemas.commit],
+                files: [Components.Schemas.diff_entry]? = nil
+            ) {
+                self.url = url
+                self.html_url = html_url
+                self.permalink_url = permalink_url
+                self.diff_url = diff_url
+                self.patch_url = patch_url
+                self.base_commit = base_commit
+                self.merge_base_commit = merge_base_commit
+                self.status = status
+                self.ahead_by = ahead_by
+                self.behind_by = behind_by
+                self.total_commits = total_commits
+                self.commits = commits
+                self.files = files
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case html_url
+                case permalink_url
+                case diff_url
+                case patch_url
+                case base_commit
+                case merge_base_commit
+                case status
+                case ahead_by
+                case behind_by
+                case total_commits
+                case commits
+                case files
             }
         }
         /// Contributor
@@ -16955,6 +17405,187 @@ public enum Operations {
             ///
             /// HTTP response code: `200 ok`.
             case ok(Operations.repos_list_pull_requests_associated_with_commit.Output.Ok)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Compare two commits
+    ///
+    /// Compares two commits against one another. You can compare branches in the same repository, or you can compare branches that exist in different repositories within the same repository network, including fork branches. For more information about how to view a repository's network, see "[Understanding connections between repositories](https://docs.github.com/repositories/viewing-activity-and-data-for-your-repository/understanding-connections-between-repositories)."
+    ///
+    /// This endpoint is equivalent to running the `git log BASE..HEAD` command, but it returns commits in a different order. The `git log BASE..HEAD` command returns commits in reverse chronological order, whereas the API returns commits in chronological order. You can pass the appropriate [media type](https://docs.github.com/rest/overview/media-types/#commits-commit-comparison-and-pull-requests) to fetch diff and patch formats.
+    ///
+    /// The API response includes details about the files that were changed between the two commits. This includes the status of the change (if a file was added, removed, modified, or renamed), and details of the change itself. For example, files with a `renamed` status have a `previous_filename` field showing the previous filename of the file, and files with a `modified` status have a `patch` field showing the changes made to the file.
+    ///
+    /// When calling this endpoint without any paging parameter (`per_page` or `page`), the returned list is limited to 250 commits, and the last commit in the list is the most recent of the entire comparison.
+    ///
+    /// **Working with large comparisons**
+    ///
+    /// To process a response with a large number of commits, use a query parameter (`per_page` or `page`) to paginate the results. When using pagination:
+    ///
+    /// - The list of changed files is only shown on the first page of results, but it includes all changed files for the entire comparison.
+    /// - The results are returned in chronological order, but the last commit in the returned list may not be the most recent one in the entire set if there are more pages of results.
+    ///
+    /// For more information on working with pagination, see "[Using pagination in the REST API](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api)."
+    ///
+    /// **Signature verification object**
+    ///
+    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The `verification` object includes the following fields:
+    ///
+    /// | Name | Type | Description |
+    /// | ---- | ---- | ----------- |
+    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
+    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
+    /// | `signature` | `string` | The signature that was extracted from the commit. |
+    /// | `payload` | `string` | The value that was signed. |
+    ///
+    /// These are the possible values for `reason` in the `verification` object:
+    ///
+    /// | Value | Description |
+    /// | ----- | ----------- |
+    /// | `expired_key` | The key that made the signature is expired. |
+    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
+    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
+    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
+    /// | `unsigned` | The object does not include a signature. |
+    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
+    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
+    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
+    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
+    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
+    /// | `malformed_signature` | There was an error parsing the signature. |
+    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
+    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/compare/{basehead}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
+    public enum repos_compare_commits {
+        public static let id: String = "repos/compare-commits"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var basehead: Swift.String
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - basehead:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    basehead: Swift.String
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.basehead = basehead
+                }
+            }
+            public var path: Operations.repos_compare_commits.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var page: Components.Parameters.page?
+                public var per_page: Components.Parameters.per_page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - page:
+                ///   - per_page:
+                public init(
+                    page: Components.Parameters.page? = nil,
+                    per_page: Components.Parameters.per_page? = nil
+                ) {
+                    self.page = page
+                    self.per_page = per_page
+                }
+            }
+            public var query: Operations.repos_compare_commits.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_compare_commits.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_compare_commits.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_compare_commits.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_compare_commits.Input.Path,
+                query: Operations.repos_compare_commits.Input.Query = .init(),
+                headers: Operations.repos_compare_commits.Input.Headers = .init(),
+                cookies: Operations.repos_compare_commits.Input.Cookies = .init(),
+                body: Operations.repos_compare_commits.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_compare_commits.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.commit_comparison)
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_compare_commits.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_compare_commits.Output.Ok.Headers = .init(),
+                    body: Operations.repos_compare_commits.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_compare_commits.Output.Ok)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Internal Error
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)/responses/500`.
+            ///
+            /// HTTP response code: `500 internalServerError`.
+            case internalServerError(Components.Responses.internal_error)
+            /// Service unavailable
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Components.Responses.service_unavailable)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.
