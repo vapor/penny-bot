@@ -22,35 +22,21 @@ extension LeafRenderer {
         let workingDirectory = FileManager.default.currentDirectoryPath
         let rootDirectory = "\(workingDirectory)/\(path)"
         let configuration = LeafConfiguration(rootDirectory: rootDirectory)
-
-        let defaultSource: any LeafSource
-        var isDebug: Bool {
-#if DEBUG
-            true
-#else
-            false
-#endif
-        }
-        var isCI: Bool {
-            ProcessInfo.processInfo.environment["CI"] != nil
-        }
-        if !isDebug || isCI {
-            defaultSource = GHLeafSource(
-                path: path,
-                httpClient: httpClient,
-                logger: logger
-            )
-        } else {
-            let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
-            defaultSource = NIOLeafFiles(
-                fileio: fileIO,
-                limits: .default,
-                sandboxDirectory: rootDirectory,
-                viewDirectory: rootDirectory
-            )
-        }
+        let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
+        let fileIOSource = NIOLeafFiles(
+            fileio: fileIO,
+            limits: .default,
+            sandboxDirectory: rootDirectory,
+            viewDirectory: rootDirectory
+        )
+        let ghSource = GHLeafSource(
+            path: path,
+            httpClient: httpClient,
+            logger: logger
+        )
         let sources = LeafSources()
-        try sources.register(source: "default", using: defaultSource)
+        try sources.register(source: "file-io", using: fileIOSource)
+        try sources.register(source: "github", using: ghSource)
         for source in extraSources {
             try sources.register(source: "\(type(of: source))", using: source)
         }
