@@ -83,18 +83,13 @@ struct PRHandler {
         let prLink = pr.html_url
 
         let body = pr.body.map { body -> String in
-            let formatted = body.formatMarkdown(
+            body.formatMarkdown(
                 maxLength: 256,
                 trailingParagraphMinLength: 128
             )
-            return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
-        let description = """
-        ### \(pr.title)
-
-        \(body)
-        """
+        let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 
         let status = Status(pr: pr)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""

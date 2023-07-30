@@ -54,18 +54,13 @@ struct IssueHandler {
         let repoName = try event.repository.requireValue().uiName
 
         let body = issue.body.map { body -> String in
-            let formatted = body.formatMarkdown(
+            body.formatMarkdown(
                 maxLength: 256,
                 trailingParagraphMinLength: 128
             )
-            return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
-        let description = """
-        ### \(issue.title)
-
-        \(body)
-        """
+        let description = try await context.renderClient.ticketReport(title: issue.title, body: body)
 
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
