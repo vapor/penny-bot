@@ -134,7 +134,7 @@ class LeafRenderTests: XCTestCase {
         )
 
         XCTAssertEqual(rendered, #"""
-        **- Auto-Pings Help**
+        ## Auto-Pings Help
 
         You can add texts to be pinged for.
         When someone uses those texts, Penny will DM you about the message.
@@ -143,7 +143,7 @@ class LeafRenderTests: XCTestCase {
 
         > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the <a:is_typing:1087429908466253984> indicator.
 
-        **Adding Expressions**
+        ### Adding Expressions
 
         You can add multiple texts using </auto-pings add:1>, separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
 
@@ -155,15 +155,15 @@ class LeafRenderTests: XCTestCase {
 
         > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
 
-        **Removing Expressions**
+        ### Removing Expressions
 
         You can remove multiple texts using </auto-pings remove:1>, separating the texts using commas (`,`).
 
-        **Your Pings List**
+        ### Your Pings List
 
         You can use </auto-pings list:1> to see your current expressions.
 
-        **Testing Expressions**
+        ### Testing Expressions
 
         You can use </auto-pings test:1> to test if a message triggers some expressions.
         """#)
