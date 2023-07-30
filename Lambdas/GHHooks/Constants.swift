@@ -6,6 +6,8 @@ enum Constants {
     static let botDevUserID: UserSnowflake = "290483761559240704"
 
     enum GitHub {
+        /// The user id of Penny.
+        static let userID = 139480971
         /// The app-id of Penny.
         static let appID = 360798
         /// The installation-id of Penny for Vapor org.

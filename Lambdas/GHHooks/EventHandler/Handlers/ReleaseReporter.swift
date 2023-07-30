@@ -6,12 +6,12 @@ import Foundation
 struct ReleaseReporter {
 
     enum Errors: Error, CustomStringConvertible {
-        case noTagRangeFound(release: Release, after: String?, upUntil: String?)
+        case noPreviousTagFound(release: Release, tags: [Tag])
 
         var description: String {
             switch self {
-            case let .noTagRangeFound(release, after, upUntil):
-                return "noTagRangeFound(release: \(release), after: \(after ?? "nil"), upUntil: \(upUntil ?? "nil"))"
+            case let .noPreviousTagFound(release, tags):
+                return "noPreviousTagFound(release: \(release), tags: \(tags))"
             }
         }
     }
@@ -45,9 +45,13 @@ struct ReleaseReporter {
         let relatedPRs = try await self.getPRsRelatedToRelease()
         if relatedPRs.isEmpty {
             try await sendToDiscordWithRelease()
-        } else {
+        } else if relatedPRs.count == 1 || release.author.id == Constants.GitHub.userID {
+            /// If there is only 1 pr, or if Penny released this, then just mention the last PR.
             let pr = relatedPRs[0]
             try await self.sendToDiscord(pr: pr)
+        } else {
+            /// If it was a manual release with more than 1 PRs, use the release for Discord message.
+            try await sendToDiscordWithRelease()
         }
     }
 
@@ -64,27 +68,15 @@ struct ReleaseReporter {
             throw GHHooksLambda.Errors.httpRequestFailed(response: response)
         }
 
-        var after: String?
-        var upUntil: String?
-
-        for tag in json.reversed() {
-            if tag.name == release.tag_name {
-                upUntil = tag.commit.sha
-            } else if upUntil != nil {
-                after = tag.commit.sha
-                break
-            }
+        if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
+           json.count > releaseIdx {
+            return json[releaseIdx + 1].name
         }
 
-        guard let after, upUntil != nil else {
-            throw Errors.noTagRangeFound(
-                release: release,
-                after: after,
-                upUntil: upUntil
-            )
-        }
-
-        return after
+        throw Errors.noPreviousTagFound(
+            release: release,
+            tags: json
+        )
     }
 
 

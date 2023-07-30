@@ -19,8 +19,8 @@ public struct GHEvent: Codable {
     public let created: Bool?
     public let deleted: Bool?
     public let forced: Bool?
-    public let commits: [Commit]?
-    public let head_commit: Commit?
+    public let commits: [SimpleCommit]?
+    public let head_commit: SimpleCommit?
     public let installation: Installation?
     public let pusher: Committer?
     public let ref: String?
