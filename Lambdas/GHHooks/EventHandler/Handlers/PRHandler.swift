@@ -103,26 +103,8 @@ struct PRHandler {
         let title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
 
         let member = try await context.getDiscordMember(githubID: "\(pr.user.id)")
-        let authorName = member?.nick ??
-        member?.user?.global_name ??
-        member?.user?.username ??
-        pr.user.uiName
-        var iconURLEndpoint: CDNEndpoint? = nil
-        if let member, let user = member.user {
-            if let avatar = member.avatar {
-                iconURLEndpoint = CDNEndpoint.guildMemberAvatar(
-                    guildId: Constants.guildID,
-                    userId: user.id,
-                    avatar: avatar
-                )
-            } else if let avatar = user.avatar {
-                iconURLEndpoint = CDNEndpoint.userAvatar(
-                    userId: user.id,
-                    avatar: avatar
-                )
-            }
-        }
-        let iconURL = iconURLEndpoint?.url ?? pr.user.avatar_url
+        let authorName = (member?.uiName).map { "@\($0)" } ?? pr.user.uiName
+        let iconURL = member?.uiAvatarCDNEndpoint?.url ?? pr.user.avatar_url
 
         let embed = Embed(
             title: title,

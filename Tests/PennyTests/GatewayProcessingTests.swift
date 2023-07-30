@@ -294,10 +294,14 @@ class GatewayProcessingTests: XCTestCase {
                 $0.embeds?.first?.title?.contains("stride") == true
             }), "\(messages)")
 
+            XCTAssertEqual(
+                message.embeds?.first?.url,
+                "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md"
+            )
+
             let buttons = try XCTUnwrap(message.components?.first?.components, "\(message)")
-            XCTAssertEqual(buttons.count, 3, "\(buttons)")
+            XCTAssertEqual(buttons.count, 2, "\(buttons)")
             let expectedLinks = [
-                "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md",
                 "https://forums.swift.org/t/se-0400-init-accessors/65583",
                 "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
             ]
@@ -322,10 +326,14 @@ class GatewayProcessingTests: XCTestCase {
                 $0.embeds?.first?.title?.contains("(most)") == true
             }), "\(messages)")
 
+            XCTAssertEqual(
+                message.embeds?.first?.url,
+                "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md"
+            )
+
             let buttons = try XCTUnwrap(message.components?.first?.components)
-            XCTAssertEqual(buttons.count, 3, "\(buttons)")
+            XCTAssertEqual(buttons.count, 2, "\(buttons)")
             let expectedLinks = [
-                "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md",
                 "https://forums.swift.org/t/se-0400-init-accessors/65583",
                 "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
             ]

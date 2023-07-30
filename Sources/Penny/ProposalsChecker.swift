@@ -177,6 +177,12 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
+        let link = proposal.link.sanitized()
+        var proposalLink: String?
+        if link.count > 10 {
+            proposalLink = "https://github.com/apple/swift-evolution/blob/main/proposals/\(link)"
+        }
+
         return .init(
             embeds: [.init(
                 title: title.unicodesPrefix(256),
@@ -187,9 +193,10 @@ actor ProposalsChecker {
                 \(authorsString)
                 \(reviewManagerString)
                 """,
+                url: proposalLink,
                 color: proposal.status.state.color
             )],
-            components: await makeComponents(proposal: proposal)
+            components: await makeComponents(proposal: proposal, proposalLink: proposalLink)
         )
     }
 
@@ -215,6 +222,12 @@ actor ProposalsChecker {
         : nil
         let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
+        let link = proposal.link.sanitized()
+        var proposalLink: String?
+        if link.count > 10 {
+            proposalLink = "https://github.com/apple/swift-evolution/blob/main/proposals/\(link)"
+        }
+
         return .init(
             embeds: [.init(
                 title: title.unicodesPrefix(256),
@@ -225,23 +238,21 @@ actor ProposalsChecker {
                 \(authorsString)
                 \(reviewManagerString)
                 """,
+                url: proposalLink,
                 color: proposal.status.state.color
             )],
-            components: await makeComponents(proposal: proposal)
+            components: await makeComponents(proposal: proposal, proposalLink: proposalLink)
         )
     }
 
-    private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
-        let link = proposal.link.sanitized()
-        if link.count < 4 { return [] }
-        let githubProposalsPrefix = "https://github.com/apple/swift-evolution/blob/main/proposals/"
-        let fullGitHubLink = githubProposalsPrefix + link
+    private func makeComponents(
+        proposal: Proposal,
+        proposalLink: String?
+    ) async -> [Interaction.ActionRow] {
+        var buttons: [Interaction.ActionRow] = [[]]
         
-        var buttons: [Interaction.ActionRow] = [[
-            .button(.init(label: "Proposal", url: fullGitHubLink)),
-        ]]
-        
-        if let link = await findForumPostLink(link: fullGitHubLink) {
+        if let proposalLink,
+           let link = await findForumPostLink(link: proposalLink) {
             buttons[0].components.append(
                 .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
             )

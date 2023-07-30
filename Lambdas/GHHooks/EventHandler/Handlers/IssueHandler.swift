@@ -73,26 +73,8 @@ struct IssueHandler {
         let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
 
         let member = try await context.getDiscordMember(githubID: "\(issue.user.id)")
-        let authorName = member?.nick ??
-        member?.user?.global_name ??
-        member?.user?.username ??
-        issue.user.uiName
-        var iconURLEndpoint: CDNEndpoint? = nil
-        if let member, let user = member.user {
-            if let avatar = member.avatar {
-                iconURLEndpoint = CDNEndpoint.guildMemberAvatar(
-                    guildId: Constants.guildID,
-                    userId: user.id,
-                    avatar: avatar
-                )
-            } else if let avatar = user.avatar {
-                iconURLEndpoint = CDNEndpoint.userAvatar(
-                    userId: user.id,
-                    avatar: avatar
-                )
-            }
-        }
-        let iconURL = iconURLEndpoint?.url ?? issue.user.avatar_url
+        let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
+        let iconURL = member?.uiAvatarCDNEndpoint?.url ?? issue.user.avatar_url
 
         let embed = Embed(
             title: title,
