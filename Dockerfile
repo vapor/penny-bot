@@ -34,9 +34,6 @@ RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Penny" .
 # Copy resources bundled by SPM to staging area
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
-# Move /Templates/Penny directory to staging area
-RUN mkdir -p ./Templates && mv /build/Templates/Penny ./Templates/Penny && chmod -R a-w ./Templates/Penny;
-
 # ================================
 # Run image
 # ================================

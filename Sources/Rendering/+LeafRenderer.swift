@@ -10,12 +10,12 @@ private let leafRendererThreadPool: NIOThreadPool = {
 
 extension LeafRenderer {
     public convenience init(
-        subDirectory: String,
+        path: String,
         extraSources: [any LeafSource] = [],
         on eventLoop: any EventLoop
     ) throws {
         let workingDirectory = FileManager.default.currentDirectoryPath
-        let rootDirectory = "\(workingDirectory)/Templates/\(subDirectory)"
+        let rootDirectory = "\(workingDirectory)/\(path)/Templates"
         let configuration = LeafConfiguration(rootDirectory: rootDirectory)
         let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
         let fileIOLeafSource = NIOLeafFiles(

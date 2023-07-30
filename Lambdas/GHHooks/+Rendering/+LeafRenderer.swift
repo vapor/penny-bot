@@ -7,7 +7,7 @@ import Foundation
 extension LeafRenderer {
     static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
         try LeafRenderer(
-            subDirectory: "GHHooksLambda",
+            path: "Lambdas/GHHooks",
             extraSources: [DocsLeafSource(
                 httpClient: httpClient,
                 logger: logger
