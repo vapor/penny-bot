@@ -1,6 +1,7 @@
 import SotoCore
 import SotoSecretsManager
 import Logging
+import Shared
 import Foundation
 
 public actor SecretsRetriever {

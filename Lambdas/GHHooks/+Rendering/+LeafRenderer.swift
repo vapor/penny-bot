@@ -8,10 +8,12 @@ extension LeafRenderer {
     static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
         try LeafRenderer(
             path: "Lambdas/GHHooks",
+            httpClient: httpClient,
             extraSources: [DocsLeafSource(
                 httpClient: httpClient,
                 logger: logger
             )],
+            logger: logger,
             on: httpClient.eventLoopGroup.next()
         )
     }

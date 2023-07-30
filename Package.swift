@@ -111,7 +111,7 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Rendering"),
-                .target(name: "SharedServices"),
+                .target(name: "Shared"),
                 .target(name: "Models"),
             ],
             resources: [
@@ -142,7 +142,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices"),
+                .target(name: "Shared"),
                 .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/Sponsors",
@@ -193,7 +193,7 @@ let package = Package(
                 .target(name: "GitHubAPI"),
                 .target(name: "Rendering"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices"),
+                .target(name: "Shared"),
                 .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHHooks",
@@ -211,7 +211,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Extensions"),
-                .target(name: "SharedServices"),
+                .target(name: "Shared"),
                 .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHOAuth",
@@ -223,6 +223,7 @@ let package = Package(
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
+                .target(name: "Shared"),
             ],
             path: "./Lambdas/LambdasShared",
             swiftSettings: swiftSettings
@@ -263,7 +264,7 @@ let package = Package(
             swiftSettings: swiftSettings
         ),
         .target(
-            name: "SharedServices",
+            name: "Shared",
             dependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
@@ -278,7 +279,10 @@ let package = Package(
             dependencies: [
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
+                .product(name: "Logging", package: "swift-log"),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "LeafKit", package: "leaf-kit"),
+                .target(name: "Shared"),
             ],
             swiftSettings: swiftSettings
         ),

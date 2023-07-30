@@ -5,7 +5,7 @@ import SotoCore
 import NIOHTTP1
 import DiscordBM
 import LambdasShared
-import SharedServices
+import Shared
 import Extensions
 import Foundation
 

@@ -19,6 +19,8 @@ class LeafRenderTests: XCTestCase {
     )
     lazy var pennyRenderClient = RenderClient(
         renderer: try! .forPenny(
+            httpClient: httpClient,
+            logger: Logger(label: "Tests_Penny+LeafRendering"),
             on: httpClient.eventLoopGroup.next()
         )
     )

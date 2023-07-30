@@ -5,6 +5,7 @@ import AsyncHTTPClient
 import OpenAPIAsyncHTTPClient
 import Logging
 import LambdasShared
+import Shared
 import Foundation
 
 actor Authenticator {

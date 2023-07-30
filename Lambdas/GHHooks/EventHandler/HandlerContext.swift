@@ -3,7 +3,7 @@ import DiscordBM
 import GitHubAPI
 import OpenAPIRuntime
 import Rendering
-import SharedServices
+import Shared
 import Logging
 
 struct HandlerContext {

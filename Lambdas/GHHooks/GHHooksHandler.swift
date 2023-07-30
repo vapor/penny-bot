@@ -9,7 +9,7 @@ import DiscordUtilities
 import Logging
 import Extensions
 import LambdasShared
-import SharedServices
+import Shared
 import Foundation
 
 @main

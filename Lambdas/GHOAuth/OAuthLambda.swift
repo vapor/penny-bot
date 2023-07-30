@@ -11,7 +11,7 @@ import DiscordBM
 import Models
 import JWTKit
 import LambdasShared
-import SharedServices
+import Shared
 import Logging
 
 @main

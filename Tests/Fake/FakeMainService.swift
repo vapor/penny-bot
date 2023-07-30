@@ -11,7 +11,7 @@ import XCTest
 public actor FakeMainService: MainService {
     public let manager: FakeManager
     public let cache: DiscordCache
-    public let eventLoopGroup: any EventLoopGroup
+    public let httpClient: HTTPClient
     public let context: HandlerContext
     var botStateManager: BotStateManager {
         context.botStateManager
@@ -27,16 +27,16 @@ public actor FakeMainService: MainService {
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
-        self.eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        self.httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
         self.context = try Self.makeContext(
             manager: manager,
             cache: cache,
-            eventLoopGroup: eventLoopGroup
+            httpClient: httpClient
         )
     }
 
     deinit {
-        try! eventLoopGroup.syncShutdownGracefully()
+        try! httpClient.syncShutdown()
     }
 
     public func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
@@ -67,7 +67,7 @@ public actor FakeMainService: MainService {
     static func makeContext(
         manager: any GatewayManager,
         cache: DiscordCache,
-        eventLoopGroup: any EventLoopGroup
+        httpClient: HTTPClient
     ) throws -> HandlerContext {
         let discordService = DiscordService(
             discordClient: manager.client,
@@ -90,7 +90,9 @@ public actor FakeMainService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
-                    on: eventLoopGroup.next()
+                    httpClient: httpClient,
+                    logger: Logger(label: "Tests_Penny+Leaf+FakeService"),
+                    on: httpClient.eventLoopGroup.next()
                 )
             )
         )

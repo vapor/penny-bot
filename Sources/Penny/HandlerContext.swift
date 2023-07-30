@@ -1,5 +1,5 @@
 import Rendering
-import SharedServices
+import Shared
 
 struct HandlerContext: Sendable {
 

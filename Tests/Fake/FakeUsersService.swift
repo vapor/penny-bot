@@ -1,7 +1,7 @@
 @testable import Penny
 @testable import Models
 import DiscordModels
-import SharedServices
+import Shared
 
 public struct FakeUsersService: UsersService {
     

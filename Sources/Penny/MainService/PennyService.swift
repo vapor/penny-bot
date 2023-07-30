@@ -3,7 +3,7 @@ import DiscordLogger
 import AsyncHTTPClient
 import NIOCore
 import SotoCore
-import SharedServices
+import Shared
 import Logging
 
 struct PennyService: MainService {
@@ -111,6 +111,8 @@ struct PennyService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
+                    httpClient: httpClient,
+                    logger: Logger(label: "Tests_Penny+Leaf"),
                     on: httpClient.eventLoopGroup.next()
                 )
             )
