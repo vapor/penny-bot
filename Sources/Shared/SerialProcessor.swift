@@ -13,30 +13,33 @@ public actor SerialProcessor {
         }
     }
 
-    private var isRunning = false
-    private var queue: Deque<CheckedContinuation<Void, Never>> = []
+    private var isRunning: [String: Bool] = [:]
+    private var queue: [String: Deque<CheckedContinuation<Void, Never>>] = [:]
     private let limit: Int
 
-    public init(queueLimit: Int = 50) {
+    public init(queueLimit: Int = 10) {
         self.limit = queueLimit
     }
 
-    public func process<T: Sendable>(block: @Sendable () async throws -> T) async throws -> T {
-        guard queue.count <= limit else {
+    public func process<T: Sendable>(
+        queueKey: String,
+        block: @Sendable () async throws -> T
+    ) async throws -> T {
+        guard queue[queueKey].map({ $0.count <= limit }) ?? true else {
             throw Errors.overloaded(limit: limit)
         }
 
-        if isRunning {
+        if isRunning[queueKey, default: false] {
             await withCheckedContinuation { continuation in
-                queue.append(continuation)
+                queue[queueKey, default: []].append(continuation)
             }
         }
 
-        precondition(!isRunning)
-        isRunning = true
+        precondition(!isRunning[queueKey, default: false])
+        isRunning[queueKey] = true
         defer {
-            isRunning = false
-            queue.popFirst()?.resume()
+            isRunning[queueKey] = false
+            queue[queueKey]?.popFirst()?.resume()
         }
 
         return try await block()

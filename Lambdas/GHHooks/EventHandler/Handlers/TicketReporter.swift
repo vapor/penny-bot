@@ -2,15 +2,15 @@ import DiscordBM
 import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
-struct Reporter {
+struct TicketReporter {
 
     enum Errors: Error, CustomStringConvertible {
-        case tooManyMatchingMessagesFound(matchingUrl: String, messages: [DiscordChannel.Message])
+        case tooManyMatchingMessagesFound(matchingURL: String, messages: [DiscordChannel.Message])
 
         var description: String {
             switch self {
-            case let .tooManyMatchingMessagesFound(matchingUrl, messages):
-                return "tooManyMatchingMessagesFound(matchingUrl: \(matchingUrl), messages: \(messages))"
+            case let .tooManyMatchingMessagesFound(matchingURL, messages):
+                return "tooManyMatchingMessagesFound(matchingURL: \(matchingURL), messages: \(messages))"
             }
         }
     }

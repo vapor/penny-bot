@@ -11,15 +11,15 @@ struct PennyService: MainService {
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
-        let webhookUrl = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
+        let webhookURL = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 #else
-        let webhookUrl = Constants.loggingWebhookUrl
+        let webhookURL = Constants.loggingWebhookURL
 #endif
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
                 aliveNotice: .init(
-                    address: try! .url(webhookUrl),
+                    address: try! .url(webhookURL),
                     interval: nil,
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
@@ -35,7 +35,7 @@ struct PennyService: MainService {
             )
         )
         await LoggingSystem.bootstrapWithDiscordLogger(
-            address: try! .url(webhookUrl),
+            address: try! .url(webhookURL),
             level: .trace,
             makeMainLogHandler: { label, metadataProvider in
                 StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)

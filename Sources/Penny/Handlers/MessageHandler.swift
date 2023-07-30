@@ -177,7 +177,7 @@ struct MessageHandler {
                 if userId == author.id { continue }
             }
             let authorName = makeAuthorName(nick: member.nick, user: author)
-            let iconUrlEndpoint = member.avatar.map { avatar in
+            let iconURLEndpoint = member.avatar.map { avatar in
                 CDNEndpoint.guildMemberAvatar(
                     guildId: guildId,
                     userId: author.id,
@@ -204,7 +204,7 @@ struct MessageHandler {
                         color: .blue,
                         footer: .init(
                             text: "By \(authorName)",
-                            icon_url: (iconUrlEndpoint?.url).map { .exact($0) }
+                            icon_url: (iconURLEndpoint?.url).map { .exact($0) }
                         )
                     )],
                     components: [[.button(.init(label: "Open Message", url: messageLink))]]

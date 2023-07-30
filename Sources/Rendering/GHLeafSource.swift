@@ -35,7 +35,7 @@ struct GHLeafSource: LeafSource {
         }
 
         func file(template: String) async throws -> ByteBuffer {
-            try await queue.process {
+            try await queue.process(queueKey: template) {
                 if let existing = await self.getFromCache(key: template) {
                     return existing
                 } else {

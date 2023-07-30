@@ -30,7 +30,7 @@ actor Authenticator {
     /// across different lambda processes, so it is possible for the installation token to
     /// live long enough to be expired in the first place, so then we can think of refreshing it.
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> String {
-        try await queue.process {
+        try await queue.process(queueKey: "default") {
             if !forceRefreshToken,
                let cachedAccessToken = await cachedAccessToken {
                 return cachedAccessToken.token

@@ -36,8 +36,8 @@ struct IssueHandler {
         try await makeReporter().reportCreation()
     }
 
-    func makeReporter() async throws -> Reporter {
-        Reporter(
+    func makeReporter() async throws -> TicketReporter {
+        TicketReporter(
             context: context,
             embed: try await createReportEmbed(),
             repoID: try context.event.repository.requireValue().id,

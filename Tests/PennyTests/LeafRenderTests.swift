@@ -35,7 +35,7 @@ class LeafRenderTests: XCTestCase {
 
     func testTranslationNeededDescription() async throws {
         let rendered = try await ghHooksRenderClient.translationNeededDescription(number: 1)
-        XCTAssertGreaterThan(rendered.count, 5)
+        XCTAssertGreaterThan(rendered.count, 20)
     }
 
     func testNewReleaseDescription() async throws {
@@ -60,7 +60,8 @@ class LeafRenderTests: XCTestCase {
                     )
                 )
             )
-            XCTAssertEqual(rendered, """
+
+            XCTRenderEquals(rendered, """
             ## What's Changed
             PR title right here by @0xTim in #833
 
@@ -102,7 +103,8 @@ class LeafRenderTests: XCTestCase {
                     )
                 )
             )
-            XCTAssertEqual(rendered, """
+
+            XCTRenderEquals(rendered, """
             ## What's Changed
             PR title right here by @0xTim in #833
 
@@ -126,7 +128,7 @@ class LeafRenderTests: XCTestCase {
             """
         )
 
-        XCTAssertEqual(rendered, """
+        XCTRenderEquals(rendered, """
         ### Some more improvements
 
         >>> - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
@@ -150,7 +152,7 @@ class LeafRenderTests: XCTestCase {
             )
         )
 
-        XCTAssertEqual(rendered, #"""
+        XCTRenderEquals(rendered, #"""
         ## Auto-Pings Help
 
         You can add texts to be pinged for.
@@ -184,5 +186,43 @@ class LeafRenderTests: XCTestCase {
 
         You can use </auto-pings test:1> to test if a message triggers some expressions.
         """#)
+    }
+
+    /// Fancy footwork to:
+    /// 1- Avoid test failures just because of a new empty line at the end of the file.
+    /// 2- Better errors about what exactly is causing the inequality.
+    func XCTRenderEquals(
+        _ expression1: String,
+        _ expression2: String,
+        line: UInt = #line
+    ) {
+        let expression1 = expression1.trimmingSuffix(while: \.isNewline)
+        let expression2 = expression2.trimmingSuffix(while: \.isNewline)
+        if expression1 != expression2 {
+            let lines1 = expression1.split(
+                omittingEmptySubsequences: false,
+                whereSeparator: \.isNewline
+            )
+            let lines2 = expression2.split(
+                omittingEmptySubsequences: false,
+                whereSeparator: \.isNewline
+            )
+            if lines1.count == lines2.count {
+                for (idx, bothLines) in zip(lines1, lines2).enumerated() {
+                    let (line1, line2) = bothLines
+                    if line1 != line2 {
+                        XCTFail("""
+                            Not equal at line \(idx + 1):
+                            Expected: \(line1.debugDescription)
+                            Got:      \(line2.debugDescription)
+                            """,
+                            line: line
+                        )
+                    }
+                }
+            } else {
+                XCTAssertEqual(expression1, expression2, line: line)
+            }
+        }
     }
 }
