@@ -29,6 +29,7 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 * [ ] Automatically respond to commonly asked questions.
 * [x] Automate SemVer releases and report on Discord.
 * [x] Report GitHub PRs and Issues on Discord.
-* [ ] Manage sponsor/backer status of GitHub users.
+* [x] Report Swift evolution proposals on Discord.
 * [x] Connect members' Discord & GitHub accounts for better integrations.
 * [x] Thank members when they contribute to Vapor repositories.
+* [ ] Manage sponsor/backer status of GitHub users.

@@ -1,4 +1,4 @@
-**- Auto-Pings Help**
+## Auto-Pings Help
 
 You can add texts to be pinged for.
 When someone uses those texts, Penny will DM you about the message.
@@ -7,7 +7,7 @@ When someone uses those texts, Penny will DM you about the message.
 
 > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the #raw(isTypingEmoji) indicator.
 
-**Adding Expressions**
+### Adding Expressions
 
 You can add multiple texts using #raw(commands.add), separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
 
@@ -19,14 +19,14 @@ You can add multiple texts using #raw(commands.add), separating the texts using 
 
 > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
 
-**Removing Expressions**
+### Removing Expressions
 
 You can remove multiple texts using #raw(commands.remove), separating the texts using commas (`,`).
 
-**Your Pings List**
+### Your Pings List
 
 You can use #raw(commands.list) to see your current expressions.
 
-**Testing Expressions**
+### Testing Expressions
 
 You can use #raw(commands.test) to test if a message triggers some expressions.
