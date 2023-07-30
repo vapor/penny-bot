@@ -380,6 +380,16 @@ class GHHooksTests: XCTestCase {
             eventName: .push,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "push3",
+            eventName: .push,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "push4",
+            eventName: .push,
+            expect: .noResponse
+        )
 
         try await handleEvent(
             key: "release1",
@@ -534,6 +544,7 @@ class GHHooksTests: XCTestCase {
         case error(description: String)
 
         static var noResponse: Self {
+            /// TODO: Optimally should include all channels in `GHHooksLambda.Constants.Channels`.
             .failure(at: .issueAndPRs)
         }
     }

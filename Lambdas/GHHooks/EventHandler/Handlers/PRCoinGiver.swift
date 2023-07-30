@@ -7,6 +7,9 @@ struct PRCoinGiver {
     let context: HandlerContext
     let commitSHA: String
     let repo: Repository
+    var event: GHEvent {
+        context.event
+    }
     var logger: Logger {
         context.logger
     }
@@ -18,6 +21,10 @@ struct PRCoinGiver {
     }
 
     func handle() async throws {
+        let primaryBranch = repo.master_branch ?? "main"
+        guard event.ref == "refs/heads/\(primaryBranch)" else {
+            return
+        }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
         let codeOwners = try await context.getCodeOwners(repoFullName: repo.full_name)
