@@ -15,6 +15,8 @@ public struct CoinEntry: Sendable, Codable {
     public enum Reason: String, Sendable, Codable {
         case userProvided
         case automationProvided
+        case prSubmittedAndClosed
+        /// `prMerge` is the new term for the old `prSubmittedAndClosed`.
         case prMerge
         case startedSponsoring
         case transferred
