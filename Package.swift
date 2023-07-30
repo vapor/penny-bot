@@ -115,7 +115,7 @@ let package = Package(
                 .target(name: "Models"),
             ],
             resources: [
-                .copy("../../Templates/Penny")
+                .copy("../../Templates/Penny/")
             ],
             swiftSettings: swiftSettings
         ),
@@ -198,7 +198,7 @@ let package = Package(
             ],
             path: "./Lambdas/GHHooks",
             resources: [
-                .copy("../../Templates/GHHooksLambda")
+                .copy("../../Templates/GHHooksLambda/")
             ],
             swiftSettings: swiftSettings
         ),
