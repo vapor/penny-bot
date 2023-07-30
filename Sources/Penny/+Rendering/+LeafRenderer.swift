@@ -11,7 +11,7 @@ extension LeafRenderer {
         on eventLoop: any EventLoop
     ) throws -> LeafRenderer {
         try LeafRenderer(
-            path: "Sources/Penny",
+            subDirectory: "Penny",
             httpClient: httpClient,
             logger: logger,
             on: eventLoop
