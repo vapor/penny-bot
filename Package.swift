@@ -115,7 +115,7 @@ let package = Package(
                 .target(name: "Models"),
             ],
             resources: [
-                .copy("Templates")
+                .process("Templates")
             ],
             swiftSettings: swiftSettings
         ),
@@ -198,7 +198,7 @@ let package = Package(
             ],
             path: "./Lambdas/GHHooks",
             resources: [
-                .copy("Templates")
+                .process("Templates")
             ],
             swiftSettings: swiftSettings
         ),

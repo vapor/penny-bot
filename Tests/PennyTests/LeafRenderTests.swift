@@ -116,6 +116,21 @@ class LeafRenderTests: XCTestCase {
         }
     }
 
+    func testTicketReport() async throws {
+        let rendered = try await ghHooksRenderClient.ticketReport(
+            title: "Some more improvements",
+            body: """
+            - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
+            """
+        )
+
+        XCTAssertEqual(rendered, """
+        ### Some more improvements
+
+        >>> - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
+        """)
+    }
+
     func testAutoPingsHelp() async throws {
         let rendered = try await pennyRenderClient.autoPingsHelp(
             context: .init(

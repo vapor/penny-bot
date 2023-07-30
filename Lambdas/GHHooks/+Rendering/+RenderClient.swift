@@ -14,5 +14,15 @@ extension RenderClient {
             context: context
         )
     }
+
+    func ticketReport(title: String, body: String) async throws -> String {
+        try await render(
+            path: "ticket_report.description",
+            context: [
+                "title": .string(title),
+                "body": .string(body),
+            ]
+        )
+    }
 }
 
