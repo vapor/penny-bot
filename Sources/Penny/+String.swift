@@ -34,14 +34,21 @@ extension String {
 
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
-    /// trims whitespaces and makes the string case, diacritic and punctuation insensitive.
+    /// Trims whitespaces and makes the string case, diacritic and punctuation insensitive.
     func heavyFolded() -> String {
         self.trimmingCharacters(in: .whitespaces)
             .removingOccurrences(of: .punctuationCharacters)
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
     }
-    
+
+    /// No whitespaces or lines and makes the string case, diacritic and punctuation insensitive.
+    func superHeavyFolded() -> String {
+        self.removingOccurrences(of: .whitespacesAndNewLinesAndPunctuations)
+            .lowercased()
+            .folding(options: .diacriticInsensitive, locale: nil)
+    }
+
     func divideForPingCommandExactMatchChecking() -> [[Substring]] {
         let modified = self.trimmingCharacters(in: .whitespaces)
             .lowercased()
@@ -58,9 +65,7 @@ extension StringProtocol {
             .lowercased()
             .folding(options: .diacriticInsensitive, locale: nil)
     }
-}
-
-extension String {
+    
     /// Removes any occurrences of the characters in the character-set.
     func removingOccurrences(of target: CharacterSet) -> String {
         /// Couldn't make it properly work without copy-ing the string
@@ -102,4 +107,10 @@ private extension Character {
     var isWhitespaceOrNewline: Bool {
         self.isWhitespace || self.isNewline
     }
+}
+
+private extension CharacterSet {
+    static let whitespacesAndNewLinesAndPunctuations = CharacterSet
+        .whitespacesAndNewlines
+        .union(.punctuationCharacters)
 }

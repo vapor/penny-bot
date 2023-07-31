@@ -25,6 +25,7 @@ public enum EventKey: String, Sendable {
     case autoFaqsGet
     case autoFaqsGetEphemeral
     case autoFaqsGetAutocomplete
+    case autoFaqsTrigger
 
     /// The endpoints from which the bot will send a response, after receiving each event.
     public var responseEndpoints: [APIEndpoint] {
@@ -82,6 +83,8 @@ public enum EventKey: String, Sendable {
             return [.updateOriginalInteractionResponse(applicationId: "11111111", interactionToken: "aW50ZXJhY3Rpb246MTEyMTc4MjI5Mzk0NjcxNjI0MDpUTVRmTTVJOXNSMVpmVXFPNHc1WG1Pd202Y2ZxOURTTFdKTFRPTWRsdlI5REdDQlJ6cTZDTHhNeE9leVlkYzFlcW9TeTlhdE9FSU4zMmJBV3BUeW9ETnQyTjJub1k1Tk91UjhZQnJoS0I4Q3pPb1NIQWNoTXkxbFY3SHVCbHc0cg"), .createInteractionResponse(interactionId: "1121782293946716240", interactionToken: "aW50ZXJhY3Rpb246MTEyMTc4MjI5Mzk0NjcxNjI0MDpUTVRmTTVJOXNSMVpmVXFPNHc1WG1Pd202Y2ZxOURTTFdKTFRPTWRsdlI5REdDQlJ6cTZDTHhNeE9leVlkYzFlcW9TeTlhdE9FSU4zMmJBV3BUeW9ETnQyTjJub1k1Tk91UjhZQnJoS0I4Q3pPb1NIQWNoTXkxbFY3SHVCbHc0cg")]
         case .autoFaqsGetAutocomplete:
             return [.createInteractionResponse(interactionId: "1097060331508994088", interactionToken: "aW50ZXJhY3Rpb246MTA5NzA2MDMzMTUwODk5NDA4ODpyWDROWEtucXBJNm1ZaDRDQ2QzVFVyRDU5Q21pZlhFV3pkUHJaaDZUbHczUlVkc1dGRDdYdHBYdVJFT2VrN2ROUzByTEdUTVJNaXhMRk5uUWk4Mng4MWF5S00yRWdQdzNqbGlkbUR3N3pwTm5HR2JnQVZQUkhtajhJbWltMVBQOQ")]
+        case .autoFaqsTrigger:
+            return [.createMessage(channelId: "519613337638797315")]
         }
     }
 }

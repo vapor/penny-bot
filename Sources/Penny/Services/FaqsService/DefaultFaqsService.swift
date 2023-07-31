@@ -11,7 +11,7 @@ import NIOHTTP1
 actor DefaultFaqsService: FaqsService {
 
     var httpClient: HTTPClient!
-    var logger = Logger(label: "DefaultPingsService")
+    var logger = Logger(label: "DefaultFaqsService")
 
     /// Use `getAll()` to retrieve.
     var _cachedItems: [String: String]?

@@ -11,10 +11,12 @@ import NIOHTTP1
 actor DefaultAutoFaqsService: AutoFaqsService {
 
     var httpClient: HTTPClient!
-    var logger = Logger(label: "DefaultPingsService")
+    var logger = Logger(label: "DefaultAutoFaqsService")
 
     /// Use `getAll()` to retrieve.
     var _cachedItems: [String: String]?
+    /// Use `getAllFolded()` to retrieve.
+    var _cachedFoldedItems: [String: String]?
     /// Use `getAllNamesHashTable()` to retrieve.
     /// `[NameHash: Name]`
     var _cachedNamesHashTable: [Int: String]?
@@ -49,17 +51,26 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     func getAll() async throws -> [String: String] {
-        if let cachedItems = _cachedItems {
-            return cachedItems
+        if let _cachedItems {
+            return _cachedItems
         } else {
             try await self.send(request: .all)
             return _cachedItems ?? [:]
         }
     }
 
+    func getAllFolded() async throws -> [String: String] {
+        if let _cachedFoldedItems {
+            return _cachedFoldedItems
+        } else {
+            try await self.send(request: .all)
+            return _cachedFoldedItems ?? [:]
+        }
+    }
+
     func getAllNamesHashTable() async throws -> [Int: String] {
-        if let cachedItems = _cachedNamesHashTable {
-            return cachedItems
+        if let _cachedNamesHashTable {
+            return _cachedNamesHashTable
         } else {
             try await self.send(request: .all)
             return _cachedNamesHashTable ?? [:]
@@ -103,6 +114,9 @@ actor DefaultAutoFaqsService: AutoFaqsService {
             "new": .stringConvertible(new)
         ])
         self._cachedItems = new
+        self._cachedFoldedItems = Dictionary(
+            uniqueKeysWithValues: new.map({ ($0.key.superHeavyFolded(), $0.value) })
+        )
         self._cachedNamesHashTable = Dictionary(
             uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })
         )
@@ -115,7 +129,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
                 /// To freshen the cache
                 _ = try await self.send(request: .all)
             } catch {
-                logger.report("Couldn't automatically freshen faqs cache", error: error)
+                logger.report("Couldn't automatically freshen auto-faqs cache", error: error)
             }
         }
     }

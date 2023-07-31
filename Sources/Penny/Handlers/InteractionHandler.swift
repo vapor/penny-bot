@@ -1470,7 +1470,7 @@ private enum ModalID {
                     min_length: 3,
                     max_length: InteractionHandler.Configuration.faqsNameMaxLength,
                     required: true,
-                    placeholder: "Example: PostgresNIO.PSQLError(backing: PostgresNIO.PSQLError.(unknown"
+                    placeholder: "Example: PostgresNIO.PSQLError"
                 )
                 let value = Interaction.ActionRow.TextInput(
                     custom_id: "value",
@@ -1480,7 +1480,7 @@ private enum ModalID {
                     required: true,
                     placeholder: """
                     Example:
-                    How to set your working directory: <link>
+                    Update your package dependencies!
                     """
                 )
                 return [expression, value]
@@ -1507,7 +1507,7 @@ private enum ModalID {
                     max_length: InteractionHandler.Configuration.faqsNameMaxLength,
                     required: true,
                     value: expression,
-                    placeholder: expression == nil ? "Example: PostgresNIO.PSQLError(backing: PostgresNIO.PSQLError.(unknown" : nil
+                    placeholder: expression == nil ? "Example: PostgresNIO.PSQLError" : nil
                 )
                 return [expression]
             }

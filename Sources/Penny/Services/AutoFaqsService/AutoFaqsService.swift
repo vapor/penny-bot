@@ -7,4 +7,5 @@ protocol AutoFaqsService: Sendable {
     func get(expression: String) async throws -> String?
     func getName(hash: Int) async throws -> String?
     func getAll() async throws -> [String: String]
+    func getAllFolded() async throws -> [String: String]
 }

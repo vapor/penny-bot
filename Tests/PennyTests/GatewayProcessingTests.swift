@@ -474,5 +474,17 @@ class GatewayProcessingTests: XCTestCase {
                 XCTFail("Wrong response data type for `/auto-faqs get`: \(response.data as Any)")
             }
         }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .autoFaqsTrigger,
+                as: Payloads.CreateMessage.self
+            )
+
+            let embed = try XCTUnwrap(response.embeds?.first)
+
+            XCTAssertEqual(embed.title, "🤖 Automated Answer")
+            XCTAssertEqual(embed.description, "Update your PostgresNIO!")
+        }
     }
 }
