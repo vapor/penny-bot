@@ -13,7 +13,9 @@ public actor SerialProcessor {
         }
     }
 
+    /// `[QueueKey: IsRunning]`
     private var isRunning: [String: Bool] = [:]
+    /// `[QueueKey: Deque<Continuation>]`
     private var queue: [String: Deque<CheckedContinuation<Void, Never>>] = [:]
     private let limit: Int
 

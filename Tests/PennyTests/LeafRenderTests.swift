@@ -121,18 +121,31 @@ class LeafRenderTests: XCTestCase {
     }
 
     func testTicketReport() async throws {
-        let rendered = try await ghHooksRenderClient.ticketReport(
-            title: "Some more improvements",
-            body: """
-            - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
-            """
-        )
+        do {
+            let rendered = try await ghHooksRenderClient.ticketReport(
+                title: "Some more improvements",
+                body: """
+                - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
+                """
+            )
+            
+            XCTRenderEquals(rendered, """
+            ### Some more improvements
 
-        XCTRenderEquals(rendered, """
-        ### Some more improvements
+            >>> - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
+            """)
+        }
 
-        >>> - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
-        """)
+        do {
+            let rendered = try await ghHooksRenderClient.ticketReport(
+                title: "Some more improvements",
+                body: ""
+            )
+
+            XCTRenderEquals(rendered, """
+            ### Some more improvements
+            """)
+        }
     }
 
     func testAutoPingsHelp() async throws {

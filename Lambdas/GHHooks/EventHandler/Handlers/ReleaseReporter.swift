@@ -131,18 +131,14 @@ struct ReleaseReporter {
 
     func sendToDiscord(pr: SimplePullRequest) async throws {
         let body = pr.body.map { body -> String in
-            let formatted = body.formatMarkdown(
+            body.formatMarkdown(
                 maxLength: 256,
                 trailingParagraphMinLength: 128
             )
-            return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
-        let description = """
-        ### \(pr.title)
+        let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 
-        \(body)
-        """
         let fullName = repo.full_name.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
         ) ?? repo.full_name
