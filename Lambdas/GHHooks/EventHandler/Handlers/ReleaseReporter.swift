@@ -34,14 +34,14 @@ struct ReleaseReporter {
             .flatMap({ Release.Action(rawValue: $0) })
             .requireValue()
         switch action {
-        case .created:
-            try await handleReleaseCreated()
+        case .published:
+            try await handleReleasePublished()
         default:
             break
         }
     }
 
-    func handleReleaseCreated() async throws {
+    func handleReleasePublished() async throws {
         let relatedPRs = try await self.getPRsRelatedToRelease()
         if relatedPRs.isEmpty {
             try await sendToDiscordWithRelease()
