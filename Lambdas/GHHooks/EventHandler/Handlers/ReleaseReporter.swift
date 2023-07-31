@@ -45,8 +45,8 @@ struct ReleaseReporter {
         let relatedPRs = try await self.getPRsRelatedToRelease()
         if relatedPRs.isEmpty {
             try await sendToDiscordWithRelease()
-        } else if release.author.id == Constants.GitHub.userID {
-            /// If there are some PRs and Penny released this, then just mention the last PR.
+        } else if relatedPRs.count == 1 || release.author.id == Constants.GitHub.userID {
+            /// If there is only 1 PR or if Penny released this, then just mention the last PR.
             try await self.sendToDiscord(pr: relatedPRs[0])
         } else {
             /// If it was a manual release, use the release for Discord message.
