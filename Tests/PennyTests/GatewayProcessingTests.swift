@@ -260,11 +260,12 @@ class GatewayProcessingTests: XCTestCase {
             key: .serverBoost,
             as: Payloads.CreateMessage.self
         )
-        let message = try XCTUnwrap(response.embeds?.first?.description)
+        XCTAssertEqual(response.content, "<@432065887202181142>")
+        let description = try XCTUnwrap(response.embeds?.first?.description)
         XCTAssertTrue(
             message.hasPrefix(
                 """
-                <@432065887202181142> Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
+                Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
                 You now have 10 more \(Constants.ServerEmojis.coin.emoji) for a total of
                 """
             )
