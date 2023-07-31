@@ -142,7 +142,6 @@ struct ReactionHandler {
             channelId: event.channel_id,
             replyingToMessageId: event.message_id,
             isFailureMessage: isFailureMessage,
-            userToExplicitlyMention: nil,
             response: response
         )
         do {

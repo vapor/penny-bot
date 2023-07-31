@@ -176,6 +176,7 @@ actor DiscordService {
             return await self.sendMessage(
                 channelId: channelId,
                 payload: .init(
+                    content: content,
                     embeds: [.init(
                         description: response,
                         color: .purple
@@ -198,11 +199,11 @@ actor DiscordService {
             return await self.sendMessage(
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
+                    content: content,
                     embeds: [.init(
                         description: "\(response) (\(link))",
                         color: .purple
-                    )],
-                    allowed_mentions: allowedMentions
+                    )]
                 )
             )
         }
