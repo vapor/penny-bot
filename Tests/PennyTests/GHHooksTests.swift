@@ -227,6 +227,29 @@ class GHHooksTests: XCTestCase {
         }
     }
 
+    func testParagraphFinder() async throws {
+        /// Goes into the `What's Changed` paragraph.
+        let text = """
+        ## What's Changed
+        * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+        * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+        * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+        * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+
+        ## New Contributors
+        * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
+
+        **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
+        """
+
+        XCTAssertEqual(text.contentsOfHeading(named: "What's Changed"), """
+        - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+        - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+        - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+        - Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+        """)
+    }
+
     func testParseCodeOwners() async throws {
         let text = """
         # This is a comment.

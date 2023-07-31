@@ -21,13 +21,15 @@ struct PRCoinGiver {
     }
 
     func handle() async throws {
-        let primaryBranch = repo.master_branch ?? "main"
-        guard event.ref == "refs/heads/\(primaryBranch)" else {
+        guard event.ref == "refs/heads/\(repo.primaryBranch)" else {
             return
         }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
-        let codeOwners = try await context.getCodeOwners(repoFullName: repo.full_name)
+        let codeOwners = try await context.getCodeOwners(
+            repoFullName: repo.full_name,
+            primaryBranch: repo.primaryBranch
+        )
         for pr in try await getPRsRelatedToCommit() {
             if pr.merged_at == nil { continue }
             if codeOwners.usernamesContain(user: pr.user) { continue }

@@ -37,11 +37,11 @@ extension HandlerContext {
 
     /// Returns code owners if the repo contains the file or returns `nil`.
     /// In form of `["gwynne", "0xTim"]`.
-    func getCodeOwners(repoFullName: String) async throws -> Set<String> {
+    func getCodeOwners(repoFullName: String, primaryBranch: String) async throws -> Set<String> {
         let fullName = repoFullName.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
         ) ?? repoFullName
-        let url = "https://raw.githubusercontent.com/\(fullName)/main/.github/CODEOWNERS"
+        let url = "https://raw.githubusercontent.com/\(fullName)/\(primaryBranch)/.github/CODEOWNERS"
         let request = HTTPClientRequest(url: url)
         let response = try await self.httpClient.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1 << 16)

@@ -154,17 +154,17 @@ struct ReleaseReporter {
     }
 
     func sendToDiscordWithRelease() async throws {
-        let body = release.body.map { body -> String in
-            let formatted = body.formatMarkdown(
+        let description = release.body.map { body -> String in
+            let preferredContent = body.contentsOfHeading(
+                named: "What's Changed"
+            ) ?? body
+            let formatted = preferredContent.formatMarkdown(
                 maxLength: 384,
                 trailingParagraphMinLength: 128
             )
             return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
-        let description = """
-        \(body)
-        """
         let fullName = repo.full_name.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
         ) ?? repo.full_name
