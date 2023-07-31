@@ -12,6 +12,9 @@ struct DocsIssuer {
     let context: HandlerContext
     let commitSHA: String
     let repo: Repository
+    var event: GHEvent {
+        context.event
+    }
     var logger: Logger {
         context.logger
     }
@@ -24,6 +27,10 @@ struct DocsIssuer {
 
     func handle() async throws {
         guard repo.id == Configuration.docsRepoID else {
+            return
+        }
+        let primaryBranch = repo.master_branch ?? "main"
+        guard event.ref == "refs/heads/\(primaryBranch)" else {
             return
         }
         for pr in try await getPRsRelatedToCommit() {
