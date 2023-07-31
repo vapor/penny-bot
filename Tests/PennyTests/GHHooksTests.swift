@@ -227,6 +227,29 @@ class GHHooksTests: XCTestCase {
         }
     }
 
+    func testParagraphFinder() async throws {
+        /// Goes into the `What's Changed` paragraph.
+        let text = """
+        ## What's Changed
+        * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+        * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+        * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+        * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+
+        ## New Contributors
+        * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
+
+        **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
+        """
+
+        XCTAssertEqual(text.contentsOfHeading(named: "What's Changed"), """
+        - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+        - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+        - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+        - Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+        """)
+    }
+
     func testParseCodeOwners() async throws {
         let text = """
         # This is a comment.
@@ -356,7 +379,6 @@ class GHHooksTests: XCTestCase {
             expect: .response(at: .issueAndPRs, type: .create)
         )
 
-
         try await handleEvent(
             key: "projects_v2_item1",
             eventName: .projects_v2_item,
@@ -399,7 +421,7 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "release2",
             eventName: .release,
-            expect: .noResponse
+            expect: .response(at: .release, type: .create)
         )
         try await handleEvent(
             key: "release3",
@@ -408,6 +430,11 @@ class GHHooksTests: XCTestCase {
         )
         try await handleEvent(
             key: "release4",
+            eventName: .release,
+            expect: .noResponse
+        )
+        try await handleEvent(
+            key: "release5",
             eventName: .release,
             expect: .response(at: .release, type: .create)
         )
@@ -450,28 +477,37 @@ class GHHooksTests: XCTestCase {
                         line: line
                     )
                 }
-            case let .failure(channel, responseType):
-                switch responseType {
-                case .create:
-                    let response = await FakeResponseStorage.shared.awaitResponse(
-                        at: .createMessage(channelId: channel.id),
-                        expectFailure: true,
-                        line: line
-                    ).value
-                    XCTAssertEqual(
-                        "\(type(of: response))", "Optional<Never>",
-                        line: line
-                    )
-                case let .edit(messageID):
-                    let response = await FakeResponseStorage.shared.awaitResponse(
-                        at: .updateMessage(channelId: channel.id, messageId: messageID),
-                        expectFailure: true,
-                        line: line
-                    ).value
-                    XCTAssertEqual(
-                        "\(type(of: response))", "Optional<Never>",
-                        line: line
-                    )
+            case let .failure(failures):
+                await withTaskGroup(of: Void.self) { group in
+                    for failure in failures {
+                        group.addTask {
+                            switch failure.type {
+                            case .create:
+                                let response = await FakeResponseStorage.shared.awaitResponse(
+                                    at: .createMessage(channelId: failure.channel.id),
+                                    expectFailure: true,
+                                    line: line
+                                ).value
+                                XCTAssertEqual(
+                                    "\(type(of: response))", "Optional<Never>",
+                                    line: line
+                                )
+                            case let .edit(messageID):
+                                let response = await FakeResponseStorage.shared.awaitResponse(
+                                    at: .updateMessage(
+                                        channelId: failure.channel.id,
+                                        messageId: messageID
+                                    ),
+                                    expectFailure: true,
+                                    line: line
+                                ).value
+                                XCTAssertEqual(
+                                    "\(type(of: response))", "Optional<Never>",
+                                    line: line
+                                )
+                            }
+                        }
+                    }
                 }
             case .error:
                 break
@@ -539,13 +575,18 @@ class GHHooksTests: XCTestCase {
             case edit(messageId: MessageSnowflake)
         }
 
-        case response(at: Constants.Channels, type: ResponseKind = .create)
-        case failure(at: Constants.Channels, type: ResponseKind = .create)
+        struct Failure {
+            let channel: GHHooksLambda.Constants.Channels
+            let type: ResponseKind
+        }
+
+        case response(at: GHHooksLambda.Constants.Channels, type: ResponseKind = .create)
+        case failure([Failure])
         case error(description: String)
 
+        /// Checks for no responses in any of the channels.
         static var noResponse: Self {
-            /// TODO: Optimally should include all channels in `GHHooksLambda.Constants.Channels`.
-            .failure(at: .issueAndPRs)
+            .failure(Constants.Channels.allCases.map({ .init(channel: $0, type: .create) }))
         }
     }
 

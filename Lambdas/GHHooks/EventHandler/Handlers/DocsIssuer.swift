@@ -29,8 +29,7 @@ struct DocsIssuer {
         guard repo.id == Configuration.docsRepoID else {
             return
         }
-        let primaryBranch = repo.master_branch ?? "main"
-        guard event.ref == "refs/heads/\(primaryBranch)" else {
+        guard event.ref == "refs/heads/\(repo.primaryBranch)" else {
             return
         }
         for pr in try await getPRsRelatedToCommit() {

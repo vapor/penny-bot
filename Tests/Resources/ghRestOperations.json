@@ -3801,5 +3801,157 @@
                 "patch": "@@ -1,5 +1,5 @@\n import SQLKit\n-import FluentKit\n+@_spi(FluentSQLSPI) import FluentKit\n \n public protocol SQLConverterDelegate {\n     func customDataType(_ dataType: DatabaseSchema.DataType) -> SQLExpression?\n@@ -112,8 +112,11 @@ public struct SQLSchemaConverter {\n             let name = self.constraintIdentifier(algorithm, table: table)\n             return SQLDropTypedConstraint(name: SQLIdentifier(name), algorithm: algorithm)\n         case .name(let name):\n-            return SQLDropTypedConstraint(name: SQLIdentifier(name), algorithm: .sql(raw: \"\"))\n+            return SQLDropTypedConstraint(name: SQLIdentifier(name), algorithm: .custom(\"\"))\n         case .custom(let any):\n+            if let fkeyExt = any as? DatabaseSchema.ConstraintDelete._ForeignKeyByNameExtension {\n+                return SQLDropTypedConstraint(name: SQLIdentifier(fkeyExt.name), algorithm: .foreignKey([], \"\", [], onDelete: .noAction, onUpdate: .noAction))\n+            }\n             return custom(any)\n         }\n     }"
             }
         ]
-    }
+    },
+    "GET-https://api.github.com/repos/vapor/apns/tags": [
+        {
+          "name": "4.0.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0",
+          "commit": {
+            "sha": "e2ac665f95b6f2d2c19d364ddba4ebaccce8d852",
+            "url": "https://api.github.com/repos/vapor/apns/commits/e2ac665f95b6f2d2c19d364ddba4ebaccce8d852"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMA=="
+        },
+        {
+          "name": "4.0.0-beta.3",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0-beta.3",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0-beta.3",
+          "commit": {
+            "sha": "1637a30b37bcb65f804ab852f991a019e6818a70",
+            "url": "https://api.github.com/repos/vapor/apns/commits/1637a30b37bcb65f804ab852f991a019e6818a70"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMC1iZXRhLjM="
+        },
+        {
+          "name": "4.0.0-beta.2",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0-beta.2",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0-beta.2",
+          "commit": {
+            "sha": "3c9cfc4ae9c3cb8765ea4e99ca81688ab28d1493",
+            "url": "https://api.github.com/repos/vapor/apns/commits/3c9cfc4ae9c3cb8765ea4e99ca81688ab28d1493"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMC1iZXRhLjI="
+        },
+        {
+          "name": "4.0.0-beta.1",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0-beta.1",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0-beta.1",
+          "commit": {
+            "sha": "87926304c763a9f090ec0f129ff9271d3fa15647",
+            "url": "https://api.github.com/repos/vapor/apns/commits/87926304c763a9f090ec0f129ff9271d3fa15647"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMC1iZXRhLjE="
+        },
+        {
+          "name": "4.0.0-alpha.3",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0-alpha.3",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0-alpha.3",
+          "commit": {
+            "sha": "4b0016ac9291ea0192dc9d705153ce95a4ae22e0",
+            "url": "https://api.github.com/repos/vapor/apns/commits/4b0016ac9291ea0192dc9d705153ce95a4ae22e0"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMC1hbHBoYS4z"
+        },
+        {
+          "name": "4.0.0-alpha.2",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0-alpha.2",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0-alpha.2",
+          "commit": {
+            "sha": "c8915e04dc130a15e394c97e776ecdf64d64a726",
+            "url": "https://api.github.com/repos/vapor/apns/commits/c8915e04dc130a15e394c97e776ecdf64d64a726"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMC1hbHBoYS4y"
+        },
+        {
+          "name": "4.0.0-alpha.1",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/4.0.0-alpha.1",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/4.0.0-alpha.1",
+          "commit": {
+            "sha": "f4295f5f05301f3dd34392b033f2e55446425c9b",
+            "url": "https://api.github.com/repos/vapor/apns/commits/f4295f5f05301f3dd34392b033f2e55446425c9b"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy80LjAuMC1hbHBoYS4x"
+        },
+        {
+          "name": "3.0.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/3.0.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/3.0.0",
+          "commit": {
+            "sha": "0eff8eee62001cff9ee21853a4357777ddc523b6",
+            "url": "https://api.github.com/repos/vapor/apns/commits/0eff8eee62001cff9ee21853a4357777ddc523b6"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8zLjAuMA=="
+        },
+        {
+          "name": "2.3.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/2.3.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/2.3.0",
+          "commit": {
+            "sha": "a9345ebc2296a8efb0be2428bf851cdea805c75b",
+            "url": "https://api.github.com/repos/vapor/apns/commits/a9345ebc2296a8efb0be2428bf851cdea805c75b"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8yLjMuMA=="
+        },
+        {
+          "name": "2.2.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/2.2.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/2.2.0",
+          "commit": {
+            "sha": "de66060fcada6d9fef4f0cae03375eee2a166b5c",
+            "url": "https://api.github.com/repos/vapor/apns/commits/de66060fcada6d9fef4f0cae03375eee2a166b5c"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8yLjIuMA=="
+        },
+        {
+          "name": "2.1.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/2.1.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/2.1.0",
+          "commit": {
+            "sha": "a880646364a7ce3cbe9dad1bd160b616467ea377",
+            "url": "https://api.github.com/repos/vapor/apns/commits/a880646364a7ce3cbe9dad1bd160b616467ea377"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8yLjEuMA=="
+        },
+        {
+          "name": "2.0.1",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/2.0.1",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/2.0.1",
+          "commit": {
+            "sha": "897389f19e9f5734acf70ad30ae169d383a59a15",
+            "url": "https://api.github.com/repos/vapor/apns/commits/897389f19e9f5734acf70ad30ae169d383a59a15"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8yLjAuMQ=="
+        },
+        {
+          "name": "2.0.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/2.0.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/2.0.0",
+          "commit": {
+            "sha": "3286f651e93615397f7520e626532c7d33333f0e",
+            "url": "https://api.github.com/repos/vapor/apns/commits/3286f651e93615397f7520e626532c7d33333f0e"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8yLjAuMA=="
+        },
+        {
+          "name": "1.0.1",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/1.0.1",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/1.0.1",
+          "commit": {
+            "sha": "a8bc863a718eb23e05b2ae3bfc7de66407b6b85d",
+            "url": "https://api.github.com/repos/vapor/apns/commits/a8bc863a718eb23e05b2ae3bfc7de66407b6b85d"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8xLjAuMQ=="
+        },
+        {
+          "name": "1.0.0",
+          "zipball_url": "https://api.github.com/repos/vapor/apns/zipball/refs/tags/1.0.0",
+          "tarball_url": "https://api.github.com/repos/vapor/apns/tarball/refs/tags/1.0.0",
+          "commit": {
+            "sha": "d8e81d9345f71ac7a6cf3637bbc10fdcc48d34f5",
+            "url": "https://api.github.com/repos/vapor/apns/commits/d8e81d9345f71ac7a6cf3637bbc10fdcc48d34f5"
+          },
+          "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8xLjAuMA=="
+        }
+      ]
 }

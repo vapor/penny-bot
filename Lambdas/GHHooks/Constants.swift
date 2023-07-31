@@ -14,7 +14,7 @@ enum Constants {
         static let installationID = 39698047
     }
 
-    enum Channels: ChannelSnowflake {
+    enum Channels: ChannelSnowflake, CaseIterable {
         case logs = "1067060193982156880"
         case issueAndPRs = "1123702585006768228"
         case release = "431926479752921098"

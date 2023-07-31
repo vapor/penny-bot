@@ -39,6 +39,15 @@ extension String {
 
         return formattedLines.joined(separator: "\n")
     }
+
+    func contentsOfHeading(named: String) -> String? {
+        let document = Document(parsing: self)
+        var headingFinder = HeadingFinder(name: named)
+        headingFinder.visitDocument(document)
+        if headingFinder.accumulated.isEmpty { return nil }
+        let newDocument = Document(headingFinder.accumulated)
+        return newDocument.format(options: .default)
+    }
 }
 
 private extension MarkupFormatter.Options {
@@ -99,3 +108,37 @@ private extension StringProtocol {
         self.allSatisfy({ $0.isWhitespace || $0.isPunctuation })
     }
 }
+
+private struct HeadingFinder: MarkupWalker {
+    let name: String
+    var accumulated: [any BlockMarkup] = []
+    var started = false
+    var stopped = false
+
+    init(name: String) {
+        self.name = Self.fold(name)
+    }
+
+    private static func fold(_ string: String) -> String {
+        string.filter({ !($0.isPunctuation || $0.isWhitespace) }).lowercased()
+    }
+
+    mutating func visit(_ markup: any Markup) {
+        if stopped { return }
+        if started {
+            if type(of: markup) == Heading.self {
+                self.stopped = true
+            } else if let blockMarkup = markup as? (any BlockMarkup) {
+                self.accumulated.append(blockMarkup)
+            }
+        } else {
+            if let heading = markup as? Heading {
+                if let firstChild = heading.children.first(where: { _ in true }),
+                   let text = firstChild as? Text,
+                   Self.fold(text.string) == name {
+                    self.started = true
+                }
+            }
+        }
+    }
+    }
