@@ -7,6 +7,7 @@ struct HandlerContext: Sendable {
         let usersService: any UsersService
         let pingsService: any AutoPingsService
         let faqsService: any FaqsService
+        let autoFaqsService: any AutoFaqsService
         let cachesService: any CachesService
         let discordService: DiscordService
         let renderClient: RenderClient

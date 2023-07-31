@@ -86,6 +86,7 @@ public actor FakeMainService: MainService {
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
+            autoFaqsService: FakeAutoFaqsService(),
             cachesService: FakeCachesService(workers: workers),
             discordService: discordService,
             renderClient: .init(

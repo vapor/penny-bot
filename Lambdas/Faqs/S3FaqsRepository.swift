@@ -1,7 +1,6 @@
 import SotoS3
 import Foundation
 import Models
-import Extensions
 
 public struct S3FaqsRepository {
 

@@ -20,6 +20,10 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed for faqs
     Default: FaqsLambda
+  AutoFaqsFilename:
+    Type: String
+    Description: Filename containing the code to be executed for faqs
+    Default: AutoFaqsLambda
   GHHooksFilename:
     Type: String
     Description: Filename containing the code to be executed for gh-hooks
@@ -265,6 +269,9 @@ Resources:
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${FaqsFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${FaqsFilename}
 
+                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoFaqsFilename}:*
+                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoFaqsFilename}
+
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${GHHooksFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHHooksFilename}
 
@@ -279,6 +286,7 @@ Resources:
 
                   - arn:aws:s3:::penny-auto-pings-lambda/*
                   - arn:aws:s3:::penny-faqs-lambda/*
+                  - arn:aws:s3:::penny-auto-faqs-lambda/*
           PolicyName: lambda
   
   lambdaLogGroup:
@@ -407,6 +415,60 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties: 
       LogGroupName: !Sub /aws/lambda/${FaqsFilename}
+      RetentionInDays: 30
+
+  # AutoFaqs lambda config
+
+  autoFaqsIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      Description: Lambda Auto Faqs Integration
+      ApiId: !Ref apiGateway
+      ConnectionType: INTERNET
+      IntegrationMethod: POST
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt autoFaqsFunction.Arn
+      PayloadFormatVersion: '2.0'
+
+  autoFaqsRoutePost:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref apiGateway
+      RouteKey: 'POST /auto-faqs'
+      Target: !Sub "integrations/${autoFaqsIntegration}"
+
+  autoFaqsFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Code:
+        S3Bucket: penny-lambdas-store
+        S3Key: !Sub ${AutoFaqsFilename}.zip
+      FunctionName: !Sub ${AutoFaqsFilename}
+      Handler: handler
+      Role: !GetAtt lambdaIAMRole.Arn
+      Runtime: provided.al2
+      Timeout: 6
+
+  lambdaAutoFaqsRoutePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Sub ${AutoFaqsFilename}
+      Principal: apigateway.amazonaws.com
+    DependsOn:
+      - faqsFunction
+
+  autoFaqsS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BucketName: penny-auto-faqs-lambda
+
+  autoFaqsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties: 
+      LogGroupName: !Sub /aws/lambda/${AutoFaqsFilename}
       RetentionInDays: 30
 
   # GH-Hooks lambda config
@@ -642,6 +704,9 @@ Outputs:
 
   faqsLambdaARN:
     Value: !GetAtt faqsFunction.Arn
+
+  autoFaqsLambdaARN:
+    Value: !GetAtt autoFaqsFunction.Arn
 
   autoPingsLambdaARN:
     Value: !GetAtt autoPingsFunction.Arn

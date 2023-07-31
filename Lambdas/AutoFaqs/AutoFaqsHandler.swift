@@ -6,26 +6,26 @@ import Models
 import LambdasShared
 
 @main
-struct FaqsHandler: LambdaHandler {
+struct AutoFaqsHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
     let awsClient: AWSClient
-    let faqsRepo: S3FaqsRepository
+    let autoFaqsRepo: S3AutoFaqsRepository
 
     init(context: LambdaInitializationContext) async {
         let awsClient = AWSClient(
             httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
         )
         self.awsClient = awsClient
-        self.faqsRepo = S3FaqsRepository(awsClient: awsClient, logger: context.logger)
+        self.autoFaqsRepo = S3AutoFaqsRepository(awsClient: awsClient, logger: context.logger)
     }
 
     func handle(
         _ event: APIGatewayV2Request,
         context: LambdaContext
     ) async -> APIGatewayV2Response {
-        let request: FaqsRequest
+        let request: AutoFaqsRequest
         do {
             request = try event.decode()
         } catch {
@@ -38,7 +38,7 @@ struct FaqsHandler: LambdaHandler {
         switch request {
         case .all:
             do {
-                newItems = try await faqsRepo.getAll()
+                newItems = try await autoFaqsRepo.getAll()
             } catch {
                 return APIGatewayV2Response(
                     status: .expectationFailed,
@@ -47,9 +47,9 @@ struct FaqsHandler: LambdaHandler {
                     )
                 )
             }
-        case let .add(name, value):
+        case let .add(expression, value):
             do {
-                newItems = try await faqsRepo.insert(name: name, value: value)
+                newItems = try await autoFaqsRepo.insert(expression: expression, value: value)
             } catch {
                 return APIGatewayV2Response(
                     status: .expectationFailed,
@@ -58,9 +58,9 @@ struct FaqsHandler: LambdaHandler {
                     )
                 )
             }
-        case let .remove(name):
+        case let .remove(expression):
             do {
-                newItems = try await faqsRepo.remove(name: name)
+                newItems = try await autoFaqsRepo.remove(expression: expression)
             } catch {
                 return APIGatewayV2Response(
                     status: .expectationFailed,

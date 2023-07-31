@@ -7,8 +7,6 @@ public struct FakePingsService: AutoPingsService {
     
     public init() { }
 
-    public func initialize(httpClient: HTTPClient) async { }
-
     private let all = S3AutoPingItems(items: [
         .matches("mongodb driver"): ["432065887202181142", "950695294906007573"],
         .matches("vapor"): ["432065887202181142"],

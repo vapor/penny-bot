@@ -10,6 +10,7 @@ struct InteractionHandler {
 
     enum Configuration {
         static let faqsNameMaxLength = 100
+        static let autoFaqsNameMaxLength = 100
         static let autoPingsMaxLimit = 100
         static let autoPingsLowLimit = 20
     }
@@ -454,6 +455,171 @@ private extension InteractionHandler {
                 \(value)
                 """
             }
+        case let .autoFaqs(autoFaqsMode):
+            switch autoFaqsMode {
+            case .add:
+                let expression = try modal.components
+                    .requireComponent(customId: "expression")
+                    .requireTextInput()
+                    .value.requireValue()
+                let newValue = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if expression.contains("\n") {
+                    let expNoNewLines = expression.replacingOccurrences(of: "\n", with: " ")
+                    return """
+                    The expression cannot contain new lines. You can try '\(expNoNewLines)' instead.
+
+                    Value:
+                    > \(newValue)
+                    """
+                }
+
+                if expression.unicodeScalars.count > Configuration.autoFaqsNameMaxLength {
+                    return """
+                    Expression cannot be more than \(Configuration.faqsNameMaxLength) characters.
+
+                    Value:
+                    > \(newValue)
+                    """
+                }
+
+                let all = try await context.services.faqsService.getAll()
+
+                if let similar = all.first(where: {
+                    $0.key.heavyFolded().filter({ !$0.isWhitespace }) == expression &&
+                    $0.key != expression
+                })?.key {
+                    return """
+                    The entered expression '\(DiscordUtils.escapingSpecialCharacters(expression))' is too similar to another expression '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
+                    This will cause ambiguity for users.
+
+                    Value:
+                    \(newValue)
+                    """
+                }
+
+                if let value = all[expression] {
+                    return """
+                    A Auto-FAQ with expression '\(expression)' already exists. Please remove it first.
+
+                    Value:
+                    \(newValue)
+
+                    Old value:
+                    \(value)
+                    """
+                }
+
+                if expression.isEmpty || newValue.isEmpty {
+                    return "'expression' or 'value' seem empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add faqs.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will add an Auto-FAQ", metadata: [
+                    "expression": .string(expression),
+                    "value": .string(newValue),
+                ])
+
+                discardingResult {
+                    try await context.services.autoFaqsService.insert(
+                        expression: expression,
+                        value: newValue
+                    )
+                }
+
+                return """
+                Added a new Auto-FAQ with expression '\(expression)':
+
+                \(newValue)
+                """
+            case let .edit(expressionHash, _):
+                guard let expression = try await context.services.autoFaqsService.getName(
+                    hash: expressionHash
+                ) else {
+                    logger.warning(
+                        "This should be very rare ... an expression doesn't exist anymore to edit",
+                        metadata: ["expressionHash": .stringConvertible(expressionHash)]
+                    )
+                    return "The name no longer exists!"
+                }
+                let newValue = try modal.components
+                    .requireComponent(customId: "value")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if expression.isEmpty || newValue.isEmpty {
+                    return "'expression' or 'value' seem empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add faqs.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will edit an Auto-FAQ", metadata: [
+                    "expression": .string(expression),
+                    "value": .string(newValue),
+                ])
+
+                discardingResult {
+                    try await context.services.autoFaqsService.insert(
+                        expression: expression,
+                        value: newValue
+                    )
+                }
+
+                return """
+                Edited an Auto-FAQ with expression '\(expression)':
+
+                \(newValue)
+                """
+            case let .rename(expressionHash, _):
+                guard let oldExpression = try await context.services.autoFaqsService.getName(
+                    hash: expressionHash
+                ) else {
+                    logger.warning(
+                        "This should be very rare ... an expression doesn't exist anymore to edit",
+                        metadata: ["expressionHash": .stringConvertible(expressionHash)]
+                    )
+                    return "The expression no longer exists!"
+                }
+                guard let value = try await context.services.autoFaqsService.get(
+                    expression: oldExpression
+                ) else {
+                    logger.warning(
+                        "This should be very rare ... an expression doesn't have a value anymore",
+                        metadata: ["expressionHash": .stringConvertible(expressionHash)]
+                    )
+                    return "Oopsie Woopsie, there is no value specified for this name at all!"
+                }
+                let expression = try modal.components
+                    .requireComponent(customId: "expression")
+                    .requireTextInput()
+                    .value.requireValue()
+
+                if expression.isEmpty {
+                    return "'expression' seems empty to me :("
+                }
+                /// The response of this command is ephemeral so members feel free to add faqs.
+                /// We will log this action so we can know if something malicious is happening.
+                logger.notice("Will rename an Auto-FAQ", metadata: [
+                    "expression": .string(expression),
+                    "value": .string(value),
+                ])
+
+                discardingResult {
+                    try await context.services.autoFaqsService.insert(
+                        expression: expression,
+                        value: value
+                    )
+                    try await context.services.autoFaqsService.remove(expression: oldExpression)
+                }
+
+                return """
+                Renamed an Auto-FAQ from '\(oldExpression)' to '\(expression)':
+
+                \(value)
+                """
+            }
         }
     }
 
@@ -491,6 +657,8 @@ private extension InteractionHandler {
                 return try await handlePingsCommand(options: options)
             case .faqs:
                 return try await handleFaqsCommand(options: options)
+            case .autoFaqs:
+                return try await handleAutoFaqsCommand(options: options)
             case .howManyCoins:
                 return try await handleHowManyCoinsCommand(options: options)
             case .howManyCoinsApp:
@@ -744,6 +912,109 @@ private extension InteractionHandler {
         }
     }
 
+    func handleAutoFaqsCommand(options: [InteractionOption]) async throws -> (any Response)? {
+        let first = try options.first.requireValue()
+        let subcommand = try AutoFaqsSubCommand(rawValue: first.name).requireValue()
+        switch subcommand {
+        case .get:
+            var ephemeralOverride: Bool?
+            if let option = first.option(named: "ephemeral"),
+               case let .bool(bool) = option.value {
+                ephemeralOverride = bool
+            }
+            guard await sendAcknowledgement(
+                isEphemeral: ephemeralOverride ?? false
+            ) else { return nil }
+        case .remove:
+            /// This is ephemeral so members feel free to remove stuff,
+            /// but we will log this action so we can know if something malicious is happening.
+            guard await sendAcknowledgement(isEphemeral: true) else { return nil }
+        case .add, .edit, .rename:
+            /// Uses modals so can't send an acknowledgment first.
+            break
+        }
+        switch subcommand {
+        case .get:
+            let expression = try first.options
+                .requireValue()
+                .requireOption(named: "expression")
+                .requireString()
+            if let value = try await context.services.autoFaqsService.get(expression: expression) {
+                return value
+            } else {
+                return "No Auto-FAQ with expression '\(expression)' exists at all"
+            }
+        case .remove:
+            let expression = try first.options
+                .requireValue()
+                .requireOption(named: "expression")
+                .requireString()
+            let member = try event.member.requireValue()
+            guard await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: member
+            ) else {
+                let rolesString = Constants.Roles
+                    .elevatedRestrictedCommandsAccess
+                    .map(\.rawValue)
+                    .map(DiscordUtils.mention(id:))
+                    .joined(separator: " ")
+                return "You don't have access to this command; it is only available to \(rolesString)"
+            }
+            guard let value = try await context.services.autoFaqsService.get(
+                expression: expression
+            ) else {
+                return "No Auto-FAQ with expression '\(expression)' exists at all"
+            }
+            logger.warning("Will remove an Auto-FAQ", metadata: [
+                "expression": .string(expression),
+                "value": .string(value),
+            ])
+
+            discardingResult {
+                try await context.services.autoFaqsService.remove(expression: expression)
+            }
+
+            return "Removed an Auto-FAQ with expression '\(expression)'"
+        case .add:
+            if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
+                return accessLevelError
+            }
+            let modalId = ModalID.faqs(.add)
+            return modalId.makeModal()
+        case .edit:
+            let expression = try first.options
+                .requireValue()
+                .requireOption(named: "expression")
+                .requireString()
+            if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
+                return accessLevelError
+            }
+            if let value = try await context.services.autoFaqsService.get(expression: expression) {
+                let modalId = ModalID.autoFaqs(.edit(expressionHash: expression.hash, value: value))
+                return modalId.makeModal()
+            } else {
+                return "No Auto-FAQ with expression '\(expression)' exists at all"
+            }
+        case .rename:
+            let expression = try first.options
+                .requireValue()
+                .requireOption(named: "expression")
+                .requireString()
+            if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
+                return accessLevelError
+            }
+            if try await context.services.autoFaqsService.get(expression: expression) != nil {
+                let modalId = ModalID.autoFaqs(.rename(
+                    expressionHash: expression.hash,
+                    expression: expression
+                ))
+                return modalId.makeModal()
+            } else {
+                return "No Auto-FAQ with expression '\(expression)' exists at all"
+            }
+        }
+    }
+
     /// Returns a `String` if there is an access-levelerror. Otherwise `nil`.
     func faqsCommandAccessLevelErrorIfNeeded() async throws -> String? {
         if await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
@@ -773,6 +1044,8 @@ private extension InteractionHandler {
                 return try await handleAutoPingsAutocomplete(data: data)
             case .faqs:
                 return try await handleFaqsAutocomplete(data: data)
+            case .autoFaqs:
+                return try await handleAutoFaqsAutocomplete(data: data)
             case .github, .howManyCoins, .howManyCoinsApp:
                 logger.error("Unrecognized command with autocomplete")
                 return Payloads.InteractionResponse.Autocomplete(
@@ -854,7 +1127,36 @@ private extension InteractionHandler {
             }
         )
     }
-    
+
+    func handleAutoFaqsAutocomplete(
+        data: Interaction.ApplicationCommand
+    ) async throws -> Payloads.InteractionResponse.Autocomplete {
+        let first = try (data.options?.first).requireValue()
+        let expression = try first.options
+            .requireValue()
+            .requireOption(named: "expression")
+            .requireString()
+        let foldedExpression = expression.heavyFolded()
+        let all = try await context.services.autoFaqsService.getAll().map(\.key)
+        let queried: ArraySlice<String>
+        if foldedExpression.isEmpty {
+            queried = ArraySlice(all.sorted { $0 > $1 }.prefix(25))
+        } else {
+            queried = all
+                .filter { $0.heavyFolded().contains(foldedExpression) }
+                .sorted { $0 > $1 }
+                .prefix(25)
+        }
+        return Payloads.InteractionResponse.Autocomplete(
+            choices: queried.map { expression in
+                ApplicationCommand.Option.Choice(
+                    name: expression,
+                    value: .string(expression)
+                )
+            }
+        )
+    }
+
     func requireExpressionMode(_ options: [InteractionOption]?) throws -> Expression.Kind {
         let optionValue = try options
             .requireValue()
@@ -937,13 +1239,13 @@ extension SlashCommand {
     var isEphemeral: Bool {
         switch self {
         case .github, .autoPings, .howManyCoins, .howManyCoinsApp: return true
-        case .faqs: return false
+        case .faqs, .autoFaqs: return false
         }
     }
 
     var shouldSendAcknowledgment: Bool {
         switch self {
-        case .autoPings, .faqs: return false
+        case .autoPings, .faqs, .autoFaqs: return false
         case .github, .howManyCoins, .howManyCoinsApp: return true
         }
     }
@@ -1004,8 +1306,56 @@ private enum ModalID {
         }
     }
 
+    enum AutoFaqsMode {
+        case add
+        /// Using the hash of the name to make sure we don't exceed Discord's
+        /// custom-id length limit (currently 100 characters).
+        ///
+        /// `value` is passed to the modal, and will not be populated when
+        /// this enum case is re-constructed from a custom-id.
+        case edit(expressionHash: Int, value: String?)
+        /// `name` is passed to the modal, and will not be populated when
+        /// this enum case is re-constructed from a custom-id.
+        case rename(expressionHash: Int, expression: String?)
+
+        var name: String {
+            switch self {
+            case .add:
+                return "Add"
+            case .edit:
+                return "Edit"
+            case .rename:
+                return "Rename"
+            }
+        }
+
+        func makeForCustomId() -> String {
+            switch self {
+            case .add:
+                return "add"
+            case .edit(let expressionHash, _):
+                return "edit-\(expressionHash)"
+            case .rename(let expressionHash, _):
+                return "rename-\(expressionHash)"
+            }
+        }
+
+        init? (customIdPart part: String) {
+            if part == "add" {
+                self = .add
+            } else if part.hasPrefix("edit-"), let hash = Int(part.dropFirst(5)) {
+                self = .edit(expressionHash: hash, value: nil)
+            } else if part.hasPrefix("rename-"), let hash = Int(part.dropFirst(7)) {
+                self = .rename(expressionHash: hash, expression: nil)
+            } else {
+                return nil
+            }
+        }
+    }
+
     case autoPings(AutoPingsMode, Expression.Kind)
     case faqs(FaqsMode)
+    case autoFaqs(AutoFaqsMode)
 
     func makeModal() -> Payloads.InteractionResponse.Modal {
         .init(
@@ -1023,6 +1373,8 @@ private enum ModalID {
             return "\(autoPingsMode) \(expressionMode) Auto-Pings"
         case let .faqs(faqsMode):
             return "\(faqsMode.name) FAQ Text"
+        case let .autoFaqs(autoFaqsMode):
+            return "\(autoFaqsMode.name) Auto-FAQ Text"
         }
     }
 
@@ -1108,6 +1460,57 @@ private enum ModalID {
                 )
                 return [name]
             }
+        case let .autoFaqs(autoFaqsMode):
+            switch autoFaqsMode {
+            case .add:
+                let expression = Interaction.ActionRow.TextInput(
+                    custom_id: "expression",
+                    style: .short,
+                    label: "The expression of the Auto-FAQ",
+                    min_length: 3,
+                    max_length: InteractionHandler.Configuration.faqsNameMaxLength,
+                    required: true,
+                    placeholder: "Example: PostgresNIO.PSQLError(backing: PostgresNIO.PSQLError.(unknown"
+                )
+                let value = Interaction.ActionRow.TextInput(
+                    custom_id: "value",
+                    style: .paragraph,
+                    label: "The value of the Auto-FAQ",
+                    min_length: 3,
+                    required: true,
+                    placeholder: """
+                    Example:
+                    How to set your working directory: <link>
+                    """
+                )
+                return [expression, value]
+            case .edit(_, let value):
+                let value = Interaction.ActionRow.TextInput(
+                    custom_id: "value",
+                    style: .paragraph,
+                    label: "The value of the Auto-FAQ",
+                    min_length: 3,
+                    required: true,
+                    value: value,
+                    placeholder: value == nil ? """
+                    Example:
+                    Update your package dependencies!
+                    """ : nil
+                )
+                return [value]
+            case .rename(_, let expression):
+                let expression = Interaction.ActionRow.TextInput(
+                    custom_id: "expression",
+                    style: .short,
+                    label: "The name of the Auto-FAQ",
+                    min_length: 3,
+                    max_length: InteractionHandler.Configuration.faqsNameMaxLength,
+                    required: true,
+                    value: expression,
+                    placeholder: expression == nil ? "Example: PostgresNIO.PSQLError(backing: PostgresNIO.PSQLError.(unknown" : nil
+                )
+                return [expression]
+            }
         }
     }
 }
@@ -1120,6 +1523,8 @@ extension ModalID: RawRepresentable {
             return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
         case let .faqs(faqsMode):
             return "faqs;\(faqsMode.makeForCustomId())"
+        case let .autoFaqs(faqsMode):
+            return "auto-faqs;\(faqsMode.makeForCustomId())"
         }
     }
 
@@ -1134,6 +1539,10 @@ extension ModalID: RawRepresentable {
                   split[0] == "faqs",
                   let faqsMode = FaqsMode(customIdPart: String(split[1])) {
             self = .faqs(faqsMode)
+        } else if split.count == 2,
+                  split[0] == "auto-faqs",
+                  let autoFaqsMode = AutoFaqsMode(customIdPart: String(split[1])) {
+            self = .autoFaqs(autoFaqsMode)
         } else {
             return nil
         }
@@ -1159,7 +1568,7 @@ private extension String {
 // MARK: - Response
 
 /// This `Response` thing didn't turn out as good as I was hoping for.
-/// The approach of abstracting the response using a protocol like this is good imo, still.
+/// The approach of abstracting the response using a protocol like this is good IMO, still.
 /// Just I didn't go full-in on it. Probably need to create a new type for each response type.
 /// I'll clean these up sometime soon.
 private protocol Response {
@@ -1216,21 +1625,4 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
 
     /// Responses containing a modal can't be an edit to another message.
     var isEditable: Bool { false }
-}
-
-extension Payloads.EditWebhookMessage: Response {
-    func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
-        Logger(label: "Payloads.EditWebhookMessage.makeResponse").error(
-            "This method is unimplemented and must not be called"
-        )
-        return .channelMessageWithSource(
-            .init(content: "Oops, something went wrong")
-        )
-    }
-
-    func makeEditPayload() -> Payloads.EditWebhookMessage {
-        self
-    }
-
-    var isEditable: Bool { true }
 }

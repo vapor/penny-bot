@@ -27,6 +27,7 @@ enum SlashCommand: String, CaseIterable {
     case github
     case autoPings = "auto-pings"
     case faqs
+    case autoFaqs = "auto-faqs"
     case howManyCoins = "how-many-coins"
     case howManyCoinsApp = "How Many Coins?"
 
@@ -37,7 +38,9 @@ enum SlashCommand: String, CaseIterable {
         case .autoPings:
             return "Configure Penny to ping you when certain someone uses a word/text"
         case .faqs:
-            return "Display help and usage information for Penny"
+            return "Answers for frequently asked questions"
+        case .autoFaqs:
+            return "Automatic answers to configured frequently asked questions"
         case .howManyCoins:
             return "See how many coins members have"
         case .howManyCoinsApp:
@@ -74,6 +77,15 @@ enum SlashCommand: String, CaseIterable {
                     options: subCommand.options
                 )
             }
+        case .autoFaqs:
+            return AutoFaqsSubCommand.allCases.map { subCommand in
+                ApplicationCommand.Option(
+                    type: .subCommand,
+                    name: subCommand.rawValue,
+                    description: subCommand.description,
+                    options: subCommand.options
+                )
+            }
         case .howManyCoins:
             return [.init(
                 type: .user,
@@ -93,7 +105,7 @@ enum SlashCommand: String, CaseIterable {
         switch self {
         case .howManyCoinsApp:
             return .user
-        case .github, .autoPings, .faqs, .howManyCoins:
+        case .github, .autoPings, .faqs, .autoFaqs, .howManyCoins:
             return nil
         }
     }
@@ -217,6 +229,56 @@ enum FaqsSubCommand: String, CaseIterable {
                 type: .string,
                 name: "name",
                 description: "The name of the command",
+                required: true,
+                autocomplete: true
+            )]
+        case .add:
+            return []
+        }
+    }
+}
+
+enum AutoFaqsSubCommand: String, CaseIterable {
+    case get, add, edit, rename, remove
+
+    var description: String {
+        switch self {
+        case .get:
+            return "Manually get an auto-faq"
+        case .add:
+            return "Add a new auto-faq"
+        case .edit:
+            return "Edit value of an auto-faq"
+        case .rename:
+            return "Rename an auto-faq"
+        case .remove:
+            return "Remove an auto-faq"
+        }
+    }
+
+    var options: [ApplicationCommand.Option] {
+        switch self {
+        case .get:
+            return [
+                .init(
+                    type: .string,
+                    name: "name",
+                    description: "The name of the command",
+                    required: true,
+                    autocomplete: true
+                ),
+                .init(
+                    type: .boolean,
+                    name: "ephemeral",
+                    description: "If True, the response will only be visible to you",
+                    required: false
+                )
+            ]
+        case .remove, .edit, .rename:
+            return [.init(
+                type: .string,
+                name: "expression",
+                description: "The matching expression of the answer",
                 required: true,
                 autocomplete: true
             )]
