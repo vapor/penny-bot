@@ -108,7 +108,7 @@ struct MessageHandler {
             let response = try await context.services.usersService.postCoin(with: coinRequest)
             await self.respondToThanks(
                 with: """
-                \(DiscordUtils.mention(id: author.id)) Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
+                Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
                 You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
                 """,
                 overrideChannelId: Constants.Channels.thanks.id,
@@ -276,7 +276,7 @@ struct MessageHandler {
             channelId: channelId ?? event.channel_id,
             replyingToMessageId: event.id,
             isFailureMessage: isFailureMessage,
-            userToExplicitlyMention: userToExplicitlyMention,
+            content: userToExplicitlyMention.map(DiscordUtils.mention(id:)),
             response: response
         )
     }

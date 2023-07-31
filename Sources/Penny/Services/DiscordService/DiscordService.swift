@@ -145,14 +145,12 @@ actor DiscordService {
     /// - Parameters:
     ///   - isFailureMessage: If this message is informing users of a failure
     ///   while performing the main action.
-    ///   - userToExplicitlyMention: Mentions the user and makes sure they receive a notification.
-    ///   By default, embeds don't send a notification.
     @discardableResult
     func sendThanksResponse(
         channelId: ChannelSnowflake,
         replyingToMessageId messageId: MessageSnowflake,
         isFailureMessage: Bool,
-        userToExplicitlyMention: UserSnowflake?,
+        content: String? = nil,
         response: String
     ) async -> DiscordClientResponse<DiscordChannel.Message>? {
         var canSendToChannel = true
@@ -174,13 +172,6 @@ actor DiscordService {
             }
         }
 
-        /// Allowed mentions make it so the user is notified even when they are only
-        /// mentioned in an embed, which by default denies notifications.
-        var allowedMentions: Payloads.AllowedMentions?
-        if let userToExplicitlyMention {
-            allowedMentions = .init(users: [userToExplicitlyMention])
-        }
-
         if canSendToChannel {
             return await self.sendMessage(
                 channelId: channelId,
@@ -189,7 +180,6 @@ actor DiscordService {
                         description: response,
                         color: .purple
                     )],
-                    allowed_mentions: allowedMentions,
                     message_reference: .init(
                         message_id: messageId,
                         channel_id: channelId,
