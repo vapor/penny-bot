@@ -53,12 +53,13 @@ struct PRCoinGiver {
             try await context.discordClient.createMessage(
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
+                    content: DiscordUtils.mention(id: discordID),
                     embeds: [.init(
                         description: """
-                        \(DiscordUtils.mention(id: discordID)) Thanks for your contribution in [\(pr.title)](\(pr.html_url)).
+                        Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
                         You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
                         """,
-                        color: .green
+                        color: .blue
                     )],
                     allowed_mentions: .init(users: [discordID])
                 )
