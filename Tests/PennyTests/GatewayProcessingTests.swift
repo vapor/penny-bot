@@ -263,14 +263,14 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertEqual(response.content, "<@432065887202181142>")
         let description = try XCTUnwrap(response.embeds?.first?.description)
         XCTAssertTrue(
-            message.hasPrefix(
+            description.hasPrefix(
                 """
                 Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
                 You now have 10 more \(Constants.ServerEmojis.coin.emoji) for a total of
                 """
             )
         )
-        XCTAssertTrue(message.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
+        XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
     }
 
     func testProposalsChecker() async throws {
