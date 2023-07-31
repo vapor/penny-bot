@@ -48,6 +48,12 @@ struct TicketReporter {
             context.logger.debug("Got message ID from Repo", metadata: [
                 "messageID": "\(messageID)"
             ])
+        } catch let error as DynamoMessageRepo.Errors where error == .unavailable {
+            context.logger.debug("Message is unavailable to edit", metadata: [
+                "repoID": .stringConvertible(repoID),
+                "number": .stringConvertible(number),
+            ])
+            return
         } catch let error as DynamoMessageRepo.Errors where error == .notFound {
             context.logger.debug(
                 "Didn't find a message id from the lookup repo, will send a new message",
@@ -77,6 +83,7 @@ struct TicketReporter {
                 channelId: Constants.Channels.issueAndPRs.id,
                 payload: .init(embeds: [embed])
             ).decode()
+
             try await context.messageLookupRepo.saveMessageID(
                 messageID: response.id.rawValue,
                 repoID: repoID,
@@ -85,10 +92,30 @@ struct TicketReporter {
             return
         }
 
-        try await context.discordClient.updateMessage(
+        let response = try await context.discordClient.updateMessage(
             channelId: Constants.Channels.issueAndPRs.id,
             messageId: messageID,
             payload: .init(embeds: [embed])
-        ).guardSuccess()
+        )
+
+        switch response.asError() {
+        case let .jsonError(jsonError) where jsonError.code == .unknownMessage:
+            context.logger.debug(
+                "Discord says message id is unknown. Will save in DB to remember.",
+                metadata: [
+                    "messageID": .stringConvertible(messageID),
+                    "repoID": .stringConvertible(repoID),
+                    "number": .stringConvertible(number),
+                ]
+            )
+            try await context.messageLookupRepo.markAsUnavailable(
+                repoID: repoID,
+                number: number
+            )
+            return
+        default: break
+        }
+
+        try response.guardSuccess()
     }
 }

@@ -9,5 +9,7 @@ public struct FakeMessageLookupRepo: MessageLookupRepo {
         try AnySnowflake.makeFake().rawValue
     }
 
+    public func markAsUnavailable(repoID: Int, number: Int) async throws { }
+
     public func saveMessageID(messageID: String, repoID: Int, number: Int) async throws { }
 }
