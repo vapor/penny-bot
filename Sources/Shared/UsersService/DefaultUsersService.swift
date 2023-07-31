@@ -37,18 +37,16 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        guard (200..<300).contains(response.status.code) else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            let body = collected.map { String(buffer: $0) } ?? "nil"
+        let body = try await response.body.collect(upTo: 1 << 24)
+
+        guard 200..<300 ~= response.status.code else {
             logger.error("Get-coin-count failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
-                "body": "\(body)",
+                "body": "\(String(buffer: body))",
             ])
             throw ServiceError.badStatus(response)
         }
-
-        let body = try await response.body.collect(upTo: 1 << 24)
 
         return try decoder.decode(DynamoDBUser.self, from: body)
     }
@@ -69,18 +67,16 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        guard (200..<300).contains(response.status.code) else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            let body = collected.map { String(buffer: $0) } ?? "nil"
+        let body = try await response.body.collect(upTo: 1 << 24)
+
+        guard 200..<300 ~= response.status.code else {
             logger.error("Get-coin-count failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
-                "body": "\(body)",
+                "body": "\(String(buffer: body))",
             ])
             throw ServiceError.badStatus(response)
         }
-
-        let body = try await response.body.collect(upTo: 1 << 24)
 
         return try decoder.decode(DynamoDBUser?.self, from: body)
     }
@@ -100,19 +96,17 @@ struct DefaultUsersService: UsersService {
             logger: self.logger
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
-        
-        guard (200..<300).contains(response.status.code) else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            let body = collected.map { String(buffer: $0) } ?? "nil"
+
+        let body = try await response.body.collect(upTo: 1 << 24)
+
+        guard 200..<300 ~= response.status.code else {
             logger.error( "Post-coin failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
-                "body": "\(body)",
+                "body": "\(String(buffer: body))",
             ])
             throw ServiceError.badStatus(response)
         }
-        
-        let body = try await response.body.collect(upTo: 1 << 24)
         
         return try decoder.decode(CoinResponse.self, from: body)
     }
@@ -137,7 +131,7 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        guard (200..<300).contains(response.status.code) else {
+        guard 200..<300 ~= response.status.code else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error("Link-GitHub-id failed", metadata: [
@@ -165,7 +159,7 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        guard (200..<300).contains(response.status.code) else {
+        guard 200..<300 ~= response.status.code else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error("Unlink-GitHub-id failed", metadata: [

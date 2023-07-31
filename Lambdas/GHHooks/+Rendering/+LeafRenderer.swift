@@ -59,7 +59,7 @@ private struct DocsLeafSource: LeafSource {
         let url = "\(repoURL)/.github/\(template)"
         let request = try HTTPClient.Request(url: url)
         return httpClient.execute(request: request).flatMapThrowing { response in
-            guard (200..<300) ~= response.status.code else {
+            guard 200..<300 ~= response.status.code else {
                 throw Errors.badStatusCode(response: response)
             }
             guard let body = response.body else {

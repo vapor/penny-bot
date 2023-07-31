@@ -118,7 +118,7 @@ actor DefaultPingsService: AutoPingsService {
         )
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
         
-        guard (200..<300).contains(response.status.code) else {
+        guard 200..<300 ~= response.status.code else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error( "Pings-service failed", metadata: [

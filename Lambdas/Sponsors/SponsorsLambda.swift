@@ -236,7 +236,7 @@ struct SponsorsHandler: LambdaHandler {
         // Send request to trigger workflow and read response
         let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
         
-        guard 200...299 ~= githubResponse.status.code else {
+        guard 200..<300 ~= githubResponse.status.code else {
             let body = try await githubResponse.body.collect(upTo: 1024 * 1024)
             logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code) and body: \(String(buffer: body))")
             throw Errors.runWorkflowError(
