@@ -12,6 +12,9 @@ struct DocsIssuer {
     let context: HandlerContext
     let commitSHA: String
     let repo: Repository
+    var event: GHEvent {
+        context.event
+    }
     var logger: Logger {
         context.logger
     }
