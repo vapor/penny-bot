@@ -36,7 +36,8 @@ extension HandlerContext {
     }
 
     /// Returns code owners if the repo contains the file or returns `nil`.
-    /// In form of `["gwynne", "0xTim"]`.
+    /// All lowercased.
+    /// In form of `["gwynne", "0xtim"]`.
     func getCodeOwners(repoFullName: String, primaryBranch: String) async throws -> Set<String> {
         let fullName = repoFullName.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
@@ -61,6 +62,7 @@ extension HandlerContext {
         return parsed
     }
 
+    /// Returns code owner names all lowercased.
     func parseCodeOwners(text: String) -> Set<String> {
         let codeOwners: [String] = text
         /// split into lines
@@ -92,6 +94,6 @@ extension HandlerContext {
                 }
             }.map(String.init)
 
-        return Set(codeOwners)
+        return Set(codeOwners.map({ $0.lowercased() }))
     }
 }
