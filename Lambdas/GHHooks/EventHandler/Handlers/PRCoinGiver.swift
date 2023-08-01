@@ -32,7 +32,7 @@ struct PRCoinGiver {
         )
         for pr in try await getPRsRelatedToCommit() {
             if pr.merged_at == nil { continue }
-            if codeOwners.usernamesContain(user: pr.user) { continue }
+            if codeOwners.contains(user: pr.user) { continue }
             guard let member = try await context.requester.getDiscordMember(
                 githubID: "\(pr.user.id)"
             ), let discordID = member.user?.id else {

@@ -35,7 +35,7 @@ extension Requester {
     /// Returns code owners if the repo contains the file or returns `nil`.
     /// All lowercased.
     /// In form of `["gwynne", "0xtim"]`.
-    func getCodeOwners(repoFullName: String, primaryBranch: String) async throws -> Set<String> {
+    func getCodeOwners(repoFullName: String, primaryBranch: String) async throws -> CodeOwners {
         let fullName = repoFullName.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
         ) ?? repoFullName
@@ -48,7 +48,7 @@ extension Requester {
                 "responseBody": "\(body)",
                 "response": "\(response)"
             ])
-            return []
+            return CodeOwners(value: [])
         }
         let text = String(buffer: body)
         let parsed = parseCodeOwners(text: text)
@@ -60,7 +60,7 @@ extension Requester {
     }
 
     /// Returns code owner names all lowercased.
-    func parseCodeOwners(text: String) -> Set<String> {
+    func parseCodeOwners(text: String) -> CodeOwners {
         let codeOwners: [String] = text
         /// split into lines
             .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
@@ -91,6 +91,38 @@ extension Requester {
                 }
             }.map(String.init)
 
-        return Set(codeOwners.map({ $0.lowercased() }))
+        return CodeOwners(value: Set(codeOwners.map({ $0.lowercased() })))
+    }
+}
+
+struct CodeOwners: CustomStringConvertible {
+    var value: Set<String>
+
+    var description: String {
+        "CodeOwners(value: \(value))"
+    }
+
+    /// Only supports names, and not emails.
+    /// Assumes the strings are already all lowercased.
+    func contains(user: User) -> Bool {
+        if let name = user.name {
+            return !self.value.intersection([user.login.lowercased(), name.lowercased()]).isEmpty
+        } else {
+            return self.value.contains(user.login.lowercased())
+        }
+    }
+
+    /// Only supports names, and not emails.
+    /// Assumes the strings are already all lowercased.
+    func contains(user: NullableUser) -> Bool {
+        if let name = user.name {
+            return !self.value.intersection([user.login.lowercased(), name.lowercased()]).isEmpty
+        } else {
+            return self.value.contains(user.login.lowercased())
+        }
+    }
+
+    func union(_ other: Set<String>) -> CodeOwners {
+        CodeOwners(value: self.value.union(other))
     }
 }
