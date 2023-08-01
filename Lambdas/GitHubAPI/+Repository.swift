@@ -1,7 +1,6 @@
-import GitHubAPI
 
 extension Repository {
-    var primaryBranch: String {
+    public var primaryBranch: String {
         self.master_branch ?? "main"
     }
 }

@@ -225,7 +225,7 @@ struct ReleaseMaker {
         previousVersion: String,
         newVersion: String
     ) async throws -> String {
-        let codeOwners = try await context.getCodeOwners(
+        let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.full_name,
             primaryBranch: repo.primaryBranch
         )

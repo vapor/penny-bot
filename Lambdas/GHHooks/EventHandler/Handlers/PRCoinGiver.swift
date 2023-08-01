@@ -26,15 +26,16 @@ struct PRCoinGiver {
         }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
-        let codeOwners = try await context.getCodeOwners(
+        let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.full_name,
             primaryBranch: repo.primaryBranch
         )
         for pr in try await getPRsRelatedToCommit() {
             if pr.merged_at == nil { continue }
             if codeOwners.usernamesContain(user: pr.user) { continue }
-            guard let member = try await context.getDiscordMember(githubID: "\(pr.user.id)"),
-                  let discordID = member.user?.id else {
+            guard let member = try await context.requester.getDiscordMember(
+                githubID: "\(pr.user.id)"
+            ), let discordID = member.user?.id else {
                 logger.debug("Found no Discord member for the GitHub user", metadata: [
                     "pr": "\(pr)"
                 ])

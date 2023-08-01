@@ -2,7 +2,7 @@
 
 public struct RenderClient: Sendable {
     let renderer: LeafRenderer
-    private let encoder = LeafEncoder()
+    let encoder = LeafEncoder()
 
     public init(renderer: LeafRenderer) {
         self.renderer = renderer

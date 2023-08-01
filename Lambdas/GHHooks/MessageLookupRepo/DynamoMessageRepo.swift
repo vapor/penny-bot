@@ -75,6 +75,10 @@ struct DynamoMessageRepo: MessageLookupRepo {
         return item
     }
 
+    /// Marks the message as unavailable to edit, for example for when Penny sends a message
+    /// for a ticket to Discord, but a moderator deletes that messages, then there is an update
+    /// to the ticket, but the previous message is unavailable to edit anymore, so Penny should
+    /// just ignore updates to messages of that ticket.
     func markAsUnavailable(repoID: Int, number: Int) async throws {
         var item = try await self.getItem(repoID: repoID, number: number)
         item._isUnavailable = true

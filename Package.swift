@@ -114,9 +114,6 @@ let package = Package(
                 .target(name: "Shared"),
                 .target(name: "Models"),
             ],
-            resources: [
-                .process("Templates")
-            ],
             swiftSettings: swiftSettings
         ),
         .executableTarget(
@@ -197,9 +194,6 @@ let package = Package(
                 .target(name: "LambdasShared"),
             ],
             path: "./Lambdas/GHHooks",
-            resources: [
-                .process("Templates")
-            ],
             swiftSettings: swiftSettings
         ),
         .executableTarget(

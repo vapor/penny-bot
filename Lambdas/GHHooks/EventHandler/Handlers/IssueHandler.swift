@@ -67,7 +67,7 @@ struct IssueHandler {
         let maxCount = 256 - statusString.unicodeScalars.count
         let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
 
-        let member = try await context.getDiscordMember(githubID: "\(issue.user.id)")
+        let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
         let iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
 
