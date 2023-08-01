@@ -10807,9 +10807,9 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/verification/reason`.
             public var reason: Swift.String
             /// - Remark: Generated from `#/components/schemas/verification/payload`.
-            public var payload: Swift.String
+            public var payload: Swift.String?
             /// - Remark: Generated from `#/components/schemas/verification/signature`.
-            public var signature: Swift.String
+            public var signature: Swift.String?
             /// Creates a new `verification`.
             ///
             /// - Parameters:
@@ -10820,8 +10820,8 @@ public enum Components {
             public init(
                 verified: Swift.Bool,
                 reason: Swift.String,
-                payload: Swift.String,
-                signature: Swift.String
+                payload: Swift.String? = nil,
+                signature: Swift.String? = nil
             ) {
                 self.verified = verified
                 self.reason = reason
@@ -11195,13 +11195,13 @@ public enum Components {
                 /// Git email address of the commit's author
                 ///
                 /// - Remark: Generated from `#/components/schemas/simple-commit/author/email`.
-                public var email: Swift.String
+                public var email: Swift.String?
                 /// Creates a new `authorPayload`.
                 ///
                 /// - Parameters:
                 ///   - name: Name of the commit's author
                 ///   - email: Git email address of the commit's author
-                public init(name: Swift.String, email: Swift.String) {
+                public init(name: Swift.String, email: Swift.String? = nil) {
                     self.name = name
                     self.email = email
                 }
@@ -11225,13 +11225,13 @@ public enum Components {
                 /// Git email address of the commit's committer
                 ///
                 /// - Remark: Generated from `#/components/schemas/simple-commit/committer/email`.
-                public var email: Swift.String
+                public var email: Swift.String?
                 /// Creates a new `committerPayload`.
                 ///
                 /// - Parameters:
                 ///   - name: Name of the commit's committer
                 ///   - email: Git email address of the commit's committer
-                public init(name: Swift.String, email: Swift.String) {
+                public init(name: Swift.String, email: Swift.String? = nil) {
                     self.name = name
                     self.email = email
                 }
