@@ -288,7 +288,7 @@ class GHHooksTests: XCTestCase {
             number: context.event.number!
         )
         XCTAssertEqual(
-            handler.context.requester.parseCodeOwners(text: text).sorted(),
+            handler.context.requester.parseCodeOwners(text: text).value.sorted(),
             ["docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner", "octo-org/octocats", "octocat"]
         )
     }

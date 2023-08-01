@@ -265,21 +265,21 @@ struct ReleaseMaker {
         )
     }
 
-    func getReviewersToCredit(codeOwners: Set<String>) async throws -> [User] {
+    func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [User] {
         let usernames = codeOwners.union([pr.user.login])
         let reviewComments = try await getReviewComments()
         let reviewers = reviewComments.map(\.user).filter { user in
-            !(usernames.usernamesContain(user: user) || user.isBot)
+            !(usernames.contains(user: user) || user.isBot)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
         let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
         return sorted
     }
 
-    func isNewContributor(codeOwners: Set<String>, existingContributors: Set<Int>) -> Bool {
+    func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
         if pr.author_association == .OWNER ||
             pr.user.isBot ||
-            codeOwners.usernamesContain(user: pr.user) {
+            codeOwners.contains(user: pr.user) {
             return false
         }
         return !existingContributors.contains(pr.user.id)
