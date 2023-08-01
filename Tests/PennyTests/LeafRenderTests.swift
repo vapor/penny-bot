@@ -54,6 +54,7 @@ class LeafRenderTests: XCTestCase {
                     isNewContributor: true,
                     reviewers: ["joannis", "vzsg"],
                     merged_by: "MahdiBM",
+                    repo: .init(fullName: "vapor/async-kit"),
                     release: .init(
                         oldTag: "1.0.0",
                         newTag: "4.8.9"
@@ -78,7 +79,7 @@ class LeafRenderTests: XCTestCase {
 
             ###### _This patch was released by @MahdiBM_
 
-            **Full Changelog**: https://github.com//compare/1.0.0...4.8.9
+            **Full Changelog**: https://github.com/vapor/async-kit/compare/1.0.0...4.8.9
             """)
         }
 
@@ -97,6 +98,7 @@ class LeafRenderTests: XCTestCase {
                     isNewContributor: false,
                     reviewers: [],
                     merged_by: "MahdiBM",
+                    repo: .init(fullName: "vapor/async-kit"),
                     release: .init(
                         oldTag: "1.0.0",
                         newTag: "4.8.9"
@@ -115,7 +117,7 @@ class LeafRenderTests: XCTestCase {
 
             ###### _This patch was released by @MahdiBM_
 
-            **Full Changelog**: https://github.com//compare/1.0.0...4.8.9
+            **Full Changelog**: https://github.com/vapor/async-kit/compare/1.0.0...4.8.9
             """)
         }
     }

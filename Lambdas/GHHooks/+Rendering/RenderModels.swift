@@ -22,5 +22,6 @@ struct NewReleaseContext: Codable {
     let isNewContributor: Bool
     let reviewers: [String]
     let merged_by: String
+    let repo: Repo
     let release: Release
 }
