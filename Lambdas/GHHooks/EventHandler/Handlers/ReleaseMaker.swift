@@ -257,6 +257,7 @@ struct ReleaseMaker {
                 isNewContributor: isNewContributor,
                 reviewers: reviewers,
                 merged_by: mergedBy.uiName,
+                repo: .init(fullName: repo.full_name),
                 release: .init(
                     oldTag: previousVersion,
                     newTag: newVersion
