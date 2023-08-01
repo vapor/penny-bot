@@ -97,7 +97,7 @@ struct PRHandler {
         let number = try event.number.requireValue()
         let title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
 
-        let member = try await context.getDiscordMember(githubID: "\(pr.user.id)")
+        let member = try await context.requester.getDiscordMember(githubID: "\(pr.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? pr.user.uiName
         let iconURL = member?.uiAvatarURL ?? pr.user.avatar_url
 

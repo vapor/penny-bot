@@ -1,7 +1,7 @@
 import Foundation
 
 /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
-public struct GHEvent: Codable {
+public struct GHEvent: Sendable, Codable {
     public let action: String?
     public let sender: User
     public let repository: Repository?
@@ -29,7 +29,7 @@ public struct GHEvent: Codable {
 
 extension GHEvent {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
-    public enum Kind: String, Codable {
+    public enum Kind: String, Sendable, Codable {
         case branch_protection_rule
         case check_run
         case check_suite

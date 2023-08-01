@@ -59,7 +59,6 @@ extension Embed.Field: Equatable {
     }
 }
 
-
 infix operator ?==: ComparisonPrecedence
 
 /// Returns `true` if any of the values is nil, or if both values are the same. Otherwise `false`.

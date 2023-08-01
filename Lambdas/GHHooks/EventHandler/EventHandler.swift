@@ -1,7 +1,7 @@
 import DiscordBM
 import GitHubAPI
 
-struct EventHandler {
+struct EventHandler: Sendable {
     let context: HandlerContext
 
     func handle() async throws {
@@ -13,8 +13,10 @@ struct EventHandler {
         case .release:
             try await ReleaseReporter(context: context).handle()
         case .push:
-            try await DocsIssuer(context: context).handle()
-            try await PRCoinGiver(context: context).handle()
+            try await withThrowingAccumulatingVoidTaskGroup(tasks: [
+                { try await DocsIssuer(context: context).handle() },
+                { try await PRCoinGiver(context: context).handle() }
+            ])
         case .ping:
             try await onPing()
         case .pull_request_review, .projects_v2_item, .project_card, .label, .installation_repositories:
