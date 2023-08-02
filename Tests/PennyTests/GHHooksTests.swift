@@ -218,7 +218,7 @@ class GHHooksTests: XCTestCase {
             You can trigger Dependabot actions by commenting on this PR:
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 128)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 96)
             XCTAssertEqual(formatted, """
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
