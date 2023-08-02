@@ -237,13 +237,10 @@ struct ReleaseMaker {
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners).map(\.uiName)
 
         let body = pr.body.map {
-            "> " + $0.formatMarkdown(
+            $0.formatMarkdown(
                 maxLength: 512,
                 trailingParagraphMinLength: 96
-            ).replacingOccurrences(
-                of: "\n",
-                with: "\n> "
-            )
+            ).quotedMarkdown()
         } ?? ""
 
         return try await context.renderClient.newReleaseDescription(
