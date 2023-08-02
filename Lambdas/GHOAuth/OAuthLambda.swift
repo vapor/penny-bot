@@ -123,9 +123,7 @@ struct GHOAuthHandler: LambdaHandler {
         }
 
         do {
-            let encodedLogin = user.login.addingPercentEncoding(
-                withAllowedCharacters: .urlPathAllowed
-            ) ?? user.login
+            let encodedLogin = user.login.urlPathEncoded()
             let url = "https://github.com/\(encodedLogin)"
             try await discordClient.updateOriginalInteractionResponse(
                 token: jwt.interactionToken,

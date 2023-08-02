@@ -139,9 +139,7 @@ struct ReleaseReporter {
 
         let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 
-        let fullName = repo.full_name.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
-        ) ?? repo.full_name
+        let fullName = repo.full_name.urlPathEncoded()
         let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
 
         try await self.sendToDiscord(embed: .init(
@@ -165,9 +163,7 @@ struct ReleaseReporter {
             return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
-        let fullName = repo.full_name.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
-        ) ?? repo.full_name
+        let fullName = repo.full_name.urlPathEncoded()
         let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
 
         try await self.sendToDiscord(embed: .init(

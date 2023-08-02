@@ -36,9 +36,7 @@ extension Requester {
     /// All lowercased.
     /// In form of `["gwynne", "0xtim"]`.
     func getCodeOwners(repoFullName: String, primaryBranch: String) async throws -> CodeOwners {
-        let fullName = repoFullName.addingPercentEncoding(
-            withAllowedCharacters: .urlPathAllowed
-        ) ?? repoFullName
+        let fullName = repoFullName.urlPathEncoded()
         let url = "https://raw.githubusercontent.com/\(fullName)/\(primaryBranch)/.github/CODEOWNERS"
         let request = HTTPClientRequest(url: url)
         let response = try await self.httpClient.execute(request, timeout: .seconds(5))

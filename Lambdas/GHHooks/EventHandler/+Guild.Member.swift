@@ -8,21 +8,22 @@ extension Guild.Member {
     }
 
     var uiAvatarURL: String? {
-        if let user = self.user {
-            if let avatar = self.avatar {
-                return CDNEndpoint.guildMemberAvatar(
-                    guildId: Constants.guildID,
-                    userId: user.id,
-                    avatar: avatar
-                ).url
-            } else if let avatar = user.avatar {
-                return CDNEndpoint.userAvatar(
-                    userId: user.id,
-                    avatar: avatar
-                ).url
-            }
+        guard let user = self.user else {
+            return nil
         }
-
-        return nil
+        if let avatar = self.avatar {
+            return CDNEndpoint.guildMemberAvatar(
+                guildId: Constants.guildID,
+                userId: user.id,
+                avatar: avatar
+            ).url
+        } else if let avatar = user.avatar {
+            return CDNEndpoint.userAvatar(
+                userId: user.id,
+                avatar: avatar
+            ).url
+        } else {
+            return nil
+        }
     }
 }
