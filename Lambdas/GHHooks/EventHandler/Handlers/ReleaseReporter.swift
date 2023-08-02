@@ -133,7 +133,7 @@ struct ReleaseReporter {
         let body = pr.body.map { body -> String in
             body.formatMarkdown(
                 maxLength: 256,
-                trailingParagraphMinLength: 128
+                trailingParagraphMinLength: 96
             )
         } ?? ""
 
@@ -160,7 +160,7 @@ struct ReleaseReporter {
             ) ?? body
             let formatted = preferredContent.formatMarkdown(
                 maxLength: 384,
-                trailingParagraphMinLength: 128
+                trailingParagraphMinLength: 96
             )
             return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""

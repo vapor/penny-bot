@@ -239,7 +239,7 @@ struct ReleaseMaker {
         let body = pr.body.map {
             "> " + $0.formatMarkdown(
                 maxLength: 512,
-                trailingParagraphMinLength: 128
+                trailingParagraphMinLength: 96
             ).replacingOccurrences(
                 of: "\n",
                 with: "\n> "

@@ -56,7 +56,7 @@ struct IssueHandler {
         let body = issue.body.map { body -> String in
             body.formatMarkdown(
                 maxLength: 256,
-                trailingParagraphMinLength: 128
+                trailingParagraphMinLength: 96
             )
         } ?? ""
 
