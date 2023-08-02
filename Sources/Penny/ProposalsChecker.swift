@@ -297,14 +297,7 @@ actor ProposalsChecker {
         let title = proposal.title.sanitized()
         guard !title.isEmpty else { return nil }
         let rawQuery = title + " #evolution"
-        guard let query = rawQuery.addingPercentEncoding(
-            withAllowedCharacters: .urlQueryAllowed
-        ) else {
-            logger.warning("Couldn't url-encode forum-search queries", metadata: [
-                "rawQuery": .string(rawQuery)
-            ])
-            return nil
-        }
+        let query = rawQuery.urlPathEncoded()
         let link = "https://forums.swift.org/search?q=\(query)"
         return link
     }

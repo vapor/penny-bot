@@ -535,9 +535,7 @@ private extension InteractionHandler {
             case .notLinked:
                 return "You don't have any linked GitHub accounts, so there is nothing to unlink."
             case .userName(let username):
-                let encodedUsername = username.addingPercentEncoding(
-                    withAllowedCharacters: .urlPathAllowed
-                ) ?? username
+                let encodedUsername = username.urlPathEncoded()
                 let url = "https://github.com/\(encodedUsername)"
                 try await context.services.usersService.unlinkGitHubID(discordID: discordID)
                 return "Successfully unlinked your GitHub account: [\(username)](\(url))"
@@ -548,9 +546,7 @@ private extension InteractionHandler {
             case .notLinked:
                 return "You don't have any linked GitHub accounts."
             case .userName(let username):
-                let encodedUsername = username.addingPercentEncoding(
-                    withAllowedCharacters: .urlPathAllowed
-                ) ?? username
+                let encodedUsername = username.urlPathEncoded()
                 let url = "https://github.com/\(encodedUsername)"
                 return "Your linked GitHub account is: [\(username)](\(url))"
             }

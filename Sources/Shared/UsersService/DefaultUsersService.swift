@@ -179,7 +179,7 @@ struct DefaultUsersService: UsersService {
             return .notLinked
         }
 
-        let encodedID = id.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? id
+        let encodedID = id.urlPathEncoded()
         let url = "https://api.github.com/user/\(encodedID)"
         logger.debug("Will make a request to get GitHub user name", metadata: [
             "user": "\(user)",
