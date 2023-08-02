@@ -87,13 +87,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-generator",
-            // Use a tag when command plugin is tagged
-            branch: "main"
+            from: "0.1.6"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            // Use a tag when command plugin is tagged
-            branch: "main"
+            from: "0.1.6"
         )
     ],
     targets: [
