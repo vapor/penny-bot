@@ -138,7 +138,6 @@ let package = Package(
         .lambdaTarget(
             name: "Users",
             additionalDependencies:[
-                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "Logging", package: "swift-log"),
@@ -156,28 +155,24 @@ let package = Package(
             name: "AutoPings",
             additionalDependencies: [
                 .product(name: "SotoS3", package: "soto"),
-                .product(name: "SotoCore", package: "soto-core"),
             ]
         ),
         .lambdaTarget(
             name: "Faqs",
             additionalDependencies: [
-                .product(name: "SotoS3", package: "soto"),
-                .product(name: "SotoCore", package: "soto-core"),
+                .product(name: "SotoS3", package: "soto")
             ]
         ),
         .lambdaTarget(
             name: "AutoFaqs",
             additionalDependencies: [
                 .product(name: "SotoS3", package: "soto"),
-                .product(name: "SotoCore", package: "soto-core"),
             ]
         ),
         .lambdaTarget(
             name: "GHHooks",
             additionalDependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SwiftSemver", package: "swift-semver"),
