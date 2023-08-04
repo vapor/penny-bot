@@ -44,8 +44,8 @@ extension StringProtocol {
 
     /// No whitespaces or lines and makes the string case, diacritic and punctuation insensitive.
     func superHeavyFolded() -> String {
-        self.filter { !($0.isWhitespace || $0.isNewline || $0.isPunctuation }
-            .lowercased()
+        self.lowercased()
+            .filter { !($0.isWhitespace || $0.isNewline || $0.isPunctuation) }
             .folding(options: .diacriticInsensitive, locale: nil)
     }
 
