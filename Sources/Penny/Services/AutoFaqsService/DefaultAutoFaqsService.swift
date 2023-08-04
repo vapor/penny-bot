@@ -79,7 +79,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
 
     /// Must "freshenCache" if it didn't throw an error.
     func send(request autoFaqsRequest: AutoFaqsRequest) async throws {
-        let url = Constants.apiBaseURL + "/faqs"
+        let url = Constants.apiBaseURL + "/auto-faqs"
         var request = HTTPClientRequest(url: url)
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
