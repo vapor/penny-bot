@@ -318,7 +318,7 @@ private extension InteractionHandler {
                     .value.requireValue()
 
                 if name.contains("\n") {
-                    let nameNoNewLines = name.replacingOccurrences(of: "\n", with: " ")
+                    let nameNoNewLines = name.replacing("\n", with: " ")
                     return """
                     The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
 
@@ -468,7 +468,7 @@ private extension InteractionHandler {
                     .value.requireValue()
 
                 if expression.contains("\n") {
-                    let expNoNewLines = expression.replacingOccurrences(of: "\n", with: " ")
+                    let expNoNewLines = expression.replacing("\n", with: " ")
                     return """
                     The expression cannot contain new lines. You can try '\(expNoNewLines)' instead.
 

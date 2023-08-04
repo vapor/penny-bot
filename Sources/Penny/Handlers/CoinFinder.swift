@@ -60,7 +60,7 @@ struct CoinFinder {
             // it relies on spaces to find meaningful components of each line.
             // These extra spaces are filtered later.
             let mention = DiscordUtils.mention(id: mentionedUser)
-            text = text.replacingOccurrences(of: mention, with: " \(mention) ")
+            text.replace(mention, with: " \(mention) ")
         }
         
         let lines = text.split(whereSeparator: \.isNewline)

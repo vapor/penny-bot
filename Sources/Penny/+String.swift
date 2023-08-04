@@ -108,9 +108,3 @@ private extension Character {
         self.isWhitespace || self.isNewline
     }
 }
-
-private extension CharacterSet {
-    static let whitespacesAndNewLinesAndPunctuations = CharacterSet
-        .whitespacesAndNewlines
-        .union(.punctuationCharacters)
-}

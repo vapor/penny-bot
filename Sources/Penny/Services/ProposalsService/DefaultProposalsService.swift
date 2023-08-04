@@ -42,13 +42,9 @@ struct DefaultProposalsService: ProposalsService {
         /// to
         /// https://raw.githubusercontent.com/apple/swift-evolution/main/proposals/0401-remove-property-wrapper-isolation.md
         /// to get the raw content of the file instead of the GitHub web page.
-        let link = link.replacingOccurrences(
-            of: "github.com",
-            with: "raw.githubusercontent.com"
-        ).replacingOccurrences(
-            of: "/blob/",
-            with: "/"
-        )
+        let link = link
+            .replacing("github.com", with: "raw.githubusercontent.com")
+            .replacing("/blob/", with: "/")
         let response = try await httpClient.execute(
             .init(url: link),
             deadline: .now() + .seconds(15)

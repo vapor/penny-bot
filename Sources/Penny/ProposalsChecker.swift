@@ -314,7 +314,7 @@ actor ProposalsChecker {
         }
         let newSummary = newMarkup?.format() ?? proposal.summary
         return newSummary
-            .replacingOccurrences(of: "\n", with: " ")
+            .replacing("\n", with: " ")
             .sanitized()
             .unicodesPrefix(2_048)
     }
@@ -332,7 +332,7 @@ actor ProposalsChecker {
 private extension String {
     func sanitized() -> String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
-            .replacingOccurrences(of: #"\/"#, with: "/") /// Un-escape
+            .replacing(#"\/"#, with: "/") /// Un-escape
     }
 }
 
