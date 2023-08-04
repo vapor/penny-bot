@@ -456,7 +456,7 @@ Resources:
       FunctionName: !Sub ${AutoFaqsFilename}
       Principal: apigateway.amazonaws.com
     DependsOn:
-      - faqsFunction
+      - autoFaqsFunction
 
   autoFaqsS3Bucket:
     Type: AWS::S3::Bucket
