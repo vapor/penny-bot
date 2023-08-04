@@ -143,11 +143,19 @@ struct MessageHandler {
         for value in matches {
             await context.services.discordService.sendMessage(
                 channelId: event.channel_id,
-                payload: .init(embeds: [.init(
-                    title: "🤖 Automated Answer",
-                    description: value,
-                    color: .blue
-                )])
+                payload: .init(
+                    embeds: [.init(
+                        title: "🤖 Automated Answer",
+                        description: value,
+                        color: .blue
+                    )],
+                    message_reference: .init(
+                        message_id: event.id,
+                        channel_id: event.channel_id,
+                        guild_id: event.guild_id,
+                        fail_if_not_exists: true
+                    )
+                )
             )
         }
     }
