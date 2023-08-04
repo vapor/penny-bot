@@ -975,7 +975,7 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            let modalId = ModalID.faqs(.add)
+            let modalId = ModalID.autoFaqs(.add)
             return modalId.makeModal()
         case .edit:
             let expression = try first.options
@@ -1519,27 +1519,35 @@ extension ModalID: RawRepresentable {
             return "auto-pings;\(autoPingsMode.rawValue);\(expressionMode.rawValue)"
         case let .faqs(faqsMode):
             return "faqs;\(faqsMode.makeForCustomId())"
-        case let .autoFaqs(faqsMode):
-            return "auto-faqs;\(faqsMode.makeForCustomId())"
+        case let .autoFaqs(autoFaqsMode):
+            return "auto-faqs;\(autoFaqsMode.makeForCustomId())"
         }
     }
 
     init? (rawValue: String) {
-        let split = rawValue.split(separator: ";")
-        if split.count == 3,
-           split[0] == "auto-pings",
-           let autoPingsMode = AutoPingsMode(rawValue: String(split[1])),
-           let expressionMode = Expression.Kind(rawValue: String(split[2])) {
+        var split = rawValue.split(separator: ";")
+        if split.isEmpty { return nil }
+        switch split.removeFirst() {
+        case "auto-pings":
+            guard split.count == 2,
+                  let autoPingsMode = AutoPingsMode(rawValue: String(split[0])),
+                  let expressionMode = Expression.Kind(rawValue: String(split[1])) else {
+                return nil
+            }
             self = .autoPings(autoPingsMode, expressionMode)
-        } else if split.count == 2,
-                  split[0] == "faqs",
-                  let faqsMode = FaqsMode(customIdPart: String(split[1])) {
+        case "faqs":
+            guard split.count == 1,
+                  let faqsMode = FaqsMode(customIdPart: String(split[0])) else {
+                return nil
+            }
             self = .faqs(faqsMode)
-        } else if split.count == 2,
-                  split[0] == "auto-faqs",
-                  let autoFaqsMode = AutoFaqsMode(customIdPart: String(split[1])) {
+        case "auto-faqs":
+            guard split.count == 1,
+                  let autoFaqsMode = AutoFaqsMode(customIdPart: String(split[0])) else {
+                return nil
+            }
             self = .autoFaqs(autoFaqsMode)
-        } else {
+        default:
             return nil
         }
     }
