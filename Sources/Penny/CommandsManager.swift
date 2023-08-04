@@ -262,8 +262,8 @@ enum AutoFaqsSubCommand: String, CaseIterable {
             return [
                 .init(
                     type: .string,
-                    name: "name",
-                    description: "The name of the command",
+                    name: "expression",
+                    description: "The expression of the command",
                     required: true,
                     autocomplete: true
                 ),
