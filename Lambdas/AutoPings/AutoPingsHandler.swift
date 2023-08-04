@@ -3,7 +3,7 @@ import AWSLambdaEvents
 import Foundation
 import SotoCore
 import Models
-import Extensions
+import LambdasShared
 
 @main
 struct AutoPingsHandler: LambdaHandler {

@@ -18,8 +18,9 @@ struct MessageHandler {
         if event.author?.bot == true { return }
         
         await checkForNewCoins()
-        await checkForGuildSubscriptionCoins()
+        await checkForAutoFaqs()
         await checkForPings()
+        await checkForGuildSubscriptionCoins()
     }
     
     func checkForNewCoins() async {
@@ -121,7 +122,36 @@ struct MessageHandler {
             /// Don't send a message at all in case of failure
         }
     }
-    
+
+    func checkForAutoFaqs() async {
+        let content = event.content
+        if content.isEmpty { return }
+        let autoFaqsDict: [String: String]
+        do {
+            autoFaqsDict = try await context.services.autoFaqsService.getAllFolded()
+        } catch {
+            logger.report("Can't retrieve auto-faqs", error: error)
+            return
+        }
+
+        let foldedContent = content.superHeavyFolded()
+
+        let matches = autoFaqsDict.filter({
+            foldedContent.contains($0.key)
+        }).map(\.value)
+
+        for value in matches {
+            await context.services.discordService.sendMessage(
+                channelId: event.channel_id,
+                payload: .init(embeds: [.init(
+                    title: "🤖 Automated Answer",
+                    description: value,
+                    color: .blue
+                )])
+            )
+        }
+    }
+
     func checkForPings() async {
         let content = event.content
         if content.isEmpty { return }

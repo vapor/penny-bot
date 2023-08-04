@@ -8,13 +8,15 @@ import AsyncHTTPClient
 import Logging
 import NIOHTTP1
 
-actor DefaultFaqsService: FaqsService {
+actor DefaultAutoFaqsService: AutoFaqsService {
 
     var httpClient: HTTPClient!
-    var logger = Logger(label: "DefaultFaqsService")
+    var logger = Logger(label: "DefaultAutoFaqsService")
 
     /// Use `getAll()` to retrieve.
     var _cachedItems: [String: String]?
+    /// Use `getAllFolded()` to retrieve.
+    var _cachedFoldedItems: [String: String]?
     /// Use `getAllNamesHashTable()` to retrieve.
     /// `[NameHash: Name]`
     var _cachedNamesHashTable: [Int: String]?
@@ -32,16 +34,16 @@ actor DefaultFaqsService: FaqsService {
         self.getFreshItemsForCache()
     }
 
-    func insert(name: String, value: String) async throws {
-        try await self.send(request: .add(name: name, value: value))
+    func insert(expression: String, value: String) async throws {
+        try await self.send(request: .add(expression: expression, value: value))
     }
 
-    func remove(name: String) async throws {
-        try await self.send(request: .remove(name: name))
+    func remove(expression: String) async throws {
+        try await self.send(request: .remove(expression: expression))
     }
 
-    func get(name: String) async throws -> String? {
-        try await self.getAll()[name]
+    func get(expression: String) async throws -> String? {
+        try await self.getAll()[expression]
     }
 
     func getName(hash: Int) async throws -> String? {
@@ -49,17 +51,26 @@ actor DefaultFaqsService: FaqsService {
     }
 
     func getAll() async throws -> [String: String] {
-        if let cachedItems = _cachedItems {
-            return cachedItems
+        if let _cachedItems {
+            return _cachedItems
         } else {
             try await self.send(request: .all)
             return _cachedItems ?? [:]
         }
     }
 
+    func getAllFolded() async throws -> [String: String] {
+        if let _cachedFoldedItems {
+            return _cachedFoldedItems
+        } else {
+            try await self.send(request: .all)
+            return _cachedFoldedItems ?? [:]
+        }
+    }
+
     func getAllNamesHashTable() async throws -> [Int: String] {
-        if let cachedItems = _cachedNamesHashTable {
-            return cachedItems
+        if let _cachedNamesHashTable {
+            return _cachedNamesHashTable
         } else {
             try await self.send(request: .all)
             return _cachedNamesHashTable ?? [:]
@@ -67,12 +78,12 @@ actor DefaultFaqsService: FaqsService {
     }
 
     /// Must "freshenCache" if it didn't throw an error.
-    func send(request faqsRequest: FaqsRequest) async throws {
+    func send(request autoFaqsRequest: AutoFaqsRequest) async throws {
         let url = Constants.apiBaseURL + "/faqs"
         var request = HTTPClientRequest(url: url)
         request.method = .POST
         request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try encoder.encode(faqsRequest)
+        let data = try encoder.encode(autoFaqsRequest)
         request.body = .bytes(data)
         let response = try await httpClient.execute(
             request,
@@ -103,6 +114,9 @@ actor DefaultFaqsService: FaqsService {
             "new": .stringConvertible(new)
         ])
         self._cachedItems = new
+        self._cachedFoldedItems = Dictionary(
+            uniqueKeysWithValues: new.map({ ($0.key.superHeavyFolded(), $0.value) })
+        )
         self._cachedNamesHashTable = Dictionary(
             uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })
         )
@@ -115,7 +129,7 @@ actor DefaultFaqsService: FaqsService {
                 /// To freshen the cache
                 _ = try await self.send(request: .all)
             } catch {
-                logger.report("Couldn't automatically freshen faqs cache", error: error)
+                logger.report("Couldn't automatically freshen auto-faqs cache", error: error)
             }
         }
     }

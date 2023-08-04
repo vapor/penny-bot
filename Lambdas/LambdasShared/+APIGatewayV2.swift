@@ -14,7 +14,7 @@ extension APIGatewayV2Request {
     
     public func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body else {
-            throw APIError.invalidRequest
+            throw APIGatewayErrors.emptyBody(self)
         }
         let data = Data(body.utf8)
         return try jsonDecoder.decode(D.self, from: data)
@@ -22,7 +22,7 @@ extension APIGatewayV2Request {
 
     public func decodeWithISO8601<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body else {
-            throw APIError.invalidRequest
+            throw APIGatewayErrors.emptyBody(self)
         }
         let data = Data(body.utf8)
         return try iso8601jsonDecoder.decode(D.self, from: data)
@@ -54,9 +54,13 @@ public struct GatewayFailure: Encodable {
     }
 }
 
-public enum APIError: Error {
-    case invalidItem
-    case tableNameNotFound
-    case invalidRequest
-    case invalidHandler
+public enum APIGatewayErrors: Error, CustomStringConvertible {
+    case emptyBody(APIGatewayV2Request)
+
+    public var description: String {
+        switch self {
+        case let .emptyBody(request):
+            return "emptyBody(\(request))"
+        }
+    }
 }

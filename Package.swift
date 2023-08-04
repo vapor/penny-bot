@@ -28,7 +28,7 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
 ]
 
-let swiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
+let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// https://github.com/apple/swift/issues/67214
     .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
 
@@ -42,6 +42,27 @@ let testsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
     .unsafeFlags(["-strict-concurrency=targeted"]),
 ]
+
+extension PackageDescription.Target {
+    static func lambdaTarget(
+        name: String,
+        additionalDependencies: [PackageDescription.Target.Dependency]
+    ) -> PackageDescription.Target {
+        .executableTarget(
+            name: "\(name)Lambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoCore", package: "soto-core"),
+                .product(name: "Logging", package: "swift-log"),
+                .target(name: "LambdasShared"),
+                .target(name: "Models"),
+            ] + additionalDependencies,
+            path: "./Lambdas/\(name)",
+            swiftSettings: targetsSwiftSettings
+        )
+    }
+}
 
 let package = Package(
     name: "Penny",
@@ -112,68 +133,49 @@ let package = Package(
                 .target(name: "Shared"),
                 .target(name: "Models"),
             ],
-            swiftSettings: swiftSettings
+            swiftSettings: targetsSwiftSettings
         ),
-        .executableTarget(
-            name: "UsersLambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+        .lambdaTarget(
+            name: "Users",
+            additionalDependencies:[
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "Collections", package: "swift-collections"),
                 .product(name: "Logging", package: "swift-log"),
-                .target(name: "Extensions"),
-                .target(name: "Models"),
-            ],
-            path: "./Lambdas/Users",
-            swiftSettings: swiftSettings
+            ]
         ),
-        .executableTarget(
-            name: "SponsorsLambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+        .lambdaTarget(
+            name: "Sponsors",
+            additionalDependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
-                .target(name: "Extensions"),
                 .target(name: "Shared"),
-                .target(name: "LambdasShared"),
-            ],
-            path: "./Lambdas/Sponsors",
-            swiftSettings: swiftSettings
+            ]
         ),
-        .executableTarget(
-            name: "AutoPingsLambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+        .lambdaTarget(
+            name: "AutoPings",
+            additionalDependencies: [
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
-                .target(name: "Extensions"),
-                .target(name: "Models"),
-            ],
-            path: "./Lambdas/AutoPings",
-            swiftSettings: swiftSettings
+            ]
         ),
-        .executableTarget(
-            name: "FaqsLambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+        .lambdaTarget(
+            name: "Faqs",
+            additionalDependencies: [
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
-                .target(name: "Extensions"),
-                .target(name: "Models"),
-            ],
-            path: "./Lambdas/Faqs",
-            swiftSettings: swiftSettings
+            ]
         ),
-        .executableTarget(
-            name: "GHHooksLambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+        .lambdaTarget(
+            name: "AutoFaqs",
+            additionalDependencies: [
+                .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoCore", package: "soto-core"),
+            ]
+        ),
+        .lambdaTarget(
+            name: "GHHooks",
+            additionalDependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
@@ -187,27 +189,17 @@ let package = Package(
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "GitHubAPI"),
                 .target(name: "Rendering"),
-                .target(name: "Extensions"),
                 .target(name: "Shared"),
-                .target(name: "LambdasShared"),
-            ],
-            path: "./Lambdas/GHHooks",
-            swiftSettings: swiftSettings
+            ]
         ),
-        .executableTarget(
-            name: "GHOAuthLambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+        .lambdaTarget(
+            name: "GHOAuth",
+            additionalDependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "JWTKit", package: "jwt-kit"),
-                .target(name: "Extensions"),
                 .target(name: "Shared"),
-                .target(name: "LambdasShared"),
-            ],
-            path: "./Lambdas/GHOAuth",
-            swiftSettings: swiftSettings
+            ]
         ),
         .target(
             name: "LambdasShared",
@@ -218,7 +210,7 @@ let package = Package(
                 .target(name: "Shared"),
             ],
             path: "./Lambdas/LambdasShared",
-            swiftSettings: swiftSettings
+            swiftSettings: targetsSwiftSettings
         ),
         .target(
             name: "GitHubAPI",
@@ -238,22 +230,14 @@ let package = Package(
                 .copy("openapi-generator-config.yml"),
                 .copy("openapi.yaml"),
             ],
-            swiftSettings: swiftSettings
-        ),
-        .target(
-            name: "Extensions",
-            dependencies: [
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .product(name: "Crypto", package: "swift-crypto"),
-            ],
-            swiftSettings: swiftSettings
+            swiftSettings: targetsSwiftSettings
         ),
         .target(
             name: "Models",
             dependencies: [
                 .product(name: "DiscordModels", package: "DiscordBM")
             ],
-            swiftSettings: swiftSettings
+            swiftSettings: targetsSwiftSettings
         ),
         .target(
             name: "Shared",
@@ -261,10 +245,9 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "DiscordModels", package: "DiscordBM"),
-                .target(name: "Extensions"),
                 .target(name: "Models"),
             ],
-            swiftSettings: swiftSettings
+            swiftSettings: targetsSwiftSettings
         ),
         .target(
             name: "Rendering",
@@ -276,7 +259,7 @@ let package = Package(
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "Shared"),
             ],
-            swiftSettings: swiftSettings
+            swiftSettings: targetsSwiftSettings
         ),
         .target(
             name: "Fake",

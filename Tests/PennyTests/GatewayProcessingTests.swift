@@ -415,4 +415,77 @@ class GatewayProcessingTests: XCTestCase {
             }
         }
     }
+
+    func testAutoFaqsCommand() async throws {
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .autoFaqsAdd,
+                as: Payloads.InteractionResponse.self
+            )
+            switch response.data {
+            case .modal: break
+            default:
+                XCTFail("Wrong response data type for `/auto-faqs add`: \(response.data as Any)")
+            }
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .autoFaqsAddFailure,
+                as: Payloads.EditWebhookMessage.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertTrue(message.hasPrefix("You don't have access to this command; it is only available to"), message)
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .autoFaqsGet,
+                as: Payloads.EditWebhookMessage.self
+            )
+            let message = try XCTUnwrap(response.embeds?.first?.description)
+            XCTAssertEqual(message, "Update your PostgresNIO!")
+        }
+
+        do {
+            let key = EventKey.autoFaqsGetEphemeral
+            let response = try await manager.sendAndAwaitResponse(
+                key: key,
+                endpoint: key.responseEndpoints[1],
+                as: Payloads.InteractionResponse.self
+            )
+            if case let .flags(flags) = response.data {
+                XCTAssertTrue(
+                    flags.flags?.contains(.ephemeral) == true,
+                    "\(flags.flags?.representableValues().values ?? [])"
+                )
+            } else {
+                XCTFail("Unexpected response: \(response)")
+            }
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .autoFaqsGetAutocomplete,
+                as: Payloads.InteractionResponse.self
+            )
+            switch response.data {
+            case .autocomplete: break
+            default:
+                XCTFail("Wrong response data type for `/auto-faqs get`: \(response.data as Any)")
+            }
+        }
+
+        do {
+            let response = try await manager.sendAndAwaitResponse(
+                key: .autoFaqsTrigger,
+                as: Payloads.CreateMessage.self
+            )
+
+            let embed = try XCTUnwrap(response.embeds?.first)
+
+            XCTAssertEqual(embed.title, "🤖 Automated Answer")
+            XCTAssertEqual(embed.description, "Update your PostgresNIO!")
+        }
+    }
 }

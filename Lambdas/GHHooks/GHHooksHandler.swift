@@ -7,7 +7,6 @@ import GitHubAPI
 import Rendering
 import DiscordUtilities
 import Logging
-import Extensions
 import LambdasShared
 import Shared
 import Foundation

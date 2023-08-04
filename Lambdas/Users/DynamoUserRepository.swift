@@ -1,7 +1,6 @@
 import SotoDynamoDB
 import Foundation
 import Models
-import Extensions
 
 struct DynamoUserRepository {
 

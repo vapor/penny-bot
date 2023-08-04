@@ -26,7 +26,8 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
   * Implemented as `/auto-pings` slash command. 
 * [x] Respond to certain command-texts with predefined answers.
   * Implemented as `/faqs` slash command.
-* [ ] Automatically respond to commonly asked questions.
+* [x] Automatically respond to commonly asked questions.
+  * Implemented as `/auto-faqs` slash command.
 * [x] Automate SemVer releases and report on Discord.
 * [x] Report GitHub PRs and Issues on Discord.
 * [x] Report Swift evolution proposals on Discord.
