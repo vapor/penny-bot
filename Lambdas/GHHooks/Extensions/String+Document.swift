@@ -5,6 +5,8 @@ extension String {
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
     func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
+        assert(maxLength > 0, "Can't request a non-positive maximum.")
+
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }

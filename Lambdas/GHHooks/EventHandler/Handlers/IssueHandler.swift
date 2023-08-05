@@ -51,7 +51,7 @@ struct IssueHandler {
 
         let issueLink = issue.html_url
 
-        let repoName = try event.repository.requireValue().uiName
+        let repo = try event.repository.requireValue()
 
         let body = issue.body.map { body -> String in
             body.formatMarkdown(
@@ -64,8 +64,14 @@ struct IssueHandler {
 
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
-        let maxCount = 256 - statusString.unicodeScalars.count
-        let title = "[\(repoName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
+        let totalMaxCount = 256
+        let title: String
+        if statusString.unicodeScalars.count < totalMaxCount {
+            let maxCount = 256 - statusString.unicodeScalars.count
+            title = "[\(repo.uiName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
+        } else {
+            title = "[\(repo.uiName)] Issue #\(number)".unicodesPrefix(totalMaxCount)
+        }
 
         let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName

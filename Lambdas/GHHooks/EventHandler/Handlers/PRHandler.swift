@@ -93,9 +93,15 @@ struct PRHandler {
 
         let status = Status(pr: pr)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
-        let maxCount = 256 - statusString.unicodeScalars.count
+        let totalMaxCount = 256
         let number = try event.number.requireValue()
-        let title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
+        let title: String
+        if statusString.unicodeScalars.count < totalMaxCount {
+            let maxCount = 256 - statusString.unicodeScalars.count
+            title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(maxCount) + statusString
+        } else {
+            title = try "[\(repo.uiName)] PR #\(number)".unicodesPrefix(totalMaxCount)
+        }
 
         let member = try await context.requester.getDiscordMember(githubID: "\(pr.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? pr.user.uiName
