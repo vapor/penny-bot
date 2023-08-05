@@ -64,14 +64,7 @@ struct IssueHandler {
 
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
-        let totalMaxCount = 256
-        let title: String
-        if statusString.unicodeScalars.count < totalMaxCount {
-            let maxCount = 256 - statusString.unicodeScalars.count
-            title = "[\(repo.uiName)] Issue #\(number)".unicodesPrefix(maxCount) + statusString
-        } else {
-            title = "[\(repo.uiName)] Issue #\(number)".unicodesPrefix(totalMaxCount)
-        }
+        let title = "[\(repo.uiName)] Issue #\(number) \(statusString)".unicodesPrefix(256)
 
         let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
