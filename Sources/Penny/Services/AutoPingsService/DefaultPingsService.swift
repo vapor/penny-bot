@@ -25,11 +25,10 @@ actor DefaultPingsService: AutoPingsService {
 
     init(httpClient: HTTPClient) {
         self.httpClient = httpClient
-    }
-
-    func onStart() {
-        self.setUpResetItemsTask()
-        self.getFreshItemsForCache()
+        Task {
+            await self.setUpResetItemsTask()
+            await self.getFreshItemsForCache()
+        }
     }
 
     func exists(

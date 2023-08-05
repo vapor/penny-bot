@@ -3,12 +3,39 @@ import Foundation
 #else
 @preconcurrency import Foundation
 #endif
+import DiscordModels
 import Models
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
 
 actor DefaultAutoFaqsService: AutoFaqsService {
+
+    struct ResponseRateLimiter: Sendable {
+
+        struct ID: Hashable, Sendable {
+            let receiverID: UserSnowflake
+            let faqHash: Int
+        }
+
+        private var expirationTimeTable: [ID: Date] = [:]
+        private let expirationTime: TimeInterval = 60 * 60
+
+        /// Returns "can respond?" and assumes that the response will always be sent.
+        mutating func canRespond(to id: ID) -> Bool {
+            if let existing = self.expirationTimeTable[id] {
+                if existing > Date() {
+                    return false
+                } else {
+                    self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)
+                    return true
+                }
+            } else {
+                self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)
+                return true
+            }
+        }
+    }
 
     var httpClient: HTTPClient!
     var logger = Logger(label: "DefaultAutoFaqsService")
@@ -22,16 +49,25 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     var _cachedNamesHashTable: [Int: String]?
     var resetItemsTask: Task<(), Never>?
 
+    /// To not send the same faq-answer to the same person again and again.
+    var responseRateLimiter = ResponseRateLimiter()
+
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
     init(httpClient: HTTPClient) {
         self.httpClient = httpClient
+        Task {
+            await self.setUpResetItemsTask()
+            await self.getFreshItemsForCache()
+        }
     }
 
-    func onStart() {
-        self.setUpResetItemsTask()
-        self.getFreshItemsForCache()
+    func canRespond(receiverID: UserSnowflake, faqHash: Int) -> Bool {
+        self.responseRateLimiter.canRespond(to: .init(
+            receiverID: receiverID,
+            faqHash: faqHash
+        ))
     }
 
     func insert(expression: String, value: String) async throws {

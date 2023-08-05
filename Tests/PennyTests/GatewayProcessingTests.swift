@@ -487,5 +487,17 @@ class GatewayProcessingTests: XCTestCase {
             XCTAssertEqual(embed.title, "🤖 Automated Answer")
             XCTAssertEqual(embed.description, "Update your PostgresNIO!")
         }
+
+        /// This one should fail since there is a rate-limiter
+        do {
+            let key: EventKey = .autoFaqsTrigger
+            await manager.send(key: key)
+            let response = await responseStorage.awaitResponse(
+                at: key.responseEndpoints[0],
+                expectFailure: true
+            ).value
+            let payload: Never? = try XCTUnwrap(response as? Optional<Never>)
+            XCTAssertEqual(payload, .none)
+        }
     }
 }

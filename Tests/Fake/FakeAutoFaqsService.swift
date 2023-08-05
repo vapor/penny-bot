@@ -2,11 +2,20 @@
 import Models
 import AsyncHTTPClient
 
-public struct FakeAutoFaqsService: AutoFaqsService {
+public actor FakeAutoFaqsService: AutoFaqsService {
 
     public init() { }
 
     private let all = ["PostgresNIO.PSQLError": "Update your PostgresNIO!"]
+
+    var responseRateLimiter = DefaultAutoFaqsService.ResponseRateLimiter()
+
+    public func canRespond(receiverID: UserSnowflake, faqHash: Int) async -> Bool {
+        responseRateLimiter.canRespond(to: .init(
+            receiverID: receiverID,
+            faqHash: faqHash
+        ))
+    }
 
     public func insert(expression: String, value: String) async throws { }
 

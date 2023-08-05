@@ -124,8 +124,11 @@ struct MessageHandler {
     }
 
     func checkForAutoFaqs() async {
+        guard let author = event.author else { return }
+
         let content = event.content
         if content.isEmpty { return }
+
         let autoFaqsDict: [String: String]
         do {
             autoFaqsDict = try await context.services.autoFaqsService.getAllFolded()
@@ -141,6 +144,10 @@ struct MessageHandler {
         }).map(\.value)
 
         for value in matches {
+            guard await context.services.autoFaqsService.canRespond(
+                receiverID: author.id,
+                faqHash: value.hash
+            ) else { continue }
             await context.services.discordService.sendMessage(
                 channelId: event.channel_id,
                 payload: .init(

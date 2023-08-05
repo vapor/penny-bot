@@ -89,11 +89,8 @@ struct PennyService: MainService {
             apiBaseURL: Constants.apiBaseURL
         )
         let pingsService = DefaultPingsService(httpClient: httpClient)
-        await pingsService.onStart()
         let faqsService = DefaultFaqsService(httpClient: httpClient)
-        await faqsService.onStart()
         let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
-        await autoFaqsService.onStart()
         let proposalsService = DefaultProposalsService(httpClient: httpClient)
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
         let proposalsChecker = ProposalsChecker(
