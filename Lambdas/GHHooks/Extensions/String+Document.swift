@@ -30,18 +30,23 @@ extension String {
             }
         }
 
-        let prefixed2 = markup2.format(options: .default)
+        var prefixed2 = markup2.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .unicodesPrefix(maxLength)
         var document3 = Document(parsing: prefixed2)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
             document3 = Document(document3.blockChildren.dropLast())
+            prefixed2 = document3
+                .format(options: .default)
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .unicodesPrefix(maxLength)
         }
 
-        var formattedLines = document3.format(options: .default)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
-            .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
+        var formattedLines = prefixed2.split(
+            omittingEmptySubsequences: false,
+            whereSeparator: \.isNewline
+        )
 
         while formattedLines.first?.isWorthlessLineForTrim ?? false {
             formattedLines.removeFirst()
