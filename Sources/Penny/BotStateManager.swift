@@ -25,7 +25,6 @@ actor BotStateManager {
 
     let id = Int(Date().timeIntervalSince1970)
     let services: HandlerContext.Services
-    let workers: HandlerContext.Workers
     let disableDuration: Duration
     let logger: Logger
 
@@ -34,11 +33,9 @@ actor BotStateManager {
 
     init(
         services: HandlerContext.Services,
-        workers: HandlerContext.Workers,
         disabledDuration: Duration = .seconds(3 * 60)
     ) {
         self.services = services
-        self.workers = workers
         self.disableDuration = disabledDuration
         var logger = Logger(label: "BotStateManager")
         logger[metadataKey: "id"] = "\(self.id)"

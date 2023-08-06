@@ -3,24 +3,37 @@ import Logging
 
 struct CachesStorage: Sendable, Codable {
 
+    struct Context {
+        let autoFaqsService: any AutoFaqsService
+        let proposalsChecker: ProposalsChecker
+        let reactionCache: ReactionCache
+    }
+
     var reactionCacheData: ReactionCache.Storage?
     var proposalsCheckerData: ProposalsChecker.Storage?
+    var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
     init() { }
 
-    static func makeFromCachedData(workers: HandlerContext.Workers) async -> CachesStorage {
+    static func makeFromCachedData(context: Context) async -> CachesStorage {
         var storage = CachesStorage()
-        storage.reactionCacheData = await workers.reactionCache.getCachedDataForCachesStorage()
-        storage.proposalsCheckerData = await workers.proposalsChecker.getCachedDataForCachesStorage()
+        storage.reactionCacheData = await context.reactionCache.getCachedDataForCachesStorage()
+        storage.proposalsCheckerData = await context.proposalsChecker
+            .getCachedDataForCachesStorage()
+        storage.autoFaqsResponseRateLimiter = await context.autoFaqsService
+            .getCachedDataForCachesStorage()
         return storage
     }
 
-    func populateServicesAndReport(workers: HandlerContext.Workers) async {
-        if let reactionCacheData = self.reactionCacheData {
-            await workers.reactionCache.consumeCachesStorageData(reactionCacheData)
+    func populateServicesAndReport(context: Context) async {
+        if let reactionCacheData {
+            await context.reactionCache.consumeCachesStorageData(reactionCacheData)
         }
-        if let proposalsCheckerData = proposalsCheckerData {
-            await workers.proposalsChecker.consumeCachesStorageData(proposalsCheckerData)
+        if let proposalsCheckerData {
+            await context.proposalsChecker.consumeCachesStorageData(proposalsCheckerData)
+        }
+        if let autoFaqsResponseRateLimiter {
+            await context.autoFaqsService.consumeCachesStorageData(autoFaqsResponseRateLimiter)
         }
 
         let reactionCacheDataCounts = reactionCacheData.map { data in
@@ -32,10 +45,12 @@ struct CachesStorage: Sendable, Codable {
             [data.previousProposals.count,
              data.queuedProposals.count]
         } ?? []
+        let autoFaqsResponseRateLimiterCounts = [autoFaqsResponseRateLimiter?.count ?? 0]
 
         Logger(label: "CachesStorage").notice("Recovered the cached stuff", metadata: [
             "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
             "proposalsChecker_counts": .stringConvertible(proposalsCheckerDataCounts),
+            "autoFaqsRateLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
         ])
     }
 }

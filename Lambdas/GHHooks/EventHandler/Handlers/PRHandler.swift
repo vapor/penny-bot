@@ -94,7 +94,7 @@ struct PRHandler {
         let status = Status(pr: pr)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let number = try event.number.requireValue()
-        let title = try "[\(repo.uiName)] PR #\(number) \(statusString)".unicodesPrefix(256)
+        let title = try "[\(repo.uiName)] PR #\(number)\(statusString)".unicodesPrefix(256)
 
         let member = try await context.requester.getDiscordMember(githubID: "\(pr.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? pr.user.uiName

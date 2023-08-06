@@ -64,7 +64,7 @@ struct IssueHandler {
 
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
-        let title = "[\(repo.uiName)] Issue #\(number) \(statusString)".unicodesPrefix(256)
+        let title = "[\(repo.uiName)] Issue #\(number)\(statusString)".unicodesPrefix(256)
 
         let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName

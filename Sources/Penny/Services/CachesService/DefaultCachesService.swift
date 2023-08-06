@@ -4,19 +4,19 @@ import SotoS3
 
 actor DefaultCachesService: CachesService {
     let cachesRepo: S3CachesRepository
-    let workers: HandlerContext.Workers
+    let context: CachesStorage.Context
     let logger = Logger(label: "DefaultCachesService")
 
-    init(awsClient: AWSClient, workers: HandlerContext.Workers) {
+    init(awsClient: AWSClient, context: CachesStorage.Context) {
         self.cachesRepo = .init(awsClient: awsClient, logger: self.logger)
-        self.workers = workers
+        self.context = context
     }
 
     /// Get the storage from the repository and then delete it from the repository.
     func getCachedInfoFromRepositoryAndPopulateServices() async {
         do {
             let storage = try await self.cachesRepo.get()
-            await storage.populateServicesAndReport(workers: workers)
+            await storage.populateServicesAndReport(context: context)
             self.delete()
         } catch {
             logger.report("Couldn't get CachesStorage", error: error)
@@ -38,7 +38,7 @@ actor DefaultCachesService: CachesService {
     /// Save the storage to the repository.
     func gatherCachedInfoAndSaveToRepository() async {
         do {
-            let storage = await CachesStorage.makeFromCachedData(workers: workers)
+            let storage = await CachesStorage.makeFromCachedData(context: context)
             try await self.cachesRepo.save(storage: storage)
         } catch {
             logger.report("Couldn't save CachesStorage", error: error)

@@ -78,16 +78,18 @@ public actor FakeMainService: MainService {
             discordService: discordService,
             queuedProposalsWaitTime: -1
         )
-        let workers = HandlerContext.Workers(
-            proposalsChecker: proposalsChecker,
-            reactionCache: ReactionCache()
-        )
+        let reactionCache = ReactionCache()
+        let autoFaqsService = FakeAutoFaqsService()
         let services = HandlerContext.Services(
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
-            autoFaqsService: FakeAutoFaqsService(),
-            cachesService: FakeCachesService(workers: workers),
+            autoFaqsService: autoFaqsService,
+            cachesService: FakeCachesService(context: .init(
+                autoFaqsService: autoFaqsService,
+                proposalsChecker: proposalsChecker,
+                reactionCache: reactionCache
+            )),
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
@@ -95,14 +97,14 @@ public actor FakeMainService: MainService {
                     logger: Logger(label: "Tests_Penny+Leaf+FakeService"),
                     on: httpClient.eventLoopGroup.next()
                 )
-            )
+            ),
+            proposalsChecker: proposalsChecker,
+            reactionCache: reactionCache
         )
         return HandlerContext(
             services: services,
-            workers: workers,
             botStateManager: BotStateManager(
                 services: services,
-                workers: workers,
                 disabledDuration: .seconds(3)
             )
         )

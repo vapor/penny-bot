@@ -362,7 +362,7 @@ struct LinkRepairer: MarkupRewriter {
         if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
            !dest.hasPrefix("https://"),
            dest.hasSuffix(".md") {
-            /// It's relative .md link like "0400-init-accessors.md".
+            /// It's a relative .md link like "0400-init-accessors.md".
             /// We make it absolute.
             var link = link
             link.destination = "\(relativeTo)/\(dest)"

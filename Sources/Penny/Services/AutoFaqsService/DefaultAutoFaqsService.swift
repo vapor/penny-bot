@@ -5,21 +5,33 @@ import Foundation
 #endif
 import DiscordModels
 import Models
+import Collections
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
 
 actor DefaultAutoFaqsService: AutoFaqsService {
 
-    struct ResponseRateLimiter: Sendable {
+    struct ResponseRateLimiter: Sendable, Codable {
 
-        struct ID: Hashable, Sendable {
+        struct ID: Sendable, Codable, Hashable {
             let receiverID: UserSnowflake
             let faqHash: Int
         }
 
-        private var expirationTimeTable: [ID: Date] = [:]
-        private let expirationTime: TimeInterval = 60 * 60
+        private var expirationTimeTable: OrderedDictionary<ID, Date> = [:] {
+            didSet {
+                if expirationTimeTable.count > 200 {
+                    expirationTimeTable.removeFirst()
+                }
+            }
+        }
+        private var expirationTime: TimeInterval {
+            60 * 60
+        }
+        var count: Int {
+            self.expirationTimeTable.count
+        }
 
         /// Returns "can respond?" and assumes that the response will always be sent.
         mutating func canRespond(to id: ID) -> Bool {
@@ -61,13 +73,6 @@ actor DefaultAutoFaqsService: AutoFaqsService {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()
         }
-    }
-
-    func canRespond(receiverID: UserSnowflake, faqHash: Int) -> Bool {
-        self.responseRateLimiter.canRespond(to: .init(
-            receiverID: receiverID,
-            faqHash: faqHash
-        ))
     }
 
     func insert(expression: String, value: String) async throws {
@@ -185,5 +190,20 @@ actor DefaultAutoFaqsService: AutoFaqsService {
                 self.setUpResetItemsTask()
             }
         }
+    }
+
+    func canRespond(receiverID: UserSnowflake, faqHash: Int) -> Bool {
+        self.responseRateLimiter.canRespond(to: .init(
+            receiverID: receiverID,
+            faqHash: faqHash
+        ))
+    }
+
+    func consumeCachesStorageData(_ storage: ResponseRateLimiter) {
+        self.responseRateLimiter = storage
+    }
+
+    func getCachedDataForCachesStorage() -> ResponseRateLimiter {
+        return self.responseRateLimiter
     }
 }

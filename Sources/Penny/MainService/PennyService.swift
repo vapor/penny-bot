@@ -97,11 +97,15 @@ struct PennyService: MainService {
             proposalsService: proposalsService,
             discordService: discordService
         )
-        let workers = HandlerContext.Workers(
-            proposalsChecker: proposalsChecker,
-            reactionCache: ReactionCache()
+        let reactionCache = ReactionCache()
+        let cachesService = DefaultCachesService(
+            awsClient: awsClient,
+            context: .init(
+                autoFaqsService: autoFaqsService,
+                proposalsChecker: proposalsChecker,
+                reactionCache: reactionCache
+            )
         )
-        let cachesService = DefaultCachesService(awsClient: awsClient, workers: workers)
         let services = HandlerContext.Services(
             usersService: usersService,
             pingsService: pingsService,
@@ -115,15 +119,13 @@ struct PennyService: MainService {
                     logger: Logger(label: "Tests_Penny+Leaf"),
                     on: httpClient.eventLoopGroup.next()
                 )
-            )
+            ),
+            proposalsChecker: proposalsChecker,
+            reactionCache: reactionCache
         )
         let context = HandlerContext(
             services: services,
-            workers: workers,
-            botStateManager: BotStateManager(
-                services: services,
-                workers: workers
-            )
+            botStateManager: BotStateManager(services: services)
         )
 
         await CommandsManager(context: context).registerCommands()
@@ -136,7 +138,7 @@ struct PennyService: MainService {
         /// since it communicates through Discord and will need the Gateway connection.
         await context.botStateManager.start {
             /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
-            context.workers.proposalsChecker.run()
+            context.services.proposalsChecker.run()
         }
     }
 }

@@ -4,18 +4,13 @@ import AsyncHTTPClient
 
 public actor FakeAutoFaqsService: AutoFaqsService {
 
+    public typealias ResponseRateLimiter = DefaultAutoFaqsService.ResponseRateLimiter
+
     public init() { }
 
     private let all = ["PostgresNIO.PSQLError": "Update your PostgresNIO!"]
 
-    var responseRateLimiter = DefaultAutoFaqsService.ResponseRateLimiter()
-
-    public func canRespond(receiverID: UserSnowflake, faqHash: Int) async -> Bool {
-        responseRateLimiter.canRespond(to: .init(
-            receiverID: receiverID,
-            faqHash: faqHash
-        ))
-    }
+    var responseRateLimiter = ResponseRateLimiter()
 
     public func insert(expression: String, value: String) async throws { }
 
@@ -35,5 +30,20 @@ public actor FakeAutoFaqsService: AutoFaqsService {
 
     public func getAllFolded() async throws -> [String: String] {
         Dictionary(uniqueKeysWithValues: self.all.map({ ($0.key.superHeavyFolded(), $0.value) }))
+    }
+
+    public func canRespond(receiverID: UserSnowflake, faqHash: Int) async -> Bool {
+        responseRateLimiter.canRespond(to: .init(
+            receiverID: receiverID,
+            faqHash: faqHash
+        ))
+    }
+
+    public func consumeCachesStorageData(_ storage: ResponseRateLimiter) async {
+        self.responseRateLimiter = storage
+    }
+
+    public func getCachedDataForCachesStorage() async -> ResponseRateLimiter {
+        return self.responseRateLimiter
     }
 }
