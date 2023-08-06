@@ -278,7 +278,7 @@ class GatewayProcessingTests: XCTestCase {
         /// and have already populated `ProposalsChecker.previousProposals`.
 
         /// This is so the proposals are send as soon as they're queued, in tests.
-        context.workers.proposalsChecker.run()
+        context.services.proposalsChecker.run()
 
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
         let _messages = await [
