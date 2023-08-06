@@ -4,14 +4,14 @@ extension String {
     /// Formats markdown in a way that looks nice on Discord, but still good on GitHub.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
-    func formatMarkdown(maxLength: Int, trailingParagraphMinLength: Int) -> String {
+    func formatMarkdown(maxLength: Int, trailingTextMinLength: Int) -> String {
         assert(maxLength > 0, "Can't request a non-positive maximum.")
 
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }
         var emptyLinksRemover = EmptyLinksRemover()
-        guard let markup2 = emptyLinksRemover.visit(markup1) else { return "" }
+        guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
         let prefixed = markup2.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
@@ -20,14 +20,34 @@ extension String {
         var paragraphCounter = ParagraphCounter()
         paragraphCounter.visit(document2)
         let paragraphCount = paragraphCounter.count
-        if [0, 1].contains(paragraphCount) { return prefixed }
-        var paragraphRemover = ParagraphRemover(
-            atCount: paragraphCount,
-            ifShorterThan: trailingParagraphMinLength
-        )
-        guard let markup3 = paragraphRemover.visit(document2) else { return "" }
+        if ![0, 1].contains(paragraphCount) {
+            var paragraphRemover = ParagraphRemover(
+                atCount: paragraphCount,
+                ifShorterThan: trailingTextMinLength
+            )
+            if let markup = paragraphRemover.visit(document2) {
+                markup2 = markup
+            }
+        }
 
-        var formattedLines = markup3.format(options: .default)
+        let prefixed2 = markup2.format(options: .default)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .unicodesPrefix(maxLength)
+        let document3 = Document(parsing: prefixed2)
+        var headingCounter = HeadingCounter()
+        headingCounter.visit(document3)
+        let headingCount = headingCounter.count
+        if ![0, 1].contains(headingCount) {
+            var headingRemover = HeadingRemover(
+                atCount: headingCount,
+                ifShorterThan: trailingTextMinLength
+            )
+            if let markup = headingRemover.visit(document3) {
+                markup2 = markup
+            }
+        }
+
+        var formattedLines = markup2.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
 
@@ -111,6 +131,38 @@ private struct ParagraphRemover: MarkupRewriter {
         } else {
             count += 1
             return paragraph
+        }
+    }
+}
+
+private struct HeadingCounter: MarkupWalker {
+    var count = 0
+
+    mutating func visitHeading(_ paragraph: Paragraph) {
+        count += 1
+    }
+}
+
+private struct HeadingRemover: MarkupRewriter {
+    let atCount: Int
+    let ifShorterThan: Int
+    var count = 0
+
+    init(atCount: Int, ifShorterThan: Int) {
+        self.atCount = atCount
+        self.ifShorterThan = ifShorterThan
+    }
+
+    mutating func visitHeading(_ heading: Heading) -> (any Markup)? {
+        if count + 1 == atCount {
+            if heading.format().unicodeScalars.count < ifShorterThan {
+                return nil
+            } else {
+                return heading
+            }
+        } else {
+            count += 1
+            return heading
         }
     }
 }

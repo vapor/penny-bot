@@ -151,7 +151,7 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
             XCTAssertEqual(formatted, scalars_206)
         }
 
@@ -172,7 +172,7 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
             XCTAssertEqual(formatted, scalars_190 + """
 
 
@@ -197,7 +197,7 @@ class GHHooksTests: XCTestCase {
             on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 64)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
             XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token pa…")
         }
 
@@ -222,7 +222,7 @@ class GHHooksTests: XCTestCase {
             You can trigger Dependabot actions by commenting on this PR:
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingParagraphMinLength: 96)
+            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
             XCTAssertEqual(formatted, """
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 

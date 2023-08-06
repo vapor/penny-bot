@@ -239,7 +239,7 @@ struct ReleaseMaker {
         let body = pr.body.map {
             $0.formatMarkdown(
                 maxLength: 512,
-                trailingParagraphMinLength: 96
+                trailingTextMinLength: 96
             ).quotedMarkdown()
         } ?? ""
 
