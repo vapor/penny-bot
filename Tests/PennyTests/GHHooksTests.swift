@@ -229,6 +229,28 @@ class GHHooksTests: XCTestCase {
             Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
             """)
         }
+
+        do {
+            let text = """
+            ### Describe the bug
+
+            I've got a custom `Codable` type that throws an error when decoding... because it's being asked to decode an empty string, rather than being skipped because I've got `T?` rather than `T` as the type in my `Content`.
+
+            ### To Reproduce
+
+            1. Declare some custom `Codable` type that throws an error if told to decode from an empty string.
+            2. Declare some custom `Content` struct that has an `Optional` of your custom type as a parameter.
+            3. Have a browser submit a request that includes `yourThing: ` in the body. (Doable in Safari by creating an HTML form, giving it a date input with the right `name`, and then... not selecting a date before hitting submit)
+            4. Observe thrown error.
+            """
+
+            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
+            XCTAssertEqual(formatted, """
+            ### Describe the bug
+
+            I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
+            """)
+        }
     }
 
     func testParagraphFinder() async throws {

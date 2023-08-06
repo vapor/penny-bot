@@ -33,21 +33,13 @@ extension String {
         let prefixed2 = markup2.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .unicodesPrefix(maxLength)
-        let document3 = Document(parsing: prefixed2)
-        var headingCounter = HeadingCounter()
-        headingCounter.visit(document3)
-        let headingCount = headingCounter.count
-        if ![0, 1].contains(headingCount) {
-            var headingRemover = HeadingRemover(
-                atCount: headingCount,
-                ifShorterThan: trailingTextMinLength
-            )
-            if let markup = headingRemover.visit(document3) {
-                markup2 = markup
-            }
+        var document3 = Document(parsing: prefixed2)
+        if let last = Array(document3.blockChildren).last,
+           last is Heading {
+            document3 = Document(document3.blockChildren.dropLast())
         }
 
-        var formattedLines = markup2.format(options: .default)
+        var formattedLines = document3.format(options: .default)
             .trimmingCharacters(in: .whitespacesAndNewlines)
             .split(omittingEmptySubsequences: false, whereSeparator: \.isNewline)
 
@@ -131,38 +123,6 @@ private struct ParagraphRemover: MarkupRewriter {
         } else {
             count += 1
             return paragraph
-        }
-    }
-}
-
-private struct HeadingCounter: MarkupWalker {
-    var count = 0
-
-    mutating func visitHeading(_ paragraph: Paragraph) {
-        count += 1
-    }
-}
-
-private struct HeadingRemover: MarkupRewriter {
-    let atCount: Int
-    let ifShorterThan: Int
-    var count = 0
-
-    init(atCount: Int, ifShorterThan: Int) {
-        self.atCount = atCount
-        self.ifShorterThan = ifShorterThan
-    }
-
-    mutating func visitHeading(_ heading: Heading) -> (any Markup)? {
-        if count + 1 == atCount {
-            if heading.format().unicodeScalars.count < ifShorterThan {
-                return nil
-            } else {
-                return heading
-            }
-        } else {
-            count += 1
-            return heading
         }
     }
 }
