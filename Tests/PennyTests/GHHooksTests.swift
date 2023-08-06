@@ -152,7 +152,7 @@ class GHHooksTests: XCTestCase {
             """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
-            XCTAssertEqual(formatted, scalars_206)
+            XCTAssertMultilineStringsEqual(formatted, scalars_206)
         }
 
         /// Remove html and images + length limits.
@@ -173,7 +173,7 @@ class GHHooksTests: XCTestCase {
             """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
-            XCTAssertEqual(formatted, scalars_190 + """
+            XCTAssertMultilineStringsEqual(formatted, scalars_190 + """
 
 
             Custom coders specified for a single `JWTSigner` affect token p…
@@ -198,7 +198,7 @@ class GHHooksTests: XCTestCase {
             """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
-            XCTAssertEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token pa…")
+            XCTAssertMultilineStringsEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token pa…")
         }
 
         /// Remove empty links
@@ -223,7 +223,7 @@ class GHHooksTests: XCTestCase {
             """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
-            XCTAssertEqual(formatted, """
+            XCTAssertMultilineStringsEqual(formatted, """
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
             Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
@@ -245,16 +245,53 @@ class GHHooksTests: XCTestCase {
             """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
-            XCTAssertEqual(formatted, """
+            XCTAssertMultilineStringsEqual(formatted, """
             ### Describe the bug
 
             I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
             """)
         }
+
+        do {
+            let text = """
+            ### Describe the bug
+
+            White text on white background is not readable.
+
+            ### To Reproduce
+
+            Go to [https://api.vapor.codes/fluent/documentation/fluent/](https://api.vapor.codes/fluent/documentation/fluent/)
+
+            ### Expected behavior
+
+            Expect some contrast between the text and the background.
+
+            ### Environment
+
+            * Vapor Framework version: current [https://api.vapor.codes/](https://api.vapor.codes/) website
+            * Vapor Toolbox version: N/A
+            * OS version: N/A
+            """
+            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
+
+            XCTAssertMultilineStringsEqual(formatted, """
+            ### Describe the bug
+
+            White text on white background is not readable.
+
+            ### To Reproduce
+
+            Go to <https://api.vapor.codes/fluent/documentation/fluent/>
+
+            ### Expected behavior
+
+            Expect some contrast between the text and the background.
+            """)
+        }
     }
 
-    func testParagraphFinder() async throws {
-        /// Goes into the `What's Changed` paragraph.
+    func testHeadingFinder() async throws {
+        /// Goes into the `What's Changed` heading.
         let text = """
         ## What's Changed
         * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
@@ -268,7 +305,8 @@ class GHHooksTests: XCTestCase {
         **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
         """
 
-        XCTAssertEqual(text.contentsOfHeading(named: "What's Changed"), """
+        let contentsOfHeading = try XCTUnwrap(text.contentsOfHeading(named: "What's Changed"))
+        XCTAssertMultilineStringsEqual(contentsOfHeading, """
         - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
         - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
         - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51

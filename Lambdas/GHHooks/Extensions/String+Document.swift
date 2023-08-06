@@ -13,8 +13,9 @@ extension String {
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        let prefixed = markup2.format(options: .default)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        let prefixed = markup2
+            .format(options: .default)
+            .trimmingForMarkdown()
             .unicodesPrefix(maxLength)
         let document2 = Document(parsing: prefixed)
         var paragraphCounter = ParagraphCounter()
@@ -30,8 +31,9 @@ extension String {
             }
         }
 
-        var prefixed2 = markup2.format(options: .default)
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+        var prefixed2 = markup2
+            .format(options: .default)
+            .trimmingForMarkdown()
             .unicodesPrefix(maxLength)
         var document3 = Document(parsing: prefixed2)
         if let last = Array(document3.blockChildren).last,
@@ -39,24 +41,34 @@ extension String {
             document3 = Document(document3.blockChildren.dropLast())
             prefixed2 = document3
                 .format(options: .default)
-                .trimmingCharacters(in: .whitespacesAndNewlines)
+                .trimmingForMarkdown()
                 .unicodesPrefix(maxLength)
         }
 
-        var formattedLines = prefixed2.split(
+        return prefixed2
+    }
+
+    private func trimmingForMarkdown() -> String {
+        self.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        ).trimmingWorthlessLines()
+    }
+
+    private func trimmingWorthlessLines() -> String {
+        var lines = self.split(
             omittingEmptySubsequences: false,
             whereSeparator: \.isNewline
         )
 
-        while formattedLines.first?.isWorthlessLineForTrim ?? false {
-            formattedLines.removeFirst()
+        while lines.first?.isWorthlessLineForTrim ?? false {
+            lines.removeFirst()
         }
 
-        while formattedLines.last?.isWorthlessLineForTrim ?? false {
-            formattedLines.removeLast()
+        while lines.last?.isWorthlessLineForTrim ?? false {
+            lines.removeLast()
         }
 
-        return formattedLines.joined(separator: "\n")
+        return lines.joined(separator: "\n")
     }
 
     func contentsOfHeading(named: String) -> String? {
