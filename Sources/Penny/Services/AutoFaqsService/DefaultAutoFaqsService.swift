@@ -5,7 +5,7 @@ import Foundation
 #endif
 import DiscordModels
 import Models
-import Collections
+@preconcurrency import Collections
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
@@ -27,7 +27,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
             }
         }
         private var expirationTime: TimeInterval {
-            60 * 60
+            60 * 60 * 6
         }
         var count: Int {
             self.expirationTimeTable.count
@@ -151,12 +151,13 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     private func freshenCache(_ new: [String: String]) {
-        logger.trace("Will refresh faqs cache", metadata: [
+        logger.trace("Will refresh auto-faqs cache", metadata: [
             "new": .stringConvertible(new)
         ])
         self._cachedItems = new
         self._cachedFoldedItems = Dictionary(
-            uniqueKeysWithValues: new.map({ ($0.key.superHeavyFolded(), $0.value) })
+            new.map({ ($0.key.superHeavyFolded(), $0.value) }),
+            uniquingKeysWith: { l, _ in l }
         )
         self._cachedNamesHashTable = Dictionary(
             uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })

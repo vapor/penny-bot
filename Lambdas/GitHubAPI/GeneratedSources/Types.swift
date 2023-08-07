@@ -5495,9 +5495,9 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/updated_at`.
             public var updated_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/closed_at`.
-            public var closed_at: Foundation.Date
+            public var closed_at: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/due_on`.
-            public var due_on: Foundation.Date
+            public var due_on: Foundation.Date?
             /// Creates a new `nullable_milestone`.
             ///
             /// - Parameters:
@@ -5532,8 +5532,8 @@ public enum Components {
                 closed_issues: Swift.Int,
                 created_at: Foundation.Date,
                 updated_at: Foundation.Date,
-                closed_at: Foundation.Date,
-                due_on: Foundation.Date
+                closed_at: Foundation.Date? = nil,
+                due_on: Foundation.Date? = nil
             ) {
                 self.url = url
                 self.html_url = html_url
@@ -17392,7 +17392,7 @@ public enum Operations {
                 ///   - body: Received HTTP response body
                 public init(
                     headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok
-                        .Headers,
+                        .Headers = .init(),
                     body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -17695,7 +17695,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.repos_list_contributors.Output.Ok.Headers,
+                    headers: Operations.repos_list_contributors.Output.Ok.Headers = .init(),
                     body: Operations.repos_list_contributors.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -17974,7 +17974,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.issues_list_for_repo.Output.Ok.Headers,
+                    headers: Operations.issues_list_for_repo.Output.Ok.Headers = .init(),
                     body: Operations.issues_list_for_repo.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -18302,7 +18302,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.issues_create.Output.Created.Headers,
+                    headers: Operations.issues_create.Output.Created.Headers = .init(),
                     body: Operations.issues_create.Output.Created.Body
                 ) {
                     self.headers = headers
@@ -18471,7 +18471,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.issues_create_comment.Output.Created.Headers,
+                    headers: Operations.issues_create_comment.Output.Created.Headers = .init(),
                     body: Operations.issues_create_comment.Output.Created.Body
                 ) {
                     self.headers = headers
@@ -18717,7 +18717,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.pulls_list.Output.Ok.Headers,
+                    headers: Operations.pulls_list.Output.Ok.Headers = .init(),
                     body: Operations.pulls_list.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -18916,7 +18916,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.pulls_list_review_comments.Output.Ok.Headers,
+                    headers: Operations.pulls_list_review_comments.Output.Ok.Headers = .init(),
                     body: Operations.pulls_list_review_comments.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -19039,7 +19039,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.pulls_list_files.Output.Ok.Headers,
+                    headers: Operations.pulls_list_files.Output.Ok.Headers = .init(),
                     body: Operations.pulls_list_files.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -19175,7 +19175,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.repos_list_releases.Output.Ok.Headers,
+                    headers: Operations.repos_list_releases.Output.Ok.Headers = .init(),
                     body: Operations.repos_list_releases.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -19406,7 +19406,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.repos_create_release.Output.Created.Headers,
+                    headers: Operations.repos_create_release.Output.Created.Headers = .init(),
                     body: Operations.repos_create_release.Output.Created.Body
                 ) {
                     self.headers = headers
@@ -19659,7 +19659,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.repos_list_tags.Output.Ok.Headers,
+                    headers: Operations.repos_list_tags.Output.Ok.Headers = .init(),
                     body: Operations.repos_list_tags.Output.Ok.Body
                 ) {
                     self.headers = headers

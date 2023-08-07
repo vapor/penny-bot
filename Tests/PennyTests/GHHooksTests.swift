@@ -375,6 +375,10 @@ class GHHooksTests: XCTestCase {
         XCTAssertTrue(body.hasPrefix("## What's Changed"), body)
     }
 
+    func testf() async throws {
+        try await handleEvent(key: "issue4", eventName: .issues, expect: .noResponse)
+    }
+
     func testEventHandler() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
         try await handleEvent(
