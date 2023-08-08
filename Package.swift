@@ -140,7 +140,6 @@ let package = Package(
             additionalDependencies:[
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "Collections", package: "swift-collections"),
-                .product(name: "Logging", package: "swift-log"),
             ]
         ),
         .lambdaTarget(

@@ -49,8 +49,7 @@ struct ReleaseReporter {
             /// If there is only 1 PR or if Penny released this, then just mention the last PR.
             try await self.sendToDiscord(pr: relatedPRs[0])
         } else {
-            /// If it was a manual release, use the release for Discord message.
-            try await sendToDiscordWithRelease()
+            try await sendToDiscord(prs: relatedPRs)
         }
     }
 
@@ -77,7 +76,6 @@ struct ReleaseReporter {
             tags: json
         )
     }
-
 
     func getPRsRelatedToRelease() async throws -> [SimplePullRequest] {
         let tagBefore = try await getTagBefore()
@@ -127,8 +125,6 @@ struct ReleaseReporter {
         return json
     }
 
-
-
     func sendToDiscord(pr: SimplePullRequest) async throws {
         let body = pr.body.map { body -> String in
             body.formatMarkdown(
@@ -139,16 +135,27 @@ struct ReleaseReporter {
 
         let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 
-        let fullName = repo.full_name.urlPathEncoded()
-        let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+        try await sendToDiscord(description: description)
+    }
 
-        try await self.sendToDiscord(embed: .init(
-            title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
-            description: description,
-            url: release.html_url,
-            color: .cyan,
-            image: .init(url: .exact(image))
-        ))
+    func sendToDiscord(prs: [SimplePullRequest]) async throws {
+        let prDescriptions = prs.map {
+            "\($0.title) by [@\($0.user.uiName)](\($0.user.html_url)) in [#\($0.number)](\($0.html_url))"
+        }
+        
+        if prDescriptions.isEmpty {
+            try await sendToDiscordWithRelease()
+        } else {
+            let description = prDescriptions.map {
+                "- \($0)"
+            }.joined(
+                separator: "\n"
+            ).formatMarkdown(
+                maxLength: 256,
+                trailingTextMinLength: 96
+            )
+            try await sendToDiscord(description: description)
+        }
     }
 
     func sendToDiscordWithRelease() async throws {
@@ -163,6 +170,10 @@ struct ReleaseReporter {
             return formatted.isEmpty ? "" : ">>> \(formatted)"
         } ?? ""
 
+        try await sendToDiscord(description: description)
+    }
+
+    func sendToDiscord(description: String) async throws {
         let fullName = repo.full_name.urlPathEncoded()
         let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
 

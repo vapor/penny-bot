@@ -1,5 +1,5 @@
-import GitHubAPI
 import DiscordBM
+import GitHubAPI
 import Logging
 
 /// Sends a "Need translation" message for each PR in a push-commit that needs that.
@@ -10,14 +10,15 @@ struct PRCoinGiver {
     var event: GHEvent {
         context.event
     }
+
     var logger: Logger {
         context.logger
     }
 
     init(context: HandlerContext) throws {
         self.context = context
-        self.commitSHA = try context.event.after.requireValue()
-        self.repo = try context.event.repository.requireValue()
+        commitSHA = try context.event.after.requireValue()
+        repo = try context.event.repository.requireValue()
     }
 
     func handle() async throws {
@@ -31,13 +32,16 @@ struct PRCoinGiver {
             primaryBranch: repo.primaryBranch
         )
         for pr in try await getPRsRelatedToCommit() {
-            if pr.merged_at == nil { continue }
-            if codeOwners.contains(user: pr.user) { continue }
+            if pr.merged_at == nil ||
+                codeOwners.contains(user: pr.user) ||
+                CodeOwners(value: Constants.GitHub.coreTeamMembers).contains(user: pr.user) {
+                continue
+            }
             guard let member = try await context.requester.getDiscordMember(
                 githubID: "\(pr.user.id)"
             ), let discordID = member.user?.id else {
                 logger.debug("Found no Discord member for the GitHub user", metadata: [
-                    "pr": "\(pr)"
+                    "pr": "\(pr)",
                 ])
                 continue
             }
@@ -83,7 +87,8 @@ struct PRCoinGiver {
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
+              case let .json(json) = ok.body
+              else { 
             throw Errors.httpRequestFailed(response: response)
         }
 

@@ -12,6 +12,8 @@ enum Constants {
         static let appID = 360798
         /// The installation-id of Penny for Vapor org.
         static let installationID = 39698047
+        /// Core team members' github usernames.
+        static let coreTeamMembers: Set<String> = ["gwynne", "0xTim"]
     }
 
     enum Channels: ChannelSnowflake, CaseIterable {
