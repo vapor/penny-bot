@@ -12,8 +12,6 @@ enum Constants {
         static let appID = 360798
         /// The installation-id of Penny for Vapor org.
         static let installationID = 39698047
-        /// Core team members' github usernames.
-        static let coreTeamMembers: Set<String> = ["gwynne", "0xTim"]
     }
 
     enum Channels: ChannelSnowflake, CaseIterable {
@@ -23,6 +21,14 @@ enum Constants {
         case thanks = "443074453719744522"
 
         var id: ChannelSnowflake {
+            self.rawValue
+        }
+    }
+
+    enum Roles: RoleSnowflake {
+        case core = "431919254372089857"
+
+        var id: RoleSnowflake {
             self.rawValue
         }
     }

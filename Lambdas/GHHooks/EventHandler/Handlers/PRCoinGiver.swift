@@ -33,8 +33,7 @@ struct PRCoinGiver {
         )
         for pr in try await getPRsRelatedToCommit() {
             if pr.merged_at == nil ||
-                codeOwners.contains(user: pr.user) ||
-                CodeOwners(value: Constants.GitHub.coreTeamMembers).contains(user: pr.user) {
+                codeOwners.contains(user: pr.user) {
                 continue
             }
             guard let member = try await context.requester.getDiscordMember(
@@ -45,6 +44,10 @@ struct PRCoinGiver {
                 ])
                 continue
             }
+
+            /// Core-team members get no coin at all.
+            if Set(member.roles).contains(Constants.Roles.core.id) { continue }
+
             let amount = 3
             let coinResponse = try await context.usersService.postCoin(with: .init(
                 amount: amount,
