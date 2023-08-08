@@ -46,7 +46,7 @@ struct PRCoinGiver {
             }
 
             /// Core-team members get no coin at all.
-            if Set(member.roles).contains(Constants.Roles.core.id) { continue }
+            if member.roles.contains(Constants.Roles.core.id) { continue }
 
             let amount = 3
             let coinResponse = try await context.usersService.postCoin(with: .init(
