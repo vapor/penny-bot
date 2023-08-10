@@ -1,42 +1,42 @@
 [
-    {
-        "authors": [
-            {
-                "link": "https:\/\/github.com\/DougGregor",
-                "name": "Doug Gregor"
-            }
-        ],
-        "id": "SE-0001",
-        "link": "0001-keywords-as-argument-labels.md",
-        "reviewManager": {
-            "link": "",
-            "name": ""
-        },
-        "sha": "cd0c7279af644b38860afaa6e0dba74a1d82107a",
-        "status": {
-            "state": ".implemented",
-            "version": "2.2"
-        },
-        "summary": "Argument labels are an important part of the interface of a Swift function,\ndescribing what particular arguments to the function do and improving\nreadability. Sometimes, the most natural label for an argument coincides with a\nlanguage keyword, such as `in`, `repeat`, or `defer`. Such keywords should be\nallowed as argument labels, allowing better expression of these interfaces.\n",
-        "title": " Allow (most) keywords as argument labels\n",
-        "trackingBugs": [
-            {
-                "assignee": "",
-                "id": "SR-344",
-                "link": "https:\/\/bugs.swift.org\/browse\/SR-344",
-                "radar": "",
-                "resolution": "",
-                "status": "",
-                "title": "",
-                "updated": ""
-            }
-        ],
-        "warnings": [
-            {
-                "kind": "warning",
-                "message": "Missing review manager.",
-                "stage": "parse"
-            }
-        ]
-    }
+  {
+    "authors": [
+      {
+        "link": "https://github.com/DougGregor",
+        "name": "Doug Gregor"
+      }
+    ],
+    "id": "SE-0001",
+    "link": "0001-keywords-as-argument-labels.md",
+    "reviewManager": {
+      "link": "",
+      "name": ""
+    },
+    "sha": "cd0c7279af644b38860afaa6e0dba74a1d82107a",
+    "status": {
+      "state": ".implemented",
+      "version": "2.2"
+    },
+    "summary": "Argument labels are an important part of the interface of a Swift function,\ndescribing what particular arguments to the function do and improving\nreadability. Sometimes, the most natural label for an argument coincides with a\nlanguage keyword, such as `in`, `repeat`, or `defer`. Such keywords should be\nallowed as argument labels, allowing better expression of these interfaces.\n",
+    "title": " Allow (most) keywords as argument labels\n",
+    "trackingBugs": [
+      {
+        "assignee": "",
+        "id": "SR-344",
+        "link": "https://bugs.swift.org/browse/SR-344",
+        "radar": "",
+        "resolution": "",
+        "status": "",
+        "title": "",
+        "updated": ""
+      }
+    ],
+    "warnings": [
+      {
+        "kind": "warning",
+        "message": "Missing review manager.",
+        "stage": "parse"
+      }
+    ]
+  }
 ]

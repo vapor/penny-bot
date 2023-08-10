@@ -10,6 +10,7 @@ public struct GHEvent: Sendable, Codable {
     public let issue: Issue?
     public let label: Label?
     public let number: Int?
+    public let changes: Changes?
     public let pull_request: PullRequest?
     public let release: Release?
     public let before: String?

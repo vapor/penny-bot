@@ -8,6 +8,11 @@ struct IssueHandler {
     var event: GHEvent {
         context.event
     }
+    var repo: Repository {
+        get throws {
+            try event.repository.requireValue()
+        }
+    }
 
     init(context: HandlerContext) throws {
         self.context = context
@@ -23,7 +28,9 @@ struct IssueHandler {
             try await onOpened()
         case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
             try await onEdited()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .transferred, .unassigned, .unlabeled, .unpinned:
+        case .transferred:
+            try await onTransferred()
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
             break
         }
     }
@@ -36,22 +43,56 @@ struct IssueHandler {
         try await makeReporter().reportCreation()
     }
 
-    func makeReporter() async throws -> TicketReporter {
-        TicketReporter(
+    func onTransferred() async throws {
+        let changes = try event.changes.requireValue()
+        let newIssue = try changes.new_issue.requireValue()
+        let newRepo = try changes.new_repository.requireValue()
+        let repo = try repo
+        let existingMessageID = try await context.messageLookupRepo.getMessageID(
+            repoID: repo.id,
+            number: issue.number
+        )
+        try await makeReporter(
+            embedIssue: newIssue,
+            embedRepo: changes.new_repository
+        ).reportEdition()
+        try await context.messageLookupRepo.delete(
+            repoID: repo.id,
+            number: issue.number
+        )
+        try await context.messageLookupRepo.saveMessageID(
+            messageID: existingMessageID,
+            repoID: newRepo.id,
+            number: newIssue.number
+        )
+    }
+
+    func makeReporter(
+        embedIssue: Issue? = nil,
+        embedRepo: Repository? = nil
+    ) async throws -> TicketReporter {
+        return TicketReporter(
             context: context,
-            embed: try await createReportEmbed(),
-            repoID: try context.event.repository.requireValue().id,
+            embed: try await createReportEmbed(
+                issue: embedIssue,
+                repo: embedRepo
+            ),
+            repoID: try repo.id,
             number: issue.number,
             ticketCreatedAt: issue.created_at
         )
     }
 
-    func createReportEmbed() async throws -> Embed {
+    func createReportEmbed(
+        issue: Issue? = nil,
+        repo: Repository? = nil
+    ) async throws -> Embed {
+        let issue = issue ?? self.issue
+        let repo = try repo ?? self.repo
+
         let number = issue.number
 
         let issueLink = issue.html_url
-
-        let repo = try event.repository.requireValue()
 
         let body = issue.body.map { body -> String in
             body.formatMarkdown(

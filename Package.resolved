@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "5d3a2891d80d48d5ff240ecedc8d4bfca01a04a6"
+        "revision" : "62345cdb53f6a1d76c7e9b9b17eb99d44de3c7c6"
       }
     },
     {
@@ -87,7 +87,7 @@
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
         "branch" : "main",
-        "revision" : "630f761959982b83abdd0ac09e8ba3e6ccbccb46"
+        "revision" : "9f5a1b7b29d11ee56865a7961f32c7483f5cd7bb"
       }
     },
     {
@@ -149,7 +149,7 @@
       "location" : "https://github.com/apple/swift-cmark.git",
       "state" : {
         "branch" : "gfm",
-        "revision" : "b1c49eb0752d727fda5dfa63c8bb23670592d7c9"
+        "revision" : "3bc2f3e25df0cecc5dc269f7ccae65d0f386f06a"
       }
     },
     {
@@ -247,8 +247,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-transport-services.git",
       "state" : {
-        "revision" : "41f4098903878418537020075a4d8a6e20a0b182",
-        "version" : "1.17.0"
+        "revision" : "5fd1458c245d5741b3c8ebe55489f590c6ca8f15",
+        "version" : "1.18.0"
       }
     },
     {

@@ -14,15 +14,12 @@ struct TicketReporter {
             }
         }
     }
-    
+
     let context: HandlerContext
     let embed: Embed
     let repoID: Int
     let number: Int
-    /// A ticket could be a PR/Issue or stuff like that.
     let ticketCreatedAt: Date
-
-    let firstReportDate = Date(timeIntervalSince1970: 1688436000)
 
     func reportCreation() async throws {
         let response = try await context.discordClient.createMessage(
@@ -62,22 +59,6 @@ struct TicketReporter {
                     "number": .stringConvertible(number),
                 ]
             )
-
-            /// Report to Discord since this is unexpected.
-            if ticketCreatedAt > firstReportDate {
-                try await context.discordClient.createMessage(
-                    channelId: Constants.Channels.logs.id,
-                    payload: .init(
-                        content: DiscordUtils.mention(id: Constants.botDevUserID),
-                        embeds: [.init(
-                            title: """
-                            GHHooks lambda couldn't find a message to edit for a ticket younger than \(firstReportDate)
-                            """,
-                            color: .red
-                        )]
-                    )
-                ).guardSuccess()
-            }
 
             let response = try await context.discordClient.createMessage(
                 channelId: Constants.Channels.issueAndPRs.id,

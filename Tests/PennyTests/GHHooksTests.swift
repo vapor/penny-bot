@@ -384,6 +384,15 @@ class GHHooksTests: XCTestCase {
         )
         try await handleEvent(key: "issue3", eventName: .issues, expect: .noResponse)
         try await handleEvent(key: "issue4", eventName: .issues, expect: .noResponse)
+        /// Transferred issue.
+        try await handleEvent(
+            key: "issue5",
+            eventName: .issues,
+            expect: .response(
+                at: .issueAndPRs,
+                type: .edit(messageId: FakeMessageLookupRepo.randomMessageID)
+            )
+        )
 
         try await handleEvent(key: "pr1", eventName: .pull_request, expect: .noResponse)
         try await handleEvent(key: "pr2", eventName: .pull_request, expect: .noResponse)

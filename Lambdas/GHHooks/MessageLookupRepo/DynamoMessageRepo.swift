@@ -46,13 +46,25 @@ struct DynamoMessageRepo: MessageLookupRepo {
         "\(repoID)_\(number)"
     }
 
-    /// Returns nil if message is unavailable to edit.
     func getMessageID(repoID: Int, number: Int) async throws -> String {
         let item = try await self.getItem(repoID: repoID, number: number)
         if item.isUnavailable {
             throw Errors.unavailable
         }
         return item.messageID
+    }
+
+    func delete(repoID: Int, number: Int) async throws {
+        let id = makeTicketID(repoID: repoID, number: number)
+        let query = DynamoDB.DeleteItemInput(
+            key: ["id": .s(id)],
+            tableName: self.tableName
+        )
+        _ = try await db.deleteItem(
+            query,
+            logger: self.logger,
+            on: self.db.eventLoopGroup.any()
+        )
     }
 
     private func getItem(repoID: Int, number: Int) async throws -> Item {
