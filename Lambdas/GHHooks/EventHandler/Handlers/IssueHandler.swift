@@ -56,7 +56,7 @@ struct IssueHandler {
             embedIssue: newIssue,
             embedRepo: changes.new_repository
         ).reportEdition()
-        try await context.messageLookupRepo.delete(
+        try await context.messageLookupRepo.markAsUnavailable(
             repoID: repo.id,
             number: issue.number
         )

@@ -401,11 +401,15 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -518,11 +522,15 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
@@ -647,16 +655,22 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "anon",
                     value: input.query.anon
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -773,56 +787,78 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "milestone",
                     value: input.query.milestone
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "state",
                     value: input.query.state
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "assignee",
                     value: input.query.assignee
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "creator",
                     value: input.query.creator
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "mentioned",
                     value: input.query.mentioned
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "labels",
                     value: input.query.labels
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "sort",
                     value: input.query.sort
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "direction",
                     value: input.query.direction
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "since",
                     value: input.query.since
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -1306,36 +1342,50 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "state",
                     value: input.query.state
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "head",
                     value: input.query.head
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "base",
                     value: input.query.base
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "sort",
                     value: input.query.sort
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "direction",
                     value: input.query.direction
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -1425,26 +1475,36 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "sort",
                     value: input.query.sort
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "direction",
                     value: input.query.direction
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "since",
                     value: input.query.since
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -1510,11 +1570,15 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -1645,11 +1709,15 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )
@@ -1902,11 +1970,15 @@ public struct Client: APIProtocol {
                 suppressMutabilityWarning(&request)
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "per_page",
                     value: input.query.per_page
                 )
                 try converter.setQueryItemAsText(
                     in: &request,
+                    style: .form,
+                    explode: true,
                     name: "page",
                     value: input.query.page
                 )

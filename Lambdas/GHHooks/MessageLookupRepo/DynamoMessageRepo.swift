@@ -54,19 +54,6 @@ struct DynamoMessageRepo: MessageLookupRepo {
         return item.messageID
     }
 
-    func delete(repoID: Int, number: Int) async throws {
-        let id = makeTicketID(repoID: repoID, number: number)
-        let query = DynamoDB.DeleteItemInput(
-            key: ["id": .s(id)],
-            tableName: self.tableName
-        )
-        _ = try await db.deleteItem(
-            query,
-            logger: self.logger,
-            on: self.db.eventLoopGroup.any()
-        )
-    }
-
     private func getItem(repoID: Int, number: Int) async throws -> Item {
         let id = makeTicketID(repoID: repoID, number: number)
         let query = DynamoDB.QueryInput(
