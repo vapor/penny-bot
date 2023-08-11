@@ -65,8 +65,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
         let results = try await db.query(
             query,
             type: Item.self,
-            logger: self.logger,
-            on: self.db.eventLoopGroup.any()
+            logger: self.logger
         )
         guard let item = results.items?.first else {
             throw Errors.notFound
@@ -99,8 +98,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
 
         _ = try await db.updateItem(
             input,
-            logger: self.logger,
-            on: self.db.eventLoopGroup.any()
+            logger: self.logger
         )
     }
 }

@@ -9,7 +9,6 @@ struct DynamoUserRepository {
     }
 
     let db: DynamoDB
-    let eventLoop: any EventLoop
     let logger: Logger
 
     let tableName = "penny-user-table"
@@ -18,14 +17,13 @@ struct DynamoUserRepository {
 
     init(db: DynamoDB, logger: Logger) {
         self.db = db
-        self.eventLoop = db.eventLoopGroup.any()
         self.logger = logger
     }
 
     func createUser(_ user: DynamoDBUser) async throws {
         let input = DynamoDB.PutItemCodableInput(item: user, tableName: self.tableName)
 
-        _ = try await db.putItem(input, logger: self.logger, on: self.eventLoop)
+        _ = try await db.putItem(input, logger: self.logger)
     }
 
     func updateUser(_ user: DynamoDBUser) async throws -> Void {
@@ -42,7 +40,7 @@ struct DynamoUserRepository {
             tableName: self.tableName,
             updateItem: user
         )
-        _ = try await db.updateItem(input, logger: self.logger, on: self.eventLoop)
+        _ = try await db.updateItem(input, logger: self.logger)
     }
 
     func getUser(discordID: UserSnowflake) async throws -> DynamoDBUser? {
@@ -74,8 +72,7 @@ struct DynamoUserRepository {
         var user = try await db.query(
             query,
             type: DynamoDBUser.self,
-            logger: self.logger,
-            on: self.eventLoop
+            logger: self.logger
         ).items?.first
 
         if user?.githubID == Configuration.githubIDNilEquivalent {

@@ -45,21 +45,17 @@ public struct S3FaqsRepository {
             throw error
         }
 
-        if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
-            do {
-                return try decoder.decode([String: String].self, from: buffer)
-            } catch {
-                let body = response.body?.asString() ?? "nil"
-                logger.error("Cannot find any data in the bucket", metadata: [
-                    "response-body": .string(body),
-                    "error": "\(error)"
-                ])
-                return [String: String]()
-            }
-        } else {
-            let body = response.body?.asString() ?? "nil"
+        let body = try await response.body.collect(upTo: 1 << 24)
+        if body.readableBytes == 0 {
+            logger.error("Cannot find any data in the bucket")
+            return [String: String]()
+        }
+        do {
+            return try decoder.decode([String: String].self, from: body)
+        } catch {
             logger.error("Cannot find any data in the bucket", metadata: [
-                "response-body": .string(body)
+                "response-body": .string(String(buffer: body)),
+                "error": "\(error)"
             ])
             return [String: String]()
         }
@@ -69,7 +65,7 @@ public struct S3FaqsRepository {
         let data = try encoder.encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
-            body: .data(data),
+            body: .init(bytes: data),
             bucket: bucket,
             key: key
         )
