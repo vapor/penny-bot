@@ -1,12 +1,12 @@
-import JWTKit
-import GitHubAPI
-import OpenAPIRuntime
 import AsyncHTTPClient
-import OpenAPIAsyncHTTPClient
-import Logging
-import LambdasShared
-import Shared
 import Foundation
+import GitHubAPI
+import JWTKit
+import LambdasShared
+import Logging
+import OpenAPIAsyncHTTPClient
+import OpenAPIRuntime
+import Shared
 
 actor Authenticator {
     private let secretsRetriever: SecretsRetriever
@@ -31,30 +31,32 @@ actor Authenticator {
     /// live long enough to be expired in the first place, so then we can think of refreshing it.
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> String {
         try await queue.process(queueKey: "default") {
-            if !forceRefreshToken,
-               let cachedAccessToken = await cachedAccessToken {
-                return cachedAccessToken.token
-            } else {
+            guard !forceRefreshToken,
+                let cachedAccessToken = await cachedAccessToken
+            else {
                 let token = try await makeJWTToken()
                 let client = try await makeClient(token: token)
                 let accessToken = try await createAccessToken(client: client)
                 await setCachedAccessToken(to: accessToken)
                 return accessToken.token
             }
+            return cachedAccessToken.token
         }
     }
 
     private func createAccessToken(client: Client) async throws -> InstallationToken {
-        let response = try await client.apps_create_installation_access_token(.init(
-            path: .init(installation_id: Constants.GitHub.installationID)
-        ))
+        let response = try await client.apps_create_installation_access_token(
+            .init(
+                path: .init(installation_id: Constants.GitHub.installationID)
+            )
+        )
 
-        if case let .created(created) = response,
-           case let .json(json) = created.body {
-            return json
-        } else {
+        guard case let .created(created) = response,
+            case let .json(json) = created.body
+        else {
             throw Errors.httpRequestFailed(response: response)
         }
+        return json
     }
 
     private func makeClient(token: String) throws -> Client {

@@ -1,20 +1,20 @@
-import DiscordBM
 import AsyncHTTPClient
+import DiscordBM
+import Foundation
+import GitHubAPI
+import Logging
+import Markdown
 import NIOCore
 import NIOFoundationCompat
-import GitHubAPI
 import SwiftSemver
-import Markdown
-import Logging
-import Foundation
 
 struct ReleaseMaker {
 
     enum Configuration {
-        static let repositoryIDDenyList: Set<Int> = [/*postgres-nio:*/ 150622661]
+        static let repositoryIDDenyList: Set<Int> = [ /*postgres-nio:*/150_622_661]
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
-        static let organizationIDAllowList: Set<Int> = [/*vapor:*/ 17364220]
+        static let organizationIDAllowList: Set<Int> = [ /*vapor:*/17_364_220]
     }
 
     enum PRErrors: Error, CustomStringConvertible {
@@ -29,7 +29,8 @@ struct ReleaseMaker {
             case let .cantBumpSemVer(version, bump):
                 return "cantBumpSemVer(version: \(version), bump: \(bump))"
             case let .cantFindAnyRelease(latest, releases):
-                return "cantFindAnyRelease(latest: \(String(describing: latest)), releases: \(releases))"
+                return
+                    "cantFindAnyRelease(latest: \(String(describing: latest)), releases: \(releases))"
             }
         }
     }
@@ -54,10 +55,10 @@ struct ReleaseMaker {
 
     func handle() async throws {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
-              Configuration.organizationIDAllowList.contains(repo.owner.id),
-              let mergedBy = pr.merged_by,
-              pr.base.ref == "main",
-              let bump = pr.knownLabels.first?.toBump()
+            Configuration.organizationIDAllowList.contains(repo.owner.id),
+            let mergedBy = pr.merged_by,
+            pr.base.ref == "main",
+            let bump = pr.knownLabels.first?.toBump()
         else { return }
 
         let previousRelease = try await getLastRelease()
@@ -85,40 +86,47 @@ struct ReleaseMaker {
     func getLastRelease() async throws -> Release {
         let latest = try await self.getLatestRelease()
 
-        let response = try await context.githubClient.repos_list_releases(.init(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
+        let response = try await context.githubClient.repos_list_releases(
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name
+                )
             )
-        ))
+        )
 
         guard case let .ok(ok) = response,
-              case let .json(releases) = ok.body
+            case let .json(releases) = ok.body
         else {
             throw Errors.httpRequestFailed(response: response)
         }
 
-        let filteredReleases: [Release] = releases.compactMap {
-            release -> (Release, SemanticVersion)? in
-            if let (_, version) = SemanticVersion.fromGitHubTag(release.tag_name) {
-                return (release, version)
+        let filteredReleases: [Release] =
+            releases.compactMap {
+                release -> (Release, SemanticVersion)? in
+                if let (_, version) = SemanticVersion.fromGitHubTag(release.tag_name) {
+                    return (release, version)
+                }
+                return nil
             }
-            return nil
-        }.filter { release, version -> Bool in
-            if let majorVersion = Int(pr.base.ref) {
-                /// If the branch name is an integer, only include releases
-                /// for that major version.
-                return version.major == majorVersion
+            .filter { release, version -> Bool in
+                if let majorVersion = Int(pr.base.ref) {
+                    /// If the branch name is an integer, only include releases
+                    /// for that major version.
+                    return version.major == majorVersion
+                }
+                return true
             }
-            return true
-        }.sorted {
-            $0.1 > $1.1
-        }.sorted { (lhs, rhs) in
-            if let latest {
-                return latest.id == lhs.0.id
+            .sorted {
+                $0.1 > $1.1
             }
-            return true
-        }.map(\.0)
+            .sorted { (lhs, rhs) in
+                if let latest {
+                    return latest.id == lhs.0.id
+                }
+                return true
+            }
+            .map(\.0)
 
         guard let release = filteredReleases.first else {
             throw PRErrors.cantFindAnyRelease(latest: latest, releases: releases)
@@ -128,12 +136,14 @@ struct ReleaseMaker {
     }
 
     private func getLatestRelease() async throws -> Release? {
-        let response = try await context.githubClient.repos_get_latest_release(.init(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
+        let response = try await context.githubClient.repos_get_latest_release(
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name
+                )
             )
-        ))
+        )
 
         switch response {
         case let .ok(ok):
@@ -144,11 +154,14 @@ struct ReleaseMaker {
         default: break
         }
 
-        logger.warning("Could not find a 'latest' release", metadata: [
-            "owner": .string(repo.owner.login),
-            "name": .string(repo.name),
-            "response": "\(response)",
-        ])
+        logger.warning(
+            "Could not find a 'latest' release",
+            metadata: [
+                "owner": .string(repo.owner.login),
+                "name": .string(repo.name),
+                "response": "\(response)",
+            ]
+        )
 
         return nil
     }
@@ -164,21 +177,25 @@ struct ReleaseMaker {
             previousVersion: previousVersion,
             newVersion: newVersion
         )
-        let response = try await context.githubClient.repos_create_release(.init(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
-            ),
-            body: .json(.init(
-                tag_name: newVersion,
-                target_commitish: pr.base.ref,
-                name: "\(newVersion) - \(pr.title)",
-                body: body,
-                draft: false,
-                prerelease: isPrerelease,
-                make_latest: isPrerelease ? ._false : ._true
-            ))
-        ))
+        let response = try await context.githubClient.repos_create_release(
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name
+                ),
+                body: .json(
+                    .init(
+                        tag_name: newVersion,
+                        target_commitish: pr.base.ref,
+                        name: "\(newVersion) - \(pr.title)",
+                        body: body,
+                        draft: false,
+                        prerelease: isPrerelease,
+                        make_latest: isPrerelease ? ._false : ._true
+                    )
+                )
+            )
+        )
 
         switch response {
         case let .created(created):
@@ -194,18 +211,22 @@ struct ReleaseMaker {
 
     func sendComment(release: Release) async throws {
         /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
-        let response = try await context.githubClient.issues_create_comment(.init(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                issue_number: number
-            ),
-            body: .json(.init(
-                body: """
-                These changes are now available in [\(release.tag_name)](\(release.html_url))
-                """
-            ))
-        ))
+        let response = try await context.githubClient.issues_create_comment(
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    issue_number: number
+                ),
+                body: .json(
+                    .init(
+                        body: """
+                            These changes are now available in [\(release.tag_name)](\(release.html_url))
+                            """
+                    )
+                )
+            )
+        )
 
         switch response {
         case .created: return
@@ -236,12 +257,14 @@ struct ReleaseMaker {
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners).map(\.uiName)
 
-        let body = pr.body.map {
-            $0.formatMarkdown(
-                maxLength: 512,
-                trailingTextMinLength: 96
-            ).quotedMarkdown()
-        } ?? ""
+        let body =
+            pr.body.map {
+                $0.formatMarkdown(
+                    maxLength: 512,
+                    trailingTextMinLength: 96
+                )
+                .quotedMarkdown()
+            } ?? ""
 
         return try await context.renderClient.newReleaseDescription(
             context: .init(
@@ -266,18 +289,17 @@ struct ReleaseMaker {
     func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [User] {
         let usernames = codeOwners.union([pr.user.login])
         let reviewComments = try await getReviewComments()
-        let reviewers = reviewComments.map(\.user).filter { user in
-            !(usernames.contains(user: user) || user.isBot)
-        }
+        let reviewers = reviewComments.map(\.user)
+            .filter { user in
+                !(usernames.contains(user: user) || user.isBot)
+            }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
         let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
         return sorted
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
-        if pr.author_association == .OWNER ||
-            pr.user.isBot ||
-            codeOwners.contains(user: pr.user) {
+        if pr.author_association == .OWNER || pr.user.isBot || codeOwners.contains(user: pr.user) {
             return false
         }
         return !existingContributors.contains(pr.user.id)
@@ -285,19 +307,24 @@ struct ReleaseMaker {
 
     func getReviewComments() async throws -> [PullRequestReviewComment] {
         let response = try await context.githubClient.pulls_list_review_comments(
-            .init(path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                pull_number: number
-            ))
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    pull_number: number
+                )
+            )
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
+            case let .json(json) = ok.body
         else {
-            logger.warning("Could not find review comments", metadata: [
-                "response": "\(response)"
-            ])
+            logger.warning(
+                "Could not find review comments",
+                metadata: [
+                    "response": "\(response)"
+                ]
+            )
             return []
         }
 
@@ -306,18 +333,23 @@ struct ReleaseMaker {
 
     func getExistingContributorIDs() async throws -> Set<Int> {
         let response = try await context.githubClient.repos_list_contributors(
-            .init(path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
-            ))
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name
+                )
+            )
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
+            case let .json(json) = ok.body
         else {
-            logger.warning("Could not find current contributors", metadata: [
-                "response": "\(response)"
-            ])
+            logger.warning(
+                "Could not find current contributors",
+                metadata: [
+                    "response": "\(response)"
+                ]
+            )
             return []
         }
 

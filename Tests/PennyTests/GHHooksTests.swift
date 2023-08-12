@@ -1,15 +1,16 @@
-@testable import GHHooksLambda
 import AsyncHTTPClient
-import GitHubAPI
-import SotoCore
 import DiscordModels
+import Fake
+import GitHubAPI
+import Logging
+import Markdown
 import OpenAPIRuntime
 import Rendering
-import Logging
+import SotoCore
 import SwiftSemver
-import Markdown
-import Fake
 import XCTest
+
+@testable import GHHooksLambda
 
 class GHHooksTests: XCTestCase {
     let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
@@ -136,20 +137,21 @@ class GHHooksTests: XCTestCase {
     func testMarkdownFormatting() async throws {
         /// Remove html and images + length limits.
         do {
-            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let scalars_206 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
+                <!-- 🚀 Thank you for contributing! -->
 
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
 
-            <!-- Describe your changes clearly and use examples if possible -->
+                <!-- Describe your changes clearly and use examples if possible -->
 
-            \(scalars_206)
+                \(scalars_206)
 
-            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+                <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
 
-            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
             XCTAssertMultilineStringsEqual(formatted, scalars_206)
@@ -157,191 +159,211 @@ class GHHooksTests: XCTestCase {
 
         /// Remove html and images + length limits.
         do {
-            let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
+            let scalars_190 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
+                <!-- 🚀 Thank you for contributing! -->
 
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
 
-            <!-- Describe your changes clearly and use examples if possible -->
+                <!-- Describe your changes clearly and use examples if possible -->
 
-            \(scalars_190)
+                \(scalars_190)
 
-            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+                <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
 
-            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
-            XCTAssertMultilineStringsEqual(formatted, scalars_190 + """
+            XCTAssertMultilineStringsEqual(
+                formatted,
+                scalars_190 + """
 
 
-            Custom coders specified for a single `JWTSigner` affect token p…
-            """)
+                    Custom coders specified for a single `JWTSigner` affect token p…
+                    """
+            )
         }
 
         /// Remove html and images + length limits.
         do {
-            let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
+            let scalars_aLot =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
+                <!-- 🚀 Thank you for contributing! -->
 
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
 
-            <!-- Describe your changes clearly and use examples if possible -->
+                <!-- Describe your changes clearly and use examples if possible -->
 
-            \(scalars_aLot)
+                \(scalars_aLot)
 
-            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+                <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
 
-            on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
-            XCTAssertMultilineStringsEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token pa…")
+            XCTAssertMultilineStringsEqual(
+                formatted,
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token pa…"
+            )
         }
 
         /// Remove empty links
         do {
             let text = """
-            Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
-            
-            [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=sass&package-manager=npm_and_yarn&previous-version=1.63.6&new-version=1.64.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+                Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
-            Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+                [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=sass&package-manager=npm_and_yarn&previous-version=1.63.6&new-version=1.64.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
 
-            [//]: # (dependabot-automerge-start)
-            [//]: # (dependabot-automerge-end)
+                Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
 
-            ---
+                [//]: # (dependabot-automerge-start)
+                [//]: # (dependabot-automerge-end)
 
-            <details>
-            <summary>Dependabot commands and options</summary>
-            <br />
+                ---
 
-            You can trigger Dependabot actions by commenting on this PR:
-            """
+                <details>
+                <summary>Dependabot commands and options</summary>
+                <br />
+
+                You can trigger Dependabot actions by commenting on this PR:
+                """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
-            XCTAssertMultilineStringsEqual(formatted, """
-            Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
+            XCTAssertMultilineStringsEqual(
+                formatted,
+                """
+                Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
-            Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
-            """)
+                Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+                """
+            )
         }
 
         do {
             let text = """
-            ### Describe the bug
+                ### Describe the bug
 
-            I've got a custom `Codable` type that throws an error when decoding... because it's being asked to decode an empty string, rather than being skipped because I've got `T?` rather than `T` as the type in my `Content`.
+                I've got a custom `Codable` type that throws an error when decoding... because it's being asked to decode an empty string, rather than being skipped because I've got `T?` rather than `T` as the type in my `Content`.
 
-            ### To Reproduce
+                ### To Reproduce
 
-            1. Declare some custom `Codable` type that throws an error if told to decode from an empty string.
-            2. Declare some custom `Content` struct that has an `Optional` of your custom type as a parameter.
-            3. Have a browser submit a request that includes `yourThing: ` in the body. (Doable in Safari by creating an HTML form, giving it a date input with the right `name`, and then... not selecting a date before hitting submit)
-            4. Observe thrown error.
-            """
+                1. Declare some custom `Codable` type that throws an error if told to decode from an empty string.
+                2. Declare some custom `Content` struct that has an `Optional` of your custom type as a parameter.
+                3. Have a browser submit a request that includes `yourThing: ` in the body. (Doable in Safari by creating an HTML form, giving it a date input with the right `name`, and then... not selecting a date before hitting submit)
+                4. Observe thrown error.
+                """
 
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
-            XCTAssertMultilineStringsEqual(formatted, """
-            ### Describe the bug
+            XCTAssertMultilineStringsEqual(
+                formatted,
+                """
+                ### Describe the bug
 
-            I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
-            """)
+                I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
+                """
+            )
         }
 
         do {
             let text = """
-            ### Describe the bug
+                ### Describe the bug
 
-            White text on white background is not readable.
+                White text on white background is not readable.
 
-            ### To Reproduce
+                ### To Reproduce
 
-            Go to [https://api.vapor.codes/fluent/documentation/fluent/](https://api.vapor.codes/fluent/documentation/fluent/)
+                Go to [https://api.vapor.codes/fluent/documentation/fluent/](https://api.vapor.codes/fluent/documentation/fluent/)
 
-            ### Expected behavior
+                ### Expected behavior
 
-            Expect some contrast between the text and the background.
+                Expect some contrast between the text and the background.
 
-            ### Environment
+                ### Environment
 
-            * Vapor Framework version: current [https://api.vapor.codes/](https://api.vapor.codes/) website
-            * Vapor Toolbox version: N/A
-            * OS version: N/A
-            """
+                * Vapor Framework version: current [https://api.vapor.codes/](https://api.vapor.codes/) website
+                * Vapor Toolbox version: N/A
+                * OS version: N/A
+                """
             let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
 
-            XCTAssertMultilineStringsEqual(formatted, """
-            ### Describe the bug
+            XCTAssertMultilineStringsEqual(
+                formatted,
+                """
+                ### Describe the bug
 
-            White text on white background is not readable.
+                White text on white background is not readable.
 
-            ### To Reproduce
+                ### To Reproduce
 
-            Go to <https://api.vapor.codes/fluent/documentation/fluent/>
+                Go to <https://api.vapor.codes/fluent/documentation/fluent/>
 
-            ### Expected behavior
+                ### Expected behavior
 
-            Expect some contrast between the text and the background.
-            """)
+                Expect some contrast between the text and the background.
+                """
+            )
         }
     }
 
     func testHeadingFinder() async throws {
         /// Goes into the `What's Changed` heading.
         let text = """
-        ## What's Changed
-        * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
-        * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
-        * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
-        * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+            ## What's Changed
+            * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+            * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+            * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+            * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
 
-        ## New Contributors
-        * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
+            ## New Contributors
+            * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
 
-        **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
-        """
+            **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
+            """
 
         let contentsOfHeading = try XCTUnwrap(text.contentsOfHeading(named: "What's Changed"))
-        XCTAssertMultilineStringsEqual(contentsOfHeading, """
-        - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
-        - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
-        - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
-        - Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
-        """)
+        XCTAssertMultilineStringsEqual(
+            contentsOfHeading,
+            """
+            - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+            - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+            - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+            - Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+            """
+        )
     }
 
     func testParseCodeOwners() async throws {
         let text = """
-        # This is a comment.
-        # Each line is a file pattern followed by one or more owners.
+            # This is a comment.
+            # Each line is a file pattern followed by one or more owners.
 
-        # These owners will be the default owners for everything in
-        *       @global-owner1 @global-owner2
+            # These owners will be the default owners for everything in
+            *       @global-owner1 @global-owner2
 
-        *.js    @js-owner #This is an inline comment.
+            *.js    @js-owner #This is an inline comment.
 
-        *.go docs@example.com
+            *.go docs@example.com
 
-        *.txt @octo-org/octocats
-        /build/logs/ @doctocat
+            *.txt @octo-org/octocats
+            /build/logs/ @doctocat
 
-        # The `docs/*` pattern will match files like
-        # `docs/getting-started.md` but not further nested files like
-        # `docs/build-app/troubleshooting.md`.
-        docs/*  docs@example.com
+            # The `docs/*` pattern will match files like
+            # `docs/getting-started.md` but not further nested files like
+            # `docs/build-app/troubleshooting.md`.
+            docs/*  docs@example.com
 
-        apps/ @octocat
-        /docs/ @doctocat
-        /scripts/ @doctocat @octocat
-        **/logs @octocat
+            apps/ @octocat
+            /docs/ @doctocat
+            /scripts/ @doctocat @octocat
+            **/logs @octocat
 
-        /apps/ @octocat
-        /apps/github
-        """
+            /apps/ @octocat
+            /apps/github
+            """
         let context = try makeContext(
             eventName: .pull_request,
             eventKey: "pr1"
@@ -353,7 +375,10 @@ class GHHooksTests: XCTestCase {
         )
         XCTAssertEqual(
             handler.context.requester.parseCodeOwners(text: text).value.sorted(),
-            ["docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner", "octo-org/octocats", "octocat"]
+            [
+                "docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner",
+                "octo-org/octocats", "octocat",
+            ]
         )
     }
 
@@ -418,7 +443,10 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "pr7",
             eventName: .pull_request,
-            expect: .error(description: "DiscordHTTPError.emptyBody(DiscordHTTPResponse(host: discord.com, status: 200 OK, version: HTTP/2.0, headers: [], body: nil))")
+            expect: .error(
+                description:
+                    "DiscordHTTPError.emptyBody(DiscordHTTPResponse(host: discord.com, status: 200 OK, version: HTTP/2.0, headers: [], body: nil))"
+            )
         )
 
         try await handleEvent(
@@ -528,26 +556,33 @@ class GHHooksTests: XCTestCase {
                     eventName: eventName,
                     event: event
                 )
-            ).handle()
+            )
+            .handle()
             switch expect {
             case let .response(channel, responseType):
                 switch responseType {
                 case .create:
-                    let response = await FakeResponseStorage.shared.awaitResponse(
-                        at: .createMessage(channelId: channel.id),
-                        line: line
-                    ).value
+                    let response = await FakeResponseStorage.shared
+                        .awaitResponse(
+                            at: .createMessage(channelId: channel.id),
+                            line: line
+                        )
+                        .value
                     XCTAssertEqual(
-                        "\(type(of: response))", "\(Payloads.CreateMessage.self)",
+                        "\(type(of: response))",
+                        "\(Payloads.CreateMessage.self)",
                         line: line
                     )
                 case let .edit(messageId):
-                    let response = await FakeResponseStorage.shared.awaitResponse(
-                        at: .updateMessage(channelId: channel.id, messageId: messageId),
-                        line: line
-                    ).value
+                    let response = await FakeResponseStorage.shared
+                        .awaitResponse(
+                            at: .updateMessage(channelId: channel.id, messageId: messageId),
+                            line: line
+                        )
+                        .value
                     XCTAssertEqual(
-                        "\(type(of: response))", "\(Payloads.EditMessage.self)",
+                        "\(type(of: response))",
+                        "\(Payloads.EditMessage.self)",
                         line: line
                     )
                 }
@@ -557,26 +592,32 @@ class GHHooksTests: XCTestCase {
                         group.addTask {
                             switch failure.type {
                             case .create:
-                                let response = await FakeResponseStorage.shared.awaitResponse(
-                                    at: .createMessage(channelId: failure.channel.id),
-                                    expectFailure: true,
-                                    line: line
-                                ).value
+                                let response = await FakeResponseStorage.shared
+                                    .awaitResponse(
+                                        at: .createMessage(channelId: failure.channel.id),
+                                        expectFailure: true,
+                                        line: line
+                                    )
+                                    .value
                                 XCTAssertEqual(
-                                    "\(type(of: response))", "Optional<Never>",
+                                    "\(type(of: response))",
+                                    "Optional<Never>",
                                     line: line
                                 )
                             case let .edit(messageID):
-                                let response = await FakeResponseStorage.shared.awaitResponse(
-                                    at: .updateMessage(
-                                        channelId: failure.channel.id,
-                                        messageId: messageID
-                                    ),
-                                    expectFailure: true,
-                                    line: line
-                                ).value
+                                let response = await FakeResponseStorage.shared
+                                    .awaitResponse(
+                                        at: .updateMessage(
+                                            channelId: failure.channel.id,
+                                            messageId: messageID
+                                        ),
+                                        expectFailure: true,
+                                        line: line
+                                    )
+                                    .value
                                 XCTAssertEqual(
-                                    "\(type(of: response))", "Optional<Never>",
+                                    "\(type(of: response))",
+                                    "Optional<Never>",
                                     line: line
                                 )
                             }
@@ -588,7 +629,8 @@ class GHHooksTests: XCTestCase {
             }
         } catch {
             if case let .error(description) = expect,
-               description == "\(error)" {
+                description == "\(error)"
+            {
                 /// Expected error
                 return
             }

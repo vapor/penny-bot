@@ -1,14 +1,15 @@
+import AsyncHTTPClient
+@preconcurrency import Collections
+import DiscordModels
+import Logging
+import Models
+import NIOHTTP1
+
 #if canImport(Darwin)
 import Foundation
 #else
 @preconcurrency import Foundation
 #endif
-import DiscordModels
-import Models
-@preconcurrency import Collections
-import AsyncHTTPClient
-import Logging
-import NIOHTTP1
 
 actor DefaultAutoFaqsService: AutoFaqsService {
 
@@ -35,17 +36,15 @@ actor DefaultAutoFaqsService: AutoFaqsService {
 
         /// Returns "can respond?" and assumes that the response will always be sent.
         mutating func canRespond(to id: ID) -> Bool {
-            if let existing = self.expirationTimeTable[id] {
-                if existing > Date() {
-                    return false
-                } else {
-                    self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)
-                    return true
-                }
-            } else {
+            guard let existing = self.expirationTimeTable[id] else {
                 self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)
                 return true
             }
+            guard existing > Date() else {
+                self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)
+                return true
+            }
+            return false
         }
     }
 
@@ -92,30 +91,27 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     func getAll() async throws -> [String: String] {
-        if let _cachedItems {
-            return _cachedItems
-        } else {
+        guard let _cachedItems else {
             try await self.send(request: .all)
             return _cachedItems ?? [:]
         }
+        return _cachedItems
     }
 
     func getAllFolded() async throws -> [String: String] {
-        if let _cachedFoldedItems {
-            return _cachedFoldedItems
-        } else {
+        guard let _cachedFoldedItems else {
             try await self.send(request: .all)
             return _cachedFoldedItems ?? [:]
         }
+        return _cachedFoldedItems
     }
 
     func getAllNamesHashTable() async throws -> [Int: String] {
-        if let _cachedNamesHashTable {
-            return _cachedNamesHashTable
-        } else {
+        guard let _cachedNamesHashTable else {
             try await self.send(request: .all)
             return _cachedNamesHashTable ?? [:]
         }
+        return _cachedNamesHashTable
     }
 
     /// Must "freshenCache" if it didn't throw an error.
@@ -136,11 +132,14 @@ actor DefaultAutoFaqsService: AutoFaqsService {
         guard 200..<300 ~= response.status.code else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error("Faqs-service failed", metadata: [
-                "status": "\(response.status)",
-                "headers": "\(response.headers)",
-                "body": "\(body)",
-            ])
+            logger.error(
+                "Faqs-service failed",
+                metadata: [
+                    "status": "\(response.status)",
+                    "headers": "\(response.headers)",
+                    "body": "\(body)",
+                ]
+            )
             throw ServiceError.badStatus(response.status)
         }
 
@@ -151,9 +150,12 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     private func freshenCache(_ new: [String: String]) {
-        logger.trace("Will refresh auto-faqs cache", metadata: [
-            "new": .stringConvertible(new)
-        ])
+        logger.trace(
+            "Will refresh auto-faqs cache",
+            metadata: [
+                "new": .stringConvertible(new)
+            ]
+        )
         self._cachedItems = new
         self._cachedFoldedItems = Dictionary(
             new.map({ ($0.key.superHeavyFolded(), $0.value) }),
@@ -194,10 +196,12 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     func canRespond(receiverID: UserSnowflake, faqHash: Int) -> Bool {
-        self.responseRateLimiter.canRespond(to: .init(
-            receiverID: receiverID,
-            faqHash: faqHash
-        ))
+        self.responseRateLimiter.canRespond(
+            to: .init(
+                receiverID: receiverID,
+                faqHash: faqHash
+            )
+        )
     }
 
     func consumeCachesStorageData(_ storage: ResponseRateLimiter) {

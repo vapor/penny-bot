@@ -7,11 +7,11 @@ enum Constants {
 
     enum GitHub {
         /// The user id of Penny.
-        static let userID = 139480971
+        static let userID = 139_480_971
         /// The app-id of Penny.
         static let appID = 360798
         /// The installation-id of Penny for Vapor org.
-        static let installationID = 39698047
+        static let installationID = 39_698_047
     }
 
     enum Channels: ChannelSnowflake, CaseIterable {

@@ -1,19 +1,20 @@
+import AsyncHTTPClient
+import DiscordBM
+import Logging
+import Models
+import NIOHTTP1
+
 #if canImport(Darwin)
 import Foundation
 #else
 @preconcurrency import Foundation
 #endif
-import Models
-import AsyncHTTPClient
-import Logging
-import DiscordBM
-import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
-    
+
     let httpClient: HTTPClient
     var logger = Logger(label: "DefaultPingsService")
-    
+
     /// Use `getAll()` to retrieve.
     var _cachedItems: S3AutoPingItems?
     /// `[ExpressionHash: Expression]`
@@ -37,7 +38,7 @@ actor DefaultPingsService: AutoPingsService {
     ) async throws -> Bool {
         try await self.getAll().items[expression]?.contains(id) ?? false
     }
-    
+
     func insert(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
@@ -48,7 +49,7 @@ actor DefaultPingsService: AutoPingsService {
             pingRequest: .init(discordID: id, expressions: expressions)
         )
     }
-    
+
     func remove(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
@@ -59,7 +60,7 @@ actor DefaultPingsService: AutoPingsService {
             pingRequest: .init(discordID: id, expressions: expressions)
         )
     }
-    
+
     func get(discordID id: UserSnowflake) async throws -> [Expression] {
         try await self.getAll()
             .items
@@ -72,21 +73,18 @@ actor DefaultPingsService: AutoPingsService {
     }
 
     func getAll() async throws -> S3AutoPingItems {
-        if let cachedItems = _cachedItems {
-            return cachedItems
-        } else {
+        guard let cachedItems = _cachedItems else {
             return try await self.send(
                 pathParameter: "all",
                 method: .GET,
                 pingRequest: nil
             )
         }
+        return cachedItems
     }
 
     func getAllExpressionsHashTable() async throws -> [Int: Expression] {
-        if let cachedItems = _cachedExpressionsHashTable {
-            return cachedItems
-        } else {
+        guard let cachedItems = _cachedExpressionsHashTable else {
             try await self.send(
                 pathParameter: "all",
                 method: .GET,
@@ -94,6 +92,7 @@ actor DefaultPingsService: AutoPingsService {
             )
             return _cachedExpressionsHashTable ?? [:]
         }
+        return cachedItems
     }
 
     @discardableResult
@@ -116,29 +115,35 @@ actor DefaultPingsService: AutoPingsService {
             logger: self.logger
         )
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
-        
+
         guard 200..<300 ~= response.status.code else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error( "Pings-service failed", metadata: [
-                "status": "\(response.status)",
-                "headers": "\(response.headers)",
-                "body": "\(body)",
-            ])
+            logger.error(
+                "Pings-service failed",
+                metadata: [
+                    "status": "\(response.status)",
+                    "headers": "\(response.headers)",
+                    "body": "\(body)",
+                ]
+            )
             throw ServiceError.badStatus(response.status)
         }
-        
+
         let body = try await response.body.collect(upTo: 1 << 24)
         let items = try decoder.decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
         return items
     }
-    
+
     private func freshenCache(_ new: S3AutoPingItems) {
-        logger.trace("Will refresh auto-pings cache", metadata: [
-            "new": .stringConvertible(new.items)
-        ])
+        logger.trace(
+            "Will refresh auto-pings cache",
+            metadata: [
+                "new": .stringConvertible(new.items)
+            ]
+        )
         self._cachedItems = new
         self._cachedExpressionsHashTable = Dictionary(
             uniqueKeysWithValues: new.items.map({ ($0.key.hashValue, $0.key) })

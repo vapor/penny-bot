@@ -62,13 +62,13 @@ actor BotStateManager {
         checkIfItsASignal(event: event)
         return canRespond
     }
-    
+
     private func checkIfItsASignal(event: Gateway.Event) {
         guard case let .messageCreate(message) = event.data,
-              message.channel_id == Constants.Channels.logs.id,
-              let author = message.author,
-              author.id == Constants.botId,
-              let otherId = message.content.split(whereSeparator: \.isWhitespace).last
+            message.channel_id == Constants.Channels.logs.id,
+            let author = message.author,
+            author.id == Constants.botId,
+            let otherId = message.content.split(whereSeparator: \.isWhitespace).last
         else { return }
         if otherId == "\(self.id)" { return }
 
@@ -121,11 +121,11 @@ actor BotStateManager {
         "\(text) \(id)"
     }
 
-#if DEBUG
+    #if DEBUG
     func _tests_didShutdownSignalEventContent() -> String {
         makeSignalMessage(text: StateManagerSignal.didShutdown.rawValue, id: self.id - 10)
     }
-#endif
+    #endif
 }
 
 enum StateManagerSignal: String {

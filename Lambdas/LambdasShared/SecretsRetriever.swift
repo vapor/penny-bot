@@ -1,8 +1,8 @@
-import SotoCore
-import SotoSecretsManager
+import Foundation
 import Logging
 import Shared
-import Foundation
+import SotoCore
+import SotoSecretsManager
 
 public actor SecretsRetriever {
 
@@ -34,13 +34,12 @@ public actor SecretsRetriever {
 
     public func getSecret(arnEnvVarKey: String) async throws -> String {
         return try await queue.process(queueKey: arnEnvVarKey) {
-            if let cached = await getCache(key: arnEnvVarKey) {
-                return cached
-            } else {
+            guard let cached = await getCache(key: arnEnvVarKey) else {
                 let value = try await self.getSecretFromAWS(arnEnvVarKey: arnEnvVarKey)
                 await self.setCache(key: arnEnvVarKey, value: value)
                 return value
             }
+            return cached
         }
     }
 
@@ -49,9 +48,12 @@ public actor SecretsRetriever {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
             throw Errors.envVarNotFound(name: arnEnvVarKey)
         }
-        logger.trace("Retrieving secret from AWS", metadata: [
-            "arnEnvVarKey": .string(arnEnvVarKey)
-        ])
+        logger.trace(
+            "Retrieving secret from AWS",
+            metadata: [
+                "arnEnvVarKey": .string(arnEnvVarKey)
+            ]
+        )
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
             logger: logger

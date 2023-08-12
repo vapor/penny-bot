@@ -1,11 +1,12 @@
+import Atomics
+import Logging
+import OpenAPIRuntime
+
 #if canImport(Darwin)
 import Foundation
 #else
 @preconcurrency import Foundation
 #endif
-import OpenAPIRuntime
-import Atomics
-import Logging
 
 /// Adds some headers to all requests.
 struct GHMiddleware: ClientMiddleware {
@@ -65,44 +66,53 @@ struct GHMiddleware: ClientMiddleware {
 
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
 
-        logger.debug("Will send request to GitHub", metadata: [
-            "request": "\(request)",
-            "baseURL": .stringConvertible(baseURL),
-            "operationID": .string(operationID),
-            "requestID": .stringConvertible(requestID),
-        ])
+        logger.debug(
+            "Will send request to GitHub",
+            metadata: [
+                "request": "\(request)",
+                "baseURL": .stringConvertible(baseURL),
+                "operationID": .string(operationID),
+                "requestID": .stringConvertible(requestID),
+            ]
+        )
 
         do {
             let response = try await next(request, baseURL)
 
-            logger.debug("Got response from GitHub", metadata: [
-                "response": "\(response.fullDescription)",
-                "requestID": .stringConvertible(requestID),
-            ])
+            logger.debug(
+                "Got response from GitHub",
+                metadata: [
+                    "response": "\(response.fullDescription)",
+                    "requestID": .stringConvertible(requestID),
+                ]
+            )
 
             /// If this is not _the_ retry,
             /// and if the authorization is retriable,
             /// and if the response status is `401 Unauthorized`,
             /// then retry the request with a force-refreshed token.
-            if !isRetry,
-               authorization.isRetriable,
-               response.statusCode == 401 {
-                logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
-                return try await intercept(
-                    &request,
-                    baseURL: baseURL,
-                    operationID: operationID,
-                    isRetry: true,
-                    next: next
-                )
-            } else {
+            guard !isRetry,
+                authorization.isRetriable,
+                response.statusCode == 401
+            else {
                 return response
             }
+            logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
+            return try await intercept(
+                &request,
+                baseURL: baseURL,
+                operationID: operationID,
+                isRetry: true,
+                next: next
+            )
         } catch {
-            logger.error("Got error from GitHub", metadata: [
-                "error": "\(error)",
-                "requestID": .stringConvertible(requestID),
-            ])
+            logger.error(
+                "Got error from GitHub",
+                metadata: [
+                    "error": "\(error)",
+                    "requestID": .stringConvertible(requestID),
+                ]
+            )
 
             throw error
         }
@@ -124,10 +134,7 @@ private extension [HeaderField] {
 
 private extension Response {
     var fullDescription: String {
-        "Response(" +
-        "status: \(statusCode), " +
-        "headers: \(headerFields.description), " +
-        "body: \(String(decoding: body, as: UTF8.self))" +
-        ")"
+        "Response(" + "status: \(statusCode), " + "headers: \(headerFields.description), "
+            + "body: \(String(decoding: body, as: UTF8.self))" + ")"
     }
 }

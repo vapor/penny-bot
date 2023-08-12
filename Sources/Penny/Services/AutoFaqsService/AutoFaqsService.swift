@@ -1,6 +1,6 @@
-import Models
-import DiscordModels
 import AsyncHTTPClient
+import DiscordModels
+import Models
 
 protocol AutoFaqsService: Sendable {
     func insert(expression: String, value: String) async throws

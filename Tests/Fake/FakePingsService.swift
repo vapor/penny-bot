@@ -1,11 +1,12 @@
-@testable import Penny
-import Models
-import DiscordModels
 import AsyncHTTPClient
+import DiscordModels
+import Models
+
+@testable import Penny
 
 public struct FakePingsService: AutoPingsService {
-    
-    public init() { }
+
+    public init() {}
 
     private let all = S3AutoPingItems(items: [
         .matches("mongodb driver"): ["432065887202181142", "950695294906007573"],
@@ -24,16 +25,16 @@ public struct FakePingsService: AutoPingsService {
     ) async throws -> Bool {
         false
     }
-    
+
     public func insert(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
-    ) async throws { }
+    ) async throws {}
 
     public func remove(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
-    ) async throws { }
+    ) async throws {}
 
     public func get(discordID id: UserSnowflake) async throws -> [Expression] {
         self.all.items.filter({ $0.value.contains(id) }).map(\.key)

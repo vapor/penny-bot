@@ -1,4 +1,5 @@
 import DiscordBM
+
 import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
@@ -10,7 +11,8 @@ struct TicketReporter {
         var description: String {
             switch self {
             case let .tooManyMatchingMessagesFound(matchingURL, messages):
-                return "tooManyMatchingMessagesFound(matchingURL: \(matchingURL), messages: \(messages))"
+                return
+                    "tooManyMatchingMessagesFound(matchingURL: \(matchingURL), messages: \(messages))"
             }
         }
     }
@@ -22,10 +24,12 @@ struct TicketReporter {
     let ticketCreatedAt: Date
 
     func reportCreation() async throws {
-        let response = try await context.discordClient.createMessage(
-            channelId: Constants.Channels.issueAndPRs.id,
-            payload: .init(embeds: [embed])
-        ).decode()
+        let response = try await context.discordClient
+            .createMessage(
+                channelId: Constants.Channels.issueAndPRs.id,
+                payload: .init(embeds: [embed])
+            )
+            .decode()
         try await context.messageLookupRepo.saveMessageID(
             messageID: response.id.rawValue,
             repoID: repoID,
@@ -42,14 +46,20 @@ struct TicketReporter {
                 number: number
             )
             messageID = MessageSnowflake(repoMessageID)
-            context.logger.debug("Got message ID from Repo", metadata: [
-                "messageID": "\(messageID)"
-            ])
+            context.logger.debug(
+                "Got message ID from Repo",
+                metadata: [
+                    "messageID": "\(messageID)"
+                ]
+            )
         } catch let error as DynamoMessageRepo.Errors where error == .unavailable {
-            context.logger.debug("Message is unavailable to edit", metadata: [
-                "repoID": .stringConvertible(repoID),
-                "number": .stringConvertible(number),
-            ])
+            context.logger.debug(
+                "Message is unavailable to edit",
+                metadata: [
+                    "repoID": .stringConvertible(repoID),
+                    "number": .stringConvertible(number),
+                ]
+            )
             return
         } catch let error as DynamoMessageRepo.Errors where error == .notFound {
             context.logger.debug(
@@ -60,10 +70,12 @@ struct TicketReporter {
                 ]
             )
 
-            let response = try await context.discordClient.createMessage(
-                channelId: Constants.Channels.issueAndPRs.id,
-                payload: .init(embeds: [embed])
-            ).decode()
+            let response = try await context.discordClient
+                .createMessage(
+                    channelId: Constants.Channels.issueAndPRs.id,
+                    payload: .init(embeds: [embed])
+                )
+                .decode()
 
             try await context.messageLookupRepo.saveMessageID(
                 messageID: response.id.rawValue,

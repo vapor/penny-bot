@@ -1,7 +1,7 @@
-import GitHubAPI
 import DiscordBM
-import Logging
 import Foundation
+import GitHubAPI
+import Logging
 
 struct ReleaseReporter {
 
@@ -54,20 +54,24 @@ struct ReleaseReporter {
     }
 
     func getTagBefore() async throws -> String {
-        let response = try await context.githubClient.repos_list_tags(.init(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
-            ))
+        let response = try await context.githubClient.repos_list_tags(
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name
+                )
+            )
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
+            case let .json(json) = ok.body
+        else {
             throw GHHooksLambda.Errors.httpRequestFailed(response: response)
         }
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
-           json.count > releaseIdx {
+            json.count > releaseIdx
+        {
             return json[releaseIdx + 1].name
         }
 
@@ -92,16 +96,19 @@ struct ReleaseReporter {
     }
 
     func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
-        let response = try await context.githubClient.repos_compare_commits(.init(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                basehead: "\(tagBefore)...\(release.tag_name)"
-            ))
+        let response = try await context.githubClient.repos_compare_commits(
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    basehead: "\(tagBefore)...\(release.tag_name)"
+                )
+            )
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
+            case let .json(json) = ok.body
+        else {
             throw GHHooksLambda.Errors.httpRequestFailed(response: response)
         }
 
@@ -109,16 +116,20 @@ struct ReleaseReporter {
     }
 
     func getPRsRelatedToCommit(sha: String) async throws -> [SimplePullRequest] {
-        let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
-            .init(path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                commit_sha: sha
-            ))
-        )
+        let response = try await context.githubClient
+            .repos_list_pull_requests_associated_with_commit(
+                .init(
+                    path: .init(
+                        owner: repo.owner.login,
+                        repo: repo.name,
+                        commit_sha: sha
+                    )
+                )
+            )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
+            case let .json(json) = ok.body
+        else {
             throw GHHooksLambda.Errors.httpRequestFailed(response: response)
         }
 
@@ -126,12 +137,13 @@ struct ReleaseReporter {
     }
 
     func sendToDiscord(pr: SimplePullRequest) async throws {
-        let body = pr.body.map { body -> String in
-            body.formatMarkdown(
-                maxLength: 256,
-                trailingTextMinLength: 96
-            )
-        } ?? ""
+        let body =
+            pr.body.map { body -> String in
+                body.formatMarkdown(
+                    maxLength: 256,
+                    trailingTextMinLength: 96
+                )
+            } ?? ""
 
         let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 
@@ -142,56 +154,66 @@ struct ReleaseReporter {
         let prDescriptions = prs.map {
             "\($0.title) by [@\($0.user.uiName)](\($0.user.html_url)) in [#\($0.number)](\($0.html_url))"
         }
-        
+
         if prDescriptions.isEmpty {
             try await sendToDiscordWithRelease()
         } else {
-            let description = prDescriptions.map {
-                "- \($0)"
-            }.joined(
-                separator: "\n"
-            ).formatMarkdown(
-                maxLength: 256,
-                trailingTextMinLength: 96
-            )
+            let description =
+                prDescriptions.map {
+                    "- \($0)"
+                }
+                .joined(
+                    separator: "\n"
+                )
+                .formatMarkdown(
+                    maxLength: 256,
+                    trailingTextMinLength: 96
+                )
             try await sendToDiscord(description: description)
         }
     }
 
     func sendToDiscordWithRelease() async throws {
-        let description = release.body.map { body -> String in
-            let preferredContent = body.contentsOfHeading(
-                named: "What's Changed"
-            ) ?? body
-            let formatted = preferredContent.formatMarkdown(
-                maxLength: 384,
-                trailingTextMinLength: 96
-            )
-            return formatted.isEmpty ? "" : ">>> \(formatted)"
-        } ?? ""
+        let description =
+            release.body.map { body -> String in
+                let preferredContent =
+                    body.contentsOfHeading(
+                        named: "What's Changed"
+                    ) ?? body
+                let formatted = preferredContent.formatMarkdown(
+                    maxLength: 384,
+                    trailingTextMinLength: 96
+                )
+                return formatted.isEmpty ? "" : ">>> \(formatted)"
+            } ?? ""
 
         try await sendToDiscord(description: description)
     }
 
     func sendToDiscord(description: String) async throws {
         let fullName = repo.full_name.urlPathEncoded()
-        let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+        let image =
+            "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
 
-        try await self.sendToDiscord(embed: .init(
-            title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
-            description: description,
-            url: release.html_url,
-            color: .cyan,
-            image: .init(url: .exact(image))
-        ))
+        try await self.sendToDiscord(
+            embed: .init(
+                title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
+                description: description,
+                url: release.html_url,
+                color: .cyan,
+                image: .init(url: .exact(image))
+            )
+        )
     }
 
     func sendToDiscord(embed: Embed) async throws {
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.release.id,
-            payload: .init(
-                embeds: [embed]
+        try await context.discordClient
+            .createMessage(
+                channelId: Constants.Channels.release.id,
+                payload: .init(
+                    embeds: [embed]
+                )
             )
-        ).guardSuccess()
+            .guardSuccess()
     }
 }

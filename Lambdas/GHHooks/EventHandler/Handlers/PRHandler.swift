@@ -1,16 +1,16 @@
-import DiscordBM
 import AsyncHTTPClient
+import DiscordBM
+import Foundation
+import GitHubAPI
+import Markdown
 import NIOCore
 import NIOFoundationCompat
-import GitHubAPI
 import SwiftSemver
-import Markdown
-import Foundation
 
 struct PRHandler {
 
     enum Configuration {
-        static let userIDDenyList: Set<Int> = [/*dependabot[bot]:*/ 49699333]
+        static let userIDDenyList: Set<Int> = [ /*dependabot[bot]:*/49_699_333]
     }
 
     let context: HandlerContext
@@ -41,9 +41,12 @@ struct PRHandler {
             try await onOpened()
         case .closed:
             try await onClosed()
-        case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
+        case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review,
+            .reopened, .unlocked:
             try await onEdited()
-        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .submitted:
+        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled,
+            .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned,
+            .unlabeled, .submitted:
             break
         }
     }
@@ -61,7 +64,8 @@ struct PRHandler {
             context: context,
             pr: pr,
             number: event.number.requireValue()
-        ).handle()
+        )
+        .handle()
         try await editPRReport()
     }
 
@@ -82,12 +86,13 @@ struct PRHandler {
     func createReportEmbed() async throws -> Embed {
         let prLink = pr.html_url
 
-        let body = pr.body.map { body -> String in
-            body.formatMarkdown(
-                maxLength: 256,
-                trailingTextMinLength: 96
-            )
-        } ?? ""
+        let body =
+            pr.body.map { body -> String in
+                body.formatMarkdown(
+                    maxLength: 256,
+                    trailingTextMinLength: 96
+                )
+            } ?? ""
 
         let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 

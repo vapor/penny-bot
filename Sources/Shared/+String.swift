@@ -1,4 +1,3 @@
-
 extension String {
     public func urlPathEncoded() -> String {
         self.addingPercentEncoding(
@@ -23,7 +22,7 @@ extension String {
         while trimmed.unicodeScalars.count >= maxUnicodeScalars {
             trimmed.removeLast()
         }
-        
+
         /// Append `U+2026 HORIZONTAL ELLIPSIS`
         trimmed.append("\u{2026}")
 

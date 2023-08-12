@@ -1,9 +1,10 @@
-@testable import Penny
 import Models
+
+@testable import Penny
 
 public struct FakeProposalsService: ProposalsService {
 
-    public init() { }
+    public init() {}
 
     public func list() async throws -> [Proposal] {
         TestData.proposalsUpdated

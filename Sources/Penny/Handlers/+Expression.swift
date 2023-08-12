@@ -1,5 +1,5 @@
-import Models
 import DiscordBM
+import Models
 
 extension Collection<S3AutoPingItems.Expression> {
     /// Make sure the list in not empty before using this function.
@@ -20,30 +20,33 @@ extension Collection<S3AutoPingItems.Expression> {
         return [
             makeList(with: contains, kind: .containment),
             makeList(with: matches, kind: .exactMatch),
-        ].compactMap { $0 }.joined(separator: "\n")
+        ]
+        .compactMap { $0 }.joined(separator: "\n")
     }
 
     private func makeList(with elements: [Element], kind: Element.Kind) -> String? {
-        if elements.isEmpty {
-            return nil
-        } else {
-            let list = elements
+        guard elements.isEmpty else {
+            let list =
+                elements
                 .sorted(by: { $0.innerValue > $1.innerValue })
                 .map(\.innerValue)
                 .makeExpressionListItems()
             return """
-            - **\(kind.UIDescription)**
-            \(list)
-            """
+                - **\(kind.UIDescription)**
+                \(list)
+                """
         }
+        return nil
     }
 }
 
 private extension [String] {
     func makeExpressionListItems() -> String {
-        self.enumerated().map { idx, text -> String in
-            let escaped = DiscordUtils.escapingSpecialCharacters(text)
-            return "  - \(escaped)"
-        }.joined(separator: "\n")
+        self.enumerated()
+            .map { idx, text -> String in
+                let escaped = DiscordUtils.escapingSpecialCharacters(text)
+                return "  - \(escaped)"
+            }
+            .joined(separator: "\n")
     }
 }

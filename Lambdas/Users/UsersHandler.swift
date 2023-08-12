@@ -1,9 +1,9 @@
-import AWSLambdaRuntime
 import AWSLambdaEvents
+import AWSLambdaRuntime
 import Foundation
-import SotoCore
-import Models
 import LambdasShared
+import Models
+import SotoCore
 
 @main
 struct UsersHandler: LambdaHandler {
@@ -20,8 +20,9 @@ struct UsersHandler: LambdaHandler {
         self.internalService = InternalUsersService(awsClient: awsClient, logger: context.logger)
         self.logger = context.logger
     }
-    
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
+
+    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response
+    {
         do {
             let request = try event.decode(as: UserRequest.self)
             switch request {
@@ -37,21 +38,25 @@ struct UsersHandler: LambdaHandler {
                 return try await handleUnlinkGitHubRequest(discordID: discordID)
             }
         } catch {
-            context.logger.error("Received error while handling request", metadata: [
-                "event": "\(event)",
-                "error": .string(String(reflecting: error))
-            ])
+            context.logger.error(
+                "Received error while handling request",
+                metadata: [
+                    "event": "\(event)",
+                    "error": .string(String(reflecting: error)),
+                ]
+            )
             return APIGatewayV2Response(
                 status: .badRequest,
                 content: GatewayFailure(reason: "Error: \(error)")
             )
         }
     }
-    
+
     func handleAddUserRequest(
         entry: UserRequest.CoinEntryRequest
     ) async throws -> APIGatewayV2Response {
-        let fromUserID = try await internalService.getOrCreateUser(discordID: entry.fromDiscordID).id
+        let fromUserID = try await internalService.getOrCreateUser(discordID: entry.fromDiscordID)
+            .id
         let toUser = try await internalService.getOrCreateUser(discordID: entry.toDiscordID)
         let coinEntry = CoinEntry(
             fromUserID: fromUserID,
@@ -68,15 +73,19 @@ struct UsersHandler: LambdaHandler {
             newCoinCount: newUser.coinCount
         )
 
-        logger.debug("Added coins", metadata: [
-            "entry": "\(entry)",
-            "coinResponse": "\(coinResponse)"
-        ])
+        logger.debug(
+            "Added coins",
+            metadata: [
+                "entry": "\(entry)",
+                "coinResponse": "\(coinResponse)",
+            ]
+        )
 
         return APIGatewayV2Response(status: .ok, content: coinResponse)
     }
-    
-    func handleGetOrCreateUserRequest(discordID: UserSnowflake) async throws -> APIGatewayV2Response {
+
+    func handleGetOrCreateUserRequest(discordID: UserSnowflake) async throws -> APIGatewayV2Response
+    {
         let user = try await internalService.getOrCreateUser(discordID: discordID)
         return APIGatewayV2Response(status: .ok, content: user)
     }

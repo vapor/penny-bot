@@ -3,7 +3,7 @@ import DiscordModels
 enum SponsorType: String {
     case sponsor = "sponsor"
     case backer = "backer"
-    
+
     var roleID: RoleSnowflake {
         switch self {
         case .sponsor:
@@ -12,7 +12,7 @@ enum SponsorType: String {
             return "431921695524126722"
         }
     }
-    
+
     var channelID: ChannelSnowflake {
         switch self {
         case .sponsor:
@@ -32,7 +32,7 @@ enum SponsorType: String {
             return .init(red: 76, green: 175, blue: 80)!
         }
     }
-    
+
     public static func `for`(sponsorshipAmount: Int) throws -> SponsorType {
         switch sponsorshipAmount {
         case 500...9900: return .backer

@@ -1,8 +1,8 @@
 import DiscordBM
+import Foundation
+import JWTKit
 import Logging
 import Models
-import JWTKit
-import Foundation
 
 private typealias Expression = S3AutoPingItems.Expression
 
@@ -18,12 +18,11 @@ struct InteractionHandler {
     let event: Interaction
     let context: HandlerContext
     var logger = Logger(label: "InteractionHandler")
-    
+
     private let oops = "Oopsie Woopsie... Something went wrong :("
-    
+
     typealias InteractionOption = Interaction.ApplicationCommand.Option
 
-    
     init(event: Interaction, context: HandlerContext) {
         self.event = event
         self.context = context
@@ -37,7 +36,7 @@ struct InteractionHandler {
         signers.use(.es256(key: privateKey))
         return signers
     }
-    
+
     func handle() async {
         switch event.data {
         case let .applicationCommand(data) where event.type == .applicationCommand:
@@ -116,22 +115,28 @@ private extension InteractionHandler {
                 let tooShorts = newExpressions.filter({ $0.innerValue.unicodeScalars.count < 3 })
                 if !tooShorts.isEmpty {
                     return """
-                    Some texts are less than 3 letters, which is not acceptable:
-                    \(tooShorts.makeExpressionListForDiscord())
-                    """
+                        Some texts are less than 3 letters, which is not acceptable:
+                        \(tooShorts.makeExpressionListForDiscord())
+                        """
                 }
 
                 let current = try await context.services.pingsService.get(discordID: discordId)
-                let limit = await context.services.discordService.memberHasRolesForElevatedPublicCommandsAccess(
-                    member: member
-                ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
+                let limit =
+                    await context.services.discordService
+                    .memberHasRolesForElevatedPublicCommandsAccess(
+                        member: member
+                    ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
                 if newExpressions.count + current.count > limit {
-                    logger.error("Someone hit their expressions count limit", metadata: [
-                        "limit": .stringConvertible(limit),
-                        "current": .stringConvertible(current),
-                        "new": .stringConvertible(newExpressions),
-                    ])
-                    return "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
+                    logger.error(
+                        "Someone hit their expressions count limit",
+                        metadata: [
+                            "limit": .stringConvertible(limit),
+                            "current": .stringConvertible(current),
+                            "new": .stringConvertible(newExpressions),
+                        ]
+                    )
+                    return
+                        "You currently have \(current.count) expressions and you want to add \(newExpressions.count) more, but you have a limit of \(limit) expressions."
                 }
 
                 discardingResult {
@@ -146,10 +151,10 @@ private extension InteractionHandler {
 
                 if !newExpressions.isEmpty {
                     components.append(
-                    """
-                    Successfully added the followings to your pings-list:
-                    \(newExpressions.makeExpressionListForDiscord())
-                    """
+                        """
+                        Successfully added the followings to your pings-list:
+                        \(newExpressions.makeExpressionListForDiscord())
+                        """
                     )
                 }
 
@@ -219,54 +224,12 @@ private extension InteractionHandler {
                     .requireComponent(customId: "texts")
                     .requireTextInput()
 
-                if let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
-                   !_text.isEmpty {
-                    let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
-
-                    let divided = message.divideForPingCommandExactMatchChecking()
-                    let folded = message.foldedForPingCommandContainmentChecking()
-                    let triggeredExpressions = dividedExpressions.filter { exp in
-                        MessageHandler.triggersPing(
-                            dividedForExactMatchChecking: divided,
-                            foldedForContainmentChecking: folded,
-                            expression: exp
-                        )
-                    }
-
-                    var response = """
-                    The message is:
-
-                    > \(message)
-
-                    And the entered texts are:
-
-                    > \(_text)
-
-
-                    """
-
-                    if dividedExpressions.isEmpty {
-                        response += "The texts you entered seem like an empty list to me."
-                    } else {
-                        response += """
-                        The identified expressions are:
-                        \(dividedExpressions.makeExpressionListForDiscord())
-
-
-                        """
-                        if triggeredExpressions.isEmpty {
-                            response += "The message won't trigger any of the expressions above."
-                        } else {
-                            response += """
-                            The message will trigger these expressions:
-                            \(triggeredExpressions.makeExpressionListForDiscord())
-                            """
-                        }
-                    }
-
-                    return response
-                } else {
-                    let currentExpressions = try await context.services.pingsService.get(discordID: discordId)
+                guard let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
+                    !_text.isEmpty
+                else {
+                    let currentExpressions = try await context.services.pingsService.get(
+                        discordID: discordId
+                    )
 
                     let divided = message.divideForPingCommandExactMatchChecking()
                     let folded = message.foldedForPingCommandContainmentChecking()
@@ -278,32 +241,75 @@ private extension InteractionHandler {
                         )
                     }
 
-                    if currentExpressions.isEmpty {
-                        return """
-                        You pings-list is empty.
-                        Either use the `texts` field, or add some expressions.
-                        """
-                    } else {
+                    guard currentExpressions.isEmpty else {
                         var response = """
-                        The message is:
+                            The message is:
 
-                        > \(message)
+                            > \(message)
 
 
-                        """
+                            """
 
                         if triggeredExpressions.isEmpty {
                             response += "The message won't trigger any of your expressions."
                         } else {
                             response += """
-                            The message will trigger these ping expressions:
-                            \(triggeredExpressions.makeExpressionListForDiscord())
-                            """
+                                The message will trigger these ping expressions:
+                                \(triggeredExpressions.makeExpressionListForDiscord())
+                                """
                         }
 
                         return response
                     }
+                    return """
+                        You pings-list is empty.
+                        Either use the `texts` field, or add some expressions.
+                        """
                 }
+                let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
+
+                let divided = message.divideForPingCommandExactMatchChecking()
+                let folded = message.foldedForPingCommandContainmentChecking()
+                let triggeredExpressions = dividedExpressions.filter { exp in
+                    MessageHandler.triggersPing(
+                        dividedForExactMatchChecking: divided,
+                        foldedForContainmentChecking: folded,
+                        expression: exp
+                    )
+                }
+
+                var response = """
+                    The message is:
+
+                    > \(message)
+
+                    And the entered texts are:
+
+                    > \(_text)
+
+
+                    """
+
+                if dividedExpressions.isEmpty {
+                    response += "The texts you entered seem like an empty list to me."
+                } else {
+                    response += """
+                        The identified expressions are:
+                        \(dividedExpressions.makeExpressionListForDiscord())
+
+
+                        """
+                    if triggeredExpressions.isEmpty {
+                        response += "The message won't trigger any of the expressions above."
+                    } else {
+                        response += """
+                            The message will trigger these expressions:
+                            \(triggeredExpressions.makeExpressionListForDiscord())
+                            """
+                    }
+                }
+
+                return response
             }
         case let .faqs(faqsMode):
             switch faqsMode {
@@ -320,47 +326,47 @@ private extension InteractionHandler {
                 if name.contains("\n") {
                     let nameNoNewLines = name.replacing("\n", with: " ")
                     return """
-                    The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
+                        The name cannot contain new lines. You can try '\(nameNoNewLines)' instead.
 
-                    Value:
-                    > \(newValue)
-                    """
+                        Value:
+                        > \(newValue)
+                        """
                 }
 
                 if name.unicodeScalars.count > Configuration.faqsNameMaxLength {
                     return """
-                    Name cannot be more than \(Configuration.faqsNameMaxLength) characters.
+                        Name cannot be more than \(Configuration.faqsNameMaxLength) characters.
 
-                    Value:
-                    > \(newValue)
-                    """
+                        Value:
+                        > \(newValue)
+                        """
                 }
 
                 let all = try await context.services.faqsService.getAll()
 
                 if let similar = all.first(where: {
-                    $0.key.heavyFolded().filter({ !$0.isWhitespace }) == name &&
-                    $0.key != name
-                })?.key {
+                    $0.key.heavyFolded().filter({ !$0.isWhitespace }) == name && $0.key != name
+                })?
+                .key {
                     return """
-                    The entered name '\(DiscordUtils.escapingSpecialCharacters(name))' is too similar to another name '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
-                    This will cause ambiguity for users.
+                        The entered name '\(DiscordUtils.escapingSpecialCharacters(name))' is too similar to another name '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
+                        This will cause ambiguity for users.
 
-                    Value:
-                    \(newValue)
-                    """
+                        Value:
+                        \(newValue)
+                        """
                 }
 
                 if let value = all[name] {
                     return """
-                    A FAQ with name '\(name)' already exists. Please remove it first.
+                        A FAQ with name '\(name)' already exists. Please remove it first.
 
-                    Value:
-                    \(newValue)
+                        Value:
+                        \(newValue)
 
-                    Old value:
-                    \(value)
-                    """
+                        Old value:
+                        \(value)
+                        """
                 }
 
                 if name.isEmpty || newValue.isEmpty {
@@ -368,22 +374,26 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will add a FAQ", metadata: [
-                    "name": .string(name),
-                    "value": .string(newValue),
-                ])
+                logger.notice(
+                    "Will add a FAQ",
+                    metadata: [
+                        "name": .string(name),
+                        "value": .string(newValue),
+                    ]
+                )
 
                 discardingResult {
                     try await context.services.faqsService.insert(name: name, value: newValue)
                 }
 
                 return """
-                Added a new FAQ with name '\(name)':
+                    Added a new FAQ with name '\(name)':
 
-                \(newValue)
-                """
+                    \(newValue)
+                    """
             case let .edit(nameHash, _):
-                guard let name = try await context.services.faqsService.getName(hash: nameHash) else {
+                guard let name = try await context.services.faqsService.getName(hash: nameHash)
+                else {
                     logger.warning(
                         "This should be very rare ... a name doesn't exist anymore to edit",
                         metadata: ["nameHash": .stringConvertible(nameHash)]
@@ -400,22 +410,26 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will edit a FAQ", metadata: [
-                    "name": .string(name),
-                    "value": .string(newValue),
-                ])
+                logger.notice(
+                    "Will edit a FAQ",
+                    metadata: [
+                        "name": .string(name),
+                        "value": .string(newValue),
+                    ]
+                )
 
                 discardingResult {
                     try await context.services.faqsService.insert(name: name, value: newValue)
                 }
 
                 return """
-                Edited a FAQ with name '\(name)':
+                    Edited a FAQ with name '\(name)':
 
-                \(newValue)
-                """
+                    \(newValue)
+                    """
             case let .rename(nameHash, _):
-                guard let oldName = try await context.services.faqsService.getName(hash: nameHash) else {
+                guard let oldName = try await context.services.faqsService.getName(hash: nameHash)
+                else {
                     logger.warning(
                         "This should be very rare ... a name doesn't exist anymore to edit",
                         metadata: ["nameHash": .stringConvertible(nameHash)]
@@ -439,10 +453,13 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will rename a FAQ", metadata: [
-                    "name": .string(name),
-                    "value": .string(value),
-                ])
+                logger.notice(
+                    "Will rename a FAQ",
+                    metadata: [
+                        "name": .string(name),
+                        "value": .string(value),
+                    ]
+                )
 
                 discardingResult {
                     try await context.services.faqsService.insert(name: name, value: value)
@@ -450,10 +467,10 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Renamed a FAQ from '\(oldName)' to '\(name)':
+                    Renamed a FAQ from '\(oldName)' to '\(name)':
 
-                \(value)
-                """
+                    \(value)
+                    """
             }
         case let .autoFaqs(autoFaqsMode):
             switch autoFaqsMode {
@@ -470,47 +487,48 @@ private extension InteractionHandler {
                 if expression.contains("\n") {
                     let expNoNewLines = expression.replacing("\n", with: " ")
                     return """
-                    The expression cannot contain new lines. You can try '\(expNoNewLines)' instead.
+                        The expression cannot contain new lines. You can try '\(expNoNewLines)' instead.
 
-                    Value:
-                    > \(newValue)
-                    """
+                        Value:
+                        > \(newValue)
+                        """
                 }
 
                 if expression.unicodeScalars.count > Configuration.autoFaqsNameMaxLength {
                     return """
-                    Expression cannot be more than \(Configuration.faqsNameMaxLength) characters.
+                        Expression cannot be more than \(Configuration.faqsNameMaxLength) characters.
 
-                    Value:
-                    > \(newValue)
-                    """
+                        Value:
+                        > \(newValue)
+                        """
                 }
 
                 let all = try await context.services.faqsService.getAll()
 
                 if let similar = all.first(where: {
-                    $0.key.heavyFolded().filter({ !$0.isWhitespace }) == expression &&
-                    $0.key != expression
-                })?.key {
+                    $0.key.heavyFolded().filter({ !$0.isWhitespace }) == expression
+                        && $0.key != expression
+                })?
+                .key {
                     return """
-                    The entered expression '\(DiscordUtils.escapingSpecialCharacters(expression))' is too similar to another expression '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
-                    This will cause ambiguity for users.
+                        The entered expression '\(DiscordUtils.escapingSpecialCharacters(expression))' is too similar to another expression '\(DiscordUtils.escapingSpecialCharacters(similar))' while not being equal.
+                        This will cause ambiguity for users.
 
-                    Value:
-                    \(newValue)
-                    """
+                        Value:
+                        \(newValue)
+                        """
                 }
 
                 if let value = all[expression] {
                     return """
-                    A Auto-FAQ with expression '\(expression)' already exists. Please remove it first.
+                        A Auto-FAQ with expression '\(expression)' already exists. Please remove it first.
 
-                    Value:
-                    \(newValue)
+                        Value:
+                        \(newValue)
 
-                    Old value:
-                    \(value)
-                    """
+                        Old value:
+                        \(value)
+                        """
                 }
 
                 if expression.isEmpty || newValue.isEmpty {
@@ -518,10 +536,13 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will add an Auto-FAQ", metadata: [
-                    "expression": .string(expression),
-                    "value": .string(newValue),
-                ])
+                logger.notice(
+                    "Will add an Auto-FAQ",
+                    metadata: [
+                        "expression": .string(expression),
+                        "value": .string(newValue),
+                    ]
+                )
 
                 discardingResult {
                     try await context.services.autoFaqsService.insert(
@@ -531,14 +552,16 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Added a new Auto-FAQ with expression '\(expression)':
+                    Added a new Auto-FAQ with expression '\(expression)':
 
-                \(newValue)
-                """
+                    \(newValue)
+                    """
             case let .edit(expressionHash, _):
-                guard let expression = try await context.services.autoFaqsService.getName(
-                    hash: expressionHash
-                ) else {
+                guard
+                    let expression = try await context.services.autoFaqsService.getName(
+                        hash: expressionHash
+                    )
+                else {
                     logger.warning(
                         "This should be very rare ... an expression doesn't exist anymore to edit",
                         metadata: ["expressionHash": .stringConvertible(expressionHash)]
@@ -555,10 +578,13 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will edit an Auto-FAQ", metadata: [
-                    "expression": .string(expression),
-                    "value": .string(newValue),
-                ])
+                logger.notice(
+                    "Will edit an Auto-FAQ",
+                    metadata: [
+                        "expression": .string(expression),
+                        "value": .string(newValue),
+                    ]
+                )
 
                 discardingResult {
                     try await context.services.autoFaqsService.insert(
@@ -568,23 +594,27 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Edited an Auto-FAQ with expression '\(expression)':
+                    Edited an Auto-FAQ with expression '\(expression)':
 
-                \(newValue)
-                """
+                    \(newValue)
+                    """
             case let .rename(expressionHash, _):
-                guard let oldExpression = try await context.services.autoFaqsService.getName(
-                    hash: expressionHash
-                ) else {
+                guard
+                    let oldExpression = try await context.services.autoFaqsService.getName(
+                        hash: expressionHash
+                    )
+                else {
                     logger.warning(
                         "This should be very rare ... an expression doesn't exist anymore to edit",
                         metadata: ["expressionHash": .stringConvertible(expressionHash)]
                     )
                     return "The expression no longer exists!"
                 }
-                guard let value = try await context.services.autoFaqsService.get(
-                    expression: oldExpression
-                ) else {
+                guard
+                    let value = try await context.services.autoFaqsService.get(
+                        expression: oldExpression
+                    )
+                else {
                     logger.warning(
                         "This should be very rare ... an expression doesn't have a value anymore",
                         metadata: ["expressionHash": .stringConvertible(expressionHash)]
@@ -601,10 +631,13 @@ private extension InteractionHandler {
                 }
                 /// The response of this command is ephemeral so members feel free to add faqs.
                 /// We will log this action so we can know if something malicious is happening.
-                logger.notice("Will rename an Auto-FAQ", metadata: [
-                    "expression": .string(expression),
-                    "value": .string(value),
-                ])
+                logger.notice(
+                    "Will rename an Auto-FAQ",
+                    metadata: [
+                        "expression": .string(expression),
+                        "value": .string(value),
+                    ]
+                )
 
                 discardingResult {
                     try await context.services.autoFaqsService.insert(
@@ -615,10 +648,10 @@ private extension InteractionHandler {
                 }
 
                 return """
-                Renamed an Auto-FAQ from '\(oldExpression)' to '\(expression)':
+                    Renamed an Auto-FAQ from '\(oldExpression)' to '\(expression)':
 
-                \(value)
-                """
+                    \(value)
+                    """
             }
         }
     }
@@ -669,7 +702,7 @@ private extension InteractionHandler {
             return oops
         }
     }
-    
+
     func handleGitHubCommand(options: [InteractionOption]) async throws -> (any Response)? {
         let discordID = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
@@ -678,7 +711,7 @@ private extension InteractionHandler {
         switch subcommand {
         case .link:
             let jwt = GHOAuthPayload(
-                discordID: discordID, 
+                discordID: discordID,
                 interactionToken: event.token
             )
             guard let signers = try makeJWTSigners() else {
@@ -687,16 +720,17 @@ private extension InteractionHandler {
             }
             let clientID = Constants.ghOAuthClientID
             let state = try signers.sign(jwt)
-            let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
+            let url =
+                "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return """
-            Click the link below to authorize Vapor:
+                Click the link below to authorize Vapor:
 
-            > This is a one-time authorization so Penny can confirm you own the Github account.
-            > Penny doesn't do anything else with it's authorization, and immediately discards its access token.
-            > Feel free to revoke Penny's access from your GitHub account afterwards.
+                > This is a one-time authorization so Penny can confirm you own the Github account.
+                > Penny doesn't do anything else with it's authorization, and immediately discards its access token.
+                > Feel free to revoke Penny's access from your GitHub account afterwards.
 
-            [**Authorize**](\(url))
-            """
+                [**Authorize**](\(url))
+                """
         case .unlink:
             let response = try await context.services.usersService.getGitHubName(of: discordID)
             switch response {
@@ -720,7 +754,7 @@ private extension InteractionHandler {
             }
         }
     }
-    
+
     func handlePingsCommand(options: [InteractionOption]) async throws -> (any Response)? {
         let discordId = try (event.member?.user).requireValue().id
         let first = try options.first.requireValue()
@@ -764,24 +798,26 @@ private extension InteractionHandler {
             )
         case .list:
             let items = try await context.services.pingsService.get(discordID: discordId)
-            if items.isEmpty {
-                return "You have not set any expressions to be pinged for."
-            } else {
+            guard items.isEmpty else {
                 return """
-                Your expressions
-                \(items.makeExpressionListForDiscord())
-                """
+                    Your expressions
+                    \(items.makeExpressionListForDiscord())
+                    """
             }
+            return "You have not set any expressions to be pinged for."
         case .remove:
-            let expressionInput = try first
+            let expressionInput =
+                try first
                 .requireOption(named: "expression")
                 .requireString()
             guard let hash = Int(expressionInput) else {
                 return "Malformed expression value: '\(expressionInput)'"
             }
-            guard let expression = try await context.services.pingsService.getExpression(
-                hash: hash
-            ) else {
+            guard
+                let expression = try await context.services.pingsService.getExpression(
+                    hash: hash
+                )
+            else {
                 return "Could not find any expression matching your input"
             }
             discardingResult {
@@ -792,9 +828,9 @@ private extension InteractionHandler {
             }
 
             return """
-            Successfully removed the followings from your pings-list:
-            \([expression].makeExpressionListForDiscord())
-            """
+                Successfully removed the followings from your pings-list:
+                \([expression].makeExpressionListForDiscord())
+                """
         case .add:
             let mode = try self.requireExpressionMode(first.options)
             let modalId = ModalID.autoPings(.add, mode)
@@ -817,12 +853,15 @@ private extension InteractionHandler {
         case .get:
             var ephemeralOverride: Bool?
             if let option = first.option(named: "ephemeral"),
-               case let .bool(bool) = option.value {
+                case let .bool(bool) = option.value
+            {
                 ephemeralOverride = bool
             }
-            guard await sendAcknowledgement(
-                isEphemeral: ephemeralOverride ?? false
-            ) else { return nil }
+            guard
+                await sendAcknowledgement(
+                    isEphemeral: ephemeralOverride ?? false
+                )
+            else { return nil }
         case .remove:
             /// This is ephemeral so members feel free to remove stuff,
             /// but we will log this action so we can know if something malicious is happening.
@@ -837,34 +876,40 @@ private extension InteractionHandler {
                 .requireValue()
                 .requireOption(named: "name")
                 .requireString()
-            if let value = try await context.services.faqsService.get(name: name) {
-                return value
-            } else {
+            guard let value = try await context.services.faqsService.get(name: name) else {
                 return "No FAQ with name '\(name)' exists at all"
             }
+            return value
         case .remove:
             let name = try first.options
                 .requireValue()
                 .requireOption(named: "name")
                 .requireString()
             let member = try event.member.requireValue()
-            guard await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-                member: member
-            ) else {
+            guard
+                await context.services.discordService
+                    .memberHasRolesForElevatedRestrictedCommandsAccess(
+                        member: member
+                    )
+            else {
                 let rolesString = Constants.Roles
                     .elevatedRestrictedCommandsAccess
                     .map(\.rawValue)
                     .map(DiscordUtils.mention(id:))
                     .joined(separator: " ")
-                return "You don't have access to this command; it is only available to \(rolesString)"
+                return
+                    "You don't have access to this command; it is only available to \(rolesString)"
             }
             guard let value = try await context.services.faqsService.get(name: name) else {
                 return "No FAQ with name '\(name)' exists at all"
             }
-            logger.warning("Will remove a FAQ", metadata: [
-                "name": .string(name),
-                "value": .string(value),
-            ])
+            logger.warning(
+                "Will remove a FAQ",
+                metadata: [
+                    "name": .string(name),
+                    "value": .string(value),
+                ]
+            )
 
             discardingResult {
                 try await context.services.faqsService.remove(name: name)
@@ -885,12 +930,11 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if let value = try await context.services.faqsService.get(name: name) {
-                let modalId = ModalID.faqs(.edit(nameHash: name.hash, value: value))
-                return modalId.makeModal()
-            } else {
+            guard let value = try await context.services.faqsService.get(name: name) else {
                 return "No FAQ with name '\(name)' exists at all"
             }
+            let modalId = ModalID.faqs(.edit(nameHash: name.hash, value: value))
+            return modalId.makeModal()
         case .rename:
             let name = try first.options
                 .requireValue()
@@ -899,12 +943,11 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if try await context.services.faqsService.get(name: name) != nil {
-                let modalId = ModalID.faqs(.rename(nameHash: name.hash, name: name))
-                return modalId.makeModal()
-            } else {
+            guard try await context.services.faqsService.get(name: name) != nil else {
                 return "No FAQ with name '\(name)' exists at all"
             }
+            let modalId = ModalID.faqs(.rename(nameHash: name.hash, name: name))
+            return modalId.makeModal()
         }
     }
 
@@ -915,12 +958,15 @@ private extension InteractionHandler {
         case .get:
             var ephemeralOverride: Bool?
             if let option = first.option(named: "ephemeral"),
-               case let .bool(bool) = option.value {
+                case let .bool(bool) = option.value
+            {
                 ephemeralOverride = bool
             }
-            guard await sendAcknowledgement(
-                isEphemeral: ephemeralOverride ?? false
-            ) else { return nil }
+            guard
+                await sendAcknowledgement(
+                    isEphemeral: ephemeralOverride ?? false
+                )
+            else { return nil }
         case .remove:
             /// This is ephemeral so members feel free to remove stuff,
             /// but we will log this action so we can know if something malicious is happening.
@@ -935,36 +981,45 @@ private extension InteractionHandler {
                 .requireValue()
                 .requireOption(named: "expression")
                 .requireString()
-            if let value = try await context.services.autoFaqsService.get(expression: expression) {
-                return value
-            } else {
+            guard let value = try await context.services.autoFaqsService.get(expression: expression)
+            else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
             }
+            return value
         case .remove:
             let expression = try first.options
                 .requireValue()
                 .requireOption(named: "expression")
                 .requireString()
             let member = try event.member.requireValue()
-            guard await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-                member: member
-            ) else {
+            guard
+                await context.services.discordService
+                    .memberHasRolesForElevatedRestrictedCommandsAccess(
+                        member: member
+                    )
+            else {
                 let rolesString = Constants.Roles
                     .elevatedRestrictedCommandsAccess
                     .map(\.rawValue)
                     .map(DiscordUtils.mention(id:))
                     .joined(separator: " ")
-                return "You don't have access to this command; it is only available to \(rolesString)"
+                return
+                    "You don't have access to this command; it is only available to \(rolesString)"
             }
-            guard let value = try await context.services.autoFaqsService.get(
-                expression: expression
-            ) else {
+            guard
+                let value = try await context.services.autoFaqsService.get(
+                    expression: expression
+                )
+            else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
             }
-            logger.warning("Will remove an Auto-FAQ", metadata: [
-                "expression": .string(expression),
-                "value": .string(value),
-            ])
+            logger.warning(
+                "Will remove an Auto-FAQ",
+                metadata: [
+                    "expression": .string(expression),
+                    "value": .string(value),
+                ]
+            )
 
             discardingResult {
                 try await context.services.autoFaqsService.remove(expression: expression)
@@ -985,12 +1040,12 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if let value = try await context.services.autoFaqsService.get(expression: expression) {
-                let modalId = ModalID.autoFaqs(.edit(expressionHash: expression.hash, value: value))
-                return modalId.makeModal()
-            } else {
+            guard let value = try await context.services.autoFaqsService.get(expression: expression)
+            else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
             }
+            let modalId = ModalID.autoFaqs(.edit(expressionHash: expression.hash, value: value))
+            return modalId.makeModal()
         case .rename:
             let expression = try first.options
                 .requireValue()
@@ -999,25 +1054,27 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if try await context.services.autoFaqsService.get(expression: expression) != nil {
-                let modalId = ModalID.autoFaqs(.rename(
-                    expressionHash: expression.hash,
-                    expression: expression
-                ))
-                return modalId.makeModal()
-            } else {
+            guard try await context.services.autoFaqsService.get(expression: expression) != nil
+            else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
             }
+            let modalId = ModalID.autoFaqs(
+                .rename(
+                    expressionHash: expression.hash,
+                    expression: expression
+                )
+            )
+            return modalId.makeModal()
         }
     }
 
     /// Returns a `String` if there is an access-levelerror. Otherwise `nil`.
     func faqsCommandAccessLevelErrorIfNeeded() async throws -> String? {
-        if await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
-            member: try event.member.requireValue()
-        ) {
-            return nil
-        } else {
+        guard
+            await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+                member: try event.member.requireValue()
+            )
+        else {
             /// To not make things too complicated for now, send an acknowledgment,
             /// so the String we return can be sent as an "edit".
             guard await sendAcknowledgement(isEphemeral: true) else { return nil }
@@ -1028,6 +1085,7 @@ private extension InteractionHandler {
                 .joined(separator: " ")
             return "You don't have access to this command; it is only available to \(rolesString)"
         }
+        return nil
     }
 
     func makeResponseForAutocomplete(
@@ -1049,9 +1107,13 @@ private extension InteractionHandler {
                 )
             }
         } catch {
-            logger.report("Autocomplete generation error", error: error, metadata: [
-                "command": .string(command.rawValue)
-            ])
+            logger.report(
+                "Autocomplete generation error",
+                error: error,
+                metadata: [
+                    "command": .string(command.rawValue)
+                ]
+            )
             return Payloads.InteractionResponse.Autocomplete(
                 choices: [.init(name: "Failure", value: .string(self.oops))]
             )
@@ -1072,27 +1134,30 @@ private extension InteractionHandler {
         let all = try await context.services.pingsService.get(discordID: userId)
         let queried: ArraySlice<S3AutoPingItems.Expression>
         if foldedName.isEmpty {
-            queried = ArraySlice(all
-                .sorted { $0.innerValue > $1.innerValue }
-                .sorted { $0.kind.priority > $1.kind.priority }
-                .prefix(25)
+            queried = ArraySlice(
+                all
+                    .sorted { $0.innerValue > $1.innerValue }
+                    .sorted { $0.kind.priority > $1.kind.priority }
+                    .prefix(25)
             )
         } else {
-            queried = all
+            queried =
+                all
                 .filter { $0.innerValue.heavyFolded().contains(foldedName) }
                 .sorted { $0.innerValue > $1.innerValue }
                 .sorted { $0.kind.priority > $1.kind.priority }
                 .prefix(25)
         }
-        
 
-        return .init(choices: queried.map { expression in
-            let name = "\(expression.kind.UIDescription) - \(expression.innerValue)"
-            return .init(
-                name: name.unicodesPrefix(100),
-                value: .string("\(expression.hashValue)")
-            )
-        })
+        return .init(
+            choices: queried.map { expression in
+                let name = "\(expression.kind.UIDescription) - \(expression.innerValue)"
+                return .init(
+                    name: name.unicodesPrefix(100),
+                    value: .string("\(expression.hashValue)")
+                )
+            }
+        )
     }
 
     func handleFaqsAutocomplete(
@@ -1109,7 +1174,8 @@ private extension InteractionHandler {
         if foldedName.isEmpty {
             queried = ArraySlice(all.sorted { $0 > $1 }.prefix(25))
         } else {
-            queried = all
+            queried =
+                all
                 .filter { $0.heavyFolded().contains(foldedName) }
                 .sorted { $0 > $1 }
                 .prefix(25)
@@ -1138,7 +1204,8 @@ private extension InteractionHandler {
         if foldedExpression.isEmpty {
             queried = ArraySlice(all.sorted { $0 > $1 }.prefix(25))
         } else {
-            queried = all
+            queried =
+                all
                 .filter { $0.heavyFolded().contains(foldedExpression) }
                 .sorted { $0 > $1 }
                 .prefix(25)
@@ -1154,22 +1221,24 @@ private extension InteractionHandler {
     }
 
     func requireExpressionMode(_ options: [InteractionOption]?) throws -> Expression.Kind {
-        let optionValue = try options
+        let optionValue =
+            try options
             .requireValue()
             .requireOption(named: "mode")
             .requireString()
         return try Expression.Kind(rawValue: optionValue).requireValue()
     }
-    
+
     func handleHowManyCoinsAppCommand() async throws -> String {
         guard case let .applicationCommand(data) = event.data,
-              let userID = data.target_id else {
+            let userID = data.target_id
+        else {
             logger.error("Coin-count command could not find appropriate data")
             return oops
         }
         return try await getCoinCount(of: UserSnowflake(userID))
     }
-    
+
     func handleHowManyCoinsCommand(options: [InteractionOption]) async throws -> String {
         let userID: String
         if let userOption = options.first?.value?.asString {
@@ -1181,12 +1250,13 @@ private extension InteractionHandler {
         }
         return try await getCoinCount(of: UserSnowflake(userID))
     }
-    
+
     func getCoinCount(of discordID: UserSnowflake) async throws -> String {
         let coinCount = try await context.services.usersService.getCoinCount(of: discordID)
-        return "\(DiscordUtils.mention(id: discordID)) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
+        return
+            "\(DiscordUtils.mention(id: discordID)) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
     }
-    
+
     /// Returns `true` if the acknowledgement was successfully sent
     private func sendAcknowledgement(isEphemeral: Bool) async -> Bool {
         await context.services.discordService.respondToInteraction(
@@ -1195,21 +1265,25 @@ private extension InteractionHandler {
             payload: .deferredChannelMessageWithSource(isEphemeral: isEphemeral)
         )
     }
-    
+
     private func sendInteractionResolveFailure() async {
         await context.services.discordService.respondToInteraction(
             id: event.id,
             token: event.token,
-            payload: .channelMessageWithSource(.init(
-                embeds: [.init(
-                    description: "Failed to resolve the interaction :(",
-                    color: .purple
-                )],
-                flags: [.ephemeral]
-            ))
+            payload: .channelMessageWithSource(
+                .init(
+                    embeds: [
+                        .init(
+                            description: "Failed to resolve the interaction :(",
+                            color: .purple
+                        )
+                    ],
+                    flags: [.ephemeral]
+                )
+            )
         )
     }
-    
+
     private func respond(
         with response: any Response,
         shouldEdit: Bool,
@@ -1289,7 +1363,7 @@ private enum ModalID {
             }
         }
 
-        init? (customIdPart part: String) {
+        init?(customIdPart part: String) {
             if part == "add" {
                 self = .add
             } else if part.hasPrefix("edit-"), let hash = Int(part.dropFirst(5)) {
@@ -1336,7 +1410,7 @@ private enum ModalID {
             }
         }
 
-        init? (customIdPart part: String) {
+        init?(customIdPart part: String) {
             if part == "add" {
                 self = .add
             } else if part.hasPrefix("edit-"), let hash = Int(part.dropFirst(5)) {
@@ -1401,7 +1475,8 @@ private enum ModalID {
                     style: .paragraph,
                     label: "Enter the ping-expressions",
                     required: false,
-                    placeholder: "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
+                    placeholder:
+                        "Leave empty to test your own expressions. Example: vapor, fluent, swift, websocket kit, your-name"
                 )
                 return [message, texts]
             }
@@ -1424,9 +1499,9 @@ private enum ModalID {
                     min_length: 3,
                     required: true,
                     placeholder: """
-                    Example:
-                    How to set your working directory: <link>
-                    """
+                        Example:
+                        How to set your working directory: <link>
+                        """
                 )
                 return [name, value]
             case .edit(_, let value):
@@ -1437,10 +1512,11 @@ private enum ModalID {
                     min_length: 3,
                     required: true,
                     value: value,
-                    placeholder: value == nil ? """
-                    Example:
-                    How to set your working directory: <link>
-                    """ : nil
+                    placeholder: value == nil
+                        ? """
+                        Example:
+                        How to set your working directory: <link>
+                        """ : nil
                 )
                 return [value]
             case .rename(_, let name):
@@ -1475,9 +1551,9 @@ private enum ModalID {
                     min_length: 3,
                     required: true,
                     placeholder: """
-                    Example:
-                    Update your package dependencies!
-                    """
+                        Example:
+                        Update your package dependencies!
+                        """
                 )
                 return [expression, value]
             case .edit(_, let value):
@@ -1488,10 +1564,11 @@ private enum ModalID {
                     min_length: 3,
                     required: true,
                     value: value,
-                    placeholder: value == nil ? """
-                    Example:
-                    Update your package dependencies!
-                    """ : nil
+                    placeholder: value == nil
+                        ? """
+                        Example:
+                        Update your package dependencies!
+                        """ : nil
                 )
                 return [value]
             case .rename(_, let expression):
@@ -1524,26 +1601,29 @@ extension ModalID: RawRepresentable {
         }
     }
 
-    init? (rawValue: String) {
+    init?(rawValue: String) {
         var split = rawValue.split(separator: ";")
         if split.isEmpty { return nil }
         switch split.removeFirst() {
         case "auto-pings":
             guard split.count == 2,
-                  let autoPingsMode = AutoPingsMode(rawValue: String(split[0])),
-                  let expressionMode = Expression.Kind(rawValue: String(split[1])) else {
+                let autoPingsMode = AutoPingsMode(rawValue: String(split[0])),
+                let expressionMode = Expression.Kind(rawValue: String(split[1]))
+            else {
                 return nil
             }
             self = .autoPings(autoPingsMode, expressionMode)
         case "faqs":
             guard split.count == 1,
-                  let faqsMode = FaqsMode(customIdPart: String(split[0])) else {
+                let faqsMode = FaqsMode(customIdPart: String(split[0]))
+            else {
                 return nil
             }
             self = .faqs(faqsMode)
         case "auto-faqs":
             guard split.count == 1,
-                  let autoFaqsMode = AutoFaqsMode(customIdPart: String(split[0])) else {
+                let autoFaqsMode = AutoFaqsMode(customIdPart: String(split[0]))
+            else {
                 return nil
             }
             self = .autoFaqs(autoFaqsMode)
@@ -1558,7 +1638,8 @@ private extension String {
         self.split(whereSeparator: { $0 == "," || $0.isNewline })
             .map(String.init)
             .map({ $0.heavyFolded() })
-            .filter({ !$0.isEmpty }).map {
+            .filter({ !$0.isEmpty })
+            .map {
                 switch mode {
                 case .containment:
                     return .contains($0)
@@ -1583,17 +1664,26 @@ private protocol Response {
 
 extension String: Response {
     func makeResponse(isEphemeral: Bool) -> Payloads.InteractionResponse {
-        .channelMessageWithSource(.init(embeds: [.init(
-            description: String(self.unicodesPrefix(4_000)),
-            color: .purple
-        )], flags: isEphemeral ? [.ephemeral] : nil))
+        .channelMessageWithSource(
+            .init(
+                embeds: [
+                    .init(
+                        description: String(self.unicodesPrefix(4_000)),
+                        color: .purple
+                    )
+                ],
+                flags: isEphemeral ? [.ephemeral] : nil
+            )
+        )
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
-        .init(embeds: [.init(
-            description: String(self.unicodesPrefix(4_000)),
-            color: .purple
-        )])
+        .init(embeds: [
+            .init(
+                description: String(self.unicodesPrefix(4_000)),
+                color: .purple
+            )
+        ])
     }
 
     var isEditable: Bool { true }
@@ -1605,9 +1695,10 @@ extension Payloads.InteractionResponse.Modal: Response {
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
-        Logger(label: "Payloads.InteractionResponse.Modal.makeEditPayload").error(
-            "This method is unimplemented and must not be called"
-        )
+        Logger(label: "Payloads.InteractionResponse.Modal.makeEditPayload")
+            .error(
+                "This method is unimplemented and must not be called"
+            )
         return .init(content: "Oops, something went wrong")
     }
 
@@ -1621,9 +1712,10 @@ extension Payloads.InteractionResponse.Autocomplete: Response {
     }
 
     func makeEditPayload() -> Payloads.EditWebhookMessage {
-        Logger(label: "Payloads.InteractionResponse.Autocomplete.makeEditPayload").error(
-            "This method must not be called"
-        )
+        Logger(label: "Payloads.InteractionResponse.Autocomplete.makeEditPayload")
+            .error(
+                "This method must not be called"
+            )
         return .init(content: "Oops, something went wrong")
     }
 
