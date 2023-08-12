@@ -53,6 +53,6 @@
     "ValidateDocumentationComments": false
   },
   "spacesAroundRangeFormationOperators": false,
-  "tabWidth": 8,
+  "tabWidth": 4,
   "version": 1
 }
