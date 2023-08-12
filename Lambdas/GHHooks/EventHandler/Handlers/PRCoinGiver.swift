@@ -10,15 +10,14 @@ struct PRCoinGiver {
     var event: GHEvent {
         context.event
     }
-
     var logger: Logger {
         context.logger
     }
 
     init(context: HandlerContext) throws {
         self.context = context
-        commitSHA = try context.event.after.requireValue()
-        repo = try context.event.repository.requireValue()
+        self.commitSHA = try context.event.after.requireValue()
+        self.repo = try context.event.repository.requireValue()
     }
 
     func handle() async throws {

@@ -89,7 +89,7 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
         .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
-        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.1"),
+        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
         .package(
             url: "https://github.com/gwynne/swift-semver",
