@@ -25,7 +25,7 @@
     "FileScopedDeclarationPrivacy": true,
     "FullyIndirectEnum": true,
     "GroupNumericLiterals": true,
-    "IdentifiersMustBeASCII": true,
+    "IdentifiersMustBeASCII": false,
     "NeverForceUnwrap": false,
     "NeverUseForceTry": false,
     "NeverUseImplicitlyUnwrappedOptionals": false,
