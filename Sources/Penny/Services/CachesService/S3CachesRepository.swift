@@ -1,5 +1,5 @@
-import Foundation
 import SotoS3
+import Foundation
 
 struct S3CachesRepository {
 
@@ -29,13 +29,10 @@ struct S3CachesRepository {
         do {
             return try decoder.decode(CachesStorage.self, from: body)
         } catch {
-            logger.error(
-                "Cannot find any data in the bucket",
-                metadata: [
-                    "response-body": .string(String(buffer: body)),
-                    "error": "\(error)",
-                ]
-            )
+            logger.error("Cannot find any data in the bucket", metadata: [
+                "response-body": .string(String(buffer: body)),
+                "error": "\(error)"
+            ])
             return CachesStorage()
         }
     }

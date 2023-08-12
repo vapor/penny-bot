@@ -1,8 +1,8 @@
-import DiscordModels
-import Foundation
 import Logging
 import Markdown
+import DiscordModels
 import Models
+import Foundation
 
 actor ProposalsChecker {
 
@@ -34,7 +34,7 @@ actor ProposalsChecker {
         Task { [self] in
             do {
                 try await self.check()
-                try await Task.sleep(for: .seconds(60 * 15))/// 15 mins
+                try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
             } catch {
                 logger.report("Couldn't check proposals", error: error)
                 try await Task.sleep(for: .seconds(60 * 5))
@@ -63,13 +63,11 @@ actor ProposalsChecker {
                 self.storage.queuedProposals[existingIdx].proposal = new
                 logger.debug("A new proposal will be delayed", metadata: ["id": .string(new.id)])
             } else {
-                self.storage.queuedProposals.append(
-                    .init(
-                        firstKnownStateBeforeQueue: nil,
-                        updatedAt: Date(),
-                        proposal: new
-                    )
-                )
+                self.storage.queuedProposals.append(.init(
+                    firstKnownStateBeforeQueue: nil,
+                    updatedAt: Date(),
+                    proposal: new
+                ))
                 logger.debug("A new proposal was queued", metadata: ["id": .string(new.id)])
             }
         }
@@ -91,26 +89,18 @@ actor ProposalsChecker {
             ) {
                 self.storage.queuedProposals[existingIdx].updatedAt = Date()
                 self.storage.queuedProposals[existingIdx].proposal = updated
-                logger.debug(
-                    "An updated proposal will be delayed",
-                    metadata: [
-                        "id": .string(updated.id)
-                    ]
-                )
+                logger.debug("An updated proposal will be delayed", metadata: [
+                    "id": .string(updated.id)
+                ])
             } else {
-                self.storage.queuedProposals.append(
-                    .init(
-                        firstKnownStateBeforeQueue: previousState,
-                        updatedAt: Date(),
-                        proposal: updated
-                    )
-                )
-                logger.debug(
-                    "An updated proposal was queued",
-                    metadata: [
-                        "id": .string(updated.id)
-                    ]
-                )
+                self.storage.queuedProposals.append(.init(
+                    firstKnownStateBeforeQueue: previousState,
+                    updatedAt: Date(),
+                    proposal: updated
+                ))
+                logger.debug("An updated proposal was queued", metadata: [
+                    "id": .string(updated.id)
+                ])
             }
         }
 
@@ -182,10 +172,9 @@ actor ProposalsChecker {
             .joined(separator: ", ")
         let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
 
-        let reviewManager =
-            proposal.reviewManager.isRealPerson
-            ? proposal.reviewManager.makeStringForDiscord()
-            : nil
+        let reviewManager = proposal.reviewManager.isRealPerson
+        ? proposal.reviewManager.makeStringForDiscord()
+        : nil
         let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
         let link = proposal.link.sanitized()
@@ -195,20 +184,18 @@ actor ProposalsChecker {
         }
 
         return .init(
-            embeds: [
-                .init(
-                    title: title.unicodesPrefix(256),
-                    description: """
-                        > \(summary)
+            embeds: [.init(
+                title: title.unicodesPrefix(256),
+                description: """
+                > \(summary)
 
-                        **Status: \(descriptionState)**
-                        \(authorsString)
-                        \(reviewManagerString)
-                        """,
-                    url: proposalLink,
-                    color: proposal.status.state.color
-                )
-            ],
+                **Status: \(descriptionState)**
+                \(authorsString)
+                \(reviewManagerString)
+                """,
+                url: proposalLink,
+                color: proposal.status.state.color
+            )],
             components: await makeComponents(proposal: proposal, proposalLink: proposalLink)
         )
     }
@@ -230,10 +217,9 @@ actor ProposalsChecker {
             .joined(separator: ", ")
         let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
 
-        let reviewManager =
-            proposal.reviewManager.isRealPerson
-            ? proposal.reviewManager.makeStringForDiscord()
-            : nil
+        let reviewManager = proposal.reviewManager.isRealPerson
+        ? proposal.reviewManager.makeStringForDiscord()
+        : nil
         let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
 
         let link = proposal.link.sanitized()
@@ -243,20 +229,18 @@ actor ProposalsChecker {
         }
 
         return .init(
-            embeds: [
-                .init(
-                    title: title.unicodesPrefix(256),
-                    description: """
-                        > \(summary)
+            embeds: [.init(
+                title: title.unicodesPrefix(256),
+                description: """
+                > \(summary)
 
-                        **Status:** \(previousState.UIDescription) -> **\(descriptionState)**
-                        \(authorsString)
-                        \(reviewManagerString)
-                        """,
-                    url: proposalLink,
-                    color: proposal.status.state.color
-                )
-            ],
+                **Status:** \(previousState.UIDescription) -> **\(descriptionState)**
+                \(authorsString)
+                \(reviewManagerString)
+                """,
+                url: proposalLink,
+                color: proposal.status.state.color
+            )],
             components: await makeComponents(proposal: proposal, proposalLink: proposalLink)
         )
     }
@@ -266,25 +250,20 @@ actor ProposalsChecker {
         proposalLink: String?
     ) async -> [Interaction.ActionRow] {
         var buttons: [Interaction.ActionRow] = [[]]
-
+        
         if let proposalLink,
-            let link = await findForumPostLink(link: proposalLink)
-        {
-            buttons[0].components
-                .append(
-                    .button(
-                        .init(label: "\(link.description.capitalized) Post", url: link.destination)
-                    )
-                )
+           let link = await findForumPostLink(link: proposalLink) {
+            buttons[0].components.append(
+                .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
+            )
         }
-
+        
         if let link = makeForumSearchLink(proposal: proposal) {
-            buttons[0].components
-                .append(
-                    .button(.init(label: "Related Posts", url: link))
-                )
+            buttons[0].components.append(
+                .button(.init(label: "Related Posts", url: link))
+            )
         }
-
+        
         return buttons
     }
 
@@ -293,13 +272,10 @@ actor ProposalsChecker {
         do {
             content = try await proposalsService.getProposalContent(link: link)
         } catch {
-            logger.error(
-                "Could not fetch proposal content",
-                metadata: [
-                    "link": .string(link),
-                    "error": "\(error)",
-                ]
-            )
+            logger.error("Could not fetch proposal content", metadata: [
+                "link": .string(link),
+                "error": "\(error)"
+            ])
             return nil
         }
 
@@ -308,13 +284,10 @@ actor ProposalsChecker {
         finder.visit(document)
 
         guard let lastLink = finder.links.last else {
-            logger.warning(
-                "Couldn't find forums link for proposal",
-                metadata: [
-                    "link": .string(link),
-                    "content": .string(content),
-                ]
-            )
+            logger.warning("Couldn't find forums link for proposal", metadata: [
+                "link": .string(link),
+                "content": .string(content)
+            ])
             return nil
         }
         return lastLink
@@ -340,8 +313,7 @@ actor ProposalsChecker {
             logger.warning("Edited Markup was nil", metadata: ["proposal": "\(proposal)"])
         }
         let newSummary = newMarkup?.format() ?? proposal.summary
-        return
-            newSummary
+        return newSummary
             .replacing("\n", with: " ")
             .sanitized()
             .unicodesPrefix(2_048)
@@ -360,8 +332,7 @@ actor ProposalsChecker {
 private extension String {
     func sanitized() -> String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
-            .replacing(#"\/"#, with: "/")
-        /// Un-escape
+            .replacing(#"\/"#, with: "/") /// Un-escape
     }
 }
 
@@ -373,10 +344,11 @@ private extension Proposal.User {
     func makeStringForDiscord() -> String {
         let link = link.sanitized()
         let name = name.sanitized()
-        guard link.isEmpty else {
+        if link.isEmpty {
+            return name
+        } else {
             return "[\(name)](\(link))"
         }
-        return name
     }
 }
 
@@ -388,9 +360,8 @@ struct LinkRepairer: MarkupRewriter {
 
     func visitLink(_ link: Link) -> (any Markup)? {
         if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
-            !dest.hasPrefix("https://"),
-            dest.hasSuffix(".md")
-        {
+           !dest.hasPrefix("https://"),
+           dest.hasSuffix(".md") {
             /// It's a relative .md link like "0400-init-accessors.md".
             /// We make it absolute.
             var link = link
@@ -415,20 +386,16 @@ struct ReviewLinksFinder: MarkupWalker {
         var links = [SimpleLink]()
 
         mutating func visitLink(_ link: Link) {
-            guard
-                let destination = link.destination?
-                    .trimmingCharacters(in: .whitespacesAndNewlines),
-                destination.hasPrefix("https"),
-                let text = link.children.first(where: { _ in true }) as? Text
-            else {
+            guard let destination = link.destination?
+                .trimmingCharacters(in: .whitespacesAndNewlines),
+                  destination.hasPrefix("https"),
+                  let text = link.children.first(where: { _ in true }) as? Text else {
                 return
             }
-            self.links.append(
-                SimpleLink(
-                    description: text.string.trimmingCharacters(in: .whitespacesAndNewlines),
-                    destination: destination
-                )
-            )
+            self.links.append(SimpleLink(
+                description: text.string.trimmingCharacters(in: .whitespacesAndNewlines),
+                destination: destination
+            ))
         }
     }
 
@@ -436,7 +403,7 @@ struct ReviewLinksFinder: MarkupWalker {
 
     mutating func visitParagraph(_ paragraph: Paragraph) {
         guard let text = paragraph.children.first(where: { _ in true }) as? Text,
-            text.string.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("Review:")
+              text.string.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("Review:")
         else { return }
         var linkFinder = LinksFinder()
         linkFinder.visitParagraph(paragraph)
@@ -537,7 +504,7 @@ struct Proposal: Sendable, Codable {
                 }
             }
 
-            init?(rawValue: String) {
+            init? (rawValue: String) {
                 switch rawValue {
                 case ".accepted": self = .accepted
                 case ".activeReview": self = .activeReview
@@ -548,11 +515,10 @@ struct Proposal: Sendable, Codable {
                 case ".returnedForRevision": self = .returnedForRevision
                 case ".withdrawn": self = .withdrawn
                 default:
-                    Logger(label: "\(#file):\(#line)")
-                        .warning(
-                            "New unknown case",
-                            metadata: ["rawValue": .string(rawValue)]
-                        )
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
                     self = .unknown(rawValue)
                 }
             }
@@ -594,15 +560,14 @@ struct Proposal: Sendable, Codable {
                 }
             }
 
-            init?(rawValue: String) {
+            init? (rawValue: String) {
                 switch rawValue {
                 case "apple": self = .apple
                 default:
-                    Logger(label: "\(#file):\(#line)")
-                        .warning(
-                            "New unknown case",
-                            metadata: ["rawValue": .string(rawValue)]
-                        )
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
                     self = .unknown(rawValue)
                 }
             }
@@ -627,7 +592,7 @@ struct Proposal: Sendable, Codable {
                 }
             }
 
-            init?(rawValue: String) {
+            init? (rawValue: String) {
                 switch rawValue {
                 case "swift": self = .swift
                 case "swift-syntax": self = .swiftSyntax
@@ -635,11 +600,10 @@ struct Proposal: Sendable, Codable {
                 case "swift-package-manager": self = .swiftPackageManager
                 case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
                 default:
-                    Logger(label: "\(#file):\(#line)")
-                        .warning(
-                            "New unknown case",
-                            metadata: ["rawValue": .string(rawValue)]
-                        )
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
                     self = .unknown(rawValue)
                 }
             }
@@ -658,16 +622,15 @@ struct Proposal: Sendable, Codable {
                 }
             }
 
-            init?(rawValue: String) {
+            init? (rawValue: String) {
                 switch rawValue {
                 case "commit": self = .commit
                 case "pull": self = .pull
                 default:
-                    Logger(label: "\(#file):\(#line)")
-                        .warning(
-                            "New unknown case",
-                            metadata: ["rawValue": .string(rawValue)]
-                        )
+                    Logger(label: "\(#file):\(#line)").warning(
+                        "New unknown case",
+                        metadata: ["rawValue": .string(rawValue)]
+                    )
                     self = .unknown(rawValue)
                 }
             }

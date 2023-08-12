@@ -36,3 +36,4 @@ extension Sequence where Element == UInt8 {
         return self.map { String(format: "%02x", $0) }.joined(separator: "")
     }
 }
+

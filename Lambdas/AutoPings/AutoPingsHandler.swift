@@ -1,15 +1,15 @@
-import AWSLambdaEvents
 import AWSLambdaRuntime
+import AWSLambdaEvents
 import Foundation
-import LambdasShared
-import Models
 import SotoCore
+import Models
+import LambdasShared
 
 @main
 struct AutoPingsHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
-
+    
     let awsClient: AWSClient
     let pingsRepo: S3AutoPingsRepository
 
@@ -20,7 +20,7 @@ struct AutoPingsHandler: LambdaHandler {
         self.awsClient = awsClient
         self.pingsRepo = S3AutoPingsRepository(awsClient: awsClient, logger: context.logger)
     }
-
+    
     func handle(
         _ event: APIGatewayV2Request,
         context: LambdaContext
@@ -85,7 +85,7 @@ struct AutoPingsHandler: LambdaHandler {
                 )
             )
         }
-
+        
         return APIGatewayV2Response(status: .ok, content: newItems)
     }
 }

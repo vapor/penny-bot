@@ -1,14 +1,13 @@
-import AsyncHTTPClient
-import DiscordUtilities
-import Fake
-import GitHubAPI
-import Logging
-import Models
-import Rendering
-import XCTest
-
 @testable import GHHooksLambda
 @testable import Penny
+import Models
+import DiscordUtilities
+import Rendering
+import AsyncHTTPClient
+import GitHubAPI
+import Logging
+import Fake
+import XCTest
 
 class LeafRenderTests: XCTestCase {
     let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
@@ -46,9 +45,9 @@ class LeafRenderTests: XCTestCase {
                     pr: .init(
                         title: "PR title right here",
                         body: """
-                            > This PR is really good!
-                            > pls accept!
-                            """,
+                        > This PR is really good!
+                        > pls accept!
+                        """,
                         author: "0xTim",
                         number: 833
                     ),
@@ -63,28 +62,25 @@ class LeafRenderTests: XCTestCase {
                 )
             )
 
-            XCTAssertMultilineStringsEqual(
-                rendered,
-                """
-                ## What's Changed
-                PR title right here by @0xTim in #833
+            XCTAssertMultilineStringsEqual(rendered, """
+            ## What's Changed
+            PR title right here by @0xTim in #833
 
-                > This PR is really good!
-                > pls accept!
+            > This PR is really good!
+            > pls accept!
 
-                ## New Contributor
-                - @0xTim made their first contribution in #833 🎉
+            ## New Contributor
+            - @0xTim made their first contribution in #833 🎉
 
-                ## Reviewers
-                Thanks to the reviewers for their help:
-                - @joannis
-                - @vzsg
+            ## Reviewers
+            Thanks to the reviewers for their help:
+            - @joannis
+            - @vzsg
 
-                ###### _This patch was released by @MahdiBM_
+            ###### _This patch was released by @MahdiBM_
 
-                **Full Changelog**: https://github.com/vapor/async-kit/compare/1.0.0...4.8.9
-                """
-            )
+            **Full Changelog**: https://github.com/vapor/async-kit/compare/1.0.0...4.8.9
+            """)
         }
 
         do {
@@ -93,9 +89,9 @@ class LeafRenderTests: XCTestCase {
                     pr: .init(
                         title: "PR title right here",
                         body: """
-                            > This PR is really good!
-                            > pls accept!
-                            """,
+                        > This PR is really good!
+                        > pls accept!
+                        """,
                         author: "0xTim",
                         number: 833
                     ),
@@ -110,22 +106,19 @@ class LeafRenderTests: XCTestCase {
                 )
             )
 
-            XCTAssertMultilineStringsEqual(
-                rendered,
-                """
-                ## What's Changed
-                PR title right here by @0xTim in #833
+            XCTAssertMultilineStringsEqual(rendered, """
+            ## What's Changed
+            PR title right here by @0xTim in #833
 
-                > This PR is really good!
-                > pls accept!
+            > This PR is really good!
+            > pls accept!
 
 
 
-                ###### _This patch was released by @MahdiBM_
+            ###### _This patch was released by @MahdiBM_
 
-                **Full Changelog**: https://github.com/vapor/async-kit/compare/1.0.0...4.8.9
-                """
-            )
+            **Full Changelog**: https://github.com/vapor/async-kit/compare/1.0.0...4.8.9
+            """)
         }
     }
 
@@ -134,18 +127,15 @@ class LeafRenderTests: XCTestCase {
             let rendered = try await ghHooksRenderClient.ticketReport(
                 title: "Some more improvements",
                 body: """
-                    - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
-                    """
-            )
-
-            XCTAssertMultilineStringsEqual(
-                rendered,
-                """
-                ### Some more improvements
-
-                >>> - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
+                - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
                 """
             )
+            
+            XCTAssertMultilineStringsEqual(rendered, """
+            ### Some more improvements
+
+            >>> - Use newer Swift and AWSCLI v2, unpin from very old CloudFormation action, and ditch old deploy actions in global deploy-api-docs workflow.
+            """)
         }
 
         do {
@@ -154,12 +144,9 @@ class LeafRenderTests: XCTestCase {
                 body: ""
             )
 
-            XCTAssertMultilineStringsEqual(
-                rendered,
-                """
-                ### Some more improvements
-                """
-            )
+            XCTAssertMultilineStringsEqual(rendered, """
+            ### Some more improvements
+            """)
         }
     }
 
@@ -180,42 +167,39 @@ class LeafRenderTests: XCTestCase {
             )
         )
 
-        XCTAssertMultilineStringsEqual(
-            rendered,
-            #"""
-            ## Auto-Pings Help
+        XCTAssertMultilineStringsEqual(rendered, #"""
+        ## Auto-Pings Help
 
-            You can add texts to be pinged for.
-            When someone uses those texts, Penny will DM you about the message.
+        You can add texts to be pinged for.
+        When someone uses those texts, Penny will DM you about the message.
 
-            - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
+        - Penny can't DM you about messages in channels which Penny doesn't have access to (such as the role-related channels)
 
-            > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the <a:is_typing:1087429908466253984> indicator.
+        > All auto-pings commands are ||private||, meaning they are visible to you and you only, and won't even trigger the <a:is_typing:1087429908466253984> indicator.
 
-            ### Adding Expressions
+        ### Adding Expressions
 
-            You can add multiple texts using </auto-pings add:1>, separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
+        You can add multiple texts using </auto-pings add:1>, separating the texts using commas (`,`). This command is Slack-compatible so you can copy-paste your Slack keywords to it.
 
-            - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to 'Containment'.
+        - Using 'mode' argument You can configure penny to look for exact matches or plain containment. Defaults to 'Containment'.
 
-            - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `“!?-_/\(){}`.
+        - All texts are **case-insensitive** (e.g. `a` == `A`), **diacritic-insensitive** (e.g. `a` == `á` == `ã`) and also **punctuation-insensitive**. Some examples of punctuations are: `“!?-_/\(){}`.
 
-            - All texts are **space-sensitive**.
+        - All texts are **space-sensitive**.
 
-            > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
+        > Make sure Penny is able to DM you. You can enable direct messages for Vapor server members under your Server Settings.
 
-            ### Removing Expressions
+        ### Removing Expressions
 
-            You can remove multiple texts using </auto-pings remove:1>, separating the texts using commas (`,`).
+        You can remove multiple texts using </auto-pings remove:1>, separating the texts using commas (`,`).
 
-            ### Your Pings List
+        ### Your Pings List
 
-            You can use </auto-pings list:1> to see your current expressions.
+        You can use </auto-pings list:1> to see your current expressions.
 
-            ### Testing Expressions
+        ### Testing Expressions
 
-            You can use </auto-pings test:1> to test if a message triggers some expressions.
-            """#
-        )
+        You can use </auto-pings test:1> to test if a message triggers some expressions.
+        """#)
     }
 }

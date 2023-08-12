@@ -11,7 +11,7 @@ private let iso8601jsonDecoder: JSONDecoder = {
 private let jsonEncoder = JSONEncoder()
 
 extension APIGatewayV2Request {
-
+    
     public func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body else {
             throw APIGatewayErrors.emptyBody(self)
@@ -48,7 +48,7 @@ extension APIGatewayV2Response {
 
 public struct GatewayFailure: Encodable {
     var reason: String
-
+    
     public init(reason: String) {
         self.reason = reason
     }

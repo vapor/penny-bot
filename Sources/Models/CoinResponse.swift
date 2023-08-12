@@ -1,3 +1,4 @@
+
 public struct CoinResponse: Sendable, Codable {
     public let sender: UserSnowflake
     public let receiver: UserSnowflake

@@ -16,6 +16,7 @@ extension SimplePullRequest {
     }
 }
 
+
 enum KnownLabel: String {
     case semVerMajor = "semver-major"
     case semVerMinor = "semver-minor"

@@ -30,7 +30,7 @@ public struct CoinEntry: Sendable, Codable {
     public let amount: Int
     public let source: Source
     public let reason: Reason
-
+    
     public init(
         id: UUID = UUID(),
         fromUserID: UUID,

@@ -1,17 +1,16 @@
-import AsyncHTTPClient
-import Models
-
 @testable import Penny
+import Models
+import AsyncHTTPClient
 
 public struct FakeFaqsService: FaqsService {
 
-    public init() {}
+    public init() { }
 
     private let all = ["Working Directory": "Test working directory help"]
 
-    public func insert(name: String, value: String) async throws {}
+    public func insert(name: String, value: String) async throws { }
 
-    public func remove(name: String) async throws {}
+    public func remove(name: String) async throws { }
 
     public func get(name: String) async throws -> String? {
         self.all[name]

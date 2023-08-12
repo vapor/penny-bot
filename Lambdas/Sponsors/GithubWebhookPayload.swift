@@ -5,7 +5,7 @@ public struct GitHubWebhookPayload: Codable {
     let sponsorship: Sponsorship
     let sender: Sender
     let changes: Changes?
-
+    
     enum ActionType: String {
         case created
         case cancelled

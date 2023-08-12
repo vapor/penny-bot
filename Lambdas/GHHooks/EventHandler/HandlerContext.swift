@@ -1,10 +1,10 @@
 import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
-import Logging
 import OpenAPIRuntime
 import Rendering
 import Shared
+import Logging
 
 struct HandlerContext: Sendable {
     let eventName: GHEvent.Kind

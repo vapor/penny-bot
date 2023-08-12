@@ -1,12 +1,11 @@
+@testable import DiscordBM
 import NIOHTTP1
 import XCTest
-
-@testable import DiscordBM
 
 public struct FakeDiscordClient: DiscordClient {
     public var appId: ApplicationSnowflake? = "11111111"
 
-    public init() {}
+    public init() { }
 
     public func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(
@@ -19,14 +18,12 @@ public struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body:
-                TestData.for(
-                    gatewayEventKey: request.endpoint.testingKey
-                )
-                .map { .init(data: $0) }
+            body: TestData.for(
+                gatewayEventKey: request.endpoint.testingKey
+            ).map { .init(data: $0) }
         )
     }
-
+    
     public func send<E: Encodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
@@ -36,19 +33,18 @@ public struct FakeDiscordClient: DiscordClient {
         XCTAssertNoThrow(try payload.validate().throw(model: payload))
 
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
-
+        
         return DiscordHTTPResponse(
             host: "discord.com",
             status: .ok,
             version: .http2,
             headers: [:],
-            body:
-                TestData
+            body: TestData
                 .for(gatewayEventKey: request.endpoint.testingKey)
                 .map { .init(data: $0) }
         )
     }
-
+    
     public func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
@@ -64,8 +60,7 @@ public struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body:
-                TestData
+            body: TestData
                 .for(gatewayEventKey: request.endpoint.testingKey)
                 .map { .init(data: $0) }
         )

@@ -1,6 +1,5 @@
 import AsyncHTTPClient
 import Logging
-
 import struct NIOCore.TimeAmount
 
 extension Client {

@@ -1,3 +1,4 @@
+
 extension Repository {
     /// If it's a Vapor repository, use the raw repo name like `postgres-nio`.
     /// Otherwise use more of the repo name, like `community/stripe` for `vapor-community/stripe`.

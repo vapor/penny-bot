@@ -1,5 +1,6 @@
-public struct S3AutoPingItems: Sendable, Codable {
 
+public struct S3AutoPingItems: Sendable, Codable {
+    
     public enum Expression: Sendable, Codable, RawRepresentable, Hashable {
 
         public enum Kind: String, CaseIterable {
@@ -31,14 +32,14 @@ public struct S3AutoPingItems: Sendable, Codable {
         case contains(String)
         /// Exact match (with some insensitivity, such as case-insensitivity)
         case matches(String)
-
+        
         public var kind: Kind {
             switch self {
             case .contains: return .containment
             case .matches: return .exactMatch
             }
         }
-
+        
         public var innerValue: String {
             switch self {
             case let .contains(contain):
@@ -61,7 +62,7 @@ public struct S3AutoPingItems: Sendable, Codable {
 
         /// Important for the Codable conformance.
         /// Changing the implementation might result in breaking the repository.
-        public init?(rawValue: String) {
+        public init? (rawValue: String) {
             if rawValue.hasPrefix("C-") {
                 self = .contains(String(rawValue.dropFirst(2)))
             } else if rawValue.hasPrefix("T-") {

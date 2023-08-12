@@ -1,5 +1,5 @@
-import AsyncHTTPClient
 import Models
+import AsyncHTTPClient
 
 protocol FaqsService: Sendable {
     func insert(name: String, value: String) async throws

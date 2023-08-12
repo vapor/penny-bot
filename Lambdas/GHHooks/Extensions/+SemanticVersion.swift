@@ -93,7 +93,7 @@ extension SemanticVersion {
                 }
             }
         }
-
+        
         return version
     }
 }

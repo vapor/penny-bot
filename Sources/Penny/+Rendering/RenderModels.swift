@@ -1,3 +1,4 @@
+
 struct AutoPingsContext: Codable {
 
     struct Commands: Codable {

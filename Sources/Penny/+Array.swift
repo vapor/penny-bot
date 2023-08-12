@@ -1,3 +1,4 @@
+
 extension Array {
     func divided(
         _ isInLhs: (Element) async throws -> Bool
@@ -22,7 +23,7 @@ extension Array {
     ) rethrows -> (lhs: ArraySlice<Element>, rhs: ArraySlice<Element>) {
         var copy = self
         let firstOfRhs = try copy.partition(by: isInLhs)
-        return (copy[firstOfRhs..<copy.endIndex], copy[copy.startIndex..<firstOfRhs])
+        return (copy[firstOfRhs ..< copy.endIndex], copy[copy.startIndex ..< firstOfRhs])
     }
 }
 

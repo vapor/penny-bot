@@ -1,8 +1,8 @@
 import AsyncHTTPClient
-import LeafKit
-import Logging
 import NIO
+import Logging
 import Shared
+import LeafKit
 
 struct GHLeafSource: LeafSource {
 
@@ -36,12 +36,13 @@ struct GHLeafSource: LeafSource {
 
         func file(template: String) async throws -> ByteBuffer {
             try await queue.process(queueKey: template) {
-                guard let existing = await self.getFromCache(key: template) else {
+                if let existing = await self.getFromCache(key: template) {
+                    return existing
+                } else {
                     let new = try await pull(template: template)
                     await self.saveToCache(key: template, value: new)
                     return new
                 }
-                return existing
             }
         }
 

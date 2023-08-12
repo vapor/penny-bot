@@ -30,8 +30,7 @@ struct IssueHandler {
             try await onEdited()
         case .transferred:
             try await onTransferred()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled,
-            .unpinned:
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
             break
         }
     }
@@ -56,8 +55,7 @@ struct IssueHandler {
         try await makeReporter(
             embedIssue: newIssue,
             embedRepo: changes.new_repository
-        )
-        .reportEdition()
+        ).reportEdition()
         try await context.messageLookupRepo.markAsUnavailable(
             repoID: repo.id,
             number: issue.number
@@ -96,18 +94,14 @@ struct IssueHandler {
 
         let issueLink = issue.html_url
 
-        let body =
-            issue.body.map { body -> String in
-                body.formatMarkdown(
-                    maxLength: 256,
-                    trailingTextMinLength: 96
-                )
-            } ?? ""
+        let body = issue.body.map { body -> String in
+            body.formatMarkdown(
+                maxLength: 256,
+                trailingTextMinLength: 96
+            )
+        } ?? ""
 
-        let description = try await context.renderClient.ticketReport(
-            title: issue.title,
-            body: body
-        )
+        let description = try await context.renderClient.ticketReport(title: issue.title, body: body)
 
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""

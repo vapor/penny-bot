@@ -1,8 +1,8 @@
-import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
-import Logging
+import AsyncHTTPClient
 import Shared
+import Logging
 
 /// A shared place for requests that more than 1 place uses.
 struct Requester: Sendable {
@@ -37,68 +37,57 @@ extension Requester {
     /// In form of `["gwynne", "0xtim"]`.
     func getCodeOwners(repoFullName: String, primaryBranch: String) async throws -> CodeOwners {
         let fullName = repoFullName.urlPathEncoded()
-        let url =
-            "https://raw.githubusercontent.com/\(fullName)/\(primaryBranch)/.github/CODEOWNERS"
+        let url = "https://raw.githubusercontent.com/\(fullName)/\(primaryBranch)/.github/CODEOWNERS"
         let request = HTTPClientRequest(url: url)
         let response = try await self.httpClient.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1 << 16)
         guard response.status == .ok else {
-            logger.warning(
-                "Can't find code owners of repo",
-                metadata: [
-                    "responseBody": "\(body)",
-                    "response": "\(response)",
-                ]
-            )
+            logger.warning("Can't find code owners of repo", metadata: [
+                "responseBody": "\(body)",
+                "response": "\(response)"
+            ])
             return CodeOwners(value: [])
         }
         let text = String(buffer: body)
         let parsed = parseCodeOwners(text: text)
-        logger.debug(
-            "Parsed code owners",
-            metadata: [
-                "text": .string(text),
-                "parsed": .stringConvertible(parsed),
-            ]
-        )
+        logger.debug("Parsed code owners", metadata: [
+            "text": .string(text),
+            "parsed": .stringConvertible(parsed)
+        ])
         return parsed
     }
 
     /// Returns code owner names all lowercased.
     func parseCodeOwners(text: String) -> CodeOwners {
-        let codeOwners: [String] =
-            text
-            /// split into lines
+        let codeOwners: [String] = text
+        /// split into lines
             .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
-            /// trim leading whitespace per line
+        /// trim leading whitespace per line
             .map { $0.trimmingPrefix(while: \.isWhitespace) }
-            /// remove whole-line comments
+        /// remove whole-line comments
             .filter { !$0.starts(with: "#") }
-            /// remove partial-line comments
+        /// remove partial-line comments
             .compactMap {
                 $0.split(
                     separator: "#",
                     maxSplits: 1,
                     omittingEmptySubsequences: true
-                )
-                .first
+                ).first
             }
-            /// split lines on whitespace, dropping first character, and combine to single list
+        /// split lines on whitespace, dropping first character, and combine to single list
             .flatMap { line -> [Substring] in
                 line.split(
                     omittingEmptySubsequences: true,
                     whereSeparator: \.isWhitespace
-                )
-                .dropFirst()
-                .map { (user: Substring) -> Substring in
+                ).dropFirst().map { (user: Substring) -> Substring in
                     /// Drop the first character of each code-owner which is an `@`.
-                    guard user.first == "@" else {
+                    if user.first == "@" {
+                        return user.dropFirst()
+                    } else {
                         return user
                     }
-                    return user.dropFirst()
                 }
-            }
-            .map(String.init)
+            }.map(String.init)
 
         return CodeOwners(value: Set(codeOwners.map({ $0.lowercased() })))
     }
@@ -114,19 +103,21 @@ struct CodeOwners: CustomStringConvertible {
     /// Only supports names, and not emails.
     /// Assumes the strings are already all lowercased.
     func contains(user: User) -> Bool {
-        guard let name = user.name else {
+        if let name = user.name {
+            return !self.value.intersection([user.login.lowercased(), name.lowercased()]).isEmpty
+        } else {
             return self.value.contains(user.login.lowercased())
         }
-        return !self.value.intersection([user.login.lowercased(), name.lowercased()]).isEmpty
     }
 
     /// Only supports names, and not emails.
     /// Assumes the strings are already all lowercased.
     func contains(user: NullableUser) -> Bool {
-        guard let name = user.name else {
+        if let name = user.name {
+            return !self.value.intersection([user.login.lowercased(), name.lowercased()]).isEmpty
+        } else {
             return self.value.contains(user.login.lowercased())
         }
-        return !self.value.intersection([user.login.lowercased(), name.lowercased()]).isEmpty
     }
 
     func union(_ other: Set<String>) -> CodeOwners {

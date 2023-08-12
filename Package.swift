@@ -31,10 +31,7 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
 let targetsSwiftSettings: [SwiftSetting] =
     upcomingFeaturesSwiftSettings + [
         /// https://github.com/apple/swift/issues/67214
-        .unsafeFlags(
-            ["-Xllvm", "-vectorize-slp=false"],
-            .when(platforms: [.linux], configuration: .release)
-        ),
+        .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
 
         /// `minimal` / `targeted` / `complete`
         /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
@@ -56,14 +53,8 @@ extension PackageDescription.Target {
         .executableTarget(
             name: "\(name)Lambda",
             dependencies: [
-                .product(
-                    name: "AWSLambdaRuntime",
-                    package: "swift-aws-lambda-runtime"
-                ),
-                .product(
-                    name: "AWSLambdaEvents",
-                    package: "swift-aws-lambda-events"
-                ),
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
                 .target(name: "LambdasShared"),
@@ -85,15 +76,9 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
-        .package(
-            url: "https://github.com/swift-server/async-http-client.git",
-            from: "1.9.0"
-        ),
+        .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
-        .package(
-            url: "https://github.com/swift-server/swift-backtrace.git",
-            from: "1.3.1"
-        ),
+        .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.13.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
@@ -101,19 +86,10 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
-        .package(
-            url: "https://github.com/DiscordBM/DiscordLogger.git",
-            from: "1.0.0-rc.1"
-        ),
+        .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
-        .package(
-            url: "https://github.com/soto-project/soto.git",
-            from: "7.0.0-alpha.1"
-        ),
-        .package(
-            url: "https://github.com/soto-project/soto-core.git",
-            from: "7.0.0-alpha.2"
-        ),
+        .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
+        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
         .package(
             url: "https://github.com/gwynne/swift-semver",
@@ -129,8 +105,7 @@ let package = Package(
             revision: "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
         ),
         .package(
-            url:
-                "https://github.com/swift-server/swift-openapi-async-http-client",
+            url: "https://github.com/swift-server/swift-openapi-async-http-client",
             .upToNextMinor(from: "0.1.0")
         ),
         .package(
@@ -151,10 +126,7 @@ let package = Package(
                 .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
@@ -175,10 +147,7 @@ let package = Package(
         .lambdaTarget(
             name: "Sponsors",
             additionalDependencies: [
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Shared"),
             ]
@@ -205,10 +174,7 @@ let package = Package(
             name: "GHHooks",
             additionalDependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "SwiftSemver", package: "swift-semver"),
                 .product(name: "JWTKit", package: "jwt-kit"),
@@ -225,10 +191,7 @@ let package = Package(
         .lambdaTarget(
             name: "GHOAuth",
             additionalDependencies: [
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Shared"),
@@ -252,14 +215,8 @@ let package = Package(
                     name: "OpenAPIAsyncHTTPClient",
                     package: "swift-openapi-async-http-client"
                 ),
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
-                .product(
-                    name: "OpenAPIRuntime",
-                    package: "swift-openapi-runtime"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Crypto", package: "swift-crypto"),
@@ -281,10 +238,7 @@ let package = Package(
         .target(
             name: "Shared",
             dependencies: [
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "DiscordModels", package: "DiscordBM"),
                 .target(name: "Models"),
@@ -297,10 +251,7 @@ let package = Package(
                 .product(name: "NIO", package: "swift-nio"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "Logging", package: "swift-log"),
-                .product(
-                    name: "AsyncHTTPClient",
-                    package: "async-http-client"
-                ),
+                .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "Shared"),
             ],
@@ -312,10 +263,7 @@ let package = Package(
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(
-                    name: "OpenAPIRuntime",
-                    package: "swift-openapi-runtime"
-                ),
+                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
                 .target(name: "GHHooksLambda"),
                 .target(name: "Penny"),
             ],

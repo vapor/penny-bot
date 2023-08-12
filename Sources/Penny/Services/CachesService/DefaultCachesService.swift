@@ -1,5 +1,5 @@
-import AsyncHTTPClient
 import Logging
+import AsyncHTTPClient
 import SotoS3
 
 actor DefaultCachesService: CachesService {

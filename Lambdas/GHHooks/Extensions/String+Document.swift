@@ -13,8 +13,7 @@ extension String {
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        let prefixed =
-            markup2
+        let prefixed = markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .unicodesPrefix(maxLength)
@@ -32,18 +31,15 @@ extension String {
             }
         }
 
-        var prefixed2 =
-            markup2
+        var prefixed2 = markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .unicodesPrefix(maxLength)
         var document3 = Document(parsing: prefixed2)
         if let last = Array(document3.blockChildren).last,
-            last is Heading
-        {
+           last is Heading {
             document3 = Document(document3.blockChildren.dropLast())
-            prefixed2 =
-                document3
+            prefixed2 = document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .unicodesPrefix(maxLength)
@@ -55,8 +51,7 @@ extension String {
     private func trimmingForMarkdown() -> String {
         self.trimmingCharacters(
             in: .whitespacesAndNewlines
-        )
-        .trimmingWorthlessLines()
+        ).trimmingWorthlessLines()
     }
 
     private func trimmingWorthlessLines() -> String {
@@ -89,11 +84,9 @@ extension String {
         self.split(
             omittingEmptySubsequences: false,
             whereSeparator: \.isNewline
-        )
-        .map {
+        ).map {
             "> \($0)"
-        }
-        .joined(
+        }.joined(
             separator: "\n"
         )
     }
@@ -138,14 +131,16 @@ private struct ParagraphRemover: MarkupRewriter {
     }
 
     mutating func visitParagraph(_ paragraph: Paragraph) -> (any Markup)? {
-        guard count + 1 == atCount else {
+        if count + 1 == atCount {
+            if paragraph.format().unicodeScalars.count < ifShorterThan {
+                return nil
+            } else {
+                return paragraph
+            }
+        } else {
             count += 1
             return paragraph
         }
-        guard paragraph.format().unicodeScalars.count < ifShorterThan else {
-            return paragraph
-        }
-        return nil
     }
 }
 
@@ -181,12 +176,11 @@ private struct HeadingFinder: MarkupWalker {
         } else {
             if let heading = markup as? Heading {
                 if let firstChild = heading.children.first(where: { _ in true }),
-                    let text = firstChild as? Text,
-                    Self.fold(text.string) == name
-                {
+                   let text = firstChild as? Text,
+                   Self.fold(text.string) == name {
                     self.started = true
                 }
             }
         }
     }
-}
+    }

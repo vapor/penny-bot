@@ -1,9 +1,9 @@
-import AWSLambdaEvents
 import AWSLambdaRuntime
+import AWSLambdaEvents
 import Foundation
-import LambdasShared
-import Models
 import SotoCore
+import Models
+import LambdasShared
 
 @main
 struct AutoFaqsHandler: LambdaHandler {

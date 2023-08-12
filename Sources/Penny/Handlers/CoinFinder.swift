@@ -1,5 +1,5 @@
-import DiscordBM
 import Foundation
+import DiscordBM
 
 struct CoinFinder {
 
@@ -18,7 +18,7 @@ struct CoinFinder {
             "thanks a lot", "thanks a bunch", "thanks so much",
             "thank you a lot", "thank you a bunch", "thank you so much",
             "thanks for the help", "thanks for your help",
-            "+= 1", "+ 1",
+            "+= 1", "+ 1"
         ]
 
         /// Two or more of these characters, like `++` or `++++++++++++`.
@@ -37,7 +37,7 @@ struct CoinFinder {
     let mentionedUsers: [UserSnowflake]
     /// Users to not be able to get a coin. Such as the author of the message.
     let excludedUsers: [UserSnowflake]
-
+    
     /// Finds users that need to get a coin, if anyone at all.
     func findUsers() -> [UserSnowflake] {
         // If there are no mentioned users or replied users,
@@ -45,15 +45,14 @@ struct CoinFinder {
         if mentionedUsers.isEmpty && (repliedUser == nil) {
             return []
         }
-
+        
         // Lowercased for case-insensitive coin-sign checking.
-        var text =
-            text
+        var text = text
             .lowercased()
-            /// Punctuations can be problematic if someone sticks it to the end of a coin sign, like
-            /// "@Penny thanks, ..." or  "@Penny thanks!"
+        /// Punctuations can be problematic if someone sticks it to the end of a coin sign, like
+        /// "@Penny thanks, ..." or  "@Penny thanks!"
             .removingOccurrences(of: undesiredCharacterSet)
-
+        
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
             // if there is a user mention in the text and there are no spaces after
@@ -63,17 +62,16 @@ struct CoinFinder {
             let mention = DiscordUtils.mention(id: mentionedUser)
             text.replace(mention, with: " \(mention) ")
         }
-
+        
         let lines = text.split(whereSeparator: \.isNewline)
-
+        
         var finalUsers = [UserSnowflake]()
 
         // Start trying to find the users that should get a coin.
         for line in lines {
             if finalUsers.count == Configuration.maxUsers { break }
 
-            let components =
-                line
+            let components = line
                 .split(whereSeparator: \.isWhitespace)
                 .filter({ !$0.isIgnorable })
             let enumeratedComponents = components.enumerated()
@@ -85,15 +83,14 @@ struct CoinFinder {
                 /// Turns `<@ID>`s to `ID`.
                 let user = user.dropFirst(2).dropLast()
                 if !usersWithNewCoins.contains(where: { $0.rawValue.elementsEqual(user) }),
-                    !excludedUsers.contains(where: { $0.rawValue.elementsEqual(user) }),
-                    !finalUsers.contains(where: { $0.rawValue.elementsEqual(user) })
-                {
+                   !excludedUsers.contains(where: { $0.rawValue.elementsEqual(user) }),
+                   !finalUsers.contains(where: { $0.rawValue.elementsEqual(user) }) {
                     usersWithNewCoins.append(UserSnowflake(String(user)))
                 }
             }
-
+            
             for mention in allMentions {
-
+                
                 // If the coin sign is in front of the @s
                 if let after = enumeratedComponents.first(where: { offset, component in
                     offset > mention.offset && !isUserMention(component)
@@ -101,42 +98,39 @@ struct CoinFinder {
                     append(user: mention.element)
                     continue
                 }
-
+                
                 // If the coin sign is behind the @s
-                if let before = enumeratedComponents.reversed()
-                    .first(where: { offset, component in
-                        offset < mention.offset && !isUserMention(component)
-                    }),
-                    components.dropLast(components.count - before.offset - 1).isSuffixedWithCoinSign
-                {
+                if let before = enumeratedComponents.reversed().first(where: { offset, component in
+                    offset < mention.offset && !isUserMention(component)
+                }), components.dropLast(components.count - before.offset - 1).isSuffixedWithCoinSign {
                     append(user: mention.element)
                     continue
                 }
             }
-
+            
             // If there were no users found so far, we try to check if
             // the message starts with @s and ends in a coin sign.
             if usersWithNewCoins.isEmpty,
-                components.isSuffixedWithCoinSign
-            {
+               components.isSuffixedWithCoinSign {
                 for component in components {
-                    guard isUserMention(component) else {
+                    if isUserMention(component) {
+                        append(user: component)
+                    } else {
                         break
                     }
-                    append(user: component)
                 }
             }
 
             // If there were no users found so far, we try to check if
             // the message starts with a coin sign and ends in @s.
             if usersWithNewCoins.isEmpty,
-                components.isPrefixedWithCoinSign
-            {
+               components.isPrefixedWithCoinSign {
                 for component in components.reversed() {
-                    guard isUserMention(component) else {
+                    if isUserMention(component) {
+                        append(user: component)
+                    } else {
                         break
                     }
-                    append(user: component)
                 }
             }
 
@@ -145,30 +139,27 @@ struct CoinFinder {
             let dropCount = usersWithNewCoins.count - remainingCapacity
             finalUsers.append(contentsOf: usersWithNewCoins.dropLast(dropCount))
         }
-
+        
         // Here we check to see if the message was in reply to another message and contains
         // a coin sign in a proper place.
         // It would mean that someone has replied to another one and thanked them.
         if let repliedUser = repliedUser,
-            !excludedUsers.contains(repliedUser),
-            !finalUsers.contains(repliedUser)
-        {
-
+           !excludedUsers.contains(repliedUser),
+           !finalUsers.contains(repliedUser) {
+            
             // At the beginning of the first line.
             if let firstLine = lines.first {
-                let components =
-                    firstLine
+                let components = firstLine
                     .split(whereSeparator: \.isWhitespace)
                     .filter({ !$0.isEmpty })
                 if components.isPrefixedWithCoinSign {
                     finalUsers.append(repliedUser)
                 }
             }
-
+            
             // At the end of the last line, only if there are no other users that get any coins.
             if finalUsers.isEmpty, let lastLine = lines.last {
-                let components =
-                    lastLine
+                let components = lastLine
                     .split(whereSeparator: \.isWhitespace)
                     .filter({ !$0.isEmpty })
                 if components.isSuffixedWithCoinSign {
@@ -176,16 +167,17 @@ struct CoinFinder {
                 }
             }
         }
-
+        
         return finalUsers
     }
-
+    
     private func isUserMention(_ string: Substring) -> Bool {
         let stringNoSurroundings = string.dropFirst(2).dropLast()
         /// `.hasPrefix()` is for a better performance.
         /// Should remove a lot of no-match strings, much faster than the containment check.
-        return string.hasPrefix("<@") && string.hasSuffix(">")
-            && mentionedUsers.contains(where: { $0.rawValue.elementsEqual(stringNoSurroundings) })
+        return string.hasPrefix("<@") &&
+        string.hasSuffix(">") &&
+        mentionedUsers.contains(where: { $0.rawValue.elementsEqual(stringNoSurroundings) })
     }
 }
 
@@ -201,22 +193,22 @@ private extension Sequence<Substring> {
             self.starts(with: $0)
         } || self.isPrefixedWithOtherCoinSigns
     }
-
+    
     var isSuffixedWithCoinSign: Bool {
         let reversedElements = self.reversed()
         return reversedSplitSigns.contains {
             reversedElements.starts(with: $0)
         } || reversedElements.isPrefixedWithOtherCoinSigns
     }
-
+    
     /// Coins signs that accept two or more of the same character.
     private var isPrefixedWithOtherCoinSigns: Bool {
-        self.first(where: { _ in true })
-            .map { element in
-                CoinFinder.Configuration.twoOrMore_coinSigns.contains { sign in
-                    element.underestimatedCount > 1 && element.allSatisfy({ sign == $0 })
-                }
-            } == true
+        self.first(where: { _ in true }).map { element in
+            CoinFinder.Configuration.twoOrMore_coinSigns.contains { sign in
+                element.underestimatedCount > 1 &&
+                element.allSatisfy({ sign == $0 })
+            }
+        } == true
     }
 }
 
