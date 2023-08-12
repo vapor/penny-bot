@@ -32,7 +32,7 @@
     "NoAccessLevelOnExtensionDeclaration": false,
     "NoAssignmentInExpressions": true,
     "NoBlockComments": true,
-    "NoCasesWithOnlyFallthrough": true,
+    "NoCasesWithOnlyFallthrough": false,
     "NoEmptyTrailingClosureParentheses": true,
     "NoLabelsInCasePatterns": false,
     "NoLeadingUnderscores": false,
