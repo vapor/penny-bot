@@ -11,15 +11,15 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
     /// Require `any` for existential types.
-        .enableUpcomingFeature("ExistentialAny"),
+    .enableUpcomingFeature("ExistentialAny"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0274-magic-file.md
     /// Nicer `#file`.
-        .enableUpcomingFeature("ConciseMagicFile"),
+    .enableUpcomingFeature("ConciseMagicFile"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0286-forward-scan-trailing-closures.md
     /// This one shouldn't do much to be honest, but shouldn't hurt as well.
-        .enableUpcomingFeature("ForwardTrailingClosures"),
+    .enableUpcomingFeature("ForwardTrailingClosures"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
     /// `BareSlashRegexLiterals` not enabled since we don't use regex anywhere.
@@ -28,20 +28,22 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
 ]
 
-let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
-    /// https://github.com/apple/swift/issues/67214
-    .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
+let targetsSwiftSettings: [SwiftSetting] =
+    upcomingFeaturesSwiftSettings + [
+        /// https://github.com/apple/swift/issues/67214
+        .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
 
-    /// `minimal` / `targeted` / `complete`
-    /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
-    .unsafeFlags(["-strict-concurrency=complete"]),
-]
+        /// `minimal` / `targeted` / `complete`
+        /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
+        .unsafeFlags(["-strict-concurrency=complete"]),
+    ]
 
-let testsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
-    /// `minimal` / `targeted` / `complete`
-    /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
-    .unsafeFlags(["-strict-concurrency=targeted"]),
-]
+let testsSwiftSettings: [SwiftSetting] =
+    upcomingFeaturesSwiftSettings + [
+        /// `minimal` / `targeted` / `complete`
+        /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
+        .unsafeFlags(["-strict-concurrency=targeted"])
+    ]
 
 extension PackageDescription.Target {
     static func lambdaTarget(
@@ -74,13 +76,11 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
-        .package(url: "https://github.com/soto-project/soto.git", from: "6.2.0"),
-        .package(url: "https://github.com/soto-project/soto-core.git", branch: "main"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
         .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.13.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
@@ -88,6 +88,8 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.1"),
         /// Not-released area:
+        .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
+        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
         .package(
             url: "https://github.com/gwynne/swift-semver",
@@ -113,7 +115,7 @@ let package = Package(
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
             from: "0.1.6"
-        )
+        ),
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
@@ -137,7 +139,7 @@ let package = Package(
         ),
         .lambdaTarget(
             name: "Users",
-            additionalDependencies:[
+            additionalDependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
                 .product(name: "Collections", package: "swift-collections"),
             ]
@@ -153,7 +155,7 @@ let package = Package(
         .lambdaTarget(
             name: "AutoPings",
             additionalDependencies: [
-                .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoS3", package: "soto")
             ]
         ),
         .lambdaTarget(
@@ -165,7 +167,7 @@ let package = Package(
         .lambdaTarget(
             name: "AutoFaqs",
             additionalDependencies: [
-                .product(name: "SotoS3", package: "soto"),
+                .product(name: "SotoS3", package: "soto")
             ]
         ),
         .lambdaTarget(

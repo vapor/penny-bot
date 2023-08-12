@@ -20,21 +20,18 @@ struct S3CachesRepository {
         let request = S3.GetObjectRequest(bucket: bucket, key: key)
         let response = try await s3.getObject(request, logger: logger)
 
-        if let buffer = response.body?.asByteBuffer(), buffer.readableBytes != 0 {
-            do {
-                return try decoder.decode(CachesStorage.self, from: buffer)
-            } catch {
-                let body = response.body?.asString() ?? "nil"
-                logger.error("Cannot find any data in the bucket", metadata: [
-                    "response-body": .string(body),
-                    "error": "\(error)"
-                ])
-                return CachesStorage()
-            }
-        } else {
-            let body = response.body?.asString() ?? "nil"
+        let body = try await response.body.collect(upTo: 1 << 24)
+        if body.readableBytes == 0 {
+            logger.error("Cannot find any data in the bucket")
+            return CachesStorage()
+        }
+
+        do {
+            return try decoder.decode(CachesStorage.self, from: body)
+        } catch {
             logger.error("Cannot find any data in the bucket", metadata: [
-                "response-body": .string(body)
+                "response-body": .string(String(buffer: body)),
+                "error": "\(error)"
             ])
             return CachesStorage()
         }
@@ -44,7 +41,7 @@ struct S3CachesRepository {
         let data = try encoder.encode(storage)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
-            body: .data(data),
+            body: .init(bytes: data),
             bucket: bucket,
             key: key
         )
