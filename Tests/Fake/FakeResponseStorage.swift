@@ -1,13 +1,14 @@
-@testable import DiscordBM
 import Atomics
 import XCTest
 
+@testable import DiscordBM
+
 public actor FakeResponseStorage {
-    
+
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
-    
-    public init() { }
+
+    public init() {}
     public static var shared = FakeResponseStorage()
 
     private static let idGenerator = ManagedAtomic(UInt(0))
@@ -28,7 +29,7 @@ public actor FakeResponseStorage {
             )
         }
     }
-    
+
     public func awaitResponse(
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
@@ -45,7 +46,7 @@ public actor FakeResponseStorage {
             )
         }
     }
-    
+
     nonisolated func expect(
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
@@ -63,7 +64,7 @@ public actor FakeResponseStorage {
             )
         }
     }
-    
+
     private func _expect(
         at endpoint: any Endpoint,
         expectFailure: Bool = false,
@@ -73,7 +74,11 @@ public actor FakeResponseStorage {
     ) {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
-                XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
+                XCTFail(
+                    "Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                    file: file,
+                    line: line
+                )
                 continuation.resume(returning: AnyBox(Optional<Never>.none as Any))
             } else {
                 continuation.resume(returning: response)
@@ -105,7 +110,7 @@ public actor FakeResponseStorage {
             }
         }
     }
-    
+
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: any Endpoint, with payload: AnyBox) {
 
@@ -128,23 +133,21 @@ private struct Continuations: CustomStringConvertible {
     }
 
     typealias Cont = CheckedContinuation<AnyBox, Never>
-    
+
     private var storage: [(endpoint: any Endpoint, id: UInt, continuation: Cont)] = []
     /// History for debugging purposes
     private var history: [(endpoint: any Endpoint, id: UInt, action: Action)] = []
 
     var description: String {
-        "Continuations(" +
-        "storage: \(storage.map({ (endpoint: $0.endpoint, id: $0.id) })), " +
-        "history: \(history)" +
-        ")"
+        "Continuations(" + "storage: \(storage.map({ (endpoint: $0.endpoint, id: $0.id) })), " + "history: \(history)"
+            + ")"
     }
-    
+
     mutating func append(endpoint: any Endpoint, id: UInt, continuation: Cont) {
         storage.append((endpoint, id, continuation))
         history.append((endpoint, id, .add))
     }
-    
+
     mutating func retrieve(endpoint: any Endpoint) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             let removed = storage.remove(at: idx)
@@ -154,7 +157,7 @@ private struct Continuations: CustomStringConvertible {
             return nil
         }
     }
-    
+
     mutating func retrieve(id: UInt) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.id == id }) {
             let removed = storage.remove(at: idx)
@@ -168,15 +171,15 @@ private struct Continuations: CustomStringConvertible {
 
 private struct UnhandledResponses: CustomStringConvertible {
     private var storage: [(endpoint: any Endpoint, payload: AnyBox)] = []
-    
+
     var description: String {
         "\(storage.map({ (endpoint: $0, payloadType: type(of: $1.value)) }))"
     }
-    
+
     mutating func append(endpoint: any Endpoint, payload: AnyBox) {
         storage.append((endpoint, payload))
     }
-    
+
     mutating func retrieve(endpoint: any Endpoint) -> AnyBox? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             return storage.remove(at: idx).payload

@@ -1,12 +1,13 @@
+import AsyncHTTPClient
+import DiscordLogger
+import NIO
+import SotoCore
+import XCTest
+
 @testable import DiscordBM
 @testable import DiscordModels
 @testable import Logging
 @testable import Penny
-import NIO
-import DiscordLogger
-import SotoCore
-import AsyncHTTPClient
-import XCTest
 
 public actor FakeMainService: MainService {
     public let manager: FakeManager
@@ -39,7 +40,7 @@ public actor FakeMainService: MainService {
         try! httpClient.syncShutdown()
     }
 
-    public func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
+    public func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {}
 
     public func makeBot(
         eventLoopGroup: any EventLoopGroup,
@@ -58,11 +59,11 @@ public actor FakeMainService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        await context.botStateManager.start(onStarted: { })
+        await context.botStateManager.start(onStarted: {})
         return context
     }
 
-    public func afterConnectCall(context: HandlerContext) async throws { }
+    public func afterConnectCall(context: HandlerContext) async throws {}
 
     static func makeContext(
         manager: any GatewayManager,
@@ -85,11 +86,13 @@ public actor FakeMainService: MainService {
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
             autoFaqsService: autoFaqsService,
-            cachesService: FakeCachesService(context: .init(
-                autoFaqsService: autoFaqsService,
-                proposalsChecker: proposalsChecker,
-                reactionCache: reactionCache
-            )),
+            cachesService: FakeCachesService(
+                context: .init(
+                    autoFaqsService: autoFaqsService,
+                    proposalsChecker: proposalsChecker,
+                    reactionCache: reactionCache
+                )
+            ),
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
@@ -117,30 +120,35 @@ public actor FakeMainService: MainService {
             at: .createMessage(channelId: Constants.Channels.logs.id)
         ).value as? Payloads.CreateMessage {
             if let signal = possibleSignal.content,
-               StateManagerSignal.shutdown.isInMessage(signal) {
+                StateManagerSignal.shutdown.isInMessage(signal)
+            {
                 let content = await botStateManager._tests_didShutdownSignalEventContent()
-                await manager.send(event: .init(
-                    opcode: .dispatch,
-                    data: .messageCreate(.init(
-                        id: try! .makeFake(),
-                        channel_id: Constants.Channels.logs.id,
-                        author: DiscordUser(
-                            id: Snowflake(Constants.botId),
-                            username: "Penny",
-                            discriminator: "#0"
-                        ),
-                        content: content,
-                        timestamp: .fake,
-                        tts: false,
-                        mention_everyone: false,
-                        mention_roles: [],
-                        attachments: [],
-                        embeds: [],
-                        pinned: false,
-                        type: .default,
-                        mentions: []
-                    ))
-                ))
+                await manager.send(
+                    event: .init(
+                        opcode: .dispatch,
+                        data: .messageCreate(
+                            .init(
+                                id: try! .makeFake(),
+                                channel_id: Constants.Channels.logs.id,
+                                author: DiscordUser(
+                                    id: Snowflake(Constants.botId),
+                                    username: "Penny",
+                                    discriminator: "#0"
+                                ),
+                                content: content,
+                                timestamp: .fake,
+                                tts: false,
+                                mention_everyone: false,
+                                mention_roles: [],
+                                attachments: [],
+                                embeds: [],
+                                pinned: false,
+                                type: .default,
+                                mentions: []
+                            )
+                        )
+                    )
+                )
                 break
             }
         }

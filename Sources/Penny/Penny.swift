@@ -1,7 +1,7 @@
-import NIOPosix
 import AsyncHTTPClient
-import SotoS3
 import Backtrace
+import NIOPosix
+import SotoS3
 
 @main
 struct Penny {

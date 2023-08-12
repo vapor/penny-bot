@@ -1,5 +1,5 @@
-import Models
 import Logging
+import Models
 
 struct CachesStorage: Sendable, Codable {
 
@@ -13,7 +13,7 @@ struct CachesStorage: Sendable, Codable {
     var proposalsCheckerData: ProposalsChecker.Storage?
     var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
-    init() { }
+    init() {}
 
     static func makeFromCachedData(context: Context) async -> CachesStorage {
         var storage = CachesStorage()
@@ -36,21 +36,30 @@ struct CachesStorage: Sendable, Codable {
             await context.autoFaqsService.consumeCachesStorageData(autoFaqsResponseRateLimiter)
         }
 
-        let reactionCacheDataCounts = reactionCacheData.map { data in
-            [data.givenCoins.count,
-             data.normalThanksMessages.count,
-             data.forcedInThanksChannelMessages.count]
-        } ?? []
-        let proposalsCheckerDataCounts = proposalsCheckerData.map { data in
-            [data.previousProposals.count,
-             data.queuedProposals.count]
-        } ?? []
+        let reactionCacheDataCounts =
+            reactionCacheData.map { data in
+                [
+                    data.givenCoins.count,
+                    data.normalThanksMessages.count,
+                    data.forcedInThanksChannelMessages.count,
+                ]
+            } ?? []
+        let proposalsCheckerDataCounts =
+            proposalsCheckerData.map { data in
+                [
+                    data.previousProposals.count,
+                    data.queuedProposals.count,
+                ]
+            } ?? []
         let autoFaqsResponseRateLimiterCounts = [autoFaqsResponseRateLimiter?.count ?? 0]
 
-        Logger(label: "CachesStorage").notice("Recovered the cached stuff", metadata: [
-            "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
-            "proposalsChecker_counts": .stringConvertible(proposalsCheckerDataCounts),
-            "autoFaqsRateLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
-        ])
+        Logger(label: "CachesStorage").notice(
+            "Recovered the cached stuff",
+            metadata: [
+                "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
+                "proposalsChecker_counts": .stringConvertible(proposalsCheckerDataCounts),
+                "autoFaqsRateLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
+            ]
+        )
     }
 }

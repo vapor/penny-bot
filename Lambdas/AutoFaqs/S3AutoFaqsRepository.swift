@@ -1,6 +1,6 @@
-import SotoS3
 import Foundation
 import Models
+import SotoS3
 
 public struct S3AutoFaqsRepository {
 
@@ -41,7 +41,10 @@ public struct S3AutoFaqsRepository {
             let request = S3.GetObjectRequest(bucket: bucket, key: key)
             response = try await s3.getObject(request, logger: logger)
         } catch {
-            logger.error("Cannot retrieve the file from the bucket. If this is the first time, manually create a file named '\(self.key)' in bucket '\(self.bucket)' and set its content to empty json ('{}'). This has not been automated to reduce the chance of data loss", metadata: ["error": "\(error)"])
+            logger.error(
+                "Cannot retrieve the file from the bucket. If this is the first time, manually create a file named '\(self.key)' in bucket '\(self.bucket)' and set its content to empty json ('{}'). This has not been automated to reduce the chance of data loss",
+                metadata: ["error": "\(error)"]
+            )
             throw error
         }
 
@@ -53,10 +56,13 @@ public struct S3AutoFaqsRepository {
         do {
             return try decoder.decode([String: String].self, from: body)
         } catch {
-            logger.error("Cannot find any data in the bucket", metadata: [
-                "response-body": .string(String(buffer: body)),
-                "error": "\(error)"
-            ])
+            logger.error(
+                "Cannot find any data in the bucket",
+                metadata: [
+                    "response-body": .string(String(buffer: body)),
+                    "error": "\(error)",
+                ]
+            )
             return [String: String]()
         }
     }

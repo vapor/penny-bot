@@ -1,20 +1,20 @@
+import AsyncHTTPClient
 import DiscordBM
 import DiscordLogger
-import AsyncHTTPClient
-import NIOCore
-import SotoCore
-import Shared
 import Logging
+import NIOCore
+import Shared
+import SotoCore
 
 struct PennyService: MainService {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
-#if DEBUG
+        #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
         let webhookURL = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
-#else
+        #else
         let webhookURL = Constants.loggingWebhookURL
-#endif
+        #endif
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
@@ -27,7 +27,7 @@ struct PennyService: MainService {
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
-                    .critical: .user(Constants.botDevUserId)
+                    .critical: .user(Constants.botDevUserId),
                 ],
                 extraMetadata: [.warning, .error, .critical],
                 disabledLogLevels: [.debug, .trace],
@@ -51,7 +51,7 @@ struct PennyService: MainService {
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
                 apiEndpoints: [
-                    .listApplicationCommands: .seconds(60 * 60) /// 1 hour
+                    .listApplicationCommands: .seconds(60 * 60)/// 1 hour
                 ],
                 apiEndpointsDefaultTTL: .seconds(5)
             )

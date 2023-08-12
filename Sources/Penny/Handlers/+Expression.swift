@@ -1,5 +1,5 @@
-import Models
 import DiscordBM
+import Models
 
 extension Collection<S3AutoPingItems.Expression> {
     /// Make sure the list in not empty before using this function.
@@ -27,14 +27,15 @@ extension Collection<S3AutoPingItems.Expression> {
         if elements.isEmpty {
             return nil
         } else {
-            let list = elements
+            let list =
+                elements
                 .sorted(by: { $0.innerValue > $1.innerValue })
                 .map(\.innerValue)
                 .makeExpressionListItems()
             return """
-            - **\(kind.UIDescription)**
-            \(list)
-            """
+                - **\(kind.UIDescription)**
+                \(list)
+                """
         }
     }
 }

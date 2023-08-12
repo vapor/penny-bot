@@ -2,9 +2,7 @@ import DiscordBM
 
 extension Guild.Member {
     var uiName: String? {
-        self.nick ??
-        self.user?.global_name ??
-        self.user?.username
+        self.nick ?? self.user?.global_name ?? self.user?.username
     }
 
     var uiAvatarURL: String? {

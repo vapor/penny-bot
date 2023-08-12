@@ -1,15 +1,18 @@
-import Foundation
 import DiscordModels
+import Foundation
+
 @testable import Penny
 
 public enum TestData {
-    
+
     private static func resource(named name: String) -> Data {
         let fileManager = FileManager.default
         let currentDirectory = fileManager.currentDirectoryPath
         let path = currentDirectory + "/Tests/Resources/" + name
         guard let data = fileManager.contents(atPath: path) else {
-            fatalError("Make sure you've set the custom working directory for the current scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory. Current working directory: \(currentDirectory)")
+            fatalError(
+                "Make sure you've set the custom working directory for the current scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory. Current working directory: \(currentDirectory)"
+            )
         }
         return data
     }
@@ -18,7 +21,7 @@ public enum TestData {
         let data = resource(named: name)
         return try! JSONDecoder().decode(D.self, from: data)
     }
-    
+
     public static let vaporGuild = resource(
         named: "guild_create.json",
         as: Gateway.GuildCreate.self

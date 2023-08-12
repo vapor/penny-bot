@@ -31,16 +31,20 @@ struct PRCoinGiver {
             primaryBranch: repo.primaryBranch
         )
         for pr in try await getPRsRelatedToCommit() {
-            if pr.merged_at == nil ||
-                codeOwners.contains(user: pr.user) {
+            if pr.merged_at == nil || codeOwners.contains(user: pr.user) {
                 continue
             }
-            guard let member = try await context.requester.getDiscordMember(
-                githubID: "\(pr.user.id)"
-            ), let discordID = member.user?.id else {
-                logger.debug("Found no Discord member for the GitHub user", metadata: [
-                    "pr": "\(pr)",
-                ])
+            guard
+                let member = try await context.requester.getDiscordMember(
+                    githubID: "\(pr.user.id)"
+                ), let discordID = member.user?.id
+            else {
+                logger.debug(
+                    "Found no Discord member for the GitHub user",
+                    metadata: [
+                        "pr": "\(pr)"
+                    ]
+                )
                 continue
             }
 
@@ -48,26 +52,30 @@ struct PRCoinGiver {
             if member.roles.contains(Constants.Roles.core.id) { continue }
 
             let amount = 3
-            let coinResponse = try await context.usersService.postCoin(with: .init(
-                amount: amount,
-                /// GuildID because this is automated.
-                fromDiscordID: Snowflake(Constants.guildID),
-                toDiscordID: discordID,
-                source: .github,
-                reason: .prMerge
-            ))
+            let coinResponse = try await context.usersService.postCoin(
+                with: .init(
+                    amount: amount,
+                    /// GuildID because this is automated.
+                    fromDiscordID: Snowflake(Constants.guildID),
+                    toDiscordID: discordID,
+                    source: .github,
+                    reason: .prMerge
+                )
+            )
 
             try await context.discordClient.createMessage(
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
                     content: DiscordUtils.mention(id: discordID),
-                    embeds: [.init(
-                        description: """
-                        Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
-                        You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
-                        """,
-                        color: .blue
-                    )],
+                    embeds: [
+                        .init(
+                            description: """
+                                Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
+                                You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
+                                """,
+                            color: .blue
+                        )
+                    ],
                     allowed_mentions: .init(users: [discordID])
                 )
             ).guardSuccess()
@@ -81,16 +89,18 @@ struct PRCoinGiver {
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
         let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
-            .init(path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                commit_sha: commitSHA
-            ))
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    commit_sha: commitSHA
+                )
+            )
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-              else { 
+            case let .json(json) = ok.body
+        else {
             throw Errors.httpRequestFailed(response: response)
         }
 

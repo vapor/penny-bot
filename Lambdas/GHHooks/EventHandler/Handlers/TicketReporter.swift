@@ -1,4 +1,5 @@
 import DiscordBM
+
 import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
@@ -42,14 +43,20 @@ struct TicketReporter {
                 number: number
             )
             messageID = MessageSnowflake(repoMessageID)
-            context.logger.debug("Got message ID from Repo", metadata: [
-                "messageID": "\(messageID)"
-            ])
+            context.logger.debug(
+                "Got message ID from Repo",
+                metadata: [
+                    "messageID": "\(messageID)"
+                ]
+            )
         } catch let error as DynamoMessageRepo.Errors where error == .unavailable {
-            context.logger.debug("Message is unavailable to edit", metadata: [
-                "repoID": .stringConvertible(repoID),
-                "number": .stringConvertible(number),
-            ])
+            context.logger.debug(
+                "Message is unavailable to edit",
+                metadata: [
+                    "repoID": .stringConvertible(repoID),
+                    "number": .stringConvertible(number),
+                ]
+            )
             return
         } catch let error as DynamoMessageRepo.Errors where error == .notFound {
             context.logger.debug(

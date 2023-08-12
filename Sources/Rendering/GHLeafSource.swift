@@ -1,8 +1,8 @@
 import AsyncHTTPClient
-import NIO
-import Logging
-import Shared
 import LeafKit
+import Logging
+import NIO
+import Shared
 
 struct GHLeafSource: LeafSource {
 

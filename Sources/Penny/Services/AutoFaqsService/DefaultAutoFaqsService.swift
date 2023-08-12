@@ -1,14 +1,15 @@
+import AsyncHTTPClient
+@preconcurrency import Collections
+import DiscordModels
+import Logging
+import Models
+import NIOHTTP1
+
 #if canImport(Darwin)
 import Foundation
 #else
 @preconcurrency import Foundation
 #endif
-import DiscordModels
-import Models
-@preconcurrency import Collections
-import AsyncHTTPClient
-import Logging
-import NIOHTTP1
 
 actor DefaultAutoFaqsService: AutoFaqsService {
 
@@ -136,11 +137,14 @@ actor DefaultAutoFaqsService: AutoFaqsService {
         guard 200..<300 ~= response.status.code else {
             let collected = try? await response.body.collect(upTo: 1 << 16)
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error("Faqs-service failed", metadata: [
-                "status": "\(response.status)",
-                "headers": "\(response.headers)",
-                "body": "\(body)",
-            ])
+            logger.error(
+                "Faqs-service failed",
+                metadata: [
+                    "status": "\(response.status)",
+                    "headers": "\(response.headers)",
+                    "body": "\(body)",
+                ]
+            )
             throw ServiceError.badStatus(response.status)
         }
 
@@ -151,9 +155,12 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     private func freshenCache(_ new: [String: String]) {
-        logger.trace("Will refresh auto-faqs cache", metadata: [
-            "new": .stringConvertible(new)
-        ])
+        logger.trace(
+            "Will refresh auto-faqs cache",
+            metadata: [
+                "new": .stringConvertible(new)
+            ]
+        )
         self._cachedItems = new
         self._cachedFoldedItems = Dictionary(
             new.map({ ($0.key.superHeavyFolded(), $0.value) }),
@@ -194,10 +201,12 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     func canRespond(receiverID: UserSnowflake, faqHash: Int) -> Bool {
-        self.responseRateLimiter.canRespond(to: .init(
-            receiverID: receiverID,
-            faqHash: faqHash
-        ))
+        self.responseRateLimiter.canRespond(
+            to: .init(
+                receiverID: receiverID,
+                faqHash: faqHash
+            )
+        )
     }
 
     func consumeCachesStorageData(_ storage: ResponseRateLimiter) {

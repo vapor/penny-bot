@@ -1,4 +1,3 @@
-
 public typealias Repository = Components.Schemas.repository
 public typealias User = Components.Schemas.simple_user
 public typealias Organization = Components.Schemas.organization_simple

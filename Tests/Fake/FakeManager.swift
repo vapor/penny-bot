@@ -1,22 +1,24 @@
-import DiscordBM
-@testable import Penny
 import Atomics
-import struct NIOCore.ByteBuffer
+import DiscordBM
 import XCTest
+
+import struct NIOCore.ByteBuffer
+
+@testable import Penny
 
 public actor FakeManager: GatewayManager {
     public nonisolated let client: any DiscordClient = FakeDiscordClient()
     public nonisolated let id: UInt = 0
     public nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
     var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
-    
-    public init() { }
-    
-    public func connect() async { }
 
-    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
-    public func updatePresence(payload: Gateway.Identify.Presence) async { }
-    public func updateVoiceState(payload: VoiceStateUpdate) async { }
+    public init() {}
+
+    public func connect() async {}
+
+    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async {}
+    public func updatePresence(payload: Gateway.Identify.Presence) async {}
+    public func updateVoiceState(payload: VoiceStateUpdate) async {}
     public func makeEventsStream() async -> AsyncStream<Gateway.Event> {
         AsyncStream { continuation in
             eventContinuations.append(continuation)
@@ -25,7 +27,7 @@ public actor FakeManager: GatewayManager {
     public func makeEventsParseFailureStream() async -> AsyncStream<(any Error, ByteBuffer)> {
         AsyncStream { _ in }
     }
-    public func disconnect() { }
+    public func disconnect() {}
 
     public func send(event: Gateway.Event) {
         for continuation in eventContinuations {
@@ -46,7 +48,7 @@ public actor FakeManager: GatewayManager {
             continuation.yield(event)
         }
     }
-    
+
     @_disfavoredOverload
     public func sendAndAwaitResponse<T>(
         key: EventKey,
@@ -63,7 +65,7 @@ public actor FakeManager: GatewayManager {
             line: line
         )
     }
-    
+
     public func sendAndAwaitResponse<T>(
         key: EventKey,
         endpoint: AnyEndpoint? = nil,

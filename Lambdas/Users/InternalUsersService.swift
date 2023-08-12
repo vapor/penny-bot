@@ -1,6 +1,6 @@
-import SotoDynamoDB
 import Foundation
 import Models
+import SotoDynamoDB
 
 public struct InternalUsersService {
     private let userRepo: DynamoUserRepository
@@ -27,7 +27,7 @@ public struct InternalUsersService {
         freshUser user: DynamoDBUser
     ) async throws -> DynamoDBUser {
         try await coinEntryRepo.createCoinEntry(coinEntry)
-        
+
         var user = user
         user.coinCount += coinEntry.amount
         try await userRepo.updateUser(user)
@@ -49,7 +49,7 @@ public struct InternalUsersService {
             return newUser
         }
     }
-    
+
     /// Returns nil if user does not exist.
     public func getUser(githubID: String) async throws -> DynamoDBUser? {
         try await userRepo.getUser(githubID: githubID)

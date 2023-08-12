@@ -1,8 +1,8 @@
-import LeafKit
-import NIO
 import AsyncHTTPClient
-import Logging
 import Foundation
+import LeafKit
+import Logging
+import NIO
 
 private let leafRendererThreadPool: NIOThreadPool = {
     let pool = NIOThreadPool(numberOfThreads: 1)

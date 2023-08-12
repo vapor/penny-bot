@@ -1,8 +1,8 @@
-import SotoCore
-import SotoSecretsManager
+import Foundation
 import Logging
 import Shared
-import Foundation
+import SotoCore
+import SotoSecretsManager
 
 public actor SecretsRetriever {
 
@@ -49,9 +49,12 @@ public actor SecretsRetriever {
         guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
             throw Errors.envVarNotFound(name: arnEnvVarKey)
         }
-        logger.trace("Retrieving secret from AWS", metadata: [
-            "arnEnvVarKey": .string(arnEnvVarKey)
-        ])
+        logger.trace(
+            "Retrieving secret from AWS",
+            metadata: [
+                "arnEnvVarKey": .string(arnEnvVarKey)
+            ]
+        )
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
             logger: logger

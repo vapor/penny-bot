@@ -1,6 +1,6 @@
+import Algorithms
 /// Copy-pasted from `Leaf`.
 import LeafKit
-import Algorithms
 
 struct LeafEncoder {
     /// Use `Codable` to convert an (almost) arbitrary encodable type to a dictionary of key/``LeafData`` pairs
@@ -16,7 +16,11 @@ struct LeafEncoder {
         // Unfortunately we have to delay this check until this point thanks to `Encoder` ever so helpfully not
         // declaring most of its methods as throwing.
         guard let dictionary = data.dictionary else {
-            throw LeafError(.illegalAccess("Leaf contexts must be dictionaries or structure types; arrays and scalar values are not permitted."))
+            throw LeafError(
+                .illegalAccess(
+                    "Leaf contexts must be dictionaries or structure types; arrays and scalar values are not permitted."
+                )
+            )
         }
 
         return dictionary
@@ -28,7 +32,7 @@ struct LeafEncoder {
 /// One of these is always necessary when implementing an unkeyed container, and needed quite often for most
 /// other things in Codable. Sure would be nice if the stdlib had one instead of there being 1000-odd versions
 /// floating around various dependencies.
-fileprivate struct GenericCodingKey: CodingKey, Hashable {
+private struct GenericCodingKey: CodingKey, Hashable {
     let stringValue: String
     let intValue: Int?
 
@@ -49,7 +53,7 @@ fileprivate struct GenericCodingKey: CodingKey, Hashable {
 
 /// Helper protocol allowing a single existential representation for all of the possible nested storage patterns
 /// that show up during encoding.
-fileprivate protocol LeafEncodingResolvable {
+private protocol LeafEncodingResolvable {
     var resolvedData: LeafData? { get }
 }
 
@@ -86,7 +90,9 @@ extension LeafEncoder {
         /// Need to expose the ability to access unwrapped keyed container to enable use of nested
         /// keyed containers (see the keyed and unkeyed containers).
         func rawContainer<Key: CodingKey>(keyedBy type: Key.Type) -> KeyedContainerImpl<Key> {
-            guard self.storage == nil else { fatalError("Can't encode to multiple containers at the same encoding level") }
+            guard self.storage == nil else {
+                fatalError("Can't encode to multiple containers at the same encoding level")
+            }
 
             self.storage = KeyedContainerImpl<Key>(encoder: self)
             return self.storage as! KeyedContainerImpl<Key>
@@ -99,7 +105,9 @@ extension LeafEncoder {
 
         /// See ``Encoder/unkeyedContainer()``.
         func unkeyedContainer() -> any UnkeyedEncodingContainer {
-            guard self.storage == nil else { fatalError("Can't encode to multiple containers at the same encoding level") }
+            guard self.storage == nil else {
+                fatalError("Can't encode to multiple containers at the same encoding level")
+            }
 
             self.storage = UnkeyedContainerImpl(encoder: self)
             return self.storage as! UnkeyedContainerImpl
@@ -107,7 +115,9 @@ extension LeafEncoder {
 
         /// See ``Encoder/singleValueContainer()``.
         func singleValueContainer() -> any SingleValueEncodingContainer {
-            guard self.storage == nil else { fatalError("Can't encode to multiple containers at the same encoding level") }
+            guard self.storage == nil else {
+                fatalError("Can't encode to multiple containers at the same encoding level")
+            }
             return self
         }
 
@@ -121,7 +131,8 @@ extension LeafEncoder {
 
         /// Encode an arbitrary encodable input, optionally deepening the current coding path with a
         /// given key during encoding, and return it as a resolvable item.
-        func encode<T>(_ value: T, forKey key: (any CodingKey)?) throws -> (any LeafEncodingResolvable)? where T: Encodable {
+        func encode<T>(_ value: T, forKey key: (any CodingKey)?) throws -> (any LeafEncodingResolvable)?
+        where T: Encodable {
             if let leafRepresentable = value as? (any LeafDataRepresentable) {
                 /// Shortcut through ``LeafDataRepresentable`` if `T` conforms to it.
                 return leafRepresentable.leafData
@@ -136,7 +147,8 @@ extension LeafEncoder {
         }
     }
 
-    private final class KeyedContainerImpl<Key>: KeyedEncodingContainerProtocol, LeafEncodingResolvable where Key: CodingKey {
+    private final class KeyedContainerImpl<Key>: KeyedEncodingContainerProtocol, LeafEncodingResolvable
+    where Key: CodingKey {
         private weak var encoder: EncoderImpl!
         private var data: [String: any LeafEncodingResolvable] = [:]
         private var nestedEncoderCaptures = [AnyObject]()
@@ -153,13 +165,15 @@ extension LeafEncoder {
         func encodeNil(forKey key: Key) throws {}
 
         /// See ``KeyedEncodingContainerProtocol/encode(_:forKey:)``.
-        func encode<T>(_ value: T, forKey key: Key) throws where T : Encodable {
+        func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
             guard let encodedValue = try self.encoder.encode(value, forKey: key) else { return }
             self.data[key.stringValue] = encodedValue
         }
 
         /// See ``KeyedEncodingContainerProtocol/nestedContainer(keyedBy:forKey:)``.
-        func nestedContainer<NestedKey: CodingKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> {
+        func nestedContainer<NestedKey: CodingKey>(keyedBy keyType: NestedKey.Type, forKey key: Key)
+            -> KeyedEncodingContainer<NestedKey>
+        {
             guard let encoder = encoder else {
                 fatalError("Encoder deallocated")
             }
@@ -169,11 +183,13 @@ extension LeafEncoder {
 
             /// Use a subencoder to create a nested container so the coding paths are correctly maintained.
             /// Save the subcontainer in our data so it can be resolved later before returning it.
-            return .init(self.insert(
-                nestedEncoder.rawContainer(keyedBy: NestedKey.self),
-                forKey: key,
-                as: KeyedContainerImpl<NestedKey>.self
-            ))
+            return .init(
+                self.insert(
+                    nestedEncoder.rawContainer(keyedBy: NestedKey.self),
+                    forKey: key,
+                    as: KeyedContainerImpl<NestedKey>.self
+                )
+            )
         }
 
         /// See ``KeyedEncodingContainerProtocol/nestedUnkeyedContainer(forKey:)``.
@@ -214,7 +230,8 @@ extension LeafEncoder {
         }
 
         /// Helper for the encoding methods.
-        private func insert<T>(_ value: any LeafEncodingResolvable, forKey key: any CodingKey, as: T.Type = T.self) -> T {
+        private func insert<T>(_ value: any LeafEncodingResolvable, forKey key: any CodingKey, as: T.Type = T.self) -> T
+        {
             self.data[key.stringValue] = value
             return value as! T
         }
@@ -249,7 +266,8 @@ extension LeafEncoder {
         }
 
         /// See ``UnkeyedEncodingContainer/nestedContainer(keyedBy:)``.
-        func nestedContainer<NestedKey: CodingKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey> {
+        func nestedContainer<NestedKey: CodingKey>(keyedBy keyType: NestedKey.Type) -> KeyedEncodingContainer<NestedKey>
+        {
             guard let encoder = encoder else {
                 fatalError("Encoder deallocated")
             }
@@ -257,10 +275,12 @@ extension LeafEncoder {
             let nestedEncoder = EncoderImpl(from: encoder, withKey: self.nextCodingKey)
             nestedEncoderCaptures.append(nestedEncoder)
 
-            return .init(self.add(
-                nestedEncoder.rawContainer(keyedBy: NestedKey.self),
-                as: KeyedContainerImpl<NestedKey>.self
-            ))
+            return .init(
+                self.add(
+                    nestedEncoder.rawContainer(keyedBy: NestedKey.self),
+                    as: KeyedContainerImpl<NestedKey>.self
+                )
+            )
         }
 
         /// See ``UnkeyedEncodingContainer/nestedUnkeyedContainer()``.

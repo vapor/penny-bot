@@ -1,12 +1,12 @@
-import AsyncHTTPClient
-import AWSLambdaRuntime
 import AWSLambdaEvents
-import SotoCore
-import NIOHTTP1
+import AWSLambdaRuntime
+import AsyncHTTPClient
 import DiscordBM
-import LambdasShared
-import Shared
 import Foundation
+import LambdasShared
+import NIOHTTP1
+import Shared
+import SotoCore
 
 @main
 struct SponsorsHandler: LambdaHandler {
@@ -51,14 +51,14 @@ struct SponsorsHandler: LambdaHandler {
         }
         do {
             context.logger.debug("Received sponsorship event")
-            
+
             // Try updating the GitHub Readme with the new sponsor
             try await requestReadmeWorkflowTrigger(on: event)
-            
+
             // Decode GitHub Webhook Response
             context.logger.debug("Decoding GitHub Payload")
             let payload = try event.decode(as: GitHubWebhookPayload.self)
-            
+
             // Look for the user in the DB
             context.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
@@ -76,16 +76,16 @@ struct SponsorsHandler: LambdaHandler {
                     body: "Error: no user found with GitHub ID \(newSponsorID)"
                 )
             }
-            
+
             // TODO: Create gh user
             let discordID = user.discordID
-            
+
             // Get role ID based on sponsorship tier
             let role = try SponsorType.for(sponsorshipAmount: payload.sponsorship.tier.monthlyPriceInCents)
-            
+
             // Do different stuff depending on what happened to the sponsorship
             let actionType = GitHubWebhookPayload.ActionType(rawValue: payload.action)!
-            
+
             context.logger.debug("Managing Discord roles")
 
             switch actionType {
@@ -105,7 +105,9 @@ struct SponsorsHandler: LambdaHandler {
                 break
             case .tierChanged:
                 guard let changes = payload.changes else {
-                    context.logger.error("Error: GitHub returned 'tier_changed' event but no 'changes' data in the payload")
+                    context.logger.error(
+                        "Error: GitHub returned 'tier_changed' event but no 'changes' data in the payload"
+                    )
                     return APIGatewayV2Response(
                         statusCode: .ok,
                         body: "Error: GitHub returned 'tier_changed' event but no 'changes' data in the payload"
@@ -113,7 +115,8 @@ struct SponsorsHandler: LambdaHandler {
                 }
                 // This means that the user downgraded from a sponsor role to a backer role
                 if try SponsorType.for(sponsorshipAmount: changes.tier.from.monthlyPriceInCents) == .sponsor,
-                   role == .backer {
+                    role == .backer
+                {
                     try await removeRole(from: discordID, role: .sponsor)
                 }
             case .pendingCancellation:
@@ -148,9 +151,11 @@ struct SponsorsHandler: LambdaHandler {
             case let .some(error):
                 switch error {
                 case let .jsonError(jsonError)
-                    where [.invalidRole, .unknownRole].contains(jsonError.code):
+                where [.invalidRole, .unknownRole].contains(jsonError.code):
                     /// This is fine
-                    logger.debug("User \(discordID) probably didn't have the \(role.rawValue) role in the first place, to be deleted")
+                    logger.debug(
+                        "User \(discordID) probably didn't have the \(role.rawValue) role in the first place, to be deleted"
+                    )
                 default:
                     throw error
                 }
@@ -164,7 +169,7 @@ struct SponsorsHandler: LambdaHandler {
             )
         }
     }
-    
+
     /**
      Adds a new Discord role to the selected user, depending on the sponsorship tier they selected (**sponsor**, **backer**).
      */
@@ -194,10 +199,13 @@ struct SponsorsHandler: LambdaHandler {
             try await discordClient.createMessage(
                 // Always send message to backer channel only
                 channelId: SponsorType.backer.channelID,
-                payload: .init(embeds: [.init(
-                    description: "Welcome \(DiscordUtils.mention(id: discordID)), our new \(DiscordUtils.mention(id: role.roleID))",
-                    color: role.discordColor
-                )])
+                payload: .init(embeds: [
+                    .init(
+                        description:
+                            "Welcome \(DiscordUtils.mention(id: discordID)), our new \(DiscordUtils.mention(id: role.roleID))",
+                        color: role.discordColor
+                    )
+                ])
             ).guardSuccess()
             logger.info("Successfully sent message to user \(discordID).")
         } catch {
@@ -227,17 +235,19 @@ struct SponsorsHandler: LambdaHandler {
         triggerActionRequest.headers.add(contentsOf: [
             "Accept": "application/vnd.github+json",
             "Authorization": "Bearer \(workflowToken)",
-            "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
+            "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)",
         ])
-        
+
         triggerActionRequest.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))
-        
+
         // Send request to trigger workflow and read response
         let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
-        
+
         guard 200..<300 ~= githubResponse.status.code else {
             let body = try await githubResponse.body.collect(upTo: 1024 * 1024)
-            logger.error("GitHub did not run workflow with error code: \(githubResponse.status.code) and body: \(String(buffer: body))")
+            logger.error(
+                "GitHub did not run workflow with error code: \(githubResponse.status.code) and body: \(String(buffer: body))"
+            )
             throw Errors.runWorkflowError(
                 message: "GitHub did not run workflow with error code: \(githubResponse.status.code)"
             )

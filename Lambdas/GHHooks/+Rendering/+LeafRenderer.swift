@@ -1,18 +1,20 @@
-import NIOCore
-import Rendering
-import Logging
 @preconcurrency import AsyncHTTPClient
 import Foundation
+import Logging
+import NIOCore
+import Rendering
 
 extension LeafRenderer {
     static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
         try LeafRenderer(
             subDirectory: "GHHooksLambda",
             httpClient: httpClient,
-            extraSources: [DocsLeafSource(
-                httpClient: httpClient,
-                logger: logger
-            )],
+            extraSources: [
+                DocsLeafSource(
+                    httpClient: httpClient,
+                    logger: logger
+                )
+            ],
             logger: logger,
             on: httpClient.eventLoopGroup.next()
         )

@@ -1,15 +1,17 @@
-import Foundation
 import DiscordBM
+import Foundation
 
 enum Constants {
     static func env(_ key: String) -> String {
         if let value = ProcessInfo.processInfo.environment[key] {
             return value
         } else {
-            fatalError("""
-            Set an environment value for key '\(key)'.
-            In tests you usually can set dummy values.
-            """)
+            fatalError(
+                """
+                Set an environment value for key '\(key)'.
+                In tests you usually can set dummy values.
+                """
+            )
         }
     }
     static let vaporGuildId: GuildSnowflake = "431917998102675485"
@@ -64,14 +66,16 @@ enum Constants {
 
         /// Must not send thanks-responses to these channels.
         /// Instead send to the #thanks channel.
-        static let thanksResponseDenyList: Set<ChannelSnowflake> = Set([
-            Channels.welcome,
-            Channels.news,
-            Channels.publications,
-            Channels.release,
-            Channels.jobs,
-            Channels.status,
-        ].map(\.id))
+        static let thanksResponseDenyList: Set<ChannelSnowflake> = Set(
+            [
+                Channels.welcome,
+                Channels.news,
+                Channels.publications,
+                Channels.release,
+                Channels.jobs,
+                Channels.status,
+            ].map(\.id)
+        )
     }
 
     enum Roles: RoleSnowflake {
@@ -82,7 +86,7 @@ enum Constants {
         case maintainer = "530113860129259521"
         case moderator = "431920836631592980"
         case core = "431919254372089857"
-        
+
         static let elevatedPublicCommandsAccess: [Roles] = [
             .nitroBooster,
             .backer,
@@ -100,11 +104,13 @@ enum Constants {
             .core,
         ]
 
-        static let elevatedRestrictedCommandsAccessSet: Set<RoleSnowflake> = Set([
-            Roles.contributor,
-            Roles.maintainer,
-            Roles.moderator,
-            Roles.core,
-        ].map(\.rawValue))
+        static let elevatedRestrictedCommandsAccessSet: Set<RoleSnowflake> = Set(
+            [
+                Roles.contributor,
+                Roles.maintainer,
+                Roles.moderator,
+                Roles.core,
+            ].map(\.rawValue)
+        )
     }
 }

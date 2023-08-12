@@ -1,7 +1,7 @@
-import Logging
-import DiscordBM
 @preconcurrency import Collections
+import DiscordBM
 import Foundation
+import Logging
 
 /// Cache for reactions-related stuff.
 actor ReactionCache {
@@ -64,7 +64,7 @@ actor ReactionCache {
     private var storage = Storage()
     let logger = Logger(label: "ReactionCache")
 
-    init() { }
+    init() {}
 
     /// This is to prevent spams. In case someone removes their reaction and
     /// reacts again, we should not give coins to message's author anymore.
@@ -91,11 +91,13 @@ actor ReactionCache {
         messageId: MessageSnowflake,
         context: HandlerContext
     ) async -> Bool {
-        guard let message = await self.getMessage(
-            channelId: channelId,
-            messageId: messageId,
-            discordService: context.services.discordService
-        ) else {
+        guard
+            let message = await self.getMessage(
+                channelId: channelId,
+                messageId: messageId,
+                discordService: context.services.discordService
+            )
+        else {
             return false
         }
         if message.author?.bot ?? false { return false }
@@ -103,16 +105,20 @@ actor ReactionCache {
         let calendar = Calendar.utc
         let now = Date()
         guard let aWeekAgo = calendar.date(byAdding: .weekOfMonth, value: -1, to: now) else {
-            logger.error("Could not find the past-week date", metadata: [
-                "now": .stringConvertible(now.timeIntervalSince1970)
-            ])
+            logger.error(
+                "Could not find the past-week date",
+                metadata: [
+                    "now": .stringConvertible(now.timeIntervalSince1970)
+                ]
+            )
             return true
         }
-        let inPastWeek = calendar.compare(
-            message.timestamp.date,
-            to: aWeekAgo,
-            toGranularity: .minute
-        ) == .orderedDescending
+        let inPastWeek =
+            calendar.compare(
+                message.timestamp.date,
+                to: aWeekAgo,
+                toGranularity: .minute
+            ) == .orderedDescending
 
         return inPastWeek
     }
@@ -122,14 +128,19 @@ actor ReactionCache {
         messageId: MessageSnowflake,
         discordService: DiscordService
     ) async -> DiscordChannel.Message? {
-        guard let message = await discordService.getPossiblyCachedChannelMessage(
-            channelId: channelId,
-            messageId: messageId
-        ) else {
-            logger.error("ReactionCache could not find a message's author id", metadata: [
-                "channelId": .stringConvertible(channelId),
-                "messageId": .stringConvertible(messageId),
-            ])
+        guard
+            let message = await discordService.getPossiblyCachedChannelMessage(
+                channelId: channelId,
+                messageId: messageId
+            )
+        else {
+            logger.error(
+                "ReactionCache could not find a message's author id",
+                metadata: [
+                    "channelId": .stringConvertible(channelId),
+                    "messageId": .stringConvertible(messageId),
+                ]
+            )
             return nil
         }
         return message
@@ -175,7 +186,7 @@ actor ReactionCache {
         if let existing = storage.forcedInThanksChannelMessages[receiverMessageId] {
             return .forcedInThanksChannel(existing)
         } else if let existing = storage.normalThanksMessages[
-           [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
+            [AnySnowflake(channelId), AnySnowflake(receiverMessageId)]
         ] {
             return .normal(existing)
         } else {
@@ -212,9 +223,10 @@ extension Emoji: Hashable {
                 return name1 == name2
             default:
                 Logger(label: "Emoji:Hashable.==").warning(
-                    "Emojis didn't have id and name!", metadata: [
+                    "Emojis didn't have id and name!",
+                    metadata: [
                         "lhs": "\(lhs)",
-                        "rhs": "\(rhs)"
+                        "rhs": "\(rhs)",
                     ]
                 )
                 return false
@@ -233,7 +245,8 @@ extension Emoji: Hashable {
             hasher.combine(name)
         } else {
             Logger(label: "Emoji:Hashable.hash(into:)").warning(
-                "Emoji didn't have id and name!", metadata: [
+                "Emoji didn't have id and name!",
+                metadata: [
                     "emoji": "\(self)"
                 ]
             )

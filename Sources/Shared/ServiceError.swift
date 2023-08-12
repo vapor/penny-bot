@@ -1,5 +1,5 @@
-import NIOHTTP1
 import AsyncHTTPClient
+import NIOHTTP1
 
 enum ServiceError: Error {
     case badStatus(HTTPClientResponse)

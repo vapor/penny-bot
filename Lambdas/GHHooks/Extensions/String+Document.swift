@@ -13,7 +13,8 @@ extension String {
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        let prefixed = markup2
+        let prefixed =
+            markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .unicodesPrefix(maxLength)
@@ -31,15 +32,18 @@ extension String {
             }
         }
 
-        var prefixed2 = markup2
+        var prefixed2 =
+            markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .unicodesPrefix(maxLength)
         var document3 = Document(parsing: prefixed2)
         if let last = Array(document3.blockChildren).last,
-           last is Heading {
+            last is Heading
+        {
             document3 = Document(document3.blockChildren.dropLast())
-            prefixed2 = document3
+            prefixed2 =
+                document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .unicodesPrefix(maxLength)
@@ -176,11 +180,12 @@ private struct HeadingFinder: MarkupWalker {
         } else {
             if let heading = markup as? Heading {
                 if let firstChild = heading.children.first(where: { _ in true }),
-                   let text = firstChild as? Text,
-                   Self.fold(text.string) == name {
+                    let text = firstChild as? Text,
+                    Self.fold(text.string) == name
+                {
                     self.started = true
                 }
             }
         }
     }
-    }
+}
