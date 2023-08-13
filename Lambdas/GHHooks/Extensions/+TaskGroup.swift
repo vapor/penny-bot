@@ -4,7 +4,6 @@
 func withThrowingAccumulatingVoidTaskGroup(
     tasks: [@Sendable () async throws -> Void]
 ) async throws {
-    /// TODO: change to discarding task-group when updated to Swift 5.9.
     try await withThrowingTaskGroup(of: Void.self) { group in
         for task in tasks {
             group.addTask {

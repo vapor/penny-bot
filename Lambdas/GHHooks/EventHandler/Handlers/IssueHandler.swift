@@ -1,7 +1,7 @@
 import DiscordBM
 import GitHubAPI
 
-struct IssueHandler {
+struct IssueHandler: Sendable {
     let context: HandlerContext
     let issue: Issue
     var event: GHEvent {
@@ -23,26 +23,32 @@ struct IssueHandler {
             .flatMap({ Issue.Action(rawValue: $0) })
             .requireValue()
         try await withThrowingAccumulatingVoidTaskGroup(tasks: [
-            {
-                switch action {
-                case .opened:
-                    try await onOpened()
-                case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
-                    try await onEdited()
-                case .transferred:
-                    try await onTransferred()
-                case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
-                    break
-                }
-            },
-            {
-                try await ProjectBoardHandler(
-                    context: context,
-                    kind: action,
-                    issue: issue
-                ).handle()
-            },
+            { try await handleIssue(action: action) },
+            { try await handleProjectBoard(action: action) },
         ])
+    }
+
+    @Sendable
+    func handleIssue(action: Issue.Action) async throws {
+        switch action {
+        case .opened:
+            try await onOpened()
+        case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
+            try await onEdited()
+        case .transferred:
+            try await onTransferred()
+        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
+            break
+        }
+    }
+
+    @Sendable
+    func handleProjectBoard(action: Issue.Action) async throws {
+        try await ProjectBoardHandler(
+            context: context,
+            action: action,
+            issue: issue
+        ).handle()
     }
 
     func onEdited() async throws {

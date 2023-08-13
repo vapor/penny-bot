@@ -3,7 +3,7 @@ import GitHubAPI
 
 struct ProjectBoardHandler {
     let context: HandlerContext
-    let kind: Issue.Action
+    let action: Issue.Action
     let issue: Issue
     var event: GHEvent {
         context.event
@@ -14,25 +14,25 @@ struct ProjectBoardHandler {
         }
     }
 
-    init(context: HandlerContext, kind: Issue.Action, issue: Issue) throws {
+    init(context: HandlerContext, action: Issue.Action, issue: Issue) throws {
         self.context = context
-        self.kind = kind
+        self.action = action
         self.issue = issue
     }
 
     func handle() async throws {
-        switch kind {
-        case .labeled: 
+        switch action {
+        case .labeled:
             try await onLabeled()
-        case .unlabeled: break
+        case .unlabeled:
             try await onUnlabeled()
-        case .assigned: break
+        case .assigned:
             try await onAssigned()
-        case .unassigned: break
+        case .unassigned:
             try await onUnassigned()
-        case .closed: break
+        case .closed:
             try await onClosed()
-        case .reopened: break
+        case .reopened:
             try await onReopened()
         default: break
         }
@@ -43,22 +43,22 @@ struct ProjectBoardHandler {
     }
 
     func onUnlabeled() async throws {
-        
+
     }
 
     func onAssigned() async throws {
-        
+
     }
 
     func onUnassigned() async throws {
-        
+
     }
 
     func onClosed() async throws {
-        
+
     }
 
     func onReopened() async throws {
-        
+
     }
 }
