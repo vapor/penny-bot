@@ -1,6 +1,27 @@
 import GitHubAPI
 
 extension PullRequest {
+
+    enum KnownLabel: String {
+        case semVerMajor = "semver-major"
+        case semVerMinor = "semver-minor"
+        case semVerPatch = "semver-patch"
+        case release = "release"
+        case noReleaseNeeded = "no-release-needed"
+        case translationUpdate = "translation-update"
+        case noTranslationNeeded = "no-translation-needed"
+
+        func toBump() -> SemVerBump? {
+            switch self {
+            case .semVerMajor: return .major
+            case .semVerMinor: return .minor
+            case .semVerPatch: return .patch
+            case .release: return .releaseStage
+            case .noReleaseNeeded, .translationUpdate, .noTranslationNeeded: return nil
+            }
+        }
+    }
+
     var knownLabels: [KnownLabel] {
         self.labels.compactMap {
             KnownLabel(rawValue: $0.name)
@@ -9,30 +30,9 @@ extension PullRequest {
 }
 
 extension SimplePullRequest {
-    var knownLabels: [KnownLabel] {
+    var knownLabels: [PullRequest.KnownLabel] {
         self.labels.compactMap {
-            KnownLabel(rawValue: $0.name)
-        }
-    }
-}
-
-
-enum KnownLabel: String {
-    case semVerMajor = "semver-major"
-    case semVerMinor = "semver-minor"
-    case semVerPatch = "semver-patch"
-    case release = "release"
-    case noReleaseNeeded = "no-release-needed"
-    case translationUpdate = "translation-update"
-    case noTranslationNeeded = "no-translation-needed"
-
-    func toBump() -> SemVerBump? {
-        switch self {
-        case .semVerMajor: return .major
-        case .semVerMinor: return .minor
-        case .semVerPatch: return .patch
-        case .release: return .releaseStage
-        case .noReleaseNeeded, .translationUpdate, .noTranslationNeeded: return nil
+            PullRequest.KnownLabel(rawValue: $0.name)
         }
     }
 }
