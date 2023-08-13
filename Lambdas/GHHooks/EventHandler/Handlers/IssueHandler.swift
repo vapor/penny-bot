@@ -1,6 +1,5 @@
 import DiscordBM
 import GitHubAPI
-import Markdown
 
 struct IssueHandler {
     let context: HandlerContext
@@ -23,16 +22,27 @@ struct IssueHandler {
         let action = try event.action
             .flatMap({ Issue.Action(rawValue: $0) })
             .requireValue()
-        switch action {
-        case .opened:
-            try await onOpened()
-        case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
-            try await onEdited()
-        case .transferred:
-            try await onTransferred()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
-            break
-        }
+        try await withThrowingAccumulatingVoidTaskGroup(tasks: [
+            {
+                switch action {
+                case .opened:
+                    try await onOpened()
+                case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
+                    try await onEdited()
+                case .transferred:
+                    try await onTransferred()
+                case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
+                    break
+                }
+            },
+            {
+                try await ProjectBoardHandler(
+                    context: context,
+                    kind: action,
+                    issue: issue
+                ).handle()
+            },
+        ])
     }
 
     func onEdited() async throws {
@@ -94,12 +104,13 @@ struct IssueHandler {
 
         let issueLink = issue.html_url
 
-        let body = issue.body.map { body -> String in
-            body.formatMarkdown(
-                maxLength: 256,
-                trailingTextMinLength: 96
-            )
-        } ?? ""
+        let body =
+            issue.body.map { body -> String in
+                body.formatMarkdown(
+                    maxLength: 256,
+                    trailingTextMinLength: 96
+                )
+            } ?? ""
 
         let description = try await context.renderClient.ticketReport(title: issue.title, body: body)
 
