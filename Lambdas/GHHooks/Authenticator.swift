@@ -1,12 +1,12 @@
-import JWTKit
-import GitHubAPI
-import OpenAPIRuntime
 import AsyncHTTPClient
-import OpenAPIAsyncHTTPClient
-import Logging
-import LambdasShared
-import Shared
 import Foundation
+import GitHubAPI
+import JWTKit
+import LambdasShared
+import Logging
+import OpenAPIAsyncHTTPClient
+import OpenAPIRuntime
+import Shared
 
 actor Authenticator {
     private let secretsRetriever: SecretsRetriever
@@ -30,15 +30,19 @@ actor Authenticator {
     /// across different lambda processes, so it is possible for the installation token to
     /// live long enough to be expired in the first place, so then we can think of refreshing it.
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> String {
-        try await queue.process(queueKey: "default") {
+        try await self.queue.process(queueKey: "default") {
             if !forceRefreshToken,
-               let cachedAccessToken = await cachedAccessToken {
+               let cachedAccessToken = await cachedAccessToken
+            {
                 return cachedAccessToken.token
             } else {
                 let token = try await makeJWTToken()
                 let client = try await makeClient(token: token)
                 let accessToken = try await createAccessToken(client: client)
-                await setCachedAccessToken(to: accessToken)
+                self.logger.debug("Generated new access token", metadata: [
+                    "token": "\(accessToken)",
+                ])
+                await self.setCachedAccessToken(to: accessToken)
                 return accessToken.token
             }
         }
@@ -50,7 +54,8 @@ actor Authenticator {
         ))
 
         if case let .created(created) = response,
-           case let .json(json) = created.body {
+           case let .json(json) = created.body
+        {
             return json
         } else {
             throw Errors.httpRequestFailed(response: response)
@@ -59,9 +64,9 @@ actor Authenticator {
 
     private func makeClient(token: String) throws -> Client {
         try .makeForGitHub(
-            httpClient: httpClient,
+            httpClient: self.httpClient,
             authorization: .bearer(token),
-            logger: logger
+            logger: self.logger
         )
     }
 
@@ -82,7 +87,7 @@ actor Authenticator {
     }
 
     private func getPrivKey() async throws -> String {
-        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY_ARN")
+        try await self.secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY_ARN")
     }
 
     private func setCachedAccessToken(to token: InstallationToken) {
@@ -123,7 +128,7 @@ private struct TokenPayload: JWTPayload, Equatable {
     // signature verification here.
     // Since we have an ExpirationClaim, we will
     // call its verify method.
-    func verify(using signer: JWTSigner) throws {
+    func verify(using _: JWTSigner) throws {
         try self.expiresAt.verifyNotExpired()
     }
 }
