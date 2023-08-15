@@ -19,7 +19,6 @@ struct TicketReporter {
     let embed: Embed
     let repoID: Int
     let number: Int
-    let ticketCreatedAt: Date
 
     func reportCreation() async throws {
         let response = try await context.discordClient.createMessage(
@@ -82,7 +81,7 @@ struct TicketReporter {
         switch response.asError() {
         case let .jsonError(jsonError) where jsonError.code == .unknownMessage:
             context.logger.debug(
-                "Discord says message id is unknown. Will save in DB to remember.",
+                "Discord says message id is unknown. Will mark as unavailable in DB.",
                 metadata: [
                     "messageID": .stringConvertible(messageID),
                     "repoID": .stringConvertible(repoID),

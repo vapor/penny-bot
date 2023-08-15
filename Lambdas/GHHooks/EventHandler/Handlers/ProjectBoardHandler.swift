@@ -5,58 +5,84 @@ struct ProjectBoardHandler {
     let context: HandlerContext
     let action: Issue.Action
     let issue: Issue
+    let repo: Repository
     var event: GHEvent {
-        context.event
+        self.context.event
     }
-    var repo: Repository {
-        get throws {
-            try event.repository.requireValue()
-        }
+
+    var note: String {
+        self.issue.html_url
     }
 
     init(context: HandlerContext, action: Issue.Action, issue: Issue) throws {
         self.context = context
         self.action = action
         self.issue = issue
+        self.repo = try self.context.event.repository.requireValue()
     }
 
     func handle() async throws {
-        switch action {
+        switch self.action {
         case .labeled:
-            try await onLabeled()
+            try await self.onLabeled()
         case .unlabeled:
-            try await onUnlabeled()
+            try await self.onUnlabeled()
         case .assigned:
-            try await onAssigned()
+            try await self.onAssigned()
         case .unassigned:
-            try await onUnassigned()
+            try await self.onUnassigned()
         case .closed:
-            try await onClosed()
+            try await self.onClosed()
         case .reopened:
-            try await onReopened()
+            try await self.onReopened()
         default: break
         }
     }
 
     func onLabeled() async throws {
-        let labels = issue.knownLabels.compactMap(ProjectBoardLabel.init(label:))
-        for label in Set(labels) {
+        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
+        for project in Set(relatedProjects) {
+            let toDoColumnID = project.columnID(of: .toDo)
 
+            func cards(column: Project.Column) async throws -> [ProjectCard] {
+                try await self.getCards(columnID: project.columnID(of: column))
+            }
+
+            func move(cardID: Int) async throws {
+                try await self.moveCard(toColumnID: toDoColumnID, cardID: cardID)
+            }
+
+            let inProgressCards = try await cards(column: .inProgress)
+
+            if let card = inProgressCards.firstCard(note: note) {
+                try await move(cardID: card.id)
+                continue
+            }
+
+            let doneCards = try await cards(column: .done)
+
+            if let card = doneCards.firstCard(note: note) {
+                try await move(cardID: card.id)
+                continue
+            }
+
+            let toDoCards = try await cards(column: .toDo)
+            if !toDoCards.containsCard(note: self.note) {
+                try await self.createCard(columnID: toDoColumnID, note: self.note)
+            }
         }
-        /**
-        a. Set boards to ["Help Wanted Issues"] or ["Beginner Issues"] respectively.
-        b. For each board in boards, remove issue from board if present.
-        */
     }
 
     func onUnlabeled() async throws {
-        let labels = issue.knownLabels.compactMap(ProjectBoardLabel.init(label:))
-        for label in Set(labels) {
-
+        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
+        for project in Set(relatedProjects) {
+            for column in Project.Column.allCases {
+                let cards = try await self.getCards(columnID: project.columnID(of: column))
+                if let card = cards.firstCard(note: note) {
+                    try await self.deleteCard(cardID: card.id)
+                }
+            }
         }
-        /**
-         Set boards to ["Help Wanted Issues"] or ["Beginner Issues"] respectively.
-        */
     }
 
     func onAssigned() async throws {
@@ -73,27 +99,102 @@ struct ProjectBoardHandler {
 
     func onClosed() async throws {
         /**
-        If event.issue.state == "closed", set column to "Done"
-        Repeat for each board in boards:
-        a. If issue present in board, move issue to column. Otherwise add issue to column in board.
-        */
+         If event.issue.state == "closed", set column to "Done"
+         Repeat for each board in boards:
+         a. If issue present in board, move issue to column. Otherwise add issue to column in board.
+         */
     }
 
-    func onReopened() async throws {
+    func onReopened() async throws {}
 
+    func createCard(columnID: Int, note _: String) async throws {
+        let response = try await self.context.githubClient.projects_create_card(.init(
+            path: .init(column_id: columnID),
+            /// Yes, send the raw url in body. GitHub will take care of properly showing it.
+            /// If you send customized text instead, the card won't be recognized as a issue-card.
+            body: .json(.case1(.init(note: self.note)))
+        ))
+
+        guard case .created = response else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+    }
+
+    func moveCard(toColumnID columnID: Int, cardID: Int) async throws {
+        let response = try await self.context.githubClient.projects_move_card(.init(
+            path: .init(card_id: cardID),
+            body: .json(.init(position: "top", column_id: columnID))
+        ))
+
+        guard case .created = response else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+    }
+
+    func deleteCard(cardID: Int) async throws {
+        let response = try await self.context.githubClient.projects_delete_card(.init(
+            path: .init(card_id: cardID)
+        ))
+
+        guard case .noContent = response else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+    }
+
+    func getCards(columnID: Int) async throws -> [ProjectCard] {
+        let response = try await self.context.githubClient.projects_list_cards(.init(
+            path: .init(column_id: columnID)
+        ))
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body
+        else {
+            throw Errors.httpRequestFailed(response: response)
+        }
+
+        return json
     }
 }
 
-private enum ProjectBoardLabel: String {
-    case helpWanted = "help wanted"
-    case goodFirstIssue = "good first issue"
+private enum Project: String, CaseIterable {
+    case helpWanted
+    case beginner
 
-    var board: String {
+    enum Column: CaseIterable {
+        case toDo
+        case inProgress
+        case done
+    }
+
+    var id: Int {
         switch self {
         case .helpWanted:
-            return "Help Wanted Issues"
-        case .goodFirstIssue:
-            return "Beginner Issues"
+            return 14_402_911
+        case .beginner:
+            return 14_183_112
+        }
+    }
+
+    func columnID(of column: Column) -> Int {
+        switch self {
+        case .helpWanted:
+            switch column {
+            case .toDo:
+                return 18_549_893
+            case .inProgress:
+                return 18_549_894
+            case .done:
+                return 18_549_895
+            }
+        case .beginner:
+            switch column {
+            case .toDo:
+                return 17_909_684
+            case .inProgress:
+                return 17_909_685
+            case .done:
+                return 17_909_686
+            }
         }
     }
 
@@ -102,9 +203,19 @@ private enum ProjectBoardLabel: String {
         case .helpWanted:
             self = .helpWanted
         case .goodFirstIssue:
-            self = .goodFirstIssue
+            self = .beginner
         default:
             return nil
         }
+    }
+}
+
+extension [ProjectCard] {
+    fileprivate func containsCard(note: String) -> Bool {
+        self.contains { $0.note == note }
+    }
+
+    fileprivate func firstCard(note: String) -> Self.Element? {
+        self.first { $0.note == note }
     }
 }

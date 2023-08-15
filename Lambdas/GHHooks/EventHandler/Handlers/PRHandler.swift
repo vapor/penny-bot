@@ -74,8 +74,7 @@ struct PRHandler {
             context: context,
             embed: try await createReportEmbed(),
             repoID: try repo.id,
-            number: try event.number.requireValue(),
-            ticketCreatedAt: pr.created_at
+            number: try event.number.requireValue()
         )
     }
 
