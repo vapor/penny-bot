@@ -6,6 +6,7 @@ extension PullRequest {
         case semVerMajor = "semver-major"
         case semVerMinor = "semver-minor"
         case semVerPatch = "semver-patch"
+        case semVerNoOp = "semver-noop"
         case release = "release"
         case noReleaseNeeded = "no-release-needed"
         case translationUpdate = "translation-update"
@@ -17,7 +18,7 @@ extension PullRequest {
             case .semVerMinor: return .minor
             case .semVerPatch: return .patch
             case .release: return .releaseStage
-            case .noReleaseNeeded, .translationUpdate, .noTranslationNeeded: return nil
+            case .semVerNoOp, .noReleaseNeeded, .translationUpdate, .noTranslationNeeded: return nil
             }
         }
     }

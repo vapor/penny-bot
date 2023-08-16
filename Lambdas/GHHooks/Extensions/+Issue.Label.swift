@@ -4,6 +4,9 @@ extension Issue {
     enum KnownLabel: String {
         case enhancement
         case bug
+        case duplicate
+        case wontFix = "wontfix"
+        case invalid
         case helpWanted = "help wanted"
         case goodFirstIssue = "good first issue"
     }

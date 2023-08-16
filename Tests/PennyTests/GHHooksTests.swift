@@ -394,6 +394,8 @@ class GHHooksTests: XCTestCase {
             )
         )
 
+        // TODO: Add real response-JSONs for project board stuff to `ghRestOperations.json`.
+
         /// Labeled with "help wanted"
         try await handleEvent(key: "issue6", eventName: .issues, expect: .noResponse)
         /// Unlabeled with "help wanted"
