@@ -44,13 +44,13 @@ struct ProjectBoardHandler {
     func onLabeled() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
         for project in Set(relatedProjects) {
-            try await moveOrCreate(targetColumn: .toDo, in: project)
+            try await self.moveOrCreate(targetColumn: .toDo, in: project)
         }
     }
 
     func onUnlabeled() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        let possibleUnlabeledProjects = Project.allCases.filter({ !relatedProjects.contains($0) })
+        let possibleUnlabeledProjects = Project.allCases.filter { !relatedProjects.contains($0) }
         for project in Set(possibleUnlabeledProjects) {
             for column in Project.Column.allCases {
                 let cards = try await self.getCards(in: project.columnID(of: column))
@@ -64,41 +64,41 @@ struct ProjectBoardHandler {
     func onAssigned() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
         for project in Set(relatedProjects) {
-            try await moveOrCreate(targetColumn: .inProgress, in: project)
+            try await self.moveOrCreate(targetColumn: .inProgress, in: project)
         }
     }
 
     func onUnassigned() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        try await moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
+        try await self.moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
     }
 
     func onClosed() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        switch issue.state {
+        switch self.issue.state {
         case "closed":
             for project in Set(relatedProjects) {
-                try await moveOrCreate(targetColumn: .done, in: project)
+                try await self.moveOrCreate(targetColumn: .done, in: project)
             }
         case "open":
-            try await moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
+            try await self.moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
         default: break
         }
     }
 
     func onReopened() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        try await moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
+        try await self.moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
     }
 
     private func moveOrCreateInToDoOrInProgress(relatedProjects: [Project]) async throws {
-        if (issue.assignees ?? []).isEmpty {
+        if (self.issue.assignees ?? []).isEmpty {
             for project in Set(relatedProjects) {
-                try await moveOrCreate(targetColumn: .toDo, in: project)
+                try await self.moveOrCreate(targetColumn: .toDo, in: project)
             }
         } else {
             for project in Set(relatedProjects) {
-                try await moveOrCreate(targetColumn: .inProgress, in: project)
+                try await self.moveOrCreate(targetColumn: .inProgress, in: project)
             }
         }
     }
@@ -158,14 +158,14 @@ struct ProjectBoardHandler {
             try await self.move(toColumnID: project.columnID(of: targetColumn), cardID: cardID)
         }
 
-        let otherColumns = Project.Column.allCases.filter({ $0 != targetColumn })
+        let otherColumns = Project.Column.allCases.filter { $0 != targetColumn }
 
         var alreadyMoved = false
         for column in otherColumns {
             let cards = try await cards(column: column)
             if let card = cards.firstCard(note: note) {
                 if alreadyMoved {
-                    try await delete(cardID: card.id)
+                    try await self.delete(cardID: card.id)
                 } else {
                     try await move(cardID: card.id)
                     alreadyMoved = true
