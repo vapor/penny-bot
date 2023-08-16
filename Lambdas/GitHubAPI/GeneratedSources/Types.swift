@@ -15427,7 +15427,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/release/upload_url`.
             public var upload_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/release/tarball_url`.
-            public var tarball_url: Swift.String
+            public var tarball_url: Swift.String?
             /// - Remark: Generated from `#/components/schemas/release/zipball_url`.
             public var zipball_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/release/id`.
@@ -15505,7 +15505,7 @@ public enum Components {
                 html_url: Swift.String,
                 assets_url: Swift.String,
                 upload_url: Swift.String,
-                tarball_url: Swift.String,
+                tarball_url: Swift.String? = nil,
                 zipball_url: Swift.String,
                 id: Swift.Int,
                 node_id: Swift.String,

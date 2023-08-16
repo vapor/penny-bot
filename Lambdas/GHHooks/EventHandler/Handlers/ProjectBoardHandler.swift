@@ -10,6 +10,8 @@ struct ProjectBoardHandler {
         self.context.event
     }
 
+    /// Yes, send the raw url is the "note" of the card. GitHub will take care of properly showing it.
+    /// If you send customized text instead, the card won't be recognized as a issue-card.
     var note: String {
         self.issue.html_url
     }
@@ -42,76 +44,68 @@ struct ProjectBoardHandler {
     func onLabeled() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
         for project in Set(relatedProjects) {
-            let toDoColumnID = project.columnID(of: .toDo)
-
-            func cards(column: Project.Column) async throws -> [ProjectCard] {
-                try await self.getCards(columnID: project.columnID(of: column))
-            }
-
-            func move(cardID: Int) async throws {
-                try await self.moveCard(toColumnID: toDoColumnID, cardID: cardID)
-            }
-
-            let inProgressCards = try await cards(column: .inProgress)
-
-            if let card = inProgressCards.firstCard(note: note) {
-                try await move(cardID: card.id)
-                continue
-            }
-
-            let doneCards = try await cards(column: .done)
-
-            if let card = doneCards.firstCard(note: note) {
-                try await move(cardID: card.id)
-                continue
-            }
-
-            let toDoCards = try await cards(column: .toDo)
-            if !toDoCards.containsCard(note: self.note) {
-                try await self.createCard(columnID: toDoColumnID, note: self.note)
-            }
+            try await moveOrCreate(targetColumn: .toDo, in: project)
         }
     }
 
     func onUnlabeled() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        for project in Set(relatedProjects) {
+        let possibleUnlabeledProjects = Project.allCases.filter({ !relatedProjects.contains($0) })
+        for project in Set(possibleUnlabeledProjects) {
             for column in Project.Column.allCases {
-                let cards = try await self.getCards(columnID: project.columnID(of: column))
+                let cards = try await self.getCards(in: project.columnID(of: column))
                 if let card = cards.firstCard(note: note) {
-                    try await self.deleteCard(cardID: card.id)
+                    try await self.delete(cardID: card.id)
                 }
             }
         }
     }
 
     func onAssigned() async throws {
-        /// If !event.issue.assignees.compacted().isEmpty, set column to "In Progress". Go to Step 7.
-        /// Repeat for each board in boards:
-        /// a. If issue present in board, move issue to column. Otherwise add issue to column in board.
+        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
+        for project in Set(relatedProjects) {
+            try await moveOrCreate(targetColumn: .inProgress, in: project)
+        }
     }
 
     func onUnassigned() async throws {
-        /// If event.issue.assignees.compacted().isEmpty, set column to "To do". Go to Step 7.
-        /// Repeat for each board in boards:
-        /// a. If issue present in board, move issue to column. Otherwise add issue to column in board.
+        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
+        try await moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
     }
 
     func onClosed() async throws {
-        /**
-         If event.issue.state == "closed", set column to "Done"
-         Repeat for each board in boards:
-         a. If issue present in board, move issue to column. Otherwise add issue to column in board.
-         */
+        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
+        switch issue.state {
+        case "closed":
+            for project in Set(relatedProjects) {
+                try await moveOrCreate(targetColumn: .done, in: project)
+            }
+        case "open":
+            try await moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
+        default: break
+        }
     }
 
-    func onReopened() async throws {}
+    func onReopened() async throws {
+        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
+        try await moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
+    }
 
-    func createCard(columnID: Int, note _: String) async throws {
+    private func moveOrCreateInToDoOrInProgress(relatedProjects: [Project]) async throws {
+        if (issue.assignees ?? []).isEmpty {
+            for project in Set(relatedProjects) {
+                try await moveOrCreate(targetColumn: .toDo, in: project)
+            }
+        } else {
+            for project in Set(relatedProjects) {
+                try await moveOrCreate(targetColumn: .inProgress, in: project)
+            }
+        }
+    }
+
+    func createCard(columnID: Int) async throws {
         let response = try await self.context.githubClient.projects_create_card(.init(
             path: .init(column_id: columnID),
-            /// Yes, send the raw url in body. GitHub will take care of properly showing it.
-            /// If you send customized text instead, the card won't be recognized as a issue-card.
             body: .json(.case1(.init(note: self.note)))
         ))
 
@@ -120,7 +114,7 @@ struct ProjectBoardHandler {
         }
     }
 
-    func moveCard(toColumnID columnID: Int, cardID: Int) async throws {
+    func move(toColumnID columnID: Int, cardID: Int) async throws {
         let response = try await self.context.githubClient.projects_move_card(.init(
             path: .init(card_id: cardID),
             body: .json(.init(position: "top", column_id: columnID))
@@ -131,7 +125,7 @@ struct ProjectBoardHandler {
         }
     }
 
-    func deleteCard(cardID: Int) async throws {
+    func delete(cardID: Int) async throws {
         let response = try await self.context.githubClient.projects_delete_card(.init(
             path: .init(card_id: cardID)
         ))
@@ -141,7 +135,7 @@ struct ProjectBoardHandler {
         }
     }
 
-    func getCards(columnID: Int) async throws -> [ProjectCard] {
+    func getCards(in columnID: Int) async throws -> [ProjectCard] {
         let response = try await self.context.githubClient.projects_list_cards(.init(
             path: .init(column_id: columnID)
         ))
@@ -153,6 +147,40 @@ struct ProjectBoardHandler {
         }
 
         return json
+    }
+
+    private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {
+        func cards(column: Project.Column) async throws -> [ProjectCard] {
+            try await self.getCards(in: project.columnID(of: column))
+        }
+
+        func move(cardID: Int) async throws {
+            try await self.move(toColumnID: project.columnID(of: targetColumn), cardID: cardID)
+        }
+
+        let otherColumns = Project.Column.allCases.filter({ $0 != targetColumn })
+
+        var alreadyMoved = false
+        for column in otherColumns {
+            let cards = try await cards(column: column)
+            if let card = cards.firstCard(note: note) {
+                if alreadyMoved {
+                    try await delete(cardID: card.id)
+                } else {
+                    try await move(cardID: card.id)
+                    alreadyMoved = true
+                }
+            }
+        }
+
+        if alreadyMoved {
+            return
+        }
+
+        let cards = try await cards(column: targetColumn)
+        if !cards.containsCard(note: self.note) {
+            try await self.createCard(columnID: project.columnID(of: targetColumn))
+        }
     }
 }
 
