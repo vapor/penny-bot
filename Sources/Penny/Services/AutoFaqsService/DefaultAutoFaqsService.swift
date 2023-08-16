@@ -35,6 +35,12 @@ actor DefaultAutoFaqsService: AutoFaqsService {
 
         /// Returns "can respond?" and assumes that the response will always be sent.
         mutating func canRespond(to id: ID) -> Bool {
+            defer {
+                /// Cleanup old items.
+                self.expirationTimeTable.removeAll { _, value in value > Date() }
+            }
+
+            /// See if "can respond".
             if let existing = self.expirationTimeTable[id] {
                 if existing > Date() {
                     return false
