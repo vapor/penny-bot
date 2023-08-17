@@ -10,8 +10,8 @@ struct ProjectBoardHandler {
         self.context.event
     }
 
-    /// Yes, send the raw url is the "note" of the card. GitHub will take care of properly showing it.
-    /// If you send customized text instead, the card won't be recognized as a issue-card.
+    /// Yes, send the raw url as the "note" of the card. GitHub will take care of properly showing it.
+    /// If you send customized text instead, the card won't be recognized as an issue-card.
     var note: String {
         self.issue.html_url
     }
