@@ -26,14 +26,14 @@ struct IssueHandler: Sendable {
 
     func handle() async throws {
         try await withThrowingAccumulatingVoidTaskGroup(tasks: [
-            { try await self.handleIssue(action: action) },
-            { try await self.handleProjectBoard(action: action) },
+            { try await self.handleIssue() },
+            { try await self.handleProjectBoard() },
         ])
     }
 
     @Sendable
-    func handleIssue(action: Issue.Action) async throws {
-        switch action {
+    func handleIssue() async throws {
+        switch self.action {
         case .opened:
             try await self.onOpened()
         case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
@@ -46,10 +46,10 @@ struct IssueHandler: Sendable {
     }
 
     @Sendable
-    func handleProjectBoard(action: Issue.Action) async throws {
+    func handleProjectBoard() async throws {
         try await ProjectBoardHandler(
             context: self.context,
-            action: action,
+            action: self.action,
             issue: self.issue
         ).handle()
     }
