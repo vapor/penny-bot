@@ -47,7 +47,7 @@ Parameters:
 Resources:
   Cluster:
     Type: AWS::ECS::Cluster
-    Properties: 
+    Properties:
       ClusterName: !Sub "${apiGatewayName}-Cluster"
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -66,7 +66,7 @@ Resources:
       RetentionInDays: 3
   Service:
     Type: AWS::ECS::Service
-    Properties: 
+    Properties:
       ServiceName: Penny-Bot
       Cluster: !Ref Cluster
       TaskDefinition: !Ref TaskDefinition
@@ -76,7 +76,7 @@ Resources:
       DesiredCount: 1
       LaunchType: FARGATE
       PlatformVersion: 1.4.0
-      NetworkConfiguration: 
+      NetworkConfiguration:
         AwsvpcConfiguration:
           # change to DISABLED if you're using private subnets that have access to a NAT gateway
           AssignPublicIp: ENABLED
@@ -85,9 +85,9 @@ Resources:
           SecurityGroups:
             - !Ref AppSecurityGroup
 
-  apiGateway: 
+  apiGateway:
     Type: AWS::ApiGatewayV2::Api
-    Properties: 
+    Properties:
       Name: !Ref apiGatewayName
       Description: API Endpoints for the discord Penny bot
       ProtocolType: HTTP
@@ -112,7 +112,7 @@ Resources:
     Properties:
       Description: Lambda Users Integration
       ApiId: !Ref apiGateway
-      ConnectionType: INTERNET 
+      ConnectionType: INTERNET
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt usersFunction.Arn
@@ -136,7 +136,7 @@ Resources:
           API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${UsersFilename}
-      Handler: handler 
+      Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
       Timeout: 6
@@ -147,17 +147,17 @@ Resources:
       Action: lambda:InvokeFunction
       FunctionName: !Sub ${UsersFilename}
       Principal: apigateway.amazonaws.com
-    DependsOn: 
+    DependsOn:
       - usersFunction
- 
+
   usersLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${UsersFilename}
       RetentionInDays: 30
-      
+
   # Sponsors lambda config
-      
+
   sponsorsIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -175,7 +175,7 @@ Resources:
       ApiId: !Ref apiGateway
       RouteKey: "POST /sponsors"
       Target: !Sub "integrations/${sponsorsIntegration}"
-      
+
   sponsorsFunction:
     Type: AWS::Lambda::Function
     Properties:
@@ -187,7 +187,7 @@ Resources:
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
       Timeout: 6
-    
+
   lambdaSponsorsPermission:
     Type: AWS::Lambda::Permission
     Properties:
@@ -196,10 +196,10 @@ Resources:
       Principal: apigateway.amazonaws.com
     DependsOn:
       - sponsorsFunction
-    
+
   sponsorsLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${SponsorsFilename}
       RetentionInDays: 30
 
@@ -207,22 +207,22 @@ Resources:
 
   lambdaIAMRole:
     Type: AWS::IAM::Role
-    Properties: 
+    Properties:
       AssumeRolePolicyDocument:
         Version: 2012-10-17
         Statement:
           - Action:
               - sts:AssumeRole
-            Effect: Allow 
+            Effect: Allow
             Principal:
-              Service: 
+              Service:
                 - lambda.amazonaws.com
                 - apigateway.amazonaws.com
-      Policies: 
-        - PolicyDocument: 
+      Policies:
+        - PolicyDocument:
             Version: 2012-10-17
             Statement:
-              - Action: 
+              - Action:
                   - logs:CreateLogGroup
                   - logs:CreateLogStream
                   - logs:PutLogEvents
@@ -243,8 +243,8 @@ Resources:
                   - secretsmanager:GetSecretValue
                   - s3:PutObject
                   - s3:GetObject
-                Effect: Allow 
-                Resource: 
+                Effect: Allow
+                Resource:
                   - !GetAtt dynamoGHHooksMessageLookupTable.Arn
                   - !GetAtt dynamoPennyUserTable.Arn
                   - !GetAtt dynamoPennyCoinTable.Arn
@@ -288,15 +288,15 @@ Resources:
                   - arn:aws:s3:::penny-faqs-lambda/*
                   - arn:aws:s3:::penny-auto-faqs-lambda/*
           PolicyName: lambda
-  
+
   lambdaLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: /aws/lambda/PennyLambda
       RetentionInDays: 30
-      
+
   # Auto-pings lambda config
-    
+
   autoPingsIntegration:
     Type: AWS::ApiGatewayV2::Integration
     Properties:
@@ -359,7 +359,7 @@ Resources:
 
   autoPingsLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${AutoPingsFilename}
       RetentionInDays: 30
 
@@ -413,7 +413,7 @@ Resources:
 
   faqsLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${FaqsFilename}
       RetentionInDays: 30
 
@@ -467,7 +467,7 @@ Resources:
 
   autoFaqsLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${AutoFaqsFilename}
       RetentionInDays: 30
 
@@ -503,12 +503,12 @@ Resources:
           WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           GH_APP_AUTH_PRIV_KEY_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
           API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
-          LOG_LEVEL: debug
+          LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 8
+      Timeout: 7
 
   lambdaGHHooksRoutePermission:
     Type: AWS::Lambda::Permission
@@ -521,7 +521,7 @@ Resources:
 
   ghHooksLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${GHHooksFilename}
       RetentionInDays: 30
 
@@ -576,7 +576,7 @@ Resources:
 
   ghOAuthLogGroup:
     Type: AWS::Logs::LogGroup
-    Properties: 
+    Properties:
       LogGroupName: !Sub /aws/lambda/${GHOAuthFilename}
       RetentionInDays: 30
 
@@ -590,7 +590,7 @@ Resources:
       BucketName: penny-caches
 
   # DynamoDB user table
-  
+
   dynamoPennyUserTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -606,7 +606,7 @@ Resources:
           AttributeName: "githubID"
           AttributeType: "S"
       KeySchema:
-        - 
+        -
           AttributeName: "id"
           KeyType: "HASH"
       GlobalSecondaryIndexes:
@@ -621,7 +621,7 @@ Resources:
         -
           IndexName: "GH-ID-GSI"
           KeySchema:
-            - 
+            -
               AttributeName: "githubID"
               KeyType: "HASH"
           Projection:
@@ -631,7 +631,7 @@ Resources:
         PointInTimeRecoveryEnabled: true
 
   # DynamoDB coin-entry table
-  
+
   dynamoPennyCoinTable:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -650,10 +650,10 @@ Resources:
           AttributeName: "toUserID"
           AttributeType: "S"
       KeySchema:
-        - 
+        -
           AttributeName: "id"
           KeyType: "HASH"
-        - 
+        -
           AttributeName: "createdAt"
           KeyType: "RANGE"
       GlobalSecondaryIndexes:
@@ -688,7 +688,7 @@ Resources:
           AttributeName: "id"
           AttributeType: "S"
       KeySchema:
-        - 
+        -
           AttributeName: "id"
           KeyType: "HASH"
       BillingMode: PAY_PER_REQUEST
@@ -716,12 +716,12 @@ Outputs:
 
   usersLambdaARN:
     Value: !GetAtt usersFunction.Arn
-  
+
   pennyUserTableARN:
     Value: !GetAtt dynamoPennyUserTable.Arn
 
   pennyCoinTableARN:
     Value: !GetAtt dynamoPennyCoinTable.Arn
-  
+
   ghHooksMessageLookupTableARN:
     Value: !GetAtt dynamoGHHooksMessageLookupTable.Arn

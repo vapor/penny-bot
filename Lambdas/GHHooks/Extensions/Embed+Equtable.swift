@@ -63,6 +63,15 @@ infix operator ?==: ComparisonPrecedence
 
 /// Returns `true` if any of the values is nil, or if both values are the same. Otherwise `false`.
 /// This is used for the fields that even if we send `nil` for, Discord might populate them itself.
-private func ?== <T: Equatable>(lhs: T?, rhs: T?) -> Bool {
-    (lhs ?? rhs) == (rhs ?? lhs)
+private func ?== <E: Equatable>(lhs: E?, rhs: E?) -> Bool {
+    switch (lhs, rhs) {
+    case (.none, _):
+        return true
+    case (_, .none):
+        return true
+    case let (.some(lhs), .some(rhs)):
+        return lhs == rhs
+    default:
+        fatalError("Impossible")
+    }
 }
