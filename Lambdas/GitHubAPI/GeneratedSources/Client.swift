@@ -3676,6 +3676,325 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// Get an issue
+    ///
+    /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
+    /// [transferred](https://docs.github.com/articles/transferring-an-issue-to-another-repository/) to another repository. If
+    /// the issue was transferred to or deleted from a repository where the authenticated user lacks read access, the API
+    /// returns a `404 Not Found` status. If the issue was deleted from a repository where the authenticated user has read
+    /// access, the API returns a `410 Gone` status. To receive webhook events for transferred and deleted issues, subscribe
+    /// to the [`issues`](https://docs.github.com/webhooks/event-payloads/#issues) webhook.
+    ///
+    /// **Note**: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this
+    /// reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by
+    /// the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull
+    /// request id, use the "[List pull requests](https://docs.github.com/rest/reference/pulls#list-pull-requests)" endpoint.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
+    public func issues_get(_ input: Operations.issues_get.Input) async throws
+        -> Operations.issues_get.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.issues_get.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/issues/{}",
+                    parameters: [input.path.owner, input.path.repo, input.path.issue_number]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.issues_get.Output.Ok.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Operations.issues_get.Output.Ok.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.issue.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .ok(.init(headers: headers, body: body))
+                case 301:
+                    let headers: Components.Responses.moved_permanently.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.moved_permanently.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .movedPermanently(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.not_found.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .notFound(.init(headers: headers, body: body))
+                case 410:
+                    let headers: Components.Responses.gone.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.gone.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .gone(.init(headers: headers, body: body))
+                case 304:
+                    let headers: Components.Responses.not_modified.Headers = .init()
+                    return .notModified(.init(headers: headers, body: nil))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
+    /// Update an issue
+    ///
+    /// Issue owners and users with push access can edit an issue.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
+    public func issues_update(_ input: Operations.issues_update.Input) async throws
+        -> Operations.issues_update.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.issues_update.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/issues/{}",
+                    parameters: [input.path.owner, input.path.repo, input.path.issue_number]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .patch)
+                suppressMutabilityWarning(&request)
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                switch input.body {
+                case .none: request.body = nil
+                case let .json(value):
+                    request.body = try converter.setOptionalRequestBodyAsJSON(
+                        value,
+                        headerFields: &request.headerFields,
+                        contentType: "application/json; charset=utf-8"
+                    )
+                }
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.issues_update.Output.Ok.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Operations.issues_update.Output.Ok.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.issue.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .ok(.init(headers: headers, body: body))
+                case 422:
+                    let headers: Components.Responses.validation_failed.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.validation_failed.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.validation_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .unprocessableEntity(.init(headers: headers, body: body))
+                case 503:
+                    let headers: Components.Responses.service_unavailable.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.service_unavailable.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Responses.service_unavailable.Body.jsonPayload.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .serviceUnavailable(.init(headers: headers, body: body))
+                case 403:
+                    let headers: Components.Responses.forbidden.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.forbidden.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .forbidden(.init(headers: headers, body: body))
+                case 301:
+                    let headers: Components.Responses.moved_permanently.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.moved_permanently.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .movedPermanently(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.not_found.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .notFound(.init(headers: headers, body: body))
+                case 410:
+                    let headers: Components.Responses.gone.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.gone.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .gone(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// Create an issue comment
     ///
     ///
