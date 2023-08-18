@@ -129,16 +129,19 @@ struct IssueHandler: Sendable {
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
         let author = "By \(authorName)"
 
+        var iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
+        var resolvedBy = ""
         var resolverMember: Guild.Member?
-        if let closedByID = try await self.maybeGetClosedByUserID() {
-            resolverMember = try await self.context.requester.getDiscordMember(githubID: "\(closedByID)")
+        if let closedBy = try await self.maybeGetClosedByUser() {
+            let resolverMember = try await self.context.requester.getDiscordMember(
+                githubID: "\(closedBy.id)"
+            )
+            if let url = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url {
+                iconURL = url
+            }
+            let uiName = (resolverMember?.uiName).map { "@\($0)" } ?? closedBy.uiName
+            resolvedBy = " | Resolved by \(uiName)"
         }
-
-        let iconURL = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url
-            ?? member?.uiAvatarURL ?? issue.user.avatar_url
-
-        let closedByName = issue.closed_by.map { (resolverMember?.uiName).map { "@\($0)" } ?? $0.uiName }
-        let resolvedBy = closedByName.map { " | Resolved by \($0)" } ?? ""
 
         let embed = Embed(
             title: title,
@@ -155,12 +158,12 @@ struct IssueHandler: Sendable {
     }
 
     /// Returns the `closed-by` user if the issue is closed at all.
-    func maybeGetClosedByUserID() async throws -> Int? {
+    func maybeGetClosedByUser() async throws -> (id: Int, uiName: String)? {
         if issue.closed_at == nil {
             return nil
         }
         if action == .closed {
-            return event.sender.id
+            return (event.sender.id, event.sender.uiName)
         } else {
             let response = try await context.githubClient.issues_get(.init(
                 path: .init(
@@ -176,7 +179,9 @@ struct IssueHandler: Sendable {
                 throw Errors.httpRequestFailed(response: response)
             }
 
-            return json.closed_by?.id
+            return json.closed_by.map {
+                ($0.id, $0.uiName)
+            }
         }
     }
 }
