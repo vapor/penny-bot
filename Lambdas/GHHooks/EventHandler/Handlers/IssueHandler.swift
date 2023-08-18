@@ -3,6 +3,7 @@ import GitHubAPI
 
 struct IssueHandler: Sendable {
     let context: HandlerContext
+    let action: Issue.Action
     let issue: Issue
     var event: GHEvent {
         self.context.event
@@ -16,13 +17,14 @@ struct IssueHandler: Sendable {
 
     init(context: HandlerContext) throws {
         self.context = context
+        self.action = try context.event
+            .action
+            .flatMap { Issue.Action(rawValue: $0) }
+            .requireValue()
         self.issue = try context.event.issue.requireValue()
     }
 
     func handle() async throws {
-        let action = try event.action
-            .flatMap { Issue.Action(rawValue: $0) }
-            .requireValue()
         try await withThrowingAccumulatingVoidTaskGroup(tasks: [
             { try await self.handleIssue(action: action) },
             { try await self.handleProjectBoard(action: action) },
@@ -128,8 +130,8 @@ struct IssueHandler: Sendable {
         let author = "By \(authorName)"
 
         var resolverMember: Guild.Member?
-        if let closedBy = issue.closed_by {
-            resolverMember = try await self.context.requester.getDiscordMember(githubID: "\(closedBy.id)")
+        if let closedByID = try await self.maybeGetClosedByUserID() {
+            resolverMember = try await self.context.requester.getDiscordMember(githubID: "\(closedByID)")
         }
 
         let iconURL = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url
@@ -150,6 +152,32 @@ struct IssueHandler: Sendable {
         )
 
         return embed
+    }
+
+    /// Returns the `closed-by` user if the issue is closed at all.
+    func maybeGetClosedByUserID() async throws -> Int? {
+        if issue.closed_at == nil {
+            return nil
+        }
+        if action == .closed {
+            return event.sender.id
+        } else {
+            let response = try await context.githubClient.issues_get(.init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    issue_number: issue.number
+                )
+            ))
+
+            guard case let .ok(ok) = response,
+                  case let .json(json) = ok.body
+            else {
+                throw Errors.httpRequestFailed(response: response)
+            }
+
+            return json.closed_by?.id
+        }
     }
 }
 

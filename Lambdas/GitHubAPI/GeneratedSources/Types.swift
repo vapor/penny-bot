@@ -285,6 +285,32 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
     func issues_create(_ input: Operations.issues_create.Input) async throws
         -> Operations.issues_create.Output
+    /// Get an issue
+    ///
+    /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
+    /// [transferred](https://docs.github.com/articles/transferring-an-issue-to-another-repository/) to another repository. If
+    /// the issue was transferred to or deleted from a repository where the authenticated user lacks read access, the API
+    /// returns a `404 Not Found` status. If the issue was deleted from a repository where the authenticated user has read
+    /// access, the API returns a `410 Gone` status. To receive webhook events for transferred and deleted issues, subscribe
+    /// to the [`issues`](https://docs.github.com/webhooks/event-payloads/#issues) webhook.
+    ///
+    /// **Note**: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this
+    /// reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by
+    /// the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull
+    /// request id, use the "[List pull requests](https://docs.github.com/rest/reference/pulls#list-pull-requests)" endpoint.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
+    func issues_get(_ input: Operations.issues_get.Input) async throws
+        -> Operations.issues_get.Output
+    /// Update an issue
+    ///
+    /// Issue owners and users with push access can edit an issue.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
+    func issues_update(_ input: Operations.issues_update.Input) async throws
+        -> Operations.issues_update.Output
     /// Create an issue comment
     ///
     ///
@@ -22361,6 +22387,571 @@ public enum Operations {
             /// Gone
             ///
             /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get an issue
+    ///
+    /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
+    /// [transferred](https://docs.github.com/articles/transferring-an-issue-to-another-repository/) to another repository. If
+    /// the issue was transferred to or deleted from a repository where the authenticated user lacks read access, the API
+    /// returns a `404 Not Found` status. If the issue was deleted from a repository where the authenticated user has read
+    /// access, the API returns a `410 Gone` status. To receive webhook events for transferred and deleted issues, subscribe
+    /// to the [`issues`](https://docs.github.com/webhooks/event-payloads/#issues) webhook.
+    ///
+    /// **Note**: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this
+    /// reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by
+    /// the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull
+    /// request id, use the "[List pull requests](https://docs.github.com/rest/reference/pulls#list-pull-requests)" endpoint.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
+    public enum issues_get {
+        public static let id: String = "issues/get"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var issue_number: Components.Parameters.issue_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - issue_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    issue_number: Components.Parameters.issue_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.issue_number = issue_number
+                }
+            }
+            public var path: Operations.issues_get.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.issues_get.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.issues_get.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.issues_get.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.issues_get.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.issues_get.Input.Path,
+                query: Operations.issues_get.Input.Query = .init(),
+                headers: Operations.issues_get.Input.Headers = .init(),
+                cookies: Operations.issues_get.Input.Cookies = .init(),
+                body: Operations.issues_get.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.issues_get.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.issue)
+                }
+                /// Received HTTP response body
+                public var body: Operations.issues_get.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.issues_get.Output.Ok.Headers = .init(),
+                    body: Operations.issues_get.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.issues_get.Output.Ok)
+            /// Moved permanently
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)/responses/301`.
+            ///
+            /// HTTP response code: `301 movedPermanently`.
+            case movedPermanently(Components.Responses.moved_permanently)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Update an issue
+    ///
+    /// Issue owners and users with push access can edit an issue.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
+    public enum issues_update {
+        public static let id: String = "issues/update"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                public var issue_number: Components.Parameters.issue_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                ///   - issue_number:
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    issue_number: Components.Parameters.issue_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.issue_number = issue_number
+                }
+            }
+            public var path: Operations.issues_update.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.issues_update.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.issues_update.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.issues_update.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The title of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title`.
+                    @frozen public enum titlePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title/case2`.
+                        case case2(Swift.Int)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// The title of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title`.
+                    public var title: Operations.issues_update.Input.Body.jsonPayload.titlePayload?
+                    /// The contents of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/body`.
+                    public var body: Swift.String?
+                    /// Username to assign to this issue. **This field is deprecated.**
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/assignee`.
+                    public var assignee: Swift.String?
+                    /// The open or closed state of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state`.
+                    @frozen
+                    public enum statePayload: RawRepresentable, Codable, Equatable, Hashable,
+                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    {
+                        case open
+                        case closed
+                        /// Parsed a raw value that was not defined in the OpenAPI document.
+                        case undocumented(String)
+                        public init?(rawValue: String) {
+                            switch rawValue {
+                            case "open": self = .open
+                            case "closed": self = .closed
+                            default: self = .undocumented(rawValue)
+                            }
+                        }
+                        public var rawValue: String {
+                            switch self {
+                            case let .undocumented(string): return string
+                            case .open: return "open"
+                            case .closed: return "closed"
+                            }
+                        }
+                        public static var allCases: [statePayload] { [.open, .closed] }
+                    }
+                    /// The open or closed state of the issue.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state`.
+                    public var state: Operations.issues_update.Input.Body.jsonPayload.statePayload?
+                    /// The reason for the state change. Ignored unless `state` is changed.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state_reason`.
+                    @frozen
+                    public enum state_reasonPayload: RawRepresentable, Codable, Equatable, Hashable,
+                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    {
+                        case completed
+                        case not_planned
+                        case reopened
+                        /// Parsed a raw value that was not defined in the OpenAPI document.
+                        case undocumented(String)
+                        public init?(rawValue: String) {
+                            switch rawValue {
+                            case "completed": self = .completed
+                            case "not_planned": self = .not_planned
+                            case "reopened": self = .reopened
+                            default: self = .undocumented(rawValue)
+                            }
+                        }
+                        public var rawValue: String {
+                            switch self {
+                            case let .undocumented(string): return string
+                            case .completed: return "completed"
+                            case .not_planned: return "not_planned"
+                            case .reopened: return "reopened"
+                            }
+                        }
+                        public static var allCases: [state_reasonPayload] {
+                            [.completed, .not_planned, .reopened]
+                        }
+                    }
+                    /// The reason for the state change. Ignored unless `state` is changed.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state_reason`.
+                    public var state_reason:
+                        Operations.issues_update.Input.Body.jsonPayload.state_reasonPayload?
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone`.
+                    @frozen public enum milestonePayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone/case1`.
+                        case case1(Swift.String)
+                        /// The `number` of the milestone to associate this issue with or use `null` to remove the current milestone. Only users with push access can set the milestone for issues. Without push access to the repository, milestone changes are silently dropped.
+                        ///
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone/case2`.
+                        case case2(Swift.Int)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone`.
+                    public var milestone:
+                        Operations.issues_update.Input.Body.jsonPayload.milestonePayload?
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload`.
+                    @frozen public enum labelsPayloadPayload: Codable, Equatable, Hashable, Sendable
+                    {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2`.
+                        public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/id`.
+                            public var id: Swift.Int?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/name`.
+                            public var name: Swift.String?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/description`.
+                            public var description: Swift.String?
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/color`.
+                            public var color: Swift.String?
+                            /// Creates a new `Case2Payload`.
+                            ///
+                            /// - Parameters:
+                            ///   - id:
+                            ///   - name:
+                            ///   - description:
+                            ///   - color:
+                            public init(
+                                id: Swift.Int? = nil,
+                                name: Swift.String? = nil,
+                                description: Swift.String? = nil,
+                                color: Swift.String? = nil
+                            ) {
+                                self.id = id
+                                self.name = name
+                                self.description = description
+                                self.color = color
+                            }
+                            public enum CodingKeys: String, CodingKey {
+                                case id
+                                case name
+                                case description
+                                case color
+                            }
+                        }
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2`.
+                        case case2(
+                            Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload
+                                .Case2Payload
+                        )
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .case1(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .case2(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value): try value.encode(to: encoder)
+                            case let .case2(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labels`.
+                    public typealias labelsPayload = [Operations.issues_update.Input.Body
+                        .jsonPayload.labelsPayloadPayload]
+                    /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labels`.
+                    public var labels:
+                        Operations.issues_update.Input.Body.jsonPayload.labelsPayload?
+                    /// Usernames to assign to this issue. Pass one or more user logins to _replace_ the set of assignees on this issue. Send an empty array (`[]`) to clear all assignees from the issue. Only users with push access can set assignees for new issues. Without push access to the repository, assignee changes are silently dropped.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/assignees`.
+                    public var assignees: [Swift.String]?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - title: The title of the issue.
+                    ///   - body: The contents of the issue.
+                    ///   - assignee: Username to assign to this issue. **This field is deprecated.**
+                    ///   - state: The open or closed state of the issue.
+                    ///   - state_reason: The reason for the state change. Ignored unless `state` is changed.
+                    ///   - milestone:
+                    ///   - labels: Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
+                    ///   - assignees: Usernames to assign to this issue. Pass one or more user logins to _replace_ the set of assignees on this issue. Send an empty array (`[]`) to clear all assignees from the issue. Only users with push access can set assignees for new issues. Without push access to the repository, assignee changes are silently dropped.
+                    public init(
+                        title: Operations.issues_update.Input.Body.jsonPayload.titlePayload? = nil,
+                        body: Swift.String? = nil,
+                        assignee: Swift.String? = nil,
+                        state: Operations.issues_update.Input.Body.jsonPayload.statePayload? = nil,
+                        state_reason: Operations.issues_update.Input.Body.jsonPayload
+                            .state_reasonPayload? = nil,
+                        milestone: Operations.issues_update.Input.Body.jsonPayload
+                            .milestonePayload? = nil,
+                        labels: Operations.issues_update.Input.Body.jsonPayload.labelsPayload? =
+                            nil,
+                        assignees: [Swift.String]? = nil
+                    ) {
+                        self.title = title
+                        self.body = body
+                        self.assignee = assignee
+                        self.state = state
+                        self.state_reason = state_reason
+                        self.milestone = milestone
+                        self.labels = labels
+                        self.assignees = assignees
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case title
+                        case body
+                        case assignee
+                        case state
+                        case state_reason
+                        case milestone
+                        case labels
+                        case assignees
+                    }
+                }
+                case json(Operations.issues_update.Input.Body.jsonPayload)
+            }
+            public var body: Operations.issues_update.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.issues_update.Input.Path,
+                query: Operations.issues_update.Input.Query = .init(),
+                headers: Operations.issues_update.Input.Headers = .init(),
+                cookies: Operations.issues_update.Input.Cookies = .init(),
+                body: Operations.issues_update.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.issues_update.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.issue)
+                }
+                /// Received HTTP response body
+                public var body: Operations.issues_update.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.issues_update.Output.Ok.Headers = .init(),
+                    body: Operations.issues_update.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.issues_update.Output.Ok)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Service unavailable
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Components.Responses.service_unavailable)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Moved permanently
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/301`.
+            ///
+            /// HTTP response code: `301 movedPermanently`.
+            case movedPermanently(Components.Responses.moved_permanently)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)/responses/410`.
             ///
             /// HTTP response code: `410 gone`.
             case gone(Components.Responses.gone)
