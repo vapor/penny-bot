@@ -10,6 +10,7 @@ struct ReactionHandler {
             Constants.ServerEmojis.love.name,
             Constants.ServerEmojis.vapor.name,
             Constants.ServerEmojis.coin.name,
+            Constants.ServerEmojis.doge.name,
             "🪙",
             "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
             "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",

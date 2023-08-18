@@ -25,12 +25,14 @@ enum Constants {
         case coin
         case vapor
         case love
+        case doge
 
         var id: EmojiSnowflake {
             switch self {
             case .coin: return "473588485962596352"
             case .vapor: return "431934596121362453"
             case .love: return "656303356280832062"
+            case .doge: return "460388864046137355"
             }
         }
 
@@ -39,6 +41,7 @@ enum Constants {
             case .coin: return "coin"
             case .vapor: return "vapor"
             case .love: return "vaporlove"
+            case .doge: return "doge"
             }
         }
 

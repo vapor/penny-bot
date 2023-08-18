@@ -1,16 +1,16 @@
 import DiscordBM
 import GitHubAPI
-import Markdown
 
-struct IssueHandler {
+struct IssueHandler: Sendable {
     let context: HandlerContext
     let issue: Issue
     var event: GHEvent {
-        context.event
+        self.context.event
     }
+
     var repo: Repository {
         get throws {
-            try event.repository.requireValue()
+            try self.event.repository.requireValue()
         }
     }
 
@@ -21,26 +21,43 @@ struct IssueHandler {
 
     func handle() async throws {
         let action = try event.action
-            .flatMap({ Issue.Action(rawValue: $0) })
+            .flatMap { Issue.Action(rawValue: $0) }
             .requireValue()
+        try await withThrowingAccumulatingVoidTaskGroup(tasks: [
+            { try await self.handleIssue(action: action) },
+            { try await self.handleProjectBoard(action: action) },
+        ])
+    }
+
+    @Sendable
+    func handleIssue(action: Issue.Action) async throws {
         switch action {
         case .opened:
-            try await onOpened()
+            try await self.onOpened()
         case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
-            try await onEdited()
+            try await self.onEdited()
         case .transferred:
-            try await onTransferred()
+            try await self.onTransferred()
         case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
             break
         }
     }
 
+    @Sendable
+    func handleProjectBoard(action: Issue.Action) async throws {
+        try await ProjectBoardHandler(
+            context: self.context,
+            action: action,
+            issue: self.issue
+        ).handle()
+    }
+
     func onEdited() async throws {
-        try await makeReporter().reportEdition()
+        try await self.makeReporter().reportEdition()
     }
 
     func onOpened() async throws {
-        try await makeReporter().reportCreation()
+        try await self.makeReporter().reportCreation()
     }
 
     func onTransferred() async throws {
@@ -50,17 +67,17 @@ struct IssueHandler {
         let repo = try repo
         let existingMessageID = try await context.messageLookupRepo.getMessageID(
             repoID: repo.id,
-            number: issue.number
+            number: self.issue.number
         )
-        try await makeReporter(
+        try await self.makeReporter(
             embedIssue: newIssue,
             embedRepo: changes.new_repository
         ).reportEdition()
-        try await context.messageLookupRepo.markAsUnavailable(
+        try await self.context.messageLookupRepo.markAsUnavailable(
             repoID: repo.id,
-            number: issue.number
+            number: self.issue.number
         )
-        try await context.messageLookupRepo.saveMessageID(
+        try await self.context.messageLookupRepo.saveMessageID(
             messageID: existingMessageID,
             repoID: newRepo.id,
             number: newIssue.number
@@ -71,15 +88,14 @@ struct IssueHandler {
         embedIssue: Issue? = nil,
         embedRepo: Repository? = nil
     ) async throws -> TicketReporter {
-        return TicketReporter(
-            context: context,
-            embed: try await createReportEmbed(
+        return try TicketReporter(
+            context: self.context,
+            embed: await self.createReportEmbed(
                 issue: embedIssue,
                 repo: embedRepo
             ),
-            repoID: try repo.id,
-            number: issue.number,
-            ticketCreatedAt: issue.created_at
+            repoID: self.repo.id,
+            number: self.issue.number
         )
     }
 
@@ -109,7 +125,18 @@ struct IssueHandler {
 
         let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
-        let iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
+        let author = "By \(authorName)"
+
+        var resolverMember: Guild.Member?
+        if let closedBy = issue.closed_by {
+            resolverMember = try await self.context.requester.getDiscordMember(githubID: "\(closedBy.id)")
+        }
+
+        let iconURL = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url
+            ?? member?.uiAvatarURL ?? issue.user.avatar_url
+
+        let closedByName = issue.closed_by.map { (resolverMember?.uiName).map { "@\($0)" } ?? $0.uiName }
+        let resolvedBy = closedByName.map { " | Resolved by \($0)" } ?? ""
 
         let embed = Embed(
             title: title,
@@ -117,7 +144,7 @@ struct IssueHandler {
             url: issueLink,
             color: status.color,
             footer: .init(
-                text: "By \(authorName)",
+                text: (author + resolvedBy).unicodesPrefix(100),
                 icon_url: .exact(iconURL)
             )
         )

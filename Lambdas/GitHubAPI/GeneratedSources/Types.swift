@@ -27,6 +27,159 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /orgs/{org}`.
     /// - Remark: Generated from `#/paths//orgs/{org}/get(orgs/get)`.
     func orgs_get(_ input: Operations.orgs_get.Input) async throws -> Operations.orgs_get.Output
+    /// Get a project card
+    ///
+    /// Gets information about a project card.
+    ///
+    /// - Remark: HTTP `GET /projects/columns/cards/{card_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)`.
+    func projects_get_card(_ input: Operations.projects_get_card.Input) async throws
+        -> Operations.projects_get_card.Output
+    /// Update an existing project card
+    ///
+    /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
+    func projects_update_card(_ input: Operations.projects_update_card.Input) async throws
+        -> Operations.projects_update_card.Output
+    /// Delete a project card
+    ///
+    /// Deletes a project card
+    ///
+    /// - Remark: HTTP `DELETE /projects/columns/cards/{card_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)`.
+    func projects_delete_card(_ input: Operations.projects_delete_card.Input) async throws
+        -> Operations.projects_delete_card.Output
+    /// Move a project card
+    ///
+    /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
+    func projects_move_card(_ input: Operations.projects_move_card.Input) async throws
+        -> Operations.projects_move_card.Output
+    /// Get a project column
+    ///
+    /// Gets information about a project column.
+    ///
+    /// - Remark: HTTP `GET /projects/columns/{column_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
+    func projects_get_column(_ input: Operations.projects_get_column.Input) async throws
+        -> Operations.projects_get_column.Output
+    /// Update an existing project column
+    ///
+    /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
+    func projects_update_column(_ input: Operations.projects_update_column.Input) async throws
+        -> Operations.projects_update_column.Output
+    /// Delete a project column
+    ///
+    /// Deletes a project column.
+    ///
+    /// - Remark: HTTP `DELETE /projects/columns/{column_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)`.
+    func projects_delete_column(_ input: Operations.projects_delete_column.Input) async throws
+        -> Operations.projects_delete_column.Output
+    /// List project cards
+    ///
+    /// Lists the project cards in a project.
+    ///
+    /// - Remark: HTTP `GET /projects/columns/{column_id}/cards`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)`.
+    func projects_list_cards(_ input: Operations.projects_list_cards.Input) async throws
+        -> Operations.projects_list_cards.Output
+    /// Create a project card
+    ///
+    /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
+    func projects_create_card(_ input: Operations.projects_create_card.Input) async throws
+        -> Operations.projects_create_card.Output
+    /// Move a project column
+    ///
+    /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
+    func projects_move_column(_ input: Operations.projects_move_column.Input) async throws
+        -> Operations.projects_move_column.Output
+    /// Get a project
+    ///
+    /// Gets a project by its `id`. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)`.
+    func projects_get(_ input: Operations.projects_get.Input) async throws
+        -> Operations.projects_get.Output
+    /// Update a project
+    ///
+    /// Updates a project board's information. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
+    ///
+    /// - Remark: HTTP `PATCH /projects/{project_id}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
+    func projects_update(_ input: Operations.projects_update.Input) async throws
+        -> Operations.projects_update.Output
+    /// Delete a project
+    ///
+    /// Deletes a project board. Returns a `404 Not Found` status if projects are disabled.
+    ///
+    /// - Remark: HTTP `DELETE /projects/{project_id}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
+    func projects_delete(_ input: Operations.projects_delete.Input) async throws
+        -> Operations.projects_delete.Output
+    /// List project collaborators
+    ///
+    /// Lists the collaborators for an organization project. For a project, the list of collaborators includes outside collaborators, organization members that are direct collaborators, organization members with access through team memberships, organization members with access through default organization permissions, and organization owners. You must be an organization owner or a project `admin` to list collaborators.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}/collaborators`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
+    func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input)
+        async throws -> Operations.projects_list_collaborators.Output
+    /// Add project collaborator
+    ///
+    /// Adds a collaborator to an organization project and sets their permission level. You must be an organization owner or a project `admin` to add a collaborator.
+    ///
+    /// - Remark: HTTP `PUT /projects/{project_id}/collaborators/{username}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)`.
+    func projects_add_collaborator(_ input: Operations.projects_add_collaborator.Input) async throws
+        -> Operations.projects_add_collaborator.Output
+    /// Remove user as a collaborator
+    ///
+    /// Removes a collaborator from an organization project. You must be an organization owner or a project `admin` to remove a collaborator.
+    ///
+    /// - Remark: HTTP `DELETE /projects/{project_id}/collaborators/{username}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
+    func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input)
+        async throws -> Operations.projects_remove_collaborator.Output
+    /// Get project permission for a user
+    ///
+    /// Returns the collaborator's permission level for an organization project. Possible values for the `permission` key: `admin`, `write`, `read`, `none`. You must be an organization owner or a project `admin` to review a user's permission level.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}/collaborators/{username}/permission`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
+    func projects_get_permission_for_user(
+        _ input: Operations.projects_get_permission_for_user.Input
+    ) async throws -> Operations.projects_get_permission_for_user.Output
+    /// List project columns
+    ///
+    /// Lists the project columns in a project.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}/columns`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)`.
+    func projects_list_columns(_ input: Operations.projects_list_columns.Input) async throws
+        -> Operations.projects_list_columns.Output
+    /// Create a project column
+    ///
+    /// Creates a new project column.
+    ///
+    /// - Remark: HTTP `POST /projects/{project_id}/columns`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)`.
+    func projects_create_column(_ input: Operations.projects_create_column.Input) async throws
+        -> Operations.projects_create_column.Output
+    /// Get rate limit status for the authenticated user
+    ///
+    /// **Note:** Accessing this endpoint does not count against your REST API rate limit.
+    ///
+    /// **Note:** The `rate` object is deprecated. If you're writing new API client code or updating existing code, you should use the `core` object instead of the `rate` object. The `core` object contains the same information that is present in the `rate` object.
+    ///
+    /// - Remark: HTTP `GET /rate_limit`.
+    /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
+    func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws
+        -> Operations.rate_limit_get.Output
     /// Get a repository
     ///
     /// The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
@@ -8053,6 +8206,156 @@ public enum Components {
                 case parent
             }
         }
+        /// Projects are a way to organize columns and cards of work.
+        ///
+        /// - Remark: Generated from `#/components/schemas/project`.
+        public struct project: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/project/owner_url`.
+            public var owner_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project/columns_url`.
+            public var columns_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/project/node_id`.
+            public var node_id: Swift.String
+            /// Name of the project
+            ///
+            /// - Remark: Generated from `#/components/schemas/project/name`.
+            public var name: Swift.String
+            /// Body of the project
+            ///
+            /// - Remark: Generated from `#/components/schemas/project/body`.
+            public var body: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project/number`.
+            public var number: Swift.Int
+            /// State of the project; either 'open' or 'closed'
+            ///
+            /// - Remark: Generated from `#/components/schemas/project/state`.
+            public var state: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project/creator`.
+            public var creator: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/project/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/project/updated_at`.
+            public var updated_at: Foundation.Date
+            /// The baseline permission that all organization members have on this project. Only present if owner is an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/project/organization_permission`.
+            @frozen
+            public enum organization_permissionPayload: RawRepresentable, Codable, Equatable,
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                case admin
+                case none
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    case "admin": self = .admin
+                    case "none": self = .none
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    case .admin: return "admin"
+                    case .none: return "none"
+                    }
+                }
+                public static var allCases: [organization_permissionPayload] {
+                    [.read, .write, .admin, .none]
+                }
+            }
+            /// The baseline permission that all organization members have on this project. Only present if owner is an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/project/organization_permission`.
+            public var organization_permission:
+                Components.Schemas.project.organization_permissionPayload?
+            /// Whether or not this project can be seen by everyone. Only present if owner is an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/project/private`.
+            public var _private: Swift.Bool?
+            /// Creates a new `project`.
+            ///
+            /// - Parameters:
+            ///   - owner_url:
+            ///   - url:
+            ///   - html_url:
+            ///   - columns_url:
+            ///   - id:
+            ///   - node_id:
+            ///   - name: Name of the project
+            ///   - body: Body of the project
+            ///   - number:
+            ///   - state: State of the project; either 'open' or 'closed'
+            ///   - creator:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - organization_permission: The baseline permission that all organization members have on this project. Only present if owner is an organization.
+            ///   - _private: Whether or not this project can be seen by everyone. Only present if owner is an organization.
+            public init(
+                owner_url: Swift.String,
+                url: Swift.String,
+                html_url: Swift.String,
+                columns_url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                name: Swift.String,
+                body: Swift.String,
+                number: Swift.Int,
+                state: Swift.String,
+                creator: Components.Schemas.nullable_simple_user,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                organization_permission: Components.Schemas.project
+                    .organization_permissionPayload? = nil,
+                _private: Swift.Bool? = nil
+            ) {
+                self.owner_url = owner_url
+                self.url = url
+                self.html_url = html_url
+                self.columns_url = columns_url
+                self.id = id
+                self.node_id = node_id
+                self.name = name
+                self.body = body
+                self.number = number
+                self.state = state
+                self.creator = creator
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.organization_permission = organization_permission
+                self._private = _private
+            }
+            public enum CodingKeys: String, CodingKey {
+                case owner_url
+                case url
+                case html_url
+                case columns_url
+                case id
+                case node_id
+                case name
+                case body
+                case number
+                case state
+                case creator
+                case created_at
+                case updated_at
+                case organization_permission
+                case _private = "private"
+            }
+        }
         /// Groups of organization members that gives permissions on specified repositories.
         ///
         /// - Remark: Generated from `#/components/schemas/team-simple`.
@@ -9890,6 +10193,314 @@ public enum Components {
                 case master_branch
                 case starred_at
                 case anonymous_access_enabled
+            }
+        }
+        /// Project cards represent a scope of work.
+        ///
+        /// - Remark: Generated from `#/components/schemas/project-card`.
+        public struct project_card: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/project-card/url`.
+            public var url: Swift.String
+            /// The project card's ID
+            ///
+            /// - Remark: Generated from `#/components/schemas/project-card/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/project-card/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-card/note`.
+            public var note: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-card/creator`.
+            public var creator: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/project-card/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/project-card/updated_at`.
+            public var updated_at: Foundation.Date
+            /// Whether or not the card is archived
+            ///
+            /// - Remark: Generated from `#/components/schemas/project-card/archived`.
+            public var archived: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/project-card/column_name`.
+            public var column_name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/project-card/project_id`.
+            public var project_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/project-card/column_url`.
+            public var column_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-card/content_url`.
+            public var content_url: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/project-card/project_url`.
+            public var project_url: Swift.String
+            /// Creates a new `project_card`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - id: The project card's ID
+            ///   - node_id:
+            ///   - note:
+            ///   - creator:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - archived: Whether or not the card is archived
+            ///   - column_name:
+            ///   - project_id:
+            ///   - column_url:
+            ///   - content_url:
+            ///   - project_url:
+            public init(
+                url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                note: Swift.String,
+                creator: Components.Schemas.nullable_simple_user,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                archived: Swift.Bool? = nil,
+                column_name: Swift.String? = nil,
+                project_id: Swift.String? = nil,
+                column_url: Swift.String,
+                content_url: Swift.String? = nil,
+                project_url: Swift.String
+            ) {
+                self.url = url
+                self.id = id
+                self.node_id = node_id
+                self.note = note
+                self.creator = creator
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.archived = archived
+                self.column_name = column_name
+                self.project_id = project_id
+                self.column_url = column_url
+                self.content_url = content_url
+                self.project_url = project_url
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case id
+                case node_id
+                case note
+                case creator
+                case created_at
+                case updated_at
+                case archived
+                case column_name
+                case project_id
+                case column_url
+                case content_url
+                case project_url
+            }
+        }
+        /// Project columns contain cards of work.
+        ///
+        /// - Remark: Generated from `#/components/schemas/project-column`.
+        public struct project_column: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/project-column/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-column/project_url`.
+            public var project_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-column/cards_url`.
+            public var cards_url: Swift.String
+            /// The unique identifier of the project column
+            ///
+            /// - Remark: Generated from `#/components/schemas/project-column/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/project-column/node_id`.
+            public var node_id: Swift.String
+            /// Name of the project column
+            ///
+            /// - Remark: Generated from `#/components/schemas/project-column/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-column/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/project-column/updated_at`.
+            public var updated_at: Foundation.Date
+            /// Creates a new `project_column`.
+            ///
+            /// - Parameters:
+            ///   - url:
+            ///   - project_url:
+            ///   - cards_url:
+            ///   - id: The unique identifier of the project column
+            ///   - node_id:
+            ///   - name: Name of the project column
+            ///   - created_at:
+            ///   - updated_at:
+            public init(
+                url: Swift.String,
+                project_url: Swift.String,
+                cards_url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                name: Swift.String,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date
+            ) {
+                self.url = url
+                self.project_url = project_url
+                self.cards_url = cards_url
+                self.id = id
+                self.node_id = node_id
+                self.name = name
+                self.created_at = created_at
+                self.updated_at = updated_at
+            }
+            public enum CodingKeys: String, CodingKey {
+                case url
+                case project_url
+                case cards_url
+                case id
+                case node_id
+                case name
+                case created_at
+                case updated_at
+            }
+        }
+        /// Project Collaborator Permission
+        ///
+        /// - Remark: Generated from `#/components/schemas/project-collaborator-permission`.
+        public struct project_collaborator_permission: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/project-collaborator-permission/permission`.
+            public var permission: Swift.String
+            /// - Remark: Generated from `#/components/schemas/project-collaborator-permission/user`.
+            public var user: Components.Schemas.nullable_simple_user
+            /// Creates a new `project_collaborator_permission`.
+            ///
+            /// - Parameters:
+            ///   - permission:
+            ///   - user:
+            public init(permission: Swift.String, user: Components.Schemas.nullable_simple_user) {
+                self.permission = permission
+                self.user = user
+            }
+            public enum CodingKeys: String, CodingKey {
+                case permission
+                case user
+            }
+        }
+        /// - Remark: Generated from `#/components/schemas/rate-limit`.
+        public struct rate_limit: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/rate-limit/limit`.
+            public var limit: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/rate-limit/remaining`.
+            public var remaining: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/rate-limit/reset`.
+            public var reset: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/rate-limit/used`.
+            public var used: Swift.Int
+            /// Creates a new `rate_limit`.
+            ///
+            /// - Parameters:
+            ///   - limit:
+            ///   - remaining:
+            ///   - reset:
+            ///   - used:
+            public init(limit: Swift.Int, remaining: Swift.Int, reset: Swift.Int, used: Swift.Int) {
+                self.limit = limit
+                self.remaining = remaining
+                self.reset = reset
+                self.used = used
+            }
+            public enum CodingKeys: String, CodingKey {
+                case limit
+                case remaining
+                case reset
+                case used
+            }
+        }
+        /// Rate Limit Overview
+        ///
+        /// - Remark: Generated from `#/components/schemas/rate-limit-overview`.
+        public struct rate_limit_overview: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources`.
+            public struct resourcesPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/core`.
+                public var core: Components.Schemas.rate_limit
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/graphql`.
+                public var graphql: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/search`.
+                public var search: Components.Schemas.rate_limit
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/code_search`.
+                public var code_search: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/source_import`.
+                public var source_import: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/integration_manifest`.
+                public var integration_manifest: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/code_scanning_upload`.
+                public var code_scanning_upload: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/actions_runner_registration`.
+                public var actions_runner_registration: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/scim`.
+                public var scim: Components.Schemas.rate_limit?
+                /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/dependency_snapshots`.
+                public var dependency_snapshots: Components.Schemas.rate_limit?
+                /// Creates a new `resourcesPayload`.
+                ///
+                /// - Parameters:
+                ///   - core:
+                ///   - graphql:
+                ///   - search:
+                ///   - code_search:
+                ///   - source_import:
+                ///   - integration_manifest:
+                ///   - code_scanning_upload:
+                ///   - actions_runner_registration:
+                ///   - scim:
+                ///   - dependency_snapshots:
+                public init(
+                    core: Components.Schemas.rate_limit,
+                    graphql: Components.Schemas.rate_limit? = nil,
+                    search: Components.Schemas.rate_limit,
+                    code_search: Components.Schemas.rate_limit? = nil,
+                    source_import: Components.Schemas.rate_limit? = nil,
+                    integration_manifest: Components.Schemas.rate_limit? = nil,
+                    code_scanning_upload: Components.Schemas.rate_limit? = nil,
+                    actions_runner_registration: Components.Schemas.rate_limit? = nil,
+                    scim: Components.Schemas.rate_limit? = nil,
+                    dependency_snapshots: Components.Schemas.rate_limit? = nil
+                ) {
+                    self.core = core
+                    self.graphql = graphql
+                    self.search = search
+                    self.code_search = code_search
+                    self.source_import = source_import
+                    self.integration_manifest = integration_manifest
+                    self.code_scanning_upload = code_scanning_upload
+                    self.actions_runner_registration = actions_runner_registration
+                    self.scim = scim
+                    self.dependency_snapshots = dependency_snapshots
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case core
+                    case graphql
+                    case search
+                    case code_search
+                    case source_import
+                    case integration_manifest
+                    case code_scanning_upload
+                    case actions_runner_registration
+                    case scim
+                    case dependency_snapshots
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources`.
+            public var resources: Components.Schemas.rate_limit_overview.resourcesPayload
+            /// - Remark: Generated from `#/components/schemas/rate-limit-overview/rate`.
+            public var rate: Components.Schemas.rate_limit
+            /// Creates a new `rate_limit_overview`.
+            ///
+            /// - Parameters:
+            ///   - resources:
+            ///   - rate:
+            public init(
+                resources: Components.Schemas.rate_limit_overview.resourcesPayload,
+                rate: Components.Schemas.rate_limit
+            ) {
+                self.resources = resources
+                self.rate = rate
+            }
+            public enum CodingKeys: String, CodingKey {
+                case resources
+                case rate
             }
         }
         /// Code of Conduct Simple
@@ -14816,7 +15427,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/release/upload_url`.
             public var upload_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/release/tarball_url`.
-            public var tarball_url: Swift.String
+            public var tarball_url: Swift.String?
             /// - Remark: Generated from `#/components/schemas/release/zipball_url`.
             public var zipball_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/release/id`.
@@ -14894,7 +15505,7 @@ public enum Components {
                 html_url: Swift.String,
                 assets_url: Swift.String,
                 upload_url: Swift.String,
-                tarball_url: Swift.String,
+                tarball_url: Swift.String? = nil,
                 zipball_url: Swift.String,
                 id: Swift.Int,
                 node_id: Swift.String,
@@ -17149,6 +17760,3408 @@ public enum Operations {
             /// Resource not found
             ///
             /// - Remark: Generated from `#/paths//orgs/{org}/get(orgs/get)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get a project card
+    ///
+    /// Gets information about a project card.
+    ///
+    /// - Remark: HTTP `GET /projects/columns/cards/{card_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)`.
+    public enum projects_get_card {
+        public static let id: String = "projects/get-card"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var card_id: Components.Parameters.card_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - card_id:
+                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+            }
+            public var path: Operations.projects_get_card.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_get_card.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_get_card.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_get_card.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_get_card.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_get_card.Input.Path,
+                query: Operations.projects_get_card.Input.Query = .init(),
+                headers: Operations.projects_get_card.Input.Headers = .init(),
+                cookies: Operations.projects_get_card.Input.Cookies = .init(),
+                body: Operations.projects_get_card.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_get_card.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_card)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_get_card.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_get_card.Output.Ok.Headers = .init(),
+                    body: Operations.projects_get_card.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_get_card.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Update an existing project card
+    ///
+    /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
+    public enum projects_update_card {
+        public static let id: String = "projects/update-card"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var card_id: Components.Parameters.card_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - card_id:
+                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+            }
+            public var path: Operations.projects_update_card.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_update_card.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_update_card.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_update_card.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The project card's note
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/json/note`.
+                    public var note: Swift.String?
+                    /// Whether or not the card is archived
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/json/archived`.
+                    public var archived: Swift.Bool?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - note: The project card's note
+                    ///   - archived: Whether or not the card is archived
+                    public init(note: Swift.String? = nil, archived: Swift.Bool? = nil) {
+                        self.note = note
+                        self.archived = archived
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case note
+                        case archived
+                    }
+                }
+                case json(Operations.projects_update_card.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_update_card.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_update_card.Input.Path,
+                query: Operations.projects_update_card.Input.Query = .init(),
+                headers: Operations.projects_update_card.Input.Headers = .init(),
+                cookies: Operations.projects_update_card.Input.Cookies = .init(),
+                body: Operations.projects_update_card.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_update_card.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_card)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_update_card.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_update_card.Output.Ok.Headers = .init(),
+                    body: Operations.projects_update_card.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_update_card.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed_simple)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Delete a project card
+    ///
+    /// Deletes a project card
+    ///
+    /// - Remark: HTTP `DELETE /projects/columns/cards/{card_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)`.
+    public enum projects_delete_card {
+        public static let id: String = "projects/delete-card"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var card_id: Components.Parameters.card_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - card_id:
+                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+            }
+            public var path: Operations.projects_delete_card.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_delete_card.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_delete_card.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_delete_card.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_delete_card.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_delete_card.Input.Path,
+                query: Operations.projects_delete_card.Input.Query = .init(),
+                headers: Operations.projects_delete_card.Input.Headers = .init(),
+                cookies: Operations.projects_delete_card.Input.Cookies = .init(),
+                body: Operations.projects_delete_card.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_delete_card.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.projects_delete_card.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_delete_card.Output.NoContent.Headers = .init(),
+                    body: Operations.projects_delete_card.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.projects_delete_card.Output.NoContent)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            public struct Forbidden: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_delete_card.Output.Forbidden.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json/message`.
+                        public var message: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json/documentation_url`.
+                        public var documentation_url: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json/errors`.
+                        public var errors: [Swift.String]?
+                        /// Creates a new `jsonPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - message:
+                        ///   - documentation_url:
+                        ///   - errors:
+                        public init(
+                            message: Swift.String? = nil,
+                            documentation_url: Swift.String? = nil,
+                            errors: [Swift.String]? = nil
+                        ) {
+                            self.message = message
+                            self.documentation_url = documentation_url
+                            self.errors = errors
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case message
+                            case documentation_url
+                            case errors
+                        }
+                    }
+                    case json(Operations.projects_delete_card.Output.Forbidden.Body.jsonPayload)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_delete_card.Output.Forbidden.Body
+                /// Creates a new `Forbidden`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_delete_card.Output.Forbidden.Headers = .init(),
+                    body: Operations.projects_delete_card.Output.Forbidden.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Operations.projects_delete_card.Output.Forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Move a project card
+    ///
+    /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
+    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
+    public enum projects_move_card {
+        public static let id: String = "projects/move-card"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var card_id: Components.Parameters.card_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - card_id:
+                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+            }
+            public var path: Operations.projects_move_card.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_move_card.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_move_card.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_move_card.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The position of the card in a column. Can be one of: `top`, `bottom`, or `after:<card_id>` to place after the specified card.
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/position`.
+                    public var position: Swift.String
+                    /// The unique identifier of the column the card should be moved to
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/column_id`.
+                    public var column_id: Swift.Int?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - position: The position of the card in a column. Can be one of: `top`, `bottom`, or `after:<card_id>` to place after the specified card.
+                    ///   - column_id: The unique identifier of the column the card should be moved to
+                    public init(position: Swift.String, column_id: Swift.Int? = nil) {
+                        self.position = position
+                        self.column_id = column_id
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case position
+                        case column_id
+                    }
+                }
+                case json(Operations.projects_move_card.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_move_card.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_move_card.Input.Path,
+                query: Operations.projects_move_card.Input.Query = .init(),
+                headers: Operations.projects_move_card.Input.Headers = .init(),
+                cookies: Operations.projects_move_card.Input.Cookies = .init(),
+                body: Operations.projects_move_card.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_move_card.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// Creates a new `jsonPayload`.
+                        public init() {}
+                        public init(from decoder: any Decoder) throws {
+                            try decoder.ensureNoAdditionalProperties(knownKeys: [])
+                        }
+                    }
+                    case json(Operations.projects_move_card.Output.Created.Body.jsonPayload)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_move_card.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_move_card.Output.Created.Headers = .init(),
+                    body: Operations.projects_move_card.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.projects_move_card.Output.Created)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            public struct Forbidden: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_move_card.Output.Forbidden.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/message`.
+                        public var message: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/documentation_url`.
+                        public var documentation_url: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload`.
+                        public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/code`.
+                            public var code: Swift.String?
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/message`.
+                            public var message: Swift.String?
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/resource`.
+                            public var resource: Swift.String?
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/field`.
+                            public var field: Swift.String?
+                            /// Creates a new `errorsPayloadPayload`.
+                            ///
+                            /// - Parameters:
+                            ///   - code:
+                            ///   - message:
+                            ///   - resource:
+                            ///   - field:
+                            public init(
+                                code: Swift.String? = nil,
+                                message: Swift.String? = nil,
+                                resource: Swift.String? = nil,
+                                field: Swift.String? = nil
+                            ) {
+                                self.code = code
+                                self.message = message
+                                self.resource = resource
+                                self.field = field
+                            }
+                            public enum CodingKeys: String, CodingKey {
+                                case code
+                                case message
+                                case resource
+                                case field
+                            }
+                        }
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        public typealias errorsPayload = [Operations.projects_move_card.Output
+                            .Forbidden.Body.jsonPayload.errorsPayloadPayload]
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        public var errors:
+                            Operations.projects_move_card.Output.Forbidden.Body.jsonPayload
+                                .errorsPayload?
+                        /// Creates a new `jsonPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - message:
+                        ///   - documentation_url:
+                        ///   - errors:
+                        public init(
+                            message: Swift.String? = nil,
+                            documentation_url: Swift.String? = nil,
+                            errors: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload
+                                .errorsPayload? = nil
+                        ) {
+                            self.message = message
+                            self.documentation_url = documentation_url
+                            self.errors = errors
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case message
+                            case documentation_url
+                            case errors
+                        }
+                    }
+                    case json(Operations.projects_move_card.Output.Forbidden.Body.jsonPayload)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_move_card.Output.Forbidden.Body
+                /// Creates a new `Forbidden`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_move_card.Output.Forbidden.Headers = .init(),
+                    body: Operations.projects_move_card.Output.Forbidden.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Operations.projects_move_card.Output.Forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            public struct ServiceUnavailable: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_move_card.Output.ServiceUnavailable.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/code`.
+                        public var code: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/message`.
+                        public var message: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/documentation_url`.
+                        public var documentation_url: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload`.
+                        public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/code`.
+                            public var code: Swift.String?
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/message`.
+                            public var message: Swift.String?
+                            /// Creates a new `errorsPayloadPayload`.
+                            ///
+                            /// - Parameters:
+                            ///   - code:
+                            ///   - message:
+                            public init(code: Swift.String? = nil, message: Swift.String? = nil) {
+                                self.code = code
+                                self.message = message
+                            }
+                            public enum CodingKeys: String, CodingKey {
+                                case code
+                                case message
+                            }
+                        }
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        public typealias errorsPayload = [Operations.projects_move_card.Output
+                            .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        public var errors:
+                            Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
+                                .errorsPayload?
+                        /// Creates a new `jsonPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - code:
+                        ///   - message:
+                        ///   - documentation_url:
+                        ///   - errors:
+                        public init(
+                            code: Swift.String? = nil,
+                            message: Swift.String? = nil,
+                            documentation_url: Swift.String? = nil,
+                            errors: Operations.projects_move_card.Output.ServiceUnavailable.Body
+                                .jsonPayload.errorsPayload? = nil
+                        ) {
+                            self.code = code
+                            self.message = message
+                            self.documentation_url = documentation_url
+                            self.errors = errors
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case code
+                            case message
+                            case documentation_url
+                            case errors
+                        }
+                    }
+                    case json(
+                        Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
+                    )
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_move_card.Output.ServiceUnavailable.Body
+                /// Creates a new `ServiceUnavailable`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_move_card.Output.ServiceUnavailable.Headers =
+                        .init(),
+                    body: Operations.projects_move_card.Output.ServiceUnavailable.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Operations.projects_move_card.Output.ServiceUnavailable)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get a project column
+    ///
+    /// Gets information about a project column.
+    ///
+    /// - Remark: HTTP `GET /projects/columns/{column_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
+    public enum projects_get_column {
+        public static let id: String = "projects/get-column"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var column_id: Components.Parameters.column_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - column_id:
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
+            }
+            public var path: Operations.projects_get_column.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_get_column.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_get_column.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_get_column.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_get_column.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_get_column.Input.Path,
+                query: Operations.projects_get_column.Input.Query = .init(),
+                headers: Operations.projects_get_column.Input.Headers = .init(),
+                cookies: Operations.projects_get_column.Input.Cookies = .init(),
+                body: Operations.projects_get_column.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_get_column.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_column)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_get_column.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_get_column.Output.Ok.Headers = .init(),
+                    body: Operations.projects_get_column.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_get_column.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Update an existing project column
+    ///
+    /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
+    public enum projects_update_column {
+        public static let id: String = "projects/update-column"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var column_id: Components.Parameters.column_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - column_id:
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
+            }
+            public var path: Operations.projects_update_column.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_update_column.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_update_column.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_update_column.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// Name of the project column
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/json/name`.
+                    public var name: Swift.String
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - name: Name of the project column
+                    public init(name: Swift.String) { self.name = name }
+                    public enum CodingKeys: String, CodingKey { case name }
+                }
+                case json(Operations.projects_update_column.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_update_column.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_update_column.Input.Path,
+                query: Operations.projects_update_column.Input.Query = .init(),
+                headers: Operations.projects_update_column.Input.Headers = .init(),
+                cookies: Operations.projects_update_column.Input.Cookies = .init(),
+                body: Operations.projects_update_column.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_update_column.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_column)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_update_column.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_update_column.Output.Ok.Headers = .init(),
+                    body: Operations.projects_update_column.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_update_column.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Delete a project column
+    ///
+    /// Deletes a project column.
+    ///
+    /// - Remark: HTTP `DELETE /projects/columns/{column_id}`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)`.
+    public enum projects_delete_column {
+        public static let id: String = "projects/delete-column"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var column_id: Components.Parameters.column_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - column_id:
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
+            }
+            public var path: Operations.projects_delete_column.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_delete_column.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_delete_column.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_delete_column.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_delete_column.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_delete_column.Input.Path,
+                query: Operations.projects_delete_column.Input.Query = .init(),
+                headers: Operations.projects_delete_column.Input.Headers = .init(),
+                cookies: Operations.projects_delete_column.Input.Cookies = .init(),
+                body: Operations.projects_delete_column.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_delete_column.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.projects_delete_column.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_delete_column.Output.NoContent.Headers = .init(),
+                    body: Operations.projects_delete_column.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.projects_delete_column.Output.NoContent)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List project cards
+    ///
+    /// Lists the project cards in a project.
+    ///
+    /// - Remark: HTTP `GET /projects/columns/{column_id}/cards`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)`.
+    public enum projects_list_cards {
+        public static let id: String = "projects/list-cards"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var column_id: Components.Parameters.column_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - column_id:
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
+            }
+            public var path: Operations.projects_list_cards.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/archived_state`.
+                @frozen
+                public enum archived_statePayload: RawRepresentable, Codable, Equatable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                {
+                    case all
+                    case archived
+                    case not_archived
+                    /// Parsed a raw value that was not defined in the OpenAPI document.
+                    case undocumented(String)
+                    public init?(rawValue: String) {
+                        switch rawValue {
+                        case "all": self = .all
+                        case "archived": self = .archived
+                        case "not_archived": self = .not_archived
+                        default: self = .undocumented(rawValue)
+                        }
+                    }
+                    public var rawValue: String {
+                        switch self {
+                        case let .undocumented(string): return string
+                        case .all: return "all"
+                        case .archived: return "archived"
+                        case .not_archived: return "not_archived"
+                        }
+                    }
+                    public static var allCases: [archived_statePayload] {
+                        [.all, .archived, .not_archived]
+                    }
+                }
+                public var archived_state:
+                    Operations.projects_list_cards.Input.Query.archived_statePayload?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - archived_state:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    archived_state: Operations.projects_list_cards.Input.Query
+                        .archived_statePayload? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.archived_state = archived_state
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.projects_list_cards.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_list_cards.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_list_cards.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_list_cards.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_list_cards.Input.Path,
+                query: Operations.projects_list_cards.Input.Query = .init(),
+                headers: Operations.projects_list_cards.Input.Headers = .init(),
+                cookies: Operations.projects_list_cards.Input.Cookies = .init(),
+                body: Operations.projects_list_cards.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_list_cards.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.project_card])
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_list_cards.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_list_cards.Output.Ok.Headers = .init(),
+                    body: Operations.projects_list_cards.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_list_cards.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Create a project card
+    ///
+    /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
+    public enum projects_create_card {
+        public static let id: String = "projects/create-card"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var column_id: Components.Parameters.column_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - column_id:
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
+            }
+            public var path: Operations.projects_create_card.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_create_card.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_create_card.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_create_card.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json`.
+                @frozen public enum jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1`.
+                    public struct Case1Payload: Codable, Equatable, Hashable, Sendable {
+                        /// The project card's note
+                        ///
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1/note`.
+                        public var note: Swift.String
+                        /// Creates a new `Case1Payload`.
+                        ///
+                        /// - Parameters:
+                        ///   - note: The project card's note
+                        public init(note: Swift.String) { self.note = note }
+                        public enum CodingKeys: String, CodingKey { case note }
+                    }
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1`.
+                    case case1(Operations.projects_create_card.Input.Body.jsonPayload.Case1Payload)
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2`.
+                    public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
+                        /// The unique identifier of the content associated with the card
+                        ///
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2/content_id`.
+                        public var content_id: Swift.Int
+                        /// The piece of content associated with the card
+                        ///
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2/content_type`.
+                        public var content_type: Swift.String
+                        /// Creates a new `Case2Payload`.
+                        ///
+                        /// - Parameters:
+                        ///   - content_id: The unique identifier of the content associated with the card
+                        ///   - content_type: The piece of content associated with the card
+                        public init(content_id: Swift.Int, content_type: Swift.String) {
+                            self.content_id = content_id
+                            self.content_type = content_type
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case content_id
+                            case content_type
+                        }
+                    }
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2`.
+                    case case2(Operations.projects_create_card.Input.Body.jsonPayload.Case2Payload)
+                    /// Parsed a case that was not defined in the OpenAPI document.
+                    case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                    public init(from decoder: any Decoder) throws {
+                        do {
+                            self = .case1(try .init(from: decoder))
+                            return
+                        } catch {}
+                        do {
+                            self = .case2(try .init(from: decoder))
+                            return
+                        } catch {}
+                        let container = try decoder.singleValueContainer()
+                        let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
+                        self = .undocumented(value)
+                    }
+                    public func encode(to encoder: any Encoder) throws {
+                        switch self {
+                        case let .case1(value): try value.encode(to: encoder)
+                        case let .case2(value): try value.encode(to: encoder)
+                        case let .undocumented(value): try value.encode(to: encoder)
+                        }
+                    }
+                }
+                case json(Operations.projects_create_card.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_create_card.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_create_card.Input.Path,
+                query: Operations.projects_create_card.Input.Query = .init(),
+                headers: Operations.projects_create_card.Input.Headers = .init(),
+                cookies: Operations.projects_create_card.Input.Cookies = .init(),
+                body: Operations.projects_create_card.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_create_card.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_card)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_create_card.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_create_card.Output.Created.Headers = .init(),
+                    body: Operations.projects_create_card.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.projects_create_card.Output.Created)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            public struct UnprocessableEntity: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers:
+                    Operations.projects_create_card.Output.UnprocessableEntity.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json`.
+                    @frozen public enum jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1`.
+                        case validation_error(Components.Schemas.validation_error)
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2`.
+                        case validation_error_simple(Components.Schemas.validation_error_simple)
+                        /// Parsed a case that was not defined in the OpenAPI document.
+                        case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+                        public init(from decoder: any Decoder) throws {
+                            do {
+                                self = .validation_error(try .init(from: decoder))
+                                return
+                            } catch {}
+                            do {
+                                self = .validation_error_simple(try .init(from: decoder))
+                                return
+                            } catch {}
+                            let container = try decoder.singleValueContainer()
+                            let value = try container.decode(
+                                OpenAPIRuntime.OpenAPIValueContainer.self
+                            )
+                            self = .undocumented(value)
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .validation_error(value): try value.encode(to: encoder)
+                            case let .validation_error_simple(value): try value.encode(to: encoder)
+                            case let .undocumented(value): try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    case json(
+                        Operations.projects_create_card.Output.UnprocessableEntity.Body.jsonPayload
+                    )
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_create_card.Output.UnprocessableEntity.Body
+                /// Creates a new `UnprocessableEntity`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_create_card.Output.UnprocessableEntity.Headers =
+                        .init(),
+                    body: Operations.projects_create_card.Output.UnprocessableEntity.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Validation failed
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Operations.projects_create_card.Output.UnprocessableEntity)
+            public struct ServiceUnavailable: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers:
+                    Operations.projects_create_card.Output.ServiceUnavailable.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/code`.
+                        public var code: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/message`.
+                        public var message: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/documentation_url`.
+                        public var documentation_url: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errorsPayload`.
+                        public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errorsPayload/code`.
+                            public var code: Swift.String?
+                            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errorsPayload/message`.
+                            public var message: Swift.String?
+                            /// Creates a new `errorsPayloadPayload`.
+                            ///
+                            /// - Parameters:
+                            ///   - code:
+                            ///   - message:
+                            public init(code: Swift.String? = nil, message: Swift.String? = nil) {
+                                self.code = code
+                                self.message = message
+                            }
+                            public enum CodingKeys: String, CodingKey {
+                                case code
+                                case message
+                            }
+                        }
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errors`.
+                        public typealias errorsPayload = [Operations.projects_create_card.Output
+                            .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errors`.
+                        public var errors:
+                            Operations.projects_create_card.Output.ServiceUnavailable.Body
+                                .jsonPayload.errorsPayload?
+                        /// Creates a new `jsonPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - code:
+                        ///   - message:
+                        ///   - documentation_url:
+                        ///   - errors:
+                        public init(
+                            code: Swift.String? = nil,
+                            message: Swift.String? = nil,
+                            documentation_url: Swift.String? = nil,
+                            errors: Operations.projects_create_card.Output.ServiceUnavailable.Body
+                                .jsonPayload.errorsPayload? = nil
+                        ) {
+                            self.code = code
+                            self.message = message
+                            self.documentation_url = documentation_url
+                            self.errors = errors
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case code
+                            case message
+                            case documentation_url
+                            case errors
+                        }
+                    }
+                    case json(
+                        Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload
+                    )
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_create_card.Output.ServiceUnavailable.Body
+                /// Creates a new `ServiceUnavailable`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_create_card.Output.ServiceUnavailable.Headers =
+                        .init(),
+                    body: Operations.projects_create_card.Output.ServiceUnavailable.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)/responses/503`.
+            ///
+            /// HTTP response code: `503 serviceUnavailable`.
+            case serviceUnavailable(Operations.projects_create_card.Output.ServiceUnavailable)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Move a project column
+    ///
+    /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
+    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
+    public enum projects_move_column {
+        public static let id: String = "projects/move-column"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var column_id: Components.Parameters.column_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - column_id:
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
+            }
+            public var path: Operations.projects_move_column.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_move_column.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_move_column.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_move_column.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The position of the column in a project. Can be one of: `first`, `last`, or `after:<column_id>` to place after the specified column.
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/json/position`.
+                    public var position: Swift.String
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - position: The position of the column in a project. Can be one of: `first`, `last`, or `after:<column_id>` to place after the specified column.
+                    public init(position: Swift.String) { self.position = position }
+                    public enum CodingKeys: String, CodingKey { case position }
+                }
+                case json(Operations.projects_move_column.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_move_column.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_move_column.Input.Path,
+                query: Operations.projects_move_column.Input.Query = .init(),
+                headers: Operations.projects_move_column.Input.Headers = .init(),
+                cookies: Operations.projects_move_column.Input.Cookies = .init(),
+                body: Operations.projects_move_column.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_move_column.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// Creates a new `jsonPayload`.
+                        public init() {}
+                        public init(from decoder: any Decoder) throws {
+                            try decoder.ensureNoAdditionalProperties(knownKeys: [])
+                        }
+                    }
+                    case json(Operations.projects_move_column.Output.Created.Body.jsonPayload)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_move_column.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_move_column.Output.Created.Headers = .init(),
+                    body: Operations.projects_move_column.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.projects_move_column.Output.Created)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed_simple)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get a project
+    ///
+    /// Gets a project by its `id`. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)`.
+    public enum projects_get {
+        public static let id: String = "projects/get"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
+            }
+            public var path: Operations.projects_get.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_get.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_get.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_get.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_get.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_get.Input.Path,
+                query: Operations.projects_get.Input.Query = .init(),
+                headers: Operations.projects_get.Input.Headers = .init(),
+                cookies: Operations.projects_get.Input.Cookies = .init(),
+                body: Operations.projects_get.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_get.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_get.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_get.Output.Ok.Headers = .init(),
+                    body: Operations.projects_get.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_get.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Update a project
+    ///
+    /// Updates a project board's information. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
+    ///
+    /// - Remark: HTTP `PATCH /projects/{project_id}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
+    public enum projects_update {
+        public static let id: String = "projects/update"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
+            }
+            public var path: Operations.projects_update.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_update.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_update.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_update.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// Name of the project
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/name`.
+                    public var name: Swift.String?
+                    /// Body of the project
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/body`.
+                    public var body: Swift.String?
+                    /// State of the project; either 'open' or 'closed'
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/state`.
+                    public var state: Swift.String?
+                    /// The baseline permission that all organization members have on this project
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/organization_permission`.
+                    @frozen
+                    public enum organization_permissionPayload: RawRepresentable, Codable,
+                        Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    {
+                        case read
+                        case write
+                        case admin
+                        case none
+                        /// Parsed a raw value that was not defined in the OpenAPI document.
+                        case undocumented(String)
+                        public init?(rawValue: String) {
+                            switch rawValue {
+                            case "read": self = .read
+                            case "write": self = .write
+                            case "admin": self = .admin
+                            case "none": self = .none
+                            default: self = .undocumented(rawValue)
+                            }
+                        }
+                        public var rawValue: String {
+                            switch self {
+                            case let .undocumented(string): return string
+                            case .read: return "read"
+                            case .write: return "write"
+                            case .admin: return "admin"
+                            case .none: return "none"
+                            }
+                        }
+                        public static var allCases: [organization_permissionPayload] {
+                            [.read, .write, .admin, .none]
+                        }
+                    }
+                    /// The baseline permission that all organization members have on this project
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/organization_permission`.
+                    public var organization_permission:
+                        Operations.projects_update.Input.Body.jsonPayload
+                            .organization_permissionPayload?
+                    /// Whether or not this project can be seen by everyone.
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/private`.
+                    public var _private: Swift.Bool?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - name: Name of the project
+                    ///   - body: Body of the project
+                    ///   - state: State of the project; either 'open' or 'closed'
+                    ///   - organization_permission: The baseline permission that all organization members have on this project
+                    ///   - _private: Whether or not this project can be seen by everyone.
+                    public init(
+                        name: Swift.String? = nil,
+                        body: Swift.String? = nil,
+                        state: Swift.String? = nil,
+                        organization_permission: Operations.projects_update.Input.Body.jsonPayload
+                            .organization_permissionPayload? = nil,
+                        _private: Swift.Bool? = nil
+                    ) {
+                        self.name = name
+                        self.body = body
+                        self.state = state
+                        self.organization_permission = organization_permission
+                        self._private = _private
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case name
+                        case body
+                        case state
+                        case organization_permission
+                        case _private = "private"
+                    }
+                }
+                case json(Operations.projects_update.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_update.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_update.Input.Path,
+                query: Operations.projects_update.Input.Query = .init(),
+                headers: Operations.projects_update.Input.Headers = .init(),
+                cookies: Operations.projects_update.Input.Cookies = .init(),
+                body: Operations.projects_update.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_update.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_update.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_update.Output.Ok.Headers = .init(),
+                    body: Operations.projects_update.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_update.Output.Ok)
+            public struct NotFound: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_update.Output.NotFound.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.projects_update.Output.NotFound.Body?
+                /// Creates a new `NotFound`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_update.Output.NotFound.Headers = .init(),
+                    body: Operations.projects_update.Output.NotFound.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Not Found if the authenticated user does not have access to the project
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Operations.projects_update.Output.NotFound)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            public struct Forbidden: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_update.Output.Forbidden.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/message`.
+                        public var message: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/documentation_url`.
+                        public var documentation_url: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/errors`.
+                        public var errors: [Swift.String]?
+                        /// Creates a new `jsonPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - message:
+                        ///   - documentation_url:
+                        ///   - errors:
+                        public init(
+                            message: Swift.String? = nil,
+                            documentation_url: Swift.String? = nil,
+                            errors: [Swift.String]? = nil
+                        ) {
+                            self.message = message
+                            self.documentation_url = documentation_url
+                            self.errors = errors
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case message
+                            case documentation_url
+                            case errors
+                        }
+                    }
+                    case json(Operations.projects_update.Output.Forbidden.Body.jsonPayload)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_update.Output.Forbidden.Body
+                /// Creates a new `Forbidden`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_update.Output.Forbidden.Headers = .init(),
+                    body: Operations.projects_update.Output.Forbidden.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Operations.projects_update.Output.Forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed_simple)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Delete a project
+    ///
+    /// Deletes a project board. Returns a `404 Not Found` status if projects are disabled.
+    ///
+    /// - Remark: HTTP `DELETE /projects/{project_id}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
+    public enum projects_delete {
+        public static let id: String = "projects/delete"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
+            }
+            public var path: Operations.projects_delete.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_delete.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_delete.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_delete.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_delete.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_delete.Input.Path,
+                query: Operations.projects_delete.Input.Query = .init(),
+                headers: Operations.projects_delete.Input.Headers = .init(),
+                cookies: Operations.projects_delete.Input.Cookies = .init(),
+                body: Operations.projects_delete.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_delete.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.projects_delete.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_delete.Output.NoContent.Headers = .init(),
+                    body: Operations.projects_delete.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Delete Success
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.projects_delete.Output.NoContent)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            public struct Forbidden: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_delete.Output.Forbidden.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json`.
+                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json/message`.
+                        public var message: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json/documentation_url`.
+                        public var documentation_url: Swift.String?
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json/errors`.
+                        public var errors: [Swift.String]?
+                        /// Creates a new `jsonPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - message:
+                        ///   - documentation_url:
+                        ///   - errors:
+                        public init(
+                            message: Swift.String? = nil,
+                            documentation_url: Swift.String? = nil,
+                            errors: [Swift.String]? = nil
+                        ) {
+                            self.message = message
+                            self.documentation_url = documentation_url
+                            self.errors = errors
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case message
+                            case documentation_url
+                            case errors
+                        }
+                    }
+                    case json(Operations.projects_delete.Output.Forbidden.Body.jsonPayload)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_delete.Output.Forbidden.Body
+                /// Creates a new `Forbidden`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_delete.Output.Forbidden.Headers = .init(),
+                    body: Operations.projects_delete.Output.Forbidden.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Operations.projects_delete.Output.Forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List project collaborators
+    ///
+    /// Lists the collaborators for an organization project. For a project, the list of collaborators includes outside collaborators, organization members that are direct collaborators, organization members with access through team memberships, organization members with access through default organization permissions, and organization owners. You must be an organization owner or a project `admin` to list collaborators.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}/collaborators`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
+    public enum projects_list_collaborators {
+        public static let id: String = "projects/list-collaborators"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
+            }
+            public var path: Operations.projects_list_collaborators.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/affiliation`.
+                @frozen
+                public enum affiliationPayload: RawRepresentable, Codable, Equatable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                {
+                    case outside
+                    case direct
+                    case all
+                    /// Parsed a raw value that was not defined in the OpenAPI document.
+                    case undocumented(String)
+                    public init?(rawValue: String) {
+                        switch rawValue {
+                        case "outside": self = .outside
+                        case "direct": self = .direct
+                        case "all": self = .all
+                        default: self = .undocumented(rawValue)
+                        }
+                    }
+                    public var rawValue: String {
+                        switch self {
+                        case let .undocumented(string): return string
+                        case .outside: return "outside"
+                        case .direct: return "direct"
+                        case .all: return "all"
+                        }
+                    }
+                    public static var allCases: [affiliationPayload] { [.outside, .direct, .all] }
+                }
+                public var affiliation:
+                    Operations.projects_list_collaborators.Input.Query.affiliationPayload?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - affiliation:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    affiliation: Operations.projects_list_collaborators.Input.Query
+                        .affiliationPayload? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.affiliation = affiliation
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.projects_list_collaborators.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_list_collaborators.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_list_collaborators.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_list_collaborators.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_list_collaborators.Input.Path,
+                query: Operations.projects_list_collaborators.Input.Query = .init(),
+                headers: Operations.projects_list_collaborators.Input.Headers = .init(),
+                cookies: Operations.projects_list_collaborators.Input.Cookies = .init(),
+                body: Operations.projects_list_collaborators.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_list_collaborators.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.simple_user])
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_list_collaborators.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_list_collaborators.Output.Ok.Headers = .init(),
+                    body: Operations.projects_list_collaborators.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_list_collaborators.Output.Ok)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Add project collaborator
+    ///
+    /// Adds a collaborator to an organization project and sets their permission level. You must be an organization owner or a project `admin` to add a collaborator.
+    ///
+    /// - Remark: HTTP `PUT /projects/{project_id}/collaborators/{username}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)`.
+    public enum projects_add_collaborator {
+        public static let id: String = "projects/add-collaborator"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                public var username: Components.Parameters.username
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                ///   - username:
+                public init(
+                    project_id: Components.Parameters.project_id,
+                    username: Components.Parameters.username
+                ) {
+                    self.project_id = project_id
+                    self.username = username
+                }
+            }
+            public var path: Operations.projects_add_collaborator.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_add_collaborator.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_add_collaborator.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_add_collaborator.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// The permission to grant the collaborator.
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/json/permission`.
+                    @frozen
+                    public enum permissionPayload: RawRepresentable, Codable, Equatable, Hashable,
+                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    {
+                        case read
+                        case write
+                        case admin
+                        /// Parsed a raw value that was not defined in the OpenAPI document.
+                        case undocumented(String)
+                        public init?(rawValue: String) {
+                            switch rawValue {
+                            case "read": self = .read
+                            case "write": self = .write
+                            case "admin": self = .admin
+                            default: self = .undocumented(rawValue)
+                            }
+                        }
+                        public var rawValue: String {
+                            switch self {
+                            case let .undocumented(string): return string
+                            case .read: return "read"
+                            case .write: return "write"
+                            case .admin: return "admin"
+                            }
+                        }
+                        public static var allCases: [permissionPayload] { [.read, .write, .admin] }
+                    }
+                    /// The permission to grant the collaborator.
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/json/permission`.
+                    public var permission:
+                        Operations.projects_add_collaborator.Input.Body.jsonPayload
+                            .permissionPayload?
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - permission: The permission to grant the collaborator.
+                    public init(
+                        permission: Operations.projects_add_collaborator.Input.Body.jsonPayload
+                            .permissionPayload? = nil
+                    ) { self.permission = permission }
+                    public enum CodingKeys: String, CodingKey { case permission }
+                }
+                case json(Operations.projects_add_collaborator.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_add_collaborator.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_add_collaborator.Input.Path,
+                query: Operations.projects_add_collaborator.Input.Query = .init(),
+                headers: Operations.projects_add_collaborator.Input.Headers = .init(),
+                cookies: Operations.projects_add_collaborator.Input.Cookies = .init(),
+                body: Operations.projects_add_collaborator.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_add_collaborator.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.projects_add_collaborator.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_add_collaborator.Output.NoContent.Headers =
+                        .init(),
+                    body: Operations.projects_add_collaborator.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.projects_add_collaborator.Output.NoContent)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Remove user as a collaborator
+    ///
+    /// Removes a collaborator from an organization project. You must be an organization owner or a project `admin` to remove a collaborator.
+    ///
+    /// - Remark: HTTP `DELETE /projects/{project_id}/collaborators/{username}`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
+    public enum projects_remove_collaborator {
+        public static let id: String = "projects/remove-collaborator"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                public var username: Components.Parameters.username
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                ///   - username:
+                public init(
+                    project_id: Components.Parameters.project_id,
+                    username: Components.Parameters.username
+                ) {
+                    self.project_id = project_id
+                    self.username = username
+                }
+            }
+            public var path: Operations.projects_remove_collaborator.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_remove_collaborator.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_remove_collaborator.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_remove_collaborator.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_remove_collaborator.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_remove_collaborator.Input.Path,
+                query: Operations.projects_remove_collaborator.Input.Query = .init(),
+                headers: Operations.projects_remove_collaborator.Input.Headers = .init(),
+                cookies: Operations.projects_remove_collaborator.Input.Cookies = .init(),
+                body: Operations.projects_remove_collaborator.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct NoContent: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_remove_collaborator.Output.NoContent.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// Received HTTP response body
+                public var body: Operations.projects_remove_collaborator.Output.NoContent.Body?
+                /// Creates a new `NoContent`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_remove_collaborator.Output.NoContent.Headers =
+                        .init(),
+                    body: Operations.projects_remove_collaborator.Output.NoContent.Body? = nil
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.projects_remove_collaborator.Output.NoContent)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get project permission for a user
+    ///
+    /// Returns the collaborator's permission level for an organization project. Possible values for the `permission` key: `admin`, `write`, `read`, `none`. You must be an organization owner or a project `admin` to review a user's permission level.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}/collaborators/{username}/permission`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
+    public enum projects_get_permission_for_user {
+        public static let id: String = "projects/get-permission-for-user"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                public var username: Components.Parameters.username
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                ///   - username:
+                public init(
+                    project_id: Components.Parameters.project_id,
+                    username: Components.Parameters.username
+                ) {
+                    self.project_id = project_id
+                    self.username = username
+                }
+            }
+            public var path: Operations.projects_get_permission_for_user.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_get_permission_for_user.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_get_permission_for_user.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_get_permission_for_user.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_get_permission_for_user.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_get_permission_for_user.Input.Path,
+                query: Operations.projects_get_permission_for_user.Input.Query = .init(),
+                headers: Operations.projects_get_permission_for_user.Input.Headers = .init(),
+                cookies: Operations.projects_get_permission_for_user.Input.Cookies = .init(),
+                body: Operations.projects_get_permission_for_user.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_get_permission_for_user.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_collaborator_permission)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_get_permission_for_user.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_get_permission_for_user.Output.Ok.Headers =
+                        .init(),
+                    body: Operations.projects_get_permission_for_user.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_get_permission_for_user.Output.Ok)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List project columns
+    ///
+    /// Lists the project columns in a project.
+    ///
+    /// - Remark: HTTP `GET /projects/{project_id}/columns`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)`.
+    public enum projects_list_columns {
+        public static let id: String = "projects/list-columns"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
+            }
+            public var path: Operations.projects_list_columns.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.projects_list_columns.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_list_columns.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_list_columns.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.projects_list_columns.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_list_columns.Input.Path,
+                query: Operations.projects_list_columns.Input.Query = .init(),
+                headers: Operations.projects_list_columns.Input.Headers = .init(),
+                cookies: Operations.projects_list_columns.Input.Cookies = .init(),
+                body: Operations.projects_list_columns.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_list_columns.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.project_column])
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_list_columns.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_list_columns.Output.Ok.Headers = .init(),
+                    body: Operations.projects_list_columns.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.projects_list_columns.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Create a project column
+    ///
+    /// Creates a new project column.
+    ///
+    /// - Remark: HTTP `POST /projects/{project_id}/columns`.
+    /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)`.
+    public enum projects_create_column {
+        public static let id: String = "projects/create-column"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var project_id: Components.Parameters.project_id
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - project_id:
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
+            }
+            public var path: Operations.projects_create_column.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.projects_create_column.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.projects_create_column.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.projects_create_column.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/json`.
+                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                    /// Name of the project column
+                    ///
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/json/name`.
+                    public var name: Swift.String
+                    /// Creates a new `jsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - name: Name of the project column
+                    public init(name: Swift.String) { self.name = name }
+                    public enum CodingKeys: String, CodingKey { case name }
+                }
+                case json(Operations.projects_create_column.Input.Body.jsonPayload)
+            }
+            public var body: Operations.projects_create_column.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.projects_create_column.Input.Path,
+                query: Operations.projects_create_column.Input.Query = .init(),
+                headers: Operations.projects_create_column.Input.Headers = .init(),
+                cookies: Operations.projects_create_column.Input.Cookies = .init(),
+                body: Operations.projects_create_column.Input.Body
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Created: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    /// Creates a new `Headers`.
+                    public init() {}
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.projects_create_column.Output.Created.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.project_column)
+                }
+                /// Received HTTP response body
+                public var body: Operations.projects_create_column.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.projects_create_column.Output.Created.Headers = .init(),
+                    body: Operations.projects_create_column.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.projects_create_column.Output.Created)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.forbidden)
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableEntity`.
+            case unprocessableEntity(Components.Responses.validation_failed_simple)
+            /// Requires authentication
+            ///
+            /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)/responses/401`.
+            ///
+            /// HTTP response code: `401 unauthorized`.
+            case unauthorized(Components.Responses.requires_authentication)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// Get rate limit status for the authenticated user
+    ///
+    /// **Note:** Accessing this endpoint does not count against your REST API rate limit.
+    ///
+    /// **Note:** The `rate` object is deprecated. If you're writing new API client code or updating existing code, you should use the `core` object instead of the `rate` object. The `core` object contains the same information that is present in the `rate` object.
+    ///
+    /// - Remark: HTTP `GET /rate_limit`.
+    /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
+    public enum rate_limit_get {
+        public static let id: String = "rate-limit/get"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                /// Creates a new `Path`.
+                public init() {}
+            }
+            public var path: Operations.rate_limit_get.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                /// Creates a new `Query`.
+                public init() {}
+            }
+            public var query: Operations.rate_limit_get.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.rate_limit_get.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.rate_limit_get.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.rate_limit_get.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.rate_limit_get.Input.Path = .init(),
+                query: Operations.rate_limit_get.Input.Query = .init(),
+                headers: Operations.rate_limit_get.Input.Headers = .init(),
+                cookies: Operations.rate_limit_get.Input.Cookies = .init(),
+                body: Operations.rate_limit_get.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var X_RateLimit_Limit: Components.Headers.x_rate_limit_limit?
+                    public var X_RateLimit_Remaining: Components.Headers.x_rate_limit_remaining?
+                    public var X_RateLimit_Reset: Components.Headers.x_rate_limit_reset?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - X_RateLimit_Limit:
+                    ///   - X_RateLimit_Remaining:
+                    ///   - X_RateLimit_Reset:
+                    public init(
+                        X_RateLimit_Limit: Components.Headers.x_rate_limit_limit? = nil,
+                        X_RateLimit_Remaining: Components.Headers.x_rate_limit_remaining? = nil,
+                        X_RateLimit_Reset: Components.Headers.x_rate_limit_reset? = nil
+                    ) {
+                        self.X_RateLimit_Limit = X_RateLimit_Limit
+                        self.X_RateLimit_Remaining = X_RateLimit_Remaining
+                        self.X_RateLimit_Reset = X_RateLimit_Reset
+                    }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.rate_limit_get.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json(Components.Schemas.rate_limit_overview)
+                }
+                /// Received HTTP response body
+                public var body: Operations.rate_limit_get.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.rate_limit_get.Output.Ok.Headers = .init(),
+                    body: Operations.rate_limit_get.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.rate_limit_get.Output.Ok)
+            /// Not modified
+            ///
+            /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)/responses/304`.
+            ///
+            /// HTTP response code: `304 notModified`.
+            case notModified(Components.Responses.not_modified)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)/responses/404`.
             ///
             /// HTTP response code: `404 notFound`.
             case notFound(Components.Responses.not_found)

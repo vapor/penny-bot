@@ -18,3 +18,4 @@ public typealias Committer = Components.Schemas.simple_commit.committerPayload
 public typealias Enterprise = Components.Schemas.enterprise
 public typealias Installation = Components.Schemas.simple_installation
 public typealias Tag = Components.Schemas.tag
+public typealias ProjectCard = Components.Schemas.project_card

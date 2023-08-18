@@ -19,13 +19,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
             let faqHash: Int
         }
 
-        private var expirationTimeTable: OrderedDictionary<ID, Date> = [:] {
-            didSet {
-                if expirationTimeTable.count > 200 {
-                    expirationTimeTable.removeFirst()
-                }
-            }
-        }
+        private var expirationTimeTable: OrderedDictionary<ID, Date> = [:]
         private var expirationTime: TimeInterval {
             60 * 60 * 6
         }
@@ -35,12 +29,18 @@ actor DefaultAutoFaqsService: AutoFaqsService {
 
         /// Returns "can respond?" and assumes that the response will always be sent.
         mutating func canRespond(to id: ID) -> Bool {
+            defer {
+                /// Cleanup old items.
+                self.expirationTimeTable.removeAll { _, value in value < Date() }
+            }
+
+            /// See if "can respond".
             if let existing = self.expirationTimeTable[id] {
-                if existing > Date() {
-                    return false
-                } else {
+                if existing < Date() {
                     self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)
                     return true
+                } else {
+                    return false
                 }
             } else {
                 self.expirationTimeTable[id] = Date().addingTimeInterval(expirationTime)

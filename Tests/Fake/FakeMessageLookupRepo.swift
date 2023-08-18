@@ -11,8 +11,6 @@ public struct FakeMessageLookupRepo: MessageLookupRepo {
         Self.randomMessageID.rawValue
     }
 
-    public func delete(repoID: Int, number: Int) async throws { }
-
     public func markAsUnavailable(repoID: Int, number: Int) async throws { }
 
     public func saveMessageID(messageID: String, repoID: Int, number: Int) async throws { }

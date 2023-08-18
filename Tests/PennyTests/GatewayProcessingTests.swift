@@ -496,7 +496,7 @@ class GatewayProcessingTests: XCTestCase {
                 at: key.responseEndpoints[0],
                 expectFailure: true
             ).value
-            let payload: Never? = try XCTUnwrap(response as? Optional<Never>)
+            let payload: Never? = try XCTUnwrap(response as? Optional<Never>, "\(response)")
             XCTAssertEqual(payload, .none)
         }
     }

@@ -1,22 +1,22 @@
-import GitHubAPI
 import DiscordBM
+import GitHubAPI
 import Logging
 
-/// Sends a "Need translation" message for each PR in a push-commit that needs that.
+/// Files a "Need translation" issue for each PR in a push-commit that needs that.
 struct DocsIssuer {
-
     enum Configuration {
-        static let docsRepoID = 64560805
+        static let docsRepoID = 64_560_805
     }
 
     let context: HandlerContext
     let commitSHA: String
     let repo: Repository
     var event: GHEvent {
-        context.event
+        self.context.event
     }
+
     var logger: Logger {
-        context.logger
+        self.context.logger
     }
 
     init(context: HandlerContext) throws {
@@ -26,15 +26,15 @@ struct DocsIssuer {
     }
 
     func handle() async throws {
-        guard repo.id == Configuration.docsRepoID else {
+        guard self.repo.id == Configuration.docsRepoID else {
             return
         }
-        guard event.ref == "refs/heads/\(repo.primaryBranch)" else {
+        guard self.event.ref == "refs/heads/\(self.repo.primaryBranch)" else {
             return
         }
-        for pr in try await getPRsRelatedToCommit() {
-            guard needsNewIssue(pr: pr) else {
-                logger.debug(
+        for pr in try await self.getPRsRelatedToCommit() {
+            guard self.needsNewIssue(pr: pr) else {
+                self.logger.debug(
                     "Will not file issue for docs push PR because it's exempt from new issues",
                     metadata: ["number": .stringConvertible(pr.number)]
                 )
@@ -45,15 +45,15 @@ struct DocsIssuer {
             /// Otherwise there is nothing to be translated and there is no need for a new issue.
             guard files.contains(where: { file in
                 file.filename.hasPrefix("docs/") &&
-                [.added, .modified].contains(file.status)
+                    [.added, .modified].contains(file.status)
             }) else {
-                logger.debug(
+                self.logger.debug(
                     "Will not file issue for docs push PR because no docs files are added or modified",
                     metadata: ["number": .stringConvertible(pr.number)]
                 )
                 continue
             }
-            try await fileIssue(number: pr.number)
+            try await self.fileIssue(number: pr.number)
         }
     }
 
@@ -65,14 +65,15 @@ struct DocsIssuer {
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
         let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
             .init(path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                commit_sha: commitSHA
+                owner: self.repo.owner.login,
+                repo: self.repo.name,
+                commit_sha: self.commitSHA
             ))
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
+              case let .json(json) = ok.body
+        else {
             throw Errors.httpRequestFailed(response: response)
         }
 
@@ -82,14 +83,15 @@ struct DocsIssuer {
     func getPRFiles(number: Int) async throws -> [DiffEntry] {
         let response = try await context.githubClient.pulls_list_files(.init(
             path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
+                owner: self.repo.owner.login,
+                repo: self.repo.name,
                 pull_number: number
             )
         ))
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
+              case let .json(json) = ok.body
+        else {
             throw Errors.httpRequestFailed(response: response)
         }
 
@@ -100,8 +102,8 @@ struct DocsIssuer {
         let description = try await context.renderClient.translationNeededDescription(number: number)
         let response = try await context.githubClient.issues_create(.init(
             path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
+                owner: self.repo.owner.login,
+                repo: self.repo.name
             ),
             body: .json(.init(
                 title: .case1("Translation needed for #\(number)"),

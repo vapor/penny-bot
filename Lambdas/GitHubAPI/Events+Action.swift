@@ -29,7 +29,7 @@ extension PullRequest {
 
 extension Issue {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#issues
-    public enum Action: String, Codable {
+    public enum Action: String, Sendable, Codable {
         case assigned
         case closed
         case deleted

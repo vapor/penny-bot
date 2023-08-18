@@ -1,4 +1,5 @@
 import SotoDynamoDB
+import Atomics
 
 struct DynamoMessageRepo: MessageLookupRepo {
 
@@ -34,11 +35,15 @@ struct DynamoMessageRepo: MessageLookupRepo {
     let db: DynamoDB
     let logger: Logger
 
+    static let idGenerator = ManagedAtomic(UInt(0))
+
     let tableName = "ghHooks-message-lookup-table"
 
     init(awsClient: AWSClient, logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
         self.db = DynamoDB(client: awsClient, region: euWest)
+        var logger = logger
+        logger[metadataKey: "repo"] = "\(Self.self)"
         self.logger = logger
     }
 
@@ -56,20 +61,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
 
     private func getItem(repoID: Int, number: Int) async throws -> Item {
         let id = makeTicketID(repoID: repoID, number: number)
-        let query = DynamoDB.QueryInput(
-            expressionAttributeValues: [":v1": .s(id)],
-            keyConditionExpression: "id = :v1",
-            limit: 1,
-            tableName: self.tableName
-        )
-        let results = try await db.query(
-            query,
-            type: Item.self,
-            logger: self.logger
-        )
-        guard let item = results.items?.first else {
-            throw Errors.notFound
-        }
+        let item = try await self.get(id: id)
         return item
     }
 
@@ -89,7 +81,39 @@ struct DynamoMessageRepo: MessageLookupRepo {
         try await save(item: item)
     }
 
+    private func get(id: String) async throws -> Item {
+        let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
+        logger.debug("Will get an item", metadata: [
+            "id": .string(id),
+            "repo-request-id": .stringConvertible(requestID),
+        ])
+        let query = DynamoDB.QueryInput(
+            expressionAttributeValues: [":v1": .s(id)],
+            keyConditionExpression: "id = :v1",
+            limit: 1,
+            tableName: self.tableName
+        )
+        let result = try await db.query(
+            query,
+            type: Item.self,
+            logger: self.logger
+        )
+        logger.debug("Got some items", metadata: [
+            "items": "\(result.items ?? [])",
+            "repo-request-id": .stringConvertible(requestID),
+        ])
+        guard let item = result.items?.first else {
+            throw Errors.notFound
+        }
+        return item
+    }
+
     private func save(item: Item) async throws {
+        let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
+        logger.debug("Will save an item", metadata: [
+            "item": "\(item)",
+            "repo-request-id": .stringConvertible(requestID),
+        ])
         let input = DynamoDB.UpdateItemCodableInput(
             key: ["id"],
             tableName: self.tableName,
@@ -100,5 +124,9 @@ struct DynamoMessageRepo: MessageLookupRepo {
             input,
             logger: self.logger
         )
+
+        logger.debug("Item did save", metadata: [
+            "repo-request-id": .stringConvertible(requestID)
+        ])
     }
 }

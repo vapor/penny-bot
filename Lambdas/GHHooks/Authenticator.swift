@@ -39,9 +39,6 @@ actor Authenticator {
                 let token = try await makeJWTToken()
                 let client = try await makeClient(token: token)
                 let accessToken = try await createAccessToken(client: client)
-                self.logger.debug("Generated new access token", metadata: [
-                    "token": "\(accessToken)",
-                ])
                 await self.setCachedAccessToken(to: accessToken)
                 return accessToken.token
             }
