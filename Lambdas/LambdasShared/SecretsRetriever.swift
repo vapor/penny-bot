@@ -33,8 +33,14 @@ public actor SecretsRetriever {
     }
 
     public func getSecret(arnEnvVarKey: String) async throws -> String {
-        return try await queue.process(queueKey: arnEnvVarKey) {
+        logger.trace("Get secret start", metadata: [
+            "arnEnvVarKey": .string(arnEnvVarKey)
+        ])
+        let secret = try await queue.process(queueKey: arnEnvVarKey) {
             if let cached = await getCache(key: arnEnvVarKey) {
+                logger.debug("Will return cached secret", metadata: [
+                    "arnEnvVarKey": .string(arnEnvVarKey)
+                ])
                 return cached
             } else {
                 let value = try await self.getSecretFromAWS(arnEnvVarKey: arnEnvVarKey)
@@ -42,16 +48,20 @@ public actor SecretsRetriever {
                 return value
             }
         }
+        logger.trace("Get secret done", metadata: [
+            "arnEnvVarKey": .string(arnEnvVarKey)
+        ])
+        return secret
     }
 
     /// Gets a secret directly from AWS.
     private func getSecretFromAWS(arnEnvVarKey: String) async throws -> String {
-        guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
-            throw Errors.envVarNotFound(name: arnEnvVarKey)
-        }
         logger.trace("Retrieving secret from AWS", metadata: [
             "arnEnvVarKey": .string(arnEnvVarKey)
         ])
+        guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
+            throw Errors.envVarNotFound(name: arnEnvVarKey)
+        }
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
             logger: logger
@@ -59,6 +69,9 @@ public actor SecretsRetriever {
         guard let secret = secret.secretString else {
             throw Errors.secretNotFound(arn: arn)
         }
+        logger.trace("Got secret from AWS", metadata: [
+            "arnEnvVarKey": .string(arnEnvVarKey)
+        ])
         return secret
     }
 

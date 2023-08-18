@@ -104,7 +104,6 @@ struct GHHooksHandler: LambdaHandler {
         ])
         
         try await verifyWebhookSignature(request: request)
-        logger.trace("Verified signature")
 
         guard let _eventName = request.headers.first(name: "x-github-event"),
               let eventName = GHEvent.Kind(rawValue: _eventName) else {
@@ -121,6 +120,7 @@ struct GHHooksHandler: LambdaHandler {
 
         let event = try request.decodeWithISO8601(as: GHEvent.self)
 
+        logger.debug("Event action is '\(event.action ?? "<null>")'")
         logger.trace("Decoded event", metadata: [
             "event": "\(event)"
         ])
@@ -156,6 +156,7 @@ struct GHHooksHandler: LambdaHandler {
     }
 
     func verifyWebhookSignature(request: APIGatewayV2Request) async throws {
+        logger.trace("Will verify webhook signature")
         guard let signature = request.headers.first(name: "x-hub-signature-256") else {
             throw Errors.headerNotFound(name: "x-hub-signature-256", headers: request.headers)
         }
@@ -166,5 +167,6 @@ struct GHHooksHandler: LambdaHandler {
             requestBody: body,
             secret: secret
         )
+        logger.trace("Did verify webhook signature")
     }
 }
