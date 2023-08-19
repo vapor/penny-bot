@@ -24,6 +24,9 @@ struct ProjectBoardHandler {
     }
 
     func handle() async throws {
+        /// Ignore events on closed issues, if the even isn't the closed-event itself.
+        if self.issue.isClosed && self.action != .closed { return }
+
         switch self.action {
         case .labeled:
             try await self.onLabeled()
@@ -43,9 +46,7 @@ struct ProjectBoardHandler {
 
     func onLabeled() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        for project in Set(relatedProjects) {
-            try await self.moveOrCreate(targetColumn: .toDo, in: project)
-        }
+        try await self.moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
     }
 
     func onUnlabeled() async throws {
@@ -75,14 +76,14 @@ struct ProjectBoardHandler {
 
     func onClosed() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        switch self.issue.state {
-        case "closed":
+        if self.issue.state_reason == .not_planned {
+            for project in Set(relatedProjects) {
+                try await self.deleteCard(in: project)
+            }
+        } else {
             for project in Set(relatedProjects) {
                 try await self.moveOrCreate(targetColumn: .done, in: project)
             }
-        case "open":
-            try await self.moveOrCreateInToDoOrInProgress(relatedProjects: relatedProjects)
-        default: break
         }
     }
 
@@ -92,14 +93,9 @@ struct ProjectBoardHandler {
     }
 
     private func moveOrCreateInToDoOrInProgress(relatedProjects: [Project]) async throws {
-        if (self.issue.assignees ?? []).isEmpty {
-            for project in Set(relatedProjects) {
-                try await self.moveOrCreate(targetColumn: .toDo, in: project)
-            }
-        } else {
-            for project in Set(relatedProjects) {
-                try await self.moveOrCreate(targetColumn: .inProgress, in: project)
-            }
+        for project in Set(relatedProjects) {
+            let targetColumn: Project.Column = issue.hasAssignees ? .inProgress : .toDo
+            try await self.moveOrCreate(targetColumn: targetColumn, in: project)
         }
     }
 
@@ -182,6 +178,15 @@ struct ProjectBoardHandler {
             try await self.createCard(columnID: project.columnID(of: targetColumn))
         }
     }
+
+    private func deleteCard(in project: Project) async throws {
+        for column in Project.Column.allCases {
+            let cards = try await self.getCards(in: project.columnID(of: column))
+            if let card = cards.firstCard(note: note) {
+                try await self.delete(cardID: card.id)
+            }
+        }
+    }
 }
 
 private enum Project: String, CaseIterable {
@@ -249,5 +254,15 @@ extension [ProjectCard] {
 
     fileprivate func firstCard(note: String) -> Self.Element? {
         self.first { areNotesEqual($0, note) }
+    }
+}
+
+private extension Issue {
+    var isClosed: Bool {
+        self.state == "closed"
+    }
+
+    var hasAssignees: Bool {
+        !(self.assignees ?? []).isEmpty
     }
 }
