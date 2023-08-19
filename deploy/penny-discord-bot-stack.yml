@@ -136,6 +136,7 @@ Resources:
           API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${UsersFilename}
+      MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -183,6 +184,7 @@ Resources:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${SponsorsFilename}.zip
       FunctionName: !Sub ${SponsorsFilename}
+      MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -336,6 +338,7 @@ Resources:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoPingsFilename}.zip
       FunctionName: !Sub ${AutoPingsFilename}
+      MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -390,6 +393,7 @@ Resources:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${FaqsFilename}.zip
       FunctionName: !Sub ${FaqsFilename}
+      MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -444,6 +448,7 @@ Resources:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoFaqsFilename}.zip
       FunctionName: !Sub ${AutoFaqsFilename}
+      MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
@@ -505,10 +510,11 @@ Resources:
           API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
           LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}
+      MemorySize: 512
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 12
+      Timeout: 8
 
   lambdaGHHooksRoutePermission:
     Type: AWS::Lambda::Permission
@@ -560,6 +566,7 @@ Resources:
           API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${GHOAuthFilename}
+      MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
