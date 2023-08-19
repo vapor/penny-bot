@@ -63,6 +63,15 @@ struct GHHooksHandler: LambdaHandler {
             logger: logger
         )
 
+        context.logger.info("Formatter start")
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
+        formatter.timeZone = TimeZone(abbreviation: "UTC")
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        context.logger.info("Formatter date")
+        let formatted = formatter.string(from: Date())
+        context.logger.info("Formatter done: \(formatted)")
+
         context.logger.trace("Handler did initialize")
     }
 
