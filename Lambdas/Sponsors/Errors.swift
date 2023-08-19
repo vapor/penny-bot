@@ -2,7 +2,6 @@ enum Errors: Error, CustomStringConvertible {
     case runWorkflowError(message: String)
     case addMemberRoleError(message: String)
     case sendWelcomeMessageError(message: String)
-    case envVarNotFound(key: String)
 
     var description: String {
         switch self {
@@ -12,8 +11,6 @@ enum Errors: Error, CustomStringConvertible {
             return "addMemberRoleError(\(message))"
         case let .sendWelcomeMessageError(message):
             return "sendWelcomeMessageError(\(message))"
-        case let .envVarNotFound(key):
-            return "envVarNotFound(key: \(key))"
         }
     }
 }

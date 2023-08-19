@@ -239,11 +239,15 @@ private enum Project: String, CaseIterable {
 }
 
 extension [ProjectCard] {
+    private func areNotesEqual(_ element: Self.Element, _ note: String) -> Bool {
+        element.content_url == note || element.note == note
+    }
+
     fileprivate func containsCard(note: String) -> Bool {
-        self.contains { $0.note == note }
+        self.contains { areNotesEqual($0, note) }
     }
 
     fileprivate func firstCard(note: String) -> Self.Element? {
-        self.first { $0.note == note }
+        self.first { areNotesEqual($0, note) }
     }
 }

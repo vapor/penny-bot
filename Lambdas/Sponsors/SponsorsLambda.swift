@@ -62,9 +62,7 @@ struct SponsorsHandler: LambdaHandler {
             // Look for the user in the DB
             context.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
-            guard let apiBaseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] else {
-                throw Errors.envVarNotFound(key: "API_BASE_URL")
-            }
+            let apiBaseURL = try requireEnvVar("API_BASE_URL")
             let userService = ServiceFactory.makeUsersService(
                 httpClient: httpClient,
                 apiBaseURL: apiBaseURL

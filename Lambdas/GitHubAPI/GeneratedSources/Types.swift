@@ -10234,7 +10234,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/project-card/node_id`.
             public var node_id: Swift.String
             /// - Remark: Generated from `#/components/schemas/project-card/note`.
-            public var note: Swift.String
+            public var note: Swift.String?
             /// - Remark: Generated from `#/components/schemas/project-card/creator`.
             public var creator: Components.Schemas.nullable_simple_user
             /// - Remark: Generated from `#/components/schemas/project-card/created_at`.
@@ -10275,7 +10275,7 @@ public enum Components {
                 url: Swift.String,
                 id: Swift.Int,
                 node_id: Swift.String,
-                note: Swift.String,
+                note: Swift.String? = nil,
                 creator: Components.Schemas.nullable_simple_user,
                 created_at: Foundation.Date,
                 updated_at: Foundation.Date,
