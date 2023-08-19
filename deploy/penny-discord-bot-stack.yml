@@ -133,7 +133,7 @@ Resources:
         S3Key: !Sub ${UsersFilename}.zip
       Environment:
         Variables:
-          API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
+          API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${UsersFilename}
       MemorySize: 256
@@ -504,10 +504,10 @@ Resources:
         S3Key: !Sub ${GHHooksFilename}.zip
       Environment:
         Variables:
-          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          WH_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
-          GH_APP_AUTH_PRIV_KEY_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
-          API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
+          BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          WH_SECRET_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
+          GH_APP_AUTH_PRIV_KEY_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
+          API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}.amazonaws.com/prod
           LOG_LEVEL: trace
       FunctionName: !Sub ${GHHooksFilename}
       MemorySize: 512
@@ -559,11 +559,11 @@ Resources:
         S3Key: !Sub ${GHOAuthFilename}.zip
       Environment:
         Variables:
-          BOT_TOKEN_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          GH_CLIENT_SECRET_ARN: arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
+          BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          GH_CLIENT_SECRET_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
           GH_CLIENT_ID: Iv1.683ea075648a5cd2
           ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY: LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg==
-          API_BASE_URL: https://ncy6caaavg.execute-api.eu-west-1.amazonaws.com/prod
+          API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${GHOAuthFilename}
       MemorySize: 256
