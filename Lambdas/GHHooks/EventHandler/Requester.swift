@@ -26,6 +26,7 @@ extension Requester {
         )
         switch response.asError() {
         case let .jsonError(jsonError) where jsonError.code == .unknownMember:
+            /// Left the server?
             return nil
         default: break
         }
@@ -89,7 +90,7 @@ extension Requester {
                 }
             }.map(String.init)
 
-        return CodeOwners(value: Set(codeOwners.map({ $0.lowercased() })))
+        return CodeOwners(value: codeOwners)
     }
 }
 
@@ -98,6 +99,14 @@ struct CodeOwners: CustomStringConvertible {
 
     var description: String {
         "CodeOwners(value: \(value))"
+    }
+
+    fileprivate init(value: [String]) {
+        self.value = Set(value.map({ $0.lowercased() }))
+    }
+
+    private init(lowercasedValue value: Set<String>) {
+        self.value = value
     }
 
     /// Only supports names, and not emails.
@@ -121,6 +130,10 @@ struct CodeOwners: CustomStringConvertible {
     }
 
     func union(_ other: Set<String>) -> CodeOwners {
-        CodeOwners(value: self.value.union(other))
+        return CodeOwners(
+            lowercasedValue: self.value.union(
+                other.map({ $0.lowercased() })
+            )
+        )
     }
 }

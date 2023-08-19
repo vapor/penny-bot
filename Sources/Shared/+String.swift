@@ -5,6 +5,7 @@ extension String {
             withAllowedCharacters: .urlPathAllowed
         ) ?? self
     }
+
     public func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
         /// Well, I mean, you _can_, but you won't like the resulting infinite loop!
         assert(maxUnicodeScalars > 0, "Can't request a non-positive maximum.")

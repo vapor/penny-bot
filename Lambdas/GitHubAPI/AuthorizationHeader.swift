@@ -1,16 +1,16 @@
 public enum AuthorizationHeader: Sendable {
     /// The `Bool` is `isRetry`.
-    public typealias CustomHeaderCalculator = @Sendable (Bool) async throws -> String
+    public typealias BearerComputer = @Sendable (Bool) async throws -> String
 
     case bearer(String)
-    case custom(CustomHeaderCalculator)
+    case computedBearer(BearerComputer)
     case none
 
     var isRetriable: Bool {
         switch self {
         case .bearer, .none:
             return false
-        case .custom:
+        case .computedBearer:
             return true
         }
     }
@@ -19,8 +19,8 @@ public enum AuthorizationHeader: Sendable {
         switch self {
         case let .bearer(token):
             return "Bearer \(token)"
-        case let .custom(customBlock):
-            let token = try await customBlock(isRetry)
+        case let .computedBearer(computer):
+            let token = try await computer(isRetry)
             return "Bearer \(token)"
         case .none:
             return nil

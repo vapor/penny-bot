@@ -50,7 +50,7 @@ struct GHHooksHandler: LambdaHandler {
 
         self.githubClient = try .makeForGitHub(
             httpClient: httpClient,
-            authorization: .custom { isRetry in
+            authorization: .computedBearer { isRetry in
                 try await authenticator.generateAccessToken(
                     forceRefreshToken: isRetry
                 )

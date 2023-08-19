@@ -119,7 +119,9 @@ struct IssueHandler: Sendable {
             )
         } ?? ""
 
-        let description = try await context.renderClient.ticketReport(title: issue.title, body: body)
+        let description = try await context.renderClient
+            .ticketReport(title: issue.title, body: body)
+            .unicodesPrefix(512)
 
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
@@ -131,16 +133,16 @@ struct IssueHandler: Sendable {
 
         var iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
         var resolvedBy = ""
-        var resolverMember: Guild.Member?
         if let closedBy = try await self.maybeGetClosedByUser() {
-            let resolverMember = try await self.context.requester.getDiscordMember(
-                githubID: "\(closedBy.id)"
-            )
+            let resolverMember = try await self.context.requester
+                .getDiscordMember(githubID: "\(closedBy.id)")
             if let url = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url {
                 iconURL = url
             }
             let uiName = (resolverMember?.uiName).map { "@\($0)" } ?? closedBy.uiName
-            resolvedBy = " | Resolved by \(uiName)"
+            if let verb = status.closedByVerb {
+                resolvedBy = " | \(verb) by \(uiName)"
+            }
         }
 
         let embed = Embed(
@@ -189,7 +191,7 @@ struct IssueHandler: Sendable {
 private enum Status: String {
     case done = "Done"
     case notPlanned = "Not Planned"
-    case opened = "Opened"
+    case open = "Open"
 
     var color: DiscordColor {
         switch self {
@@ -197,7 +199,7 @@ private enum Status: String {
             return .teal
         case .notPlanned:
             return .gray(level: .level2, scheme: .dark)
-        case .opened:
+        case .open:
             return .yellow
         }
     }
@@ -206,7 +208,18 @@ private enum Status: String {
         switch self {
         case .done, .notPlanned:
             return self.rawValue
-        case .opened:
+        case .open:
+            return nil
+        }
+    }
+
+    var closedByVerb: String? {
+        switch self {
+        case .done:
+            return "Resolved"
+        case .notPlanned:
+            return "Closed"
+        case .open:
             return nil
         }
     }
@@ -217,7 +230,7 @@ private enum Status: String {
         } else if issue.closed_at != nil {
             self = .done
         } else {
-            self = .opened
+            self = .open
         }
     }
 }
