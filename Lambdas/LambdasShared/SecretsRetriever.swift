@@ -7,13 +7,10 @@ import Foundation
 public actor SecretsRetriever {
 
     enum Errors: Error, CustomStringConvertible {
-        case envVarNotFound(name: String)
         case secretNotFound(arn: String)
 
         var description: String {
             switch self {
-            case let .envVarNotFound(name):
-                return "envVarNotFound(name: \(name))"
             case let .secretNotFound(arn):
                 return "secretNotFound(arn: \(arn))"
             }
@@ -59,9 +56,7 @@ public actor SecretsRetriever {
         logger.trace("Retrieving secret from AWS", metadata: [
             "arnEnvVarKey": .string(arnEnvVarKey)
         ])
-        guard let arn = ProcessInfo.processInfo.environment[arnEnvVarKey] else {
-            throw Errors.envVarNotFound(name: arnEnvVarKey)
-        }
+        let arn = try requireEnvVar(arnEnvVarKey)
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
             logger: logger

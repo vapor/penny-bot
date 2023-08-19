@@ -63,15 +63,6 @@ struct GHHooksHandler: LambdaHandler {
             logger: logger
         )
 
-        context.logger.info("Formatter start")
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyyMMdd'T'HHmmss'Z'"
-        formatter.timeZone = TimeZone(abbreviation: "UTC")
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        context.logger.info("Formatter date")
-        let formatted = formatter.string(from: Date())
-        context.logger.info("Formatter done: \(formatted)")
-
         context.logger.trace("Handler did initialize")
     }
 
@@ -129,14 +120,12 @@ struct GHHooksHandler: LambdaHandler {
 
         let event = try request.decodeWithISO8601(as: GHEvent.self)
 
-        logger.debug("Event action is '\(event.action ?? "<null>")'")
+        logger.debug("Event identifier is '\(eventName).\(event.action ?? "<null>")'")
         logger.trace("Decoded event", metadata: [
             "event": "\(event)"
         ])
 
-        guard let apiBaseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] else {
-            throw Errors.envVarNotFound(key: "API_BASE_URL")
-        }
+        let apiBaseURL = try requireEnvVar("API_BASE_URL")
         try await EventHandler(
             context: .init(
                 eventName: eventName,

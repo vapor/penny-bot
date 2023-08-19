@@ -22,9 +22,9 @@ extension LeafRenderer {
 private struct DocsLeafSource: LeafSource {
 
     enum Configuration {
-        static var supportedFileNames: Set<String> {
-            ["translation_needed.description.leaf"]
-        }
+        static let supportedFileNames: Set<String> = [
+            "translation_needed.description.leaf"
+        ]
     }
 
     enum Errors: Error, CustomStringConvertible {
@@ -56,7 +56,7 @@ private struct DocsLeafSource: LeafSource {
             return eventLoop.makeFailedFuture(Errors.unsupportedTemplate(template))
         }
         let repoURL = "https://raw.githubusercontent.com/vapor/docs/main"
-        let url = "\(repoURL)/.github/\(template)"
+        let url = "\(repoURL)/.github/\(template.urlPathEncoded())"
         let request = try HTTPClient.Request(url: url)
         return httpClient.execute(request: request).flatMapThrowing { response in
             guard 200..<300 ~= response.status.code else {

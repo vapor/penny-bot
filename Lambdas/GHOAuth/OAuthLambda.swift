@@ -44,9 +44,7 @@ struct GHOAuthHandler: LambdaHandler {
         let awsClient = AWSClient(httpClientProvider: .shared(client))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
-        guard let apiBaseURL = ProcessInfo.processInfo.environment["API_BASE_URL"] else {
-            throw Errors.envVarNotFound(name: "API_BASE_URL")
-        }
+        let apiBaseURL = try requireEnvVar("API_BASE_URL")
         self.userService = ServiceFactory.makeUsersService(
             httpClient: client,
             apiBaseURL: apiBaseURL
@@ -58,14 +56,12 @@ struct GHOAuthHandler: LambdaHandler {
 
     private func getJWTSignersPublicKey() throws -> ECDSAKey {
         logger.debug("Retrieving JWT signer secrets")
-        let pubKeyEnvVarKey = "ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY"
-        guard let publicKeyString = ProcessInfo.processInfo.environment[pubKeyEnvVarKey] else {
-            throw Errors.envVarNotFound(name: pubKeyEnvVarKey)
-        }
-        guard let publicKeyData = Data(base64Encoded: publicKeyString) else {
+        let key = try requireEnvVar("ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
+        guard let data = Data(base64Encoded: key) else {
             throw Errors.invalidPublicKey
         }
-        return try ECDSAKey.public(pem: publicKeyData)
+        let ecdsa = try ECDSAKey.public(pem: data)
+        return ecdsa
     }
 
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
@@ -149,9 +145,7 @@ struct GHOAuthHandler: LambdaHandler {
         logger.debug("Retrieving GitHub client secrets")
 
         let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
-        guard let clientID = ProcessInfo.processInfo.environment["GH_CLIENT_ID"] else {
-            throw Errors.envVarNotFound(name: "GH_CLIENT_ID")
-        }
+        let clientID = try requireEnvVar("GH_CLIENT_ID")
 
         // https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
 
