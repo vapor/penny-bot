@@ -10,7 +10,7 @@ import Fake
 import XCTest
 
 class LeafRenderTests: XCTestCase {
-    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+    let httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
             httpClient: httpClient,

@@ -3,6 +3,7 @@ import AsyncHTTPClient
 import GitHubAPI
 import SotoCore
 import DiscordModels
+import DiscordHTTP
 import OpenAPIRuntime
 import Rendering
 import Logging
@@ -12,7 +13,7 @@ import Fake
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient(eventLoopGroupProvider: .createNew)
+    let httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
@@ -567,31 +568,25 @@ class GHHooksTests: XCTestCase {
                 await withTaskGroup(of: Void.self) { group in
                     for failure in failures {
                         group.addTask {
+                            let endpoint: APIEndpoint
                             switch failure.type {
                             case .create:
-                                let response = await FakeResponseStorage.shared.awaitResponse(
-                                    at: .createMessage(channelId: failure.channel.id),
-                                    expectFailure: true,
-                                    line: line
-                                ).value
-                                XCTAssertEqual(
-                                    "\(type(of: response))", "Optional<Never>",
-                                    line: line
-                                )
+                                endpoint = .createMessage(channelId: failure.channel.id)
                             case let .edit(messageID):
-                                let response = await FakeResponseStorage.shared.awaitResponse(
-                                    at: .updateMessage(
-                                        channelId: failure.channel.id,
-                                        messageId: messageID
-                                    ),
-                                    expectFailure: true,
-                                    line: line
-                                ).value
-                                XCTAssertEqual(
-                                    "\(type(of: response))", "Optional<Never>",
-                                    line: line
+                                endpoint = .updateMessage(
+                                    channelId: failure.channel.id,
+                                    messageId: messageID
                                 )
                             }
+                            let response = await FakeResponseStorage.shared.awaitResponse(
+                                at: endpoint,
+                                expectFailure: true,
+                                line: line
+                            ).value
+                            XCTAssertEqual(
+                                "\(type(of: response))", "Optional<Never>",
+                                line: line
+                            )
                         }
                     }
                 }
