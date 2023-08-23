@@ -519,6 +519,11 @@ class GHHooksTests: XCTestCase {
             eventName: .release,
             expect: .response(at: .release, type: .create)
         )
+        try await handleEvent(
+            key: "release6",
+            eventName: .release,
+            expect: .response(at: .release, type: .create)
+        )
     }
 
     func handleEvent(

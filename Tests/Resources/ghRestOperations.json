@@ -3946,6 +3946,298 @@
       "node_id": "MDM6UmVmMTY5NjI5OTE4OnJlZnMvdGFncy8xLjAuMA=="
     }
   ],
+  "GET-https://api.github.com/repos/vapor-community/stripe-kit/tags": [
+    {
+      "name": "21.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/21.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/21.0.0",
+      "commit": {
+        "sha": "4dc40c3ad71292bd77517e64d89103a3523c61e8",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/4dc40c3ad71292bd77517e64d89103a3523c61e8"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8yMS4wLjA="
+    },
+    {
+      "name": "20.1.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/20.1.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/20.1.1",
+      "commit": {
+        "sha": "782be513bcec63566f2fa1fae06a30ee37087b82",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/782be513bcec63566f2fa1fae06a30ee37087b82"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8yMC4xLjE="
+    },
+    {
+      "name": "20.1.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/20.1.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/20.1.0",
+      "commit": {
+        "sha": "6155b59393b8d3f547575cdd825c5c49ca6a8804",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/6155b59393b8d3f547575cdd825c5c49ca6a8804"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8yMC4xLjA="
+    },
+    {
+      "name": "20.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/20.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/20.0.0",
+      "commit": {
+        "sha": "90f435d577f9edd489ba58957abafcfa79d24991",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/90f435d577f9edd489ba58957abafcfa79d24991"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8yMC4wLjA="
+    },
+    {
+      "name": "19.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/19.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/19.0.0",
+      "commit": {
+        "sha": "f3b66204c817da8a2425c0853c6a0505e97b6793",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/f3b66204c817da8a2425c0853c6a0505e97b6793"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xOS4wLjA="
+    },
+    {
+      "name": "18.1.2",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/18.1.2",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/18.1.2",
+      "commit": {
+        "sha": "a8dac4195e8bc0f28bce3d53baaf9ede0445223c",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/a8dac4195e8bc0f28bce3d53baaf9ede0445223c"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xOC4xLjI="
+    },
+    {
+      "name": "18.1.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/18.1.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/18.1.1",
+      "commit": {
+        "sha": "dd874cf5f6ae723ae58591502eeed69e2ac94343",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/dd874cf5f6ae723ae58591502eeed69e2ac94343"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xOC4xLjE="
+    },
+    {
+      "name": "18.1.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/18.1.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/18.1.0",
+      "commit": {
+        "sha": "85c3d68de8cd6f13064d0a1db6b0d75ee56e8033",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/85c3d68de8cd6f13064d0a1db6b0d75ee56e8033"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xOC4xLjA="
+    },
+    {
+      "name": "18.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/18.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/18.0.0",
+      "commit": {
+        "sha": "c558b4bbd91073ae85a1bfa369f327cf1de2a249",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/c558b4bbd91073ae85a1bfa369f327cf1de2a249"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xOC4wLjA="
+    },
+    {
+      "name": "17.1.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/17.1.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/17.1.0",
+      "commit": {
+        "sha": "211a1fe003ef6f5308065d8adbeb1bc641bb9236",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/211a1fe003ef6f5308065d8adbeb1bc641bb9236"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNy4xLjA="
+    },
+    {
+      "name": "17.0.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/17.0.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/17.0.1",
+      "commit": {
+        "sha": "58ea4f4ad77f86aad54da22d1d86f610c50712ac",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/58ea4f4ad77f86aad54da22d1d86f610c50712ac"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNy4wLjE="
+    },
+    {
+      "name": "17.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/17.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/17.0.0",
+      "commit": {
+        "sha": "81e9e525b7f9b8dd4cb13fe5b8b04652a1b03e6c",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/81e9e525b7f9b8dd4cb13fe5b8b04652a1b03e6c"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNy4wLjA="
+    },
+    {
+      "name": "16.2.2",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/16.2.2",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/16.2.2",
+      "commit": {
+        "sha": "9454cd52739e6a1d92ac17015bf68cd418894247",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/9454cd52739e6a1d92ac17015bf68cd418894247"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNi4yLjI="
+    },
+    {
+      "name": "16.2.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/16.2.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/16.2.1",
+      "commit": {
+        "sha": "800f24187922145ea32da1a1d14771e8e926b9c3",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/800f24187922145ea32da1a1d14771e8e926b9c3"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNi4yLjE="
+    },
+    {
+      "name": "16.2.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/16.2.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/16.2.0",
+      "commit": {
+        "sha": "d12f5dcac391293f4b4905b39aa7134e3854f29c",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/d12f5dcac391293f4b4905b39aa7134e3854f29c"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNi4yLjA="
+    },
+    {
+      "name": "16.1.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/16.1.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/16.1.0",
+      "commit": {
+        "sha": "e1b4bae452a69c2e20f85c91bc2447f189a69d93",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/e1b4bae452a69c2e20f85c91bc2447f189a69d93"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNi4xLjA="
+    },
+    {
+      "name": "16.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/16.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/16.0.0",
+      "commit": {
+        "sha": "369ccae109757d576141cd779b354150b426265d",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/369ccae109757d576141cd779b354150b426265d"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNi4wLjA="
+    },
+    {
+      "name": "15.0.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/15.0.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/15.0.1",
+      "commit": {
+        "sha": "ac78042405323431710bd8b7ab1c7f51ac0d2bc5",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/ac78042405323431710bd8b7ab1c7f51ac0d2bc5"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNS4wLjE="
+    },
+    {
+      "name": "15.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/15.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/15.0.0",
+      "commit": {
+        "sha": "02028ea0c28a6f8586d7cf1ab95991c45c90ce06",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/02028ea0c28a6f8586d7cf1ab95991c45c90ce06"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNS4wLjA="
+    },
+    {
+      "name": "14.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/14.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/14.0.0",
+      "commit": {
+        "sha": "bc125cff9a2772e7205965bb271a4a81f0132b5c",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/bc125cff9a2772e7205965bb271a4a81f0132b5c"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xNC4wLjA="
+    },
+    {
+      "name": "13.2.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/13.2.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/13.2.0",
+      "commit": {
+        "sha": "ce9d91e6f3abceaffed68c6f936ff879e0ebbf5a",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/ce9d91e6f3abceaffed68c6f936ff879e0ebbf5a"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMy4yLjA="
+    },
+    {
+      "name": "13.1.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/13.1.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/13.1.0",
+      "commit": {
+        "sha": "52af608107dbae65168a0bd6b8210f690c0762d0",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/52af608107dbae65168a0bd6b8210f690c0762d0"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMy4xLjA="
+    },
+    {
+      "name": "13.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/13.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/13.0.0",
+      "commit": {
+        "sha": "edd058075c82ab57a9c69f3bba4697682d38ff0f",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/edd058075c82ab57a9c69f3bba4697682d38ff0f"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMy4wLjA="
+    },
+    {
+      "name": "12.0.2",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/12.0.2",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/12.0.2",
+      "commit": {
+        "sha": "9ab8c2853aae893cd859683ca7a849496041d4e2",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/9ab8c2853aae893cd859683ca7a849496041d4e2"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMi4wLjI="
+    },
+    {
+      "name": "12.0.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/12.0.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/12.0.1",
+      "commit": {
+        "sha": "2976fe4b65ff9771667fd073a69368970c953f4a",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/2976fe4b65ff9771667fd073a69368970c953f4a"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMi4wLjE="
+    },
+    {
+      "name": "12.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/12.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/12.0.0",
+      "commit": {
+        "sha": "9a175aecfd1e93e5ac7a6cfe2910524a952dbe36",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/9a175aecfd1e93e5ac7a6cfe2910524a952dbe36"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMi4wLjA="
+    },
+    {
+      "name": "11.0.0",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/11.0.0",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/11.0.0",
+      "commit": {
+        "sha": "274efbf9f31b846d35115aff8d5dcb94d3540611",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/274efbf9f31b846d35115aff8d5dcb94d3540611"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMS4wLjA="
+    },
+    {
+      "name": "10.1.2",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/10.1.2",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/10.1.2",
+      "commit": {
+        "sha": "ccb2d276b8d2d41af11ed32543ffcfdc2d7f1548",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/ccb2d276b8d2d41af11ed32543ffcfdc2d7f1548"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMC4xLjI="
+    },
+    {
+      "name": "10.1.1",
+      "zipball_url": "https://api.github.com/repos/vapor-community/stripe-kit/zipball/refs/tags/10.1.1",
+      "tarball_url": "https://api.github.com/repos/vapor-community/stripe-kit/tarball/refs/tags/10.1.1",
+      "commit": {
+        "sha": "3351215afe23502e57079b7ea0a84aae0ed17ad1",
+        "url": "https://api.github.com/repos/vapor-community/stripe-kit/commits/3351215afe23502e57079b7ea0a84aae0ed17ad1"
+      },
+      "node_id": "MDM6UmVmMTg5NzM2NTYwOnJlZnMvdGFncy8xMC4xLjE="
+    }
+  ],
   "projects/list-cards": [],
   "projects/create-card": {
     "url": "https://api.github.com/projects/columns/cards/1478",

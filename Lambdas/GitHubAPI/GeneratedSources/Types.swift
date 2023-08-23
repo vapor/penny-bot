@@ -189,6 +189,41 @@ public protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
     func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output
+    /// List commits
+    ///
+    /// **Signature verification object**
+    ///
+    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The following fields are included in the `verification` object:
+    ///
+    /// | Name | Type | Description |
+    /// | ---- | ---- | ----------- |
+    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
+    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
+    /// | `signature` | `string` | The signature that was extracted from the commit. |
+    /// | `payload` | `string` | The value that was signed. |
+    ///
+    /// These are the possible values for `reason` in the `verification` object:
+    ///
+    /// | Value | Description |
+    /// | ----- | ----------- |
+    /// | `expired_key` | The key that made the signature is expired. |
+    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
+    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
+    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
+    /// | `unsigned` | The object does not include a signature. |
+    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
+    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
+    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
+    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
+    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
+    /// | `malformed_signature` | There was an error parsing the signature. |
+    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
+    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
+    func repos_list_commits(_ input: Operations.repos_list_commits.Input) async throws
+        -> Operations.repos_list_commits.Output
     /// List pull requests associated with a commit
     ///
     /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
@@ -21311,6 +21346,197 @@ public enum Operations {
             ///
             /// HTTP response code: `301 movedPermanently`.
             case movedPermanently(Components.Responses.moved_permanently)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+    }
+    /// List commits
+    ///
+    /// **Signature verification object**
+    ///
+    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The following fields are included in the `verification` object:
+    ///
+    /// | Name | Type | Description |
+    /// | ---- | ---- | ----------- |
+    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
+    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
+    /// | `signature` | `string` | The signature that was extracted from the commit. |
+    /// | `payload` | `string` | The value that was signed. |
+    ///
+    /// These are the possible values for `reason` in the `verification` object:
+    ///
+    /// | Value | Description |
+    /// | ----- | ----------- |
+    /// | `expired_key` | The key that made the signature is expired. |
+    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
+    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
+    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
+    /// | `unsigned` | The object does not include a signature. |
+    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
+    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
+    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
+    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
+    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
+    /// | `malformed_signature` | There was an error parsing the signature. |
+    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
+    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
+    public enum repos_list_commits {
+        public static let id: String = "repos/list-commits"
+        public struct Input: Sendable, Equatable, Hashable {
+            public struct Path: Sendable, Equatable, Hashable {
+                public var owner: Components.Parameters.owner
+                public var repo: Components.Parameters.repo
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner:
+                ///   - repo:
+                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                    self.owner = owner
+                    self.repo = repo
+                }
+            }
+            public var path: Operations.repos_list_commits.Input.Path
+            public struct Query: Sendable, Equatable, Hashable {
+                public var sha: Swift.String?
+                public var path: Swift.String?
+                public var author: Swift.String?
+                public var committer: Swift.String?
+                public var since: Components.Parameters.since?
+                public var until: Foundation.Date?
+                public var per_page: Components.Parameters.per_page?
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - sha:
+                ///   - path:
+                ///   - author:
+                ///   - committer:
+                ///   - since:
+                ///   - until:
+                ///   - per_page:
+                ///   - page:
+                public init(
+                    sha: Swift.String? = nil,
+                    path: Swift.String? = nil,
+                    author: Swift.String? = nil,
+                    committer: Swift.String? = nil,
+                    since: Components.Parameters.since? = nil,
+                    until: Foundation.Date? = nil,
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.sha = sha
+                    self.path = path
+                    self.author = author
+                    self.committer = committer
+                    self.since = since
+                    self.until = until
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.repos_list_commits.Input.Query
+            public struct Headers: Sendable, Equatable, Hashable {
+                /// Creates a new `Headers`.
+                public init() {}
+            }
+            public var headers: Operations.repos_list_commits.Input.Headers
+            public struct Cookies: Sendable, Equatable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.repos_list_commits.Input.Cookies
+            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            public var body: Operations.repos_list_commits.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.repos_list_commits.Input.Path,
+                query: Operations.repos_list_commits.Input.Query = .init(),
+                headers: Operations.repos_list_commits.Input.Headers = .init(),
+                cookies: Operations.repos_list_commits.Input.Cookies = .init(),
+                body: Operations.repos_list_commits.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Equatable, Hashable {
+            public struct Ok: Sendable, Equatable, Hashable {
+                public struct Headers: Sendable, Equatable, Hashable {
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.repos_list_commits.Output.Ok.Headers
+                @frozen public enum Body: Sendable, Equatable, Hashable {
+                    case json([Components.Schemas.commit])
+                }
+                /// Received HTTP response body
+                public var body: Operations.repos_list_commits.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.repos_list_commits.Output.Ok.Headers = .init(),
+                    body: Operations.repos_list_commits.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.repos_list_commits.Output.Ok)
+            /// Internal Error
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)/responses/500`.
+            ///
+            /// HTTP response code: `500 internalServerError`.
+            case internalServerError(Components.Responses.internal_error)
+            /// Bad Request
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)/responses/400`.
+            ///
+            /// HTTP response code: `400 badRequest`.
+            case badRequest(Components.Responses.bad_request)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Conflict
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)/responses/409`.
+            ///
+            /// HTTP response code: `409 conflict`.
+            case conflict(Components.Responses.conflict)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.

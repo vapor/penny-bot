@@ -2892,6 +2892,233 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List commits
+    ///
+    /// **Signature verification object**
+    ///
+    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The following fields are included in the `verification` object:
+    ///
+    /// | Name | Type | Description |
+    /// | ---- | ---- | ----------- |
+    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
+    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
+    /// | `signature` | `string` | The signature that was extracted from the commit. |
+    /// | `payload` | `string` | The value that was signed. |
+    ///
+    /// These are the possible values for `reason` in the `verification` object:
+    ///
+    /// | Value | Description |
+    /// | ----- | ----------- |
+    /// | `expired_key` | The key that made the signature is expired. |
+    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
+    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
+    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
+    /// | `unsigned` | The object does not include a signature. |
+    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
+    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
+    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
+    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
+    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
+    /// | `malformed_signature` | There was an error parsing the signature. |
+    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
+    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
+    public func repos_list_commits(_ input: Operations.repos_list_commits.Input) async throws
+        -> Operations.repos_list_commits.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.repos_list_commits.id,
+            serializer: { input in
+                let path = try converter.renderedRequestPath(
+                    template: "/repos/{}/{}/commits",
+                    parameters: [input.path.owner, input.path.repo]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "sha",
+                    value: input.query.sha
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "path",
+                    value: input.query.path
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "author",
+                    value: input.query.author
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "committer",
+                    value: input.query.committer
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "since",
+                    value: input.query.since
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "until",
+                    value: input.query.until
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsText(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "page",
+                    value: input.query.page
+                )
+                try converter.setHeaderFieldAsText(
+                    in: &request.headerFields,
+                    name: "accept",
+                    value: "application/json"
+                )
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.repos_list_commits.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsText(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Operations.repos_list_commits.Output.Ok.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.commit].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .ok(.init(headers: headers, body: body))
+                case 500:
+                    let headers: Components.Responses.internal_error.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.internal_error.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .internalServerError(.init(headers: headers, body: body))
+                case 400:
+                    let headers: Components.Responses.bad_request.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.bad_request.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .badRequest(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.not_found.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .notFound(.init(headers: headers, body: body))
+                case 409:
+                    let headers: Components.Responses.conflict.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(
+                        in: response.headerFields
+                    )
+                    let body: Components.Responses.conflict.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(
+                            received: contentType,
+                            expectedRaw: "application/json"
+                        )
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .conflict(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// List pull requests associated with a commit
     ///
     /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.

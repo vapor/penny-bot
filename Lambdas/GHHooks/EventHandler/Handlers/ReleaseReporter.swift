@@ -4,18 +4,6 @@ import Logging
 import Foundation
 
 struct ReleaseReporter {
-
-    enum Errors: Error, CustomStringConvertible {
-        case noPreviousTagFound(release: Release, tags: [Tag])
-
-        var description: String {
-            switch self {
-            case let .noPreviousTagFound(release, tags):
-                return "noPreviousTagFound(release: \(release), tags: \(tags))"
-            }
-        }
-    }
-
     let context: HandlerContext
     let release: Release
     let repo: Repository
@@ -53,7 +41,7 @@ struct ReleaseReporter {
         }
     }
 
-    func getTagBefore() async throws -> String {
+    func getTagBefore() async throws -> String? {
         let response = try await context.githubClient.repos_list_tags(.init(
             path: .init(
                 owner: repo.owner.login,
@@ -69,17 +57,22 @@ struct ReleaseReporter {
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
            json.count > releaseIdx {
             return json[releaseIdx + 1].name
+        } else {
+            logger.warning("No previous tag found. Will just return the first tag", metadata: [
+                "tags": "\(json)",
+                "release": "\(release)"
+            ])
+            return json.first?.name
         }
-
-        throw Errors.noPreviousTagFound(
-            release: release,
-            tags: json
-        )
     }
 
     func getPRsRelatedToRelease() async throws -> [SimplePullRequest] {
-        let tagBefore = try await getTagBefore()
-        let commits = try await getCommitsInRelease(tagBefore: tagBefore)
+        let commits: [Commit]
+        if let tagBefore = try await getTagBefore() {
+            commits = try await getCommitsInRelease(tagBefore: tagBefore)
+        } else {
+            commits = try await getAllCommits()
+        }
         var prs = [SimplePullRequest]()
         prs.reserveCapacity(commits.count)
 
@@ -106,6 +99,22 @@ struct ReleaseReporter {
         }
 
         return json.commits.reversed()
+    }
+
+    func getAllCommits() async throws -> [Commit] {
+        let response = try await context.githubClient.repos_list_commits(.init(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            )
+        ))
+
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body else {
+            throw GHHooksLambda.Errors.httpRequestFailed(response: response)
+        }
+
+        return json.reversed()
     }
 
     func getPRsRelatedToCommit(sha: String) async throws -> [SimplePullRequest] {
