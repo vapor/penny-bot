@@ -109,6 +109,7 @@ struct PRHandler {
             title: title,
             description: description,
             url: prLink,
+            timestamp: pr.created_at,
             color: status.color,
             footer: .init(
                 text: "By \(authorName)",

@@ -149,6 +149,7 @@ struct IssueHandler: Sendable {
             title: title,
             description: description,
             url: issueLink,
+            timestamp: issue.created_at,
             color: status.color,
             footer: .init(
                 text: (author + resolvedBy).unicodesPrefix(100),
