@@ -247,6 +247,24 @@ class GHHooksTests: XCTestCase {
             """)
         }
 
+        do {
+            let text = """
+            ```
+            Hello, how are you?
+            ```
+            """
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 10,
+                hardLimit: 200,
+                trailingTextMinLength: 64
+            )
+            XCTAssertMultilineStringsEqual(formatted, """
+            ```
+            Hello, ho\(dots)
+            ```
+            """)
+        }
+
         /// Remove html and images + length limits.
         do {
             let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
@@ -417,7 +435,7 @@ class GHHooksTests: XCTestCase {
 
             ### To Reproduce
 
-            1. 
+            1.
             """)
         }
 
