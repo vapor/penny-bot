@@ -19,6 +19,8 @@ class GHHooksTests: XCTestCase {
         decoder.dateDecodingStrategy = .iso8601
         return decoder
     }()
+    /// The `…` (U+2026 Horizontal Ellipsis) character.
+    let dots = "\u{2026}"
 
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
@@ -29,9 +31,6 @@ class GHHooksTests: XCTestCase {
     }
 
     func testUnicodesPrefix() throws {
-        /// The `…` (U+2026 Horizontal Ellipsis) character.
-        let dots = "\u{2026}"
-
         do {
             let scalars_16 = "Hello, world! 👍🏾"
             let scalars_14 = "Hello, world! "
@@ -39,13 +38,13 @@ class GHHooksTests: XCTestCase {
             let scalars_12 = "Hello, world"
             let scalars_11 = "Hello, worl"
             let scalars_6 = "Hello,"
-            XCTAssertEqual(scalars_16.unicodesPrefix(17), scalars_16)
-            XCTAssertEqual(scalars_16.unicodesPrefix(16), scalars_16)
-            XCTAssertEqual(scalars_16.unicodesPrefix(15), scalars_14 + dots)
-            XCTAssertEqual(scalars_16.unicodesPrefix(14), scalars_13 + dots)
-            XCTAssertEqual(scalars_16.unicodesPrefix(13), scalars_12 + dots)
-            XCTAssertEqual(scalars_16.unicodesPrefix(12), scalars_11 + dots)
-            XCTAssertEqual(scalars_16.unicodesPrefix(7), scalars_6 + dots)
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(17), (1, scalars_16))
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(16), (0, scalars_16))
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(15), (0, scalars_14 + dots))
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(14), (0, scalars_13 + dots))
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(13), (0, scalars_12 + dots))
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(12), (0, scalars_11 + dots))
+            XCTAssertTuplesEqual(scalars_16.unicodesPrefix(7), (0, scalars_6 + dots))
         }
 
         do {
@@ -54,34 +53,115 @@ class GHHooksTests: XCTestCase {
             let scalars_6 = "👍🏿👍🏾👍🏽"
             let scalars_4 = "👍🏿👍🏾"
             let scalars_2 = "👍🏿"
-            XCTAssertEqual(scalars_11.unicodesPrefix(12), scalars_11)
-            XCTAssertEqual(scalars_11.unicodesPrefix(11), scalars_11)
-            XCTAssertEqual(scalars_11.unicodesPrefix(10), scalars_8 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(9), scalars_8 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(8), scalars_6 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(7), scalars_6 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(6), scalars_4 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(4), scalars_2 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(3), scalars_2 + dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(2), dots)
-            XCTAssertEqual(scalars_11.unicodesPrefix(1), dots)
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(12), (1, scalars_11))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(11), (0, scalars_11))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(10), (0, scalars_8 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(9), (0, scalars_8 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(8), (0, scalars_6 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(7), (0, scalars_6 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(6), (0, scalars_4 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(4), (0, scalars_2 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(3), (0, scalars_2 + dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(2), (0, dots))
+            XCTAssertTuplesEqual(scalars_11.unicodesPrefix(1), (0, dots))
         }
 
         do {
             let scalars_14 = "👩‍👩‍👧‍👦👨‍👨‍👧‍👦"
             let scalars_7 = "👩‍👩‍👧‍👦"
-            XCTAssertEqual(scalars_14.unicodesPrefix(15), scalars_14)
-            XCTAssertEqual(scalars_14.unicodesPrefix(14), scalars_14)
-            XCTAssertEqual(scalars_14.unicodesPrefix(13), scalars_7 + dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(10), scalars_7 + dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(9), scalars_7 + dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(8), scalars_7 + dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(7), dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(6), dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(3), dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(2), dots)
-            XCTAssertEqual(scalars_14.unicodesPrefix(1), dots)
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(15), (1, scalars_14))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(14), (0, scalars_14))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(13), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(10), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(9), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(8), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(7), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(6), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(3), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(2), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.unicodesPrefix(1), (0, dots))
         }
+    }
+
+    func testMarkdownUnicodesPrefix() async throws {
+        do {
+            let scalars_16 = "Hello, world! 👍🏾"
+            let scalars_14 = "Hello, world! "
+            let scalars_13 = "Hello, world!"
+            let scalars_12 = "Hello, world"
+            let scalars_11 = "Hello, worl"
+            let scalars_6 = "Hello,"
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(17), (1, scalars_16))
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(16), (0, scalars_16))
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(15), (0, scalars_14 + dots))
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(14), (0, scalars_13 + dots))
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(13), (0, scalars_12 + dots))
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(12), (0, scalars_11 + dots))
+            XCTAssertTuplesEqual(scalars_16.markdownUnicodesPrefix(7), (0, scalars_6 + dots))
+        }
+
+        do {
+            let scalars_11 = "👍🏿👍🏾👍🏽👍🏼👍🏻👍"
+            let scalars_8 = "👍🏿👍🏾👍🏽👍🏼"
+            let scalars_6 = "👍🏿👍🏾👍🏽"
+            let scalars_4 = "👍🏿👍🏾"
+            let scalars_2 = "👍🏿"
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(12), (1, scalars_11))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(11), (0, scalars_11))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(10), (0, scalars_8 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(9), (0, scalars_8 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(8), (0, scalars_6 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(7), (0, scalars_6 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(6), (0, scalars_4 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(4), (0, scalars_2 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(3), (0, scalars_2 + dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(2), (0, dots))
+            XCTAssertTuplesEqual(scalars_11.markdownUnicodesPrefix(1), (0, dots))
+        }
+
+        do {
+            let scalars_14 = "👩‍👩‍👧‍👦👨‍👨‍👧‍👦"
+            let scalars_7 = "👩‍👩‍👧‍👦"
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(15), (1, scalars_14))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(14), (0, scalars_14))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(13), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(10), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(9), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(8), (0, scalars_7 + dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(7), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(6), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(3), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(2), (0, dots))
+            XCTAssertTuplesEqual(scalars_14.markdownUnicodesPrefix(1), (0, dots))
+        }
+
+        /// Testing with markdown text
+        do {
+            let scalars_9 = "**Hello**"
+            let scalars_8 = "**Hel\(dots)**"
+            let scalars_7 = "**He\(dots)**"
+            let scalars_6 = "**H\(dots)**"
+            let scalars_5 = "**\(dots)**"
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(10), scalars_9)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(9), scalars_9)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(8), scalars_9)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(7), scalars_9)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(6), scalars_9)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(5), scalars_9)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(4), scalars_8)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(3), scalars_7)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(2), scalars_6)
+            XCTAssertEqual(scalars_9.markdownUnicodesPrefix(1), scalars_5)
+        }
+    }
+
+    func XCTAssertTuplesEqual(
+        _ expression1: (Int, String),
+        _ expression2: (Int, String),
+        line: UInt = #line
+    ) {
+        XCTAssertEqual(expression1.0, expression2.0, line: line)
+        XCTAssertEqual(expression1.1, expression2.1, line: line)
     }
 
     func testSemVerBump() throws {
@@ -135,6 +215,38 @@ class GHHooksTests: XCTestCase {
     }
 
     func testMarkdownFormatting() async throws {
+        do {
+            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let formatted = scalars_206.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 64
+            )
+            XCTAssertMultilineStringsEqual(formatted, scalars_206)
+        }
+
+        do {
+            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let formatted = scalars_206.formatMarkdown(
+                maxVisualLength: 200,
+                hardLimit: 2_048,
+                trailingTextMinLength: 64
+            )
+            XCTAssertMultilineStringsEqual(formatted, scalars_206)
+        }
+
+        do {
+            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let formatted = scalars_206.formatMarkdown(
+                maxVisualLength: 200,
+                hardLimit: 203,
+                trailingTextMinLength: 64
+            )
+            XCTAssertMultilineStringsEqual(formatted, """
+            Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not inclu\(dots)
+            """)
+        }
+
         /// Remove html and images + length limits.
         do {
             let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
@@ -152,8 +264,42 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 64
+            )
             XCTAssertMultilineStringsEqual(formatted, scalars_206)
+        }
+
+        /// Remove html and images + length limits.
+        do {
+            let scalars_200 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not int"
+            let text = """
+            <!-- 🚀 Thank you for contributing! -->
+
+            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+
+            <!-- Describe your changes clearly and use examples if possible -->
+
+            \(scalars_200)
+
+            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+            """
+
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 64
+            )
+            let scalars_66 = "Custom coders specified for a single `JWTSigner` affect token par…"
+            XCTAssertMultilineStringsEqual(formatted, scalars_200 + """
+
+
+            \(scalars_66)
+            """)
         }
 
         /// Remove html and images + length limits.
@@ -173,11 +319,16 @@ class GHHooksTests: XCTestCase {
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 64
+            )
+            let scalars_76 = "Custom coders specified for a single `JWTSigner` affect token parsing and s…"
             XCTAssertMultilineStringsEqual(formatted, scalars_190 + """
 
 
-            Custom coders specified for a single `JWTSigner` affect token p…
+            \(scalars_76)
             """)
         }
 
@@ -198,8 +349,12 @@ class GHHooksTests: XCTestCase {
             on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 64)
-            XCTAssertMultilineStringsEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token pa…")
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 64
+            )
+            XCTAssertMultilineStringsEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and …")
         }
 
         /// Remove empty links
@@ -223,7 +378,11 @@ class GHHooksTests: XCTestCase {
             You can trigger Dependabot actions by commenting on this PR:
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 96
+            )
             XCTAssertMultilineStringsEqual(formatted, """
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
@@ -245,11 +404,20 @@ class GHHooksTests: XCTestCase {
             4. Observe thrown error.
             """
 
-            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 96
+            )
+            // TODO: Handle this situation better os we don't end up with an empty list item.
             XCTAssertMultilineStringsEqual(formatted, """
             ### Describe the bug
 
             I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
+
+            ### To Reproduce
+
+            1. 
             """)
         }
 
@@ -273,7 +441,11 @@ class GHHooksTests: XCTestCase {
             * Vapor Toolbox version: N/A
             * OS version: N/A
             """
-            let formatted = text.formatMarkdown(maxLength: 256, trailingTextMinLength: 96)
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 96
+            )
 
             XCTAssertMultilineStringsEqual(formatted, """
             ### Describe the bug

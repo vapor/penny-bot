@@ -6,12 +6,17 @@ extension String {
         ) ?? self
     }
 
-    public func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
+    @_disfavoredOverload
+    public func unicodesPrefix(_ maxUnicodeScalars: Int) -> (remaining: Int, result: String) {
         /// Well, I mean, you _can_, but you won't like the resulting infinite loop!
         assert(maxUnicodeScalars > 0, "Can't request a non-positive maximum.")
 
+        let delta = maxUnicodeScalars - self.unicodeScalars.count
+
         /// Early exit: Do we need to trim at all?
-        guard self.unicodeScalars.count > maxUnicodeScalars else { return self }
+        guard delta.signum() == -1 else {
+            return (delta, self)
+        }
 
         /// Take a prefix of the string (i.e. a sequence of extended grapheme clusters) first.
         /// Most of the time, this will already be short enough.
@@ -28,6 +33,10 @@ extension String {
         /// Append `U+2026 HORIZONTAL ELLIPSIS`
         trimmed.append("\u{2026}")
 
-        return String(trimmed)
+        return (0, String(trimmed))
+    }
+
+    public func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
+        unicodesPrefix(maxUnicodeScalars).result
     }
 }

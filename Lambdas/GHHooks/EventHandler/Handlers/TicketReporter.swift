@@ -3,18 +3,6 @@ import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
 struct TicketReporter {
-
-    enum Errors: Error, CustomStringConvertible {
-        case tooManyMatchingMessagesFound(matchingURL: String, messages: [DiscordChannel.Message])
-
-        var description: String {
-            switch self {
-            case let .tooManyMatchingMessagesFound(matchingURL, messages):
-                return "tooManyMatchingMessagesFound(matchingURL: \(matchingURL), messages: \(messages))"
-            }
-        }
-    }
-
     let context: HandlerContext
     let embed: Embed
     let repoID: Int
