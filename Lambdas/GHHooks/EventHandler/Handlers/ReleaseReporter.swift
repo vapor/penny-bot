@@ -161,7 +161,7 @@ struct ReleaseReporter {
             separator: "\n"
         )
 
-        let commitCount = commitCount > 10 ? "More than 10" : "\(commitCount)"
+        let commitCount = commitCount > 10 ? "More Than 10" : "\(commitCount)"
 
         let description = """
         ### \(commitCount) Changes, Including:
