@@ -437,7 +437,7 @@ public enum Components {
         /// A GitHub user.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-simple-user`.
-        public struct nullable_simple_user: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_simple_user: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/nullable-simple-user/name`.
             public var name: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-simple-user/email`.
@@ -576,7 +576,7 @@ public enum Components {
         /// Basic Error
         ///
         /// - Remark: Generated from `#/components/schemas/basic-error`.
-        public struct basic_error: Codable, Equatable, Hashable, Sendable {
+        public struct basic_error: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/basic-error/message`.
             public var message: Swift.String?
             /// - Remark: Generated from `#/components/schemas/basic-error/documentation_url`.
@@ -613,7 +613,7 @@ public enum Components {
         /// Validation Error Simple
         ///
         /// - Remark: Generated from `#/components/schemas/validation-error-simple`.
-        public struct validation_error_simple: Codable, Equatable, Hashable, Sendable {
+        public struct validation_error_simple: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/validation-error-simple/message`.
             public var message: Swift.String
             /// - Remark: Generated from `#/components/schemas/validation-error-simple/documentation_url`.
@@ -644,13 +644,13 @@ public enum Components {
         /// Validation Error
         ///
         /// - Remark: Generated from `#/components/schemas/validation-error`.
-        public struct validation_error: Codable, Equatable, Hashable, Sendable {
+        public struct validation_error: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/validation-error/message`.
             public var message: Swift.String
             /// - Remark: Generated from `#/components/schemas/validation-error/documentation_url`.
             public var documentation_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload`.
-            public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct errorsPayloadPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/resource`.
                 public var resource: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/field`.
@@ -662,7 +662,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/index`.
                 public var index: Swift.Int?
                 /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/value`.
-                @frozen public enum valuePayload: Codable, Equatable, Hashable, Sendable {
+                @frozen public enum valuePayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/value/case1`.
                     case case1(Swift.String)
                     /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/value/case2`.
@@ -763,7 +763,7 @@ public enum Components {
         /// Delivery made by a webhook.
         ///
         /// - Remark: Generated from `#/components/schemas/hook-delivery`.
-        public struct hook_delivery: Codable, Equatable, Hashable, Sendable {
+        public struct hook_delivery: Codable, Hashable, Sendable {
             /// Unique identifier of the delivery.
             ///
             /// - Remark: Generated from `#/components/schemas/hook-delivery/id`.
@@ -813,11 +813,11 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/hook-delivery/url`.
             public var url: Swift.String?
             /// - Remark: Generated from `#/components/schemas/hook-delivery/request`.
-            public struct requestPayload: Codable, Equatable, Hashable, Sendable {
+            public struct requestPayload: Codable, Hashable, Sendable {
                 /// The request headers sent with the webhook delivery.
                 ///
                 /// - Remark: Generated from `#/components/schemas/hook-delivery/request/headers`.
-                public struct headersPayload: Codable, Equatable, Hashable, Sendable {
+                public struct headersPayload: Codable, Hashable, Sendable {
                     /// A container of undocumented properties.
                     public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
                     /// Creates a new `headersPayload`.
@@ -841,7 +841,7 @@ public enum Components {
                 /// The webhook payload.
                 ///
                 /// - Remark: Generated from `#/components/schemas/hook-delivery/request/payload`.
-                public struct payloadPayload: Codable, Equatable, Hashable, Sendable {
+                public struct payloadPayload: Codable, Hashable, Sendable {
                     /// A container of undocumented properties.
                     public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
                     /// Creates a new `payloadPayload`.
@@ -882,11 +882,11 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/hook-delivery/request`.
             public var request: Components.Schemas.hook_delivery.requestPayload
             /// - Remark: Generated from `#/components/schemas/hook-delivery/response`.
-            public struct responsePayload: Codable, Equatable, Hashable, Sendable {
+            public struct responsePayload: Codable, Hashable, Sendable {
                 /// The response headers received when the delivery was made.
                 ///
                 /// - Remark: Generated from `#/components/schemas/hook-delivery/response/headers`.
-                public struct headersPayload: Codable, Equatable, Hashable, Sendable {
+                public struct headersPayload: Codable, Hashable, Sendable {
                     /// A container of undocumented properties.
                     public var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
                     /// Creates a new `headersPayload`.
@@ -998,7 +998,7 @@ public enum Components {
         /// A GitHub user.
         ///
         /// - Remark: Generated from `#/components/schemas/simple-user`.
-        public struct simple_user: Codable, Equatable, Hashable, Sendable {
+        public struct simple_user: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/simple-user/name`.
             public var name: Swift.String?
             /// - Remark: Generated from `#/components/schemas/simple-user/email`.
@@ -1137,7 +1137,7 @@ public enum Components {
         /// An enterprise on GitHub.
         ///
         /// - Remark: Generated from `#/components/schemas/enterprise`.
-        public struct enterprise: Codable, Equatable, Hashable, Sendable {
+        public struct enterprise: Codable, Hashable, Sendable {
             /// A short description of the enterprise.
             ///
             /// - Remark: Generated from `#/components/schemas/enterprise/description`.
@@ -1220,7 +1220,7 @@ public enum Components {
         /// Request to install an integration on a target
         ///
         /// - Remark: Generated from `#/components/schemas/integration-installation-request`.
-        public struct integration_installation_request: Codable, Equatable, Hashable, Sendable {
+        public struct integration_installation_request: Codable, Hashable, Sendable {
             /// Unique identifier of the request installation.
             ///
             /// - Remark: Generated from `#/components/schemas/integration-installation-request/id`.
@@ -1228,7 +1228,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/integration-installation-request/node_id`.
             public var node_id: Swift.String?
             /// - Remark: Generated from `#/components/schemas/integration-installation-request/account`.
-            public struct accountPayload: Codable, Equatable, Hashable, Sendable {
+            public struct accountPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/integration-installation-request/account/value1`.
                 public var value1: Components.Schemas.simple_user?
                 /// - Remark: Generated from `#/components/schemas/integration-installation-request/account/value2`.
@@ -1297,12 +1297,12 @@ public enum Components {
         /// The permissions granted to the user access token.
         ///
         /// - Remark: Generated from `#/components/schemas/app-permissions`.
-        public struct app_permissions: Codable, Equatable, Hashable, Sendable {
+        public struct app_permissions: Codable, Hashable, Sendable {
             /// The level of permission to grant the access token for GitHub Actions workflows, workflow runs, and artifacts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/actions`.
             @frozen
-            public enum actionsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum actionsPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1323,7 +1323,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [actionsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for GitHub Actions workflows, workflow runs, and artifacts.
             ///
@@ -1333,8 +1333,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/administration`.
             @frozen
-            public enum administrationPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum administrationPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1354,7 +1354,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [administrationPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for repository creation, deletion, settings, teams, and collaborators creation.
             ///
@@ -1364,7 +1364,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/checks`.
             @frozen
-            public enum checksPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum checksPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1385,7 +1385,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [checksPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for checks on code.
             ///
@@ -1395,7 +1395,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/contents`.
             @frozen
-            public enum contentsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum contentsPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1416,7 +1416,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [contentsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for repository contents, commits, branches, downloads, releases, and merges.
             ///
@@ -1426,8 +1426,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/deployments`.
             @frozen
-            public enum deploymentsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum deploymentsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1447,7 +1447,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [deploymentsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for deployments and deployment statuses.
             ///
@@ -1457,8 +1457,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/environments`.
             @frozen
-            public enum environmentsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum environmentsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1478,7 +1478,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [environmentsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for managing repository environments.
             ///
@@ -1488,7 +1488,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/issues`.
             @frozen
-            public enum issuesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum issuesPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1509,7 +1509,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [issuesPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for issues and related comments, assignees, labels, and milestones.
             ///
@@ -1519,7 +1519,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/metadata`.
             @frozen
-            public enum metadataPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum metadataPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1540,7 +1540,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [metadataPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to search repositories, list collaborators, and access repository metadata.
             ///
@@ -1550,7 +1550,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/packages`.
             @frozen
-            public enum packagesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum packagesPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1571,7 +1571,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [packagesPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for packages published to GitHub Packages.
             ///
@@ -1581,7 +1581,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/pages`.
             @frozen
-            public enum pagesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum pagesPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1602,7 +1602,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [pagesPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to retrieve Pages statuses, configuration, and builds, as well as create new builds.
             ///
@@ -1612,8 +1612,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/pull_requests`.
             @frozen
-            public enum pull_requestsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum pull_requestsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1633,7 +1633,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [pull_requestsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for pull requests and related comments, assignees, labels, milestones, and merges.
             ///
@@ -1643,8 +1643,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/repository_hooks`.
             @frozen
-            public enum repository_hooksPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum repository_hooksPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1664,7 +1664,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [repository_hooksPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage the post-receive hooks for a repository.
             ///
@@ -1674,8 +1674,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/repository_projects`.
             @frozen
-            public enum repository_projectsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum repository_projectsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1698,9 +1698,7 @@ public enum Components {
                     case .admin: return "admin"
                     }
                 }
-                public static var allCases: [repository_projectsPayload] {
-                    [.read, .write, .admin]
-                }
+                public static var allCases: [Self] { [.read, .write, .admin] }
             }
             /// The level of permission to grant the access token to manage repository projects, columns, and cards.
             ///
@@ -1711,8 +1709,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/secret_scanning_alerts`.
             @frozen
-            public enum secret_scanning_alertsPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum secret_scanning_alertsPayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1732,7 +1730,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [secret_scanning_alertsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to view and manage secret scanning alerts.
             ///
@@ -1743,7 +1741,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/secrets`.
             @frozen
-            public enum secretsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum secretsPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1764,7 +1762,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [secretsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage repository secrets.
             ///
@@ -1774,69 +1772,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/security_events`.
             @frozen
-            public enum security_eventsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
-                case read
-                case write
-                /// Parsed a raw value that was not defined in the OpenAPI document.
-                case undocumented(String)
-                public init?(rawValue: String) {
-                    switch rawValue {
-                    case "read": self = .read
-                    case "write": self = .write
-                    default: self = .undocumented(rawValue)
-                    }
-                }
-                public var rawValue: String {
-                    switch self {
-                    case let .undocumented(string): return string
-                    case .read: return "read"
-                    case .write: return "write"
-                    }
-                }
-                public static var allCases: [security_eventsPayload] { [.read, .write] }
-            }
-            /// The level of permission to grant the access token to view and manage security events like code scanning alerts.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/security_events`.
-            public var security_events: Components.Schemas.app_permissions.security_eventsPayload?
-            /// The level of permission to grant the access token to manage just a single file.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
-            @frozen
-            public enum single_filePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
-                case read
-                case write
-                /// Parsed a raw value that was not defined in the OpenAPI document.
-                case undocumented(String)
-                public init?(rawValue: String) {
-                    switch rawValue {
-                    case "read": self = .read
-                    case "write": self = .write
-                    default: self = .undocumented(rawValue)
-                    }
-                }
-                public var rawValue: String {
-                    switch self {
-                    case let .undocumented(string): return string
-                    case .read: return "read"
-                    case .write: return "write"
-                    }
-                }
-                public static var allCases: [single_filePayload] { [.read, .write] }
-            }
-            /// The level of permission to grant the access token to manage just a single file.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
-            public var single_file: Components.Schemas.app_permissions.single_filePayload?
-            /// The level of permission to grant the access token for commit statuses.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
-            @frozen
-            public enum statusesPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum security_eventsPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1857,18 +1793,18 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [statusesPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
-            /// The level of permission to grant the access token for commit statuses.
+            /// The level of permission to grant the access token to view and manage security events like code scanning alerts.
             ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
-            public var statuses: Components.Schemas.app_permissions.statusesPayload?
-            /// The level of permission to grant the access token to manage Dependabot alerts.
+            /// - Remark: Generated from `#/components/schemas/app-permissions/security_events`.
+            public var security_events: Components.Schemas.app_permissions.security_eventsPayload?
+            /// The level of permission to grant the access token to manage just a single file.
             ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/vulnerability_alerts`.
+            /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
             @frozen
-            public enum vulnerability_alertsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum single_filePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1888,7 +1824,69 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [vulnerability_alertsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to manage just a single file.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
+            public var single_file: Components.Schemas.app_permissions.single_filePayload?
+            /// The level of permission to grant the access token for commit statuses.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
+            @frozen
+            public enum statusesPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [Self] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token for commit statuses.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
+            public var statuses: Components.Schemas.app_permissions.statusesPayload?
+            /// The level of permission to grant the access token to manage Dependabot alerts.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/vulnerability_alerts`.
+            @frozen
+            public enum vulnerability_alertsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage Dependabot alerts.
             ///
@@ -1899,7 +1897,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/workflows`.
             @frozen
-            public enum workflowsPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum workflowsPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case write
@@ -1917,7 +1915,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [workflowsPayload] { [.write] }
+                public static var allCases: [Self] { [.write] }
             }
             /// The level of permission to grant the access token to update GitHub Actions workflow files.
             ///
@@ -1927,7 +1925,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/members`.
             @frozen
-            public enum membersPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum membersPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -1948,7 +1946,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [membersPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for organization teams and members.
             ///
@@ -1958,8 +1956,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_administration`.
             @frozen
-            public enum organization_administrationPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_administrationPayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -1979,9 +1977,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_administrationPayload] {
-                    [.read, .write]
-                }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage access to an organization.
             ///
@@ -1992,8 +1988,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
             @frozen
-            public enum organization_custom_rolesPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_custom_rolesPayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2013,7 +2009,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_custom_rolesPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
             ///
@@ -2025,7 +2021,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_announcement_banners`.
             @frozen
             public enum organization_announcement_bannersPayload: RawRepresentable, Codable,
-                Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2045,9 +2041,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_announcement_bannersPayload] {
-                    [.read, .write]
-                }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to view and manage announcement banners for an organization.
             ///
@@ -2058,8 +2052,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_hooks`.
             @frozen
-            public enum organization_hooksPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_hooksPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2079,7 +2073,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_hooksPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage the post-receive hooks for an organization.
             ///
@@ -2091,7 +2085,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_tokens`.
             @frozen
             public enum organization_personal_access_tokensPayload: RawRepresentable, Codable,
-                Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2111,9 +2105,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_personal_access_tokensPayload] {
-                    [.read, .write]
-                }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for viewing and managing fine-grained personal access token requests to an organization.
             ///
@@ -2125,7 +2117,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
             @frozen
             public enum organization_personal_access_token_requestsPayload: RawRepresentable,
-                Codable, Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                Codable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2145,9 +2137,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_personal_access_token_requestsPayload] {
-                    [.read, .write]
-                }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for viewing and managing fine-grained personal access tokens that have been approved by an organization.
             ///
@@ -2159,8 +2149,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
             @frozen
-            public enum organization_planPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_planPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -2177,7 +2167,7 @@ public enum Components {
                     case .read: return "read"
                     }
                 }
-                public static var allCases: [organization_planPayload] { [.read] }
+                public static var allCases: [Self] { [.read] }
             }
             /// The level of permission to grant the access token for viewing an organization's plan.
             ///
@@ -2188,8 +2178,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_projects`.
             @frozen
-            public enum organization_projectsPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_projectsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2212,9 +2202,7 @@ public enum Components {
                     case .admin: return "admin"
                     }
                 }
-                public static var allCases: [organization_projectsPayload] {
-                    [.read, .write, .admin]
-                }
+                public static var allCases: [Self] { [.read, .write, .admin] }
             }
             /// The level of permission to grant the access token to manage organization projects and projects beta (where available).
             ///
@@ -2225,8 +2213,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_packages`.
             @frozen
-            public enum organization_packagesPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_packagesPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2246,7 +2234,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_packagesPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token for organization packages published to GitHub Packages.
             ///
@@ -2257,8 +2245,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_secrets`.
             @frozen
-            public enum organization_secretsPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_secretsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -2278,7 +2266,7 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_secretsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage organization secrets.
             ///
@@ -2290,40 +2278,6 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
             @frozen
             public enum organization_self_hosted_runnersPayload: RawRepresentable, Codable,
-                Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
-                case read
-                case write
-                /// Parsed a raw value that was not defined in the OpenAPI document.
-                case undocumented(String)
-                public init?(rawValue: String) {
-                    switch rawValue {
-                    case "read": self = .read
-                    case "write": self = .write
-                    default: self = .undocumented(rawValue)
-                    }
-                }
-                public var rawValue: String {
-                    switch self {
-                    case let .undocumented(string): return string
-                    case .read: return "read"
-                    case .write: return "write"
-                    }
-                }
-                public static var allCases: [organization_self_hosted_runnersPayload] {
-                    [.read, .write]
-                }
-            }
-            /// The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
-            public var organization_self_hosted_runners:
-                Components.Schemas.app_permissions.organization_self_hosted_runnersPayload?
-            /// The level of permission to grant the access token to view and manage users blocked by the organization.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
-            @frozen
-            public enum organization_user_blockingPayload: RawRepresentable, Codable, Equatable,
                 Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -2344,18 +2298,18 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [organization_user_blockingPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
             }
+            /// The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
+            public var organization_self_hosted_runners:
+                Components.Schemas.app_permissions.organization_self_hosted_runnersPayload?
             /// The level of permission to grant the access token to view and manage users blocked by the organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
-            public var organization_user_blocking:
-                Components.Schemas.app_permissions.organization_user_blockingPayload?
-            /// The level of permission to grant the access token to manage team discussions and related comments.
-            ///
-            /// - Remark: Generated from `#/components/schemas/app-permissions/team_discussions`.
             @frozen
-            public enum team_discussionsPayload: RawRepresentable, Codable, Equatable, Hashable,
+            public enum organization_user_blockingPayload: RawRepresentable, Codable, Hashable,
                 Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
@@ -2376,7 +2330,39 @@ public enum Components {
                     case .write: return "write"
                     }
                 }
-                public static var allCases: [team_discussionsPayload] { [.read, .write] }
+                public static var allCases: [Self] { [.read, .write] }
+            }
+            /// The level of permission to grant the access token to view and manage users blocked by the organization.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
+            public var organization_user_blocking:
+                Components.Schemas.app_permissions.organization_user_blockingPayload?
+            /// The level of permission to grant the access token to manage team discussions and related comments.
+            ///
+            /// - Remark: Generated from `#/components/schemas/app-permissions/team_discussions`.
+            @frozen
+            public enum team_discussionsPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
+            {
+                case read
+                case write
+                /// Parsed a raw value that was not defined in the OpenAPI document.
+                case undocumented(String)
+                public init?(rawValue: String) {
+                    switch rawValue {
+                    case "read": self = .read
+                    case "write": self = .write
+                    default: self = .undocumented(rawValue)
+                    }
+                }
+                public var rawValue: String {
+                    switch self {
+                    case let .undocumented(string): return string
+                    case .read: return "read"
+                    case .write: return "write"
+                    }
+                }
+                public static var allCases: [Self] { [.read, .write] }
             }
             /// The level of permission to grant the access token to manage team discussions and related comments.
             ///
@@ -2546,13 +2532,13 @@ public enum Components {
         /// Installation
         ///
         /// - Remark: Generated from `#/components/schemas/installation`.
-        public struct installation: Codable, Equatable, Hashable, Sendable {
+        public struct installation: Codable, Hashable, Sendable {
             /// The ID of the installation.
             ///
             /// - Remark: Generated from `#/components/schemas/installation/id`.
             public var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/installation/account`.
-            public struct accountPayload: Codable, Equatable, Hashable, Sendable {
+            public struct accountPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/installation/account/value1`.
                 public var value1: Components.Schemas.simple_user?
                 /// - Remark: Generated from `#/components/schemas/installation/account/value2`.
@@ -2589,8 +2575,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
             @frozen
-            public enum repository_selectionPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum repository_selectionPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case all
                 case selected
@@ -2610,7 +2596,7 @@ public enum Components {
                     case .selected: return "selected"
                     }
                 }
-                public static var allCases: [repository_selectionPayload] { [.all, .selected] }
+                public static var allCases: [Self] { [.all, .selected] }
             }
             /// Describe whether all repositories have been selected or there's a selection involved
             ///
@@ -2745,7 +2731,7 @@ public enum Components {
         /// License Simple
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-license-simple`.
-        public struct nullable_license_simple: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_license_simple: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/key`.
             public var key: Swift.String
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/name`.
@@ -2794,7 +2780,7 @@ public enum Components {
         /// A repository on GitHub.
         ///
         /// - Remark: Generated from `#/components/schemas/repository`.
-        public struct repository: Codable, Equatable, Hashable, Sendable {
+        public struct repository: Codable, Hashable, Sendable {
             /// Unique identifier of the repository
             ///
             /// - Remark: Generated from `#/components/schemas/repository/id`.
@@ -2810,7 +2796,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/license`.
             public var license: Components.Schemas.nullable_license_simple?
             /// - Remark: Generated from `#/components/schemas/repository/organization`.
-            @frozen public enum organizationPayload: Codable, Equatable, Hashable, Sendable {
+            @frozen public enum organizationPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/repository/organization/case1`.
                 case nullable_simple_user(Components.Schemas.nullable_simple_user)
                 /// - Remark: Generated from `#/components/schemas/repository/organization/case2`.
@@ -2843,7 +2829,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/forks`.
             public var forks: Swift.Int
             /// - Remark: Generated from `#/components/schemas/repository/permissions`.
-            public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+            public struct permissionsPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/repository/permissions/admin`.
                 public var admin: Swift.Bool
                 /// - Remark: Generated from `#/components/schemas/repository/permissions/pull`.
@@ -3052,7 +3038,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/allow_rebase_merge`.
             public var allow_rebase_merge: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/repository/template_repository`.
-            public struct template_repositoryPayload: Codable, Equatable, Hashable, Sendable {
+            public struct template_repositoryPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/id`.
                 public var id: Swift.Int?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/node_id`.
@@ -3062,7 +3048,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/full_name`.
                 public var full_name: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/owner`.
-                public struct ownerPayload: Codable, Equatable, Hashable, Sendable {
+                public struct ownerPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/repository/template_repository/owner/login`.
                     public var login: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/repository/template_repository/owner/id`.
@@ -3318,7 +3304,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/updated_at`.
                 public var updated_at: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/permissions`.
-                public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+                public struct permissionsPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/repository/template_repository/permissions/admin`.
                     public var admin: Swift.Bool?
                     /// - Remark: Generated from `#/components/schemas/repository/template_repository/permissions/maintain`.
@@ -3382,8 +3368,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_title`.
                 @frozen
-                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                    Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_TITLE
                     case COMMIT_OR_PR_TITLE
@@ -3403,9 +3389,7 @@ public enum Components {
                         case .COMMIT_OR_PR_TITLE: return "COMMIT_OR_PR_TITLE"
                         }
                     }
-                    public static var allCases: [squash_merge_commit_titlePayload] {
-                        [.PR_TITLE, .COMMIT_OR_PR_TITLE]
-                    }
+                    public static var allCases: [Self] { [.PR_TITLE, .COMMIT_OR_PR_TITLE] }
                 }
                 /// The default value for a squash merge commit title:
                 ///
@@ -3424,8 +3408,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_message`.
                 @frozen
-                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable,
-                    Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_BODY
                     case COMMIT_MESSAGES
@@ -3448,9 +3432,7 @@ public enum Components {
                         case .BLANK: return "BLANK"
                         }
                     }
-                    public static var allCases: [squash_merge_commit_messagePayload] {
-                        [.PR_BODY, .COMMIT_MESSAGES, .BLANK]
-                    }
+                    public static var allCases: [Self] { [.PR_BODY, .COMMIT_MESSAGES, .BLANK] }
                 }
                 /// The default value for a squash merge commit message:
                 ///
@@ -3469,8 +3451,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_title`.
                 @frozen
-                public enum merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                    Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_TITLE
                     case MERGE_MESSAGE
@@ -3490,9 +3472,7 @@ public enum Components {
                         case .MERGE_MESSAGE: return "MERGE_MESSAGE"
                         }
                     }
-                    public static var allCases: [merge_commit_titlePayload] {
-                        [.PR_TITLE, .MERGE_MESSAGE]
-                    }
+                    public static var allCases: [Self] { [.PR_TITLE, .MERGE_MESSAGE] }
                 }
                 /// The default value for a merge commit title.
                 ///
@@ -3511,8 +3491,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_message`.
                 @frozen
-                public enum merge_commit_messagePayload: RawRepresentable, Codable, Equatable,
-                    Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_BODY
                     case PR_TITLE
@@ -3535,9 +3515,7 @@ public enum Components {
                         case .BLANK: return "BLANK"
                         }
                     }
-                    public static var allCases: [merge_commit_messagePayload] {
-                        [.PR_BODY, .PR_TITLE, .BLANK]
-                    }
+                    public static var allCases: [Self] { [.PR_BODY, .PR_TITLE, .BLANK] }
                 }
                 /// The default value for a merge commit message.
                 ///
@@ -3950,8 +3928,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/repository/squash_merge_commit_title`.
             @frozen
-            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_TITLE
                 case COMMIT_OR_PR_TITLE
@@ -3971,9 +3949,7 @@ public enum Components {
                     case .COMMIT_OR_PR_TITLE: return "COMMIT_OR_PR_TITLE"
                     }
                 }
-                public static var allCases: [squash_merge_commit_titlePayload] {
-                    [.PR_TITLE, .COMMIT_OR_PR_TITLE]
-                }
+                public static var allCases: [Self] { [.PR_TITLE, .COMMIT_OR_PR_TITLE] }
             }
             /// The default value for a squash merge commit title:
             ///
@@ -3991,8 +3967,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/repository/squash_merge_commit_message`.
             @frozen
-            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_BODY
                 case COMMIT_MESSAGES
@@ -4015,9 +3991,7 @@ public enum Components {
                     case .BLANK: return "BLANK"
                     }
                 }
-                public static var allCases: [squash_merge_commit_messagePayload] {
-                    [.PR_BODY, .COMMIT_MESSAGES, .BLANK]
-                }
+                public static var allCases: [Self] { [.PR_BODY, .COMMIT_MESSAGES, .BLANK] }
             }
             /// The default value for a squash merge commit message:
             ///
@@ -4035,8 +4009,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/repository/merge_commit_title`.
             @frozen
-            public enum merge_commit_titlePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_TITLE
                 case MERGE_MESSAGE
@@ -4056,9 +4030,7 @@ public enum Components {
                     case .MERGE_MESSAGE: return "MERGE_MESSAGE"
                     }
                 }
-                public static var allCases: [merge_commit_titlePayload] {
-                    [.PR_TITLE, .MERGE_MESSAGE]
-                }
+                public static var allCases: [Self] { [.PR_TITLE, .MERGE_MESSAGE] }
             }
             /// The default value for a merge commit title.
             ///
@@ -4075,8 +4047,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/repository/merge_commit_message`.
             @frozen
-            public enum merge_commit_messagePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_BODY
                 case PR_TITLE
@@ -4099,9 +4071,7 @@ public enum Components {
                     case .BLANK: return "BLANK"
                     }
                 }
-                public static var allCases: [merge_commit_messagePayload] {
-                    [.PR_BODY, .PR_TITLE, .BLANK]
-                }
+                public static var allCases: [Self] { [.PR_BODY, .PR_TITLE, .BLANK] }
             }
             /// The default value for a merge commit message.
             ///
@@ -4550,7 +4520,7 @@ public enum Components {
             }
         }
         /// - Remark: Generated from `#/components/schemas/string-or-int-date`.
-        @frozen public enum string_or_int_date: Codable, Equatable, Hashable, Sendable {
+        @frozen public enum string_or_int_date: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/string-or-int-date/case1`.
             case string_date(Components.Schemas.string_date)
             /// - Remark: Generated from `#/components/schemas/string-or-int-date/case2`.
@@ -4585,7 +4555,7 @@ public enum Components {
         /// Authentication token for a GitHub App installed on a user or org.
         ///
         /// - Remark: Generated from `#/components/schemas/installation-token`.
-        public struct installation_token: Codable, Equatable, Hashable, Sendable {
+        public struct installation_token: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/installation-token/token`.
             public var token: Swift.String
             /// - Remark: Generated from `#/components/schemas/installation-token/expires_at`.
@@ -4594,8 +4564,8 @@ public enum Components {
             public var permissions: Components.Schemas.app_permissions?
             /// - Remark: Generated from `#/components/schemas/installation-token/repository_selection`.
             @frozen
-            public enum repository_selectionPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum repository_selectionPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case all
                 case selected
@@ -4615,7 +4585,7 @@ public enum Components {
                     case .selected: return "selected"
                     }
                 }
-                public static var allCases: [repository_selectionPayload] { [.all, .selected] }
+                public static var allCases: [Self] { [.all, .selected] }
             }
             /// - Remark: Generated from `#/components/schemas/installation-token/repository_selection`.
             public var repository_selection:
@@ -4673,7 +4643,7 @@ public enum Components {
         /// Code Of Conduct
         ///
         /// - Remark: Generated from `#/components/schemas/code-of-conduct`.
-        public struct code_of_conduct: Codable, Equatable, Hashable, Sendable {
+        public struct code_of_conduct: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/code-of-conduct/key`.
             public var key: Swift.String
             /// - Remark: Generated from `#/components/schemas/code-of-conduct/name`.
@@ -4720,7 +4690,7 @@ public enum Components {
         /// Details for the vulnerable package.
         ///
         /// - Remark: Generated from `#/components/schemas/dependabot-alert-package`.
-        public struct dependabot_alert_package: Codable, Equatable, Hashable, Sendable {
+        public struct dependabot_alert_package: Codable, Hashable, Sendable {
             /// The package's language or package management ecosystem.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-package/ecosystem`.
@@ -4752,16 +4722,14 @@ public enum Components {
         /// Details pertaining to one vulnerable version range for the advisory.
         ///
         /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability`.
-        public struct dependabot_alert_security_vulnerability: Codable, Equatable, Hashable,
-            Sendable
-        {
+        public struct dependabot_alert_security_vulnerability: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/package`.
             public var package: Components.Schemas.dependabot_alert_package
             /// The severity of the vulnerability.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/severity`.
             @frozen
-            public enum severityPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case low
@@ -4788,7 +4756,7 @@ public enum Components {
                     case .critical: return "critical"
                     }
                 }
-                public static var allCases: [severityPayload] { [.low, .medium, .high, .critical] }
+                public static var allCases: [Self] { [.low, .medium, .high, .critical] }
             }
             /// The severity of the vulnerability.
             ///
@@ -4802,7 +4770,7 @@ public enum Components {
             /// Details pertaining to the package version that patches this vulnerability.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/first_patched_version`.
-            public struct first_patched_versionPayload: Codable, Equatable, Hashable, Sendable {
+            public struct first_patched_versionPayload: Codable, Hashable, Sendable {
                 /// The package version that patches this vulnerability.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/first_patched_version/identifier`.
@@ -4878,7 +4846,7 @@ public enum Components {
         /// Details for the GitHub Security Advisory.
         ///
         /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory`.
-        public struct dependabot_alert_security_advisory: Codable, Equatable, Hashable, Sendable {
+        public struct dependabot_alert_security_advisory: Codable, Hashable, Sendable {
             /// The unique GitHub Security Advisory ID assigned to the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/ghsa_id`.
@@ -4903,7 +4871,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/severity`.
             @frozen
-            public enum severityPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case low
@@ -4930,7 +4898,7 @@ public enum Components {
                     case .critical: return "critical"
                     }
                 }
-                public static var allCases: [severityPayload] { [.low, .medium, .high, .critical] }
+                public static var allCases: [Self] { [.low, .medium, .high, .critical] }
             }
             /// The severity of the advisory.
             ///
@@ -4940,7 +4908,7 @@ public enum Components {
             /// Details for the advisory pertaining to the Common Vulnerability Scoring System.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cvss`.
-            public struct cvssPayload: Codable, Equatable, Hashable, Sendable {
+            public struct cvssPayload: Codable, Hashable, Sendable {
                 /// The overall CVSS score of the advisory.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cvss/score`.
@@ -4976,7 +4944,7 @@ public enum Components {
             /// A CWE weakness assigned to the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cwesPayload`.
-            public struct cwesPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct cwesPayloadPayload: Codable, Hashable, Sendable {
                 /// The unique CWE ID.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cwesPayload/cwe_id`.
@@ -5017,12 +4985,12 @@ public enum Components {
             /// An advisory identifier.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload`.
-            public struct identifiersPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct identifiersPayloadPayload: Codable, Hashable, Sendable {
                 /// The type of advisory identifier.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload/type`.
                 @frozen
-                public enum _typePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum _typePayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case CVE
@@ -5043,7 +5011,7 @@ public enum Components {
                         case .GHSA: return "GHSA"
                         }
                     }
-                    public static var allCases: [_typePayload] { [.CVE, .GHSA] }
+                    public static var allCases: [Self] { [.CVE, .GHSA] }
                 }
                 /// The type of advisory identifier.
                 ///
@@ -5096,7 +5064,7 @@ public enum Components {
             /// A link to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/referencesPayload`.
-            public struct referencesPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct referencesPayloadPayload: Codable, Hashable, Sendable {
                 /// The URL of the reference.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/referencesPayload/url`.
@@ -5267,7 +5235,7 @@ public enum Components {
         /// A GitHub repository.
         ///
         /// - Remark: Generated from `#/components/schemas/simple-repository`.
-        public struct simple_repository: Codable, Equatable, Hashable, Sendable {
+        public struct simple_repository: Codable, Hashable, Sendable {
             /// A unique identifier of the repository.
             ///
             /// - Remark: Generated from `#/components/schemas/simple-repository/id`.
@@ -5646,7 +5614,7 @@ public enum Components {
         /// A collection of related issues and pull requests.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-milestone`.
-        public struct nullable_milestone: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_milestone: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/html_url`.
@@ -5665,7 +5633,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/state`.
             @frozen
-            public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case open
@@ -5686,7 +5654,7 @@ public enum Components {
                     case .closed: return "closed"
                     }
                 }
-                public static var allCases: [statePayload] { [.open, .closed] }
+                public static var allCases: [Self] { [.open, .closed] }
             }
             /// The state of the milestone.
             ///
@@ -5788,7 +5756,7 @@ public enum Components {
         /// GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-integration`.
-        public struct nullable_integration: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_integration: Codable, Hashable, Sendable {
             /// Unique identifier of the GitHub app
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-integration/id`.
@@ -5818,7 +5786,7 @@ public enum Components {
             /// The set of permissions for the GitHub app
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-integration/permissions`.
-            public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+            public struct permissionsPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/nullable-integration/permissions/issues`.
                 public var issues: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/nullable-integration/permissions/checks`.
@@ -5987,7 +5955,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/schemas/author-association`.
         @frozen
-        public enum author_association: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum author_association: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case COLLABORATOR
@@ -6026,7 +5994,7 @@ public enum Components {
                 case .OWNER: return "OWNER"
                 }
             }
-            public static var allCases: [author_association] {
+            public static var allCases: [Self] {
                 [
                     .COLLABORATOR, .CONTRIBUTOR, .FIRST_TIMER, .FIRST_TIME_CONTRIBUTOR, .MANNEQUIN,
                     .MEMBER, .NONE, .OWNER,
@@ -6034,7 +6002,7 @@ public enum Components {
             }
         }
         /// - Remark: Generated from `#/components/schemas/reaction-rollup`.
-        public struct reaction_rollup: Codable, Equatable, Hashable, Sendable {
+        public struct reaction_rollup: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/reaction-rollup/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/reaction-rollup/total_count`.
@@ -6095,7 +6063,7 @@ public enum Components {
         /// Issues are a great way to keep track of tasks, enhancements, and bugs for your projects.
         ///
         /// - Remark: Generated from `#/components/schemas/issue`.
-        public struct issue: Codable, Equatable, Hashable, Sendable {
+        public struct issue: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/issue/id`.
             public var id: Swift.Int64
             /// - Remark: Generated from `#/components/schemas/issue/node_id`.
@@ -6126,8 +6094,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/issue/state_reason`.
             @frozen
-            public enum state_reasonPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum state_reasonPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case completed
                 case reopened
@@ -6150,9 +6118,7 @@ public enum Components {
                     case .not_planned: return "not_planned"
                     }
                 }
-                public static var allCases: [state_reasonPayload] {
-                    [.completed, .reopened, .not_planned]
-                }
+                public static var allCases: [Self] { [.completed, .reopened, .not_planned] }
             }
             /// The reason for the current state
             ///
@@ -6169,11 +6135,11 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/issue/user`.
             public var user: Components.Schemas.nullable_simple_user
             /// - Remark: Generated from `#/components/schemas/issue/labelsPayload`.
-            @frozen public enum labelsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            @frozen public enum labelsPayloadPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/issue/labelsPayload/case1`.
                 case case1(Swift.String)
                 /// - Remark: Generated from `#/components/schemas/issue/labelsPayload/case2`.
-                public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
+                public struct Case2Payload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/issue/labelsPayload/case2/id`.
                     public var id: Swift.Int64?
                     /// - Remark: Generated from `#/components/schemas/issue/labelsPayload/case2/node_id`.
@@ -6271,7 +6237,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/issue/comments`.
             public var comments: Swift.Int
             /// - Remark: Generated from `#/components/schemas/issue/pull_request`.
-            public struct pull_requestPayload: Codable, Equatable, Hashable, Sendable {
+            public struct pull_requestPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/merged_at`.
                 public var merged_at: Foundation.Date?
                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/diff_url`.
@@ -6485,7 +6451,7 @@ public enum Components {
         /// Comments provide a way for people to collaborate on an issue.
         ///
         /// - Remark: Generated from `#/components/schemas/issue-comment`.
-        public struct issue_comment: Codable, Equatable, Hashable, Sendable {
+        public struct issue_comment: Codable, Hashable, Sendable {
             /// Unique identifier of the issue comment
             ///
             /// - Remark: Generated from `#/components/schemas/issue-comment/id`.
@@ -6586,12 +6552,12 @@ public enum Components {
             }
         }
         /// - Remark: Generated from `#/components/schemas/security-and-analysis`.
-        public struct security_and_analysis: Codable, Equatable, Hashable, Sendable {
+        public struct security_and_analysis: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security`.
-            public struct advanced_securityPayload: Codable, Equatable, Hashable, Sendable {
+            public struct advanced_securityPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security/status`.
                 @frozen
-                public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case enabled
@@ -6612,7 +6578,7 @@ public enum Components {
                         case .disabled: return "disabled"
                         }
                     }
-                    public static var allCases: [statusPayload] { [.enabled, .disabled] }
+                    public static var allCases: [Self] { [.enabled, .disabled] }
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security/status`.
                 public var status:
@@ -6631,10 +6597,10 @@ public enum Components {
             public var advanced_security:
                 Components.Schemas.security_and_analysis.advanced_securityPayload?
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning`.
-            public struct secret_scanningPayload: Codable, Equatable, Hashable, Sendable {
+            public struct secret_scanningPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning/status`.
                 @frozen
-                public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case enabled
@@ -6655,7 +6621,7 @@ public enum Components {
                         case .disabled: return "disabled"
                         }
                     }
-                    public static var allCases: [statusPayload] { [.enabled, .disabled] }
+                    public static var allCases: [Self] { [.enabled, .disabled] }
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning/status`.
                 public var status:
@@ -6674,12 +6640,10 @@ public enum Components {
             public var secret_scanning:
                 Components.Schemas.security_and_analysis.secret_scanningPayload?
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection`.
-            public struct secret_scanning_push_protectionPayload: Codable, Equatable, Hashable,
-                Sendable
-            {
+            public struct secret_scanning_push_protectionPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection/status`.
                 @frozen
-                public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case enabled
@@ -6700,7 +6664,7 @@ public enum Components {
                         case .disabled: return "disabled"
                         }
                     }
-                    public static var allCases: [statusPayload] { [.enabled, .disabled] }
+                    public static var allCases: [Self] { [.enabled, .disabled] }
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection/status`.
                 public var status:
@@ -6746,7 +6710,7 @@ public enum Components {
         /// A GitHub organization.
         ///
         /// - Remark: Generated from `#/components/schemas/organization-simple`.
-        public struct organization_simple: Codable, Equatable, Hashable, Sendable {
+        public struct organization_simple: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/organization-simple/login`.
             public var login: Swift.String
             /// - Remark: Generated from `#/components/schemas/organization-simple/id`.
@@ -6831,7 +6795,7 @@ public enum Components {
         /// Organization Full
         ///
         /// - Remark: Generated from `#/components/schemas/organization-full`.
-        public struct organization_full: Codable, Equatable, Hashable, Sendable {
+        public struct organization_full: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/organization-full/login`.
             public var login: Swift.String
             /// - Remark: Generated from `#/components/schemas/organization-full/id`.
@@ -6901,7 +6865,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/organization-full/billing_email`.
             public var billing_email: Swift.String?
             /// - Remark: Generated from `#/components/schemas/organization-full/plan`.
-            public struct planPayload: Codable, Equatable, Hashable, Sendable {
+            public struct planPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/organization-full/plan/name`.
                 public var name: Swift.String
                 /// - Remark: Generated from `#/components/schemas/organization-full/plan/space`.
@@ -7265,7 +7229,7 @@ public enum Components {
         /// A label for a self hosted runner
         ///
         /// - Remark: Generated from `#/components/schemas/runner-label`.
-        public struct runner_label: Codable, Equatable, Hashable, Sendable {
+        public struct runner_label: Codable, Hashable, Sendable {
             /// Unique identifier of the label.
             ///
             /// - Remark: Generated from `#/components/schemas/runner-label/id`.
@@ -7278,7 +7242,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/runner-label/type`.
             @frozen
-            public enum _typePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum _typePayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case read_only
@@ -7299,7 +7263,7 @@ public enum Components {
                     case .custom: return "custom"
                     }
                 }
-                public static var allCases: [_typePayload] { [.read_only, .custom] }
+                public static var allCases: [Self] { [.read_only, .custom] }
             }
             /// The type of label. Read-only labels are applied automatically when the runner is configured.
             ///
@@ -7329,7 +7293,7 @@ public enum Components {
         /// A self hosted runner
         ///
         /// - Remark: Generated from `#/components/schemas/runner`.
-        public struct runner: Codable, Equatable, Hashable, Sendable {
+        public struct runner: Codable, Hashable, Sendable {
             /// The id of the runner.
             ///
             /// - Remark: Generated from `#/components/schemas/runner/id`.
@@ -7403,8 +7367,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-state-query`.
         @frozen
-        public enum code_scanning_alert_state_query: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum code_scanning_alert_state_query: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case open
             case closed
@@ -7430,16 +7394,14 @@ public enum Components {
                 case .fixed: return "fixed"
                 }
             }
-            public static var allCases: [code_scanning_alert_state_query] {
-                [.open, .closed, .dismissed, .fixed]
-            }
+            public static var allCases: [Self] { [.open, .closed, .dismissed, .fixed] }
         }
         /// Severity of a code scanning alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-severity`.
         @frozen
-        public enum code_scanning_alert_severity: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum code_scanning_alert_severity: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case critical
             case high
@@ -7474,7 +7436,7 @@ public enum Components {
                 case .error: return "error"
                 }
             }
-            public static var allCases: [code_scanning_alert_severity] {
+            public static var allCases: [Self] {
                 [.critical, .high, .medium, .low, .warning, .note, .error]
             }
         }
@@ -7486,8 +7448,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-state`.
         @frozen
-        public enum code_scanning_alert_state: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum code_scanning_alert_state: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case open
             case dismissed
@@ -7510,14 +7472,14 @@ public enum Components {
                 case .fixed: return "fixed"
                 }
             }
-            public static var allCases: [code_scanning_alert_state] { [.open, .dismissed, .fixed] }
+            public static var allCases: [Self] { [.open, .dismissed, .fixed] }
         }
         /// **Required when the state is dismissed.** The reason for dismissing or closing the alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-dismissed-reason`.
         @frozen
-        public enum code_scanning_alert_dismissed_reason: RawRepresentable, Codable, Equatable,
-            Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum code_scanning_alert_dismissed_reason: RawRepresentable, Codable, Hashable,
+            Sendable, _AutoLosslessStringConvertible, CaseIterable
         {
             case false_positive
             case won_t_fix
@@ -7540,16 +7502,14 @@ public enum Components {
                 case .used_in_tests: return "used in tests"
                 }
             }
-            public static var allCases: [code_scanning_alert_dismissed_reason] {
-                [.false_positive, .won_t_fix, .used_in_tests]
-            }
+            public static var allCases: [Self] { [.false_positive, .won_t_fix, .used_in_tests] }
         }
         /// The dismissal comment associated with the dismissal of the alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-dismissed-comment`.
         public typealias code_scanning_alert_dismissed_comment = Swift.String
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule`.
-        public struct code_scanning_alert_rule: Codable, Equatable, Hashable, Sendable {
+        public struct code_scanning_alert_rule: Codable, Hashable, Sendable {
             /// A unique identifier for the rule used to detect the alert.
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/id`.
@@ -7562,7 +7522,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/severity`.
             @frozen
-            public enum severityPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case none
@@ -7589,7 +7549,7 @@ public enum Components {
                     case .error: return "error"
                     }
                 }
-                public static var allCases: [severityPayload] { [.none, .note, .warning, .error] }
+                public static var allCases: [Self] { [.none, .note, .warning, .error] }
             }
             /// The severity of the alert.
             ///
@@ -7599,8 +7559,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/security_severity_level`.
             @frozen
-            public enum security_severity_levelPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum security_severity_levelPayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case low
                 case medium
@@ -7626,9 +7586,7 @@ public enum Components {
                     case .critical: return "critical"
                     }
                 }
-                public static var allCases: [security_severity_levelPayload] {
-                    [.low, .medium, .high, .critical]
-                }
+                public static var allCases: [Self] { [.low, .medium, .high, .critical] }
             }
             /// The security severity of the alert.
             ///
@@ -7706,7 +7664,7 @@ public enum Components {
         /// - Remark: Generated from `#/components/schemas/code-scanning-analysis-tool-version`.
         public typealias code_scanning_analysis_tool_version = Swift.String
         /// - Remark: Generated from `#/components/schemas/code-scanning-analysis-tool`.
-        public struct code_scanning_analysis_tool: Codable, Equatable, Hashable, Sendable {
+        public struct code_scanning_analysis_tool: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/code-scanning-analysis-tool/name`.
             public var name: Components.Schemas.code_scanning_analysis_tool_name?
             /// - Remark: Generated from `#/components/schemas/code-scanning-analysis-tool/version`.
@@ -7754,7 +7712,7 @@ public enum Components {
         /// Describe a region within a file for the alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-location`.
-        public struct code_scanning_alert_location: Codable, Equatable, Hashable, Sendable {
+        public struct code_scanning_alert_location: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-location/path`.
             public var path: Swift.String?
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-location/start_line`.
@@ -7798,8 +7756,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-classification`.
         @frozen
-        public enum code_scanning_alert_classification: RawRepresentable, Codable, Equatable,
-            Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum code_scanning_alert_classification: RawRepresentable, Codable, Hashable,
+            Sendable, _AutoLosslessStringConvertible, CaseIterable
         {
             case source
             case generated
@@ -7825,12 +7783,10 @@ public enum Components {
                 case .library: return "library"
                 }
             }
-            public static var allCases: [code_scanning_alert_classification] {
-                [.source, .generated, .test, .library]
-            }
+            public static var allCases: [Self] { [.source, .generated, .test, .library] }
         }
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance`.
-        public struct code_scanning_alert_instance: Codable, Equatable, Hashable, Sendable {
+        public struct code_scanning_alert_instance: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance/ref`.
             public var ref: Components.Schemas.code_scanning_ref?
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance/analysis_key`.
@@ -7844,7 +7800,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance/commit_sha`.
             public var commit_sha: Swift.String?
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance/message`.
-            public struct messagePayload: Codable, Equatable, Hashable, Sendable {
+            public struct messagePayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance/message/text`.
                 public var text: Swift.String?
                 /// Creates a new `messagePayload`.
@@ -7915,8 +7871,7 @@ public enum Components {
             }
         }
         /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items`.
-        public struct code_scanning_organization_alert_items: Codable, Equatable, Hashable, Sendable
-        {
+        public struct code_scanning_organization_alert_items: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/number`.
             public var number: Components.Schemas.alert_number
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/created_at`.
@@ -8025,7 +7980,7 @@ public enum Components {
         /// Groups of organization members that gives permissions on specified repositories.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-team-simple`.
-        public struct nullable_team_simple: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_team_simple: Codable, Hashable, Sendable {
             /// Unique identifier of the team
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-team-simple/id`.
@@ -8132,7 +8087,7 @@ public enum Components {
         /// Groups of organization members that gives permissions on specified repositories.
         ///
         /// - Remark: Generated from `#/components/schemas/team`.
-        public struct team: Codable, Equatable, Hashable, Sendable {
+        public struct team: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/team/id`.
             public var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/team/node_id`.
@@ -8150,7 +8105,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/team/permission`.
             public var permission: Swift.String
             /// - Remark: Generated from `#/components/schemas/team/permissions`.
-            public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+            public struct permissionsPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/team/permissions/pull`.
                 public var pull: Swift.Bool
                 /// - Remark: Generated from `#/components/schemas/team/permissions/triage`.
@@ -8270,7 +8225,7 @@ public enum Components {
         /// Projects are a way to organize columns and cards of work.
         ///
         /// - Remark: Generated from `#/components/schemas/project`.
-        public struct project: Codable, Equatable, Hashable, Sendable {
+        public struct project: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/project/owner_url`.
             public var owner_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/project/url`.
@@ -8307,8 +8262,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/project/organization_permission`.
             @frozen
-            public enum organization_permissionPayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_permissionPayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case read
                 case write
@@ -8334,9 +8289,7 @@ public enum Components {
                     case .none: return "none"
                     }
                 }
-                public static var allCases: [organization_permissionPayload] {
-                    [.read, .write, .admin, .none]
-                }
+                public static var allCases: [Self] { [.read, .write, .admin, .none] }
             }
             /// The baseline permission that all organization members have on this project. Only present if owner is an organization.
             ///
@@ -8420,7 +8373,7 @@ public enum Components {
         /// Groups of organization members that gives permissions on specified repositories.
         ///
         /// - Remark: Generated from `#/components/schemas/team-simple`.
-        public struct team_simple: Codable, Equatable, Hashable, Sendable {
+        public struct team_simple: Codable, Hashable, Sendable {
             /// Unique identifier of the team
             ///
             /// - Remark: Generated from `#/components/schemas/team-simple/id`.
@@ -8527,7 +8480,7 @@ public enum Components {
         /// A repository on GitHub.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-repository`.
-        public struct nullable_repository: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_repository: Codable, Hashable, Sendable {
             /// Unique identifier of the repository
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/id`.
@@ -8547,7 +8500,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-repository/forks`.
             public var forks: Swift.Int
             /// - Remark: Generated from `#/components/schemas/nullable-repository/permissions`.
-            public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+            public struct permissionsPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/permissions/admin`.
                 public var admin: Swift.Bool
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/permissions/pull`.
@@ -8756,7 +8709,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-repository/allow_rebase_merge`.
             public var allow_rebase_merge: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository`.
-            public struct template_repositoryPayload: Codable, Equatable, Hashable, Sendable {
+            public struct template_repositoryPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/id`.
                 public var id: Swift.Int?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/node_id`.
@@ -8766,7 +8719,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/full_name`.
                 public var full_name: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/owner`.
-                public struct ownerPayload: Codable, Equatable, Hashable, Sendable {
+                public struct ownerPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/owner/login`.
                     public var login: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/owner/id`.
@@ -9022,7 +8975,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/updated_at`.
                 public var updated_at: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/permissions`.
-                public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+                public struct permissionsPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/permissions/admin`.
                     public var admin: Swift.Bool?
                     /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/permissions/maintain`.
@@ -9087,8 +9040,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_title`.
                 @frozen
-                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                    Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_TITLE
                     case COMMIT_OR_PR_TITLE
@@ -9108,9 +9061,7 @@ public enum Components {
                         case .COMMIT_OR_PR_TITLE: return "COMMIT_OR_PR_TITLE"
                         }
                     }
-                    public static var allCases: [squash_merge_commit_titlePayload] {
-                        [.PR_TITLE, .COMMIT_OR_PR_TITLE]
-                    }
+                    public static var allCases: [Self] { [.PR_TITLE, .COMMIT_OR_PR_TITLE] }
                 }
                 /// The default value for a squash merge commit title:
                 ///
@@ -9129,8 +9080,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_message`.
                 @frozen
-                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable,
-                    Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_BODY
                     case COMMIT_MESSAGES
@@ -9153,9 +9104,7 @@ public enum Components {
                         case .BLANK: return "BLANK"
                         }
                     }
-                    public static var allCases: [squash_merge_commit_messagePayload] {
-                        [.PR_BODY, .COMMIT_MESSAGES, .BLANK]
-                    }
+                    public static var allCases: [Self] { [.PR_BODY, .COMMIT_MESSAGES, .BLANK] }
                 }
                 /// The default value for a squash merge commit message:
                 ///
@@ -9174,8 +9123,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_title`.
                 @frozen
-                public enum merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                    Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_TITLE
                     case MERGE_MESSAGE
@@ -9195,9 +9144,7 @@ public enum Components {
                         case .MERGE_MESSAGE: return "MERGE_MESSAGE"
                         }
                     }
-                    public static var allCases: [merge_commit_titlePayload] {
-                        [.PR_TITLE, .MERGE_MESSAGE]
-                    }
+                    public static var allCases: [Self] { [.PR_TITLE, .MERGE_MESSAGE] }
                 }
                 /// The default value for a merge commit title.
                 ///
@@ -9216,8 +9163,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_message`.
                 @frozen
-                public enum merge_commit_messagePayload: RawRepresentable, Codable, Equatable,
-                    Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                    Sendable, _AutoLosslessStringConvertible, CaseIterable
                 {
                     case PR_BODY
                     case PR_TITLE
@@ -9240,9 +9187,7 @@ public enum Components {
                         case .BLANK: return "BLANK"
                         }
                     }
-                    public static var allCases: [merge_commit_messagePayload] {
-                        [.PR_BODY, .PR_TITLE, .BLANK]
-                    }
+                    public static var allCases: [Self] { [.PR_BODY, .PR_TITLE, .BLANK] }
                 }
                 /// The default value for a merge commit message.
                 ///
@@ -9655,8 +9600,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/squash_merge_commit_title`.
             @frozen
-            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_TITLE
                 case COMMIT_OR_PR_TITLE
@@ -9676,9 +9621,7 @@ public enum Components {
                     case .COMMIT_OR_PR_TITLE: return "COMMIT_OR_PR_TITLE"
                     }
                 }
-                public static var allCases: [squash_merge_commit_titlePayload] {
-                    [.PR_TITLE, .COMMIT_OR_PR_TITLE]
-                }
+                public static var allCases: [Self] { [.PR_TITLE, .COMMIT_OR_PR_TITLE] }
             }
             /// The default value for a squash merge commit title:
             ///
@@ -9696,8 +9639,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/squash_merge_commit_message`.
             @frozen
-            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_BODY
                 case COMMIT_MESSAGES
@@ -9720,9 +9663,7 @@ public enum Components {
                     case .BLANK: return "BLANK"
                     }
                 }
-                public static var allCases: [squash_merge_commit_messagePayload] {
-                    [.PR_BODY, .COMMIT_MESSAGES, .BLANK]
-                }
+                public static var allCases: [Self] { [.PR_BODY, .COMMIT_MESSAGES, .BLANK] }
             }
             /// The default value for a squash merge commit message:
             ///
@@ -9740,8 +9681,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/merge_commit_title`.
             @frozen
-            public enum merge_commit_titlePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_TITLE
                 case MERGE_MESSAGE
@@ -9761,9 +9702,7 @@ public enum Components {
                     case .MERGE_MESSAGE: return "MERGE_MESSAGE"
                     }
                 }
-                public static var allCases: [merge_commit_titlePayload] {
-                    [.PR_TITLE, .MERGE_MESSAGE]
-                }
+                public static var allCases: [Self] { [.PR_TITLE, .MERGE_MESSAGE] }
             }
             /// The default value for a merge commit title.
             ///
@@ -9781,8 +9720,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/merge_commit_message`.
             @frozen
-            public enum merge_commit_messagePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_BODY
                 case PR_TITLE
@@ -9805,9 +9744,7 @@ public enum Components {
                     case .BLANK: return "BLANK"
                     }
                 }
-                public static var allCases: [merge_commit_messagePayload] {
-                    [.PR_BODY, .PR_TITLE, .BLANK]
-                }
+                public static var allCases: [Self] { [.PR_BODY, .PR_TITLE, .BLANK] }
             }
             /// The default value for a merge commit message.
             ///
@@ -10259,7 +10196,7 @@ public enum Components {
         /// Project cards represent a scope of work.
         ///
         /// - Remark: Generated from `#/components/schemas/project-card`.
-        public struct project_card: Codable, Equatable, Hashable, Sendable {
+        public struct project_card: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/project-card/url`.
             public var url: Swift.String
             /// The project card's ID
@@ -10354,7 +10291,7 @@ public enum Components {
         /// Project columns contain cards of work.
         ///
         /// - Remark: Generated from `#/components/schemas/project-column`.
-        public struct project_column: Codable, Equatable, Hashable, Sendable {
+        public struct project_column: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/project-column/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/project-column/project_url`.
@@ -10419,7 +10356,7 @@ public enum Components {
         /// Project Collaborator Permission
         ///
         /// - Remark: Generated from `#/components/schemas/project-collaborator-permission`.
-        public struct project_collaborator_permission: Codable, Equatable, Hashable, Sendable {
+        public struct project_collaborator_permission: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/project-collaborator-permission/permission`.
             public var permission: Swift.String
             /// - Remark: Generated from `#/components/schemas/project-collaborator-permission/user`.
@@ -10439,7 +10376,7 @@ public enum Components {
             }
         }
         /// - Remark: Generated from `#/components/schemas/rate-limit`.
-        public struct rate_limit: Codable, Equatable, Hashable, Sendable {
+        public struct rate_limit: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/rate-limit/limit`.
             public var limit: Swift.Int
             /// - Remark: Generated from `#/components/schemas/rate-limit/remaining`.
@@ -10471,9 +10408,9 @@ public enum Components {
         /// Rate Limit Overview
         ///
         /// - Remark: Generated from `#/components/schemas/rate-limit-overview`.
-        public struct rate_limit_overview: Codable, Equatable, Hashable, Sendable {
+        public struct rate_limit_overview: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources`.
-            public struct resourcesPayload: Codable, Equatable, Hashable, Sendable {
+            public struct resourcesPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/core`.
                 public var core: Components.Schemas.rate_limit
                 /// - Remark: Generated from `#/components/schemas/rate-limit-overview/resources/graphql`.
@@ -10567,7 +10504,7 @@ public enum Components {
         /// Code of Conduct Simple
         ///
         /// - Remark: Generated from `#/components/schemas/code-of-conduct-simple`.
-        public struct code_of_conduct_simple: Codable, Equatable, Hashable, Sendable {
+        public struct code_of_conduct_simple: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/code-of-conduct-simple/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/code-of-conduct-simple/key`.
@@ -10604,7 +10541,7 @@ public enum Components {
         /// Full Repository
         ///
         /// - Remark: Generated from `#/components/schemas/full-repository`.
-        public struct full_repository: Codable, Equatable, Hashable, Sendable {
+        public struct full_repository: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/full-repository/id`.
             public var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/full-repository/node_id`.
@@ -10758,7 +10695,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/full-repository/updated_at`.
             public var updated_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/full-repository/permissions`.
-            public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+            public struct permissionsPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/full-repository/permissions/admin`.
                 public var admin: Swift.Bool
                 /// - Remark: Generated from `#/components/schemas/full-repository/permissions/maintain`.
@@ -10825,8 +10762,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_title`.
             @frozen
-            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_TITLE
                 case COMMIT_OR_PR_TITLE
@@ -10846,9 +10783,7 @@ public enum Components {
                     case .COMMIT_OR_PR_TITLE: return "COMMIT_OR_PR_TITLE"
                     }
                 }
-                public static var allCases: [squash_merge_commit_titlePayload] {
-                    [.PR_TITLE, .COMMIT_OR_PR_TITLE]
-                }
+                public static var allCases: [Self] { [.PR_TITLE, .COMMIT_OR_PR_TITLE] }
             }
             /// The default value for a squash merge commit title:
             ///
@@ -10866,8 +10801,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_message`.
             @frozen
-            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Equatable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
+                Sendable, _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_BODY
                 case COMMIT_MESSAGES
@@ -10890,9 +10825,7 @@ public enum Components {
                     case .BLANK: return "BLANK"
                     }
                 }
-                public static var allCases: [squash_merge_commit_messagePayload] {
-                    [.PR_BODY, .COMMIT_MESSAGES, .BLANK]
-                }
+                public static var allCases: [Self] { [.PR_BODY, .COMMIT_MESSAGES, .BLANK] }
             }
             /// The default value for a squash merge commit message:
             ///
@@ -10910,8 +10843,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/merge_commit_title`.
             @frozen
-            public enum merge_commit_titlePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_TITLE
                 case MERGE_MESSAGE
@@ -10931,9 +10864,7 @@ public enum Components {
                     case .MERGE_MESSAGE: return "MERGE_MESSAGE"
                     }
                 }
-                public static var allCases: [merge_commit_titlePayload] {
-                    [.PR_TITLE, .MERGE_MESSAGE]
-                }
+                public static var allCases: [Self] { [.PR_TITLE, .MERGE_MESSAGE] }
             }
             /// The default value for a merge commit title.
             ///
@@ -10951,8 +10882,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/merge_commit_message`.
             @frozen
-            public enum merge_commit_messagePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case PR_BODY
                 case PR_TITLE
@@ -10975,9 +10906,7 @@ public enum Components {
                     case .BLANK: return "BLANK"
                     }
                 }
-                public static var allCases: [merge_commit_messagePayload] {
-                    [.PR_BODY, .PR_TITLE, .BLANK]
-                }
+                public static var allCases: [Self] { [.PR_BODY, .PR_TITLE, .BLANK] }
             }
             /// The default value for a merge commit message.
             ///
@@ -11444,7 +11373,7 @@ public enum Components {
         /// Metaproperties for Git author/committer information.
         ///
         /// - Remark: Generated from `#/components/schemas/nullable-git-user`.
-        public struct nullable_git_user: Codable, Equatable, Hashable, Sendable {
+        public struct nullable_git_user: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/nullable-git-user/name`.
             public var name: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-git-user/email`.
@@ -11473,7 +11402,7 @@ public enum Components {
             }
         }
         /// - Remark: Generated from `#/components/schemas/verification`.
-        public struct verification: Codable, Equatable, Hashable, Sendable {
+        public struct verification: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/verification/verified`.
             public var verified: Swift.Bool
             /// - Remark: Generated from `#/components/schemas/verification/reason`.
@@ -11510,14 +11439,14 @@ public enum Components {
         /// Diff Entry
         ///
         /// - Remark: Generated from `#/components/schemas/diff-entry`.
-        public struct diff_entry: Codable, Equatable, Hashable, Sendable {
+        public struct diff_entry: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/diff-entry/sha`.
             public var sha: Swift.String
             /// - Remark: Generated from `#/components/schemas/diff-entry/filename`.
             public var filename: Swift.String
             /// - Remark: Generated from `#/components/schemas/diff-entry/status`.
             @frozen
-            public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case added
@@ -11553,7 +11482,7 @@ public enum Components {
                     case .unchanged: return "unchanged"
                     }
                 }
-                public static var allCases: [statusPayload] {
+                public static var allCases: [Self] {
                     [.added, .removed, .modified, .renamed, .copied, .changed, .unchanged]
                 }
             }
@@ -11631,7 +11560,7 @@ public enum Components {
         /// Commit
         ///
         /// - Remark: Generated from `#/components/schemas/commit`.
-        public struct commit: Codable, Equatable, Hashable, Sendable {
+        public struct commit: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/commit/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/commit/sha`.
@@ -11643,7 +11572,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/commit/comments_url`.
             public var comments_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/commit/commit`.
-            public struct commitPayload: Codable, Equatable, Hashable, Sendable {
+            public struct commitPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/commit/commit/url`.
                 public var url: Swift.String
                 /// - Remark: Generated from `#/components/schemas/commit/commit/author`.
@@ -11655,7 +11584,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/commit/commit/comment_count`.
                 public var comment_count: Swift.Int
                 /// - Remark: Generated from `#/components/schemas/commit/commit/tree`.
-                public struct treePayload: Codable, Equatable, Hashable, Sendable {
+                public struct treePayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/commit/commit/tree/sha`.
                     public var sha: Swift.String
                     /// - Remark: Generated from `#/components/schemas/commit/commit/tree/url`.
@@ -11722,7 +11651,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/commit/committer`.
             public var committer: Components.Schemas.nullable_simple_user
             /// - Remark: Generated from `#/components/schemas/commit/parentsPayload`.
-            public struct parentsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct parentsPayloadPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/commit/parentsPayload/sha`.
                 public var sha: Swift.String
                 /// - Remark: Generated from `#/components/schemas/commit/parentsPayload/url`.
@@ -11751,7 +11680,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/commit/parents`.
             public var parents: Components.Schemas.commit.parentsPayload
             /// - Remark: Generated from `#/components/schemas/commit/stats`.
-            public struct statsPayload: Codable, Equatable, Hashable, Sendable {
+            public struct statsPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/commit/stats/additions`.
                 public var additions: Swift.Int?
                 /// - Remark: Generated from `#/components/schemas/commit/stats/deletions`.
@@ -11839,7 +11768,7 @@ public enum Components {
         /// A commit.
         ///
         /// - Remark: Generated from `#/components/schemas/simple-commit`.
-        public struct simple_commit: Codable, Equatable, Hashable, Sendable {
+        public struct simple_commit: Codable, Hashable, Sendable {
             /// SHA for the commit
             ///
             /// - Remark: Generated from `#/components/schemas/simple-commit/id`.
@@ -11859,7 +11788,7 @@ public enum Components {
             /// Information about the Git author
             ///
             /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
-            public struct authorPayload: Codable, Equatable, Hashable, Sendable {
+            public struct authorPayload: Codable, Hashable, Sendable {
                 /// Name of the commit's author
                 ///
                 /// - Remark: Generated from `#/components/schemas/simple-commit/author/name`.
@@ -11889,7 +11818,7 @@ public enum Components {
             /// Information about the Git committer
             ///
             /// - Remark: Generated from `#/components/schemas/simple-commit/committer`.
-            public struct committerPayload: Codable, Equatable, Hashable, Sendable {
+            public struct committerPayload: Codable, Hashable, Sendable {
                 /// Name of the commit's committer
                 ///
                 /// - Remark: Generated from `#/components/schemas/simple-commit/committer/name`.
@@ -11952,7 +11881,7 @@ public enum Components {
         /// Hypermedia Link
         ///
         /// - Remark: Generated from `#/components/schemas/link`.
-        public struct link: Codable, Equatable, Hashable, Sendable {
+        public struct link: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/link/href`.
             public var href: Swift.String
             /// Creates a new `link`.
@@ -11965,15 +11894,15 @@ public enum Components {
         /// The status of auto merging a pull request.
         ///
         /// - Remark: Generated from `#/components/schemas/auto-merge`.
-        public struct auto_merge: Codable, Equatable, Hashable, Sendable {
+        public struct auto_merge: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/auto-merge/enabled_by`.
             public var enabled_by: Components.Schemas.simple_user
             /// The merge method to use.
             ///
             /// - Remark: Generated from `#/components/schemas/auto-merge/merge_method`.
             @frozen
-            public enum merge_methodPayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum merge_methodPayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case merge
                 case squash
@@ -11996,7 +11925,7 @@ public enum Components {
                     case .rebase: return "rebase"
                     }
                 }
-                public static var allCases: [merge_methodPayload] { [.merge, .squash, .rebase] }
+                public static var allCases: [Self] { [.merge, .squash, .rebase] }
             }
             /// The merge method to use.
             ///
@@ -12038,7 +11967,7 @@ public enum Components {
         /// Pull Request Simple
         ///
         /// - Remark: Generated from `#/components/schemas/pull-request-simple`.
-        public struct pull_request_simple: Codable, Equatable, Hashable, Sendable {
+        public struct pull_request_simple: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/id`.
@@ -12076,7 +12005,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/body`.
             public var body: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload`.
-            public struct labelsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct labelsPayloadPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload/id`.
                 public var id: Swift.Int64
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/labelsPayload/node_id`.
@@ -12156,7 +12085,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/requested_teams`.
             public var requested_teams: [Components.Schemas.team]?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/head`.
-            public struct headPayload: Codable, Equatable, Hashable, Sendable {
+            public struct headPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/head/label`.
                 public var label: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/head/ref`.
@@ -12199,7 +12128,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/head`.
             public var head: Components.Schemas.pull_request_simple.headPayload
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/base`.
-            public struct basePayload: Codable, Equatable, Hashable, Sendable {
+            public struct basePayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/base/label`.
                 public var label: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/base/ref`.
@@ -12242,7 +12171,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/base`.
             public var base: Components.Schemas.pull_request_simple.basePayload
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/_links`.
-            public struct _linksPayload: Codable, Equatable, Hashable, Sendable {
+            public struct _linksPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/_links/comments`.
                 public var comments: Components.Schemas.link
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/_links/commits`.
@@ -12466,7 +12395,7 @@ public enum Components {
         /// Commit Comparison
         ///
         /// - Remark: Generated from `#/components/schemas/commit-comparison`.
-        public struct commit_comparison: Codable, Equatable, Hashable, Sendable {
+        public struct commit_comparison: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/commit-comparison/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/commit-comparison/html_url`.
@@ -12483,7 +12412,7 @@ public enum Components {
             public var merge_base_commit: Components.Schemas.commit
             /// - Remark: Generated from `#/components/schemas/commit-comparison/status`.
             @frozen
-            public enum statusPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case diverged
@@ -12510,9 +12439,7 @@ public enum Components {
                     case .identical: return "identical"
                     }
                 }
-                public static var allCases: [statusPayload] {
-                    [.diverged, .ahead, .behind, .identical]
-                }
+                public static var allCases: [Self] { [.diverged, .ahead, .behind, .identical] }
             }
             /// - Remark: Generated from `#/components/schemas/commit-comparison/status`.
             public var status: Components.Schemas.commit_comparison.statusPayload
@@ -12590,7 +12517,7 @@ public enum Components {
         /// Contributor
         ///
         /// - Remark: Generated from `#/components/schemas/contributor`.
-        public struct contributor: Codable, Equatable, Hashable, Sendable {
+        public struct contributor: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/contributor/login`.
             public var login: Swift.String?
             /// - Remark: Generated from `#/components/schemas/contributor/id`.
@@ -12729,7 +12656,7 @@ public enum Components {
         /// Color-coded labels help you categorize and filter your issues (just like labels in Gmail).
         ///
         /// - Remark: Generated from `#/components/schemas/label`.
-        public struct label: Codable, Equatable, Hashable, Sendable {
+        public struct label: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/label/id`.
             public var id: Swift.Int64
             /// - Remark: Generated from `#/components/schemas/label/node_id`.
@@ -12790,7 +12717,7 @@ public enum Components {
         /// Pull Request Review Comments are comments on a portion of the Pull Request's diff.
         ///
         /// - Remark: Generated from `#/components/schemas/pull-request-review-comment`.
-        public struct pull_request_review_comment: Codable, Equatable, Hashable, Sendable {
+        public struct pull_request_review_comment: Codable, Hashable, Sendable {
             /// URL for the pull request review comment
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/url`.
@@ -12856,9 +12783,9 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/author_association`.
             public var author_association: Components.Schemas.author_association
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links`.
-            public struct _linksPayload: Codable, Equatable, Hashable, Sendable {
+            public struct _linksPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
-                public struct _selfPayload: Codable, Equatable, Hashable, Sendable {
+                public struct _selfPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self/href`.
                     public var href: Swift.String
                     /// Creates a new `_selfPayload`.
@@ -12872,7 +12799,7 @@ public enum Components {
                 public var _self:
                     Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
-                public struct htmlPayload: Codable, Equatable, Hashable, Sendable {
+                public struct htmlPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html/href`.
                     public var href: Swift.String
                     /// Creates a new `htmlPayload`.
@@ -12886,7 +12813,7 @@ public enum Components {
                 public var html:
                     Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
-                public struct pull_requestPayload: Codable, Equatable, Hashable, Sendable {
+                public struct pull_requestPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request/href`.
                     public var href: Swift.String
                     /// Creates a new `pull_requestPayload`.
@@ -12936,7 +12863,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
             @frozen
-            public enum start_sidePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum start_sidePayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case LEFT
@@ -12957,7 +12884,7 @@ public enum Components {
                     case .RIGHT: return "RIGHT"
                     }
                 }
-                public static var allCases: [start_sidePayload] { [.LEFT, .RIGHT] }
+                public static var allCases: [Self] { [.LEFT, .RIGHT] }
             }
             /// The side of the first line of the range for a multi-line comment.
             ///
@@ -12975,7 +12902,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/side`.
             @frozen
-            public enum sidePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum sidePayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case LEFT
@@ -12996,7 +12923,7 @@ public enum Components {
                     case .RIGHT: return "RIGHT"
                     }
                 }
-                public static var allCases: [sidePayload] { [.LEFT, .RIGHT] }
+                public static var allCases: [Self] { [.LEFT, .RIGHT] }
             }
             /// The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
             ///
@@ -13006,8 +12933,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
             @frozen
-            public enum subject_typePayload: RawRepresentable, Codable, Equatable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum subject_typePayload: RawRepresentable, Codable, Hashable, Sendable,
+                _AutoLosslessStringConvertible, CaseIterable
             {
                 case line
                 case file
@@ -13027,7 +12954,7 @@ public enum Components {
                     case .file: return "file"
                     }
                 }
-                public static var allCases: [subject_typePayload] { [.line, .file] }
+                public static var allCases: [Self] { [.line, .file] }
             }
             /// The level at which the comment is targeted, can be a diff line or a file.
             ///
@@ -13169,7 +13096,7 @@ public enum Components {
         /// Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
         ///
         /// - Remark: Generated from `#/components/schemas/pull-request`.
-        public struct pull_request: Codable, Equatable, Hashable, Sendable {
+        public struct pull_request: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/pull-request/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request/id`.
@@ -13202,7 +13129,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request/state`.
             @frozen
-            public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case open
@@ -13223,7 +13150,7 @@ public enum Components {
                     case .closed: return "closed"
                     }
                 }
-                public static var allCases: [statePayload] { [.open, .closed] }
+                public static var allCases: [Self] { [.open, .closed] }
             }
             /// State of this Pull Request. Either `open` or `closed`.
             ///
@@ -13240,7 +13167,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/body`.
             public var body: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload`.
-            public struct labelsPayloadPayload: Codable, Equatable, Hashable, Sendable {
+            public struct labelsPayloadPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/id`.
                 public var id: Swift.Int64
                 /// - Remark: Generated from `#/components/schemas/pull-request/labelsPayload/node_id`.
@@ -13319,13 +13246,13 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/requested_teams`.
             public var requested_teams: [Components.Schemas.team_simple]?
             /// - Remark: Generated from `#/components/schemas/pull-request/head`.
-            public struct headPayload: Codable, Equatable, Hashable, Sendable {
+            public struct headPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/label`.
                 public var label: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/ref`.
                 public var ref: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/repo`.
-                public struct repoPayload: Codable, Equatable, Hashable, Sendable {
+                public struct repoPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/archive_url`.
                     public var archive_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/assignees_url`.
@@ -13395,7 +13322,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/notifications_url`.
                     public var notifications_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner`.
-                    public struct ownerPayload: Codable, Equatable, Hashable, Sendable {
+                    public struct ownerPayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/avatar_url`.
                         public var avatar_url: Swift.String
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner/events_url`.
@@ -13581,7 +13508,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/open_issues_count`.
                     public var open_issues_count: Swift.Int
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions`.
-                    public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+                    public struct permissionsPayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/admin`.
                         public var admin: Swift.Bool
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions/maintain`.
@@ -13633,7 +13560,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_rebase_merge`.
                     public var allow_rebase_merge: Swift.Bool?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license`.
-                    public struct licensePayload: Codable, Equatable, Hashable, Sendable {
+                    public struct licensePayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/key`.
                         public var key: Swift.String
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/name`.
@@ -14058,7 +13985,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/sha`.
                 public var sha: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/user`.
-                public struct userPayload: Codable, Equatable, Hashable, Sendable {
+                public struct userPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/user/avatar_url`.
                     public var avatar_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/user/events_url`.
@@ -14210,13 +14137,13 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/head`.
             public var head: Components.Schemas.pull_request.headPayload
             /// - Remark: Generated from `#/components/schemas/pull-request/base`.
-            public struct basePayload: Codable, Equatable, Hashable, Sendable {
+            public struct basePayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request/base/label`.
                 public var label: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/base/ref`.
                 public var ref: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/base/repo`.
-                public struct repoPayload: Codable, Equatable, Hashable, Sendable {
+                public struct repoPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/archive_url`.
                     public var archive_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/assignees_url`.
@@ -14288,7 +14215,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/notifications_url`.
                     public var notifications_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner`.
-                    public struct ownerPayload: Codable, Equatable, Hashable, Sendable {
+                    public struct ownerPayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/avatar_url`.
                         public var avatar_url: Swift.String
                         /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner/events_url`.
@@ -14474,7 +14401,7 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/open_issues_count`.
                     public var open_issues_count: Swift.Int
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions`.
-                    public struct permissionsPayload: Codable, Equatable, Hashable, Sendable {
+                    public struct permissionsPayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/admin`.
                         public var admin: Swift.Bool
                         /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions/maintain`.
@@ -14906,7 +14833,7 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request/base/sha`.
                 public var sha: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/base/user`.
-                public struct userPayload: Codable, Equatable, Hashable, Sendable {
+                public struct userPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/user/avatar_url`.
                     public var avatar_url: Swift.String
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/user/events_url`.
@@ -15058,7 +14985,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/base`.
             public var base: Components.Schemas.pull_request.basePayload
             /// - Remark: Generated from `#/components/schemas/pull-request/_links`.
-            public struct _linksPayload: Codable, Equatable, Hashable, Sendable {
+            public struct _linksPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request/_links/comments`.
                 public var comments: Components.Schemas.link
                 /// - Remark: Generated from `#/components/schemas/pull-request/_links/commits`.
@@ -15356,7 +15283,7 @@ public enum Components {
         /// Data related to a release.
         ///
         /// - Remark: Generated from `#/components/schemas/release-asset`.
-        public struct release_asset: Codable, Equatable, Hashable, Sendable {
+        public struct release_asset: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/release-asset/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/release-asset/browser_download_url`.
@@ -15375,7 +15302,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/release-asset/state`.
             @frozen
-            public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+            public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
                 _AutoLosslessStringConvertible, CaseIterable
             {
                 case uploaded
@@ -15396,7 +15323,7 @@ public enum Components {
                     case .open: return "open"
                     }
                 }
-                public static var allCases: [statePayload] { [.uploaded, .open] }
+                public static var allCases: [Self] { [.uploaded, .open] }
             }
             /// State of the release asset.
             ///
@@ -15478,7 +15405,7 @@ public enum Components {
         /// A release.
         ///
         /// - Remark: Generated from `#/components/schemas/release`.
-        public struct release: Codable, Equatable, Hashable, Sendable {
+        public struct release: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/release/url`.
             public var url: Swift.String
             /// - Remark: Generated from `#/components/schemas/release/html_url`.
@@ -15490,7 +15417,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/release/tarball_url`.
             public var tarball_url: Swift.String?
             /// - Remark: Generated from `#/components/schemas/release/zipball_url`.
-            public var zipball_url: Swift.String
+            public var zipball_url: Swift.String?
             /// - Remark: Generated from `#/components/schemas/release/id`.
             public var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/release/node_id`.
@@ -15567,7 +15494,7 @@ public enum Components {
                 assets_url: Swift.String,
                 upload_url: Swift.String,
                 tarball_url: Swift.String? = nil,
-                zipball_url: Swift.String,
+                zipball_url: Swift.String? = nil,
                 id: Swift.Int,
                 node_id: Swift.String,
                 tag_name: Swift.String,
@@ -15639,11 +15566,11 @@ public enum Components {
         /// Tag
         ///
         /// - Remark: Generated from `#/components/schemas/tag`.
-        public struct tag: Codable, Equatable, Hashable, Sendable {
+        public struct tag: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/tag/name`.
             public var name: Swift.String
             /// - Remark: Generated from `#/components/schemas/tag/commit`.
-            public struct commitPayload: Codable, Equatable, Hashable, Sendable {
+            public struct commitPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/tag/commit/sha`.
                 public var sha: Swift.String
                 /// - Remark: Generated from `#/components/schemas/tag/commit/url`.
@@ -15702,7 +15629,7 @@ public enum Components {
         /// The GitHub App installation. This property is included when the event is configured for and sent to a GitHub App.
         ///
         /// - Remark: Generated from `#/components/schemas/simple-installation`.
-        public struct simple_installation: Codable, Equatable, Hashable, Sendable {
+        public struct simple_installation: Codable, Hashable, Sendable {
             /// The ID of the installation.
             ///
             /// - Remark: Generated from `#/components/schemas/simple-installation/id`.
@@ -15786,8 +15713,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/dependabot-alert-scope`.
         @frozen
-        public enum dependabot_alert_scope: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum dependabot_alert_scope: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case development
             case runtime
@@ -15807,7 +15734,7 @@ public enum Components {
                 case .runtime: return "runtime"
                 }
             }
-            public static var allCases: [dependabot_alert_scope] { [.development, .runtime] }
+            public static var allCases: [Self] { [.development, .runtime] }
         }
         /// The property by which to sort the results.
         /// `created` means when the alert was created.
@@ -15815,7 +15742,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/dependabot-alert-sort`.
         @frozen
-        public enum dependabot_alert_sort: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum dependabot_alert_sort: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case created
@@ -15836,13 +15763,13 @@ public enum Components {
                 case .updated: return "updated"
                 }
             }
-            public static var allCases: [dependabot_alert_sort] { [.created, .updated] }
+            public static var allCases: [Self] { [.created, .updated] }
         }
         /// The direction to sort the results by.
         ///
         /// - Remark: Generated from `#/components/parameters/direction`.
         @frozen
-        public enum direction: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum direction: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case asc
@@ -15863,7 +15790,7 @@ public enum Components {
                 case .desc: return "desc"
                 }
             }
-            public static var allCases: [direction] { [.asc, .desc] }
+            public static var allCases: [Self] { [.asc, .desc] }
         }
         /// A cursor, as given in the [Link header](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api#using-link-headers). If specified, the query only searches for results before this cursor.
         ///
@@ -15889,8 +15816,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/secret-scanning-alert-state`.
         @frozen
-        public enum secret_scanning_alert_state: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum secret_scanning_alert_state: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case open
             case resolved
@@ -15910,7 +15837,7 @@ public enum Components {
                 case .resolved: return "resolved"
                 }
             }
-            public static var allCases: [secret_scanning_alert_state] { [.open, .resolved] }
+            public static var allCases: [Self] { [.open, .resolved] }
         }
         /// A comma-separated list of secret types to return. By default all secret types are returned.
         /// See "[Secret scanning patterns](https://docs.github.com/code-security/secret-scanning/secret-scanning-patterns#supported-secrets-for-advanced-security)"
@@ -15926,8 +15853,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/secret-scanning-alert-sort`.
         @frozen
-        public enum secret_scanning_alert_sort: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum secret_scanning_alert_sort: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case created
             case updated
@@ -15947,7 +15874,7 @@ public enum Components {
                 case .updated: return "updated"
                 }
             }
-            public static var allCases: [secret_scanning_alert_sort] { [.created, .updated] }
+            public static var allCases: [Self] { [.created, .updated] }
         }
         /// The unique identifier of the gist.
         ///
@@ -15973,7 +15900,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/sort`.
         @frozen
-        public enum sort: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum sort: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case created
@@ -15994,7 +15921,7 @@ public enum Components {
                 case .updated: return "updated"
                 }
             }
-            public static var allCases: [sort] { [.created, .updated] }
+            public static var allCases: [Self] { [.created, .updated] }
         }
         /// The account owner of the repository. The name is not case sensitive.
         ///
@@ -16091,7 +16018,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/package-visibility`.
         @frozen
-        public enum package_visibility: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum package_visibility: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case _public
@@ -16115,13 +16042,13 @@ public enum Components {
                 case ._internal: return "internal"
                 }
             }
-            public static var allCases: [package_visibility] { [._public, ._private, ._internal] }
+            public static var allCases: [Self] { [._public, ._private, ._internal] }
         }
         /// The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry.
         ///
         /// - Remark: Generated from `#/components/parameters/package-type`.
         @frozen
-        public enum package_type: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum package_type: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case npm
@@ -16154,7 +16081,7 @@ public enum Components {
                 case .container: return "container"
                 }
             }
-            public static var allCases: [package_type] {
+            public static var allCases: [Self] {
                 [.npm, .maven, .rubygems, .docker, .nuget, .container]
             }
         }
@@ -16170,8 +16097,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/personal-access-token-sort`.
         @frozen
-        public enum personal_access_token_sort: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum personal_access_token_sort: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case created_at
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -16188,7 +16115,7 @@ public enum Components {
                 case .created_at: return "created_at"
                 }
             }
-            public static var allCases: [personal_access_token_sort] { [.created_at] }
+            public static var allCases: [Self] { [.created_at] }
         }
         /// A list of owner usernames to use to filter the results.
         ///
@@ -16246,7 +16173,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/security-product`.
         @frozen
-        public enum security_product: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum security_product: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case dependency_graph
@@ -16282,7 +16209,7 @@ public enum Components {
                 case .secret_scanning_push_protection: return "secret_scanning_push_protection"
                 }
             }
-            public static var allCases: [security_product] {
+            public static var allCases: [Self] {
                 [
                     .dependency_graph, .dependabot_alerts, .dependabot_security_updates,
                     .advanced_security, .code_scanning_default_setup, .secret_scanning,
@@ -16297,8 +16224,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/org-security-product-enablement`.
         @frozen
-        public enum org_security_product_enablement: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum org_security_product_enablement: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case enable_all
             case disable_all
@@ -16318,9 +16245,7 @@ public enum Components {
                 case .disable_all: return "disable_all"
                 }
             }
-            public static var allCases: [org_security_product_enablement] {
-                [.enable_all, .disable_all]
-            }
+            public static var allCases: [Self] { [.enable_all, .disable_all] }
         }
         /// The unique identifier of the card.
         ///
@@ -16346,8 +16271,8 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/actions-cache-list-sort`.
         @frozen
-        public enum actions_cache_list_sort: RawRepresentable, Codable, Equatable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
+        public enum actions_cache_list_sort: RawRepresentable, Codable, Hashable, Sendable,
+            _AutoLosslessStringConvertible, CaseIterable
         {
             case created_at
             case last_accessed_at
@@ -16370,9 +16295,7 @@ public enum Components {
                 case .size_in_bytes: return "size_in_bytes"
                 }
             }
-            public static var allCases: [actions_cache_list_sort] {
-                [.created_at, .last_accessed_at, .size_in_bytes]
-            }
+            public static var allCases: [Self] { [.created_at, .last_accessed_at, .size_in_bytes] }
         }
         /// A key for identifying the cache.
         ///
@@ -16402,7 +16325,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/workflow-run-status`.
         @frozen
-        public enum workflow_run_status: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum workflow_run_status: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case completed
@@ -16459,7 +16382,7 @@ public enum Components {
                 case .pending: return "pending"
                 }
             }
-            public static var allCases: [workflow_run_status] {
+            public static var allCases: [Self] {
                 [
                     .completed, .action_required, .cancelled, .failure, .neutral, .skipped, .stale,
                     .success, .timed_out, .in_progress, .queued, .requested, .waiting, .pending,
@@ -16493,7 +16416,7 @@ public enum Components {
         /// The ID of the workflow. You can also pass the workflow file name as a string.
         ///
         /// - Remark: Generated from `#/components/parameters/workflow-id`.
-        @frozen public enum workflow_id: Codable, Equatable, Hashable, Sendable {
+        @frozen public enum workflow_id: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/parameters/workflow-id/case1`.
             case case1(Swift.Int)
             /// - Remark: Generated from `#/components/parameters/workflow-id/case2`.
@@ -16545,7 +16468,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/status`.
         @frozen
-        public enum status: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum status: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case queued
@@ -16569,7 +16492,7 @@ public enum Components {
                 case .completed: return "completed"
                 }
             }
-            public static var allCases: [status] { [.queued, .in_progress, .completed] }
+            public static var allCases: [Self] { [.queued, .in_progress, .completed] }
         }
         /// The Git reference for the results you want to list. The `ref` for a branch can be formatted either as `refs/heads/<branch name>` or simply `<branch name>`. To reference a pull request use `refs/pull/<number>/merge`.
         ///
@@ -16662,7 +16585,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/per`.
         @frozen
-        public enum per: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum per: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case day
@@ -16683,7 +16606,7 @@ public enum Components {
                 case .week: return "week"
                 }
             }
-            public static var allCases: [per] { [.day, .week] }
+            public static var allCases: [Self] { [.day, .week] }
         }
         /// A repository ID. Only return repositories with an ID greater than this ID.
         ///
@@ -16693,7 +16616,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/order`.
         @frozen
-        public enum order: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum order: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case desc
@@ -16714,7 +16637,7 @@ public enum Components {
                 case .asc: return "asc"
                 }
             }
-            public static var allCases: [order] { [.desc, .asc] }
+            public static var allCases: [Self] { [.desc, .asc] }
         }
         /// The unique identifier of the team.
         ///
@@ -16748,7 +16671,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/sort-starred`.
         @frozen
-        public enum sort_starred: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+        public enum sort_starred: RawRepresentable, Codable, Hashable, Sendable,
             _AutoLosslessStringConvertible, CaseIterable
         {
             case created
@@ -16769,21 +16692,24 @@ public enum Components {
                 case .updated: return "updated"
                 }
             }
-            public static var allCases: [sort_starred] { [.created, .updated] }
+            public static var allCases: [Self] { [.created, .updated] }
         }
     }
     /// Types generated from the `#/components/requestBodies` section of the OpenAPI document.
     public enum RequestBodies {}
     /// Types generated from the `#/components/responses` section of the OpenAPI document.
     public enum Responses {
-        public struct not_found: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct not_found: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/not_found/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.not_found.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/not_found/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/not_found/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -16801,14 +16727,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct validation_failed_simple: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct validation_failed_simple: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/validation_failed_simple/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.validation_failed_simple.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/validation_failed_simple/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/validation_failed_simple/content/application\/json`.
                 case json(Components.Schemas.validation_error_simple)
             }
             /// Received HTTP response body
@@ -16826,14 +16755,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct bad_request: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct bad_request: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/bad_request/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.bad_request.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/bad_request/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/bad_request/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -16851,14 +16783,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct validation_failed: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct validation_failed: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/validation_failed/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.validation_failed.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/validation_failed/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/validation_failed/content/application\/json`.
                 case json(Components.Schemas.validation_error)
             }
             /// Received HTTP response body
@@ -16876,14 +16811,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct accepted: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct accepted: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/accepted/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.accepted.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/accepted/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/accepted/content/application\/json`.
                 case json(OpenAPIRuntime.OpenAPIObjectContainer)
             }
             /// Received HTTP response body
@@ -16901,14 +16839,16 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct not_modified: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct not_modified: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/not_modified/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.not_modified.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/components/responses/not_modified/content`.
+            @frozen public enum Body: Sendable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.not_modified.Body?
             /// Creates a new `not_modified`.
@@ -16924,14 +16864,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct requires_authentication: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct requires_authentication: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/requires_authentication/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.requires_authentication.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/requires_authentication/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/requires_authentication/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -16949,14 +16892,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct forbidden: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct forbidden: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/forbidden/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.forbidden.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/forbidden/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/forbidden/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -16974,21 +16920,23 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct service_unavailable: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct service_unavailable: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/service_unavailable/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.service_unavailable.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/components/responses/service_unavailable/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                    /// - Remark: Generated from `#/components/responses/service_unavailable/json/code`.
+            /// - Remark: Generated from `#/components/responses/service_unavailable/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/service_unavailable/content/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/responses/service_unavailable/content/json/code`.
                     public var code: Swift.String?
-                    /// - Remark: Generated from `#/components/responses/service_unavailable/json/message`.
+                    /// - Remark: Generated from `#/components/responses/service_unavailable/content/json/message`.
                     public var message: Swift.String?
-                    /// - Remark: Generated from `#/components/responses/service_unavailable/json/documentation_url`.
+                    /// - Remark: Generated from `#/components/responses/service_unavailable/content/json/documentation_url`.
                     public var documentation_url: Swift.String?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -17011,6 +16959,7 @@ public enum Components {
                         case documentation_url
                     }
                 }
+                /// - Remark: Generated from `#/components/responses/service_unavailable/content/application\/json`.
                 case json(Components.Responses.service_unavailable.Body.jsonPayload)
             }
             /// Received HTTP response body
@@ -17028,23 +16977,25 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct forbidden_gist: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct forbidden_gist: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/forbidden_gist/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.forbidden_gist.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/components/responses/forbidden_gist/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                    /// - Remark: Generated from `#/components/responses/forbidden_gist/json/block`.
-                    public struct blockPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/components/responses/forbidden_gist/json/block/reason`.
+            /// - Remark: Generated from `#/components/responses/forbidden_gist/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/block`.
+                    public struct blockPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/block/reason`.
                         public var reason: Swift.String?
-                        /// - Remark: Generated from `#/components/responses/forbidden_gist/json/block/created_at`.
+                        /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/block/created_at`.
                         public var created_at: Swift.String?
-                        /// - Remark: Generated from `#/components/responses/forbidden_gist/json/block/html_url`.
+                        /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/block/html_url`.
                         public var html_url: Swift.String?
                         /// Creates a new `blockPayload`.
                         ///
@@ -17067,12 +17018,12 @@ public enum Components {
                             case html_url
                         }
                     }
-                    /// - Remark: Generated from `#/components/responses/forbidden_gist/json/block`.
+                    /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/block`.
                     public var block:
                         Components.Responses.forbidden_gist.Body.jsonPayload.blockPayload?
-                    /// - Remark: Generated from `#/components/responses/forbidden_gist/json/message`.
+                    /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/message`.
                     public var message: Swift.String?
-                    /// - Remark: Generated from `#/components/responses/forbidden_gist/json/documentation_url`.
+                    /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/documentation_url`.
                     public var documentation_url: Swift.String?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -17096,6 +17047,7 @@ public enum Components {
                         case documentation_url
                     }
                 }
+                /// - Remark: Generated from `#/components/responses/forbidden_gist/content/application\/json`.
                 case json(Components.Responses.forbidden_gist.Body.jsonPayload)
             }
             /// Received HTTP response body
@@ -17113,14 +17065,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct moved_permanently: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct moved_permanently: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/moved_permanently/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.moved_permanently.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/moved_permanently/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/moved_permanently/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17138,14 +17093,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct conflict: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct conflict: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/conflict/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.conflict.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/conflict/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/conflict/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17163,21 +17121,23 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct actions_runner_jitconfig: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct actions_runner_jitconfig: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.actions_runner_jitconfig.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                    /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/json/runner`.
+            /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/content/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/content/json/runner`.
                     public var runner: Components.Schemas.runner
                     /// The base64 encoded runner configuration.
                     ///
-                    /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/json/encoded_jit_config`.
+                    /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/content/json/encoded_jit_config`.
                     public var encoded_jit_config: Swift.String
                     /// Creates a new `jsonPayload`.
                     ///
@@ -17194,6 +17154,7 @@ public enum Components {
                         case encoded_jit_config
                     }
                 }
+                /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/content/application\/json`.
                 case json(Components.Responses.actions_runner_jitconfig.Body.jsonPayload)
             }
             /// Received HTTP response body
@@ -17211,19 +17172,21 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct actions_runner_labels: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct actions_runner_labels: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/actions_runner_labels/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.actions_runner_labels.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/components/responses/actions_runner_labels/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                    /// - Remark: Generated from `#/components/responses/actions_runner_labels/json/total_count`.
+            /// - Remark: Generated from `#/components/responses/actions_runner_labels/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/actions_runner_labels/content/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/responses/actions_runner_labels/content/json/total_count`.
                     public var total_count: Swift.Int
-                    /// - Remark: Generated from `#/components/responses/actions_runner_labels/json/labels`.
+                    /// - Remark: Generated from `#/components/responses/actions_runner_labels/content/json/labels`.
                     public var labels: [Components.Schemas.runner_label]
                     /// Creates a new `jsonPayload`.
                     ///
@@ -17239,6 +17202,7 @@ public enum Components {
                         case labels
                     }
                 }
+                /// - Remark: Generated from `#/components/responses/actions_runner_labels/content/application\/json`.
                 case json(Components.Responses.actions_runner_labels.Body.jsonPayload)
             }
             /// Received HTTP response body
@@ -17256,19 +17220,21 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct actions_runner_labels_readonly: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct actions_runner_labels_readonly: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.actions_runner_labels_readonly.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                    /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/json/total_count`.
+            /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/content/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/content/json/total_count`.
                     public var total_count: Swift.Int
-                    /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/json/labels`.
+                    /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/content/json/labels`.
                     public var labels: [Components.Schemas.runner_label]
                     /// Creates a new `jsonPayload`.
                     ///
@@ -17284,6 +17250,7 @@ public enum Components {
                         case labels
                     }
                 }
+                /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/content/application\/json`.
                 case json(Components.Responses.actions_runner_labels_readonly.Body.jsonPayload)
             }
             /// Received HTTP response body
@@ -17301,14 +17268,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct internal_error: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct internal_error: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/internal_error/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.internal_error.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/internal_error/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/internal_error/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17326,14 +17296,16 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct package_es_list_error: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct package_es_list_error: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/package_es_list_error/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.package_es_list_error.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/components/responses/package_es_list_error/content`.
+            @frozen public enum Body: Sendable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.package_es_list_error.Body?
             /// Creates a new `package_es_list_error`.
@@ -17349,14 +17321,16 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct no_content: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct no_content: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/no_content/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.no_content.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/components/responses/no_content/content`.
+            @frozen public enum Body: Sendable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.no_content.Body?
             /// Creates a new `no_content`.
@@ -17372,14 +17346,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct gone: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct gone: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/gone/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.gone.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/gone/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/gone/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17397,14 +17374,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct temporary_redirect: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct temporary_redirect: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/temporary_redirect/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.temporary_redirect.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/temporary_redirect/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/temporary_redirect/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17422,14 +17402,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct code_scanning_forbidden_read: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct code_scanning_forbidden_read: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_read/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.code_scanning_forbidden_read.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_read/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_read/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17447,14 +17430,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct code_scanning_forbidden_write: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct code_scanning_forbidden_write: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_write/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.code_scanning_forbidden_write.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_write/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_write/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17472,14 +17458,16 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct found: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct found: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/found/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.found.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/components/responses/found/content`.
+            @frozen public enum Body: Sendable, Hashable {}
             /// Received HTTP response body
             public var body: Components.Responses.found.Body?
             /// Creates a new `found`.
@@ -17495,14 +17483,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct code_scanning_conflict: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct code_scanning_conflict: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/code_scanning_conflict/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.code_scanning_conflict.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/code_scanning_conflict/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/code_scanning_conflict/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17520,14 +17511,17 @@ public enum Components {
                 self.body = body
             }
         }
-        public struct porter_maintenance: Sendable, Equatable, Hashable {
-            public struct Headers: Sendable, Equatable, Hashable {
+        public struct porter_maintenance: Sendable, Hashable {
+            /// - Remark: Generated from `#/components/responses/porter_maintenance/headers`.
+            public struct Headers: Sendable, Hashable {
                 /// Creates a new `Headers`.
                 public init() {}
             }
             /// Received HTTP response headers
             public var headers: Components.Responses.porter_maintenance.Headers
-            @frozen public enum Body: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/components/responses/porter_maintenance/content`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/components/responses/porter_maintenance/content/application\/json`.
                 case json(Components.Schemas.basic_error)
             }
             /// Received HTTP response body
@@ -17576,45 +17570,64 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
     public enum apps_create_installation_access_token {
         public static let id: String = "apps/create-installation-access-token"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the installation.
+                ///
+                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/path/installation_id`.
                 public var installation_id: Components.Parameters.installation_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - installation_id:
+                ///   - installation_id: The unique identifier of the installation.
                 public init(installation_id: Components.Parameters.installation_id) {
                     self.installation_id = installation_id
                 }
             }
             public var path: Operations.apps_create_installation_access_token.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.apps_create_installation_access_token.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.apps_create_installation_access_token.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.apps_create_installation_access_token.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.apps_create_installation_access_token.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.apps_create_installation_access_token.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// List of repository names that the token should have access to
                     ///
-                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json/repositories`.
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody/json/repositories`.
                     public var repositories: [Swift.String]?
                     /// List of repository IDs that the token should have access to
                     ///
-                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json/repository_ids`.
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody/json/repository_ids`.
                     public var repository_ids: [Swift.Int]?
-                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/json/permissions`.
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody/json/permissions`.
                     public var permissions: Components.Schemas.app_permissions?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -17637,6 +17650,7 @@ public enum Operations {
                         case permissions
                     }
                 }
+                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody/content/application\/json`.
                 case json(Operations.apps_create_installation_access_token.Input.Body.jsonPayload)
             }
             public var body: Operations.apps_create_installation_access_token.Input.Body?
@@ -17662,16 +17676,19 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers:
                     Operations.apps_create_installation_access_token.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.installation_token)
                 }
                 /// Received HTTP response body
@@ -17726,6 +17743,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get an organization
     ///
@@ -17737,32 +17771,51 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//orgs/{org}/get(orgs/get)`.
     public enum orgs_get {
         public static let id: String = "orgs/get"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/orgs/{org}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The organization name. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/orgs/{org}/GET/path/org`.
                 public var org: Components.Parameters.org
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - org:
+                ///   - org: The organization name. The name is not case sensitive.
                 public init(org: Components.Parameters.org) { self.org = org }
             }
             public var path: Operations.orgs_get.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/orgs/{org}/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.orgs_get.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/orgs/{org}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.orgs_get.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.orgs_get.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.orgs_get.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/orgs/{org}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.orgs_get.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/orgs/{org}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.orgs_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -17786,15 +17839,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/orgs/{org}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.orgs_get.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/orgs/{org}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/orgs/{org}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.organization_full)
                 }
                 /// Received HTTP response body
@@ -17829,6 +17885,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get a project card
     ///
@@ -17838,32 +17911,51 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)`.
     public enum projects_get_card {
         public static let id: String = "projects/get-card"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the card.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/path/card_id`.
                 public var card_id: Components.Parameters.card_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - card_id:
+                ///   - card_id: The unique identifier of the card.
                 public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
             }
             public var path: Operations.projects_get_card.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_get_card.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get_card.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get_card.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_get_card.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_get_card.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_get_card.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -17887,15 +17979,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_get_card.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.project_card)
                 }
                 /// Received HTTP response body
@@ -17948,6 +18043,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Update an existing project card
     ///
@@ -17955,41 +18067,60 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
     public enum projects_update_card {
         public static let id: String = "projects/update-card"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the card.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/path/card_id`.
                 public var card_id: Components.Parameters.card_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - card_id:
+                ///   - card_id: The unique identifier of the card.
                 public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
             }
             public var path: Operations.projects_update_card.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_update_card.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_update_card.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_update_card.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_update_card.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_update_card.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The project card's note
                     ///
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/json/note`.
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/requestBody/json/note`.
                     public var note: Swift.String?
                     /// Whether or not the card is archived
                     ///
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/json/archived`.
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/requestBody/json/archived`.
                     public var archived: Swift.Bool?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -18005,6 +18136,7 @@ public enum Operations {
                         case archived
                     }
                 }
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/requestBody/content/application\/json`.
                 case json(Operations.projects_update_card.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_update_card.Input.Body?
@@ -18030,15 +18162,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_update_card.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/responses/200/content/application\/json`.
                     case json(Components.Schemas.project_card)
                 }
                 /// Received HTTP response body
@@ -18097,6 +18232,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Delete a project card
     ///
@@ -18106,32 +18258,51 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)`.
     public enum projects_delete_card {
         public static let id: String = "projects/delete-card"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the card.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/path/card_id`.
                 public var card_id: Components.Parameters.card_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - card_id:
+                ///   - card_id: The unique identifier of the card.
                 public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
             }
             public var path: Operations.projects_delete_card.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_delete_card.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_delete_card.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_delete_card.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_delete_card.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_delete_card.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_delete_card.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -18155,15 +18326,17 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct NoContent: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct NoContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/204/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_delete_card.Output.NoContent.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/204/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.projects_delete_card.Output.NoContent.Body?
                 /// Creates a new `NoContent`.
@@ -18191,21 +18364,23 @@ public enum Operations {
             ///
             /// HTTP response code: `304 notModified`.
             case notModified(Components.Responses.not_modified)
-            public struct Forbidden: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct Forbidden: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_delete_card.Output.Forbidden.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json/message`.
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/content/json/message`.
                         public var message: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json/documentation_url`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/content/json/documentation_url`.
                         public var documentation_url: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/content/json/errors`.
                         public var errors: [Swift.String]?
                         /// Creates a new `jsonPayload`.
                         ///
@@ -18228,6 +18403,7 @@ public enum Operations {
                             case errors
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/responses/403/content/application\/json`.
                     case json(Operations.projects_delete_card.Output.Forbidden.Body.jsonPayload)
                 }
                 /// Received HTTP response body
@@ -18268,6 +18444,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Move a project card
     ///
@@ -18275,41 +18468,60 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
     public enum projects_move_card {
         public static let id: String = "projects/move-card"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the card.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/path/card_id`.
                 public var card_id: Components.Parameters.card_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - card_id:
+                ///   - card_id: The unique identifier of the card.
                 public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
             }
             public var path: Operations.projects_move_card.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_move_card.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_move_card.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_move_card.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_move_card.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_move_card.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The position of the card in a column. Can be one of: `top`, `bottom`, or `after:<card_id>` to place after the specified card.
                     ///
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/position`.
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/requestBody/json/position`.
                     public var position: Swift.String
                     /// The unique identifier of the column the card should be moved to
                     ///
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/column_id`.
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/requestBody/json/column_id`.
                     public var column_id: Swift.Int?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -18325,6 +18537,7 @@ public enum Operations {
                         case column_id
                     }
                 }
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/requestBody/content/application\/json`.
                 case json(Operations.projects_move_card.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_move_card.Input.Body
@@ -18350,23 +18563,26 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_move_card.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/201/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
                         /// Creates a new `jsonPayload`.
                         public init() {}
                         public init(from decoder: any Decoder) throws {
                             try decoder.ensureNoAdditionalProperties(knownKeys: [])
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/201/content/application\/json`.
                     case json(Operations.projects_move_card.Output.Created.Body.jsonPayload)
                 }
                 /// Received HTTP response body
@@ -18396,29 +18612,31 @@ public enum Operations {
             ///
             /// HTTP response code: `304 notModified`.
             case notModified(Components.Responses.not_modified)
-            public struct Forbidden: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct Forbidden: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_move_card.Output.Forbidden.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/message`.
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/message`.
                         public var message: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/documentation_url`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/documentation_url`.
                         public var documentation_url: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload`.
-                        public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
-                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/code`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errorsPayload`.
+                        public struct errorsPayloadPayload: Codable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errorsPayload/code`.
                             public var code: Swift.String?
-                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/message`.
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errorsPayload/message`.
                             public var message: Swift.String?
-                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/resource`.
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errorsPayload/resource`.
                             public var resource: Swift.String?
-                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/field`.
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errorsPayload/field`.
                             public var field: Swift.String?
                             /// Creates a new `errorsPayloadPayload`.
                             ///
@@ -18445,10 +18663,10 @@ public enum Operations {
                                 case field
                             }
                         }
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errors`.
                         public typealias errorsPayload = [Operations.projects_move_card.Output
                             .Forbidden.Body.jsonPayload.errorsPayloadPayload]
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errors`.
                         public var errors:
                             Operations.projects_move_card.Output.Forbidden.Body.jsonPayload
                                 .errorsPayload?
@@ -18474,6 +18692,7 @@ public enum Operations {
                             case errors
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/application\/json`.
                     case json(Operations.projects_move_card.Output.Forbidden.Body.jsonPayload)
                 }
                 /// Received HTTP response body
@@ -18503,27 +18722,29 @@ public enum Operations {
             ///
             /// HTTP response code: `401 unauthorized`.
             case unauthorized(Components.Responses.requires_authentication)
-            public struct ServiceUnavailable: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct ServiceUnavailable: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_move_card.Output.ServiceUnavailable.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/code`.
+                /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/code`.
                         public var code: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/message`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/message`.
                         public var message: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/documentation_url`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/documentation_url`.
                         public var documentation_url: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload`.
-                        public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
-                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/code`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errorsPayload`.
+                        public struct errorsPayloadPayload: Codable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errorsPayload/code`.
                             public var code: Swift.String?
-                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errorsPayload/message`.
+                            /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errorsPayload/message`.
                             public var message: Swift.String?
                             /// Creates a new `errorsPayloadPayload`.
                             ///
@@ -18539,10 +18760,10 @@ public enum Operations {
                                 case message
                             }
                         }
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errors`.
                         public typealias errorsPayload = [Operations.projects_move_card.Output
                             .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
-                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errors`.
                         public var errors:
                             Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
                                 .errorsPayload?
@@ -18572,6 +18793,7 @@ public enum Operations {
                             case errors
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/application\/json`.
                     case json(
                         Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
                     )
@@ -18609,6 +18831,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get a project column
     ///
@@ -18618,34 +18857,53 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
     public enum projects_get_column {
         public static let id: String = "projects/get-column"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the column.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/path/column_id`.
                 public var column_id: Components.Parameters.column_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - column_id:
+                ///   - column_id: The unique identifier of the column.
                 public init(column_id: Components.Parameters.column_id) {
                     self.column_id = column_id
                 }
             }
             public var path: Operations.projects_get_column.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_get_column.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get_column.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get_column.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_get_column.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_get_column.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_get_column.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -18669,15 +18927,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_get_column.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.project_column)
                 }
                 /// Received HTTP response body
@@ -18730,6 +18991,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Update an existing project column
     ///
@@ -18737,39 +19015,58 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
     public enum projects_update_column {
         public static let id: String = "projects/update-column"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the column.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/path/column_id`.
                 public var column_id: Components.Parameters.column_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - column_id:
+                ///   - column_id: The unique identifier of the column.
                 public init(column_id: Components.Parameters.column_id) {
                     self.column_id = column_id
                 }
             }
             public var path: Operations.projects_update_column.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_update_column.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_update_column.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_update_column.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_update_column.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_update_column.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// Name of the project column
                     ///
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/json/name`.
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/requestBody/json/name`.
                     public var name: Swift.String
                     /// Creates a new `jsonPayload`.
                     ///
@@ -18778,6 +19075,7 @@ public enum Operations {
                     public init(name: Swift.String) { self.name = name }
                     public enum CodingKeys: String, CodingKey { case name }
                 }
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/requestBody/content/application\/json`.
                 case json(Operations.projects_update_column.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_update_column.Input.Body
@@ -18803,15 +19101,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_update_column.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/responses/200/content/application\/json`.
                     case json(Components.Schemas.project_column)
                 }
                 /// Received HTTP response body
@@ -18858,6 +19159,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Delete a project column
     ///
@@ -18867,34 +19185,53 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)`.
     public enum projects_delete_column {
         public static let id: String = "projects/delete-column"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the column.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/path/column_id`.
                 public var column_id: Components.Parameters.column_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - column_id:
+                ///   - column_id: The unique identifier of the column.
                 public init(column_id: Components.Parameters.column_id) {
                     self.column_id = column_id
                 }
             }
             public var path: Operations.projects_delete_column.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_delete_column.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_delete_column.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_delete_column.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_delete_column.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_delete_column.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_delete_column.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -18918,15 +19255,17 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct NoContent: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct NoContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/responses/204/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_delete_column.Output.NoContent.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/responses/204/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.projects_delete_column.Output.NoContent.Body?
                 /// Creates a new `NoContent`.
@@ -18971,6 +19310,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List project cards
     ///
@@ -18980,23 +19336,28 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)`.
     public enum projects_list_cards {
         public static let id: String = "projects/list-cards"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the column.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/path/column_id`.
                 public var column_id: Components.Parameters.column_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - column_id:
+                ///   - column_id: The unique identifier of the column.
                 public init(column_id: Components.Parameters.column_id) {
                     self.column_id = column_id
                 }
             }
             public var path: Operations.projects_list_cards.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/archived_state`.
                 @frozen
-                public enum archived_statePayload: RawRepresentable, Codable, Equatable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum archived_statePayload: RawRepresentable, Codable, Hashable, Sendable,
+                    _AutoLosslessStringConvertible, CaseIterable
                 {
                     case all
                     case archived
@@ -19019,20 +19380,27 @@ public enum Operations {
                         case .not_archived: return "not_archived"
                         }
                     }
-                    public static var allCases: [archived_statePayload] {
-                        [.all, .archived, .not_archived]
-                    }
+                    public static var allCases: [Self] { [.all, .archived, .not_archived] }
                 }
+                /// Filters the project cards that are returned by the card's state.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/archived_state`.
                 public var archived_state:
                     Operations.projects_list_cards.Input.Query.archived_statePayload?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - archived_state:
-                ///   - per_page:
-                ///   - page:
+                ///   - archived_state: Filters the project cards that are returned by the card's state.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     archived_state: Operations.projects_list_cards.Input.Query
                         .archived_statePayload? = nil,
@@ -19045,17 +19413,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.projects_list_cards.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_list_cards.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_list_cards.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_list_cards.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_list_cards.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_list_cards.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -19079,9 +19461,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -19091,7 +19475,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_list_cards.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.project_card])
                 }
                 /// Received HTTP response body
@@ -19138,6 +19524,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Create a project card
     ///
@@ -19145,41 +19548,60 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
     public enum projects_create_card {
         public static let id: String = "projects/create-card"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the column.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/path/column_id`.
                 public var column_id: Components.Parameters.column_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - column_id:
+                ///   - column_id: The unique identifier of the column.
                 public init(column_id: Components.Parameters.column_id) {
                     self.column_id = column_id
                 }
             }
             public var path: Operations.projects_create_card.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_create_card.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_create_card.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_create_card.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_create_card.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_create_card.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json`.
-                @frozen public enum jsonPayload: Codable, Equatable, Hashable, Sendable {
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1`.
-                    public struct Case1Payload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json`.
+                @frozen public enum jsonPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case1`.
+                    public struct Case1Payload: Codable, Hashable, Sendable {
                         /// The project card's note
                         ///
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1/note`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case1/note`.
                         public var note: Swift.String
                         /// Creates a new `Case1Payload`.
                         ///
@@ -19188,17 +19610,17 @@ public enum Operations {
                         public init(note: Swift.String) { self.note = note }
                         public enum CodingKeys: String, CodingKey { case note }
                     }
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1`.
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case1`.
                     case case1(Operations.projects_create_card.Input.Body.jsonPayload.Case1Payload)
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2`.
-                    public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case2`.
+                    public struct Case2Payload: Codable, Hashable, Sendable {
                         /// The unique identifier of the content associated with the card
                         ///
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2/content_id`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case2/content_id`.
                         public var content_id: Swift.Int
                         /// The piece of content associated with the card
                         ///
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2/content_type`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case2/content_type`.
                         public var content_type: Swift.String
                         /// Creates a new `Case2Payload`.
                         ///
@@ -19214,7 +19636,7 @@ public enum Operations {
                             case content_type
                         }
                     }
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2`.
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case2`.
                     case case2(Operations.projects_create_card.Input.Body.jsonPayload.Case2Payload)
                     /// Parsed a case that was not defined in the OpenAPI document.
                     case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
@@ -19239,6 +19661,7 @@ public enum Operations {
                         }
                     }
                 }
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/content/application\/json`.
                 case json(Operations.projects_create_card.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_create_card.Input.Body
@@ -19264,15 +19687,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_create_card.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.project_card)
                 }
                 /// Received HTTP response body
@@ -19314,20 +19740,22 @@ public enum Operations {
             ///
             /// HTTP response code: `401 unauthorized`.
             case unauthorized(Components.Responses.requires_authentication)
-            public struct UnprocessableEntity: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct UnprocessableEntity: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers:
                     Operations.projects_create_card.Output.UnprocessableEntity.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json`.
-                    @frozen public enum jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case1`.
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/json`.
+                    @frozen public enum jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/json/case1`.
                         case validation_error(Components.Schemas.validation_error)
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/case2`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/json/case2`.
                         case validation_error_simple(Components.Schemas.validation_error_simple)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
@@ -19354,6 +19782,7 @@ public enum Operations {
                             }
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/application\/json`.
                     case json(
                         Operations.projects_create_card.Output.UnprocessableEntity.Body.jsonPayload
                     )
@@ -19380,28 +19809,30 @@ public enum Operations {
             ///
             /// HTTP response code: `422 unprocessableEntity`.
             case unprocessableEntity(Operations.projects_create_card.Output.UnprocessableEntity)
-            public struct ServiceUnavailable: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct ServiceUnavailable: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers:
                     Operations.projects_create_card.Output.ServiceUnavailable.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/code`.
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/code`.
                         public var code: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/message`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/message`.
                         public var message: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/documentation_url`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/documentation_url`.
                         public var documentation_url: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errorsPayload`.
-                        public struct errorsPayloadPayload: Codable, Equatable, Hashable, Sendable {
-                            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errorsPayload/code`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errorsPayload`.
+                        public struct errorsPayloadPayload: Codable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errorsPayload/code`.
                             public var code: Swift.String?
-                            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errorsPayload/message`.
+                            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errorsPayload/message`.
                             public var message: Swift.String?
                             /// Creates a new `errorsPayloadPayload`.
                             ///
@@ -19417,10 +19848,10 @@ public enum Operations {
                                 case message
                             }
                         }
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errors`.
                         public typealias errorsPayload = [Operations.projects_create_card.Output
                             .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
-                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errors`.
                         public var errors:
                             Operations.projects_create_card.Output.ServiceUnavailable.Body
                                 .jsonPayload.errorsPayload?
@@ -19450,6 +19881,7 @@ public enum Operations {
                             case errors
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/application\/json`.
                     case json(
                         Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload
                     )
@@ -19481,6 +19913,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Move a project column
     ///
@@ -19488,39 +19937,58 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
     public enum projects_move_column {
         public static let id: String = "projects/move-column"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the column.
+                ///
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/path/column_id`.
                 public var column_id: Components.Parameters.column_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - column_id:
+                ///   - column_id: The unique identifier of the column.
                 public init(column_id: Components.Parameters.column_id) {
                     self.column_id = column_id
                 }
             }
             public var path: Operations.projects_move_column.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_move_column.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_move_column.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_move_column.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_move_column.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_move_column.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The position of the column in a project. Can be one of: `first`, `last`, or `after:<column_id>` to place after the specified column.
                     ///
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/json/position`.
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/requestBody/json/position`.
                     public var position: Swift.String
                     /// Creates a new `jsonPayload`.
                     ///
@@ -19529,6 +19997,7 @@ public enum Operations {
                     public init(position: Swift.String) { self.position = position }
                     public enum CodingKeys: String, CodingKey { case position }
                 }
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/requestBody/content/application\/json`.
                 case json(Operations.projects_move_column.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_move_column.Input.Body
@@ -19554,23 +20023,26 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_move_column.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+                /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/responses/201/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
                         /// Creates a new `jsonPayload`.
                         public init() {}
                         public init(from decoder: any Decoder) throws {
                             try decoder.ensureNoAdditionalProperties(knownKeys: [])
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/responses/201/content/application\/json`.
                     case json(Operations.projects_move_column.Output.Created.Body.jsonPayload)
                 }
                 /// Received HTTP response body
@@ -19623,6 +20095,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get a project
     ///
@@ -19632,34 +20121,53 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)`.
     public enum projects_get {
         public static let id: String = "projects/get"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/GET/path/project_id`.
                 public var project_id: Components.Parameters.project_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
+                ///   - project_id: The unique identifier of the project.
                 public init(project_id: Components.Parameters.project_id) {
                     self.project_id = project_id
                 }
             }
             public var path: Operations.projects_get.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_get.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_get.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_get.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/{project_id}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -19683,15 +20191,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_get.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.project)
                 }
                 /// Received HTTP response body
@@ -19738,6 +20249,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Update a project
     ///
@@ -19747,54 +20275,73 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
     public enum projects_update {
         public static let id: String = "projects/update"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/path/project_id`.
                 public var project_id: Components.Parameters.project_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
+                ///   - project_id: The unique identifier of the project.
                 public init(project_id: Components.Parameters.project_id) {
                     self.project_id = project_id
                 }
             }
             public var path: Operations.projects_update.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_update.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_update.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_update.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_update.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_update.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// Name of the project
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/name`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/name`.
                     public var name: Swift.String?
                     /// Body of the project
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/body`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/body`.
                     public var body: Swift.String?
                     /// State of the project; either 'open' or 'closed'
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/state`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/state`.
                     public var state: Swift.String?
                     /// The baseline permission that all organization members have on this project
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/organization_permission`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/organization_permission`.
                     @frozen
-                    public enum organization_permissionPayload: RawRepresentable, Codable,
-                        Equatable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    public enum organization_permissionPayload: RawRepresentable, Codable, Hashable,
+                        Sendable, _AutoLosslessStringConvertible, CaseIterable
                     {
                         case read
                         case write
@@ -19820,19 +20367,17 @@ public enum Operations {
                             case .none: return "none"
                             }
                         }
-                        public static var allCases: [organization_permissionPayload] {
-                            [.read, .write, .admin, .none]
-                        }
+                        public static var allCases: [Self] { [.read, .write, .admin, .none] }
                     }
                     /// The baseline permission that all organization members have on this project
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/organization_permission`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/organization_permission`.
                     public var organization_permission:
                         Operations.projects_update.Input.Body.jsonPayload
                             .organization_permissionPayload?
                     /// Whether or not this project can be seen by everyone.
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/private`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/private`.
                     public var _private: Swift.Bool?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -19864,6 +20409,7 @@ public enum Operations {
                         case _private = "private"
                     }
                 }
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/content/application\/json`.
                 case json(Operations.projects_update.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_update.Input.Body?
@@ -19889,15 +20435,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_update.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/200/content/application\/json`.
                     case json(Components.Schemas.project)
                 }
                 /// Received HTTP response body
@@ -19921,14 +20470,16 @@ public enum Operations {
             ///
             /// HTTP response code: `200 ok`.
             case ok(Operations.projects_update.Output.Ok)
-            public struct NotFound: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct NotFound: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/404/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_update.Output.NotFound.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/404/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.projects_update.Output.NotFound.Body?
                 /// Creates a new `NotFound`.
@@ -19956,21 +20507,23 @@ public enum Operations {
             ///
             /// HTTP response code: `304 notModified`.
             case notModified(Components.Responses.not_modified)
-            public struct Forbidden: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct Forbidden: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_update.Output.Forbidden.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/message`.
+                /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/content/json/message`.
                         public var message: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/documentation_url`.
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/content/json/documentation_url`.
                         public var documentation_url: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/content/json/errors`.
                         public var errors: [Swift.String]?
                         /// Creates a new `jsonPayload`.
                         ///
@@ -19993,6 +20546,7 @@ public enum Operations {
                             case errors
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/responses/403/content/application\/json`.
                     case json(Operations.projects_update.Output.Forbidden.Body.jsonPayload)
                 }
                 /// Received HTTP response body
@@ -20039,6 +20593,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Delete a project
     ///
@@ -20048,34 +20619,53 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
     public enum projects_delete {
         public static let id: String = "projects/delete"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/path/project_id`.
                 public var project_id: Components.Parameters.project_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
+                ///   - project_id: The unique identifier of the project.
                 public init(project_id: Components.Parameters.project_id) {
                     self.project_id = project_id
                 }
             }
             public var path: Operations.projects_delete.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_delete.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_delete.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_delete.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_delete.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_delete.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_delete.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -20099,15 +20689,17 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct NoContent: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct NoContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/204/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_delete.Output.NoContent.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/204/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.projects_delete.Output.NoContent.Body?
                 /// Creates a new `NoContent`.
@@ -20135,21 +20727,23 @@ public enum Operations {
             ///
             /// HTTP response code: `304 notModified`.
             case notModified(Components.Responses.not_modified)
-            public struct Forbidden: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct Forbidden: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_delete.Output.Forbidden.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json`.
-                    public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json/message`.
+                /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/content/json`.
+                    public struct jsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/content/json/message`.
                         public var message: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json/documentation_url`.
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/content/json/documentation_url`.
                         public var documentation_url: Swift.String?
-                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/json/errors`.
+                        /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/content/json/errors`.
                         public var errors: [Swift.String]?
                         /// Creates a new `jsonPayload`.
                         ///
@@ -20172,6 +20766,7 @@ public enum Operations {
                             case errors
                         }
                     }
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/responses/403/content/application\/json`.
                     case json(Operations.projects_delete.Output.Forbidden.Body.jsonPayload)
                 }
                 /// Received HTTP response body
@@ -20218,6 +20813,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List project collaborators
     ///
@@ -20227,23 +20839,28 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
     public enum projects_list_collaborators {
         public static let id: String = "projects/list-collaborators"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/path/project_id`.
                 public var project_id: Components.Parameters.project_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
+                ///   - project_id: The unique identifier of the project.
                 public init(project_id: Components.Parameters.project_id) {
                     self.project_id = project_id
                 }
             }
             public var path: Operations.projects_list_collaborators.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/affiliation`.
                 @frozen
-                public enum affiliationPayload: RawRepresentable, Codable, Equatable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum affiliationPayload: RawRepresentable, Codable, Hashable, Sendable,
+                    _AutoLosslessStringConvertible, CaseIterable
                 {
                     case outside
                     case direct
@@ -20266,18 +20883,27 @@ public enum Operations {
                         case .all: return "all"
                         }
                     }
-                    public static var allCases: [affiliationPayload] { [.outside, .direct, .all] }
+                    public static var allCases: [Self] { [.outside, .direct, .all] }
                 }
+                /// Filters the collaborators by their affiliation. `outside` means outside collaborators of a project that are not a member of the project's organization. `direct` means collaborators with permissions to a project, regardless of organization membership status. `all` means all collaborators the authenticated user can see.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/affiliation`.
                 public var affiliation:
                     Operations.projects_list_collaborators.Input.Query.affiliationPayload?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - affiliation:
-                ///   - per_page:
-                ///   - page:
+                ///   - affiliation: Filters the collaborators by their affiliation. `outside` means outside collaborators of a project that are not a member of the project's organization. `direct` means collaborators with permissions to a project, regardless of organization membership status. `all` means all collaborators the authenticated user can see.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     affiliation: Operations.projects_list_collaborators.Input.Query
                         .affiliationPayload? = nil,
@@ -20290,17 +20916,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.projects_list_collaborators.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_list_collaborators.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_list_collaborators.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_list_collaborators.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_list_collaborators.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_list_collaborators.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -20324,9 +20964,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -20336,7 +20978,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_list_collaborators.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.simple_user])
                 }
                 /// Received HTTP response body
@@ -20395,6 +21039,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Add project collaborator
     ///
@@ -20404,15 +21065,22 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)`.
     public enum projects_add_collaborator {
         public static let id: String = "projects/add-collaborator"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/path/project_id`.
                 public var project_id: Components.Parameters.project_id
+                /// The handle for the GitHub user account.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/path/username`.
                 public var username: Components.Parameters.username
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
-                ///   - username:
+                ///   - project_id: The unique identifier of the project.
+                ///   - username: The handle for the GitHub user account.
                 public init(
                     project_id: Components.Parameters.project_id,
                     username: Components.Parameters.username
@@ -20422,30 +21090,45 @@ public enum Operations {
                 }
             }
             public var path: Operations.projects_add_collaborator.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_add_collaborator.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_add_collaborator.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_add_collaborator.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_add_collaborator.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_add_collaborator.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The permission to grant the collaborator.
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/json/permission`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/json/permission`.
                     @frozen
-                    public enum permissionPayload: RawRepresentable, Codable, Equatable, Hashable,
-                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    public enum permissionPayload: RawRepresentable, Codable, Hashable, Sendable,
+                        _AutoLosslessStringConvertible, CaseIterable
                     {
                         case read
                         case write
@@ -20468,11 +21151,11 @@ public enum Operations {
                             case .admin: return "admin"
                             }
                         }
-                        public static var allCases: [permissionPayload] { [.read, .write, .admin] }
+                        public static var allCases: [Self] { [.read, .write, .admin] }
                     }
                     /// The permission to grant the collaborator.
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/json/permission`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/json/permission`.
                     public var permission:
                         Operations.projects_add_collaborator.Input.Body.jsonPayload
                             .permissionPayload?
@@ -20486,6 +21169,7 @@ public enum Operations {
                     ) { self.permission = permission }
                     public enum CodingKeys: String, CodingKey { case permission }
                 }
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/content/application\/json`.
                 case json(Operations.projects_add_collaborator.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_add_collaborator.Input.Body?
@@ -20511,15 +21195,17 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct NoContent: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct NoContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/responses/204/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_add_collaborator.Output.NoContent.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/responses/204/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.projects_add_collaborator.Output.NoContent.Body?
                 /// Creates a new `NoContent`.
@@ -20577,6 +21263,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Remove user as a collaborator
     ///
@@ -20586,15 +21289,22 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
     public enum projects_remove_collaborator {
         public static let id: String = "projects/remove-collaborator"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/path/project_id`.
                 public var project_id: Components.Parameters.project_id
+                /// The handle for the GitHub user account.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/path/username`.
                 public var username: Components.Parameters.username
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
-                ///   - username:
+                ///   - project_id: The unique identifier of the project.
+                ///   - username: The handle for the GitHub user account.
                 public init(
                     project_id: Components.Parameters.project_id,
                     username: Components.Parameters.username
@@ -20604,22 +21314,37 @@ public enum Operations {
                 }
             }
             public var path: Operations.projects_remove_collaborator.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_remove_collaborator.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_remove_collaborator.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_remove_collaborator.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_remove_collaborator.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_remove_collaborator.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_remove_collaborator.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -20643,15 +21368,17 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct NoContent: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct NoContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/responses/204/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_remove_collaborator.Output.NoContent.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/responses/204/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.projects_remove_collaborator.Output.NoContent.Body?
                 /// Creates a new `NoContent`.
@@ -20709,6 +21436,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get project permission for a user
     ///
@@ -20718,15 +21462,22 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
     public enum projects_get_permission_for_user {
         public static let id: String = "projects/get-permission-for-user"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/path/project_id`.
                 public var project_id: Components.Parameters.project_id
+                /// The handle for the GitHub user account.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/path/username`.
                 public var username: Components.Parameters.username
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
-                ///   - username:
+                ///   - project_id: The unique identifier of the project.
+                ///   - username: The handle for the GitHub user account.
                 public init(
                     project_id: Components.Parameters.project_id,
                     username: Components.Parameters.username
@@ -20736,22 +21487,37 @@ public enum Operations {
                 }
             }
             public var path: Operations.projects_get_permission_for_user.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_get_permission_for_user.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get_permission_for_user.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_get_permission_for_user.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_get_permission_for_user.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_get_permission_for_user.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_get_permission_for_user.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -20775,15 +21541,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_get_permission_for_user.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.project_collaborator_permission)
                 }
                 /// Received HTTP response body
@@ -20843,6 +21612,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List project columns
     ///
@@ -20852,26 +21638,37 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)`.
     public enum projects_list_columns {
         public static let id: String = "projects/list-columns"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/path/project_id`.
                 public var project_id: Components.Parameters.project_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
+                ///   - project_id: The unique identifier of the project.
                 public init(project_id: Components.Parameters.project_id) {
                     self.project_id = project_id
                 }
             }
             public var path: Operations.projects_list_columns.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - per_page:
-                ///   - page:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -20881,17 +21678,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.projects_list_columns.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_list_columns.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_list_columns.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_list_columns.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_list_columns.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.projects_list_columns.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -20915,9 +21726,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -20927,7 +21740,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_list_columns.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.project_column])
                 }
                 /// Received HTTP response body
@@ -20974,6 +21789,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Create a project column
     ///
@@ -20983,39 +21815,58 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)`.
     public enum projects_create_column {
         public static let id: String = "projects/create-column"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The unique identifier of the project.
+                ///
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/path/project_id`.
                 public var project_id: Components.Parameters.project_id
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - project_id:
+                ///   - project_id: The unique identifier of the project.
                 public init(project_id: Components.Parameters.project_id) {
                     self.project_id = project_id
                 }
             }
             public var path: Operations.projects_create_column.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.projects_create_column.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_create_column.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.projects_create_column.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.projects_create_column.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.projects_create_column.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// Name of the project column
                     ///
-                    /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/json/name`.
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/requestBody/json/name`.
                     public var name: Swift.String
                     /// Creates a new `jsonPayload`.
                     ///
@@ -21024,6 +21875,7 @@ public enum Operations {
                     public init(name: Swift.String) { self.name = name }
                     public enum CodingKeys: String, CodingKey { case name }
                 }
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/requestBody/content/application\/json`.
                 case json(Operations.projects_create_column.Input.Body.jsonPayload)
             }
             public var body: Operations.projects_create_column.Input.Body
@@ -21049,15 +21901,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_create_column.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.project_column)
                 }
                 /// Received HTTP response body
@@ -21110,6 +21965,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get rate limit status for the authenticated user
     ///
@@ -21121,28 +21993,44 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
     public enum rate_limit_get {
         public static let id: String = "rate-limit/get"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/rate_limit/GET/path`.
+            public struct Path: Sendable, Hashable {
                 /// Creates a new `Path`.
                 public init() {}
             }
             public var path: Operations.rate_limit_get.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/rate_limit/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.rate_limit_get.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/rate_limit/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.rate_limit_get.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.rate_limit_get.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.rate_limit_get.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/rate_limit/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.rate_limit_get.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/rate_limit/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.rate_limit_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -21166,11 +22054,15 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers/X-RateLimit-Limit`.
                     public var X_RateLimit_Limit: Components.Headers.x_rate_limit_limit?
+                    /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers/X-RateLimit-Remaining`.
                     public var X_RateLimit_Remaining: Components.Headers.x_rate_limit_remaining?
+                    /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers/X-RateLimit-Reset`.
                     public var X_RateLimit_Reset: Components.Headers.x_rate_limit_reset?
                     /// Creates a new `Headers`.
                     ///
@@ -21190,7 +22082,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.rate_limit_get.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.rate_limit_overview)
                 }
                 /// Received HTTP response body
@@ -21231,6 +22125,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get a repository
     ///
@@ -21242,37 +22153,59 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
     public enum repos_get {
         public static let id: String = "repos/get"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_get.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.repos_get.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_get.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_get.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_get.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_get.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -21296,15 +22229,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_get.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.full_repository)
                 }
                 /// Received HTTP response body
@@ -21351,6 +22287,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List commits
     ///
@@ -21387,41 +22340,73 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
     public enum repos_list_commits {
         public static let id: String = "repos/list-commits"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_list_commits.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// SHA or branch to start listing commits from. Default: the repository’s default branch (usually `main`).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/sha`.
                 public var sha: Swift.String?
+                /// Only commits containing this file path will be returned.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/path`.
                 public var path: Swift.String?
+                /// GitHub username or email address to use to filter by commit author.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/author`.
                 public var author: Swift.String?
+                /// GitHub username or email address to use to filter by commit committer.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/committer`.
                 public var committer: Swift.String?
+                /// Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/since`.
                 public var since: Components.Parameters.since?
+                /// Only commits before this date will be returned. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/until`.
                 public var until: Foundation.Date?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - sha:
-                ///   - path:
-                ///   - author:
-                ///   - committer:
-                ///   - since:
-                ///   - until:
-                ///   - per_page:
-                ///   - page:
+                ///   - sha: SHA or branch to start listing commits from. Default: the repository’s default branch (usually `main`).
+                ///   - path: Only commits containing this file path will be returned.
+                ///   - author: GitHub username or email address to use to filter by commit author.
+                ///   - committer: GitHub username or email address to use to filter by commit committer.
+                ///   - since: Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///   - until: Only commits before this date will be returned. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     sha: Swift.String? = nil,
                     path: Swift.String? = nil,
@@ -21443,17 +22428,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.repos_list_commits.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_commits.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_commits.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_list_commits.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_list_commits.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_list_commits.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -21477,9 +22476,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -21489,7 +22490,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_commits.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.commit])
                 }
                 /// Received HTTP response body
@@ -21542,6 +22545,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List pull requests associated with a commit
     ///
@@ -21553,17 +22573,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
     public enum repos_list_pull_requests_associated_with_commit {
         public static let id: String = "repos/list-pull-requests-associated-with-commit"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The SHA of the commit.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/path/commit_sha`.
                 public var commit_sha: Components.Parameters.commit_sha
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - commit_sha:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - commit_sha: The SHA of the commit.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -21575,14 +22605,21 @@ public enum Operations {
                 }
             }
             public var path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - per_page:
-                ///   - page:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -21592,19 +22629,35 @@ public enum Operations {
                 }
             }
             public var query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_pull_requests_associated_with_commit
+                            .AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_pull_requests_associated_with_commit
+                            .AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers:
                 Operations.repos_list_pull_requests_associated_with_commit.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies:
                 Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -21631,9 +22684,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -21644,7 +22699,9 @@ public enum Operations {
                 /// Received HTTP response headers
                 public var headers:
                     Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.pull_request_simple])
                 }
                 /// Received HTTP response body
@@ -21674,6 +22731,23 @@ public enum Operations {
             ///
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
         }
     }
     /// Compare two commits
@@ -21728,17 +22802,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
     public enum repos_compare_commits {
         public static let id: String = "repos/compare-commits"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The base branch and head branch to compare. This parameter expects the format `BASE...HEAD`. Both must be branch names in `repo`. To compare with a branch that exists in a different repository in the same network as `repo`, the `basehead` parameter expects the format `USERNAME:BASE...USERNAME:HEAD`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/path/basehead`.
                 public var basehead: Swift.String
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - basehead:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - basehead: The base branch and head branch to compare. This parameter expects the format `BASE...HEAD`. Both must be branch names in `repo`. To compare with a branch that exists in a different repository in the same network as `repo`, the `basehead` parameter expects the format `USERNAME:BASE...USERNAME:HEAD`.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -21750,14 +22834,21 @@ public enum Operations {
                 }
             }
             public var path: Operations.repos_compare_commits.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/query/page`.
                 public var page: Components.Parameters.page?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - page:
-                ///   - per_page:
+                ///   - page: Page number of the results to fetch.
+                ///   - per_page: The number of results per page (max 100).
                 public init(
                     page: Components.Parameters.page? = nil,
                     per_page: Components.Parameters.per_page? = nil
@@ -21767,17 +22858,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.repos_compare_commits.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_compare_commits.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_compare_commits.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_compare_commits.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_compare_commits.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_compare_commits.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -21801,15 +22906,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_compare_commits.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.commit_comparison)
                 }
                 /// Received HTTP response body
@@ -21856,6 +22964,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List repository contributors
     ///
@@ -21867,31 +22992,48 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
     public enum repos_list_contributors {
         public static let id: String = "repos/list-contributors"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_list_contributors.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// Set to `1` or `true` to include anonymous contributors in results.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/query/anon`.
                 public var anon: Swift.String?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - anon:
-                ///   - per_page:
-                ///   - page:
+                ///   - anon: Set to `1` or `true` to include anonymous contributors in results.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     anon: Swift.String? = nil,
                     per_page: Components.Parameters.per_page? = nil,
@@ -21903,17 +23045,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.repos_list_contributors.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_contributors.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_contributors.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_list_contributors.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_list_contributors.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_list_contributors.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -21937,9 +23093,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -21949,7 +23107,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_contributors.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.contributor])
                 }
                 /// Received HTTP response body
@@ -21973,14 +23133,16 @@ public enum Operations {
             ///
             /// HTTP response code: `200 ok`.
             case ok(Operations.repos_list_contributors.Output.Ok)
-            public struct NoContent: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct NoContent: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/204/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_contributors.Output.NoContent.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {}
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/204/content`.
+                @frozen public enum Body: Sendable, Hashable {}
                 /// Received HTTP response body
                 public var body: Operations.repos_list_contributors.Output.NoContent.Body?
                 /// Creates a new `NoContent`.
@@ -22019,6 +23181,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List repository issues
     ///
@@ -22033,26 +23212,37 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
     public enum issues_list_for_repo {
         public static let id: String = "issues/list-for-repo"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.issues_list_for_repo.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// If an `integer` is passed, it should refer to a milestone by its `number` field. If the string `*` is passed, issues with any milestone are accepted. If the string `none` is passed, issues without milestones are returned.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/milestone`.
                 public var milestone: Swift.String?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/state`.
                 @frozen
-                public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case open
@@ -22076,16 +23266,31 @@ public enum Operations {
                         case .all: return "all"
                         }
                     }
-                    public static var allCases: [statePayload] { [.open, .closed, .all] }
+                    public static var allCases: [Self] { [.open, .closed, .all] }
                 }
+                /// Indicates the state of the issues to return.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/state`.
                 public var state: Operations.issues_list_for_repo.Input.Query.statePayload?
+                /// Can be the name of a user. Pass in `none` for issues with no assigned user, and `*` for issues assigned to any user.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/assignee`.
                 public var assignee: Swift.String?
+                /// The user that created the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/creator`.
                 public var creator: Swift.String?
+                /// A user that's mentioned in the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/mentioned`.
                 public var mentioned: Swift.String?
+                /// A list of comma separated label names. Example: `bug,ui,@high`
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/labels`.
                 public var labels: Components.Parameters.labels?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/sort`.
                 @frozen
-                public enum sortPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum sortPayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case created
@@ -22109,12 +23314,15 @@ public enum Operations {
                         case .comments: return "comments"
                         }
                     }
-                    public static var allCases: [sortPayload] { [.created, .updated, .comments] }
+                    public static var allCases: [Self] { [.created, .updated, .comments] }
                 }
+                /// What to sort results by.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/sort`.
                 public var sort: Operations.issues_list_for_repo.Input.Query.sortPayload?
                 /// - Remark: Generated from `#/components/parameters/direction`.
                 @frozen
-                public enum direction: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum direction: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case asc
@@ -22135,26 +23343,38 @@ public enum Operations {
                         case .desc: return "desc"
                         }
                     }
-                    public static var allCases: [direction] { [.asc, .desc] }
+                    public static var allCases: [Self] { [.asc, .desc] }
                 }
+                /// The direction to sort the results by.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/direction`.
                 public var direction: Components.Parameters.direction?
+                /// Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/since`.
                 public var since: Components.Parameters.since?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - milestone:
-                ///   - state:
-                ///   - assignee:
-                ///   - creator:
-                ///   - mentioned:
-                ///   - labels:
-                ///   - sort:
-                ///   - direction:
-                ///   - since:
-                ///   - per_page:
-                ///   - page:
+                ///   - milestone: If an `integer` is passed, it should refer to a milestone by its `number` field. If the string `*` is passed, issues with any milestone are accepted. If the string `none` is passed, issues without milestones are returned.
+                ///   - state: Indicates the state of the issues to return.
+                ///   - assignee: Can be the name of a user. Pass in `none` for issues with no assigned user, and `*` for issues assigned to any user.
+                ///   - creator: The user that created the issue.
+                ///   - mentioned: A user that's mentioned in the issue.
+                ///   - labels: A list of comma separated label names. Example: `bug,ui,@high`
+                ///   - sort: What to sort results by.
+                ///   - direction: The direction to sort the results by.
+                ///   - since: Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     milestone: Swift.String? = nil,
                     state: Operations.issues_list_for_repo.Input.Query.statePayload? = nil,
@@ -22182,17 +23402,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.issues_list_for_repo.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_list_for_repo.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_list_for_repo.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.issues_list_for_repo.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.issues_list_for_repo.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.issues_list_for_repo.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -22216,9 +23450,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -22228,7 +23464,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_list_for_repo.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.issue])
                 }
                 /// Received HTTP response body
@@ -22275,6 +23513,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Create an issue
     ///
@@ -22286,46 +23541,68 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
     public enum issues_create {
         public static let id: String = "issues/create"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.issues_create.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.issues_create.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_create.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_create.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.issues_create.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.issues_create.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The title of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title`.
-                    @frozen public enum titlePayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title/case1`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/title`.
+                    @frozen public enum titlePayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/title/case1`.
                         case case1(Swift.String)
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title/case2`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/title/case2`.
                         case case2(Swift.Int)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
@@ -22354,23 +23631,23 @@ public enum Operations {
                     }
                     /// The title of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/title`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/title`.
                     public var title: Operations.issues_create.Input.Body.jsonPayload.titlePayload
                     /// The contents of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/body`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/body`.
                     public var body: Swift.String?
                     /// Login for the user that this issue should be assigned to. _NOTE: Only users with push access can set the assignee for new issues. The assignee is silently dropped otherwise. **This field is deprecated.**_
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/assignee`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/assignee`.
                     public var assignee: Swift.String?
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone`.
-                    @frozen public enum milestonePayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone/case1`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/milestone`.
+                    @frozen public enum milestonePayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/milestone/case1`.
                         case case1(Swift.String)
                         /// The `number` of the milestone to associate this issue with. _NOTE: Only users with push access can set the milestone for new issues. The milestone is silently dropped otherwise._
                         ///
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone/case2`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/milestone/case2`.
                         case case2(Swift.Int)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
@@ -22397,23 +23674,22 @@ public enum Operations {
                             }
                         }
                     }
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/milestone`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/milestone`.
                     public var milestone:
                         Operations.issues_create.Input.Body.jsonPayload.milestonePayload?
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload`.
-                    @frozen public enum labelsPayloadPayload: Codable, Equatable, Hashable, Sendable
-                    {
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case1`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload`.
+                    @frozen public enum labelsPayloadPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case1`.
                         case case1(Swift.String)
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2`.
-                        public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/id`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2`.
+                        public struct Case2Payload: Codable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2/id`.
                             public var id: Swift.Int?
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/name`.
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2/name`.
                             public var name: Swift.String?
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/description`.
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2/description`.
                             public var description: Swift.String?
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2/color`.
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2/color`.
                             public var color: Swift.String?
                             /// Creates a new `Case2Payload`.
                             ///
@@ -22440,7 +23716,7 @@ public enum Operations {
                                 case color
                             }
                         }
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labelsPayload/case2`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2`.
                         case case2(
                             Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload
                                 .Case2Payload
@@ -22472,17 +23748,17 @@ public enum Operations {
                     }
                     /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labels`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labels`.
                     public typealias labelsPayload = [Operations.issues_create.Input.Body
                         .jsonPayload.labelsPayloadPayload]
                     /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/labels`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labels`.
                     public var labels:
                         Operations.issues_create.Input.Body.jsonPayload.labelsPayload?
                     /// Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/json/assignees`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/assignees`.
                     public var assignees: [Swift.String]?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -22519,6 +23795,7 @@ public enum Operations {
                         case assignees
                     }
                 }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/content/application\/json`.
                 case json(Operations.issues_create.Input.Body.jsonPayload)
             }
             public var body: Operations.issues_create.Input.Body
@@ -22544,9 +23821,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/responses/201/headers/Location`.
                     public var Location: Swift.String?
                     /// Creates a new `Headers`.
                     ///
@@ -22556,7 +23835,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_create.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.issue)
                 }
                 /// Received HTTP response body
@@ -22621,6 +23902,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get an issue
     ///
@@ -22640,17 +23938,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
     public enum issues_get {
         public static let id: String = "issues/get"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The number that identifies the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/path/issue_number`.
                 public var issue_number: Components.Parameters.issue_number
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - issue_number:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - issue_number: The number that identifies the issue.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -22662,22 +23970,37 @@ public enum Operations {
                 }
             }
             public var path: Operations.issues_get.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.issues_get.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_get.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_get.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.issues_get.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.issues_get.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.issues_get.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -22701,15 +24024,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_get.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.issue)
                 }
                 /// Received HTTP response body
@@ -22762,6 +24088,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Update an issue
     ///
@@ -22771,17 +24114,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
     public enum issues_update {
         public static let id: String = "issues/update"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The number that identifies the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/path/issue_number`.
                 public var issue_number: Components.Parameters.issue_number
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - issue_number:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - issue_number: The number that identifies the issue.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -22793,31 +24146,46 @@ public enum Operations {
                 }
             }
             public var path: Operations.issues_update.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.issues_update.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_update.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_update.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.issues_update.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.issues_update.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The title of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title`.
-                    @frozen public enum titlePayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title/case1`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/title`.
+                    @frozen public enum titlePayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/title/case1`.
                         case case1(Swift.String)
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title/case2`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/title/case2`.
                         case case2(Swift.Int)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
@@ -22846,22 +24214,22 @@ public enum Operations {
                     }
                     /// The title of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/title`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/title`.
                     public var title: Operations.issues_update.Input.Body.jsonPayload.titlePayload?
                     /// The contents of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/body`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/body`.
                     public var body: Swift.String?
                     /// Username to assign to this issue. **This field is deprecated.**
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/assignee`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/assignee`.
                     public var assignee: Swift.String?
                     /// The open or closed state of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state`.
                     @frozen
-                    public enum statePayload: RawRepresentable, Codable, Equatable, Hashable,
-                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
+                        _AutoLosslessStringConvertible, CaseIterable
                     {
                         case open
                         case closed
@@ -22881,18 +24249,18 @@ public enum Operations {
                             case .closed: return "closed"
                             }
                         }
-                        public static var allCases: [statePayload] { [.open, .closed] }
+                        public static var allCases: [Self] { [.open, .closed] }
                     }
                     /// The open or closed state of the issue.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state`.
                     public var state: Operations.issues_update.Input.Body.jsonPayload.statePayload?
                     /// The reason for the state change. Ignored unless `state` is changed.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state_reason`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state_reason`.
                     @frozen
-                    public enum state_reasonPayload: RawRepresentable, Codable, Equatable, Hashable,
-                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    public enum state_reasonPayload: RawRepresentable, Codable, Hashable, Sendable,
+                        _AutoLosslessStringConvertible, CaseIterable
                     {
                         case completed
                         case not_planned
@@ -22915,22 +24283,22 @@ public enum Operations {
                             case .reopened: return "reopened"
                             }
                         }
-                        public static var allCases: [state_reasonPayload] {
+                        public static var allCases: [Self] {
                             [.completed, .not_planned, .reopened]
                         }
                     }
                     /// The reason for the state change. Ignored unless `state` is changed.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/state_reason`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state_reason`.
                     public var state_reason:
                         Operations.issues_update.Input.Body.jsonPayload.state_reasonPayload?
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone`.
-                    @frozen public enum milestonePayload: Codable, Equatable, Hashable, Sendable {
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone/case1`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone`.
+                    @frozen public enum milestonePayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone/case1`.
                         case case1(Swift.String)
                         /// The `number` of the milestone to associate this issue with or use `null` to remove the current milestone. Only users with push access can set the milestone for issues. Without push access to the repository, milestone changes are silently dropped.
                         ///
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone/case2`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone/case2`.
                         case case2(Swift.Int)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
@@ -22957,23 +24325,22 @@ public enum Operations {
                             }
                         }
                     }
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/milestone`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone`.
                     public var milestone:
                         Operations.issues_update.Input.Body.jsonPayload.milestonePayload?
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload`.
-                    @frozen public enum labelsPayloadPayload: Codable, Equatable, Hashable, Sendable
-                    {
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case1`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload`.
+                    @frozen public enum labelsPayloadPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case1`.
                         case case1(Swift.String)
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2`.
-                        public struct Case2Payload: Codable, Equatable, Hashable, Sendable {
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/id`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2`.
+                        public struct Case2Payload: Codable, Hashable, Sendable {
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2/id`.
                             public var id: Swift.Int?
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/name`.
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2/name`.
                             public var name: Swift.String?
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/description`.
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2/description`.
                             public var description: Swift.String?
-                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2/color`.
+                            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2/color`.
                             public var color: Swift.String?
                             /// Creates a new `Case2Payload`.
                             ///
@@ -23000,7 +24367,7 @@ public enum Operations {
                                 case color
                             }
                         }
-                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labelsPayload/case2`.
+                        /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2`.
                         case case2(
                             Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload
                                 .Case2Payload
@@ -23032,17 +24399,17 @@ public enum Operations {
                     }
                     /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labels`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labels`.
                     public typealias labelsPayload = [Operations.issues_update.Input.Body
                         .jsonPayload.labelsPayloadPayload]
                     /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/labels`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labels`.
                     public var labels:
                         Operations.issues_update.Input.Body.jsonPayload.labelsPayload?
                     /// Usernames to assign to this issue. Pass one or more user logins to _replace_ the set of assignees on this issue. Send an empty array (`[]`) to clear all assignees from the issue. Only users with push access can set assignees for new issues. Without push access to the repository, assignee changes are silently dropped.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/json/assignees`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/assignees`.
                     public var assignees: [Swift.String]?
                     /// Creates a new `jsonPayload`.
                     ///
@@ -23088,6 +24455,7 @@ public enum Operations {
                         case assignees
                     }
                 }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/content/application\/json`.
                 case json(Operations.issues_update.Input.Body.jsonPayload)
             }
             public var body: Operations.issues_update.Input.Body?
@@ -23113,15 +24481,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_update.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/responses/200/content/application\/json`.
                     case json(Components.Schemas.issue)
                 }
                 /// Received HTTP response body
@@ -23186,6 +24557,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Create an issue comment
     ///
@@ -23202,17 +24590,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
     public enum issues_create_comment {
         public static let id: String = "issues/create-comment"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The number that identifies the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path/issue_number`.
                 public var issue_number: Components.Parameters.issue_number
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - issue_number:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - issue_number: The number that identifies the issue.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -23224,27 +24622,42 @@ public enum Operations {
                 }
             }
             public var path: Operations.issues_create_comment.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.issues_create_comment.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_create_comment.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_create_comment.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.issues_create_comment.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.issues_create_comment.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The contents of the comment.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/json/body`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/json/body`.
                     public var body: Swift.String
                     /// Creates a new `jsonPayload`.
                     ///
@@ -23253,6 +24666,7 @@ public enum Operations {
                     public init(body: Swift.String) { self.body = body }
                     public enum CodingKeys: String, CodingKey { case body }
                 }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/content/application\/json`.
                 case json(Operations.issues_create_comment.Input.Body.jsonPayload)
             }
             public var body: Operations.issues_create_comment.Input.Body
@@ -23278,9 +24692,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/headers/Location`.
                     public var Location: Swift.String?
                     /// Creates a new `Headers`.
                     ///
@@ -23290,7 +24706,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_create_comment.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.issue_comment)
                 }
                 /// Received HTTP response body
@@ -23343,6 +24761,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List pull requests
     ///
@@ -23352,25 +24787,33 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
     public enum pulls_list {
         public static let id: String = "pulls/list"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.pulls_list.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/state`.
                 @frozen
-                public enum statePayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case open
@@ -23394,14 +24837,23 @@ public enum Operations {
                         case .all: return "all"
                         }
                     }
-                    public static var allCases: [statePayload] { [.open, .closed, .all] }
+                    public static var allCases: [Self] { [.open, .closed, .all] }
                 }
+                /// Either `open`, `closed`, or `all` to filter by state.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/state`.
                 public var state: Operations.pulls_list.Input.Query.statePayload?
+                /// Filter pulls by head user or head organization and branch name in the format of `user:ref-name` or `organization:ref-name`. For example: `github:new-script-format` or `octocat:test-branch`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/head`.
                 public var head: Swift.String?
+                /// Filter pulls by base branch name. Example: `gh-pages`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/base`.
                 public var base: Swift.String?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/sort`.
                 @frozen
-                public enum sortPayload: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum sortPayload: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case created
@@ -23428,15 +24880,18 @@ public enum Operations {
                         case .long_running: return "long-running"
                         }
                     }
-                    public static var allCases: [sortPayload] {
+                    public static var allCases: [Self] {
                         [.created, .updated, .popularity, .long_running]
                     }
                 }
+                /// What to sort results by. `popularity` will sort by the number of comments. `long-running` will sort by date created and will limit the results to pull requests that have been open for more than a month and have had activity within the past month.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/sort`.
                 public var sort: Operations.pulls_list.Input.Query.sortPayload?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/direction`.
                 @frozen
-                public enum directionPayload: RawRepresentable, Codable, Equatable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum directionPayload: RawRepresentable, Codable, Hashable, Sendable,
+                    _AutoLosslessStringConvertible, CaseIterable
                 {
                     case asc
                     case desc
@@ -23456,21 +24911,30 @@ public enum Operations {
                         case .desc: return "desc"
                         }
                     }
-                    public static var allCases: [directionPayload] { [.asc, .desc] }
+                    public static var allCases: [Self] { [.asc, .desc] }
                 }
+                /// The direction of the sort. Default: `desc` when sort is `created` or sort is not specified, otherwise `asc`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/direction`.
                 public var direction: Operations.pulls_list.Input.Query.directionPayload?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - state:
-                ///   - head:
-                ///   - base:
-                ///   - sort:
-                ///   - direction:
-                ///   - per_page:
-                ///   - page:
+                ///   - state: Either `open`, `closed`, or `all` to filter by state.
+                ///   - head: Filter pulls by head user or head organization and branch name in the format of `user:ref-name` or `organization:ref-name`. For example: `github:new-script-format` or `octocat:test-branch`.
+                ///   - base: Filter pulls by base branch name. Example: `gh-pages`.
+                ///   - sort: What to sort results by. `popularity` will sort by the number of comments. `long-running` will sort by date created and will limit the results to pull requests that have been open for more than a month and have had activity within the past month.
+                ///   - direction: The direction of the sort. Default: `desc` when sort is `created` or sort is not specified, otherwise `asc`.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     state: Operations.pulls_list.Input.Query.statePayload? = nil,
                     head: Swift.String? = nil,
@@ -23490,17 +24954,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.pulls_list.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.pulls_list.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.pulls_list.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.pulls_list.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.pulls_list.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.pulls_list.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -23524,9 +25002,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -23536,7 +25016,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.pull_request_simple])
                 }
                 /// Received HTTP response body
@@ -23577,6 +25059,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List review comments on a pull request
     ///
@@ -23586,17 +25085,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
     public enum pulls_list_review_comments {
         public static let id: String = "pulls/list-review-comments"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The number that identifies the pull request.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/path/pull_number`.
                 public var pull_number: Components.Parameters.pull_number
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - pull_number:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - pull_number: The number that identifies the pull request.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -23608,10 +25117,11 @@ public enum Operations {
                 }
             }
             public var path: Operations.pulls_list_review_comments.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/components/parameters/sort`.
                 @frozen
-                public enum sort: RawRepresentable, Codable, Equatable, Hashable, Sendable,
+                public enum sort: RawRepresentable, Codable, Hashable, Sendable,
                     _AutoLosslessStringConvertible, CaseIterable
                 {
                     case created
@@ -23632,13 +25142,16 @@ public enum Operations {
                         case .updated: return "updated"
                         }
                     }
-                    public static var allCases: [sort] { [.created, .updated] }
+                    public static var allCases: [Self] { [.created, .updated] }
                 }
+                /// The property to sort the results by.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/sort`.
                 public var sort: Components.Parameters.sort?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
                 @frozen
-                public enum directionPayload: RawRepresentable, Codable, Equatable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum directionPayload: RawRepresentable, Codable, Hashable, Sendable,
+                    _AutoLosslessStringConvertible, CaseIterable
                 {
                     case asc
                     case desc
@@ -23658,21 +25171,33 @@ public enum Operations {
                         case .desc: return "desc"
                         }
                     }
-                    public static var allCases: [directionPayload] { [.asc, .desc] }
+                    public static var allCases: [Self] { [.asc, .desc] }
                 }
+                /// The direction to sort results. Ignored without `sort` parameter.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
                 public var direction:
                     Operations.pulls_list_review_comments.Input.Query.directionPayload?
+                /// Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/since`.
                 public var since: Components.Parameters.since?
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - sort:
-                ///   - direction:
-                ///   - since:
-                ///   - per_page:
-                ///   - page:
+                ///   - sort: The property to sort the results by.
+                ///   - direction: The direction to sort results. Ignored without `sort` parameter.
+                ///   - since: Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     sort: Components.Parameters.sort? = nil,
                     direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? =
@@ -23689,17 +25214,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.pulls_list_review_comments.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.pulls_list_review_comments.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.pulls_list_review_comments.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.pulls_list_review_comments.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.pulls_list_review_comments.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.pulls_list_review_comments.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -23723,9 +25262,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -23735,7 +25276,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list_review_comments.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.pull_request_review_comment])
                 }
                 /// Received HTTP response body
@@ -23764,6 +25307,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List pull requests files
     ///
@@ -23773,17 +25333,27 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
     public enum pulls_list_files {
         public static let id: String = "pulls/list-files"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/path/repo`.
                 public var repo: Components.Parameters.repo
+                /// The number that identifies the pull request.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/path/pull_number`.
                 public var pull_number: Components.Parameters.pull_number
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
-                ///   - pull_number:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - pull_number: The number that identifies the pull request.
                 public init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
@@ -23795,14 +25365,21 @@ public enum Operations {
                 }
             }
             public var path: Operations.pulls_list_files.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - per_page:
-                ///   - page:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -23812,17 +25389,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.pulls_list_files.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.pulls_list_files.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.pulls_list_files.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.pulls_list_files.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.pulls_list_files.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.pulls_list_files.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -23846,9 +25437,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -23858,7 +25451,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list_files.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.diff_entry])
                 }
                 /// Received HTTP response body
@@ -23905,6 +25500,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List releases
     ///
@@ -23916,29 +25528,43 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
     public enum repos_list_releases {
         public static let id: String = "repos/list-releases"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_list_releases.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - per_page:
-                ///   - page:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -23948,17 +25574,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.repos_list_releases.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_releases.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_releases.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_list_releases.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_list_releases.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_list_releases.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -23982,9 +25622,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -23994,7 +25636,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_releases.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.release])
                 }
                 /// Received HTTP response body
@@ -24029,6 +25673,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Create a release
     ///
@@ -24040,77 +25701,99 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)`.
     public enum repos_create_release {
         public static let id: String = "repos/create-release"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_create_release.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.repos_create_release.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_create_release.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_create_release.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_create_release.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_create_release.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {
-                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json`.
-                public struct jsonPayload: Codable, Equatable, Hashable, Sendable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json`.
+                public struct jsonPayload: Codable, Hashable, Sendable {
                     /// The name of the tag.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/tag_name`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/tag_name`.
                     public var tag_name: Swift.String
                     /// Specifies the commitish value that determines where the Git tag is created from. Can be any branch or commit SHA. Unused if the Git tag already exists. Default: the repository's default branch.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/target_commitish`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/target_commitish`.
                     public var target_commitish: Swift.String?
                     /// The name of the release.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/name`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/name`.
                     public var name: Swift.String?
                     /// Text describing the contents of the tag.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/body`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/body`.
                     public var body: Swift.String?
                     /// `true` to create a draft (unpublished) release, `false` to create a published one.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/draft`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/draft`.
                     public var draft: Swift.Bool?
                     /// `true` to identify the release as a prerelease. `false` to identify the release as a full release.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/prerelease`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/prerelease`.
                     public var prerelease: Swift.Bool?
                     /// If specified, a discussion of the specified category is created and linked to the release. The value must be a category that already exists in the repository. For more information, see "[Managing categories for discussions in your repository](https://docs.github.com/discussions/managing-discussions-for-your-community/managing-categories-for-discussions-in-your-repository)."
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/discussion_category_name`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/discussion_category_name`.
                     public var discussion_category_name: Swift.String?
                     /// Whether to automatically generate the name and body for this release. If `name` is specified, the specified name will be used; otherwise, a name will be automatically generated. If `body` is specified, the body will be pre-pended to the automatically generated notes.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/generate_release_notes`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/generate_release_notes`.
                     public var generate_release_notes: Swift.Bool?
                     /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/make_latest`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/make_latest`.
                     @frozen
-                    public enum make_latestPayload: RawRepresentable, Codable, Equatable, Hashable,
-                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    public enum make_latestPayload: RawRepresentable, Codable, Hashable, Sendable,
+                        _AutoLosslessStringConvertible, CaseIterable
                     {
                         case _true
                         case _false
@@ -24133,13 +25816,11 @@ public enum Operations {
                             case .legacy: return "legacy"
                             }
                         }
-                        public static var allCases: [make_latestPayload] {
-                            [._true, ._false, .legacy]
-                        }
+                        public static var allCases: [Self] { [._true, ._false, .legacy] }
                     }
                     /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
                     ///
-                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/json/make_latest`.
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/make_latest`.
                     public var make_latest:
                         Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload?
                     /// Creates a new `jsonPayload`.
@@ -24188,6 +25869,7 @@ public enum Operations {
                         case make_latest
                     }
                 }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/content/application\/json`.
                 case json(Operations.repos_create_release.Input.Body.jsonPayload)
             }
             public var body: Operations.repos_create_release.Input.Body
@@ -24213,9 +25895,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Created: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/201/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/201/headers/Location`.
                     public var Location: Swift.String?
                     /// Creates a new `Headers`.
                     ///
@@ -24225,7 +25909,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_create_release.Output.Created.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/201/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.release)
                 }
                 /// Received HTTP response body
@@ -24249,14 +25935,17 @@ public enum Operations {
             ///
             /// HTTP response code: `201 created`.
             case created(Operations.repos_create_release.Output.Created)
-            public struct NotFound: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+            public struct NotFound: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/404/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_create_release.Output.NotFound.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/404/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/responses/404/content/application\/json`.
                     case json(Components.Schemas.basic_error)
                 }
                 /// Received HTTP response body
@@ -24291,6 +25980,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// Get the latest release
     ///
@@ -24302,37 +26008,59 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
     public enum repos_get_latest_release {
         public static let id: String = "repos/get-latest-release"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_get_latest_release.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/query`.
+            public struct Query: Sendable, Hashable {
                 /// Creates a new `Query`.
                 public init() {}
             }
             public var query: Operations.repos_get_latest_release.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_get_latest_release.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_get_latest_release.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_get_latest_release.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_get_latest_release.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_get_latest_release.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -24356,15 +26084,18 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
                     /// Creates a new `Headers`.
                     public init() {}
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_get_latest_release.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/responses/200/content/application\/json`.
                     case json(Components.Schemas.release)
                 }
                 /// Received HTTP response body
@@ -24393,6 +26124,23 @@ public enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
         }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
     }
     /// List repository tags
     ///
@@ -24400,29 +26148,43 @@ public enum Operations {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
     public enum repos_list_tags {
         public static let id: String = "repos/list-tags"
-        public struct Input: Sendable, Equatable, Hashable {
-            public struct Path: Sendable, Equatable, Hashable {
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/path/owner`.
                 public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/path/repo`.
                 public var repo: Components.Parameters.repo
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
-                ///   - owner:
-                ///   - repo:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
                     self.owner = owner
                     self.repo = repo
                 }
             }
             public var path: Operations.repos_list_tags.Input.Path
-            public struct Query: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/query/per_page`.
                 public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/query/page`.
                 public var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
-                ///   - per_page:
-                ///   - page:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
                 public init(
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -24432,17 +26194,31 @@ public enum Operations {
                 }
             }
             public var query: Operations.repos_list_tags.Input.Query
-            public struct Headers: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_tags.AcceptableContentType
+                    >]
                 /// Creates a new `Headers`.
-                public init() {}
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.repos_list_tags.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
             }
             public var headers: Operations.repos_list_tags.Input.Headers
-            public struct Cookies: Sendable, Equatable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
             public var cookies: Operations.repos_list_tags.Input.Cookies
-            @frozen public enum Body: Sendable, Equatable, Hashable {}
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_list_tags.Input.Body?
             /// Creates a new `Input`.
             ///
@@ -24466,9 +26242,11 @@ public enum Operations {
                 self.body = body
             }
         }
-        @frozen public enum Output: Sendable, Equatable, Hashable {
-            public struct Ok: Sendable, Equatable, Hashable {
-                public struct Headers: Sendable, Equatable, Hashable {
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
@@ -24478,7 +26256,9 @@ public enum Operations {
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_tags.Output.Ok.Headers
-                @frozen public enum Body: Sendable, Equatable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.tag])
                 }
                 /// Received HTTP response body
@@ -24506,6 +26286,23 @@ public enum Operations {
             ///
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
         }
     }
 }
