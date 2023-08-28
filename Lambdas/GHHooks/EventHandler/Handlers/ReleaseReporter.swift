@@ -74,11 +74,12 @@ struct ReleaseReporter {
             commits = try await getAllCommits()
         }
 
+        let maxCommits = 5
         let maxPRs = 3
         var prs = [SimplePullRequest]()
         prs.reserveCapacity(min(commits.count, maxPRs))
 
-        for commit in commits.prefix(maxPRs) {
+        for commit in commits.prefix(maxCommits) where prs.count < 3 {
             let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
             prs.append(contentsOf: newPRs)
         }
