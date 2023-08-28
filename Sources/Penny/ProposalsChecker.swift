@@ -402,9 +402,13 @@ struct ReviewLinksFinder: MarkupWalker {
     var links = [SimpleLink]()
 
     mutating func visitParagraph(_ paragraph: Paragraph) {
-        guard let text = paragraph.children.first(where: { _ in true }) as? Text,
-              text.string.trimmingCharacters(in: .whitespacesAndNewlines).hasPrefix("Review:")
-        else { return }
+        guard let text = paragraph.children.first(where: { _ in true }) as? Text else {
+            return
+        }
+        let trimmed = text.string.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard ["Review:", "Decision Notes:"].contains(where: { trimmed.hasPrefix($0) }) else {
+            return
+        }
         var linkFinder = LinksFinder()
         linkFinder.visitParagraph(paragraph)
         self.links = linkFinder.links

@@ -15445,7 +15445,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/release/created_at`.
             public var created_at: Foundation.Date
             /// - Remark: Generated from `#/components/schemas/release/published_at`.
-            public var published_at: Foundation.Date
+            public var published_at: Foundation.Date?
             /// - Remark: Generated from `#/components/schemas/release/author`.
             public var author: Components.Schemas.simple_user
             /// - Remark: Generated from `#/components/schemas/release/assets`.
@@ -15504,7 +15504,7 @@ public enum Components {
                 draft: Swift.Bool,
                 prerelease: Swift.Bool,
                 created_at: Foundation.Date,
-                published_at: Foundation.Date,
+                published_at: Foundation.Date? = nil,
                 author: Components.Schemas.simple_user,
                 assets: [Components.Schemas.release_asset],
                 body_html: Swift.String? = nil,
