@@ -30,14 +30,14 @@ struct ReleaseReporter {
     }
 
     func handleReleasePublished() async throws {
-        let relatedPRs = try await self.getPRsRelatedToRelease()
+        let (commitCount, relatedPRs) = try await self.getPRsRelatedToRelease()
         if relatedPRs.isEmpty {
             try await sendToDiscordWithRelease()
         } else if relatedPRs.count == 1 || release.author.id == Constants.GitHub.userID {
             /// If there is only 1 PR or if Penny released this, then just mention the last PR.
             try await self.sendToDiscord(pr: relatedPRs[0])
         } else {
-            try await sendToDiscord(prs: relatedPRs)
+            try await sendToDiscord(prs: relatedPRs, commitCount: commitCount)
         }
     }
 
@@ -66,22 +66,24 @@ struct ReleaseReporter {
         }
     }
 
-    func getPRsRelatedToRelease() async throws -> [SimplePullRequest] {
+    func getPRsRelatedToRelease() async throws -> (commits: Int, somePRs: [SimplePullRequest]) {
         let commits: [Commit]
         if let tagBefore = try await getTagBefore() {
             commits = try await getCommitsInRelease(tagBefore: tagBefore)
         } else {
             commits = try await getAllCommits()
         }
-        var prs = [SimplePullRequest]()
-        prs.reserveCapacity(commits.count)
 
-        for commit in commits {
+        let maxPRs = 3
+        var prs = [SimplePullRequest]()
+        prs.reserveCapacity(min(commits.count, maxPRs))
+
+        for commit in commits.prefix(maxPRs) {
             let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
             prs.append(contentsOf: newPRs)
         }
 
-        return prs
+        return (commits.count, prs)
     }
 
     func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
@@ -137,7 +139,7 @@ struct ReleaseReporter {
     func sendToDiscord(pr: SimplePullRequest) async throws {
         let body = pr.body.map { body -> String in
             body.formatMarkdown(
-                maxLength: 256,
+                maxLength: 384,
                 trailingTextMinLength: 96
             )
         } ?? ""
@@ -147,24 +149,28 @@ struct ReleaseReporter {
         try await sendToDiscord(description: description)
     }
 
-    func sendToDiscord(prs: [SimplePullRequest]) async throws {
+    func sendToDiscord(prs: [SimplePullRequest], commitCount: Int) async throws {
+        precondition(!prs.isEmpty)
+
         let prDescriptions = prs.map {
             "\($0.title) by [@\($0.user.uiName)](\($0.user.html_url)) in [#\($0.number)](\($0.html_url))"
-        }
-        
-        if prDescriptions.isEmpty {
-            try await sendToDiscordWithRelease()
-        } else {
-            let description = prDescriptions.map {
-                "- \($0)"
-            }.joined(
-                separator: "\n"
-            ).formatMarkdown(
-                maxLength: 256,
-                trailingTextMinLength: 96
-            )
-            try await sendToDiscord(description: description)
-        }
+        }.map {
+            "- \($0)"
+        }.joined(
+            separator: "\n"
+        )
+
+        let commitCount = commitCount > 10 ? "More than 10" : "\(commitCount)"
+
+        let description = """
+        ### \(commitCount) Changes, Including:
+
+        \(prDescriptions)
+        """.formatMarkdown(
+            maxLength: 384,
+            trailingTextMinLength: 96
+        )
+        try await sendToDiscord(description: description)
     }
 
     func sendToDiscordWithRelease() async throws {
