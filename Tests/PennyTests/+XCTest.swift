@@ -2,8 +2,9 @@ import XCTest
 
 extension XCTestCase {
     /// Fancy footwork to:
-    /// 1- Avoid test failures just because of a new empty line at the end of the file.
-    /// 2- Better errors about what exactly is causing the inequality.
+    /// 1- Avoid test failures just because of a new empty line at the end of a file.
+    /// 2- Avoid test failures just because of some whitespaces at the end of a line.
+    /// 3- Better errors about what exactly is causing the inequality.
     func XCTAssertMultilineStringsEqual(
         _ expression1: String,
         _ expression2: String,
@@ -22,8 +23,7 @@ extension XCTestCase {
                 .map { $0.trimmingSuffix(while: \.isWhitespace) }
 
             if lines1.count == lines2.count {
-                for (idx, bothLines) in zip(lines1, lines2).enumerated() {
-                    let (line1, line2) = bothLines
+                for (idx, (line1, line2)) in zip(lines1, lines2).enumerated() {
                     if line1 != line2 {
                         XCTFail(
                             """
