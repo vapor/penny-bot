@@ -89,7 +89,8 @@ struct PRHandler {
 
         let body = self.pr.body.map { body -> String in
             body.formatMarkdown(
-                maxLength: 256,
+                maxVisualLength: 256,
+                hardLimit: 2_048,
                 trailingTextMinLength: 96
             )
         } ?? ""

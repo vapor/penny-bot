@@ -4,8 +4,14 @@ extension String {
     /// Formats markdown in a way that looks nice on Discord, but still good on GitHub.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
-    func formatMarkdown(maxLength: Int, trailingTextMinLength: Int) -> String {
-        assert(maxLength > 0, "Can't request a non-positive maximum.")
+    func formatMarkdown(
+        maxVisualLength: Int,
+        hardLimit: Int,
+        trailingTextMinLength: Int
+    ) -> String {
+        assert(maxVisualLength > 0, "Can't request a non-positive maximum.")
+        assert(hardLimit > 0, "Can't use a non-positive maximum.")
+        assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
@@ -16,7 +22,8 @@ extension String {
         let prefixed = markup2
             .format(options: .default)
             .trimmingForMarkdown()
-            .unicodesPrefix(maxLength)
+            .markdownUnicodesPrefix(maxVisualLength)
+            .unicodesPrefix(hardLimit)
         let document2 = Document(parsing: prefixed)
         var paragraphCounter = ParagraphCounter()
         paragraphCounter.visit(document2)
@@ -34,7 +41,8 @@ extension String {
         var prefixed2 = markup2
             .format(options: .default)
             .trimmingForMarkdown()
-            .unicodesPrefix(maxLength)
+            .markdownUnicodesPrefix(maxVisualLength)
+            .unicodesPrefix(hardLimit)
         var document3 = Document(parsing: prefixed2)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
@@ -42,7 +50,8 @@ extension String {
             prefixed2 = document3
                 .format(options: .default)
                 .trimmingForMarkdown()
-                .unicodesPrefix(maxLength)
+                .markdownUnicodesPrefix(maxVisualLength)
+                .unicodesPrefix(hardLimit)
         }
 
         return prefixed2
@@ -69,6 +78,21 @@ extension String {
         }
 
         return lines.joined(separator: "\n")
+    }
+
+    /// Doesn't count markdown attributes towards the limit.
+    @_disfavoredOverload
+    func markdownUnicodesPrefix(_ maxLength: Int) -> (remaining: Int, result: String) {
+        let document = Document(parsing: self)
+        var rewriter = TextElementUnicodePrefixRewriter(maxLength: maxLength)
+        let markup = rewriter.visitDocument(document)
+        let result = markup?.format(options: .default) ?? ""
+        return (rewriter.remainingLength, result)
+    }
+
+    /// Doesn't count markdown attributes towards the limit.
+    func markdownUnicodesPrefix(_ maxLength: Int) -> String {
+        markdownUnicodesPrefix(maxLength).result
     }
 
     func contentsOfHeading(named: String) -> String? {
@@ -131,16 +155,105 @@ private struct ParagraphRemover: MarkupRewriter {
     }
 
     mutating func visitParagraph(_ paragraph: Paragraph) -> (any Markup)? {
+        defer { count += 1 }
+
         if count + 1 == atCount {
-            if paragraph.format().unicodeScalars.count < ifShorterThan {
+            var lengthCounter = MarkupLengthCounter()
+            lengthCounter.visit(paragraph)
+            if lengthCounter.length < ifShorterThan {
                 return nil
             } else {
                 return paragraph
             }
         } else {
-            count += 1
             return paragraph
         }
+    }
+}
+
+/// Should be kept in sync with `TextElementUnicodePrefixRewriter` down there.
+private struct MarkupLengthCounter: MarkupWalker {
+    var length = 0
+
+    mutating func defaultVisit(_ markup: any Markup) {
+        visitChildren(markup)
+    }
+
+    mutating func visitChildren(_ markup: any Markup) {
+        for child in markup.children {
+            var walker = MarkupLengthCounter()
+            walker.visit(child)
+            self.length += walker.length
+        }
+    }
+
+    mutating func visitText(_ text: Text) {
+        length += text.string.unicodeScalars.count
+        visitChildren(text)
+    }
+
+    mutating func visitInlineCode(_ inlineCode: InlineCode) {
+        length += inlineCode.code.unicodeScalars.count
+        visitChildren(inlineCode)
+
+    }
+
+    mutating func visitCodeBlock(_ codeBlock: CodeBlock) {
+        length += codeBlock.code.unicodeScalars.count
+        visitChildren(codeBlock)
+    }
+}
+
+/// Should be kept in sync with `MarkupLengthCounter` up there.
+private struct TextElementUnicodePrefixRewriter: MarkupRewriter {
+    var remainingLength: Int
+
+    init(maxLength: Int) {
+        self.remainingLength = maxLength
+    }
+
+    mutating func defaultVisit(_ markup: any Markup) -> (any Markup)? {
+        visitChildren(markup)
+    }
+
+    mutating func visitChildren(_ markup: any Markup) -> any Markup {
+        let newChildren = markup.children.compactMap { child -> (any Markup)? in
+            if remainingLength == 0 { return nil }
+
+            var rewriter = TextElementUnicodePrefixRewriter(maxLength: remainingLength)
+            let result = rewriter.visit(child)
+            self.remainingLength = rewriter.remainingLength
+            return result
+        }
+        return markup.withUncheckedChildren(newChildren)
+    }
+
+    mutating func visitText(_ text: Text) -> (any Markup)? {
+        if remainingLength == 0 { return nil }
+
+        var text = text
+        (remainingLength, text.string) = text.string.unicodesPrefix(remainingLength)
+
+        return visitChildren(text)
+    }
+
+    mutating func visitInlineCode(_ inlineCode: InlineCode) -> (any Markup)? {
+        if remainingLength == 0 { return nil }
+
+        var inlineCode = inlineCode
+        (remainingLength, inlineCode.code) = inlineCode.code.unicodesPrefix(remainingLength)
+
+        return visitChildren(inlineCode)
+
+    }
+
+    mutating func visitCodeBlock(_ codeBlock: CodeBlock) -> (any Markup)? {
+        if remainingLength == 0 { return nil }
+
+        var codeBlock = codeBlock
+        (remainingLength, codeBlock.code) = codeBlock.code.unicodesPrefix(remainingLength)
+
+        return visitChildren(codeBlock)
     }
 }
 
