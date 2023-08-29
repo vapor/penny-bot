@@ -274,8 +274,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
       "state" : {
-        "revision" : "875fecf08b5850f3fe81ae77c2c7566a7c9495bf",
-        "version" : "0.1.2"
+        "revision" : "91dfd35092f622aedf2f79943293a9cccc25bff3",
+        "version" : "0.1.3"
       }
     },
     {
