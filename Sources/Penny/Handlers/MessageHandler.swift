@@ -208,11 +208,17 @@ struct MessageHandler {
         let domain = "https://discord.com"
         let channelLink = "\(domain)/channels/\(Constants.vaporGuildId.rawValue)/\(event.channel_id.rawValue)"
         let messageLink = "\(channelLink)/\(event.id.rawValue)"
+        let mentionUsers = Set(event.mentions.map(\.id))
         /// For now we don't need to worry about Discord rate-limits,
         /// `DiscordBM` will do enough and will try to not exceed them.
         /// If at some point this starts to hit rate-limits,
         /// we can just wait 1-2s before sending each message.
         for (userId, words) in usersToPing {
+            if mentionUsers.contains(userId) {
+                /// User is already mentioned in the message, no need to ping them.
+                continue
+            }
+
             /// Identify if this could be a test message by the bot-dev.
             let mightBeATestMessage = userId == Constants.botDevUserId
             && event.channel_id == Constants.Channels.logs.id
