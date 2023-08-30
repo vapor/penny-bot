@@ -550,29 +550,7 @@
       "referenced_message": null,
       "pinned": false,
       "nonce": "1029637767555973120",
-      "mentions": [
-        {
-          "username": "Penny",
-          "public_flags": 0,
-          "member": {
-            "roles": ["950719637044207689", "441346871651336193"],
-            "premium_since": null,
-            "pending": false,
-            "nick": null,
-            "mute": false,
-            "joined_at": "2022-03-08T11:40:25.028000+00:00",
-            "flags": 0,
-            "deaf": false,
-            "communication_disabled_until": null,
-            "avatar": null
-          },
-          "id": "950695294906007573",
-          "discriminator": "0",
-          "bot": false,
-          "avatar_decoration": null,
-          "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
-        }
-      ],
+      "mentions": [ ],
       "mention_roles": [],
       "mention_everyone": false,
       "member": {

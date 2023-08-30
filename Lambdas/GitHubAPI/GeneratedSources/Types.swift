@@ -15,9 +15,8 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
     /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
-    func apps_create_installation_access_token(
-        _ input: Operations.apps_create_installation_access_token.Input
-    ) async throws -> Operations.apps_create_installation_access_token.Output
+    func apps_create_installation_access_token(_ input: Operations.apps_create_installation_access_token.Input)
+        async throws -> Operations.apps_create_installation_access_token.Output
     /// Get an organization
     ///
     /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).
@@ -103,32 +102,29 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)`.
-    func projects_get(_ input: Operations.projects_get.Input) async throws
-        -> Operations.projects_get.Output
+    func projects_get(_ input: Operations.projects_get.Input) async throws -> Operations.projects_get.Output
     /// Update a project
     ///
     /// Updates a project board's information. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
     ///
     /// - Remark: HTTP `PATCH /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
-    func projects_update(_ input: Operations.projects_update.Input) async throws
-        -> Operations.projects_update.Output
+    func projects_update(_ input: Operations.projects_update.Input) async throws -> Operations.projects_update.Output
     /// Delete a project
     ///
     /// Deletes a project board. Returns a `404 Not Found` status if projects are disabled.
     ///
     /// - Remark: HTTP `DELETE /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
-    func projects_delete(_ input: Operations.projects_delete.Input) async throws
-        -> Operations.projects_delete.Output
+    func projects_delete(_ input: Operations.projects_delete.Input) async throws -> Operations.projects_delete.Output
     /// List project collaborators
     ///
     /// Lists the collaborators for an organization project. For a project, the list of collaborators includes outside collaborators, organization members that are direct collaborators, organization members with access through team memberships, organization members with access through default organization permissions, and organization owners. You must be an organization owner or a project `admin` to list collaborators.
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/collaborators`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
-    func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input)
-        async throws -> Operations.projects_list_collaborators.Output
+    func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input) async throws
+        -> Operations.projects_list_collaborators.Output
     /// Add project collaborator
     ///
     /// Adds a collaborator to an organization project and sets their permission level. You must be an organization owner or a project `admin` to add a collaborator.
@@ -143,17 +139,16 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `DELETE /projects/{project_id}/collaborators/{username}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
-    func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input)
-        async throws -> Operations.projects_remove_collaborator.Output
+    func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input) async throws
+        -> Operations.projects_remove_collaborator.Output
     /// Get project permission for a user
     ///
     /// Returns the collaborator's permission level for an organization project. Possible values for the `permission` key: `admin`, `write`, `read`, `none`. You must be an organization owner or a project `admin` to review a user's permission level.
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/collaborators/{username}/permission`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
-    func projects_get_permission_for_user(
-        _ input: Operations.projects_get_permission_for_user.Input
-    ) async throws -> Operations.projects_get_permission_for_user.Output
+    func projects_get_permission_for_user(_ input: Operations.projects_get_permission_for_user.Input) async throws
+        -> Operations.projects_get_permission_for_user.Output
     /// List project columns
     ///
     /// Lists the project columns in a project.
@@ -178,8 +173,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /rate_limit`.
     /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
-    func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws
-        -> Operations.rate_limit_get.Output
+    func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws -> Operations.rate_limit_get.Output
     /// Get a repository
     ///
     /// The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
@@ -318,8 +312,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
-    func issues_create(_ input: Operations.issues_create.Input) async throws
-        -> Operations.issues_create.Output
+    func issues_create(_ input: Operations.issues_create.Input) async throws -> Operations.issues_create.Output
     /// Get an issue
     ///
     /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
@@ -336,16 +329,14 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
-    func issues_get(_ input: Operations.issues_get.Input) async throws
-        -> Operations.issues_get.Output
+    func issues_get(_ input: Operations.issues_get.Input) async throws -> Operations.issues_get.Output
     /// Update an issue
     ///
     /// Issue owners and users with push access can edit an issue.
     ///
     /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
-    func issues_update(_ input: Operations.issues_update.Input) async throws
-        -> Operations.issues_update.Output
+    func issues_update(_ input: Operations.issues_update.Input) async throws -> Operations.issues_update.Output
     /// Create an issue comment
     ///
     ///
@@ -367,24 +358,22 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
-    func pulls_list(_ input: Operations.pulls_list.Input) async throws
-        -> Operations.pulls_list.Output
+    func pulls_list(_ input: Operations.pulls_list.Input) async throws -> Operations.pulls_list.Output
     /// List review comments on a pull request
     ///
     /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
-    func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input)
-        async throws -> Operations.pulls_list_review_comments.Output
+    func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input) async throws
+        -> Operations.pulls_list_review_comments.Output
     /// List pull requests files
     ///
     /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
-    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws
-        -> Operations.pulls_list_files.Output
+    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws -> Operations.pulls_list_files.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -419,14 +408,11 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
-    func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws
-        -> Operations.repos_list_tags.Output
+    func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws -> Operations.repos_list_tags.Output
 }
 /// Server URLs defined in the OpenAPI document.
 public enum Servers {
-    public static func server1() throws -> URL {
-        try URL(validatingOpenAPIServerURL: "https://api.github.com")
-    }
+    public static func server1() throws -> URL { try URL(validatingOpenAPIServerURL: "https://api.github.com") }
 }
 /// Types generated from the components section of the OpenAPI document.
 public enum Components {
@@ -626,11 +612,7 @@ public enum Components {
             ///   - message:
             ///   - documentation_url:
             ///   - errors:
-            public init(
-                message: Swift.String,
-                documentation_url: Swift.String,
-                errors: [Swift.String]? = nil
-            ) {
+            public init(message: Swift.String, documentation_url: Swift.String, errors: [Swift.String]? = nil) {
                 self.message = message
                 self.documentation_url = documentation_url
                 self.errors = errors
@@ -698,8 +680,7 @@ public enum Components {
                     }
                 }
                 /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/value`.
-                public var value:
-                    Components.Schemas.validation_error.errorsPayloadPayload.valuePayload?
+                public var value: Components.Schemas.validation_error.errorsPayloadPayload.valuePayload?
                 /// Creates a new `errorsPayloadPayload`.
                 ///
                 /// - Parameters:
@@ -715,8 +696,7 @@ public enum Components {
                     message: Swift.String? = nil,
                     code: Swift.String,
                     index: Swift.Int? = nil,
-                    value: Components.Schemas.validation_error.errorsPayloadPayload.valuePayload? =
-                        nil
+                    value: Components.Schemas.validation_error.errorsPayloadPayload.valuePayload? = nil
                 ) {
                     self.resource = resource
                     self.field = field
@@ -735,8 +715,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/validation-error/errors`.
-            public typealias errorsPayload = [Components.Schemas.validation_error
-                .errorsPayloadPayload]
+            public typealias errorsPayload = [Components.Schemas.validation_error.errorsPayloadPayload]
             /// - Remark: Generated from `#/components/schemas/validation-error/errors`.
             public var errors: Components.Schemas.validation_error.errorsPayload?
             /// Creates a new `validation_error`.
@@ -824,9 +803,9 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - additionalProperties: A container of undocumented properties.
-                    public init(
-                        additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
-                    ) { self.additionalProperties = additionalProperties }
+                    public init(additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()) {
+                        self.additionalProperties = additionalProperties
+                    }
                     public init(from decoder: any Decoder) throws {
                         additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
                     }
@@ -848,9 +827,9 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - additionalProperties: A container of undocumented properties.
-                    public init(
-                        additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
-                    ) { self.additionalProperties = additionalProperties }
+                    public init(additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()) {
+                        self.additionalProperties = additionalProperties
+                    }
                     public init(from decoder: any Decoder) throws {
                         additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
                     }
@@ -893,9 +872,9 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - additionalProperties: A container of undocumented properties.
-                    public init(
-                        additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()
-                    ) { self.additionalProperties = additionalProperties }
+                    public init(additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()) {
+                        self.additionalProperties = additionalProperties
+                    }
                     public init(from decoder: any Decoder) throws {
                         additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
                     }
@@ -1238,10 +1217,8 @@ public enum Components {
                 /// - Parameters:
                 ///   - value1:
                 ///   - value2:
-                public init(
-                    value1: Components.Schemas.simple_user? = nil,
-                    value2: Components.Schemas.enterprise? = nil
-                ) {
+                public init(value1: Components.Schemas.simple_user? = nil, value2: Components.Schemas.enterprise? = nil)
+                {
                     self.value1 = value1
                     self.value2 = value2
                 }
@@ -1301,10 +1278,7 @@ public enum Components {
             /// The level of permission to grant the access token for GitHub Actions workflows, workflow runs, and artifacts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/actions`.
-            @frozen
-            public enum actionsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum actionsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1332,10 +1306,7 @@ public enum Components {
             /// The level of permission to grant the access token for repository creation, deletion, settings, teams, and collaborators creation.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/administration`.
-            @frozen
-            public enum administrationPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum administrationPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1363,10 +1334,7 @@ public enum Components {
             /// The level of permission to grant the access token for checks on code.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/checks`.
-            @frozen
-            public enum checksPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum checksPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1394,10 +1362,7 @@ public enum Components {
             /// The level of permission to grant the access token for repository contents, commits, branches, downloads, releases, and merges.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/contents`.
-            @frozen
-            public enum contentsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum contentsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1425,10 +1390,7 @@ public enum Components {
             /// The level of permission to grant the access token for deployments and deployment statuses.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/deployments`.
-            @frozen
-            public enum deploymentsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum deploymentsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1456,10 +1418,7 @@ public enum Components {
             /// The level of permission to grant the access token for managing repository environments.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/environments`.
-            @frozen
-            public enum environmentsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum environmentsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1487,10 +1446,7 @@ public enum Components {
             /// The level of permission to grant the access token for issues and related comments, assignees, labels, and milestones.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/issues`.
-            @frozen
-            public enum issuesPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum issuesPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1518,10 +1474,7 @@ public enum Components {
             /// The level of permission to grant the access token to search repositories, list collaborators, and access repository metadata.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/metadata`.
-            @frozen
-            public enum metadataPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum metadataPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1549,10 +1502,7 @@ public enum Components {
             /// The level of permission to grant the access token for packages published to GitHub Packages.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/packages`.
-            @frozen
-            public enum packagesPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum packagesPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1580,10 +1530,7 @@ public enum Components {
             /// The level of permission to grant the access token to retrieve Pages statuses, configuration, and builds, as well as create new builds.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/pages`.
-            @frozen
-            public enum pagesPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum pagesPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1611,10 +1558,7 @@ public enum Components {
             /// The level of permission to grant the access token for pull requests and related comments, assignees, labels, milestones, and merges.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/pull_requests`.
-            @frozen
-            public enum pull_requestsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum pull_requestsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1642,10 +1586,7 @@ public enum Components {
             /// The level of permission to grant the access token to manage the post-receive hooks for a repository.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/repository_hooks`.
-            @frozen
-            public enum repository_hooksPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum repository_hooksPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1673,9 +1614,7 @@ public enum Components {
             /// The level of permission to grant the access token to manage repository projects, columns, and cards.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/repository_projects`.
-            @frozen
-            public enum repository_projectsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum repository_projectsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case read
                 case write
@@ -1703,15 +1642,12 @@ public enum Components {
             /// The level of permission to grant the access token to manage repository projects, columns, and cards.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/repository_projects`.
-            public var repository_projects:
-                Components.Schemas.app_permissions.repository_projectsPayload?
+            public var repository_projects: Components.Schemas.app_permissions.repository_projectsPayload?
             /// The level of permission to grant the access token to view and manage secret scanning alerts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/secret_scanning_alerts`.
             @frozen
-            public enum secret_scanning_alertsPayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum secret_scanning_alertsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1735,15 +1671,11 @@ public enum Components {
             /// The level of permission to grant the access token to view and manage secret scanning alerts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/secret_scanning_alerts`.
-            public var secret_scanning_alerts:
-                Components.Schemas.app_permissions.secret_scanning_alertsPayload?
+            public var secret_scanning_alerts: Components.Schemas.app_permissions.secret_scanning_alertsPayload?
             /// The level of permission to grant the access token to manage repository secrets.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/secrets`.
-            @frozen
-            public enum secretsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum secretsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1771,10 +1703,7 @@ public enum Components {
             /// The level of permission to grant the access token to view and manage security events like code scanning alerts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/security_events`.
-            @frozen
-            public enum security_eventsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum security_eventsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1802,10 +1731,7 @@ public enum Components {
             /// The level of permission to grant the access token to manage just a single file.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/single_file`.
-            @frozen
-            public enum single_filePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum single_filePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1833,10 +1759,7 @@ public enum Components {
             /// The level of permission to grant the access token for commit statuses.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/statuses`.
-            @frozen
-            public enum statusesPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum statusesPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1864,9 +1787,7 @@ public enum Components {
             /// The level of permission to grant the access token to manage Dependabot alerts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/vulnerability_alerts`.
-            @frozen
-            public enum vulnerability_alertsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum vulnerability_alertsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case read
                 case write
@@ -1891,15 +1812,11 @@ public enum Components {
             /// The level of permission to grant the access token to manage Dependabot alerts.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/vulnerability_alerts`.
-            public var vulnerability_alerts:
-                Components.Schemas.app_permissions.vulnerability_alertsPayload?
+            public var vulnerability_alerts: Components.Schemas.app_permissions.vulnerability_alertsPayload?
             /// The level of permission to grant the access token to update GitHub Actions workflow files.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/workflows`.
-            @frozen
-            public enum workflowsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum workflowsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
                 case undocumented(String)
@@ -1924,10 +1841,7 @@ public enum Components {
             /// The level of permission to grant the access token for organization teams and members.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/members`.
-            @frozen
-            public enum membersPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum membersPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -1956,8 +1870,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_administration`.
             @frozen
-            public enum organization_administrationPayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_administrationPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case read
                 case write
@@ -1988,9 +1901,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
             @frozen
-            public enum organization_custom_rolesPayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum organization_custom_rolesPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -2014,14 +1925,13 @@ public enum Components {
             /// The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
-            public var organization_custom_roles:
-                Components.Schemas.app_permissions.organization_custom_rolesPayload?
+            public var organization_custom_roles: Components.Schemas.app_permissions.organization_custom_rolesPayload?
             /// The level of permission to grant the access token to view and manage announcement banners for an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_announcement_banners`.
             @frozen
-            public enum organization_announcement_bannersPayload: RawRepresentable, Codable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_announcement_bannersPayload: RawRepresentable, Codable, Hashable, Sendable,
+                CaseIterable
             {
                 case read
                 case write
@@ -2051,10 +1961,7 @@ public enum Components {
             /// The level of permission to grant the access token to manage the post-receive hooks for an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_hooks`.
-            @frozen
-            public enum organization_hooksPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum organization_hooksPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -2078,14 +1985,13 @@ public enum Components {
             /// The level of permission to grant the access token to manage the post-receive hooks for an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_hooks`.
-            public var organization_hooks:
-                Components.Schemas.app_permissions.organization_hooksPayload?
+            public var organization_hooks: Components.Schemas.app_permissions.organization_hooksPayload?
             /// The level of permission to grant the access token for viewing and managing fine-grained personal access token requests to an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_tokens`.
             @frozen
-            public enum organization_personal_access_tokensPayload: RawRepresentable, Codable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_personal_access_tokensPayload: RawRepresentable, Codable, Hashable, Sendable,
+                CaseIterable
             {
                 case read
                 case write
@@ -2116,8 +2022,8 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
             @frozen
-            public enum organization_personal_access_token_requestsPayload: RawRepresentable,
-                Codable, Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_personal_access_token_requestsPayload: RawRepresentable, Codable, Hashable,
+                Sendable, CaseIterable
             {
                 case read
                 case write
@@ -2143,15 +2049,11 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
             public var organization_personal_access_token_requests:
-                Components.Schemas.app_permissions
-                    .organization_personal_access_token_requestsPayload?
+                Components.Schemas.app_permissions.organization_personal_access_token_requestsPayload?
             /// The level of permission to grant the access token for viewing an organization's plan.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
-            @frozen
-            public enum organization_planPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum organization_planPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 /// Parsed a raw value that was not defined in the OpenAPI document.
                 case undocumented(String)
@@ -2172,15 +2074,12 @@ public enum Components {
             /// The level of permission to grant the access token for viewing an organization's plan.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
-            public var organization_plan:
-                Components.Schemas.app_permissions.organization_planPayload?
+            public var organization_plan: Components.Schemas.app_permissions.organization_planPayload?
             /// The level of permission to grant the access token to manage organization projects and projects beta (where available).
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_projects`.
             @frozen
-            public enum organization_projectsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum organization_projectsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 case admin
@@ -2207,15 +2106,12 @@ public enum Components {
             /// The level of permission to grant the access token to manage organization projects and projects beta (where available).
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_projects`.
-            public var organization_projects:
-                Components.Schemas.app_permissions.organization_projectsPayload?
+            public var organization_projects: Components.Schemas.app_permissions.organization_projectsPayload?
             /// The level of permission to grant the access token for organization packages published to GitHub Packages.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_packages`.
             @frozen
-            public enum organization_packagesPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum organization_packagesPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -2239,14 +2135,11 @@ public enum Components {
             /// The level of permission to grant the access token for organization packages published to GitHub Packages.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_packages`.
-            public var organization_packages:
-                Components.Schemas.app_permissions.organization_packagesPayload?
+            public var organization_packages: Components.Schemas.app_permissions.organization_packagesPayload?
             /// The level of permission to grant the access token to manage organization secrets.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_secrets`.
-            @frozen
-            public enum organization_secretsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum organization_secretsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case read
                 case write
@@ -2271,14 +2164,13 @@ public enum Components {
             /// The level of permission to grant the access token to manage organization secrets.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_secrets`.
-            public var organization_secrets:
-                Components.Schemas.app_permissions.organization_secretsPayload?
+            public var organization_secrets: Components.Schemas.app_permissions.organization_secretsPayload?
             /// The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
             @frozen
-            public enum organization_self_hosted_runnersPayload: RawRepresentable, Codable,
-                Hashable, Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum organization_self_hosted_runnersPayload: RawRepresentable, Codable, Hashable, Sendable,
+                CaseIterable
             {
                 case read
                 case write
@@ -2309,9 +2201,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
             @frozen
-            public enum organization_user_blockingPayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum organization_user_blockingPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -2335,15 +2225,11 @@ public enum Components {
             /// The level of permission to grant the access token to view and manage users blocked by the organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
-            public var organization_user_blocking:
-                Components.Schemas.app_permissions.organization_user_blockingPayload?
+            public var organization_user_blocking: Components.Schemas.app_permissions.organization_user_blockingPayload?
             /// The level of permission to grant the access token to manage team discussions and related comments.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/team_discussions`.
-            @frozen
-            public enum team_discussionsPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum team_discussionsPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -2418,42 +2304,32 @@ public enum Components {
                 pages: Components.Schemas.app_permissions.pagesPayload? = nil,
                 pull_requests: Components.Schemas.app_permissions.pull_requestsPayload? = nil,
                 repository_hooks: Components.Schemas.app_permissions.repository_hooksPayload? = nil,
-                repository_projects: Components.Schemas.app_permissions
-                    .repository_projectsPayload? = nil,
-                secret_scanning_alerts: Components.Schemas.app_permissions
-                    .secret_scanning_alertsPayload? = nil,
+                repository_projects: Components.Schemas.app_permissions.repository_projectsPayload? = nil,
+                secret_scanning_alerts: Components.Schemas.app_permissions.secret_scanning_alertsPayload? = nil,
                 secrets: Components.Schemas.app_permissions.secretsPayload? = nil,
                 security_events: Components.Schemas.app_permissions.security_eventsPayload? = nil,
                 single_file: Components.Schemas.app_permissions.single_filePayload? = nil,
                 statuses: Components.Schemas.app_permissions.statusesPayload? = nil,
-                vulnerability_alerts: Components.Schemas.app_permissions
-                    .vulnerability_alertsPayload? = nil,
+                vulnerability_alerts: Components.Schemas.app_permissions.vulnerability_alertsPayload? = nil,
                 workflows: Components.Schemas.app_permissions.workflowsPayload? = nil,
                 members: Components.Schemas.app_permissions.membersPayload? = nil,
-                organization_administration: Components.Schemas.app_permissions
-                    .organization_administrationPayload? = nil,
-                organization_custom_roles: Components.Schemas.app_permissions
-                    .organization_custom_rolesPayload? = nil,
+                organization_administration: Components.Schemas.app_permissions.organization_administrationPayload? =
+                    nil,
+                organization_custom_roles: Components.Schemas.app_permissions.organization_custom_rolesPayload? = nil,
                 organization_announcement_banners: Components.Schemas.app_permissions
                     .organization_announcement_bannersPayload? = nil,
-                organization_hooks: Components.Schemas.app_permissions.organization_hooksPayload? =
-                    nil,
+                organization_hooks: Components.Schemas.app_permissions.organization_hooksPayload? = nil,
                 organization_personal_access_tokens: Components.Schemas.app_permissions
                     .organization_personal_access_tokensPayload? = nil,
                 organization_personal_access_token_requests: Components.Schemas.app_permissions
                     .organization_personal_access_token_requestsPayload? = nil,
-                organization_plan: Components.Schemas.app_permissions.organization_planPayload? =
-                    nil,
-                organization_projects: Components.Schemas.app_permissions
-                    .organization_projectsPayload? = nil,
-                organization_packages: Components.Schemas.app_permissions
-                    .organization_packagesPayload? = nil,
-                organization_secrets: Components.Schemas.app_permissions
-                    .organization_secretsPayload? = nil,
+                organization_plan: Components.Schemas.app_permissions.organization_planPayload? = nil,
+                organization_projects: Components.Schemas.app_permissions.organization_projectsPayload? = nil,
+                organization_packages: Components.Schemas.app_permissions.organization_packagesPayload? = nil,
+                organization_secrets: Components.Schemas.app_permissions.organization_secretsPayload? = nil,
                 organization_self_hosted_runners: Components.Schemas.app_permissions
                     .organization_self_hosted_runnersPayload? = nil,
-                organization_user_blocking: Components.Schemas.app_permissions
-                    .organization_user_blockingPayload? = nil,
+                organization_user_blocking: Components.Schemas.app_permissions.organization_user_blockingPayload? = nil,
                 team_discussions: Components.Schemas.app_permissions.team_discussionsPayload? = nil
             ) {
                 self.actions = actions
@@ -2482,8 +2358,7 @@ public enum Components {
                 self.organization_announcement_banners = organization_announcement_banners
                 self.organization_hooks = organization_hooks
                 self.organization_personal_access_tokens = organization_personal_access_tokens
-                self.organization_personal_access_token_requests =
-                    organization_personal_access_token_requests
+                self.organization_personal_access_token_requests = organization_personal_access_token_requests
                 self.organization_plan = organization_plan
                 self.organization_projects = organization_projects
                 self.organization_packages = organization_packages
@@ -2548,10 +2423,8 @@ public enum Components {
                 /// - Parameters:
                 ///   - value1:
                 ///   - value2:
-                public init(
-                    value1: Components.Schemas.simple_user? = nil,
-                    value2: Components.Schemas.enterprise? = nil
-                ) {
+                public init(value1: Components.Schemas.simple_user? = nil, value2: Components.Schemas.enterprise? = nil)
+                {
                     self.value1 = value1
                     self.value2 = value2
                 }
@@ -2574,9 +2447,7 @@ public enum Components {
             /// Describe whether all repositories have been selected or there's a selection involved
             ///
             /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
-            @frozen
-            public enum repository_selectionPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum repository_selectionPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case all
                 case selected
@@ -2601,8 +2472,7 @@ public enum Components {
             /// Describe whether all repositories have been selected or there's a selection involved
             ///
             /// - Remark: Generated from `#/components/schemas/installation/repository_selection`.
-            public var repository_selection:
-                Components.Schemas.installation.repository_selectionPayload
+            public var repository_selection: Components.Schemas.installation.repository_selectionPayload
             /// - Remark: Generated from `#/components/schemas/installation/access_tokens_url`.
             public var access_tokens_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/installation/repositories_url`.
@@ -3167,8 +3037,7 @@ public enum Components {
                     }
                 }
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/owner`.
-                public var owner:
-                    Components.Schemas.repository.template_repositoryPayload.ownerPayload?
+                public var owner: Components.Schemas.repository.template_repositoryPayload.ownerPayload?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/private`.
                 public var _private: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/html_url`.
@@ -3345,8 +3214,7 @@ public enum Components {
                     }
                 }
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/permissions`.
-                public var permissions:
-                    Components.Schemas.repository.template_repositoryPayload.permissionsPayload?
+                public var permissions: Components.Schemas.repository.template_repositoryPayload.permissionsPayload?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/allow_rebase_merge`.
                 public var allow_rebase_merge: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/temp_clone_token`.
@@ -3368,8 +3236,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_title`.
                 @frozen
-                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
+                    CaseIterable
                 {
                     case PR_TITLE
                     case COMMIT_OR_PR_TITLE
@@ -3398,8 +3266,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_title`.
                 public var squash_merge_commit_title:
-                    Components.Schemas.repository.template_repositoryPayload
-                        .squash_merge_commit_titlePayload?
+                    Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_titlePayload?
                 /// The default value for a squash merge commit message:
                 ///
                 /// - `PR_BODY` - default to the pull request's body.
@@ -3408,8 +3275,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_message`.
                 @frozen
-                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
+                    CaseIterable
                 {
                     case PR_BODY
                     case COMMIT_MESSAGES
@@ -3442,8 +3309,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_message`.
                 public var squash_merge_commit_message:
-                    Components.Schemas.repository.template_repositoryPayload
-                        .squash_merge_commit_messagePayload?
+                    Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_messagePayload?
                 /// The default value for a merge commit title.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -3451,9 +3317,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_title`.
                 @frozen
-                public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
-                {
+                public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case PR_TITLE
                     case MERGE_MESSAGE
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -3481,8 +3345,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_title`.
                 public var merge_commit_title:
-                    Components.Schemas.repository.template_repositoryPayload
-                        .merge_commit_titlePayload?
+                    Components.Schemas.repository.template_repositoryPayload.merge_commit_titlePayload?
                 /// The default value for a merge commit message.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -3491,9 +3354,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_message`.
                 @frozen
-                public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
-                {
+                public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case PR_BODY
                     case PR_TITLE
                     case BLANK
@@ -3525,8 +3386,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_message`.
                 public var merge_commit_message:
-                    Components.Schemas.repository.template_repositoryPayload
-                        .merge_commit_messagePayload?
+                    Components.Schemas.repository.template_repositoryPayload.merge_commit_messagePayload?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/allow_merge_commit`.
                 public var allow_merge_commit: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/subscribers_count`.
@@ -3628,8 +3488,7 @@ public enum Components {
                     node_id: Swift.String? = nil,
                     name: Swift.String? = nil,
                     full_name: Swift.String? = nil,
-                    owner: Components.Schemas.repository.template_repositoryPayload.ownerPayload? =
-                        nil,
+                    owner: Components.Schemas.repository.template_repositoryPayload.ownerPayload? = nil,
                     _private: Swift.Bool? = nil,
                     html_url: Swift.String? = nil,
                     description: Swift.String? = nil,
@@ -3697,8 +3556,7 @@ public enum Components {
                     pushed_at: Swift.String? = nil,
                     created_at: Swift.String? = nil,
                     updated_at: Swift.String? = nil,
-                    permissions: Components.Schemas.repository.template_repositoryPayload
-                        .permissionsPayload? = nil,
+                    permissions: Components.Schemas.repository.template_repositoryPayload.permissionsPayload? = nil,
                     allow_rebase_merge: Swift.Bool? = nil,
                     temp_clone_token: Swift.String? = nil,
                     allow_squash_merge: Swift.Bool? = nil,
@@ -3706,10 +3564,10 @@ public enum Components {
                     delete_branch_on_merge: Swift.Bool? = nil,
                     allow_update_branch: Swift.Bool? = nil,
                     use_squash_pr_title_as_default: Swift.Bool? = nil,
-                    squash_merge_commit_title: Components.Schemas.repository
-                        .template_repositoryPayload.squash_merge_commit_titlePayload? = nil,
-                    squash_merge_commit_message: Components.Schemas.repository
-                        .template_repositoryPayload.squash_merge_commit_messagePayload? = nil,
+                    squash_merge_commit_title: Components.Schemas.repository.template_repositoryPayload
+                        .squash_merge_commit_titlePayload? = nil,
+                    squash_merge_commit_message: Components.Schemas.repository.template_repositoryPayload
+                        .squash_merge_commit_messagePayload? = nil,
                     merge_commit_title: Components.Schemas.repository.template_repositoryPayload
                         .merge_commit_titlePayload? = nil,
                     merge_commit_message: Components.Schemas.repository.template_repositoryPayload
@@ -3897,8 +3755,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/repository/template_repository`.
-            public var template_repository:
-                Components.Schemas.repository.template_repositoryPayload?
+            public var template_repository: Components.Schemas.repository.template_repositoryPayload?
             /// - Remark: Generated from `#/components/schemas/repository/temp_clone_token`.
             public var temp_clone_token: Swift.String?
             /// Whether to allow squash merges for pull requests.
@@ -3928,9 +3785,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/repository/squash_merge_commit_title`.
             @frozen
-            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case PR_TITLE
                 case COMMIT_OR_PR_TITLE
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -3957,8 +3812,7 @@ public enum Components {
             /// - `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
             ///
             /// - Remark: Generated from `#/components/schemas/repository/squash_merge_commit_title`.
-            public var squash_merge_commit_title:
-                Components.Schemas.repository.squash_merge_commit_titlePayload?
+            public var squash_merge_commit_title: Components.Schemas.repository.squash_merge_commit_titlePayload?
             /// The default value for a squash merge commit message:
             ///
             /// - `PR_BODY` - default to the pull request's body.
@@ -3967,8 +3821,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/repository/squash_merge_commit_message`.
             @frozen
-            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case PR_BODY
                 case COMMIT_MESSAGES
@@ -4000,18 +3853,14 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/squash_merge_commit_message`.
-            public var squash_merge_commit_message:
-                Components.Schemas.repository.squash_merge_commit_messagePayload?
+            public var squash_merge_commit_message: Components.Schemas.repository.squash_merge_commit_messagePayload?
             /// The default value for a merge commit title.
             ///
             /// - `PR_TITLE` - default to the pull request's title.
             /// - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
             ///
             /// - Remark: Generated from `#/components/schemas/repository/merge_commit_title`.
-            @frozen
-            public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case PR_TITLE
                 case MERGE_MESSAGE
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -4046,9 +3895,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/merge_commit_message`.
-            @frozen
-            public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case PR_BODY
                 case PR_TITLE
@@ -4080,8 +3927,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/merge_commit_message`.
-            public var merge_commit_message:
-                Components.Schemas.repository.merge_commit_messagePayload?
+            public var merge_commit_message: Components.Schemas.repository.merge_commit_messagePayload?
             /// Whether to allow merge commits for pull requests.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/allow_merge_commit`.
@@ -4291,21 +4137,17 @@ public enum Components {
                 created_at: Components.Schemas.string_or_int_date,
                 updated_at: Components.Schemas.string_or_int_date,
                 allow_rebase_merge: Swift.Bool? = nil,
-                template_repository: Components.Schemas.repository.template_repositoryPayload? =
-                    nil,
+                template_repository: Components.Schemas.repository.template_repositoryPayload? = nil,
                 temp_clone_token: Swift.String? = nil,
                 allow_squash_merge: Swift.Bool? = nil,
                 allow_auto_merge: Swift.Bool? = nil,
                 delete_branch_on_merge: Swift.Bool? = nil,
                 allow_update_branch: Swift.Bool? = nil,
                 use_squash_pr_title_as_default: Swift.Bool? = nil,
-                squash_merge_commit_title: Components.Schemas.repository
-                    .squash_merge_commit_titlePayload? = nil,
-                squash_merge_commit_message: Components.Schemas.repository
-                    .squash_merge_commit_messagePayload? = nil,
+                squash_merge_commit_title: Components.Schemas.repository.squash_merge_commit_titlePayload? = nil,
+                squash_merge_commit_message: Components.Schemas.repository.squash_merge_commit_messagePayload? = nil,
                 merge_commit_title: Components.Schemas.repository.merge_commit_titlePayload? = nil,
-                merge_commit_message: Components.Schemas.repository.merge_commit_messagePayload? =
-                    nil,
+                merge_commit_message: Components.Schemas.repository.merge_commit_messagePayload? = nil,
                 allow_merge_commit: Swift.Bool? = nil,
                 allow_forking: Swift.Bool? = nil,
                 web_commit_signoff_required: Swift.Bool? = nil,
@@ -4563,9 +4405,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/installation-token/permissions`.
             public var permissions: Components.Schemas.app_permissions?
             /// - Remark: Generated from `#/components/schemas/installation-token/repository_selection`.
-            @frozen
-            public enum repository_selectionPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum repository_selectionPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case all
                 case selected
@@ -4588,8 +4428,7 @@ public enum Components {
                 public static var allCases: [Self] { [.all, .selected] }
             }
             /// - Remark: Generated from `#/components/schemas/installation-token/repository_selection`.
-            public var repository_selection:
-                Components.Schemas.installation_token.repository_selectionPayload?
+            public var repository_selection: Components.Schemas.installation_token.repository_selectionPayload?
             /// - Remark: Generated from `#/components/schemas/installation-token/repositories`.
             public var repositories: [Components.Schemas.repository]?
             /// - Remark: Generated from `#/components/schemas/installation-token/single_file`.
@@ -4613,8 +4452,7 @@ public enum Components {
                 token: Swift.String,
                 expires_at: Swift.String,
                 permissions: Components.Schemas.app_permissions? = nil,
-                repository_selection: Components.Schemas.installation_token
-                    .repository_selectionPayload? = nil,
+                repository_selection: Components.Schemas.installation_token.repository_selectionPayload? = nil,
                 repositories: [Components.Schemas.repository]? = nil,
                 single_file: Swift.String? = nil,
                 has_multiple_single_files: Swift.Bool? = nil,
@@ -4728,10 +4566,7 @@ public enum Components {
             /// The severity of the vulnerability.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/severity`.
-            @frozen
-            public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case low
                 case medium
                 case high
@@ -4761,8 +4596,7 @@ public enum Components {
             /// The severity of the vulnerability.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/severity`.
-            public var severity:
-                Components.Schemas.dependabot_alert_security_vulnerability.severityPayload
+            public var severity: Components.Schemas.dependabot_alert_security_vulnerability.severityPayload
             /// Conditions that identify vulnerable versions of this vulnerability's package.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/vulnerable_version_range`.
@@ -4791,8 +4625,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/first_patched_version`.
             public var first_patched_version:
-                Components.Schemas.dependabot_alert_security_vulnerability
-                    .first_patched_versionPayload
+                Components.Schemas.dependabot_alert_security_vulnerability.first_patched_versionPayload
             /// Creates a new `dependabot_alert_security_vulnerability`.
             ///
             /// - Parameters:
@@ -4802,8 +4635,7 @@ public enum Components {
             ///   - first_patched_version: Details pertaining to the package version that patches this vulnerability.
             public init(
                 package: Components.Schemas.dependabot_alert_package,
-                severity: Components.Schemas.dependabot_alert_security_vulnerability
-                    .severityPayload,
+                severity: Components.Schemas.dependabot_alert_security_vulnerability.severityPayload,
                 vulnerable_version_range: Swift.String,
                 first_patched_version: Components.Schemas.dependabot_alert_security_vulnerability
                     .first_patched_versionPayload
@@ -4821,21 +4653,14 @@ public enum Components {
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                package = try container.decode(
-                    Components.Schemas.dependabot_alert_package.self,
-                    forKey: .package
-                )
+                package = try container.decode(Components.Schemas.dependabot_alert_package.self, forKey: .package)
                 severity = try container.decode(
                     Components.Schemas.dependabot_alert_security_vulnerability.severityPayload.self,
                     forKey: .severity
                 )
-                vulnerable_version_range = try container.decode(
-                    Swift.String.self,
-                    forKey: .vulnerable_version_range
-                )
+                vulnerable_version_range = try container.decode(Swift.String.self, forKey: .vulnerable_version_range)
                 first_patched_version = try container.decode(
-                    Components.Schemas.dependabot_alert_security_vulnerability
-                        .first_patched_versionPayload.self,
+                    Components.Schemas.dependabot_alert_security_vulnerability.first_patched_versionPayload.self,
                     forKey: .first_patched_version
                 )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
@@ -4870,10 +4695,7 @@ public enum Components {
             /// The severity of the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/severity`.
-            @frozen
-            public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case low
                 case medium
                 case high
@@ -4903,8 +4725,7 @@ public enum Components {
             /// The severity of the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/severity`.
-            public var severity:
-                Components.Schemas.dependabot_alert_security_advisory.severityPayload
+            public var severity: Components.Schemas.dependabot_alert_security_advisory.severityPayload
             /// Details for the advisory pertaining to the Common Vulnerability Scoring System.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cvss`.
@@ -4976,8 +4797,7 @@ public enum Components {
             /// Details for the advisory pertaining to Common Weakness Enumeration.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cwes`.
-            public typealias cwesPayload = [Components.Schemas.dependabot_alert_security_advisory
-                .cwesPayloadPayload]
+            public typealias cwesPayload = [Components.Schemas.dependabot_alert_security_advisory.cwesPayloadPayload]
             /// Details for the advisory pertaining to Common Weakness Enumeration.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cwes`.
@@ -4989,10 +4809,7 @@ public enum Components {
                 /// The type of advisory identifier.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload/type`.
-                @frozen
-                public enum _typePayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum _typePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case CVE
                     case GHSA
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -5017,8 +4834,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload/type`.
                 public var _type:
-                    Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload
-                        ._typePayload
+                    Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload._typePayload
                 /// The value of the advisory identifer.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload/value`.
@@ -5029,8 +4845,7 @@ public enum Components {
                 ///   - _type: The type of advisory identifier.
                 ///   - value: The value of the advisory identifer.
                 public init(
-                    _type: Components.Schemas.dependabot_alert_security_advisory
-                        .identifiersPayloadPayload._typePayload,
+                    _type: Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload._typePayload,
                     value: Swift.String
                 ) {
                     self._type = _type
@@ -5043,8 +4858,8 @@ public enum Components {
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     _type = try container.decode(
-                        Components.Schemas.dependabot_alert_security_advisory
-                            .identifiersPayloadPayload._typePayload.self,
+                        Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload._typePayload
+                            .self,
                         forKey: ._type
                     )
                     value = try container.decode(Swift.String.self, forKey: .value)
@@ -5054,13 +4869,12 @@ public enum Components {
             /// Values that identify this advisory among security information sources.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiers`.
-            public typealias identifiersPayload = [Components.Schemas
-                .dependabot_alert_security_advisory.identifiersPayloadPayload]
+            public typealias identifiersPayload = [Components.Schemas.dependabot_alert_security_advisory
+                .identifiersPayloadPayload]
             /// Values that identify this advisory among security information sources.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiers`.
-            public var identifiers:
-                Components.Schemas.dependabot_alert_security_advisory.identifiersPayload
+            public var identifiers: Components.Schemas.dependabot_alert_security_advisory.identifiersPayload
             /// A link to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/referencesPayload`.
@@ -5084,13 +4898,12 @@ public enum Components {
             /// Links to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/references`.
-            public typealias referencesPayload = [Components.Schemas
-                .dependabot_alert_security_advisory.referencesPayloadPayload]
+            public typealias referencesPayload = [Components.Schemas.dependabot_alert_security_advisory
+                .referencesPayloadPayload]
             /// Links to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/references`.
-            public var references:
-                Components.Schemas.dependabot_alert_security_advisory.referencesPayload
+            public var references: Components.Schemas.dependabot_alert_security_advisory.referencesPayload
             /// The time that the advisory was published in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/published_at`.
@@ -5128,8 +4941,7 @@ public enum Components {
                 severity: Components.Schemas.dependabot_alert_security_advisory.severityPayload,
                 cvss: Components.Schemas.dependabot_alert_security_advisory.cvssPayload,
                 cwes: Components.Schemas.dependabot_alert_security_advisory.cwesPayload,
-                identifiers: Components.Schemas.dependabot_alert_security_advisory
-                    .identifiersPayload,
+                identifiers: Components.Schemas.dependabot_alert_security_advisory.identifiersPayload,
                 references: Components.Schemas.dependabot_alert_security_advisory.referencesPayload,
                 published_at: Foundation.Date,
                 updated_at: Foundation.Date,
@@ -5198,9 +5010,8 @@ public enum Components {
                 updated_at = try container.decode(Foundation.Date.self, forKey: .updated_at)
                 withdrawn_at = try container.decode(Foundation.Date.self, forKey: .withdrawn_at)
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
-                    "ghsa_id", "cve_id", "summary", "description", "vulnerabilities", "severity",
-                    "cvss", "cwes", "identifiers", "references", "published_at", "updated_at",
-                    "withdrawn_at",
+                    "ghsa_id", "cve_id", "summary", "description", "vulnerabilities", "severity", "cvss", "cwes",
+                    "identifiers", "references", "published_at", "updated_at", "withdrawn_at",
                 ])
             }
         }
@@ -5632,10 +5443,7 @@ public enum Components {
             /// The state of the milestone.
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/state`.
-            @frozen
-            public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case open
                 case closed
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -5836,10 +5644,7 @@ public enum Components {
                     checks = try container.decodeIfPresent(Swift.String.self, forKey: .checks)
                     metadata = try container.decodeIfPresent(Swift.String.self, forKey: .metadata)
                     contents = try container.decodeIfPresent(Swift.String.self, forKey: .contents)
-                    deployments = try container.decodeIfPresent(
-                        Swift.String.self,
-                        forKey: .deployments
-                    )
+                    deployments = try container.decodeIfPresent(Swift.String.self, forKey: .deployments)
                     additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
                         "issues", "checks", "metadata", "contents", "deployments",
                     ])
@@ -5954,10 +5759,7 @@ public enum Components {
         /// How the author is associated with the repository.
         ///
         /// - Remark: Generated from `#/components/schemas/author-association`.
-        @frozen
-        public enum author_association: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum author_association: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case COLLABORATOR
             case CONTRIBUTOR
             case FIRST_TIMER
@@ -5996,8 +5798,8 @@ public enum Components {
             }
             public static var allCases: [Self] {
                 [
-                    .COLLABORATOR, .CONTRIBUTOR, .FIRST_TIMER, .FIRST_TIME_CONTRIBUTOR, .MANNEQUIN,
-                    .MEMBER, .NONE, .OWNER,
+                    .COLLABORATOR, .CONTRIBUTOR, .FIRST_TIMER, .FIRST_TIME_CONTRIBUTOR, .MANNEQUIN, .MEMBER, .NONE,
+                    .OWNER,
                 ]
             }
         }
@@ -6093,10 +5895,7 @@ public enum Components {
             /// The reason for the current state
             ///
             /// - Remark: Generated from `#/components/schemas/issue/state_reason`.
-            @frozen
-            public enum state_reasonPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum state_reasonPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case completed
                 case reopened
                 case not_planned
@@ -6556,10 +6355,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security`.
             public struct advanced_securityPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security/status`.
-                @frozen
-                public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case enabled
                     case disabled
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -6581,28 +6377,22 @@ public enum Components {
                     public static var allCases: [Self] { [.enabled, .disabled] }
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security/status`.
-                public var status:
-                    Components.Schemas.security_and_analysis.advanced_securityPayload.statusPayload?
+                public var status: Components.Schemas.security_and_analysis.advanced_securityPayload.statusPayload?
                 /// Creates a new `advanced_securityPayload`.
                 ///
                 /// - Parameters:
                 ///   - status:
                 public init(
-                    status: Components.Schemas.security_and_analysis.advanced_securityPayload
-                        .statusPayload? = nil
+                    status: Components.Schemas.security_and_analysis.advanced_securityPayload.statusPayload? = nil
                 ) { self.status = status }
                 public enum CodingKeys: String, CodingKey { case status }
             }
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security`.
-            public var advanced_security:
-                Components.Schemas.security_and_analysis.advanced_securityPayload?
+            public var advanced_security: Components.Schemas.security_and_analysis.advanced_securityPayload?
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning`.
             public struct secret_scanningPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning/status`.
-                @frozen
-                public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case enabled
                     case disabled
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -6624,28 +6414,22 @@ public enum Components {
                     public static var allCases: [Self] { [.enabled, .disabled] }
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning/status`.
-                public var status:
-                    Components.Schemas.security_and_analysis.secret_scanningPayload.statusPayload?
+                public var status: Components.Schemas.security_and_analysis.secret_scanningPayload.statusPayload?
                 /// Creates a new `secret_scanningPayload`.
                 ///
                 /// - Parameters:
                 ///   - status:
                 public init(
-                    status: Components.Schemas.security_and_analysis.secret_scanningPayload
-                        .statusPayload? = nil
+                    status: Components.Schemas.security_and_analysis.secret_scanningPayload.statusPayload? = nil
                 ) { self.status = status }
                 public enum CodingKeys: String, CodingKey { case status }
             }
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning`.
-            public var secret_scanning:
-                Components.Schemas.security_and_analysis.secret_scanningPayload?
+            public var secret_scanning: Components.Schemas.security_and_analysis.secret_scanningPayload?
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection`.
             public struct secret_scanning_push_protectionPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection/status`.
-                @frozen
-                public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case enabled
                     case disabled
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -6668,15 +6452,14 @@ public enum Components {
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection/status`.
                 public var status:
-                    Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload
-                        .statusPayload?
+                    Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload.statusPayload?
                 /// Creates a new `secret_scanning_push_protectionPayload`.
                 ///
                 /// - Parameters:
                 ///   - status:
                 public init(
-                    status: Components.Schemas.security_and_analysis
-                        .secret_scanning_push_protectionPayload.statusPayload? = nil
+                    status: Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload
+                        .statusPayload? = nil
                 ) { self.status = status }
                 public enum CodingKeys: String, CodingKey { case status }
             }
@@ -6690,10 +6473,8 @@ public enum Components {
             ///   - secret_scanning:
             ///   - secret_scanning_push_protection:
             public init(
-                advanced_security: Components.Schemas.security_and_analysis
-                    .advanced_securityPayload? = nil,
-                secret_scanning: Components.Schemas.security_and_analysis.secret_scanningPayload? =
-                    nil,
+                advanced_security: Components.Schemas.security_and_analysis.advanced_securityPayload? = nil,
+                secret_scanning: Components.Schemas.security_and_analysis.secret_scanningPayload? = nil,
                 secret_scanning_push_protection: Components.Schemas.security_and_analysis
                     .secret_scanning_push_protectionPayload? = nil
             ) {
@@ -7137,35 +6918,27 @@ public enum Components {
                 self.default_repository_permission = default_repository_permission
                 self.members_can_create_repositories = members_can_create_repositories
                 self.two_factor_requirement_enabled = two_factor_requirement_enabled
-                self.members_allowed_repository_creation_type =
-                    members_allowed_repository_creation_type
+                self.members_allowed_repository_creation_type = members_allowed_repository_creation_type
                 self.members_can_create_public_repositories = members_can_create_public_repositories
-                self.members_can_create_private_repositories =
-                    members_can_create_private_repositories
-                self.members_can_create_internal_repositories =
-                    members_can_create_internal_repositories
+                self.members_can_create_private_repositories = members_can_create_private_repositories
+                self.members_can_create_internal_repositories = members_can_create_internal_repositories
                 self.members_can_create_pages = members_can_create_pages
                 self.members_can_create_public_pages = members_can_create_public_pages
                 self.members_can_create_private_pages = members_can_create_private_pages
                 self.members_can_fork_private_repositories = members_can_fork_private_repositories
                 self.web_commit_signoff_required = web_commit_signoff_required
                 self.updated_at = updated_at
-                self.advanced_security_enabled_for_new_repositories =
-                    advanced_security_enabled_for_new_repositories
-                self.dependabot_alerts_enabled_for_new_repositories =
-                    dependabot_alerts_enabled_for_new_repositories
+                self.advanced_security_enabled_for_new_repositories = advanced_security_enabled_for_new_repositories
+                self.dependabot_alerts_enabled_for_new_repositories = dependabot_alerts_enabled_for_new_repositories
                 self.dependabot_security_updates_enabled_for_new_repositories =
                     dependabot_security_updates_enabled_for_new_repositories
-                self.dependency_graph_enabled_for_new_repositories =
-                    dependency_graph_enabled_for_new_repositories
-                self.secret_scanning_enabled_for_new_repositories =
-                    secret_scanning_enabled_for_new_repositories
+                self.dependency_graph_enabled_for_new_repositories = dependency_graph_enabled_for_new_repositories
+                self.secret_scanning_enabled_for_new_repositories = secret_scanning_enabled_for_new_repositories
                 self.secret_scanning_push_protection_enabled_for_new_repositories =
                     secret_scanning_push_protection_enabled_for_new_repositories
                 self.secret_scanning_push_protection_custom_link_enabled =
                     secret_scanning_push_protection_custom_link_enabled
-                self.secret_scanning_push_protection_custom_link =
-                    secret_scanning_push_protection_custom_link
+                self.secret_scanning_push_protection_custom_link = secret_scanning_push_protection_custom_link
             }
             public enum CodingKeys: String, CodingKey {
                 case login
@@ -7241,10 +7014,7 @@ public enum Components {
             /// The type of label. Read-only labels are applied automatically when the runner is configured.
             ///
             /// - Remark: Generated from `#/components/schemas/runner-label/type`.
-            @frozen
-            public enum _typePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum _typePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read_only
                 case custom
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -7366,9 +7136,7 @@ public enum Components {
         /// State of a code scanning alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-state-query`.
-        @frozen
-        public enum code_scanning_alert_state_query: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
+        @frozen public enum code_scanning_alert_state_query: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
         {
             case open
             case closed
@@ -7399,10 +7167,7 @@ public enum Components {
         /// Severity of a code scanning alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-severity`.
-        @frozen
-        public enum code_scanning_alert_severity: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum code_scanning_alert_severity: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case critical
             case high
             case medium
@@ -7436,9 +7201,7 @@ public enum Components {
                 case .error: return "error"
                 }
             }
-            public static var allCases: [Self] {
-                [.critical, .high, .medium, .low, .warning, .note, .error]
-            }
+            public static var allCases: [Self] { [.critical, .high, .medium, .low, .warning, .note, .error] }
         }
         /// The REST API URL for fetching the list of instances for an alert.
         ///
@@ -7447,10 +7210,7 @@ public enum Components {
         /// State of a code scanning alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-state`.
-        @frozen
-        public enum code_scanning_alert_state: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum code_scanning_alert_state: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case open
             case dismissed
             case fixed
@@ -7478,9 +7238,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-dismissed-reason`.
         @frozen
-        public enum code_scanning_alert_dismissed_reason: RawRepresentable, Codable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
-        {
+        public enum code_scanning_alert_dismissed_reason: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case false_positive
             case won_t_fix
             case used_in_tests
@@ -7521,10 +7279,7 @@ public enum Components {
             /// The severity of the alert.
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/severity`.
-            @frozen
-            public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum severityPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case none
                 case note
                 case warning
@@ -7559,9 +7314,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/security_severity_level`.
             @frozen
-            public enum security_severity_levelPayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum security_severity_levelPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case low
                 case medium
                 case high
@@ -7629,8 +7382,8 @@ public enum Components {
                 id: Swift.String? = nil,
                 name: Swift.String? = nil,
                 severity: Components.Schemas.code_scanning_alert_rule.severityPayload? = nil,
-                security_severity_level: Components.Schemas.code_scanning_alert_rule
-                    .security_severity_levelPayload? = nil,
+                security_severity_level: Components.Schemas.code_scanning_alert_rule.security_severity_levelPayload? =
+                    nil,
                 description: Swift.String? = nil,
                 full_description: Swift.String? = nil,
                 tags: [Swift.String]? = nil,
@@ -7756,9 +7509,7 @@ public enum Components {
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-classification`.
         @frozen
-        public enum code_scanning_alert_classification: RawRepresentable, Codable, Hashable,
-            Sendable, _AutoLosslessStringConvertible, CaseIterable
-        {
+        public enum code_scanning_alert_classification: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case source
             case generated
             case test
@@ -8262,9 +8013,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/project/organization_permission`.
             @frozen
-            public enum organization_permissionPayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum organization_permissionPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case read
                 case write
                 case admin
@@ -8294,8 +8043,7 @@ public enum Components {
             /// The baseline permission that all organization members have on this project. Only present if owner is an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/project/organization_permission`.
-            public var organization_permission:
-                Components.Schemas.project.organization_permissionPayload?
+            public var organization_permission: Components.Schemas.project.organization_permissionPayload?
             /// Whether or not this project can be seen by everyone. Only present if owner is an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/project/private`.
@@ -8332,8 +8080,7 @@ public enum Components {
                 creator: Components.Schemas.nullable_simple_user,
                 created_at: Foundation.Date,
                 updated_at: Foundation.Date,
-                organization_permission: Components.Schemas.project
-                    .organization_permissionPayload? = nil,
+                organization_permission: Components.Schemas.project.organization_permissionPayload? = nil,
                 _private: Swift.Bool? = nil
             ) {
                 self.owner_url = owner_url
@@ -8838,8 +8585,7 @@ public enum Components {
                     }
                 }
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/owner`.
-                public var owner:
-                    Components.Schemas.nullable_repository.template_repositoryPayload.ownerPayload?
+                public var owner: Components.Schemas.nullable_repository.template_repositoryPayload.ownerPayload?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/private`.
                 public var _private: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/html_url`.
@@ -9017,8 +8763,7 @@ public enum Components {
                 }
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/permissions`.
                 public var permissions:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .permissionsPayload?
+                    Components.Schemas.nullable_repository.template_repositoryPayload.permissionsPayload?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/allow_rebase_merge`.
                 public var allow_rebase_merge: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/temp_clone_token`.
@@ -9040,8 +8785,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_title`.
                 @frozen
-                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
+                    CaseIterable
                 {
                     case PR_TITLE
                     case COMMIT_OR_PR_TITLE
@@ -9070,8 +8815,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_title`.
                 public var squash_merge_commit_title:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .squash_merge_commit_titlePayload?
+                    Components.Schemas.nullable_repository.template_repositoryPayload.squash_merge_commit_titlePayload?
                 /// The default value for a squash merge commit message:
                 ///
                 /// - `PR_BODY` - default to the pull request's body.
@@ -9080,8 +8824,8 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_message`.
                 @frozen
-                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
+                public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
+                    CaseIterable
                 {
                     case PR_BODY
                     case COMMIT_MESSAGES
@@ -9123,9 +8867,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_title`.
                 @frozen
-                public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
-                {
+                public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case PR_TITLE
                     case MERGE_MESSAGE
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -9153,8 +8895,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_title`.
                 public var merge_commit_title:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .merge_commit_titlePayload?
+                    Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_titlePayload?
                 /// The default value for a merge commit message.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -9163,9 +8904,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_message`.
                 @frozen
-                public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                    Sendable, _AutoLosslessStringConvertible, CaseIterable
-                {
+                public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case PR_BODY
                     case PR_TITLE
                     case BLANK
@@ -9197,8 +8936,7 @@ public enum Components {
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_message`.
                 public var merge_commit_message:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .merge_commit_messagePayload?
+                    Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_messagePayload?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/allow_merge_commit`.
                 public var allow_merge_commit: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/subscribers_count`.
@@ -9300,8 +9038,7 @@ public enum Components {
                     node_id: Swift.String? = nil,
                     name: Swift.String? = nil,
                     full_name: Swift.String? = nil,
-                    owner: Components.Schemas.nullable_repository.template_repositoryPayload
-                        .ownerPayload? = nil,
+                    owner: Components.Schemas.nullable_repository.template_repositoryPayload.ownerPayload? = nil,
                     _private: Swift.Bool? = nil,
                     html_url: Swift.String? = nil,
                     description: Swift.String? = nil,
@@ -9369,8 +9106,8 @@ public enum Components {
                     pushed_at: Swift.String? = nil,
                     created_at: Swift.String? = nil,
                     updated_at: Swift.String? = nil,
-                    permissions: Components.Schemas.nullable_repository.template_repositoryPayload
-                        .permissionsPayload? = nil,
+                    permissions: Components.Schemas.nullable_repository.template_repositoryPayload.permissionsPayload? =
+                        nil,
                     allow_rebase_merge: Swift.Bool? = nil,
                     temp_clone_token: Swift.String? = nil,
                     allow_squash_merge: Swift.Bool? = nil,
@@ -9378,14 +9115,14 @@ public enum Components {
                     delete_branch_on_merge: Swift.Bool? = nil,
                     allow_update_branch: Swift.Bool? = nil,
                     use_squash_pr_title_as_default: Swift.Bool? = nil,
-                    squash_merge_commit_title: Components.Schemas.nullable_repository
-                        .template_repositoryPayload.squash_merge_commit_titlePayload? = nil,
-                    squash_merge_commit_message: Components.Schemas.nullable_repository
-                        .template_repositoryPayload.squash_merge_commit_messagePayload? = nil,
-                    merge_commit_title: Components.Schemas.nullable_repository
-                        .template_repositoryPayload.merge_commit_titlePayload? = nil,
-                    merge_commit_message: Components.Schemas.nullable_repository
-                        .template_repositoryPayload.merge_commit_messagePayload? = nil,
+                    squash_merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload
+                        .squash_merge_commit_titlePayload? = nil,
+                    squash_merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload
+                        .squash_merge_commit_messagePayload? = nil,
+                    merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload
+                        .merge_commit_titlePayload? = nil,
+                    merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload
+                        .merge_commit_messagePayload? = nil,
                     allow_merge_commit: Swift.Bool? = nil,
                     subscribers_count: Swift.Int? = nil,
                     network_count: Swift.Int? = nil
@@ -9569,8 +9306,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository`.
-            public var template_repository:
-                Components.Schemas.nullable_repository.template_repositoryPayload?
+            public var template_repository: Components.Schemas.nullable_repository.template_repositoryPayload?
             /// - Remark: Generated from `#/components/schemas/nullable-repository/temp_clone_token`.
             public var temp_clone_token: Swift.String?
             /// Whether to allow squash merges for pull requests.
@@ -9600,9 +9336,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/squash_merge_commit_title`.
             @frozen
-            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case PR_TITLE
                 case COMMIT_OR_PR_TITLE
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -9639,8 +9373,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/squash_merge_commit_message`.
             @frozen
-            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case PR_BODY
                 case COMMIT_MESSAGES
@@ -9680,10 +9413,7 @@ public enum Components {
             /// - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/merge_commit_title`.
-            @frozen
-            public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case PR_TITLE
                 case MERGE_MESSAGE
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -9710,8 +9440,7 @@ public enum Components {
             /// - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/merge_commit_title`.
-            public var merge_commit_title:
-                Components.Schemas.nullable_repository.merge_commit_titlePayload?
+            public var merge_commit_title: Components.Schemas.nullable_repository.merge_commit_titlePayload?
             /// The default value for a merge commit message.
             ///
             /// - `PR_TITLE` - default to the pull request's title.
@@ -9719,9 +9448,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/merge_commit_message`.
-            @frozen
-            public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case PR_BODY
                 case PR_TITLE
@@ -9753,8 +9480,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/merge_commit_message`.
-            public var merge_commit_message:
-                Components.Schemas.nullable_repository.merge_commit_messagePayload?
+            public var merge_commit_message: Components.Schemas.nullable_repository.merge_commit_messagePayload?
             /// Whether to allow merge commits for pull requests.
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/allow_merge_commit`.
@@ -9964,22 +9690,19 @@ public enum Components {
                 created_at: Foundation.Date,
                 updated_at: Foundation.Date,
                 allow_rebase_merge: Swift.Bool? = nil,
-                template_repository: Components.Schemas.nullable_repository
-                    .template_repositoryPayload? = nil,
+                template_repository: Components.Schemas.nullable_repository.template_repositoryPayload? = nil,
                 temp_clone_token: Swift.String? = nil,
                 allow_squash_merge: Swift.Bool? = nil,
                 allow_auto_merge: Swift.Bool? = nil,
                 delete_branch_on_merge: Swift.Bool? = nil,
                 allow_update_branch: Swift.Bool? = nil,
                 use_squash_pr_title_as_default: Swift.Bool? = nil,
-                squash_merge_commit_title: Components.Schemas.nullable_repository
-                    .squash_merge_commit_titlePayload? = nil,
+                squash_merge_commit_title: Components.Schemas.nullable_repository.squash_merge_commit_titlePayload? =
+                    nil,
                 squash_merge_commit_message: Components.Schemas.nullable_repository
                     .squash_merge_commit_messagePayload? = nil,
-                merge_commit_title: Components.Schemas.nullable_repository
-                    .merge_commit_titlePayload? = nil,
-                merge_commit_message: Components.Schemas.nullable_repository
-                    .merge_commit_messagePayload? = nil,
+                merge_commit_title: Components.Schemas.nullable_repository.merge_commit_titlePayload? = nil,
+                merge_commit_message: Components.Schemas.nullable_repository.merge_commit_messagePayload? = nil,
                 allow_merge_commit: Swift.Bool? = nil,
                 allow_forking: Swift.Bool? = nil,
                 web_commit_signoff_required: Swift.Bool? = nil,
@@ -10520,12 +10243,7 @@ public enum Components {
             ///   - key:
             ///   - name:
             ///   - html_url:
-            public init(
-                url: Swift.String,
-                key: Swift.String,
-                name: Swift.String,
-                html_url: Swift.String
-            ) {
+            public init(url: Swift.String, key: Swift.String, name: Swift.String, html_url: Swift.String) {
                 self.url = url
                 self.key = key
                 self.name = name
@@ -10762,9 +10480,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_title`.
             @frozen
-            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
-            {
+            public enum squash_merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case PR_TITLE
                 case COMMIT_OR_PR_TITLE
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -10791,8 +10507,7 @@ public enum Components {
             /// - `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_title`.
-            public var squash_merge_commit_title:
-                Components.Schemas.full_repository.squash_merge_commit_titlePayload?
+            public var squash_merge_commit_title: Components.Schemas.full_repository.squash_merge_commit_titlePayload?
             /// The default value for a squash merge commit message:
             ///
             /// - `PR_BODY` - default to the pull request's body.
@@ -10801,8 +10516,7 @@ public enum Components {
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_message`.
             @frozen
-            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable,
-                Sendable, _AutoLosslessStringConvertible, CaseIterable
+            public enum squash_merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case PR_BODY
                 case COMMIT_MESSAGES
@@ -10842,10 +10556,7 @@ public enum Components {
             ///   - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/merge_commit_title`.
-            @frozen
-            public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum merge_commit_titlePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case PR_TITLE
                 case MERGE_MESSAGE
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -10872,8 +10583,7 @@ public enum Components {
             ///   - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/merge_commit_title`.
-            public var merge_commit_title:
-                Components.Schemas.full_repository.merge_commit_titlePayload?
+            public var merge_commit_title: Components.Schemas.full_repository.merge_commit_titlePayload?
             /// The default value for a merge commit message.
             ///
             /// - `PR_TITLE` - default to the pull request's title.
@@ -10881,9 +10591,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/merge_commit_message`.
-            @frozen
-            public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
+            @frozen public enum merge_commit_messagePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
             {
                 case PR_BODY
                 case PR_TITLE
@@ -10915,8 +10623,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/merge_commit_message`.
-            public var merge_commit_message:
-                Components.Schemas.full_repository.merge_commit_messagePayload?
+            public var merge_commit_message: Components.Schemas.full_repository.merge_commit_messagePayload?
             /// - Remark: Generated from `#/components/schemas/full-repository/allow_forking`.
             public var allow_forking: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/full-repository/web_commit_signoff_required`.
@@ -11138,14 +10845,11 @@ public enum Components {
                 allow_merge_commit: Swift.Bool? = nil,
                 allow_update_branch: Swift.Bool? = nil,
                 use_squash_pr_title_as_default: Swift.Bool? = nil,
-                squash_merge_commit_title: Components.Schemas.full_repository
-                    .squash_merge_commit_titlePayload? = nil,
-                squash_merge_commit_message: Components.Schemas.full_repository
-                    .squash_merge_commit_messagePayload? = nil,
-                merge_commit_title: Components.Schemas.full_repository.merge_commit_titlePayload? =
+                squash_merge_commit_title: Components.Schemas.full_repository.squash_merge_commit_titlePayload? = nil,
+                squash_merge_commit_message: Components.Schemas.full_repository.squash_merge_commit_messagePayload? =
                     nil,
-                merge_commit_message: Components.Schemas.full_repository
-                    .merge_commit_messagePayload? = nil,
+                merge_commit_title: Components.Schemas.full_repository.merge_commit_titlePayload? = nil,
+                merge_commit_message: Components.Schemas.full_repository.merge_commit_messagePayload? = nil,
                 allow_forking: Swift.Bool? = nil,
                 web_commit_signoff_required: Swift.Bool? = nil,
                 subscribers_count: Swift.Int,
@@ -11386,11 +11090,7 @@ public enum Components {
             ///   - name:
             ///   - email:
             ///   - date:
-            public init(
-                name: Swift.String? = nil,
-                email: Swift.String? = nil,
-                date: Swift.String? = nil
-            ) {
+            public init(name: Swift.String? = nil, email: Swift.String? = nil, date: Swift.String? = nil) {
                 self.name = name
                 self.email = email
                 self.date = date
@@ -11445,10 +11145,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/diff-entry/filename`.
             public var filename: Swift.String
             /// - Remark: Generated from `#/components/schemas/diff-entry/status`.
-            @frozen
-            public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case added
                 case removed
                 case modified
@@ -11693,11 +11390,7 @@ public enum Components {
                 ///   - additions:
                 ///   - deletions:
                 ///   - total:
-                public init(
-                    additions: Swift.Int? = nil,
-                    deletions: Swift.Int? = nil,
-                    total: Swift.Int? = nil
-                ) {
+                public init(additions: Swift.Int? = nil, deletions: Swift.Int? = nil, total: Swift.Int? = nil) {
                     self.additions = additions
                     self.deletions = deletions
                     self.total = total
@@ -11900,10 +11593,7 @@ public enum Components {
             /// The merge method to use.
             ///
             /// - Remark: Generated from `#/components/schemas/auto-merge/merge_method`.
-            @frozen
-            public enum merge_methodPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum merge_methodPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case merge
                 case squash
                 case rebase
@@ -12058,8 +11748,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labels`.
-            public typealias labelsPayload = [Components.Schemas.pull_request_simple
-                .labelsPayloadPayload]
+            public typealias labelsPayload = [Components.Schemas.pull_request_simple.labelsPayloadPayload]
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/labels`.
             public var labels: Components.Schemas.pull_request_simple.labelsPayload
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/milestone`.
@@ -12411,10 +12100,7 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/commit-comparison/merge_base_commit`.
             public var merge_base_commit: Components.Schemas.commit
             /// - Remark: Generated from `#/components/schemas/commit-comparison/status`.
-            @frozen
-            public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum statusPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case diverged
                 case ahead
                 case behind
@@ -12796,8 +12482,7 @@ public enum Components {
                     public enum CodingKeys: String, CodingKey { case href }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
-                public var _self:
-                    Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
+                public var _self: Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
                 public struct htmlPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html/href`.
@@ -12810,8 +12495,7 @@ public enum Components {
                     public enum CodingKeys: String, CodingKey { case href }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
-                public var html:
-                    Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
+                public var html: Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
                 public struct pull_requestPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request/href`.
@@ -12833,11 +12517,9 @@ public enum Components {
                 ///   - html:
                 ///   - pull_request:
                 public init(
-                    _self: Components.Schemas.pull_request_review_comment._linksPayload
-                        ._selfPayload,
+                    _self: Components.Schemas.pull_request_review_comment._linksPayload._selfPayload,
                     html: Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload,
-                    pull_request: Components.Schemas.pull_request_review_comment._linksPayload
-                        .pull_requestPayload
+                    pull_request: Components.Schemas.pull_request_review_comment._linksPayload.pull_requestPayload
                 ) {
                     self._self = _self
                     self.html = html
@@ -12862,10 +12544,7 @@ public enum Components {
             /// The side of the first line of the range for a multi-line comment.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
-            @frozen
-            public enum start_sidePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum start_sidePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case LEFT
                 case RIGHT
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -12901,10 +12580,7 @@ public enum Components {
             /// The side of the diff to which the comment applies. The side of the last line of the range for a multi-line comment
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/side`.
-            @frozen
-            public enum sidePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum sidePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case LEFT
                 case RIGHT
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -12932,10 +12608,7 @@ public enum Components {
             /// The level at which the comment is targeted, can be a diff line or a file.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
-            @frozen
-            public enum subject_typePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum subject_typePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case line
                 case file
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -12959,8 +12632,7 @@ public enum Components {
             /// The level at which the comment is targeted, can be a diff line or a file.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
-            public var subject_type:
-                Components.Schemas.pull_request_review_comment.subject_typePayload?
+            public var subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload?
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/reactions`.
             public var reactions: Components.Schemas.reaction_rollup?
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body_html`.
@@ -13025,8 +12697,7 @@ public enum Components {
                 line: Swift.Int? = nil,
                 original_line: Swift.Int? = nil,
                 side: Components.Schemas.pull_request_review_comment.sidePayload? = nil,
-                subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload? =
-                    nil,
+                subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload? = nil,
                 reactions: Components.Schemas.reaction_rollup? = nil,
                 body_html: Swift.String? = nil,
                 body_text: Swift.String? = nil
@@ -13128,10 +12799,7 @@ public enum Components {
             /// State of this Pull Request. Either `open` or `closed`.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request/state`.
-            @frozen
-            public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case open
                 case closed
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -13441,8 +13109,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/owner`.
-                    public var owner:
-                        Components.Schemas.pull_request.headPayload.repoPayload.ownerPayload
+                    public var owner: Components.Schemas.pull_request.headPayload.repoPayload.ownerPayload
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/private`.
                     public var _private: Swift.Bool
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/pulls_url`.
@@ -13549,8 +13216,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions`.
-                    public var permissions:
-                        Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload?
+                    public var permissions: Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/temp_clone_token`.
                     public var temp_clone_token: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_merge_commit`.
@@ -13601,8 +13267,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license`.
-                    public var license:
-                        Components.Schemas.pull_request.headPayload.repoPayload.licensePayload?
+                    public var license: Components.Schemas.pull_request.headPayload.repoPayload.licensePayload?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/pushed_at`.
                     public var pushed_at: Foundation.Date
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/size`.
@@ -13784,14 +13449,12 @@ public enum Components {
                         mirror_url: Swift.String? = nil,
                         open_issues: Swift.Int,
                         open_issues_count: Swift.Int,
-                        permissions: Components.Schemas.pull_request.headPayload.repoPayload
-                            .permissionsPayload? = nil,
+                        permissions: Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload? = nil,
                         temp_clone_token: Swift.String? = nil,
                         allow_merge_commit: Swift.Bool? = nil,
                         allow_squash_merge: Swift.Bool? = nil,
                         allow_rebase_merge: Swift.Bool? = nil,
-                        license: Components.Schemas.pull_request.headPayload.repoPayload
-                            .licensePayload? = nil,
+                        license: Components.Schemas.pull_request.headPayload.repoPayload.licensePayload? = nil,
                         pushed_at: Foundation.Date,
                         size: Swift.Int,
                         ssh_url: Swift.String,
@@ -14334,8 +13997,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/owner`.
-                    public var owner:
-                        Components.Schemas.pull_request.basePayload.repoPayload.ownerPayload
+                    public var owner: Components.Schemas.pull_request.basePayload.repoPayload.ownerPayload
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/private`.
                     public var _private: Swift.Bool
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/pulls_url`.
@@ -14442,8 +14104,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions`.
-                    public var permissions:
-                        Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload?
+                    public var permissions: Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/temp_clone_token`.
                     public var temp_clone_token: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/allow_merge_commit`.
@@ -14634,8 +14295,7 @@ public enum Components {
                         mirror_url: Swift.String? = nil,
                         open_issues: Swift.Int,
                         open_issues_count: Swift.Int,
-                        permissions: Components.Schemas.pull_request.basePayload.repoPayload
-                            .permissionsPayload? = nil,
+                        permissions: Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload? = nil,
                         temp_clone_token: Swift.String? = nil,
                         allow_merge_commit: Swift.Bool? = nil,
                         allow_squash_merge: Swift.Bool? = nil,
@@ -15301,10 +14961,7 @@ public enum Components {
             /// State of the release asset.
             ///
             /// - Remark: Generated from `#/components/schemas/release-asset/state`.
-            @frozen
-            public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                _AutoLosslessStringConvertible, CaseIterable
-            {
+            @frozen public enum statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                 case uploaded
                 case open
                 /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -15712,10 +15369,7 @@ public enum Components {
         /// The scope of the vulnerable dependency. If specified, only alerts with this scope will be returned.
         ///
         /// - Remark: Generated from `#/components/parameters/dependabot-alert-scope`.
-        @frozen
-        public enum dependabot_alert_scope: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum dependabot_alert_scope: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case development
             case runtime
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -15741,10 +15395,7 @@ public enum Components {
         /// `updated` means when the alert's state last changed.
         ///
         /// - Remark: Generated from `#/components/parameters/dependabot-alert-sort`.
-        @frozen
-        public enum dependabot_alert_sort: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum dependabot_alert_sort: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case created
             case updated
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -15768,10 +15419,7 @@ public enum Components {
         /// The direction to sort the results by.
         ///
         /// - Remark: Generated from `#/components/parameters/direction`.
-        @frozen
-        public enum direction: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum direction: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case asc
             case desc
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -15815,10 +15463,7 @@ public enum Components {
         /// Set to `open` or `resolved` to only list secret scanning alerts in a specific state.
         ///
         /// - Remark: Generated from `#/components/parameters/secret-scanning-alert-state`.
-        @frozen
-        public enum secret_scanning_alert_state: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum secret_scanning_alert_state: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case open
             case resolved
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -15852,10 +15497,7 @@ public enum Components {
         /// The property to sort the results by. `created` means when the alert was created. `updated` means when the alert was updated or resolved.
         ///
         /// - Remark: Generated from `#/components/parameters/secret-scanning-alert-sort`.
-        @frozen
-        public enum secret_scanning_alert_sort: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum secret_scanning_alert_sort: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case created
             case updated
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -15899,10 +15541,7 @@ public enum Components {
         /// The property to sort the results by.
         ///
         /// - Remark: Generated from `#/components/parameters/sort`.
-        @frozen
-        public enum sort: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum sort: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case created
             case updated
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -16017,10 +15656,7 @@ public enum Components {
         /// For the list of GitHub Packages registries that support granular permissions, see "[About permissions for GitHub Packages](https://docs.github.com/packages/learn-github-packages/about-permissions-for-github-packages#granular-permissions-for-userorganization-scoped-packages)."
         ///
         /// - Remark: Generated from `#/components/parameters/package-visibility`.
-        @frozen
-        public enum package_visibility: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum package_visibility: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case _public
             case _private
             case _internal
@@ -16047,10 +15683,7 @@ public enum Components {
         /// The type of supported package. Packages in GitHub's Gradle registry have the type `maven`. Docker images pushed to GitHub's Container registry (`ghcr.io`) have the type `container`. You can use the type `docker` to find images that were pushed to GitHub's Docker registry (`docker.pkg.github.com`), even if these have now been migrated to the Container registry.
         ///
         /// - Remark: Generated from `#/components/parameters/package-type`.
-        @frozen
-        public enum package_type: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum package_type: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case npm
             case maven
             case rubygems
@@ -16081,9 +15714,7 @@ public enum Components {
                 case .container: return "container"
                 }
             }
-            public static var allCases: [Self] {
-                [.npm, .maven, .rubygems, .docker, .nuget, .container]
-            }
+            public static var allCases: [Self] { [.npm, .maven, .rubygems, .docker, .nuget, .container] }
         }
         /// The name of the package.
         ///
@@ -16096,10 +15727,7 @@ public enum Components {
         /// The property by which to sort the results.
         ///
         /// - Remark: Generated from `#/components/parameters/personal-access-token-sort`.
-        @frozen
-        public enum personal_access_token_sort: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum personal_access_token_sort: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case created_at
             /// Parsed a raw value that was not defined in the OpenAPI document.
             case undocumented(String)
@@ -16172,10 +15800,7 @@ public enum Components {
         /// The security feature to enable or disable.
         ///
         /// - Remark: Generated from `#/components/parameters/security-product`.
-        @frozen
-        public enum security_product: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum security_product: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case dependency_graph
             case dependabot_alerts
             case dependabot_security_updates
@@ -16211,9 +15836,8 @@ public enum Components {
             }
             public static var allCases: [Self] {
                 [
-                    .dependency_graph, .dependabot_alerts, .dependabot_security_updates,
-                    .advanced_security, .code_scanning_default_setup, .secret_scanning,
-                    .secret_scanning_push_protection,
+                    .dependency_graph, .dependabot_alerts, .dependabot_security_updates, .advanced_security,
+                    .code_scanning_default_setup, .secret_scanning, .secret_scanning_push_protection,
                 ]
             }
         }
@@ -16223,9 +15847,7 @@ public enum Components {
         /// `disable_all` means to disable the specified security feature for all repositories in the organization.
         ///
         /// - Remark: Generated from `#/components/parameters/org-security-product-enablement`.
-        @frozen
-        public enum org_security_product_enablement: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
+        @frozen public enum org_security_product_enablement: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
         {
             case enable_all
             case disable_all
@@ -16270,10 +15892,7 @@ public enum Components {
         /// The property to sort the results by. `created_at` means when the cache was created. `last_accessed_at` means when the cache was last accessed. `size_in_bytes` is the size of the cache in bytes.
         ///
         /// - Remark: Generated from `#/components/parameters/actions-cache-list-sort`.
-        @frozen
-        public enum actions_cache_list_sort: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum actions_cache_list_sort: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case created_at
             case last_accessed_at
             case size_in_bytes
@@ -16324,10 +15943,7 @@ public enum Components {
         /// Returns workflow runs with the check run `status` or `conclusion` that you specify. For example, a conclusion can be `success` or a status can be `in_progress`. Only GitHub can set a status of `waiting` or `requested`.
         ///
         /// - Remark: Generated from `#/components/parameters/workflow-run-status`.
-        @frozen
-        public enum workflow_run_status: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum workflow_run_status: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case completed
             case action_required
             case cancelled
@@ -16384,8 +16000,8 @@ public enum Components {
             }
             public static var allCases: [Self] {
                 [
-                    .completed, .action_required, .cancelled, .failure, .neutral, .skipped, .stale,
-                    .success, .timed_out, .in_progress, .queued, .requested, .waiting, .pending,
+                    .completed, .action_required, .cancelled, .failure, .neutral, .skipped, .stale, .success,
+                    .timed_out, .in_progress, .queued, .requested, .waiting, .pending,
                 ]
             }
         }
@@ -16467,10 +16083,7 @@ public enum Components {
         /// Returns check runs with the specified `status`.
         ///
         /// - Remark: Generated from `#/components/parameters/status`.
-        @frozen
-        public enum status: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum status: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case queued
             case in_progress
             case completed
@@ -16584,10 +16197,7 @@ public enum Components {
         /// The time frame to display results for.
         ///
         /// - Remark: Generated from `#/components/parameters/per`.
-        @frozen
-        public enum per: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum per: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case day
             case week
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -16615,10 +16225,7 @@ public enum Components {
         /// Determines whether the first search result returned is the highest number of matches (`desc`) or lowest number of matches (`asc`). This parameter is ignored unless you provide `sort`.
         ///
         /// - Remark: Generated from `#/components/parameters/order`.
-        @frozen
-        public enum order: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum order: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case desc
             case asc
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -16670,10 +16277,7 @@ public enum Components {
         /// The property to sort the results by. `created` means when the repository was starred. `updated` means when the repository was last pushed to.
         ///
         /// - Remark: Generated from `#/components/parameters/sort-starred`.
-        @frozen
-        public enum sort_starred: RawRepresentable, Codable, Hashable, Sendable,
-            _AutoLosslessStringConvertible, CaseIterable
-        {
+        @frozen public enum sort_starred: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
             case created
             case updated
             /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -17019,8 +16623,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/block`.
-                    public var block:
-                        Components.Responses.forbidden_gist.Body.jsonPayload.blockPayload?
+                    public var block: Components.Responses.forbidden_gist.Body.jsonPayload.blockPayload?
                     /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/message`.
                     public var message: Swift.String?
                     /// - Remark: Generated from `#/components/responses/forbidden_gist/content/json/documentation_url`.
@@ -17032,8 +16635,7 @@ public enum Components {
                     ///   - message:
                     ///   - documentation_url:
                     public init(
-                        block: Components.Responses.forbidden_gist.Body.jsonPayload.blockPayload? =
-                            nil,
+                        block: Components.Responses.forbidden_gist.Body.jsonPayload.blockPayload? = nil,
                         message: Swift.String? = nil,
                         documentation_url: Swift.String? = nil
                     ) {
@@ -17144,8 +16746,7 @@ public enum Components {
                     /// - Parameters:
                     ///   - runner:
                     ///   - encoded_jit_config: The base64 encoded runner configuration.
-                    public init(runner: Components.Schemas.runner, encoded_jit_config: Swift.String)
-                    {
+                    public init(runner: Components.Schemas.runner, encoded_jit_config: Swift.String) {
                         self.runner = runner
                         self.encoded_jit_config = encoded_jit_config
                     }
@@ -17366,10 +16967,7 @@ public enum Components {
             /// - Parameters:
             ///   - headers: Received HTTP response headers
             ///   - body: Received HTTP response body
-            public init(
-                headers: Components.Responses.gone.Headers = .init(),
-                body: Components.Responses.gone.Body
-            ) {
+            public init(headers: Components.Responses.gone.Headers = .init(), body: Components.Responses.gone.Body) {
                 self.headers = headers
                 self.body = body
             }
@@ -17684,24 +17282,21 @@ public enum Operations {
                     public init() {}
                 }
                 /// Received HTTP response headers
-                public var headers:
-                    Operations.apps_create_installation_access_token.Output.Created.Headers
+                public var headers: Operations.apps_create_installation_access_token.Output.Created.Headers
                 /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/responses/201/content`.
                 @frozen public enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/responses/201/content/application\/json`.
                     case json(Components.Schemas.installation_token)
                 }
                 /// Received HTTP response body
-                public var body:
-                    Operations.apps_create_installation_access_token.Output.Created.Body
+                public var body: Operations.apps_create_installation_access_token.Output.Created.Body
                 /// Creates a new `Created`.
                 ///
                 /// - Parameters:
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.apps_create_installation_access_token.Output.Created
-                        .Headers = .init(),
+                    headers: Operations.apps_create_installation_access_token.Output.Created.Headers = .init(),
                     body: Operations.apps_create_installation_access_token.Output.Created.Body
                 ) {
                     self.headers = headers
@@ -17793,18 +17388,14 @@ public enum Operations {
             public var query: Operations.orgs_get.Input.Query
             /// - Remark: Generated from `#/paths/orgs/{org}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.orgs_get.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.orgs_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.orgs_get.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.orgs_get.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.orgs_get.Input.Headers
@@ -17934,9 +17525,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_card.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -18090,9 +17679,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update_card.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -18281,9 +17868,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete_card.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -18491,9 +18076,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_move_card.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_move_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -18664,12 +18247,11 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errors`.
-                        public typealias errorsPayload = [Operations.projects_move_card.Output
-                            .Forbidden.Body.jsonPayload.errorsPayloadPayload]
+                        public typealias errorsPayload = [Operations.projects_move_card.Output.Forbidden.Body
+                            .jsonPayload.errorsPayloadPayload]
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errors`.
                         public var errors:
-                            Operations.projects_move_card.Output.Forbidden.Body.jsonPayload
-                                .errorsPayload?
+                            Operations.projects_move_card.Output.Forbidden.Body.jsonPayload.errorsPayload?
                         /// Creates a new `jsonPayload`.
                         ///
                         /// - Parameters:
@@ -18679,8 +18261,7 @@ public enum Operations {
                         public init(
                             message: Swift.String? = nil,
                             documentation_url: Swift.String? = nil,
-                            errors: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload
-                                .errorsPayload? = nil
+                            errors: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload.errorsPayload? = nil
                         ) {
                             self.message = message
                             self.documentation_url = documentation_url
@@ -18761,12 +18342,11 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errors`.
-                        public typealias errorsPayload = [Operations.projects_move_card.Output
-                            .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
+                        public typealias errorsPayload = [Operations.projects_move_card.Output.ServiceUnavailable.Body
+                            .jsonPayload.errorsPayloadPayload]
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errors`.
                         public var errors:
-                            Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
-                                .errorsPayload?
+                            Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayload?
                         /// Creates a new `jsonPayload`.
                         ///
                         /// - Parameters:
@@ -18778,8 +18358,8 @@ public enum Operations {
                             code: Swift.String? = nil,
                             message: Swift.String? = nil,
                             documentation_url: Swift.String? = nil,
-                            errors: Operations.projects_move_card.Output.ServiceUnavailable.Body
-                                .jsonPayload.errorsPayload? = nil
+                            errors: Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
+                                .errorsPayload? = nil
                         ) {
                             self.code = code
                             self.message = message
@@ -18794,9 +18374,7 @@ public enum Operations {
                         }
                     }
                     /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/application\/json`.
-                    case json(
-                        Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
-                    )
+                    case json(Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload)
                 }
                 /// Received HTTP response body
                 public var body: Operations.projects_move_card.Output.ServiceUnavailable.Body
@@ -18806,8 +18384,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.projects_move_card.Output.ServiceUnavailable.Headers =
-                        .init(),
+                    headers: Operations.projects_move_card.Output.ServiceUnavailable.Headers = .init(),
                     body: Operations.projects_move_card.Output.ServiceUnavailable.Body
                 ) {
                     self.headers = headers
@@ -18868,9 +18445,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) {
-                    self.column_id = column_id
-                }
+                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
             }
             public var path: Operations.projects_get_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/query`.
@@ -18882,9 +18457,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_column.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -19026,9 +18599,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) {
-                    self.column_id = column_id
-                }
+                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
             }
             public var path: Operations.projects_update_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/query`.
@@ -19040,9 +18611,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update_column.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -19196,9 +18765,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) {
-                    self.column_id = column_id
-                }
+                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
             }
             public var path: Operations.projects_delete_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/query`.
@@ -19210,9 +18777,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete_column.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -19347,18 +18912,13 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) {
-                    self.column_id = column_id
-                }
+                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
             }
             public var path: Operations.projects_list_cards.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query`.
             public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/archived_state`.
-                @frozen
-                public enum archived_statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum archived_statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case all
                     case archived
                     case not_archived
@@ -19385,8 +18945,7 @@ public enum Operations {
                 /// Filters the project cards that are returned by the card's state.
                 ///
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/archived_state`.
-                public var archived_state:
-                    Operations.projects_list_cards.Input.Query.archived_statePayload?
+                public var archived_state: Operations.projects_list_cards.Input.Query.archived_statePayload?
                 /// The number of results per page (max 100).
                 ///
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query/per_page`.
@@ -19402,8 +18961,7 @@ public enum Operations {
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
                 public init(
-                    archived_state: Operations.projects_list_cards.Input.Query
-                        .archived_statePayload? = nil,
+                    archived_state: Operations.projects_list_cards.Input.Query.archived_statePayload? = nil,
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
                 ) {
@@ -19416,9 +18974,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_cards.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_cards.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -19559,9 +19115,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) {
-                    self.column_id = column_id
-                }
+                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
             }
             public var path: Operations.projects_create_card.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/query`.
@@ -19573,9 +19127,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_create_card.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_create_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -19747,8 +19299,7 @@ public enum Operations {
                     public init() {}
                 }
                 /// Received HTTP response headers
-                public var headers:
-                    Operations.projects_create_card.Output.UnprocessableEntity.Headers
+                public var headers: Operations.projects_create_card.Output.UnprocessableEntity.Headers
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content`.
                 @frozen public enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/json`.
@@ -19769,9 +19320,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -19783,9 +19332,7 @@ public enum Operations {
                         }
                     }
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/application\/json`.
-                    case json(
-                        Operations.projects_create_card.Output.UnprocessableEntity.Body.jsonPayload
-                    )
+                    case json(Operations.projects_create_card.Output.UnprocessableEntity.Body.jsonPayload)
                 }
                 /// Received HTTP response body
                 public var body: Operations.projects_create_card.Output.UnprocessableEntity.Body
@@ -19795,8 +19342,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.projects_create_card.Output.UnprocessableEntity.Headers =
-                        .init(),
+                    headers: Operations.projects_create_card.Output.UnprocessableEntity.Headers = .init(),
                     body: Operations.projects_create_card.Output.UnprocessableEntity.Body
                 ) {
                     self.headers = headers
@@ -19816,8 +19362,7 @@ public enum Operations {
                     public init() {}
                 }
                 /// Received HTTP response headers
-                public var headers:
-                    Operations.projects_create_card.Output.ServiceUnavailable.Headers
+                public var headers: Operations.projects_create_card.Output.ServiceUnavailable.Headers
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content`.
                 @frozen public enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json`.
@@ -19849,12 +19394,11 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errors`.
-                        public typealias errorsPayload = [Operations.projects_create_card.Output
-                            .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
+                        public typealias errorsPayload = [Operations.projects_create_card.Output.ServiceUnavailable.Body
+                            .jsonPayload.errorsPayloadPayload]
                         /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errors`.
                         public var errors:
-                            Operations.projects_create_card.Output.ServiceUnavailable.Body
-                                .jsonPayload.errorsPayload?
+                            Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayload?
                         /// Creates a new `jsonPayload`.
                         ///
                         /// - Parameters:
@@ -19866,8 +19410,8 @@ public enum Operations {
                             code: Swift.String? = nil,
                             message: Swift.String? = nil,
                             documentation_url: Swift.String? = nil,
-                            errors: Operations.projects_create_card.Output.ServiceUnavailable.Body
-                                .jsonPayload.errorsPayload? = nil
+                            errors: Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload
+                                .errorsPayload? = nil
                         ) {
                             self.code = code
                             self.message = message
@@ -19882,9 +19426,7 @@ public enum Operations {
                         }
                     }
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/application\/json`.
-                    case json(
-                        Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload
-                    )
+                    case json(Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload)
                 }
                 /// Received HTTP response body
                 public var body: Operations.projects_create_card.Output.ServiceUnavailable.Body
@@ -19894,8 +19436,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.projects_create_card.Output.ServiceUnavailable.Headers =
-                        .init(),
+                    headers: Operations.projects_create_card.Output.ServiceUnavailable.Headers = .init(),
                     body: Operations.projects_create_card.Output.ServiceUnavailable.Body
                 ) {
                     self.headers = headers
@@ -19948,9 +19489,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) {
-                    self.column_id = column_id
-                }
+                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
             }
             public var path: Operations.projects_move_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/query`.
@@ -19962,9 +19501,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_move_column.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_move_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -20132,9 +19669,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) {
-                    self.project_id = project_id
-                }
+                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
             }
             public var path: Operations.projects_get.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/GET/query`.
@@ -20146,17 +19681,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/{project_id}/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.projects_get.Input.Headers
@@ -20286,9 +19818,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) {
-                    self.project_id = project_id
-                }
+                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
             }
             public var path: Operations.projects_update.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/query`.
@@ -20300,17 +19830,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.projects_update.Input.Headers
@@ -20340,8 +19867,8 @@ public enum Operations {
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/organization_permission`.
                     @frozen
-                    public enum organization_permissionPayload: RawRepresentable, Codable, Hashable,
-                        Sendable, _AutoLosslessStringConvertible, CaseIterable
+                    public enum organization_permissionPayload: RawRepresentable, Codable, Hashable, Sendable,
+                        CaseIterable
                     {
                         case read
                         case write
@@ -20373,8 +19900,7 @@ public enum Operations {
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/organization_permission`.
                     public var organization_permission:
-                        Operations.projects_update.Input.Body.jsonPayload
-                            .organization_permissionPayload?
+                        Operations.projects_update.Input.Body.jsonPayload.organization_permissionPayload?
                     /// Whether or not this project can be seen by everyone.
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/private`.
@@ -20630,9 +20156,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) {
-                    self.project_id = project_id
-                }
+                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
             }
             public var path: Operations.projects_delete.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/query`.
@@ -20644,17 +20168,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.projects_delete.Input.Headers
@@ -20850,18 +20371,13 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) {
-                    self.project_id = project_id
-                }
+                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
             }
             public var path: Operations.projects_list_collaborators.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query`.
             public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/affiliation`.
-                @frozen
-                public enum affiliationPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum affiliationPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case outside
                     case direct
                     case all
@@ -20888,8 +20404,7 @@ public enum Operations {
                 /// Filters the collaborators by their affiliation. `outside` means outside collaborators of a project that are not a member of the project's organization. `direct` means collaborators with permissions to a project, regardless of organization membership status. `all` means all collaborators the authenticated user can see.
                 ///
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/affiliation`.
-                public var affiliation:
-                    Operations.projects_list_collaborators.Input.Query.affiliationPayload?
+                public var affiliation: Operations.projects_list_collaborators.Input.Query.affiliationPayload?
                 /// The number of results per page (max 100).
                 ///
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/per_page`.
@@ -20905,8 +20420,7 @@ public enum Operations {
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
                 public init(
-                    affiliation: Operations.projects_list_collaborators.Input.Query
-                        .affiliationPayload? = nil,
+                    affiliation: Operations.projects_list_collaborators.Input.Query.affiliationPayload? = nil,
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
                 ) {
@@ -21081,10 +20595,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
                 ///   - username: The handle for the GitHub user account.
-                public init(
-                    project_id: Components.Parameters.project_id,
-                    username: Components.Parameters.username
-                ) {
+                public init(project_id: Components.Parameters.project_id, username: Components.Parameters.username) {
                     self.project_id = project_id
                     self.username = username
                 }
@@ -21099,9 +20610,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_add_collaborator.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_add_collaborator.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -21126,10 +20635,7 @@ public enum Operations {
                     /// The permission to grant the collaborator.
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/json/permission`.
-                    @frozen
-                    public enum permissionPayload: RawRepresentable, Codable, Hashable, Sendable,
-                        _AutoLosslessStringConvertible, CaseIterable
-                    {
+                    @frozen public enum permissionPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                         case read
                         case write
                         case admin
@@ -21157,15 +20663,13 @@ public enum Operations {
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/json/permission`.
                     public var permission:
-                        Operations.projects_add_collaborator.Input.Body.jsonPayload
-                            .permissionPayload?
+                        Operations.projects_add_collaborator.Input.Body.jsonPayload.permissionPayload?
                     /// Creates a new `jsonPayload`.
                     ///
                     /// - Parameters:
                     ///   - permission: The permission to grant the collaborator.
                     public init(
-                        permission: Operations.projects_add_collaborator.Input.Body.jsonPayload
-                            .permissionPayload? = nil
+                        permission: Operations.projects_add_collaborator.Input.Body.jsonPayload.permissionPayload? = nil
                     ) { self.permission = permission }
                     public enum CodingKeys: String, CodingKey { case permission }
                 }
@@ -21214,8 +20718,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.projects_add_collaborator.Output.NoContent.Headers =
-                        .init(),
+                    headers: Operations.projects_add_collaborator.Output.NoContent.Headers = .init(),
                     body: Operations.projects_add_collaborator.Output.NoContent.Body? = nil
                 ) {
                     self.headers = headers
@@ -21305,10 +20808,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
                 ///   - username: The handle for the GitHub user account.
-                public init(
-                    project_id: Components.Parameters.project_id,
-                    username: Components.Parameters.username
-                ) {
+                public init(project_id: Components.Parameters.project_id, username: Components.Parameters.username) {
                     self.project_id = project_id
                     self.username = username
                 }
@@ -21387,8 +20887,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.projects_remove_collaborator.Output.NoContent.Headers =
-                        .init(),
+                    headers: Operations.projects_remove_collaborator.Output.NoContent.Headers = .init(),
                     body: Operations.projects_remove_collaborator.Output.NoContent.Body? = nil
                 ) {
                     self.headers = headers
@@ -21478,10 +20977,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
                 ///   - username: The handle for the GitHub user account.
-                public init(
-                    project_id: Components.Parameters.project_id,
-                    username: Components.Parameters.username
-                ) {
+                public init(project_id: Components.Parameters.project_id, username: Components.Parameters.username) {
                     self.project_id = project_id
                     self.username = username
                 }
@@ -21563,8 +21059,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.projects_get_permission_for_user.Output.Ok.Headers =
-                        .init(),
+                    headers: Operations.projects_get_permission_for_user.Output.Ok.Headers = .init(),
                     body: Operations.projects_get_permission_for_user.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -21649,9 +21144,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) {
-                    self.project_id = project_id
-                }
+                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
             }
             public var path: Operations.projects_list_columns.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/query`.
@@ -21669,10 +21162,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
-                public init(
-                    per_page: Components.Parameters.per_page? = nil,
-                    page: Components.Parameters.page? = nil
-                ) {
+                public init(per_page: Components.Parameters.per_page? = nil, page: Components.Parameters.page? = nil) {
                     self.per_page = per_page
                     self.page = page
                 }
@@ -21681,9 +21171,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_columns.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_columns.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -21826,9 +21314,7 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) {
-                    self.project_id = project_id
-                }
+                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
             }
             public var path: Operations.projects_create_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/query`.
@@ -21840,9 +21326,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_create_column.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_create_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -22009,17 +21493,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/rate_limit/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.rate_limit_get.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.rate_limit_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.rate_limit_get.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.rate_limit_get.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.rate_limit_get.Input.Headers
@@ -22183,18 +21664,14 @@ public enum Operations {
             public var query: Operations.repos_get.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_get.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_get.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.repos_get.Input.Headers
@@ -22431,9 +21908,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_commits.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_commits.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -22620,10 +22095,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
-                public init(
-                    per_page: Components.Parameters.per_page? = nil,
-                    page: Components.Parameters.page? = nil
-                ) {
+                public init(per_page: Components.Parameters.per_page? = nil, page: Components.Parameters.page? = nil) {
                     self.per_page = per_page
                     self.page = page
                 }
@@ -22633,8 +22105,7 @@ public enum Operations {
             public struct Headers: Sendable, Hashable {
                 public var accept:
                     [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_pull_requests_associated_with_commit
-                            .AcceptableContentType
+                        Operations.repos_list_pull_requests_associated_with_commit.AcceptableContentType
                     >]
                 /// Creates a new `Headers`.
                 ///
@@ -22642,20 +22113,17 @@ public enum Operations {
                 ///   - accept:
                 public init(
                     accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_pull_requests_associated_with_commit
-                            .AcceptableContentType
+                        Operations.repos_list_pull_requests_associated_with_commit.AcceptableContentType
                     >] = .defaultValues()
                 ) { self.accept = accept }
             }
-            public var headers:
-                Operations.repos_list_pull_requests_associated_with_commit.Input.Headers
+            public var headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/cookie`.
             public struct Cookies: Sendable, Hashable {
                 /// Creates a new `Cookies`.
                 public init() {}
             }
-            public var cookies:
-                Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies
+            public var cookies: Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/requestBody`.
             @frozen public enum Body: Sendable, Hashable {}
             public var body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body?
@@ -22669,12 +22137,9 @@ public enum Operations {
             ///   - body:
             public init(
                 path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path,
-                query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query =
-                    .init(),
-                headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers =
-                    .init(),
-                cookies: Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies =
-                    .init(),
+                query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query = .init(),
+                headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers = .init(),
+                cookies: Operations.repos_list_pull_requests_associated_with_commit.Input.Cookies = .init(),
                 body: Operations.repos_list_pull_requests_associated_with_commit.Input.Body? = nil
             ) {
                 self.path = path
@@ -22697,24 +22162,21 @@ public enum Operations {
                     public init(Link: Components.Headers.link? = nil) { self.Link = Link }
                 }
                 /// Received HTTP response headers
-                public var headers:
-                    Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers
+                public var headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/content`.
                 @frozen public enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.pull_request_simple])
                 }
                 /// Received HTTP response body
-                public var body:
-                    Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
+                public var body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
                 /// Creates a new `Ok`.
                 ///
                 /// - Parameters:
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok
-                        .Headers = .init(),
+                    headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers = .init(),
                     body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -22849,10 +22311,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - page: Page number of the results to fetch.
                 ///   - per_page: The number of results per page (max 100).
-                public init(
-                    page: Components.Parameters.page? = nil,
-                    per_page: Components.Parameters.per_page? = nil
-                ) {
+                public init(page: Components.Parameters.page? = nil, per_page: Components.Parameters.per_page? = nil) {
                     self.page = page
                     self.per_page = per_page
                 }
@@ -22861,9 +22320,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_compare_commits.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_compare_commits.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -23048,9 +22505,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_contributors.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_contributors.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -23241,10 +22696,7 @@ public enum Operations {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/milestone`.
                 public var milestone: Swift.String?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/state`.
-                @frozen
-                public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case open
                     case closed
                     case all
@@ -23289,10 +22741,7 @@ public enum Operations {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/labels`.
                 public var labels: Components.Parameters.labels?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/sort`.
-                @frozen
-                public enum sortPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum sortPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case created
                     case updated
                     case comments
@@ -23321,10 +22770,7 @@ public enum Operations {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/query/sort`.
                 public var sort: Operations.issues_list_for_repo.Input.Query.sortPayload?
                 /// - Remark: Generated from `#/components/parameters/direction`.
-                @frozen
-                public enum direction: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum direction: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case asc
                     case desc
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -23405,9 +22851,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_list_for_repo.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_list_for_repo.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -23572,17 +23016,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_create.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_create.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.issues_create.Input.Headers
@@ -23616,9 +23057,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -23661,9 +23100,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -23675,8 +23112,7 @@ public enum Operations {
                         }
                     }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/milestone`.
-                    public var milestone:
-                        Operations.issues_create.Input.Body.jsonPayload.milestonePayload?
+                    public var milestone: Operations.issues_create.Input.Body.jsonPayload.milestonePayload?
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload`.
                     @frozen public enum labelsPayloadPayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case1`.
@@ -23717,10 +23153,7 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2`.
-                        case case2(
-                            Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload
-                                .Case2Payload
-                        )
+                        case case2(Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload.Case2Payload)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
                         public init(from decoder: any Decoder) throws {
@@ -23733,9 +23166,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -23749,13 +23180,12 @@ public enum Operations {
                     /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labels`.
-                    public typealias labelsPayload = [Operations.issues_create.Input.Body
-                        .jsonPayload.labelsPayloadPayload]
+                    public typealias labelsPayload = [Operations.issues_create.Input.Body.jsonPayload
+                        .labelsPayloadPayload]
                     /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labels`.
-                    public var labels:
-                        Operations.issues_create.Input.Body.jsonPayload.labelsPayload?
+                    public var labels: Operations.issues_create.Input.Body.jsonPayload.labelsPayload?
                     /// Logins for Users to assign to this issue. _NOTE: Only users with push access can set assignees for new issues. Assignees are silently dropped otherwise._
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/assignees`.
@@ -23773,10 +23203,8 @@ public enum Operations {
                         title: Operations.issues_create.Input.Body.jsonPayload.titlePayload,
                         body: Swift.String? = nil,
                         assignee: Swift.String? = nil,
-                        milestone: Operations.issues_create.Input.Body.jsonPayload
-                            .milestonePayload? = nil,
-                        labels: Operations.issues_create.Input.Body.jsonPayload.labelsPayload? =
-                            nil,
+                        milestone: Operations.issues_create.Input.Body.jsonPayload.milestonePayload? = nil,
+                        labels: Operations.issues_create.Input.Body.jsonPayload.labelsPayload? = nil,
                         assignees: [Swift.String]? = nil
                     ) {
                         self.title = title
@@ -23978,18 +23406,14 @@ public enum Operations {
             public var query: Operations.issues_get.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_get.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_get.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_get.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.issues_get.Input.Headers
@@ -24155,17 +23579,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_update.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_update.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_update.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_update.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.issues_update.Input.Headers
@@ -24199,9 +23620,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -24227,10 +23646,7 @@ public enum Operations {
                     /// The open or closed state of the issue.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state`.
-                    @frozen
-                    public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                        _AutoLosslessStringConvertible, CaseIterable
-                    {
+                    @frozen public enum statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                         case open
                         case closed
                         /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -24258,9 +23674,7 @@ public enum Operations {
                     /// The reason for the state change. Ignored unless `state` is changed.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state_reason`.
-                    @frozen
-                    public enum state_reasonPayload: RawRepresentable, Codable, Hashable, Sendable,
-                        _AutoLosslessStringConvertible, CaseIterable
+                    @frozen public enum state_reasonPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
                     {
                         case completed
                         case not_planned
@@ -24283,15 +23697,12 @@ public enum Operations {
                             case .reopened: return "reopened"
                             }
                         }
-                        public static var allCases: [Self] {
-                            [.completed, .not_planned, .reopened]
-                        }
+                        public static var allCases: [Self] { [.completed, .not_planned, .reopened] }
                     }
                     /// The reason for the state change. Ignored unless `state` is changed.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/state_reason`.
-                    public var state_reason:
-                        Operations.issues_update.Input.Body.jsonPayload.state_reasonPayload?
+                    public var state_reason: Operations.issues_update.Input.Body.jsonPayload.state_reasonPayload?
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone`.
                     @frozen public enum milestonePayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone/case1`.
@@ -24312,9 +23723,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -24326,8 +23735,7 @@ public enum Operations {
                         }
                     }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone`.
-                    public var milestone:
-                        Operations.issues_update.Input.Body.jsonPayload.milestonePayload?
+                    public var milestone: Operations.issues_update.Input.Body.jsonPayload.milestonePayload?
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload`.
                     @frozen public enum labelsPayloadPayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case1`.
@@ -24368,10 +23776,7 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2`.
-                        case case2(
-                            Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload
-                                .Case2Payload
-                        )
+                        case case2(Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload.Case2Payload)
                         /// Parsed a case that was not defined in the OpenAPI document.
                         case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
                         public init(from decoder: any Decoder) throws {
@@ -24384,9 +23789,7 @@ public enum Operations {
                                 return
                             } catch {}
                             let container = try decoder.singleValueContainer()
-                            let value = try container.decode(
-                                OpenAPIRuntime.OpenAPIValueContainer.self
-                            )
+                            let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
                             self = .undocumented(value)
                         }
                         public func encode(to encoder: any Encoder) throws {
@@ -24400,13 +23803,12 @@ public enum Operations {
                     /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labels`.
-                    public typealias labelsPayload = [Operations.issues_update.Input.Body
-                        .jsonPayload.labelsPayloadPayload]
+                    public typealias labelsPayload = [Operations.issues_update.Input.Body.jsonPayload
+                        .labelsPayloadPayload]
                     /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labels`.
-                    public var labels:
-                        Operations.issues_update.Input.Body.jsonPayload.labelsPayload?
+                    public var labels: Operations.issues_update.Input.Body.jsonPayload.labelsPayload?
                     /// Usernames to assign to this issue. Pass one or more user logins to _replace_ the set of assignees on this issue. Send an empty array (`[]`) to clear all assignees from the issue. Only users with push access can set assignees for new issues. Without push access to the repository, assignee changes are silently dropped.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/assignees`.
@@ -24427,12 +23829,9 @@ public enum Operations {
                         body: Swift.String? = nil,
                         assignee: Swift.String? = nil,
                         state: Operations.issues_update.Input.Body.jsonPayload.statePayload? = nil,
-                        state_reason: Operations.issues_update.Input.Body.jsonPayload
-                            .state_reasonPayload? = nil,
-                        milestone: Operations.issues_update.Input.Body.jsonPayload
-                            .milestonePayload? = nil,
-                        labels: Operations.issues_update.Input.Body.jsonPayload.labelsPayload? =
-                            nil,
+                        state_reason: Operations.issues_update.Input.Body.jsonPayload.state_reasonPayload? = nil,
+                        milestone: Operations.issues_update.Input.Body.jsonPayload.milestonePayload? = nil,
+                        labels: Operations.issues_update.Input.Body.jsonPayload.labelsPayload? = nil,
                         assignees: [Swift.String]? = nil
                     ) {
                         self.title = title
@@ -24631,9 +24030,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_create_comment.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create_comment.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -24812,10 +24209,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query`.
             public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/state`.
-                @frozen
-                public enum statePayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum statePayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case open
                     case closed
                     case all
@@ -24852,10 +24246,7 @@ public enum Operations {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/base`.
                 public var base: Swift.String?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/sort`.
-                @frozen
-                public enum sortPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum sortPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case created
                     case updated
                     case popularity
@@ -24880,19 +24271,14 @@ public enum Operations {
                         case .long_running: return "long-running"
                         }
                     }
-                    public static var allCases: [Self] {
-                        [.created, .updated, .popularity, .long_running]
-                    }
+                    public static var allCases: [Self] { [.created, .updated, .popularity, .long_running] }
                 }
                 /// What to sort results by. `popularity` will sort by the number of comments. `long-running` will sort by date created and will limit the results to pull requests that have been open for more than a month and have had activity within the past month.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/sort`.
                 public var sort: Operations.pulls_list.Input.Query.sortPayload?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/query/direction`.
-                @frozen
-                public enum directionPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum directionPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case asc
                     case desc
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -24956,18 +24342,14 @@ public enum Operations {
             public var query: Operations.pulls_list.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.pulls_list.Input.Headers
@@ -25120,10 +24502,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query`.
             public struct Query: Sendable, Hashable {
                 /// - Remark: Generated from `#/components/parameters/sort`.
-                @frozen
-                public enum sort: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum sort: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case created
                     case updated
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -25149,10 +24528,7 @@ public enum Operations {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/sort`.
                 public var sort: Components.Parameters.sort?
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
-                @frozen
-                public enum directionPayload: RawRepresentable, Codable, Hashable, Sendable,
-                    _AutoLosslessStringConvertible, CaseIterable
-                {
+                @frozen public enum directionPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable {
                     case asc
                     case desc
                     /// Parsed a raw value that was not defined in the OpenAPI document.
@@ -25176,8 +24552,7 @@ public enum Operations {
                 /// The direction to sort results. Ignored without `sort` parameter.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
-                public var direction:
-                    Operations.pulls_list_review_comments.Input.Query.directionPayload?
+                public var direction: Operations.pulls_list_review_comments.Input.Query.directionPayload?
                 /// Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/since`.
@@ -25200,8 +24575,7 @@ public enum Operations {
                 ///   - page: Page number of the results to fetch.
                 public init(
                     sort: Components.Parameters.sort? = nil,
-                    direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? =
-                        nil,
+                    direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? = nil,
                     since: Components.Parameters.since? = nil,
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -25380,10 +24754,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
-                public init(
-                    per_page: Components.Parameters.per_page? = nil,
-                    page: Components.Parameters.page? = nil
-                ) {
+                public init(per_page: Components.Parameters.per_page? = nil, page: Components.Parameters.page? = nil) {
                     self.per_page = per_page
                     self.page = page
                 }
@@ -25392,9 +24763,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_files.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_files.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -25565,10 +24934,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
-                public init(
-                    per_page: Components.Parameters.per_page? = nil,
-                    page: Components.Parameters.page? = nil
-                ) {
+                public init(per_page: Components.Parameters.per_page? = nil, page: Components.Parameters.page? = nil) {
                     self.per_page = per_page
                     self.page = page
                 }
@@ -25577,9 +24943,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_releases.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_releases.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -25732,9 +25096,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_create_release.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_create_release.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -25791,9 +25153,7 @@ public enum Operations {
                     /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/make_latest`.
-                    @frozen
-                    public enum make_latestPayload: RawRepresentable, Codable, Hashable, Sendable,
-                        _AutoLosslessStringConvertible, CaseIterable
+                    @frozen public enum make_latestPayload: RawRepresentable, Codable, Hashable, Sendable, CaseIterable
                     {
                         case _true
                         case _false
@@ -25821,8 +25181,7 @@ public enum Operations {
                     /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/make_latest`.
-                    public var make_latest:
-                        Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload?
+                    public var make_latest: Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload?
                     /// Creates a new `jsonPayload`.
                     ///
                     /// - Parameters:
@@ -25844,8 +25203,7 @@ public enum Operations {
                         prerelease: Swift.Bool? = nil,
                         discussion_category_name: Swift.String? = nil,
                         generate_release_notes: Swift.Bool? = nil,
-                        make_latest: Operations.repos_create_release.Input.Body.jsonPayload
-                            .make_latestPayload? = nil
+                        make_latest: Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload? = nil
                     ) {
                         self.tag_name = tag_name
                         self.target_commitish = target_commitish
@@ -26039,9 +25397,7 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_get_latest_release.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get_latest_release.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
@@ -26185,10 +25541,7 @@ public enum Operations {
                 /// - Parameters:
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
-                public init(
-                    per_page: Components.Parameters.per_page? = nil,
-                    page: Components.Parameters.page? = nil
-                ) {
+                public init(per_page: Components.Parameters.per_page? = nil, page: Components.Parameters.page? = nil) {
                     self.per_page = per_page
                     self.page = page
                 }
@@ -26197,17 +25550,14 @@ public enum Operations {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/header`.
             public struct Headers: Sendable, Hashable {
                 public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_tags.AcceptableContentType
-                    >]
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_tags.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
                 public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_tags.AcceptableContentType
-                    >] = .defaultValues()
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_tags.AcceptableContentType>] =
+                        .defaultValues()
                 ) { self.accept = accept }
             }
             public var headers: Operations.repos_list_tags.Input.Headers
