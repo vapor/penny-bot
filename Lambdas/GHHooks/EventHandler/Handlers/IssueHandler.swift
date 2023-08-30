@@ -130,19 +130,22 @@ struct IssueHandler: Sendable {
 
         let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
-        let author = "By \(authorName)"
 
         var iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
-        var resolvedBy = ""
-        if let closedBy = try await self.maybeGetClosedByUser() {
-            let resolverMember = try await self.context.requester
-                .getDiscordMember(githubID: "\(closedBy.id)")
-            if let url = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url {
-                iconURL = url
-            }
-            let uiName = (resolverMember?.uiName).map { "@\($0)" } ?? closedBy.uiName
-            if let verb = status.closedByVerb {
-                resolvedBy = " | \(verb) by \(uiName)"
+        var footer = "By \(authorName)"
+        if  let verb = status.closedByVerb,
+            let closedBy = try await self.maybeGetClosedByUser() {
+            if closedBy.id == issue.user.id {
+                /// The same person opened and closed the issue.
+                footer = "Filed & \(verb) by \(authorName)"
+            } else {
+                let resolverMember = try await self.context.requester
+                    .getDiscordMember(githubID: "\(closedBy.id)")
+                if let url = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url {
+                    iconURL = url
+                }
+                let uiName = (resolverMember?.uiName).map { "@\($0)" } ?? closedBy.uiName
+                footer = "By \(authorName) | \(verb) by \(uiName)"
             }
         }
 
@@ -153,7 +156,7 @@ struct IssueHandler: Sendable {
             timestamp: issue.created_at,
             color: status.color,
             footer: .init(
-                text: (author + resolvedBy).unicodesPrefix(100),
+                text: footer.unicodesPrefix(100),
                 icon_url: .exact(iconURL)
             )
         )

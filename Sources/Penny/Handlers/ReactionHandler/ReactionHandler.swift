@@ -6,21 +6,27 @@ import Foundation
 struct ReactionHandler {
 
     enum Configuration {
-        static let coinSignEmojis = [
+        /// U+1F3FB EMOJI MODIFIER FITZPATRICK TYPE-1-2...TYPE-6
+        private static var emojiSkins: [String] {
+            ["","\u{1f3fb}","\u{1f3fc}","\u{1f3fd}","\u{1f3fe}","\u{1f3ff}"]
+        }
+        /// U+2640 FEMALE SIGN, U+2642 MALE SIGN, U+200D ZWJ, U+FE0F VARIATION SELECTOR 16
+        private static var emojiGenders: [String] {
+            ["", "\u{200d}\u{2640}\u{fe0f}", "\u{200d}\u{2642}\u{fe0f}"]
+        }
+
+        static let coinSignEmojis: Set<String> = [
             Constants.ServerEmojis.love.name,
             Constants.ServerEmojis.vapor.name,
             Constants.ServerEmojis.coin.name,
             Constants.ServerEmojis.doge.name,
-            "🪙",
+            "🪙", "🚀",
             "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
-            "💗", "💖", "💞", "❣️", "💓", "💘", "💝", "💕", "❤️‍🔥", "💟",
-            "😍", "😻",
-            "🚀", "🎉", "💯",
-            "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
-            "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
-            "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
-            "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
+            "🩷", "🩶", "🩵", "💗", "💕", "😍", "😻", "🎉", "💯",
         ]
+        + emojiSkins.map { "🙌\($0)" }
+        + emojiSkins.map { "🙏\($0)" }
+        + emojiSkins.flatMap { s in emojiGenders.map { g in "🙇\(s)\(g)" } }
     }
 
     let event: Gateway.MessageReactionAdd
@@ -210,3 +216,6 @@ struct ReactionHandler {
     }
 }
 
+private func + (lhs: Set<String>, rhs: [String]) -> Set<String> {
+    lhs.union(rhs)
+}
