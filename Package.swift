@@ -106,7 +106,7 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/swift-server/swift-openapi-async-http-client",
-            .upToNextMinor(from: "0.1.0")
+            .upToNextMinor(from: "0.2.1")
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-generator",
