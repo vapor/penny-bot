@@ -23,8 +23,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordLogger.git",
       "state" : {
-        "revision" : "8ee82aa023ad3348b0d1ef9fc1bc2d3144ef142d",
-        "version" : "1.0.0-rc.1"
+        "revision" : "e097e726b71d5f20656d5d7c294df912a898ae8f",
+        "version" : "1.0.0-rc.2"
       }
     },
     {

@@ -81,9 +81,14 @@ struct GHHooksHandler: LambdaHandler {
                         content: DiscordUtils.mention(id: Constants.botDevUserID),
                         embeds: [.init(
                             title: "GHHooks lambda top-level error",
-                            description: "\(error)".unicodesPrefix(4_000),
+                            description: "\(error)".unicodesPrefix(2_048),
                             color: .red
-                        )]
+                        )],
+                        files: [.init(
+                            data: ByteBuffer(string: "\(error)"),
+                            filename: "error"
+                        )],
+                        attachments: [.init(index: 0, filename: "error")]
                     )
                 ).guardSuccess()
             } catch {

@@ -208,9 +208,7 @@ struct ReleaseReporter {
     func sendToDiscord(embed: Embed) async throws {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.release.id,
-            payload: .init(
-                embeds: [embed]
-            )
+            payload: .init(embeds: [embed])
         ).guardSuccess()
     }
 }

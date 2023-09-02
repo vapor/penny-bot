@@ -14,22 +14,15 @@ enum SponsorType: String {
     }
     
     var channelID: ChannelSnowflake {
-        switch self {
-        case .sponsor:
-            return "633345798490292229"
-        case .backer:
-            return "633345683012976640"
-        }
+        return "633345683012976640"
     }
 
     var discordColor: DiscordColor {
         switch self {
         case .sponsor:
-            /// Light yellow
-            return .init(red: 255, green: 235, blue: 59)!
+            return .yellow
         case .backer:
-            /// Light green
-            return .init(red: 76, green: 175, blue: 80)!
+            return .green
         }
     }
     

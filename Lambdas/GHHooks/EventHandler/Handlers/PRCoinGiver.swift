@@ -67,8 +67,7 @@ struct PRCoinGiver {
                         You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
                         """,
                         color: .blue
-                    )],
-                    allowed_mentions: .init(users: [discordID])
+                    )]
                 )
             ).guardSuccess()
         }

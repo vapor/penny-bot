@@ -24,6 +24,7 @@ struct PennyService: MainService {
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
+                sendFullLogAsAttachment: .enabled,
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
