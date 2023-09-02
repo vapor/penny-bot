@@ -13,7 +13,7 @@ import Fake
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+    let httpClient = HTTPClient()
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

@@ -17141,7 +17141,34 @@ public enum Components {
     /// Types generated from the `#/components/headers` section of the OpenAPI document.
     public enum Headers {
         /// - Remark: Generated from `#/components/headers/link`.
-        public typealias link = Swift.String
+        @frozen public enum link: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/headers/link/case1`.
+            case case1(Swift.String)
+            /// - Remark: Generated from `#/components/headers/link/case2`.
+            case case2([Swift.String])
+            /// Parsed a case that was not defined in the OpenAPI document.
+            case undocumented(OpenAPIRuntime.OpenAPIValueContainer)
+            public init(from decoder: any Decoder) throws {
+                do {
+                    self = .case1(try .init(from: decoder))
+                    return
+                } catch {}
+                do {
+                    self = .case2(try .init(from: decoder))
+                    return
+                } catch {}
+                let container = try decoder.singleValueContainer()
+                let value = try container.decode(OpenAPIRuntime.OpenAPIValueContainer.self)
+                self = .undocumented(value)
+            }
+            public func encode(to encoder: any Encoder) throws {
+                switch self {
+                case let .case1(value): try value.encode(to: encoder)
+                case let .case2(value): try value.encode(to: encoder)
+                case let .undocumented(value): try value.encode(to: encoder)
+                }
+            }
+        }
         /// - Remark: Generated from `#/components/headers/content-type`.
         public typealias content_type = Swift.String
         /// - Remark: Generated from `#/components/headers/x-common-marker-version`.
