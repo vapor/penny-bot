@@ -110,11 +110,11 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-generator",
-            "0.1.6"..<"0.2.0"
+            "0.1.6"..<"1.0.0"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            "0.1.6"..<"0.2.0"
+            "0.1.6"..<"1.0.0"
         ),
     ],
     targets: [
