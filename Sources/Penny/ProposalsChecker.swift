@@ -253,8 +253,12 @@ actor ProposalsChecker {
         
         if let proposalLink,
            let link = await findForumPostLink(link: proposalLink) {
+            let description = link.description.trimmingCharacters(in: .punctuationCharacters).capitalized
             buttons[0].components.append(
-                .button(.init(label: "\(link.description.capitalized) Post", url: link.destination))
+                .button(.init(
+                    label: "\(description) Post",
+                    url: link.destination
+                ))
             )
         }
         
