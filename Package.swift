@@ -28,22 +28,18 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
 ]
 
-let targetsSwiftSettings: [SwiftSetting] =
-    upcomingFeaturesSwiftSettings + [
+let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
         /// https://github.com/apple/swift/issues/67214
         .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
 
         /// `minimal` / `targeted` / `complete`
-        /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
         .unsafeFlags(["-strict-concurrency=complete"]),
     ]
 
-let testsSwiftSettings: [SwiftSetting] =
-    upcomingFeaturesSwiftSettings + [
-        /// `minimal` / `targeted` / `complete`
-        /// The only things incompatible with `complete` in Penny are the globally-modifiable vars.
-        .unsafeFlags(["-strict-concurrency=targeted"])
-    ]
+let testsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
+    /// `minimal` / `targeted` / `complete`
+    .unsafeFlags(["-strict-concurrency=targeted"])
+]
 
 extension PackageDescription.Target {
     static func lambdaTarget(
@@ -91,10 +87,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
-        .package(
-            url: "https://github.com/gwynne/swift-semver",
-            from: "0.2.0-alpha.1"
-        ),
+        .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0-beta.1"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
