@@ -140,7 +140,7 @@ struct ReleaseReporter {
     func sendToDiscord(pr: SimplePullRequest) async throws {
         let body = pr.body.map { body -> String in
             body.formatMarkdown(
-                maxVisualLength: 384,
+                maxVisualLength: 256,
                 hardLimit: 2_048,
                 trailingTextMinLength: 96
             )
@@ -169,7 +169,7 @@ struct ReleaseReporter {
 
         \(prDescriptions)
         """.formatMarkdown(
-            maxVisualLength: 384,
+            maxVisualLength: 256,
             hardLimit: 2_048,
             trailingTextMinLength: 96
         )
@@ -182,7 +182,7 @@ struct ReleaseReporter {
                 named: "What's Changed"
             ) ?? body
             let formatted = preferredContent.formatMarkdown(
-                maxVisualLength: 384,
+                maxVisualLength: 256,
                 hardLimit: 2_048,
                 trailingTextMinLength: 96
             )
