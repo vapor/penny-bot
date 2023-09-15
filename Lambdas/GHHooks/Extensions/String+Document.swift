@@ -23,7 +23,6 @@ extension String {
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
-            .unicodesPrefix(hardLimit)
         let document2 = Document(parsing: prefixed)
         var paragraphCounter = ParagraphCounter()
         paragraphCounter.visit(document2)
@@ -42,7 +41,6 @@ extension String {
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
-            .unicodesPrefix(hardLimit)
         var document3 = Document(parsing: prefixed2)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
@@ -51,10 +49,9 @@ extension String {
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .markdownUnicodesPrefix(maxVisualLength)
-                .unicodesPrefix(hardLimit)
         }
 
-        return prefixed2
+        return prefixed2.unicodesPrefix(hardLimit)
     }
 
     private func trimmingForMarkdown() -> String {
