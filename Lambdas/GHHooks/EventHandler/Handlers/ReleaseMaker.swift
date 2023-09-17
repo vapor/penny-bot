@@ -238,9 +238,9 @@ struct ReleaseMaker {
 
         let body = pr.body.map {
             $0.formatMarkdown(
-                maxVisualLength: 512,
+                maxVisualLength: 1_024,
                 hardLimit: 2_048,
-                trailingTextMinLength: 96
+                trailingTextMinLength: 128
             ).quotedMarkdown()
         } ?? ""
 
