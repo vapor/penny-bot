@@ -115,7 +115,7 @@ struct GHHooksHandler: LambdaHandler {
             throw Errors.headerNotFound(name: "x-gitHub-event", headers: request.headers)
         }
 
-        logger.debug("Event name is '\(eventName)'")
+        logger.debug("Event name: '\(eventName)'")
 
         /// To make sure we don't miss pings because of a decoding error or something
         if eventName == .ping {
@@ -125,7 +125,7 @@ struct GHHooksHandler: LambdaHandler {
 
         let event = try request.decodeWithISO8601(as: GHEvent.self)
 
-        logger.debug("Event identifier is '\(eventName).\(event.action ?? "<null>")'")
+        logger.debug("Event id: '\(eventName).\(event.action ?? "<null>")'")
         logger.trace("Decoded event", metadata: [
             "event": "\(event)"
         ])
