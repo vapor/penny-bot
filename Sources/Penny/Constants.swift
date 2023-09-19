@@ -21,6 +21,15 @@ enum Constants {
     static let ghOAuthClientID = env("GH_OAUTH_CLIENT_ID")
     static let accountLinkOAuthPrivKey = env("ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY")
 
+    /// U+1F3FB EMOJI MODIFIER FITZPATRICK TYPE-1-2...TYPE-6
+    static var emojiSkins: [String] {
+        ["", "\u{1f3fb}", "\u{1f3fc}", "\u{1f3fd}", "\u{1f3fe}", "\u{1f3ff}"]
+    }
+    /// U+2640 FEMALE SIGN, U+2642 MALE SIGN, U+200D ZWJ, U+FE0F VARIATION SELECTOR 16
+    static var emojiGenders: [String] {
+        ["", "\u{200d}\u{2640}\u{fe0f}", "\u{200d}\u{2642}\u{fe0f}"]
+    }
+
     enum ServerEmojis {
         case coin
         case vapor
