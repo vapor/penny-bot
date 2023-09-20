@@ -16,14 +16,14 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
         <img src="https://github.com/vapor/penny-bot/actions/workflows/deploy-penny.yml/badge.svg?branch=main" alt="Deploy Penny CI">
     </a>
     <a href="https://swift.org">
-        <img src="https://img.shields.io/badge/swift-5.8-brightgreen.svg" alt="Swift 5.8">
+        <img src="https://img.shields.io/badge/swift-5.9-brightgreen.svg" alt="Swift 5.9">
     </a>
 </p>
 
 ### Features
 * [x] Give coins to the members when they're "thanked".
 * [x] Automatically ping members based on the ping-words they have set up.
-  * Implemented as `/auto-pings` slash command. 
+  * Implemented as `/auto-pings` slash command.
 * [x] Respond to certain command-texts with predefined answers.
   * Implemented as `/faqs` slash command.
 * [x] Automatically respond to commonly asked questions.
