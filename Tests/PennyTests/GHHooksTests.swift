@@ -592,6 +592,13 @@ class GHHooksTests: XCTestCase {
         /// Unlabeled with "help wanted"
         try await handleEvent(key: "issue7", eventName: .issues, expect: .noResponse)
 
+        /// Issue-closed that has "timeline" info too, in case sometime in the future
+        /// we want to be more accurate about reporting who closed the issue.
+        /// See https://discord.com/channels/431917998102675485/441327731486097429/1155443078778323036.
+        /// The message isn't public (doesn't contain anything too special tbh), 
+        /// only Penny maintainers can see it.
+        try await handleEvent(key: "issue8", eventName: .issues, expect: .noResponse)
+
         try await handleEvent(key: "pr1", eventName: .pull_request, expect: .noResponse)
         try await handleEvent(key: "pr2", eventName: .pull_request, expect: .noResponse)
         try await handleEvent(key: "pr3", eventName: .pull_request, expect: .noResponse)
