@@ -29,16 +29,22 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
 ]
 
 let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
-        /// https://github.com/apple/swift/issues/67214
-        .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
+    /// https://github.com/apple/swift/issues/67214
+    .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
 
-        /// `minimal` / `targeted` / `complete`
-        .unsafeFlags(["-strict-concurrency=complete"]),
-    ]
+    /// https://github.com/apple/swift/pull/68671
+    .unsafeFlags(
+        ["-Xlinker", "-u", "-Xlinker", "_swift_backtrace_isThunkFunction"],
+        .when(platforms: [.linux], configuration: .release)
+    ),
+
+    /// `minimal` / `targeted` / `complete`
+    .enableExperimentalFeature("StrictConcurrency=complete"),
+]
 
 let testsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// `minimal` / `targeted` / `complete`
-    .unsafeFlags(["-strict-concurrency=targeted"])
+    .enableExperimentalFeature("StrictConcurrency=targeted"),
 ]
 
 extension PackageDescription.Target {
@@ -267,7 +273,20 @@ let package = Package(
             name: "PennyTests",
             dependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
+                .product(name: "SotoS3", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
+                .product(name: "LeafKit", package: "leaf-kit"),
+                .product(name: "Markdown", package: "swift-markdown"),
+                .product(name: "SwiftSemver", package: "swift-semver"),
+                .product(name: "DiscordLogger", package: "DiscordLogger"),
+                .product(name: "JWTKit", package: "jwt-kit"),
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .target(name: "GitHubAPI"),
+                .target(name: "LambdasShared"),
+                .target(name: "Shared"),
+                .target(name: "Rendering"),
+                .target(name: "Models"),
                 .target(name: "Penny"),
                 .target(name: "GHHooksLambda"),
                 .target(name: "Fake"),
