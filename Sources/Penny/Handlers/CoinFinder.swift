@@ -7,19 +7,17 @@ struct CoinFinder {
         /// All coin signs must be lowercased.
         /// Add a test when you add a coin sign.
         static let coinSigns = [
-            "🙌", "🙌🏻", "🙌🏼", "🙌🏽", "🙌🏾", "🙌🏿",
-            "🙏", "🙏🏻", "🙏🏼", "🙏🏽", "🙏🏾", "🙏🏿",
-            "👌", "👌🏻", "👌🏼", "👌🏽", "👌🏾", "👌🏿",
-            "👍", "👍🏻", "👍🏼", "👍🏽", "👍🏾", "👍🏿",
-            "🪙",
             Constants.ServerEmojis.coin.emoji,
-            "🚀", "🎉", "💯",
+            Constants.ServerEmojis.love.emoji,
+            "🚀", "🎉", "💯", "🪙",
             "thx", "thanks", "thank you",
             "thanks a lot", "thanks a bunch", "thanks so much",
             "thank you a lot", "thank you a bunch", "thank you so much",
             "thanks for the help", "thanks for your help",
             "+= 1", "+ 1"
         ]
+        + Constants.emojiSkins.map { "🙌\($0)" }
+        + Constants.emojiSkins.map { "🙏\($0)" }
 
         /// Two or more of these characters, like `++` or `++++++++++++`.
         static let twoOrMore_coinSigns: [Character] = ["+"]
