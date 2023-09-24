@@ -420,7 +420,7 @@ struct ReviewLinksFinder: MarkupWalker {
 }
 
 // MARK: - QueuedProposal
-struct QueuedProposal: Codable {
+struct QueuedProposal: Sendable, Codable {
     let uuid: UUID
     let firstKnownStateBeforeQueue: Proposal.Status.State?
     var updatedAt: Date
