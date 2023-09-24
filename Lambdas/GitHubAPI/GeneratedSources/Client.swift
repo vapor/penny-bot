@@ -3569,6 +3569,103 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// List timeline events for an issue
+    ///
+    /// List all timeline events for an issue.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/timeline`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)`.
+    public func issues_list_events_for_timeline(_ input: Operations.issues_list_events_for_timeline.Input) async throws
+        -> Operations.issues_list_events_for_timeline.Output
+    {
+        try await client.send(
+            input: input,
+            forOperation: Operations.issues_list_events_for_timeline.id,
+            serializer: { input in
+                let path = try converter.renderedPath(
+                    template: "/repos/{}/{}/issues/{}/timeline",
+                    parameters: [input.path.owner, input.path.repo, input.path.issue_number]
+                )
+                var request: OpenAPIRuntime.Request = .init(path: path, method: .get)
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsURI(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsURI(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "page",
+                    value: input.query.page
+                )
+                converter.setAcceptHeader(in: &request.headerFields, contentTypes: input.headers.accept)
+                return request
+            },
+            deserializer: { response in
+                switch response.statusCode {
+                case 200:
+                    let headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers = .init(
+                        Link: try converter.getOptionalHeaderFieldAsURI(
+                            in: response.headerFields,
+                            name: "Link",
+                            as: Components.Headers.link.self
+                        )
+                    )
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.issues_list_events_for_timeline.Output.Ok.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(received: contentType, expectedRaw: "application/json")
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            [Components.Schemas.timeline_issue_events].self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .ok(.init(headers: headers, body: body))
+                case 404:
+                    let headers: Components.Responses.not_found.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.not_found.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(received: contentType, expectedRaw: "application/json")
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .notFound(.init(headers: headers, body: body))
+                case 410:
+                    let headers: Components.Responses.gone.Headers = .init()
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.gone.Body
+                    if try contentType == nil
+                        || converter.isMatchingContentType(received: contentType, expectedRaw: "application/json")
+                    {
+                        body = try converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: response.body,
+                            transforming: { value in .json(value) }
+                        )
+                    } else {
+                        throw converter.makeUnexpectedContentTypeError(contentType: contentType)
+                    }
+                    return .gone(.init(headers: headers, body: body))
+                default: return .undocumented(statusCode: response.statusCode, .init())
+                }
+            }
+        )
+    }
     /// List pull requests
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.

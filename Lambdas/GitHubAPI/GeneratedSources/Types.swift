@@ -352,6 +352,14 @@ public protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
     func issues_create_comment(_ input: Operations.issues_create_comment.Input) async throws
         -> Operations.issues_create_comment.Output
+    /// List timeline events for an issue
+    ///
+    /// List all timeline events for an issue.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/timeline`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)`.
+    func issues_list_events_for_timeline(_ input: Operations.issues_list_events_for_timeline.Input) async throws
+        -> Operations.issues_list_events_for_timeline.Output
     /// List pull requests
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -557,6 +565,201 @@ public enum Components {
                 case _type = "type"
                 case site_admin
                 case starred_at
+            }
+        }
+        /// GitHub apps are a new way to extend GitHub. They can be installed directly on organizations and user accounts and granted access to specific repositories. They come with granular permissions and built-in webhooks. GitHub apps are first class actors within GitHub.
+        ///
+        /// - Remark: Generated from `#/components/schemas/integration`.
+        public struct integration: Codable, Hashable, Sendable {
+            /// Unique identifier of the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/id`.
+            public var id: Swift.Int
+            /// The slug name of the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/slug`.
+            public var slug: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/integration/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/integration/owner`.
+            public var owner: Components.Schemas.nullable_simple_user
+            /// The name of the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/name`.
+            public var name: Swift.String
+            /// - Remark: Generated from `#/components/schemas/integration/description`.
+            public var description: Swift.String
+            /// - Remark: Generated from `#/components/schemas/integration/external_url`.
+            public var external_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/integration/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/integration/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/integration/updated_at`.
+            public var updated_at: Foundation.Date
+            /// The set of permissions for the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/permissions`.
+            public struct permissionsPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/integration/permissions/issues`.
+                public var issues: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/integration/permissions/checks`.
+                public var checks: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/integration/permissions/metadata`.
+                public var metadata: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/integration/permissions/contents`.
+                public var contents: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/integration/permissions/deployments`.
+                public var deployments: Swift.String?
+                /// A container of undocumented properties.
+                public var additionalProperties: [String: Swift.String]
+                /// Creates a new `permissionsPayload`.
+                ///
+                /// - Parameters:
+                ///   - issues:
+                ///   - checks:
+                ///   - metadata:
+                ///   - contents:
+                ///   - deployments:
+                ///   - additionalProperties: A container of undocumented properties.
+                public init(
+                    issues: Swift.String? = nil,
+                    checks: Swift.String? = nil,
+                    metadata: Swift.String? = nil,
+                    contents: Swift.String? = nil,
+                    deployments: Swift.String? = nil,
+                    additionalProperties: [String: Swift.String] = .init()
+                ) {
+                    self.issues = issues
+                    self.checks = checks
+                    self.metadata = metadata
+                    self.contents = contents
+                    self.deployments = deployments
+                    self.additionalProperties = additionalProperties
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case issues
+                    case checks
+                    case metadata
+                    case contents
+                    case deployments
+                }
+                public init(from decoder: any Decoder) throws {
+                    let container = try decoder.container(keyedBy: CodingKeys.self)
+                    issues = try container.decodeIfPresent(Swift.String.self, forKey: .issues)
+                    checks = try container.decodeIfPresent(Swift.String.self, forKey: .checks)
+                    metadata = try container.decodeIfPresent(Swift.String.self, forKey: .metadata)
+                    contents = try container.decodeIfPresent(Swift.String.self, forKey: .contents)
+                    deployments = try container.decodeIfPresent(Swift.String.self, forKey: .deployments)
+                    additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
+                        "issues", "checks", "metadata", "contents", "deployments",
+                    ])
+                }
+                public func encode(to encoder: any Encoder) throws {
+                    var container = encoder.container(keyedBy: CodingKeys.self)
+                    try container.encodeIfPresent(issues, forKey: .issues)
+                    try container.encodeIfPresent(checks, forKey: .checks)
+                    try container.encodeIfPresent(metadata, forKey: .metadata)
+                    try container.encodeIfPresent(contents, forKey: .contents)
+                    try container.encodeIfPresent(deployments, forKey: .deployments)
+                    try encoder.encodeAdditionalProperties(additionalProperties)
+                }
+            }
+            /// The set of permissions for the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/permissions`.
+            public var permissions: Components.Schemas.integration.permissionsPayload
+            /// The list of events for the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/events`.
+            public var events: [Swift.String]
+            /// The number of installations associated with the GitHub app
+            ///
+            /// - Remark: Generated from `#/components/schemas/integration/installations_count`.
+            public var installations_count: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/integration/client_id`.
+            public var client_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/integration/client_secret`.
+            public var client_secret: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/integration/webhook_secret`.
+            public var webhook_secret: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/integration/pem`.
+            public var pem: Swift.String?
+            /// Creates a new `integration`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the GitHub app
+            ///   - slug: The slug name of the GitHub app
+            ///   - node_id:
+            ///   - owner:
+            ///   - name: The name of the GitHub app
+            ///   - description:
+            ///   - external_url:
+            ///   - html_url:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - permissions: The set of permissions for the GitHub app
+            ///   - events: The list of events for the GitHub app
+            ///   - installations_count: The number of installations associated with the GitHub app
+            ///   - client_id:
+            ///   - client_secret:
+            ///   - webhook_secret:
+            ///   - pem:
+            public init(
+                id: Swift.Int,
+                slug: Swift.String? = nil,
+                node_id: Swift.String,
+                owner: Components.Schemas.nullable_simple_user,
+                name: Swift.String,
+                description: Swift.String,
+                external_url: Swift.String,
+                html_url: Swift.String,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                permissions: Components.Schemas.integration.permissionsPayload,
+                events: [Swift.String],
+                installations_count: Swift.Int? = nil,
+                client_id: Swift.String? = nil,
+                client_secret: Swift.String? = nil,
+                webhook_secret: Swift.String? = nil,
+                pem: Swift.String? = nil
+            ) {
+                self.id = id
+                self.slug = slug
+                self.node_id = node_id
+                self.owner = owner
+                self.name = name
+                self.description = description
+                self.external_url = external_url
+                self.html_url = html_url
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.permissions = permissions
+                self.events = events
+                self.installations_count = installations_count
+                self.client_id = client_id
+                self.client_secret = client_secret
+                self.webhook_secret = webhook_secret
+                self.pem = pem
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case slug
+                case node_id
+                case owner
+                case name
+                case description
+                case external_url
+                case html_url
+                case created_at
+                case updated_at
+                case permissions
+                case events
+                case installations_count
+                case client_id
+                case client_secret
+                case webhook_secret
+                case pem
             }
         }
         /// Basic Error
@@ -11571,6 +11774,103 @@ public enum Components {
                 case committer
             }
         }
+        /// Commit Comment
+        ///
+        /// - Remark: Generated from `#/components/schemas/commit-comment`.
+        public struct commit_comment: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/commit-comment/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comment/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comment/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/commit-comment/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comment/body`.
+            public var body: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comment/path`.
+            public var path: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comment/position`.
+            public var position: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/commit-comment/line`.
+            public var line: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/commit-comment/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/commit-comment/user`.
+            public var user: Components.Schemas.nullable_simple_user
+            /// - Remark: Generated from `#/components/schemas/commit-comment/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/commit-comment/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/commit-comment/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// - Remark: Generated from `#/components/schemas/commit-comment/reactions`.
+            public var reactions: Components.Schemas.reaction_rollup?
+            /// Creates a new `commit_comment`.
+            ///
+            /// - Parameters:
+            ///   - html_url:
+            ///   - url:
+            ///   - id:
+            ///   - node_id:
+            ///   - body:
+            ///   - path:
+            ///   - position:
+            ///   - line:
+            ///   - commit_id:
+            ///   - user:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - author_association:
+            ///   - reactions:
+            public init(
+                html_url: Swift.String,
+                url: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                body: Swift.String,
+                path: Swift.String,
+                position: Swift.Int,
+                line: Swift.Int,
+                commit_id: Swift.String,
+                user: Components.Schemas.nullable_simple_user,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                author_association: Components.Schemas.author_association,
+                reactions: Components.Schemas.reaction_rollup? = nil
+            ) {
+                self.html_url = html_url
+                self.url = url
+                self.id = id
+                self.node_id = node_id
+                self.body = body
+                self.path = path
+                self.position = position
+                self.line = line
+                self.commit_id = commit_id
+                self.user = user
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.author_association = author_association
+                self.reactions = reactions
+            }
+            public enum CodingKeys: String, CodingKey {
+                case html_url
+                case url
+                case id
+                case node_id
+                case body
+                case path
+                case position
+                case line
+                case commit_id
+                case user
+                case created_at
+                case updated_at
+                case author_association
+                case reactions
+            }
+        }
         /// Hypermedia Link
         ///
         /// - Remark: Generated from `#/components/schemas/link`.
@@ -12339,6 +12639,1570 @@ public enum Components {
                 case name
             }
         }
+        /// Labeled Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/labeled-issue-event`.
+        public struct labeled_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/label`.
+            public struct labelPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/labeled-issue-event/label/name`.
+                public var name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/labeled-issue-event/label/color`.
+                public var color: Swift.String
+                /// Creates a new `labelPayload`.
+                ///
+                /// - Parameters:
+                ///   - name:
+                ///   - color:
+                public init(name: Swift.String, color: Swift.String) {
+                    self.name = name
+                    self.color = color
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case name
+                    case color
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/labeled-issue-event/label`.
+            public var label: Components.Schemas.labeled_issue_event.labelPayload
+            /// Creates a new `labeled_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - label:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                label: Components.Schemas.labeled_issue_event.labelPayload
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.label = label
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case label
+            }
+        }
+        /// Unlabeled Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event`.
+        public struct unlabeled_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/label`.
+            public struct labelPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/label/name`.
+                public var name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/label/color`.
+                public var color: Swift.String
+                /// Creates a new `labelPayload`.
+                ///
+                /// - Parameters:
+                ///   - name:
+                ///   - color:
+                public init(name: Swift.String, color: Swift.String) {
+                    self.name = name
+                    self.color = color
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case name
+                    case color
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/unlabeled-issue-event/label`.
+            public var label: Components.Schemas.unlabeled_issue_event.labelPayload
+            /// Creates a new `unlabeled_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - label:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                label: Components.Schemas.unlabeled_issue_event.labelPayload
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.label = label
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case label
+            }
+        }
+        /// Assigned Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/assigned-issue-event`.
+        public struct assigned_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.integration
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/assignee`.
+            public var assignee: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/assigned-issue-event/assigner`.
+            public var assigner: Components.Schemas.simple_user
+            /// Creates a new `assigned_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - assignee:
+            ///   - assigner:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.integration,
+                assignee: Components.Schemas.simple_user,
+                assigner: Components.Schemas.simple_user
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.assignee = assignee
+                self.assigner = assigner
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case assignee
+                case assigner
+            }
+        }
+        /// Unassigned Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/unassigned-issue-event`.
+        public struct unassigned_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/assignee`.
+            public var assignee: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/unassigned-issue-event/assigner`.
+            public var assigner: Components.Schemas.simple_user
+            /// Creates a new `unassigned_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - assignee:
+            ///   - assigner:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                assignee: Components.Schemas.simple_user,
+                assigner: Components.Schemas.simple_user
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.assignee = assignee
+                self.assigner = assigner
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case assignee
+                case assigner
+            }
+        }
+        /// Milestoned Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/milestoned-issue-event`.
+        public struct milestoned_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/milestone`.
+            public struct milestonePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/milestone/title`.
+                public var title: Swift.String
+                /// Creates a new `milestonePayload`.
+                ///
+                /// - Parameters:
+                ///   - title:
+                public init(title: Swift.String) { self.title = title }
+                public enum CodingKeys: String, CodingKey { case title }
+            }
+            /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/milestone`.
+            public var milestone: Components.Schemas.milestoned_issue_event.milestonePayload
+            /// Creates a new `milestoned_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - milestone:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                milestone: Components.Schemas.milestoned_issue_event.milestonePayload
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.milestone = milestone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case milestone
+            }
+        }
+        /// Demilestoned Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event`.
+        public struct demilestoned_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/milestone`.
+            public struct milestonePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/milestone/title`.
+                public var title: Swift.String
+                /// Creates a new `milestonePayload`.
+                ///
+                /// - Parameters:
+                ///   - title:
+                public init(title: Swift.String) { self.title = title }
+                public enum CodingKeys: String, CodingKey { case title }
+            }
+            /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/milestone`.
+            public var milestone: Components.Schemas.demilestoned_issue_event.milestonePayload
+            /// Creates a new `demilestoned_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - milestone:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                milestone: Components.Schemas.demilestoned_issue_event.milestonePayload
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.milestone = milestone
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case milestone
+            }
+        }
+        /// Renamed Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/renamed-issue-event`.
+        public struct renamed_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/rename`.
+            public struct renamePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/renamed-issue-event/rename/from`.
+                public var from: Swift.String
+                /// - Remark: Generated from `#/components/schemas/renamed-issue-event/rename/to`.
+                public var to: Swift.String
+                /// Creates a new `renamePayload`.
+                ///
+                /// - Parameters:
+                ///   - from:
+                ///   - to:
+                public init(from: Swift.String, to: Swift.String) {
+                    self.from = from
+                    self.to = to
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case from
+                    case to
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/renamed-issue-event/rename`.
+            public var rename: Components.Schemas.renamed_issue_event.renamePayload
+            /// Creates a new `renamed_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - rename:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                rename: Components.Schemas.renamed_issue_event.renamePayload
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.rename = rename
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case rename
+            }
+        }
+        /// Review Requested Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/review-requested-issue-event`.
+        public struct review_requested_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/review_requester`.
+            public var review_requester: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/requested_team`.
+            public var requested_team: Components.Schemas.team?
+            /// - Remark: Generated from `#/components/schemas/review-requested-issue-event/requested_reviewer`.
+            public var requested_reviewer: Components.Schemas.simple_user?
+            /// Creates a new `review_requested_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - review_requester:
+            ///   - requested_team:
+            ///   - requested_reviewer:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                review_requester: Components.Schemas.simple_user,
+                requested_team: Components.Schemas.team? = nil,
+                requested_reviewer: Components.Schemas.simple_user? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.review_requester = review_requester
+                self.requested_team = requested_team
+                self.requested_reviewer = requested_reviewer
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case review_requester
+                case requested_team
+                case requested_reviewer
+            }
+        }
+        /// Review Request Removed Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event`.
+        public struct review_request_removed_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/review_requester`.
+            public var review_requester: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/requested_team`.
+            public var requested_team: Components.Schemas.team?
+            /// - Remark: Generated from `#/components/schemas/review-request-removed-issue-event/requested_reviewer`.
+            public var requested_reviewer: Components.Schemas.simple_user?
+            /// Creates a new `review_request_removed_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - review_requester:
+            ///   - requested_team:
+            ///   - requested_reviewer:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                review_requester: Components.Schemas.simple_user,
+                requested_team: Components.Schemas.team? = nil,
+                requested_reviewer: Components.Schemas.simple_user? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.review_requester = review_requester
+                self.requested_team = requested_team
+                self.requested_reviewer = requested_reviewer
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case review_requester
+                case requested_team
+                case requested_reviewer
+            }
+        }
+        /// Review Dismissed Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event`.
+        public struct review_dismissed_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review`.
+            public struct dismissed_reviewPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review/state`.
+                public var state: Swift.String
+                /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review/review_id`.
+                public var review_id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review/dismissal_message`.
+                public var dismissal_message: Swift.String
+                /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review/dismissal_commit_id`.
+                public var dismissal_commit_id: Swift.String?
+                /// Creates a new `dismissed_reviewPayload`.
+                ///
+                /// - Parameters:
+                ///   - state:
+                ///   - review_id:
+                ///   - dismissal_message:
+                ///   - dismissal_commit_id:
+                public init(
+                    state: Swift.String,
+                    review_id: Swift.Int,
+                    dismissal_message: Swift.String,
+                    dismissal_commit_id: Swift.String? = nil
+                ) {
+                    self.state = state
+                    self.review_id = review_id
+                    self.dismissal_message = dismissal_message
+                    self.dismissal_commit_id = dismissal_commit_id
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case state
+                    case review_id
+                    case dismissal_message
+                    case dismissal_commit_id
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review`.
+            public var dismissed_review: Components.Schemas.review_dismissed_issue_event.dismissed_reviewPayload
+            /// Creates a new `review_dismissed_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - dismissed_review:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                dismissed_review: Components.Schemas.review_dismissed_issue_event.dismissed_reviewPayload
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.dismissed_review = dismissed_review
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case dismissed_review
+            }
+        }
+        /// Locked Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/locked-issue-event`.
+        public struct locked_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/locked-issue-event/lock_reason`.
+            public var lock_reason: Swift.String
+            /// Creates a new `locked_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - lock_reason:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                lock_reason: Swift.String
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.lock_reason = lock_reason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case lock_reason
+            }
+        }
+        /// Added to Project Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event`.
+        public struct added_to_project_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card`.
+            public struct project_cardPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card/id`.
+                public var id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card/project_id`.
+                public var project_id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card/project_url`.
+                public var project_url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card/column_name`.
+                public var column_name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card/previous_column_name`.
+                public var previous_column_name: Swift.String?
+                /// Creates a new `project_cardPayload`.
+                ///
+                /// - Parameters:
+                ///   - id:
+                ///   - url:
+                ///   - project_id:
+                ///   - project_url:
+                ///   - column_name:
+                ///   - previous_column_name:
+                public init(
+                    id: Swift.Int,
+                    url: Swift.String,
+                    project_id: Swift.Int,
+                    project_url: Swift.String,
+                    column_name: Swift.String,
+                    previous_column_name: Swift.String? = nil
+                ) {
+                    self.id = id
+                    self.url = url
+                    self.project_id = project_id
+                    self.project_url = project_url
+                    self.column_name = column_name
+                    self.previous_column_name = previous_column_name
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case id
+                    case url
+                    case project_id
+                    case project_url
+                    case column_name
+                    case previous_column_name
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card`.
+            public var project_card: Components.Schemas.added_to_project_issue_event.project_cardPayload?
+            /// Creates a new `added_to_project_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - project_card:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                project_card: Components.Schemas.added_to_project_issue_event.project_cardPayload? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.project_card = project_card
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case project_card
+            }
+        }
+        /// Moved Column in Project Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event`.
+        public struct moved_column_in_project_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card`.
+            public struct project_cardPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card/id`.
+                public var id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card/project_id`.
+                public var project_id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card/project_url`.
+                public var project_url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card/column_name`.
+                public var column_name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card/previous_column_name`.
+                public var previous_column_name: Swift.String?
+                /// Creates a new `project_cardPayload`.
+                ///
+                /// - Parameters:
+                ///   - id:
+                ///   - url:
+                ///   - project_id:
+                ///   - project_url:
+                ///   - column_name:
+                ///   - previous_column_name:
+                public init(
+                    id: Swift.Int,
+                    url: Swift.String,
+                    project_id: Swift.Int,
+                    project_url: Swift.String,
+                    column_name: Swift.String,
+                    previous_column_name: Swift.String? = nil
+                ) {
+                    self.id = id
+                    self.url = url
+                    self.project_id = project_id
+                    self.project_url = project_url
+                    self.column_name = column_name
+                    self.previous_column_name = previous_column_name
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case id
+                    case url
+                    case project_id
+                    case project_url
+                    case column_name
+                    case previous_column_name
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card`.
+            public var project_card: Components.Schemas.moved_column_in_project_issue_event.project_cardPayload?
+            /// Creates a new `moved_column_in_project_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - project_card:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                project_card: Components.Schemas.moved_column_in_project_issue_event.project_cardPayload? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.project_card = project_card
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case project_card
+            }
+        }
+        /// Removed from Project Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event`.
+        public struct removed_from_project_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card`.
+            public struct project_cardPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card/id`.
+                public var id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card/project_id`.
+                public var project_id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card/project_url`.
+                public var project_url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card/column_name`.
+                public var column_name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card/previous_column_name`.
+                public var previous_column_name: Swift.String?
+                /// Creates a new `project_cardPayload`.
+                ///
+                /// - Parameters:
+                ///   - id:
+                ///   - url:
+                ///   - project_id:
+                ///   - project_url:
+                ///   - column_name:
+                ///   - previous_column_name:
+                public init(
+                    id: Swift.Int,
+                    url: Swift.String,
+                    project_id: Swift.Int,
+                    project_url: Swift.String,
+                    column_name: Swift.String,
+                    previous_column_name: Swift.String? = nil
+                ) {
+                    self.id = id
+                    self.url = url
+                    self.project_id = project_id
+                    self.project_url = project_url
+                    self.column_name = column_name
+                    self.previous_column_name = previous_column_name
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case id
+                    case url
+                    case project_id
+                    case project_url
+                    case column_name
+                    case previous_column_name
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card`.
+            public var project_card: Components.Schemas.removed_from_project_issue_event.project_cardPayload?
+            /// Creates a new `removed_from_project_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - project_card:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                project_card: Components.Schemas.removed_from_project_issue_event.project_cardPayload? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.project_card = project_card
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case project_card
+            }
+        }
+        /// Converted Note to Issue Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event`.
+        public struct converted_note_to_issue_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.integration
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card`.
+            public struct project_cardPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card/id`.
+                public var id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card/project_id`.
+                public var project_id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card/project_url`.
+                public var project_url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card/column_name`.
+                public var column_name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card/previous_column_name`.
+                public var previous_column_name: Swift.String?
+                /// Creates a new `project_cardPayload`.
+                ///
+                /// - Parameters:
+                ///   - id:
+                ///   - url:
+                ///   - project_id:
+                ///   - project_url:
+                ///   - column_name:
+                ///   - previous_column_name:
+                public init(
+                    id: Swift.Int,
+                    url: Swift.String,
+                    project_id: Swift.Int,
+                    project_url: Swift.String,
+                    column_name: Swift.String,
+                    previous_column_name: Swift.String? = nil
+                ) {
+                    self.id = id
+                    self.url = url
+                    self.project_id = project_id
+                    self.project_url = project_url
+                    self.column_name = column_name
+                    self.previous_column_name = previous_column_name
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case id
+                    case url
+                    case project_id
+                    case project_url
+                    case column_name
+                    case previous_column_name
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card`.
+            public var project_card: Components.Schemas.converted_note_to_issue_issue_event.project_cardPayload?
+            /// Creates a new `converted_note_to_issue_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - project_card:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.integration,
+                project_card: Components.Schemas.converted_note_to_issue_issue_event.project_cardPayload? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.project_card = project_card
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case project_card
+            }
+        }
+        /// Issue Event for Issue
+        ///
+        /// - Remark: Generated from `#/components/schemas/issue-event-for-issue`.
+        public struct issue_event_for_issue: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value1`.
+            public var value1: Components.Schemas.labeled_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value2`.
+            public var value2: Components.Schemas.unlabeled_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value3`.
+            public var value3: Components.Schemas.assigned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value4`.
+            public var value4: Components.Schemas.unassigned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value5`.
+            public var value5: Components.Schemas.milestoned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value6`.
+            public var value6: Components.Schemas.demilestoned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value7`.
+            public var value7: Components.Schemas.renamed_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value8`.
+            public var value8: Components.Schemas.review_requested_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value9`.
+            public var value9: Components.Schemas.review_request_removed_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value10`.
+            public var value10: Components.Schemas.review_dismissed_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value11`.
+            public var value11: Components.Schemas.locked_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value12`.
+            public var value12: Components.Schemas.added_to_project_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value13`.
+            public var value13: Components.Schemas.moved_column_in_project_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value14`.
+            public var value14: Components.Schemas.removed_from_project_issue_event?
+            /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value15`.
+            public var value15: Components.Schemas.converted_note_to_issue_issue_event?
+            /// Creates a new `issue_event_for_issue`.
+            ///
+            /// - Parameters:
+            ///   - value1:
+            ///   - value2:
+            ///   - value3:
+            ///   - value4:
+            ///   - value5:
+            ///   - value6:
+            ///   - value7:
+            ///   - value8:
+            ///   - value9:
+            ///   - value10:
+            ///   - value11:
+            ///   - value12:
+            ///   - value13:
+            ///   - value14:
+            ///   - value15:
+            public init(
+                value1: Components.Schemas.labeled_issue_event? = nil,
+                value2: Components.Schemas.unlabeled_issue_event? = nil,
+                value3: Components.Schemas.assigned_issue_event? = nil,
+                value4: Components.Schemas.unassigned_issue_event? = nil,
+                value5: Components.Schemas.milestoned_issue_event? = nil,
+                value6: Components.Schemas.demilestoned_issue_event? = nil,
+                value7: Components.Schemas.renamed_issue_event? = nil,
+                value8: Components.Schemas.review_requested_issue_event? = nil,
+                value9: Components.Schemas.review_request_removed_issue_event? = nil,
+                value10: Components.Schemas.review_dismissed_issue_event? = nil,
+                value11: Components.Schemas.locked_issue_event? = nil,
+                value12: Components.Schemas.added_to_project_issue_event? = nil,
+                value13: Components.Schemas.moved_column_in_project_issue_event? = nil,
+                value14: Components.Schemas.removed_from_project_issue_event? = nil,
+                value15: Components.Schemas.converted_note_to_issue_issue_event? = nil
+            ) {
+                self.value1 = value1
+                self.value2 = value2
+                self.value3 = value3
+                self.value4 = value4
+                self.value5 = value5
+                self.value6 = value6
+                self.value7 = value7
+                self.value8 = value8
+                self.value9 = value9
+                self.value10 = value10
+                self.value11 = value11
+                self.value12 = value12
+                self.value13 = value13
+                self.value14 = value14
+                self.value15 = value15
+            }
+            public init(from decoder: any Decoder) throws {
+                value1 = try? .init(from: decoder)
+                value2 = try? .init(from: decoder)
+                value3 = try? .init(from: decoder)
+                value4 = try? .init(from: decoder)
+                value5 = try? .init(from: decoder)
+                value6 = try? .init(from: decoder)
+                value7 = try? .init(from: decoder)
+                value8 = try? .init(from: decoder)
+                value9 = try? .init(from: decoder)
+                value10 = try? .init(from: decoder)
+                value11 = try? .init(from: decoder)
+                value12 = try? .init(from: decoder)
+                value13 = try? .init(from: decoder)
+                value14 = try? .init(from: decoder)
+                value15 = try? .init(from: decoder)
+                try DecodingError.verifyAtLeastOneSchemaIsNotNil(
+                    [
+                        value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11,
+                        value12, value13, value14, value15,
+                    ],
+                    type: Self.self,
+                    codingPath: decoder.codingPath
+                )
+            }
+            public func encode(to encoder: any Encoder) throws {
+                try value1?.encode(to: encoder)
+                try value2?.encode(to: encoder)
+                try value3?.encode(to: encoder)
+                try value4?.encode(to: encoder)
+                try value5?.encode(to: encoder)
+                try value6?.encode(to: encoder)
+                try value7?.encode(to: encoder)
+                try value8?.encode(to: encoder)
+                try value9?.encode(to: encoder)
+                try value10?.encode(to: encoder)
+                try value11?.encode(to: encoder)
+                try value12?.encode(to: encoder)
+                try value13?.encode(to: encoder)
+                try value14?.encode(to: encoder)
+                try value15?.encode(to: encoder)
+            }
+        }
         /// Color-coded labels help you categorize and filter your issues (just like labels in Gmail).
         ///
         /// - Remark: Generated from `#/components/schemas/label`.
@@ -12398,6 +14262,567 @@ public enum Components {
                 case description
                 case color
                 case _default = "default"
+            }
+        }
+        /// Timeline Comment Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-comment-event`.
+        public struct timeline_comment_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// Unique identifier of the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/node_id`.
+            public var node_id: Swift.String
+            /// URL for the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/url`.
+            public var url: Swift.String
+            /// Contents of the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/body`.
+            public var body: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/body_text`.
+            public var body_text: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/body_html`.
+            public var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/user`.
+            public var user: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/issue_url`.
+            public var issue_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration?
+            /// - Remark: Generated from `#/components/schemas/timeline-comment-event/reactions`.
+            public var reactions: Components.Schemas.reaction_rollup?
+            /// Creates a new `timeline_comment_event`.
+            ///
+            /// - Parameters:
+            ///   - event:
+            ///   - actor:
+            ///   - id: Unique identifier of the issue comment
+            ///   - node_id:
+            ///   - url: URL for the issue comment
+            ///   - body: Contents of the issue comment
+            ///   - body_text:
+            ///   - body_html:
+            ///   - html_url:
+            ///   - user:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - issue_url:
+            ///   - author_association:
+            ///   - performed_via_github_app:
+            ///   - reactions:
+            public init(
+                event: Swift.String,
+                actor: Components.Schemas.simple_user,
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                body: Swift.String? = nil,
+                body_text: Swift.String? = nil,
+                body_html: Swift.String? = nil,
+                html_url: Swift.String,
+                user: Components.Schemas.simple_user,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                issue_url: Swift.String,
+                author_association: Components.Schemas.author_association,
+                performed_via_github_app: Components.Schemas.nullable_integration? = nil,
+                reactions: Components.Schemas.reaction_rollup? = nil
+            ) {
+                self.event = event
+                self.actor = actor
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.body = body
+                self.body_text = body_text
+                self.body_html = body_html
+                self.html_url = html_url
+                self.user = user
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.issue_url = issue_url
+                self.author_association = author_association
+                self.performed_via_github_app = performed_via_github_app
+                self.reactions = reactions
+            }
+            public enum CodingKeys: String, CodingKey {
+                case event
+                case actor
+                case id
+                case node_id
+                case url
+                case body
+                case body_text
+                case body_html
+                case html_url
+                case user
+                case created_at
+                case updated_at
+                case issue_url
+                case author_association
+                case performed_via_github_app
+                case reactions
+            }
+        }
+        /// Timeline Cross Referenced Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event`.
+        public struct timeline_cross_referenced_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/actor`.
+            public var actor: Components.Schemas.simple_user?
+            /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/created_at`.
+            public var created_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/updated_at`.
+            public var updated_at: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/source`.
+            public struct sourcePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/source/type`.
+                public var _type: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/source/issue`.
+                public var issue: Components.Schemas.issue?
+                /// Creates a new `sourcePayload`.
+                ///
+                /// - Parameters:
+                ///   - _type:
+                ///   - issue:
+                public init(_type: Swift.String? = nil, issue: Components.Schemas.issue? = nil) {
+                    self._type = _type
+                    self.issue = issue
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case _type = "type"
+                    case issue
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/timeline-cross-referenced-event/source`.
+            public var source: Components.Schemas.timeline_cross_referenced_event.sourcePayload
+            /// Creates a new `timeline_cross_referenced_event`.
+            ///
+            /// - Parameters:
+            ///   - event:
+            ///   - actor:
+            ///   - created_at:
+            ///   - updated_at:
+            ///   - source:
+            public init(
+                event: Swift.String,
+                actor: Components.Schemas.simple_user? = nil,
+                created_at: Foundation.Date,
+                updated_at: Foundation.Date,
+                source: Components.Schemas.timeline_cross_referenced_event.sourcePayload
+            ) {
+                self.event = event
+                self.actor = actor
+                self.created_at = created_at
+                self.updated_at = updated_at
+                self.source = source
+            }
+            public enum CodingKeys: String, CodingKey {
+                case event
+                case actor
+                case created_at
+                case updated_at
+                case source
+            }
+        }
+        /// Timeline Committed Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-committed-event`.
+        public struct timeline_committed_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/event`.
+            public var event: Swift.String?
+            /// SHA for the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/sha`.
+            public var sha: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/url`.
+            public var url: Swift.String
+            /// Identifying information for the git-user
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/author`.
+            public struct authorPayload: Codable, Hashable, Sendable {
+                /// Timestamp of the commit
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/author/date`.
+                public var date: Foundation.Date
+                /// Git email address of the user
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/author/email`.
+                public var email: Swift.String
+                /// Name of the git user
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/author/name`.
+                public var name: Swift.String
+                /// Creates a new `authorPayload`.
+                ///
+                /// - Parameters:
+                ///   - date: Timestamp of the commit
+                ///   - email: Git email address of the user
+                ///   - name: Name of the git user
+                public init(date: Foundation.Date, email: Swift.String, name: Swift.String) {
+                    self.date = date
+                    self.email = email
+                    self.name = name
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case date
+                    case email
+                    case name
+                }
+            }
+            /// Identifying information for the git-user
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/author`.
+            public var author: Components.Schemas.timeline_committed_event.authorPayload
+            /// Identifying information for the git-user
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/committer`.
+            public struct committerPayload: Codable, Hashable, Sendable {
+                /// Timestamp of the commit
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/committer/date`.
+                public var date: Foundation.Date
+                /// Git email address of the user
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/committer/email`.
+                public var email: Swift.String
+                /// Name of the git user
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/committer/name`.
+                public var name: Swift.String
+                /// Creates a new `committerPayload`.
+                ///
+                /// - Parameters:
+                ///   - date: Timestamp of the commit
+                ///   - email: Git email address of the user
+                ///   - name: Name of the git user
+                public init(date: Foundation.Date, email: Swift.String, name: Swift.String) {
+                    self.date = date
+                    self.email = email
+                    self.name = name
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case date
+                    case email
+                    case name
+                }
+            }
+            /// Identifying information for the git-user
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/committer`.
+            public var committer: Components.Schemas.timeline_committed_event.committerPayload
+            /// Message describing the purpose of the commit
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/message`.
+            public var message: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/tree`.
+            public struct treePayload: Codable, Hashable, Sendable {
+                /// SHA for the commit
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/tree/sha`.
+                public var sha: Swift.String
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/tree/url`.
+                public var url: Swift.String
+                /// Creates a new `treePayload`.
+                ///
+                /// - Parameters:
+                ///   - sha: SHA for the commit
+                ///   - url:
+                public init(sha: Swift.String, url: Swift.String) {
+                    self.sha = sha
+                    self.url = url
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case sha
+                    case url
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/tree`.
+            public var tree: Components.Schemas.timeline_committed_event.treePayload
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parentsPayload`.
+            public struct parentsPayloadPayload: Codable, Hashable, Sendable {
+                /// SHA for the commit
+                ///
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parentsPayload/sha`.
+                public var sha: Swift.String
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parentsPayload/url`.
+                public var url: Swift.String
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parentsPayload/html_url`.
+                public var html_url: Swift.String
+                /// Creates a new `parentsPayloadPayload`.
+                ///
+                /// - Parameters:
+                ///   - sha: SHA for the commit
+                ///   - url:
+                ///   - html_url:
+                public init(sha: Swift.String, url: Swift.String, html_url: Swift.String) {
+                    self.sha = sha
+                    self.url = url
+                    self.html_url = html_url
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case sha
+                    case url
+                    case html_url
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parents`.
+            public typealias parentsPayload = [Components.Schemas.timeline_committed_event.parentsPayloadPayload]
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parents`.
+            public var parents: Components.Schemas.timeline_committed_event.parentsPayload
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification`.
+            public struct verificationPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification/verified`.
+                public var verified: Swift.Bool
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification/reason`.
+                public var reason: Swift.String
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification/signature`.
+                public var signature: Swift.String
+                /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification/payload`.
+                public var payload: Swift.String
+                /// Creates a new `verificationPayload`.
+                ///
+                /// - Parameters:
+                ///   - verified:
+                ///   - reason:
+                ///   - signature:
+                ///   - payload:
+                public init(verified: Swift.Bool, reason: Swift.String, signature: Swift.String, payload: Swift.String)
+                {
+                    self.verified = verified
+                    self.reason = reason
+                    self.signature = signature
+                    self.payload = payload
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case verified
+                    case reason
+                    case signature
+                    case payload
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification`.
+            public var verification: Components.Schemas.timeline_committed_event.verificationPayload
+            /// - Remark: Generated from `#/components/schemas/timeline-committed-event/html_url`.
+            public var html_url: Swift.String
+            /// Creates a new `timeline_committed_event`.
+            ///
+            /// - Parameters:
+            ///   - event:
+            ///   - sha: SHA for the commit
+            ///   - node_id:
+            ///   - url:
+            ///   - author: Identifying information for the git-user
+            ///   - committer: Identifying information for the git-user
+            ///   - message: Message describing the purpose of the commit
+            ///   - tree:
+            ///   - parents:
+            ///   - verification:
+            ///   - html_url:
+            public init(
+                event: Swift.String? = nil,
+                sha: Swift.String,
+                node_id: Swift.String,
+                url: Swift.String,
+                author: Components.Schemas.timeline_committed_event.authorPayload,
+                committer: Components.Schemas.timeline_committed_event.committerPayload,
+                message: Swift.String,
+                tree: Components.Schemas.timeline_committed_event.treePayload,
+                parents: Components.Schemas.timeline_committed_event.parentsPayload,
+                verification: Components.Schemas.timeline_committed_event.verificationPayload,
+                html_url: Swift.String
+            ) {
+                self.event = event
+                self.sha = sha
+                self.node_id = node_id
+                self.url = url
+                self.author = author
+                self.committer = committer
+                self.message = message
+                self.tree = tree
+                self.parents = parents
+                self.verification = verification
+                self.html_url = html_url
+            }
+            public enum CodingKeys: String, CodingKey {
+                case event
+                case sha
+                case node_id
+                case url
+                case author
+                case committer
+                case message
+                case tree
+                case parents
+                case verification
+                case html_url
+            }
+        }
+        /// Timeline Reviewed Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event`.
+        public struct timeline_reviewed_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/event`.
+            public var event: Swift.String
+            /// Unique identifier of the review
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/user`.
+            public var user: Components.Schemas.simple_user
+            /// The text of the review.
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/body`.
+            public var body: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/state`.
+            public var state: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/html_url`.
+            public var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/pull_request_url`.
+            public var pull_request_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links`.
+            public struct _linksPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/html`.
+                public struct htmlPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/html/href`.
+                    public var href: Swift.String
+                    /// Creates a new `htmlPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/html`.
+                public var html: Components.Schemas.timeline_reviewed_event._linksPayload.htmlPayload
+                /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/pull_request`.
+                public struct pull_requestPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/pull_request/href`.
+                    public var href: Swift.String
+                    /// Creates a new `pull_requestPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    public init(href: Swift.String) { self.href = href }
+                    public enum CodingKeys: String, CodingKey { case href }
+                }
+                /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/pull_request`.
+                public var pull_request: Components.Schemas.timeline_reviewed_event._linksPayload.pull_requestPayload
+                /// Creates a new `_linksPayload`.
+                ///
+                /// - Parameters:
+                ///   - html:
+                ///   - pull_request:
+                public init(
+                    html: Components.Schemas.timeline_reviewed_event._linksPayload.htmlPayload,
+                    pull_request: Components.Schemas.timeline_reviewed_event._linksPayload.pull_requestPayload
+                ) {
+                    self.html = html
+                    self.pull_request = pull_request
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case html
+                    case pull_request
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links`.
+            public var _links: Components.Schemas.timeline_reviewed_event._linksPayload
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/submitted_at`.
+            public var submitted_at: Foundation.Date?
+            /// A commit SHA for the review.
+            ///
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/body_html`.
+            public var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/body_text`.
+            public var body_text: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/author_association`.
+            public var author_association: Components.Schemas.author_association
+            /// Creates a new `timeline_reviewed_event`.
+            ///
+            /// - Parameters:
+            ///   - event:
+            ///   - id: Unique identifier of the review
+            ///   - node_id:
+            ///   - user:
+            ///   - body: The text of the review.
+            ///   - state:
+            ///   - html_url:
+            ///   - pull_request_url:
+            ///   - _links:
+            ///   - submitted_at:
+            ///   - commit_id: A commit SHA for the review.
+            ///   - body_html:
+            ///   - body_text:
+            ///   - author_association:
+            public init(
+                event: Swift.String,
+                id: Swift.Int,
+                node_id: Swift.String,
+                user: Components.Schemas.simple_user,
+                body: Swift.String,
+                state: Swift.String,
+                html_url: Swift.String,
+                pull_request_url: Swift.String,
+                _links: Components.Schemas.timeline_reviewed_event._linksPayload,
+                submitted_at: Foundation.Date? = nil,
+                commit_id: Swift.String,
+                body_html: Swift.String? = nil,
+                body_text: Swift.String? = nil,
+                author_association: Components.Schemas.author_association
+            ) {
+                self.event = event
+                self.id = id
+                self.node_id = node_id
+                self.user = user
+                self.body = body
+                self.state = state
+                self.html_url = html_url
+                self.pull_request_url = pull_request_url
+                self._links = _links
+                self.submitted_at = submitted_at
+                self.commit_id = commit_id
+                self.body_html = body_html
+                self.body_text = body_text
+                self.author_association = author_association
+            }
+            public enum CodingKeys: String, CodingKey {
+                case event
+                case id
+                case node_id
+                case user
+                case body
+                case state
+                case html_url
+                case pull_request_url
+                case _links
+                case submitted_at
+                case commit_id
+                case body_html
+                case body_text
+                case author_association
             }
         }
         /// Pull Request Review Comments are comments on a portion of the Pull Request's diff.
@@ -12762,6 +15187,477 @@ public enum Components {
                 case reactions
                 case body_html
                 case body_text
+            }
+        }
+        /// Timeline Line Commented Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-line-commented-event`.
+        public struct timeline_line_commented_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-line-commented-event/event`.
+            public var event: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-line-commented-event/node_id`.
+            public var node_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-line-commented-event/actor`.
+            public var actor: Components.Schemas.simple_user?
+            /// - Remark: Generated from `#/components/schemas/timeline-line-commented-event/comments`.
+            public var comments: [Components.Schemas.pull_request_review_comment]?
+            /// Creates a new `timeline_line_commented_event`.
+            ///
+            /// - Parameters:
+            ///   - event:
+            ///   - node_id:
+            ///   - actor:
+            ///   - comments:
+            public init(
+                event: Swift.String? = nil,
+                node_id: Swift.String? = nil,
+                actor: Components.Schemas.simple_user? = nil,
+                comments: [Components.Schemas.pull_request_review_comment]? = nil
+            ) {
+                self.event = event
+                self.node_id = node_id
+                self.actor = actor
+                self.comments = comments
+            }
+            public enum CodingKeys: String, CodingKey {
+                case event
+                case node_id
+                case actor
+                case comments
+            }
+        }
+        /// Timeline Commit Commented Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-commit-commented-event`.
+        public struct timeline_commit_commented_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-commit-commented-event/event`.
+            public var event: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-commit-commented-event/node_id`.
+            public var node_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-commit-commented-event/commit_id`.
+            public var commit_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/timeline-commit-commented-event/comments`.
+            public var comments: [Components.Schemas.commit_comment]?
+            /// Creates a new `timeline_commit_commented_event`.
+            ///
+            /// - Parameters:
+            ///   - event:
+            ///   - node_id:
+            ///   - commit_id:
+            ///   - comments:
+            public init(
+                event: Swift.String? = nil,
+                node_id: Swift.String? = nil,
+                commit_id: Swift.String? = nil,
+                comments: [Components.Schemas.commit_comment]? = nil
+            ) {
+                self.event = event
+                self.node_id = node_id
+                self.commit_id = commit_id
+                self.comments = comments
+            }
+            public enum CodingKeys: String, CodingKey {
+                case event
+                case node_id
+                case commit_id
+                case comments
+            }
+        }
+        /// Timeline Assigned Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event`.
+        public struct timeline_assigned_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/timeline-assigned-issue-event/assignee`.
+            public var assignee: Components.Schemas.simple_user
+            /// Creates a new `timeline_assigned_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - assignee:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                assignee: Components.Schemas.simple_user
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.assignee = assignee
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case assignee
+            }
+        }
+        /// Timeline Unassigned Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event`.
+        public struct timeline_unassigned_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/timeline-unassigned-issue-event/assignee`.
+            public var assignee: Components.Schemas.simple_user
+            /// Creates a new `timeline_unassigned_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - assignee:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                assignee: Components.Schemas.simple_user
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.assignee = assignee
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case assignee
+            }
+        }
+        /// State Change Issue Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/state-change-issue-event`.
+        public struct state_change_issue_event: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/id`.
+            public var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/node_id`.
+            public var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/url`.
+            public var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/actor`.
+            public var actor: Components.Schemas.simple_user
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/event`.
+            public var event: Swift.String
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/commit_id`.
+            public var commit_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/commit_url`.
+            public var commit_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/created_at`.
+            public var created_at: Swift.String
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/performed_via_github_app`.
+            public var performed_via_github_app: Components.Schemas.nullable_integration
+            /// - Remark: Generated from `#/components/schemas/state-change-issue-event/state_reason`.
+            public var state_reason: Swift.String?
+            /// Creates a new `state_change_issue_event`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - node_id:
+            ///   - url:
+            ///   - actor:
+            ///   - event:
+            ///   - commit_id:
+            ///   - commit_url:
+            ///   - created_at:
+            ///   - performed_via_github_app:
+            ///   - state_reason:
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                url: Swift.String,
+                actor: Components.Schemas.simple_user,
+                event: Swift.String,
+                commit_id: Swift.String,
+                commit_url: Swift.String,
+                created_at: Swift.String,
+                performed_via_github_app: Components.Schemas.nullable_integration,
+                state_reason: Swift.String? = nil
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.url = url
+                self.actor = actor
+                self.event = event
+                self.commit_id = commit_id
+                self.commit_url = commit_url
+                self.created_at = created_at
+                self.performed_via_github_app = performed_via_github_app
+                self.state_reason = state_reason
+            }
+            public enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case url
+                case actor
+                case event
+                case commit_id
+                case commit_url
+                case created_at
+                case performed_via_github_app
+                case state_reason
+            }
+        }
+        /// Timeline Event
+        ///
+        /// - Remark: Generated from `#/components/schemas/timeline-issue-events`.
+        public struct timeline_issue_events: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value1`.
+            public var value1: Components.Schemas.labeled_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value2`.
+            public var value2: Components.Schemas.unlabeled_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value3`.
+            public var value3: Components.Schemas.milestoned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value4`.
+            public var value4: Components.Schemas.demilestoned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value5`.
+            public var value5: Components.Schemas.renamed_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value6`.
+            public var value6: Components.Schemas.review_requested_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value7`.
+            public var value7: Components.Schemas.review_request_removed_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value8`.
+            public var value8: Components.Schemas.review_dismissed_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value9`.
+            public var value9: Components.Schemas.locked_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value10`.
+            public var value10: Components.Schemas.added_to_project_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value11`.
+            public var value11: Components.Schemas.moved_column_in_project_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value12`.
+            public var value12: Components.Schemas.removed_from_project_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value13`.
+            public var value13: Components.Schemas.converted_note_to_issue_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value14`.
+            public var value14: Components.Schemas.timeline_comment_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value15`.
+            public var value15: Components.Schemas.timeline_cross_referenced_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value16`.
+            public var value16: Components.Schemas.timeline_committed_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value17`.
+            public var value17: Components.Schemas.timeline_reviewed_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value18`.
+            public var value18: Components.Schemas.timeline_line_commented_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value19`.
+            public var value19: Components.Schemas.timeline_commit_commented_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value20`.
+            public var value20: Components.Schemas.timeline_assigned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value21`.
+            public var value21: Components.Schemas.timeline_unassigned_issue_event?
+            /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value22`.
+            public var value22: Components.Schemas.state_change_issue_event?
+            /// Creates a new `timeline_issue_events`.
+            ///
+            /// - Parameters:
+            ///   - value1:
+            ///   - value2:
+            ///   - value3:
+            ///   - value4:
+            ///   - value5:
+            ///   - value6:
+            ///   - value7:
+            ///   - value8:
+            ///   - value9:
+            ///   - value10:
+            ///   - value11:
+            ///   - value12:
+            ///   - value13:
+            ///   - value14:
+            ///   - value15:
+            ///   - value16:
+            ///   - value17:
+            ///   - value18:
+            ///   - value19:
+            ///   - value20:
+            ///   - value21:
+            ///   - value22:
+            public init(
+                value1: Components.Schemas.labeled_issue_event? = nil,
+                value2: Components.Schemas.unlabeled_issue_event? = nil,
+                value3: Components.Schemas.milestoned_issue_event? = nil,
+                value4: Components.Schemas.demilestoned_issue_event? = nil,
+                value5: Components.Schemas.renamed_issue_event? = nil,
+                value6: Components.Schemas.review_requested_issue_event? = nil,
+                value7: Components.Schemas.review_request_removed_issue_event? = nil,
+                value8: Components.Schemas.review_dismissed_issue_event? = nil,
+                value9: Components.Schemas.locked_issue_event? = nil,
+                value10: Components.Schemas.added_to_project_issue_event? = nil,
+                value11: Components.Schemas.moved_column_in_project_issue_event? = nil,
+                value12: Components.Schemas.removed_from_project_issue_event? = nil,
+                value13: Components.Schemas.converted_note_to_issue_issue_event? = nil,
+                value14: Components.Schemas.timeline_comment_event? = nil,
+                value15: Components.Schemas.timeline_cross_referenced_event? = nil,
+                value16: Components.Schemas.timeline_committed_event? = nil,
+                value17: Components.Schemas.timeline_reviewed_event? = nil,
+                value18: Components.Schemas.timeline_line_commented_event? = nil,
+                value19: Components.Schemas.timeline_commit_commented_event? = nil,
+                value20: Components.Schemas.timeline_assigned_issue_event? = nil,
+                value21: Components.Schemas.timeline_unassigned_issue_event? = nil,
+                value22: Components.Schemas.state_change_issue_event? = nil
+            ) {
+                self.value1 = value1
+                self.value2 = value2
+                self.value3 = value3
+                self.value4 = value4
+                self.value5 = value5
+                self.value6 = value6
+                self.value7 = value7
+                self.value8 = value8
+                self.value9 = value9
+                self.value10 = value10
+                self.value11 = value11
+                self.value12 = value12
+                self.value13 = value13
+                self.value14 = value14
+                self.value15 = value15
+                self.value16 = value16
+                self.value17 = value17
+                self.value18 = value18
+                self.value19 = value19
+                self.value20 = value20
+                self.value21 = value21
+                self.value22 = value22
+            }
+            public init(from decoder: any Decoder) throws {
+                value1 = try? .init(from: decoder)
+                value2 = try? .init(from: decoder)
+                value3 = try? .init(from: decoder)
+                value4 = try? .init(from: decoder)
+                value5 = try? .init(from: decoder)
+                value6 = try? .init(from: decoder)
+                value7 = try? .init(from: decoder)
+                value8 = try? .init(from: decoder)
+                value9 = try? .init(from: decoder)
+                value10 = try? .init(from: decoder)
+                value11 = try? .init(from: decoder)
+                value12 = try? .init(from: decoder)
+                value13 = try? .init(from: decoder)
+                value14 = try? .init(from: decoder)
+                value15 = try? .init(from: decoder)
+                value16 = try? .init(from: decoder)
+                value17 = try? .init(from: decoder)
+                value18 = try? .init(from: decoder)
+                value19 = try? .init(from: decoder)
+                value20 = try? .init(from: decoder)
+                value21 = try? .init(from: decoder)
+                value22 = try? .init(from: decoder)
+                try DecodingError.verifyAtLeastOneSchemaIsNotNil(
+                    [
+                        value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11,
+                        value12, value13, value14, value15, value16, value17, value18, value19, value20, value21,
+                        value22,
+                    ],
+                    type: Self.self,
+                    codingPath: decoder.codingPath
+                )
+            }
+            public func encode(to encoder: any Encoder) throws {
+                try value1?.encode(to: encoder)
+                try value2?.encode(to: encoder)
+                try value3?.encode(to: encoder)
+                try value4?.encode(to: encoder)
+                try value5?.encode(to: encoder)
+                try value6?.encode(to: encoder)
+                try value7?.encode(to: encoder)
+                try value8?.encode(to: encoder)
+                try value9?.encode(to: encoder)
+                try value10?.encode(to: encoder)
+                try value11?.encode(to: encoder)
+                try value12?.encode(to: encoder)
+                try value13?.encode(to: encoder)
+                try value14?.encode(to: encoder)
+                try value15?.encode(to: encoder)
+                try value16?.encode(to: encoder)
+                try value17?.encode(to: encoder)
+                try value18?.encode(to: encoder)
+                try value19?.encode(to: encoder)
+                try value20?.encode(to: encoder)
+                try value21?.encode(to: encoder)
+                try value22?.encode(to: encoder)
             }
         }
         /// Pull requests let you tell others about changes you've pushed to a repository on GitHub. Once a pull request is sent, interested parties can review the set of changes, discuss potential modifications, and even push follow-up commits if necessary.
@@ -24180,6 +27076,190 @@ public enum Operations {
             ///
             /// HTTP response code: `404 notFound`.
             case notFound(Components.Responses.not_found)
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen public enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(String)
+            public init?(rawValue: String) {
+                switch rawValue.lowercased() {
+                case "application/json": self = .json
+                default: self = .other(rawValue)
+                }
+            }
+            public var rawValue: String {
+                switch self {
+                case let .other(string): return string
+                case .json: return "application/json"
+                }
+            }
+            public static var allCases: [Self] { [.json] }
+        }
+    }
+    /// List timeline events for an issue
+    ///
+    /// List all timeline events for an issue.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/timeline`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)`.
+    public enum issues_list_events_for_timeline {
+        public static let id: String = "issues/list-events-for-timeline"
+        public struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/path`.
+            public struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/path/owner`.
+                public var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/path/repo`.
+                public var repo: Components.Parameters.repo
+                /// The number that identifies the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/path/issue_number`.
+                public var issue_number: Components.Parameters.issue_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - issue_number: The number that identifies the issue.
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    issue_number: Components.Parameters.issue_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.issue_number = issue_number
+                }
+            }
+            public var path: Operations.issues_list_events_for_timeline.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/query`.
+            public struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/query/per_page`.
+                public var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/query/page`.
+                public var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
+                public init(per_page: Components.Parameters.per_page? = nil, page: Components.Parameters.page? = nil) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            public var query: Operations.issues_list_events_for_timeline.Input.Query
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/header`.
+            public struct Headers: Sendable, Hashable {
+                public var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_list_events_for_timeline.AcceptableContentType
+                    >]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                public init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.issues_list_events_for_timeline.AcceptableContentType
+                    >] = .defaultValues()
+                ) { self.accept = accept }
+            }
+            public var headers: Operations.issues_list_events_for_timeline.Input.Headers
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/cookie`.
+            public struct Cookies: Sendable, Hashable {
+                /// Creates a new `Cookies`.
+                public init() {}
+            }
+            public var cookies: Operations.issues_list_events_for_timeline.Input.Cookies
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/requestBody`.
+            @frozen public enum Body: Sendable, Hashable {}
+            public var body: Operations.issues_list_events_for_timeline.Input.Body?
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            ///   - cookies:
+            ///   - body:
+            public init(
+                path: Operations.issues_list_events_for_timeline.Input.Path,
+                query: Operations.issues_list_events_for_timeline.Input.Query = .init(),
+                headers: Operations.issues_list_events_for_timeline.Input.Headers = .init(),
+                cookies: Operations.issues_list_events_for_timeline.Input.Cookies = .init(),
+                body: Operations.issues_list_events_for_timeline.Input.Body? = nil
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+                self.cookies = cookies
+                self.body = body
+            }
+        }
+        @frozen public enum Output: Sendable, Hashable {
+            public struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/headers`.
+                public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/headers/Link`.
+                    public var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                }
+                /// Received HTTP response headers
+                public var headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/content`.
+                @frozen public enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/content/application\/json`.
+                    case json([Components.Schemas.timeline_issue_events])
+                }
+                /// Received HTTP response body
+                public var body: Operations.issues_list_events_for_timeline.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                public init(
+                    headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers = .init(),
+                    body: Operations.issues_list_events_for_timeline.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.issues_list_events_for_timeline.Output.Ok)
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.not_found)
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.gone)
             /// Undocumented response.
             ///
             /// A response with a code that is not documented in the OpenAPI document.
