@@ -1,7 +1,6 @@
 import NIOPosix
 import AsyncHTTPClient
 import SotoS3
-import Backtrace
 
 @main
 struct Penny {
@@ -10,8 +9,6 @@ struct Penny {
     }
 
     static func start(mainService: any MainService) async throws {
-        Backtrace.install()
-
         /// Use `1` instead of `System.coreCount`.
         /// This is preferred for apps that primarily use structured concurrency.
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)

@@ -80,7 +80,6 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "2.0.0"),
-        .package(url: "https://github.com/swift-server/swift-backtrace.git", from: "1.3.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.13.0"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
@@ -122,7 +121,6 @@ let package = Package(
         .executableTarget(
             name: "Penny",
             dependencies: [
-                .product(name: "Backtrace", package: "swift-backtrace"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
