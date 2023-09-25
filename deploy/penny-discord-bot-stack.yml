@@ -140,7 +140,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaUsersRoutePermission:
     Type: AWS::Lambda::Permission
@@ -188,7 +188,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaSponsorsPermission:
     Type: AWS::Lambda::Permission
@@ -342,7 +342,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaAutoPingsRoutePermission:
     Type: AWS::Lambda::Permission
@@ -397,7 +397,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaFaqsRoutePermission:
     Type: AWS::Lambda::Permission
@@ -452,7 +452,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaAutoFaqsRoutePermission:
     Type: AWS::Lambda::Permission
@@ -514,7 +514,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 8
+      Timeout: 12
 
   lambdaGHHooksRoutePermission:
     Type: AWS::Lambda::Permission
@@ -566,11 +566,11 @@ Resources:
           API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${GHOAuthFilename}
-      MemorySize: 256
+      MemorySize: 512
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 6
+      Timeout: 8
 
   lambdaGHOAuthRoutePermission:
     Type: AWS::Lambda::Permission

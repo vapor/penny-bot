@@ -23,7 +23,7 @@ public enum Verifier {
         var hmac = HMAC<SHA256>.init(key: secret)
         hmac.update(data: requestBody)
         let mac = hmac.finalize()
-        let expectedSignature = "sha256=" + mac.toHexDigest()
+        let expectedSignature = "sha256=\(mac.toHexDigest())"
         guard signatureHeader == expectedSignature else {
             throw Errors.signaturesDoNotMatch(header: signatureHeader, expected: expectedSignature)
         }
