@@ -570,7 +570,7 @@ Resources:
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
       Runtime: provided.al2
-      Timeout: 8
+      Timeout: 30
 
   lambdaGHOAuthRoutePermission:
     Type: AWS::Lambda::Permission
