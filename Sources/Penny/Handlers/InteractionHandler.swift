@@ -691,8 +691,8 @@ private extension InteractionHandler {
             return """
             Click the link below to authorize Vapor:
 
-            > This is a one-time authorization so Penny can confirm you own the Github account.
-            > Penny doesn't do anything else with it's authorization, and immediately discards its access token.
+            > This is a one-time authorization so Penny can confirm you own the GitHub account.
+            > Penny doesn't do anything else with its authorization, and immediately discards its access token as visible in the Penny's open-source code.
             > Feel free to revoke Penny's access from your GitHub account afterwards.
 
             [**Authorize**](\(url))

@@ -71,6 +71,50 @@ struct GHOAuthHandler: LambdaHandler {
             return .init(statusCode: .badRequest, body: "Missing code query parameter")
         }
 
+        guard let state = event.queryStringParameters?["state"] else {
+            logger.error("No state found")
+            return .init(statusCode: .badRequest, body: "Error getting state query parameter")
+        }
+
+        logger.trace("Got code and state", metadata: [
+            "code": .string(code),
+            "state": .string(state),
+        ])
+
+        let jwt: GHOAuthPayload
+
+        logger.debug("Verifying state")
+        do {
+            jwt = try signers.verify(state, as: GHOAuthPayload.self)
+        } catch {
+            logger.error("Error during state verification", metadata: [
+                "error": "\(String(reflecting: error))",
+                "state": .string(event.queryStringParameters?["state"] ?? "")
+            ])
+            return .init(statusCode: .badRequest, body: "Error verifying state")
+        }
+
+        func updateInteraction(color: DiscordColor, description: String) async {
+            do {
+                try await discordClient.updateOriginalInteractionResponse(
+                    token: jwt.interactionToken,
+                    payload: .init(embeds: [.init(
+                        description: description,
+                        color: color
+                    )])
+                ).guardSuccess()
+            } catch {
+                logger.warning("Received Discord error while updating interaction", metadata: [
+                    "error": "\(String(reflecting: error))"
+                ])
+            }
+        }
+
+        func failure(_ error: String) async -> APIGatewayV2Response {
+            await updateInteraction(color: .red, description: error )
+            return .init(statusCode: .badRequest, body: error)
+        }
+
         let accessToken: String
 
         do {
@@ -79,7 +123,7 @@ struct GHOAuthHandler: LambdaHandler {
             logger.error("Error getting access token", metadata: [
                 "error": "\(String(reflecting: error))"
             ])
-            return .init(statusCode: .badRequest, body: "Error getting access token")
+            return await failure("Error getting access token")
         }
 
         let user: User
@@ -91,20 +135,7 @@ struct GHOAuthHandler: LambdaHandler {
                 "error": "\(String(reflecting: error))",
                 "accessToken": .string(accessToken)
             ])
-            return .init(statusCode: .badRequest, body: "Error getting user")
-        }
-
-        let jwt: GHOAuthPayload
-
-        logger.debug("Verifying state")
-        do {
-            jwt = try signers.verify(String(event.queryStringParameters?["state"] ?? ""), as: GHOAuthPayload.self)
-        } catch {
-            logger.error("Error during state verification", metadata: [
-                "error": "\(String(reflecting: error))",
-                "state": .string(event.queryStringParameters?["state"] ?? "")
-            ])
-            return .init(statusCode: .badRequest, body: "Error verifying state")
+            return await failure("Error getting user")
         }
 
         do {
@@ -115,28 +146,17 @@ struct GHOAuthHandler: LambdaHandler {
                 "githubID": .stringConvertible(user.id),
                 "error": .string(String(reflecting: error))
             ])
-            return .init(statusCode: .badRequest, body: "Error linking user")
+            return await failure("Error linking user")
         }
 
-        do {
-            let encodedLogin = user.login.urlPathEncoded()
-            let url = "https://github.com/\(encodedLogin)"
-            try await discordClient.updateOriginalInteractionResponse(
-                token: jwt.interactionToken,
-                payload: .init(
-                    embeds: [.init(
-                        description: """
-                        Successfully linked your GitHub account with username: [\(user.login)](\(url))
-                        """,
-                        color: .green
-                    )]
-                )
-            ).guardSuccess()
-        } catch {
-            logger.warning("Received Discord error while updating interaction", metadata: [
-                "error": "\(String(reflecting: error))"
-            ])
-        }
+        let encodedLogin = user.login.urlPathEncoded()
+        let url = "https://github.com/\(encodedLogin)"
+        await updateInteraction(
+            color: .green,
+            description: """
+            Successfully linked your GitHub account with username: [\(user.login)](\(url))
+            """
+        )
 
         return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
     }
@@ -194,6 +214,7 @@ struct GHOAuthHandler: LambdaHandler {
             "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
         ]
 
+        logger.trace("Will send get-GH-user request", metadata: ["accessToken": .string(accessToken)])
         let response = try await client.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1024 * 1024)
 
