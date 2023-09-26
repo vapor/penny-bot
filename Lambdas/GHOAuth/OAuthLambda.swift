@@ -68,12 +68,15 @@ struct GHOAuthHandler: LambdaHandler {
         logger.debug("Received event: \(event)")
 
         guard let code = event.queryStringParameters?["code"] else {
+            logger.error("Missing code query parameter")
+            await logErrorToDiscord("Missing code query parameter")
             return .init(statusCode: .badRequest, body: "Missing code query parameter")
         }
 
         guard let state = event.queryStringParameters?["state"] else {
-            logger.error("No state found")
-            return .init(statusCode: .badRequest, body: "Error getting state query parameter")
+            logger.error("Missing state query parameter")
+            await logErrorToDiscord("Missing state query parameter")
+            return .init(statusCode: .badRequest, body: "Missing state query parameter")
         }
 
         logger.trace("Got code and state", metadata: [
@@ -91,6 +94,7 @@ struct GHOAuthHandler: LambdaHandler {
                 "error": "\(String(reflecting: error))",
                 "state": .string(event.queryStringParameters?["state"] ?? "")
             ])
+            await logErrorToDiscord("Error verifying state")
             return .init(statusCode: .badRequest, body: "Error verifying state")
         }
 
@@ -104,14 +108,18 @@ struct GHOAuthHandler: LambdaHandler {
                     )])
                 ).guardSuccess()
             } catch {
-                logger.warning("Received Discord error while updating interaction", metadata: [
+                await logErrorToDiscord(
+                    "Received Discord error while updating interaction: \(String(reflecting: error))"
+                )
+                logger.error("Received Discord error while updating interaction", metadata: [
                     "error": "\(String(reflecting: error))"
                 ])
             }
         }
 
         func failure(_ error: String) async -> APIGatewayV2Response {
-            await updateInteraction(color: .red, description: error )
+            await logErrorToDiscord(error)
+            await updateInteraction(color: .red, description: error)
             return .init(statusCode: .badRequest, body: error)
         }
 
@@ -233,5 +241,25 @@ struct GHOAuthHandler: LambdaHandler {
         logger.info("Got user: \(user)")
 
         return user
+    }
+
+    func logErrorToDiscord(_ error: String) async {
+        do {
+            try await discordClient.createMessage(
+                channelId: Constants.Channels.logs.id,
+                payload: .init(embeds: [.init(
+                    description: """
+                    Error in GHHooks Lambda:
+
+                    >>> \(error)
+                    """,
+                    color: .red
+                )])
+            ).guardSuccess()
+        } catch {
+            logger.warning("Received Discord error while logging", metadata: [
+                "error": "\(String(reflecting: error))"
+            ])
+        }
     }
 }
