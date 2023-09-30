@@ -324,8 +324,7 @@ actor ProposalsChecker {
     }
 
     func consumeCachesStorageData(_ storage: Storage) {
-        self.storage.previousProposals = storage.previousProposals
-        self.storage.queuedProposals = storage.queuedProposals
+        self.storage = storage
     }
 
     func getCachedDataForCachesStorage() -> Storage {

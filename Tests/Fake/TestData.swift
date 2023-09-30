@@ -35,6 +35,10 @@ public enum TestData {
         data: TestData.resource(named: "proposal_content.md"),
         encoding: .utf8
     )!
+    public static let soQuestions = TestData.resource(
+        named: "soQuestions.json",
+        as: SOQuestions.self
+    ).items
 
     private static let gatewayEvents: [String: Data] = {
         let data = resource(named: "gatewayEvents.json")

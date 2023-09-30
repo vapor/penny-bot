@@ -42,6 +42,10 @@
                 {
                     "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/account-linking-oauth-flow-priv-key-49J2PL",
                     "name": "ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY"
+                },
+                {
+                    "valueFrom": "arn:aws:secretsmanager:eu-west-1:177420307256:secret:prod/penny/penny-bot/stack-overflow-api-key-THIUye",
+                    "name": "SO_API_KEY"
                 }
             ]
         }
