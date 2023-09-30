@@ -79,6 +79,7 @@ struct PRHandler {
         try TicketReporter(
             context: self.context,
             embed: await self.createReportEmbed(),
+            createdAt: self.pr.created_at,
             repoID: self.repo.id,
             number: self.event.number.requireValue()
         )
