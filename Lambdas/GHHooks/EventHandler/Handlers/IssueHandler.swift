@@ -96,6 +96,7 @@ struct IssueHandler: Sendable {
                 issue: embedIssue,
                 repo: embedRepo
             ),
+            createdAt: self.issue.created_at,
             repoID: self.repo.id,
             number: self.issue.number
         )

@@ -5,15 +5,11 @@ import struct Foundation.Date
 struct TicketReporter {
     let context: HandlerContext
     let embed: Embed
+    let createdAt: Date
     let repoID: Int
     let number: Int
     var channel: Constants.Channels {
-        /// The change to use `.reportingChannel(repoID:)` was made only after this timestamp.
-        if Date().timeIntervalSince1970 < 1_696_067_000 {
-            return .issueAndPRs
-        } else {
-            return .reportingChannel(repoID: repoID)
-        }
+        .reportingChannel(repoID: repoID, createdAt: createdAt)
     }
 
     func reportCreation() async throws {
@@ -90,6 +86,22 @@ struct TicketReporter {
             )
         default:
             try response.guardSuccess()
+        }
+    }
+}
+
+private extension Constants.Channels {
+    static func reportingChannel(repoID: Int, createdAt: Date) -> Self {
+        /// The change to use `.documentation` was made only after this timestamp.
+        if createdAt.timeIntervalSince1970 < 1_696_067_000 {
+            return .issueAndPRs
+        } else {
+            switch repoID {
+            case 64560805:
+                return .documentation
+            default:
+                return .issueAndPRs
+            }
         }
     }
 }

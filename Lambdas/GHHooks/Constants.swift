@@ -24,15 +24,6 @@ enum Constants {
         var id: ChannelSnowflake {
             self.rawValue
         }
-
-        static func reportingChannel(repoID: Int) -> Self {
-            switch repoID {
-            case 64560805:
-                return .documentation
-            default:
-                return .issueAndPRs
-            }
-        }
     }
 
     enum Roles: RoleSnowflake {
