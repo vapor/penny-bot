@@ -7,10 +7,18 @@ struct TicketReporter {
     let embed: Embed
     let repoID: Int
     let number: Int
+    var channel: Constants.Channels {
+        /// The change to use `.reportingChannel(repoID:)` was made only after this timestamp.
+        if Date().timeIntervalSince1970 < 1_696_067_000 {
+            return .issueAndPRs
+        } else {
+            return .reportingChannel(repoID: repoID)
+        }
+    }
 
     func reportCreation() async throws {
         let response = try await context.discordClient.createMessage(
-            channelId: Constants.Channels.issueAndPRs.id,
+            channelId: self.channel.id,
             payload: .init(embeds: [embed])
         ).decode()
         try await context.messageLookupRepo.saveMessageID(
@@ -48,7 +56,7 @@ struct TicketReporter {
             )
 
             let response = try await context.discordClient.createMessage(
-                channelId: Constants.Channels.issueAndPRs.id,
+                channelId: self.channel.id,
                 payload: .init(embeds: [embed])
             ).decode()
 
@@ -61,7 +69,7 @@ struct TicketReporter {
         }
 
         let response = try await context.discordClient.updateMessage(
-            channelId: Constants.Channels.issueAndPRs.id,
+            channelId: self.channel.id,
             messageId: messageID,
             payload: .init(embeds: [embed])
         )

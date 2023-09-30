@@ -19,9 +19,19 @@ enum Constants {
         case issueAndPRs = "1123702585006768228"
         case release = "431926479752921098"
         case thanks = "443074453719744522"
+        case documentation = "484454139506458634"
 
         var id: ChannelSnowflake {
             self.rawValue
+        }
+
+        static func reportingChannel(repoID: Int) -> Self {
+            switch repoID {
+            case 64560805:
+                return .documentation
+            default:
+                return .issueAndPRs
+            }
         }
     }
 
