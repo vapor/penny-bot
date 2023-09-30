@@ -88,10 +88,8 @@ struct TicketReporter {
                 repoID: repoID,
                 number: number
             )
-            return
-        default: break
+        default:
+            try response.guardSuccess()
         }
-
-        try response.guardSuccess()
     }
 }
