@@ -1,6 +1,7 @@
 import GitHubAPI
 import DiscordBM
 import Logging
+import Algorithms
 import Foundation
 
 struct ReleaseReporter {
@@ -66,7 +67,7 @@ struct ReleaseReporter {
         }
     }
 
-    func getPRsRelatedToRelease() async throws -> (commits: Int, somePRs: [SimplePullRequest]) {
+    func getPRsRelatedToRelease() async throws -> (Int, [SimplePullRequest]) {
         let commits: [Commit]
         if let tagBefore = try await getTagBefore() {
             commits = try await getCommitsInRelease(tagBefore: tagBefore)
@@ -83,6 +84,7 @@ struct ReleaseReporter {
             let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
             prs.append(contentsOf: newPRs)
         }
+        prs = prs.uniqued(on: \.html_url)
 
         return (commits.count, prs)
     }
