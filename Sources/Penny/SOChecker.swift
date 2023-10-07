@@ -26,7 +26,7 @@ actor SOChecker {
                 try await self.check()
                 try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
             } catch {
-                logger.report("Couldn't check so questions", error: error)
+                logger.report("Couldn't check SO questions", error: error)
                 try await Task.sleep(for: .seconds(60 * 5))
             }
             self.run()
@@ -65,7 +65,7 @@ actor SOChecker {
 }
 
 // MARK: +String
-extension String {
+private extension String {
     func htmlDecoded() -> String {
         Document(parsing: self).format()
     }
