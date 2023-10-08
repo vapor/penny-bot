@@ -22,13 +22,13 @@ actor SOChecker {
 
     nonisolated func run() {
         Task { [self] in
+            if Task.isCancelled { return }
             do {
                 try await self.check()
-                try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
             } catch {
                 logger.report("Couldn't check SO questions", error: error)
-                try await Task.sleep(for: .seconds(60 * 5))
             }
+            try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
             self.run()
         }
     }
