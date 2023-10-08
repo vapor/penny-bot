@@ -4,7 +4,11 @@ import Foundation
 
 struct DefaultSOService: SOService {
     let httpClient: HTTPClient
-    let decoder = JSONDecoder()
+    let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
 
     func listQuestions(after: Date) async throws -> [SOQuestions.Item] {
         let queries: KeyValuePairs = [
@@ -34,8 +38,6 @@ private extension KeyValuePairs<String, String> {
     /// Doesn't do url-query encoding.
     /// Assumes the values are already safe.
     func makeForURLQueryUnchecked() -> String {
-        "?" + self.map {
-            "\($0)=\($1)"
-        }.joined(separator: "&")
+        "?" + self.map { "\($0)=\($1)" }.joined(separator: "&")
     }
 }
