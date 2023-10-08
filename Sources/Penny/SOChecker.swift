@@ -85,6 +85,17 @@ struct SOQuestions: Codable {
             let profileImage: String?
             let displayName: String
             let link: String?
+
+            enum CodingKeys: String, CodingKey {
+                case accountID = "account_id"
+                case reputation
+                case userID = "user_id"
+                case userType = "user_type"
+                case acceptRate = "accept_rate"
+                case profileImage = "profile_image"
+                case displayName = "display_name"
+                case link
+            }
         }
 
         let tags: [String]
@@ -103,10 +114,34 @@ struct SOQuestions: Codable {
         let lastEditDate: Int?
         let closedDate: Int?
         let closedReason: String?
+
+        enum CodingKeys: String, CodingKey {
+            case tags, owner
+            case isAnswered = "is_answered"
+            case viewCount = "view_count"
+            case acceptedAnswerID = "accepted_answer_id"
+            case answerCount = "answer_count"
+            case score
+            case lastActivityDate = "last_activity_date"
+            case creationDate = "creation_date"
+            case questionID = "question_id"
+            case contentLicense = "content_license"
+            case link, title
+            case lastEditDate = "last_edit_date"
+            case closedDate = "closed_date"
+            case closedReason = "closed_reason"
+        }
     }
 
     let items: [Item]
     let hasMore: Bool
     let quotaMax: Int
     let quotaRemaining: Int
+
+    enum CodingKeys: String, CodingKey {
+        case items
+        case hasMore = "has_more"
+        case quotaMax = "quota_max"
+        case quotaRemaining = "quota_remaining"
+    }
 }

@@ -4,11 +4,7 @@ import Foundation
 
 struct DefaultSOService: SOService {
     let httpClient: HTTPClient
-    let decoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
+    let decoder = JSONDecoder()
 
     func listQuestions(after: Date) async throws -> [SOQuestions.Item] {
         let queries: KeyValuePairs = [
