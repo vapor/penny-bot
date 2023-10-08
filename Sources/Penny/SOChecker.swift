@@ -6,7 +6,7 @@ import Foundation
 actor SOChecker {
 
     struct Storage: Sendable, Codable {
-        var lastCheckDate: Date? = nil
+        var lastCheckDate: Date?
     }
 
     var storage = Storage()
