@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
     - name: Setup and run CloudFormation lint
       uses: ScottBrenner/cfn-lint-action@v2
       with:
