@@ -3,16 +3,24 @@ import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
 struct TicketReporter {
+
+    enum Configuration {
+        static let userIDDenyList: Set<Int> = [ /* dependabot[bot]: */ 49_699_333]
+    }
+
     let context: HandlerContext
     let embed: Embed
     let createdAt: Date
     let repoID: Int
     let number: Int
+    let authorID: Int
     var channel: Constants.Channels {
         .reportingChannel(repoID: repoID, createdAt: createdAt)
     }
 
     func reportCreation() async throws {
+        if Configuration.userIDDenyList.contains(authorID) { return }
+
         let response = try await context.discordClient.createMessage(
             channelId: self.channel.id,
             payload: .init(embeds: [embed])
@@ -25,6 +33,8 @@ struct TicketReporter {
     }
 
     func reportEdition() async throws {
+        if Configuration.userIDDenyList.contains(authorID) { return }
+
         let messageID: MessageSnowflake
 
         do {

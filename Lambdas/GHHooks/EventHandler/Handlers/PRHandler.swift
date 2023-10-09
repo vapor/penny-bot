@@ -8,10 +8,6 @@ import NIOFoundationCompat
 import SwiftSemver
 
 struct PRHandler {
-    enum Configuration {
-        static let userIDDenyList: Set<Int> = [ /* dependabot[bot]: */ 49_699_333]
-    }
-
     let context: HandlerContext
     let pr: PullRequest
     var event: GHEvent {
@@ -33,9 +29,6 @@ struct PRHandler {
         let action = try event.action
             .flatMap { PullRequest.Action(rawValue: $0) }
             .requireValue()
-        guard !Configuration.userIDDenyList.contains(self.pr.user.id) else {
-            return
-        }
         switch action {
         case .opened:
             try await self.onOpened()
@@ -81,7 +74,8 @@ struct PRHandler {
             embed: await self.createReportEmbed(),
             createdAt: self.pr.created_at,
             repoID: self.repo.id,
-            number: self.event.number.requireValue()
+            number: self.event.number.requireValue(),
+            authorID: self.pr.user.id
         )
     }
 
