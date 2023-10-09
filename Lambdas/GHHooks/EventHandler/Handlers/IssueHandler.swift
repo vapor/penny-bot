@@ -98,7 +98,8 @@ struct IssueHandler: Sendable {
             ),
             createdAt: self.issue.created_at,
             repoID: self.repo.id,
-            number: self.issue.number
+            number: self.issue.number, 
+            authorID: self.issue.user.id
         )
     }
 
