@@ -30,6 +30,10 @@ enum Constants {
         ["", "\u{200d}\u{2640}\u{fe0f}", "\u{200d}\u{2642}\u{fe0f}"]
     }
 
+    enum StackOverflow {
+        static let apiKey = env("SO_API_KEY")
+    }
+
     enum ServerEmojis {
         case coin
         case vapor
@@ -69,6 +73,7 @@ enum Constants {
         case logs = "1067060193982156880"
         case proposals = "1104650517549953094"
         case thanks = "443074453719744522"
+        case stackOverflow = "473249028142923787"
 
         var id: ChannelSnowflake {
             self.rawValue

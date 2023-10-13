@@ -6,11 +6,13 @@ struct CachesStorage: Sendable, Codable {
     struct Context {
         let autoFaqsService: any AutoFaqsService
         let proposalsChecker: ProposalsChecker
+        let soChecker: SOChecker
         let reactionCache: ReactionCache
     }
 
     var reactionCacheData: ReactionCache.Storage?
     var proposalsCheckerData: ProposalsChecker.Storage?
+    var soCheckerData: SOChecker.Storage?
     var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
     init() { }
@@ -18,10 +20,9 @@ struct CachesStorage: Sendable, Codable {
     static func makeFromCachedData(context: Context) async -> CachesStorage {
         var storage = CachesStorage()
         storage.reactionCacheData = await context.reactionCache.getCachedDataForCachesStorage()
-        storage.proposalsCheckerData = await context.proposalsChecker
-            .getCachedDataForCachesStorage()
-        storage.autoFaqsResponseRateLimiter = await context.autoFaqsService
-            .getCachedDataForCachesStorage()
+        storage.proposalsCheckerData = await context.proposalsChecker.getCachedDataForCachesStorage()
+        storage.soCheckerData = await context.soChecker.getCachedDataForCachesStorage()
+        storage.autoFaqsResponseRateLimiter = await context.autoFaqsService.getCachedDataForCachesStorage()
         return storage
     }
 
@@ -31,6 +32,9 @@ struct CachesStorage: Sendable, Codable {
         }
         if let proposalsCheckerData {
             await context.proposalsChecker.consumeCachesStorageData(proposalsCheckerData)
+        }
+        if let soCheckerData {
+            await context.soChecker.consumeCachesStorageData(soCheckerData)
         }
         if let autoFaqsResponseRateLimiter {
             await context.autoFaqsService.consumeCachesStorageData(autoFaqsResponseRateLimiter)
@@ -50,7 +54,8 @@ struct CachesStorage: Sendable, Codable {
         Logger(label: "CachesStorage").notice("Recovered the cached stuff", metadata: [
             "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
             "proposalsChecker_counts": .stringConvertible(proposalsCheckerDataCounts),
-            "autoFaqsRateLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
+            "soChecker_isNotNil": .stringConvertible(soCheckerData != nil),
+            "autoFaqsLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
         ])
     }
 }

@@ -78,6 +78,10 @@ public actor FakeMainService: MainService {
             discordService: discordService,
             queuedProposalsWaitTime: -1
         )
+        let soChecker = SOChecker(
+            soService: FakeSOService(),
+            discordService: discordService
+        )
         let reactionCache = ReactionCache()
         let autoFaqsService = FakeAutoFaqsService()
         let services = HandlerContext.Services(
@@ -88,6 +92,7 @@ public actor FakeMainService: MainService {
             cachesService: FakeCachesService(context: .init(
                 autoFaqsService: autoFaqsService,
                 proposalsChecker: proposalsChecker,
+                soChecker: soChecker,
                 reactionCache: reactionCache
             )),
             discordService: discordService,
@@ -99,6 +104,7 @@ public actor FakeMainService: MainService {
                 )
             ),
             proposalsChecker: proposalsChecker,
+            soChecker: soChecker,
             reactionCache: reactionCache
         )
         return HandlerContext(

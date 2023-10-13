@@ -32,6 +32,7 @@ actor ProposalsChecker {
 
     nonisolated func run() {
         Task { [self] in
+            if Task.isCancelled { return }
             do {
                 try await self.check()
                 try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
@@ -250,7 +251,7 @@ actor ProposalsChecker {
         proposalLink: String?
     ) async -> [Interaction.ActionRow] {
         var buttons: [Interaction.ActionRow] = [[]]
-        
+
         if let proposalLink,
            let link = await findForumPostLink(link: proposalLink) {
             let description = link.description.trimmingCharacters(in: .punctuationCharacters).capitalized
@@ -261,13 +262,13 @@ actor ProposalsChecker {
                 ))
             )
         }
-        
+
         if let link = makeForumSearchLink(proposal: proposal) {
             buttons[0].components.append(
                 .button(.init(label: "Related Posts", url: link))
             )
         }
-        
+
         return buttons
     }
 
@@ -324,8 +325,7 @@ actor ProposalsChecker {
     }
 
     func consumeCachesStorageData(_ storage: Storage) {
-        self.storage.previousProposals = storage.previousProposals
-        self.storage.queuedProposals = storage.queuedProposals
+        self.storage = storage
     }
 
     func getCachedDataForCachesStorage() -> Storage {

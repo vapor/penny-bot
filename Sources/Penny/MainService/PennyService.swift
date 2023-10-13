@@ -93,9 +93,14 @@ struct PennyService: MainService {
         let faqsService = DefaultFaqsService(httpClient: httpClient)
         let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
         let proposalsService = DefaultProposalsService(httpClient: httpClient)
+        let soService = DefaultSOService(httpClient: httpClient)
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
         let proposalsChecker = ProposalsChecker(
             proposalsService: proposalsService,
+            discordService: discordService
+        )
+        let soChecker = SOChecker(
+            soService: soService,
             discordService: discordService
         )
         let reactionCache = ReactionCache()
@@ -104,6 +109,7 @@ struct PennyService: MainService {
             context: .init(
                 autoFaqsService: autoFaqsService,
                 proposalsChecker: proposalsChecker,
+                soChecker: soChecker,
                 reactionCache: reactionCache
             )
         )
@@ -117,11 +123,12 @@ struct PennyService: MainService {
             renderClient: .init(
                 renderer: try .forPenny(
                     httpClient: httpClient,
-                    logger: Logger(label: "Tests_Penny+Leaf"),
+                    logger: Logger(label: "Penny+Leaf"),
                     on: httpClient.eventLoopGroup.next()
                 )
             ),
             proposalsChecker: proposalsChecker,
+            soChecker: soChecker,
             reactionCache: reactionCache
         )
         let context = HandlerContext(
@@ -144,8 +151,9 @@ struct PennyService: MainService {
         /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
         /// since it communicates through Discord and will need the Gateway connection.
         await context.botStateManager.start {
-            /// ProposalsChecker contains cached stuff and needs to wait for `BotStateManager`.
+            /// These contain cached stuff and need to wait for `BotStateManager`.
             context.services.proposalsChecker.run()
+            context.services.soChecker.run()
         }
     }
 }

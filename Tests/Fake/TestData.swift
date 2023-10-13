@@ -3,7 +3,7 @@ import DiscordModels
 @testable import Penny
 
 public enum TestData {
-    
+
     private static func resource(named name: String) -> Data {
         let fileManager = FileManager.default
         let currentDirectory = fileManager.currentDirectoryPath
@@ -18,7 +18,7 @@ public enum TestData {
         let data = resource(named: name)
         return try! JSONDecoder().decode(D.self, from: data)
     }
-    
+
     public static let vaporGuild = resource(
         named: "guild_create.json",
         as: Gateway.GuildCreate.self
@@ -32,9 +32,13 @@ public enum TestData {
         as: [Proposal].self
     )
     public static let proposalContent = String(
-        data: TestData.resource(named: "proposal_content.md"),
-        encoding: .utf8
-    )!
+        decoding: TestData.resource(named: "proposal_content.md"),
+        as: UTF8.self
+    )
+    public static let soQuestions = TestData.resource(
+        named: "soQuestions.json",
+        as: SOQuestions.self
+    ).items
 
     private static let gatewayEvents: [String: Data] = {
         let data = resource(named: "gatewayEvents.json")

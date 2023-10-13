@@ -355,6 +355,41 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
 
+    func testSOChecker() async throws {
+        context.services.soChecker.run()
+
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.stackOverflow.id)
+        let _messages = await [
+            responseStorage.awaitResponse(at: endpoint).value,
+            responseStorage.awaitResponse(at: endpoint).value,
+            responseStorage.awaitResponse(at: endpoint).value,
+            responseStorage.awaitResponse(at: endpoint).value,
+        ]
+        let messages = try _messages.map {
+            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
+        }
+
+        XCTAssertEqual(
+            messages[0].embeds?.first?.title,
+            "Vapor Logger doesn't log any messages into System Log"
+        )
+        XCTAssertEqual(
+            messages[1].embeds?.first?.title,
+            "Postgre-Kit: Unable to complete code access to PostgreSQL DB"
+        )
+        XCTAssertEqual(
+            messages[2].embeds?.first?.title,
+            "How to decide to use siblings or parent/children relations in vapor?"
+        )
+        XCTAssertEqual(
+            messages[3].embeds?.first?.title,
+            "How to make a optional query filter in Vapor"
+        )
+
+        let lastCheckDate = await context.services.soChecker.storage.lastCheckDate
+        XCTAssertNotNil(lastCheckDate)
+    }
+
     func testFaqsCommand() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(

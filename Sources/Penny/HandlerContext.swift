@@ -12,6 +12,7 @@ struct HandlerContext: Sendable {
         let discordService: DiscordService
         let renderClient: RenderClient
         let proposalsChecker: ProposalsChecker
+        let soChecker: SOChecker
         let reactionCache: ReactionCache
     }
 
