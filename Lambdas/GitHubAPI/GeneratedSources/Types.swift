@@ -2806,15 +2806,15 @@ public enum Components {
         /// - Remark: Generated from `#/components/schemas/nullable-license-simple`.
         public struct nullable_license_simple: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/key`.
-            public var key: Swift.String
+            public var key: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/name`.
-            public var name: Swift.String
+            public var name: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/url`.
-            public var url: Swift.String
+            public var url: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/spdx_id`.
-            public var spdx_id: Swift.String
+            public var spdx_id: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/node_id`.
-            public var node_id: Swift.String
+            public var node_id: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-license-simple/html_url`.
             public var html_url: Swift.String?
             /// Creates a new `nullable_license_simple`.
@@ -2827,11 +2827,11 @@ public enum Components {
             ///   - node_id:
             ///   - html_url:
             public init(
-                key: Swift.String,
-                name: Swift.String,
-                url: Swift.String,
-                spdx_id: Swift.String,
-                node_id: Swift.String,
+                key: Swift.String? = nil,
+                name: Swift.String? = nil,
+                url: Swift.String? = nil,
+                spdx_id: Swift.String? = nil,
+                node_id: Swift.String? = nil,
                 html_url: Swift.String? = nil
             ) {
                 self.key = key
@@ -16124,15 +16124,15 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license`.
                     public struct licensePayload: Codable, Hashable, Sendable {
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/key`.
-                        public var key: Swift.String
+                        public var key: Swift.String?
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/name`.
-                        public var name: Swift.String
+                        public var name: Swift.String?
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/url`.
-                        public var url: Swift.String
+                        public var url: Swift.String?
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/spdx_id`.
-                        public var spdx_id: Swift.String
+                        public var spdx_id: Swift.String?
                         /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/license/node_id`.
-                        public var node_id: Swift.String
+                        public var node_id: Swift.String?
                         /// Creates a new `licensePayload`.
                         ///
                         /// - Parameters:
@@ -16142,11 +16142,11 @@ public enum Components {
                         ///   - spdx_id:
                         ///   - node_id:
                         public init(
-                            key: Swift.String,
-                            name: Swift.String,
-                            url: Swift.String,
-                            spdx_id: Swift.String,
-                            node_id: Swift.String
+                            key: Swift.String? = nil,
+                            name: Swift.String? = nil,
+                            url: Swift.String? = nil,
+                            spdx_id: Swift.String? = nil,
+                            node_id: Swift.String? = nil
                         ) {
                             self.key = key
                             self.name = name
