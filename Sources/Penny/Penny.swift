@@ -12,7 +12,10 @@ struct Penny {
         /// Use `1` instead of `System.coreCount`.
         /// This is preferred for apps that primarily use structured concurrency.
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        let httpClient = HTTPClient(eventLoopGroupProvider: .shared(eventLoopGroup))
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(eventLoopGroup),
+            configuration: .init(decompression: .enabled(limit: .size(1 << 32)))
+        )
         let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly

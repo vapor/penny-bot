@@ -7,18 +7,20 @@ struct DefaultSOService: SOService {
     let httpClient: HTTPClient
     let logger = Logger(label: "DefaultSOService")
     let decoder = JSONDecoder()
+    private static let urlEncodedAPIKey = Constants.StackOverflow.apiKey
+        .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
 
     func listQuestions(after: Date) async throws -> [SOQuestions.Item] {
         let queries: KeyValuePairs = [
             "site": "stackoverflow",
             "tagged": "vapor",
-            "nottagged": "laravel", /// Don't be a "laravel" questin
+            "nottagged": "laravel", /// Don't be a "laravel" question
             "page": "1",
             "sort": "creation",
             "order": "desc",
             "fromdate": "\(Int(after.timeIntervalSince1970))",
             "pagesize": "100",
-            "key": Constants.StackOverflow.apiKey,
+            "key": Self.urlEncodedAPIKey,
         ]
         let url = "https://api.stackexchange.com/2.3/search/advanced" + queries.makeForURLQueryUnchecked()
         let request = HTTPClientRequest(url: url)
