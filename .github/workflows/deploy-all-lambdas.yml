@@ -8,11 +8,14 @@ on:
 jobs:
   deploy-lambdas:
     runs-on: ubuntu-latest
+
     container: swift:5.9-amazonlinux2
+
     env:
       AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+
     steps:
       - name: Install additional dependencies and AWSCLI v2
         run: |
@@ -24,19 +27,26 @@ jobs:
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           ./aws/install
+
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: Build, package, and deploy
+
+      - name: Find package names
+        id: find_package_names
         run: |
-          mkdir zips
-          for name in $(
+          echo "names=$(
             swift package dump-package | \
               jq '.targets' | \
               jq 'map(select(.type == "executable"))' | \
               jq 'map(select(.path != null))' | \
               jq 'map(select(.path | startswith("./Lambdas")))' | \
               jq -r '.[].name'
-            ); do
+          )" >> $GITHUB_OUTPUT
+
+      - name: Build and package
+        run: |
+          mkdir zips
+          for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package archive \
               --output-path ./zips \
               --products "${name}"
@@ -44,6 +54,26 @@ jobs:
               --bucket penny-lambdas-store \
               --key "${name}.zip" \
               --body ./zips/${name}/${name}.zip
+          done
+
+      - name: Get run-id of tests workflow
+        id: get_run_id
+        uses: mahdibm/get-parallel-workflow-action@main
+        with: { token: "${{ secrets.GH_PAT }}", name: "tests" }
+
+      - name: Await tests success
+        uses: Codex-/await-remote-run@v1.0.0
+        with:
+          token: ${{ secrets.GH_PAT }}
+          repo: ${{ github.event.repository.name }}
+          owner: ${{ github.event.repository.owner.login }}
+          run_id: ${{ steps.get_run_id.outputs.run_id }}
+          run_timeout_seconds: 1800 # 30 minutes
+          poll_interval_ms: 5000 # 5 seconds
+
+      - name: Deploy
+        run: |
+          for name in ${{ steps.find_package_names.outputs.names }}; do
             aws lambda update-function-code \
               --function-name "${name}" \
               --s3-bucket "penny-lambdas-store" \
