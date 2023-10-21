@@ -19,8 +19,6 @@ jobs:
     steps:
       - name: Install additional dependencies and AWSCLI v2
         run: |
-          echo "::add_mask::$AWS_ACCESS_KEY_ID"
-          echo "::add_mask::$AWS_SECRET_ACCESS_KEY"
           yum -y install \
             {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
             libtool jq zip
@@ -35,12 +33,13 @@ jobs:
         id: find_package_names
         run: |
           echo "names=$(
-            swift package dump-package | \
-              jq '.targets' | \
-              jq 'map(select(.type == "executable"))' | \
-              jq 'map(select(.path != null))' | \
-              jq 'map(select(.path | startswith("./Lambdas")))' | \
-              jq -r '.[].name'
+            swift package describe --type json | \
+            jq -r '.targets[] |
+              select(
+                .type == "executable"
+              and
+                (.name | endswith("Lambda"))
+              ).name'
           )" >> $GITHUB_OUTPUT
 
       - name: Build and package
