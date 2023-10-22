@@ -99,7 +99,7 @@ struct IssueHandler: Sendable {
             createdAt: self.issue.created_at,
             repoID: self.repo.id,
             number: self.issue.number, 
-            authorID: self.issue.user.id
+            authorID: self.issue.user.requireValue().id
         )
     }
 
@@ -129,15 +129,16 @@ struct IssueHandler: Sendable {
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let title = "[\(repo.uiName)] Issue #\(number)\(statusString)".unicodesPrefix(256)
+        let user = try issue.user.requireValue()
 
-        let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
-        let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
+        let member = try await context.requester.getDiscordMember(githubID: "\(user.id)")
+        let authorName = (member?.uiName).map { "@\($0)" } ?? user.uiName
 
-        var iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
+        var iconURL = member?.uiAvatarURL ?? user.avatar_url
         var footer = "By \(authorName)"
         if  let verb = status.closedByVerb,
             let closedBy = try await self.maybeGetClosedByUser() {
-            if closedBy.id == issue.user.id {
+            if closedBy.id == issue.user?.id {
                 /// The same person opened and closed the issue.
                 footer = "Filed & \(verb) by \(authorName)"
             } else {
@@ -174,21 +175,13 @@ struct IssueHandler: Sendable {
         if action == .closed {
             return (event.sender.id, event.sender.uiName)
         } else {
-            let response = try await context.githubClient.issues_get(.init(
+            return try await context.githubClient.issues_get(.init(
                 path: .init(
                     owner: repo.owner.login,
                     repo: repo.name,
                     issue_number: issue.number
                 )
-            ))
-
-            guard case let .ok(ok) = response,
-                  case let .json(json) = ok.body
-            else {
-                throw Errors.httpRequestFailed(response: response)
-            }
-
-            return json.closed_by.map {
+            )).ok.body.json.closed_by.map {
                 ($0.id, $0.uiName)
             }
         }

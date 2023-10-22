@@ -100,49 +100,29 @@ struct ProjectBoardHandler {
     }
 
     func createCard(columnID: Int) async throws {
-        let response = try await self.context.githubClient.projects_create_card(.init(
+        try await self.context.githubClient.projects_create_card(.init(
             path: .init(column_id: columnID),
             body: .json(.case1(.init(note: self.note)))
-        ))
-
-        guard case .created = response else {
-            throw Errors.httpRequestFailed(response: response)
-        }
+        )).created
     }
 
     func move(toColumnID columnID: Int, cardID: Int) async throws {
-        let response = try await self.context.githubClient.projects_move_card(.init(
+        try await self.context.githubClient.projects_move_card(.init(
             path: .init(card_id: cardID),
             body: .json(.init(position: "top", column_id: columnID))
-        ))
-
-        guard case .created = response else {
-            throw Errors.httpRequestFailed(response: response)
-        }
+        )).created
     }
 
     func delete(cardID: Int) async throws {
-        let response = try await self.context.githubClient.projects_delete_card(.init(
+        try await self.context.githubClient.projects_delete_card(.init(
             path: .init(card_id: cardID)
-        ))
-
-        guard case .noContent = response else {
-            throw Errors.httpRequestFailed(response: response)
-        }
+        )).noContent
     }
 
     func getCards(in columnID: Int) async throws -> [ProjectCard] {
-        let response = try await self.context.githubClient.projects_list_cards(.init(
+        try await self.context.githubClient.projects_list_cards(.init(
             path: .init(column_id: columnID)
-        ))
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-        else {
-            throw Errors.httpRequestFailed(response: response)
-        }
-
-        return json
+        )).ok.body.json
     }
 
     private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {
