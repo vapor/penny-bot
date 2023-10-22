@@ -84,7 +84,7 @@ struct DocsIssuer {
 
     func fileIssue(number: Int) async throws {
         let description = try await context.renderClient.translationNeededDescription(number: number)
-        try await context.githubClient.issues_create(.init(
+        _ = try await context.githubClient.issues_create(.init(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name

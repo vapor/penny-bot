@@ -100,21 +100,21 @@ struct ProjectBoardHandler {
     }
 
     func createCard(columnID: Int) async throws {
-        try await self.context.githubClient.projects_create_card(.init(
+        _ = try await self.context.githubClient.projects_create_card(.init(
             path: .init(column_id: columnID),
             body: .json(.case1(.init(note: self.note)))
         )).created
     }
 
     func move(toColumnID columnID: Int, cardID: Int) async throws {
-        try await self.context.githubClient.projects_move_card(.init(
+        _ = try await self.context.githubClient.projects_move_card(.init(
             path: .init(card_id: cardID),
             body: .json(.init(position: "top", column_id: columnID))
         )).created
     }
 
     func delete(cardID: Int) async throws {
-        try await self.context.githubClient.projects_delete_card(.init(
+        _ = try await self.context.githubClient.projects_delete_card(.init(
             path: .init(card_id: cardID)
         )).noContent
     }

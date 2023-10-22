@@ -173,7 +173,7 @@ struct ReleaseMaker {
 
     func sendComment(release: Release) async throws {
         /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
-        try await context.githubClient.issues_create_comment(.init(
+        _ = try await context.githubClient.issues_create_comment(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
