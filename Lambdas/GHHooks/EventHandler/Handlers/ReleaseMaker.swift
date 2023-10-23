@@ -85,18 +85,12 @@ struct ReleaseMaker {
     func getLastRelease() async throws -> Release {
         let latest = try await self.getLatestRelease()
 
-        let response = try await context.githubClient.repos_list_releases(.init(
+        let releases = try await context.githubClient.repos_list_releases(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             )
-        ))
-
-        guard case let .ok(ok) = response,
-              case let .json(releases) = ok.body
-        else {
-            throw Errors.httpRequestFailed(response: response)
-        }
+        )).ok.body.json
 
         let filteredReleases: [Release] = releases.compactMap {
             release -> (Release, SemanticVersion)? in
@@ -135,13 +129,9 @@ struct ReleaseMaker {
             )
         ))
 
-        switch response {
-        case let .ok(ok):
-            switch ok.body {
-            case let .json(json):
-                return json
-            }
-        default: break
+        if case let .ok(ok) = response,
+           case let .json(json) = ok.body {
+            return json
         }
 
         logger.warning("Could not find a 'latest' release", metadata: [
@@ -164,7 +154,7 @@ struct ReleaseMaker {
             previousVersion: previousVersion,
             newVersion: newVersion
         )
-        let response = try await context.githubClient.repos_create_release(.init(
+        return try await context.githubClient.repos_create_release(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
@@ -178,23 +168,12 @@ struct ReleaseMaker {
                 prerelease: isPrerelease,
                 make_latest: isPrerelease ? ._false : ._true
             ))
-        ))
-
-        switch response {
-        case let .created(created):
-            switch created.body {
-            case let .json(release):
-                return release
-            }
-        default: break
-        }
-
-        throw Errors.httpRequestFailed(response: response)
+        )).created.body.json
     }
 
     func sendComment(release: Release) async throws {
         /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
-        let response = try await context.githubClient.issues_create_comment(.init(
+        _ = try await context.githubClient.issues_create_comment(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
@@ -205,13 +184,7 @@ struct ReleaseMaker {
                 These changes are now available in [\(release.tag_name)](\(release.html_url))
                 """
             ))
-        ))
-
-        switch response {
-        case .created: return
-        default:
-            throw Errors.httpRequestFailed(response: response)
-        }
+        )).created
     }
 
     /**
@@ -293,16 +266,15 @@ struct ReleaseMaker {
             ))
         )
 
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-        else {
+        if case let .ok(ok) = response,
+           case let .json(json) = ok.body {
+            return json
+        } else {
             logger.warning("Could not find review comments", metadata: [
                 "response": "\(response)"
             ])
             return []
         }
-
-        return json
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
@@ -313,15 +285,14 @@ struct ReleaseMaker {
             ))
         )
 
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-        else {
+        if case let .ok(ok) = response,
+           case let .json(json) = ok.body {
+            return Set(json.compactMap(\.id))
+        } else {
             logger.warning("Could not find current contributors", metadata: [
                 "response": "\(response)"
             ])
             return []
         }
-
-        return Set(json.compactMap(\.id))
     }
 }

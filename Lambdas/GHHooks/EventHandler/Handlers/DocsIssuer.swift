@@ -63,44 +63,28 @@ struct DocsIssuer {
     }
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
-        let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+        try await context.githubClient.repos_list_pull_requests_associated_with_commit(
             .init(path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name,
                 commit_sha: self.commitSHA
             ))
-        )
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-        else {
-            throw Errors.httpRequestFailed(response: response)
-        }
-
-        return json
+        ).ok.body.json
     }
 
     func getPRFiles(number: Int) async throws -> [DiffEntry] {
-        let response = try await context.githubClient.pulls_list_files(.init(
+        try await context.githubClient.pulls_list_files(.init(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name,
                 pull_number: number
             )
-        ))
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-        else {
-            throw Errors.httpRequestFailed(response: response)
-        }
-
-        return json
+        )).ok.body.json
     }
 
     func fileIssue(number: Int) async throws {
         let description = try await context.renderClient.translationNeededDescription(number: number)
-        let response = try await context.githubClient.issues_create(.init(
+        _ = try await context.githubClient.issues_create(.init(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name
@@ -109,10 +93,6 @@ struct DocsIssuer {
                 title: .case1("Translation needed for #\(number)"),
                 body: description
             ))
-        ))
-
-        guard case .created = response else {
-            throw Errors.httpRequestFailed(response: response)
-        }
+        )).created
     }
 }

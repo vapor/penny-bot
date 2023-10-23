@@ -25,8 +25,6 @@ private extension Issue.labelsPayloadPayload {
             return string
         case let .case2(payload):
             return payload.name
-        case .undocumented:
-            return nil
         }
     }
 }
