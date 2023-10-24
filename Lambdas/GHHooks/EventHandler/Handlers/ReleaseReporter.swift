@@ -43,17 +43,12 @@ struct ReleaseReporter {
     }
 
     func getTagBefore() async throws -> String? {
-        let response = try await context.githubClient.repos_list_tags(.init(
+        let json = try await context.githubClient.repos_list_tags(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             ))
-        )
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
-            throw GHHooksLambda.Errors.httpRequestFailed(response: response)
-        }
+        ).ok.body.json
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
            json.count > releaseIdx {
@@ -90,53 +85,32 @@ struct ReleaseReporter {
     }
 
     func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
-        let response = try await context.githubClient.repos_compare_commits(.init(
+        try await context.githubClient.repos_compare_commits(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 basehead: "\(tagBefore)...\(release.tag_name)"
             ))
-        )
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
-            throw GHHooksLambda.Errors.httpRequestFailed(response: response)
-        }
-
-        return json.commits.reversed()
+        ).ok.body.json.commits.reversed()
     }
 
     func getAllCommits() async throws -> [Commit] {
-        let response = try await context.githubClient.repos_list_commits(.init(
+        try await context.githubClient.repos_list_commits(.init(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             )
-        ))
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
-            throw GHHooksLambda.Errors.httpRequestFailed(response: response)
-        }
-
-        return json.reversed()
+        )).ok.body.json.reversed()
     }
 
     func getPRsRelatedToCommit(sha: String) async throws -> [SimplePullRequest] {
-        let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+        try await context.githubClient.repos_list_pull_requests_associated_with_commit(
             .init(path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 commit_sha: sha
             ))
-        )
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body else {
-            throw GHHooksLambda.Errors.httpRequestFailed(response: response)
-        }
-
-        return json
+        ).ok.body.json
     }
 
     func sendToDiscord(pr: SimplePullRequest) async throws {
@@ -156,8 +130,9 @@ struct ReleaseReporter {
     func sendToDiscord(prs: [SimplePullRequest], commitCount: Int) async throws {
         precondition(!prs.isEmpty)
 
-        let prDescriptions = prs.map {
-            "\($0.title) by [@\($0.user.uiName)](\($0.user.html_url)) in [#\($0.number)](\($0.html_url))"
+        let prDescriptions = try prs.map {
+            let user = try $0.user.requireValue()
+            return "\($0.title) by [@\(user.uiName)](\(user.html_url)) in [#\($0.number)](\($0.html_url))"
         }.map {
             "- \($0)"
         }.joined(

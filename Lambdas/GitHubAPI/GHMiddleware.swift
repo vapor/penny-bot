@@ -6,11 +6,16 @@ import Foundation
 import OpenAPIRuntime
 import Atomics
 import Logging
+import HTTPTypes
+import NIOCore
+import OpenAPIAsyncHTTPClient
 
 /// Adds some headers to all requests.
 struct GHMiddleware: ClientMiddleware {
     let authorization: AuthorizationHeader
     let logger: Logger
+
+    private static let allocator = ByteBufferAllocator()
 
     static let idGenerator = ManagedAtomic(UInt(0))
 
@@ -19,32 +24,32 @@ struct GHMiddleware: ClientMiddleware {
         self.logger = logger
     }
 
-    /// Intercepts, modifies and makes the request and
-    /// retries it if it seems like a invalid-auth-header problem.
     func intercept(
-        _ request: Request,
+        _ request: HTTPRequest,
+        body: HTTPBody?,
         baseURL: URL,
         operationID: String,
-        next: @Sendable (Request, URL) async throws -> Response
-    ) async throws -> Response {
+        next: @Sendable (HTTPRequest, HTTPBody?, URL) async throws -> (HTTPResponse, HTTPBody?)
+    ) async throws -> (HTTPResponse, HTTPBody?) {
         var request = request
         request.headerFields.reserveCapacity(4)
 
         request.headerFields.addOrReplace(
-            name: "Accept",
+            name: .accept,
             value: "application/vnd.github.raw+json"
         )
         request.headerFields.addOrReplace(
-            name: "X-GitHub-Api-Version",
+            name: .xGitHubAPIVersion,
             value: "2022-11-28"
         )
         request.headerFields.addOrReplace(
-            name: "User-Agent",
+            name: .userAgent,
             value: "Penny/1.0.0 (https://github.com/vapor/penny-bot)"
         )
 
         return try await intercept(
             &request,
+            body: body,
             baseURL: baseURL,
             operationID: operationID,
             isRetry: false,
@@ -53,14 +58,15 @@ struct GHMiddleware: ClientMiddleware {
     }
 
     private func intercept(
-        _ request: inout Request,
+        _ request: inout HTTPRequest,
+        body: HTTPBody?,
         baseURL: URL,
         operationID: String,
         isRetry: Bool,
-        next: @Sendable (Request, URL) async throws -> Response
-    ) async throws -> Response {
+        next: @Sendable (HTTPRequest, HTTPBody?, URL) async throws -> (HTTPResponse, HTTPBody?)
+    ) async throws -> (HTTPResponse, HTTPBody?) {
         if let authHeader = try await authorization.makeHeader(isRetry: isRetry) {
-            request.headerFields.addOrReplace(name: "Authorization", value: authHeader)
+            request.headerFields.addOrReplace(name: .authorization, value: authHeader)
         }
 
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
@@ -73,10 +79,11 @@ struct GHMiddleware: ClientMiddleware {
         ])
 
         do {
-            let response = try await next(request, baseURL)
+            let (response, body) = try await next(request, body, baseURL)
+            let collectedBody = try await body?.collect(upTo: 1 << 28, using: Self.allocator)
 
             logger.debug("Got response from GitHub", metadata: [
-                "response": "\(response.fullDescription)",
+                "response": .string(response.debugDescription),
                 "requestID": .stringConvertible(requestID),
             ])
 
@@ -86,17 +93,18 @@ struct GHMiddleware: ClientMiddleware {
             /// then retry the request with a force-refreshed token.
             if !isRetry,
                authorization.isRetriable,
-               response.statusCode == 401 {
+               response.status == .unauthorized {
                 logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
                 return try await intercept(
                     &request,
+                    body: body,
                     baseURL: baseURL,
                     operationID: operationID,
                     isRetry: true,
                     next: next
                 )
             } else {
-                return response
+                return (response, collectedBody.map { HTTPBody($0.readableBytesView) })
             }
         } catch {
             logger.error("Got error from GitHub", metadata: [
@@ -109,11 +117,11 @@ struct GHMiddleware: ClientMiddleware {
     }
 }
 
-private extension [HeaderField] {
-    mutating func addOrReplace(name: String, value: String) {
-        let header = HeaderField(name: name, value: value)
+private extension HTTPFields {
+    mutating func addOrReplace(name: HTTPField.Name, value: String) {
+        let header = HTTPField(name: name, value: value)
         if let existingIdx = self.firstIndex(
-            where: { $0.name.caseInsensitiveCompare(name).rawValue == 0 }
+            where: { $0.name == name }
         ) {
             self[existingIdx] = header
         } else {
@@ -122,12 +130,6 @@ private extension [HeaderField] {
     }
 }
 
-private extension Response {
-    var fullDescription: String {
-        "Response(" +
-        "status: \(statusCode), " +
-        "headers: \(headerFields.description), " +
-        "body: \(String(decoding: body, as: UTF8.self))" +
-        ")"
-    }
+private extension HTTPField.Name {
+    static let xGitHubAPIVersion = Self("X-GitHub-Api-Version")!
 }
