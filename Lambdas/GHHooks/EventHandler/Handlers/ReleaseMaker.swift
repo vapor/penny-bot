@@ -264,10 +264,10 @@ struct ReleaseMaker {
         )
     }
 
-    func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [User] {
+    func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [NullableUser] {
         let usernames = codeOwners.union([pr.user.login])
-        let reviewComments = try await getReviewComments()
-        let reviewers = reviewComments.map(\.user).filter { user in
+        let reviews = try await getReviews()
+        let reviewers = reviews.compactMap(\.user).filter { user in
             !(usernames.contains(user: user) || user.isBot)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
@@ -284,8 +284,8 @@ struct ReleaseMaker {
         return !existingContributors.contains(pr.user.id)
     }
 
-    func getReviewComments() async throws -> [PullRequestReviewComment] {
-        let response = try await context.githubClient.pulls_list_review_comments(
+    func getReviews() async throws -> [PullRequestReview] {
+        let response = try await context.githubClient.pulls_list_reviews(
             .init(path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
@@ -293,10 +293,18 @@ struct ReleaseMaker {
             ))
         )
 
+<<<<<<< Updated upstream
         guard case let .ok(ok) = response,
               case let .json(json) = ok.body
         else {
             logger.warning("Could not find review comments", metadata: [
+=======
+        if case let .ok(ok) = response,
+           case let .json(json) = ok.body {
+            return json
+        } else {
+            logger.warning("Could not find reviews", metadata: [
+>>>>>>> Stashed changes
                 "response": "\(response)"
             ])
             return []
