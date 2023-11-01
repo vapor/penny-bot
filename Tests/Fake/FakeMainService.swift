@@ -140,11 +140,11 @@ public actor FakeMainService: MainService {
                         tts: false,
                         mention_everyone: false,
                         mention_roles: [],
+                        mentions: [],
                         attachments: [],
                         embeds: [],
                         pinned: false,
-                        type: .default,
-                        mentions: []
+                        type: .default
                     ))
                 ))
                 break
