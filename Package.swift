@@ -35,7 +35,10 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
 
 let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// https://github.com/apple/swift/issues/67214
-    .unsafeFlags(["-Xllvm", "-vectorize-slp=false"], .when(platforms: [.linux], configuration: .release)),
+    .unsafeFlags(
+        ["-Xllvm", "-vectorize-slp=false"],
+        .when(platforms: [.linux], configuration: .release)
+    ),
 
     /// https://github.com/apple/swift/pull/68671
     .unsafeFlags(
