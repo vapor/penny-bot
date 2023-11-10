@@ -19,39 +19,42 @@ extension String {
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        let prefixed = markup2
+        var (remaining, prefixed) = markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
-        let document2 = Document(parsing: prefixed)
-        var paragraphCounter = ParagraphCounter()
-        paragraphCounter.visit(document2)
-        let paragraphCount = paragraphCounter.count
-        if ![0, 1].contains(paragraphCount) {
-            var paragraphRemover = ParagraphRemover(
-                atCount: paragraphCount,
-                ifShorterThan: trailingTextMinLength
-            )
-            if let markup = paragraphRemover.visit(document2) {
-                markup2 = markup
+        if remaining == 0 {
+            let document2 = Document(parsing: prefixed)
+            var paragraphCounter = ParagraphCounter()
+            paragraphCounter.visit(document2)
+            let paragraphCount = paragraphCounter.count
+            if ![0, 1].contains(paragraphCount) {
+                var paragraphRemover = ParagraphRemover(
+                    atCount: paragraphCount,
+                    ifShorterThan: trailingTextMinLength
+                )
+                if let markup = paragraphRemover.visit(document2) {
+                    markup2 = markup
+                    /// Update `prefixed`
+                    prefixed = markup2
+                        .format(options: .default)
+                        .trimmingForMarkdown()
+                        .markdownUnicodesPrefix(maxVisualLength)
+                }
             }
         }
 
-        var prefixed2 = markup2
-            .format(options: .default)
-            .trimmingForMarkdown()
-            .markdownUnicodesPrefix(maxVisualLength)
-        var document3 = Document(parsing: prefixed2)
+        var document3 = Document(parsing: prefixed)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
             document3 = Document(document3.blockChildren.dropLast())
-            prefixed2 = document3
+            prefixed = document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .markdownUnicodesPrefix(maxVisualLength)
         }
 
-        return prefixed2.unicodesPrefix(hardLimit)
+        return prefixed.unicodesPrefix(hardLimit)
     }
 
     private func trimmingForMarkdown() -> String {
