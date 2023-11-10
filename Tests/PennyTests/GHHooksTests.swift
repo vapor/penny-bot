@@ -459,6 +459,7 @@ class GHHooksTests: XCTestCase {
             * Vapor Toolbox version: N/A
             * OS version: N/A
             """
+
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
@@ -477,6 +478,26 @@ class GHHooksTests: XCTestCase {
             ### Expected behavior
 
             Expect some contrast between the text and the background.
+            """)
+        }
+
+        do {
+            let text = """
+            Final stage of Vapor's `Sendable` journey as `Request` is now `Sendable`.
+
+            There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
+            """
+
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 128
+            )
+
+            XCTAssertMultilineStringsEqual(formatted, """
+            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable`.
+
+            There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
             """)
         }
     }
