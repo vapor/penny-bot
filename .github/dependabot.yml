@@ -17,18 +17,6 @@ updates:
     allow:
       - dependency-type: all
     groups:
-      patch-dependencies:
-        update-types:
-          - "patch"
-        patterns:
-          - "*"
-      minor-dependencies:
-        update-types:
-          - "minor"
-        patterns:
-          - "*"
-      major-dependencies:
-        update-types:
-          - "major"
+      all-dependencies:
         patterns:
           - "*"
