@@ -1,11 +1,34 @@
 version: 2
 enable-beta-ecosystems: true
 updates:
-  - package-ecosystem: "swift"
+  - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "daily"
     groups:
       dependencies:
+        patterns:
+          - "*"
+  - package-ecosystem: "swift"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    open-pull-requests-limit: 6
+    allow:
+      - dependency-type: all
+    groups:
+      patch-dependencies:
+        update-types:
+          - "patch"
+        patterns:
+          - "*"
+      minor-dependencies:
+        update-types:
+          - "minor"
+        patterns:
+          - "*"
+      major-dependencies:
+        update-types:
+          - "major"
         patterns:
           - "*"
