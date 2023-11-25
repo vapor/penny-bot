@@ -2,7 +2,6 @@ import DiscordBM
 import GitHubAPI
 
 struct IssueHandler: Sendable {
-    let context: HandlerContext
     let action: Issue.Action
     let issue: Issue
     var event: GHEvent {
@@ -15,7 +14,8 @@ struct IssueHandler: Sendable {
         }
     }
 
-    init(context: HandlerContext) throws {
+    init() throws {
+        
         self.context = context
         self.action = try context.event
             .action

@@ -21,7 +21,7 @@ struct GHLeafSource: LeafSource {
         let path: String
         let httpClient: HTTPClient
         let logger: Logger
-        let queue = SerialProcessor()
+        let queue = SerialProcessor<String>()
         var cache: [String: ByteBuffer] = [:]
 
         init(

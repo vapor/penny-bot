@@ -22,7 +22,7 @@ struct SponsorsHandler: LambdaHandler {
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
-            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            let botToken = try await secretsRetriever.getSecret(for: .botToken)
             return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
         }
     }
@@ -207,7 +207,7 @@ struct SponsorsHandler: LambdaHandler {
     }
 
     private func getWorkflowToken() async throws -> String {
-        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
+        try await secretsRetriever.getSecret(for: .githubWorkflowToken)
     }
 
     /**

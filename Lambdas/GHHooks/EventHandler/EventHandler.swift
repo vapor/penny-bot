@@ -1,11 +1,13 @@
 import DiscordBM
 import GitHubAPI
+import Dependencies
 
 struct EventHandler: Sendable {
-    let context: HandlerContext
 
     func handle() async throws {
-        switch context.eventName {
+        @Dependency(\.eventName) var eventName
+
+        switch eventName {
         case .issues:
             try await IssueHandler(context: context).handle()
         case .pull_request:
@@ -29,14 +31,17 @@ struct EventHandler: Sendable {
     }
 
     func onPing() async throws {
-        try await context.discordClient.createMessage(
+        @Dependency(\.discordClient) var discordClient
+        @Dependency(\.event) var event
+
+        try await discordClient.createMessage(
             channelId: Constants.Channels.logs.id,
             payload: .init(embeds: [.init(
                 title: "Ping events should not reach here",
                 description: """
                 Ping events must be handled immediately, even before any body-decoding happens.
-                Action: \(context.event.action ?? "<null>")
-                Repo: \(context.event.repository?.name ?? "<null>")
+                Action: \(event.action ?? "<null>")
+                Repo: \(event.repository?.name ?? "<null>")
                 """,
                 color: .red
             )])
@@ -44,13 +49,16 @@ struct EventHandler: Sendable {
     }
 
     func onSponsorship() async throws {
-        try await context.discordClient.createMessage(
+        @Dependency(\.discordClient) var discordClient
+        @Dependency(\.event) var event
+
+        try await discordClient.createMessage(
             channelId: Constants.Channels.logs.id,
             payload: .init(embeds: [.init(
                 title: "Got Sponsorship payload. Check the logs!",
                 description: """
-                Action: \(context.event.action ?? "<null>")
-                Repo: \(context.event.repository?.name ?? "<null>")
+                Action: \(event.action ?? "<null>")
+                Repo: \(event.repository?.name ?? "<null>")
                 """,
                 color: .yellow
             )])
@@ -58,13 +66,17 @@ struct EventHandler: Sendable {
     }
 
     func onDefault() async throws {
-        try await context.discordClient.createMessage(
+        @Dependency(\.discordClient) var discordClient
+        @Dependency(\.event) var event
+        @Dependency(\.eventName) var eventName
+
+        try await discordClient.createMessage(
             channelId: Constants.Channels.logs.id,
             payload: .init(embeds: [.init(
-                title: "Received UNHANDLED event \(context.eventName)",
+                title: "Received UNHANDLED event \(eventName)",
                 description: """
-                Action: \(context.event.action ?? "<null>")
-                Repo: \(context.event.repository?.name ?? "<null>")
+                Action: \(event.action ?? "<null>")
+                Repo: \(event.repository?.name ?? "<null>")
                 """,
                 color: .red
             )])

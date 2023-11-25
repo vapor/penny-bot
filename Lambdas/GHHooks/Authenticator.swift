@@ -16,7 +16,7 @@ actor Authenticator {
     /// The cached access token.
     private var cachedAccessToken: InstallationToken?
 
-    private let queue = SerialProcessor()
+    private let queue = SerialProcessor<String>()
 
     init(secretsRetriever: SecretsRetriever, httpClient: HTTPClient, logger: Logger) {
         self.secretsRetriever = secretsRetriever
@@ -84,7 +84,7 @@ actor Authenticator {
     }
 
     private func getPrivKey() async throws -> String {
-        try await self.secretsRetriever.getSecret(arnEnvVarKey: "GH_APP_AUTH_PRIV_KEY_ARN")
+        try await self.secretsRetriever.getSecret(for: .githubAppPrivateKey)
     }
 
     private func setCachedAccessToken(to token: InstallationToken) {

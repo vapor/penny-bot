@@ -19,10 +19,14 @@ extension String {
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        var (remaining, prefixed) = markup2
-            .format(options: .default)
-            .trimmingForMarkdown()
-            .markdownUnicodesPrefix(maxVisualLength)
+        func formatMarkup(_ markup: any Markup) -> (remaining: Int, result: String) {
+            markup
+                .format(options: .default)
+                .trimmingForMarkdown()
+                .markdownUnicodesPrefix(maxVisualLength)
+        }
+
+        var (remaining, prefixed) = formatMarkup(markup2)
         if remaining == 0 {
             let document2 = Document(parsing: prefixed)
             var paragraphCounter = ParagraphCounter()
@@ -36,10 +40,7 @@ extension String {
                 if let markup = paragraphRemover.visit(document2) {
                     markup2 = markup
                     /// Update `prefixed`
-                    prefixed = markup2
-                        .format(options: .default)
-                        .trimmingForMarkdown()
-                        .markdownUnicodesPrefix(maxVisualLength)
+                    prefixed = formatMarkup(markup2).result
                 }
             }
         }
@@ -48,10 +49,7 @@ extension String {
         if let last = Array(document3.blockChildren).last,
            last is Heading {
             document3 = Document(document3.blockChildren.dropLast())
-            prefixed = document3
-                .format(options: .default)
-                .trimmingForMarkdown()
-                .markdownUnicodesPrefix(maxVisualLength)
+            prefixed = formatMarkup(document3).result
         }
 
         return prefixed.unicodesPrefix(hardLimit)
@@ -296,4 +294,4 @@ private struct HeadingFinder: MarkupWalker {
             }
         }
     }
-    }
+}

@@ -32,7 +32,7 @@ struct GHOAuthHandler: LambdaHandler {
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
-            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            let botToken = try await secretsRetriever.getSecret(for: .botToken)
             return await DefaultDiscordClient(httpClient: client, token: botToken)
         }
     }
@@ -172,7 +172,7 @@ struct GHOAuthHandler: LambdaHandler {
     func getGHAccessToken(code: String) async throws -> String {
         logger.debug("Retrieving GitHub client secrets")
 
-        let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
+        let clientSecret = try await secretsRetriever.getSecret(for: .githubClientSecret)
         let clientID = try requireEnvVar("GH_CLIENT_ID")
 
         // https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps

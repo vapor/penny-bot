@@ -6,6 +6,7 @@ import DiscordHTTP
 import GitHubAPI
 import Rendering
 import DiscordUtilities
+import Dependencies
 import Logging
 import LambdasShared
 import Shared
@@ -26,7 +27,7 @@ struct GHHooksHandler: LambdaHandler {
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
-            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            let botToken = try await secretsRetriever.getSecret(for: .botToken)
             return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
         }
     }
@@ -131,27 +132,27 @@ struct GHHooksHandler: LambdaHandler {
         ])
 
         let apiBaseURL = try requireEnvVar("API_BASE_URL")
-        try await EventHandler(
-            context: .init(
-                eventName: eventName,
-                event: event,
-                httpClient: httpClient,
-                discordClient: discordClient,
-                githubClient: githubClient,
-                renderClient: RenderClient(
-                    renderer: try .forGHHooks(
-                        httpClient: httpClient,
-                        logger: logger
-                    )
-                ),
-                messageLookupRepo: self.messageLookupRepo,
-                usersService: ServiceFactory.makeUsersService(
+        try await withDependencies({
+            $0.eventName = eventName
+            $0.event = event
+            $0.httpClient = httpClient
+            $0.discordClient = try await discordClient
+            $0.githubClient = githubClient
+            $0.renderClient = RenderClient(
+                renderer: try .forGHHooks(
                     httpClient: httpClient,
-                    apiBaseURL: apiBaseURL
-                ),
-                logger: logger
+                    logger: logger
+                )
             )
-        ).handle()
+            $0.messageLookupRepo = self.messageLookupRepo
+            $0.usersService = ServiceFactory.makeUsersService(
+                httpClient: httpClient,
+                apiBaseURL: apiBaseURL
+            )
+            $0.logger = logger
+        }, operation: {
+            try await EventHandler().handle()
+        })
 
         logger.trace("Event handled")
 
@@ -163,8 +164,8 @@ struct GHHooksHandler: LambdaHandler {
         guard let signature = request.headers.first(name: "x-hub-signature-256") else {
             throw Errors.headerNotFound(name: "x-hub-signature-256", headers: request.headers)
         }
-        let body = Data((request.body ?? "").utf8)
-        let secret = try await secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
+        let body = request.body.map { Data($0.utf8) } ?? Data()
+        let secret = try await secretsRetriever.getSecret(for: .webhookSecret)
         try Verifier.verifyWebhookSignature(
             signatureHeader: signature,
             requestBody: body,
