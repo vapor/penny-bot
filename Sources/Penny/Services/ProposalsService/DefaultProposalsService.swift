@@ -7,7 +7,7 @@ import AsyncHTTPClient
 import Models
 import NIOCore
 
-struct DefaultProposalsService: ProposalsService {
+struct DefaultEvolutionService: EvolutionService {
     
     enum Errors: Error, CustomStringConvertible {
         case emptyProposals

@@ -16,7 +16,7 @@ enum Constants {
 
     enum Channels: ChannelSnowflake, CaseIterable {
         case logs = "1067060193982156880"
-        case issueAndPRs = "1123702585006768228"
+        case issuesAndPRs = "1123702585006768228"
         case release = "431926479752921098"
         case thanks = "443074453719744522"
         case documentation = "484454139506458634"

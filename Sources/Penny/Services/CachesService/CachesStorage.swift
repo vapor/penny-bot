@@ -5,13 +5,13 @@ struct CachesStorage: Sendable, Codable {
 
     struct Context {
         let autoFaqsService: any AutoFaqsService
-        let proposalsChecker: ProposalsChecker
+        let evolutionChecker: EvolutionChecker
         let soChecker: SOChecker
         let reactionCache: ReactionCache
     }
 
     var reactionCacheData: ReactionCache.Storage?
-    var proposalsCheckerData: ProposalsChecker.Storage?
+    var evolutionCheckerData: EvolutionChecker.Storage?
     var soCheckerData: SOChecker.Storage?
     var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
@@ -20,7 +20,7 @@ struct CachesStorage: Sendable, Codable {
     static func makeFromCachedData(context: Context) async -> CachesStorage {
         var storage = CachesStorage()
         storage.reactionCacheData = await context.reactionCache.getCachedDataForCachesStorage()
-        storage.proposalsCheckerData = await context.proposalsChecker.getCachedDataForCachesStorage()
+        storage.evolutionCheckerData = await context.evolutionChecker.getCachedDataForCachesStorage()
         storage.soCheckerData = await context.soChecker.getCachedDataForCachesStorage()
         storage.autoFaqsResponseRateLimiter = await context.autoFaqsService.getCachedDataForCachesStorage()
         return storage
@@ -30,8 +30,8 @@ struct CachesStorage: Sendable, Codable {
         if let reactionCacheData {
             await context.reactionCache.consumeCachesStorageData(reactionCacheData)
         }
-        if let proposalsCheckerData {
-            await context.proposalsChecker.consumeCachesStorageData(proposalsCheckerData)
+        if let evolutionCheckerData {
+            await context.evolutionChecker.consumeCachesStorageData(evolutionCheckerData)
         }
         if let soCheckerData {
             await context.soChecker.consumeCachesStorageData(soCheckerData)
@@ -45,7 +45,7 @@ struct CachesStorage: Sendable, Codable {
              data.normalThanksMessages.count,
              data.forcedInThanksChannelMessages.count]
         } ?? []
-        let proposalsCheckerDataCounts = proposalsCheckerData.map { data in
+        let evolutionCheckerDataCounts = evolutionCheckerData.map { data in
             [data.previousProposals.count,
              data.queuedProposals.count]
         } ?? []
@@ -53,7 +53,7 @@ struct CachesStorage: Sendable, Codable {
 
         Logger(label: "CachesStorage").notice("Recovered the cached stuff", metadata: [
             "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
-            "proposalsChecker_counts": .stringConvertible(proposalsCheckerDataCounts),
+            "evolutionChecker_counts": .stringConvertible(evolutionCheckerDataCounts),
             "soChecker_isNotNil": .stringConvertible(soCheckerData != nil),
             "autoFaqsLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
         ])

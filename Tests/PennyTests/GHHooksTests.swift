@@ -592,7 +592,7 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "issue2",
             eventName: .issues,
-            expect: .response(at: .issueAndPRs)
+            expect: .response(at: .issuesAndPRs)
         )
         try await handleEvent(key: "issue3", eventName: .issues, expect: .noResponse)
         try await handleEvent(key: "issue4", eventName: .issues, expect: .noResponse)
@@ -601,7 +601,7 @@ class GHHooksTests: XCTestCase {
             key: "issue5",
             eventName: .issues,
             expect: .response(
-                at: .issueAndPRs,
+                at: .issuesAndPRs,
                 type: .edit(messageId: FakeMessageLookupRepo.randomMessageID)
             )
         )
@@ -676,7 +676,7 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "pr13",
             eventName: .pull_request,
-            expect: .response(at: .issueAndPRs, type: .create)
+            expect: .response(at: .issuesAndPRs, type: .create)
         )
 
         try await handleEvent(

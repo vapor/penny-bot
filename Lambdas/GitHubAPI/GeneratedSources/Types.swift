@@ -19,9 +19,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
     /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
-    func apps_create_installation_access_token(
-        _ input: Operations.apps_create_installation_access_token.Input
-    ) async throws -> Operations.apps_create_installation_access_token.Output
+    func apps_create_installation_access_token(_ input: Operations.apps_create_installation_access_token.Input) async throws -> Operations.apps_create_installation_access_token.Output
     /// Get an organization
     ///
     /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).
@@ -37,70 +35,60 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)`.
-    func projects_get_card(_ input: Operations.projects_get_card.Input) async throws
-        -> Operations.projects_get_card.Output
+    func projects_get_card(_ input: Operations.projects_get_card.Input) async throws -> Operations.projects_get_card.Output
     /// Update an existing project card
     ///
     /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
-    func projects_update_card(_ input: Operations.projects_update_card.Input) async throws
-        -> Operations.projects_update_card.Output
+    func projects_update_card(_ input: Operations.projects_update_card.Input) async throws -> Operations.projects_update_card.Output
     /// Delete a project card
     ///
     /// Deletes a project card
     ///
     /// - Remark: HTTP `DELETE /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)`.
-    func projects_delete_card(_ input: Operations.projects_delete_card.Input) async throws
-        -> Operations.projects_delete_card.Output
+    func projects_delete_card(_ input: Operations.projects_delete_card.Input) async throws -> Operations.projects_delete_card.Output
     /// Move a project card
     ///
     /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
-    func projects_move_card(_ input: Operations.projects_move_card.Input) async throws
-        -> Operations.projects_move_card.Output
+    func projects_move_card(_ input: Operations.projects_move_card.Input) async throws -> Operations.projects_move_card.Output
     /// Get a project column
     ///
     /// Gets information about a project column.
     ///
     /// - Remark: HTTP `GET /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
-    func projects_get_column(_ input: Operations.projects_get_column.Input) async throws
-        -> Operations.projects_get_column.Output
+    func projects_get_column(_ input: Operations.projects_get_column.Input) async throws -> Operations.projects_get_column.Output
     /// Update an existing project column
     ///
     /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
-    func projects_update_column(_ input: Operations.projects_update_column.Input) async throws
-        -> Operations.projects_update_column.Output
+    func projects_update_column(_ input: Operations.projects_update_column.Input) async throws -> Operations.projects_update_column.Output
     /// Delete a project column
     ///
     /// Deletes a project column.
     ///
     /// - Remark: HTTP `DELETE /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)`.
-    func projects_delete_column(_ input: Operations.projects_delete_column.Input) async throws
-        -> Operations.projects_delete_column.Output
+    func projects_delete_column(_ input: Operations.projects_delete_column.Input) async throws -> Operations.projects_delete_column.Output
     /// List project cards
     ///
     /// Lists the project cards in a project.
     ///
     /// - Remark: HTTP `GET /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)`.
-    func projects_list_cards(_ input: Operations.projects_list_cards.Input) async throws
-        -> Operations.projects_list_cards.Output
+    func projects_list_cards(_ input: Operations.projects_list_cards.Input) async throws -> Operations.projects_list_cards.Output
     /// Create a project card
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
-    func projects_create_card(_ input: Operations.projects_create_card.Input) async throws
-        -> Operations.projects_create_card.Output
+    func projects_create_card(_ input: Operations.projects_create_card.Input) async throws -> Operations.projects_create_card.Output
     /// Move a project column
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
-    func projects_move_column(_ input: Operations.projects_move_column.Input) async throws
-        -> Operations.projects_move_column.Output
+    func projects_move_column(_ input: Operations.projects_move_column.Input) async throws -> Operations.projects_move_column.Output
     /// Get a project
     ///
     /// Gets a project by its `id`. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
@@ -114,65 +102,56 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `PATCH /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
-    func projects_update(_ input: Operations.projects_update.Input) async throws
-        -> Operations.projects_update.Output
+    func projects_update(_ input: Operations.projects_update.Input) async throws -> Operations.projects_update.Output
     /// Delete a project
     ///
     /// Deletes a project board. Returns a `404 Not Found` status if projects are disabled.
     ///
     /// - Remark: HTTP `DELETE /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
-    func projects_delete(_ input: Operations.projects_delete.Input) async throws
-        -> Operations.projects_delete.Output
+    func projects_delete(_ input: Operations.projects_delete.Input) async throws -> Operations.projects_delete.Output
     /// List project collaborators
     ///
     /// Lists the collaborators for an organization project. For a project, the list of collaborators includes outside collaborators, organization members that are direct collaborators, organization members with access through team memberships, organization members with access through default organization permissions, and organization owners. You must be an organization owner or a project `admin` to list collaborators.
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/collaborators`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
-    func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input)
-        async throws -> Operations.projects_list_collaborators.Output
+    func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input) async throws -> Operations.projects_list_collaborators.Output
     /// Add project collaborator
     ///
     /// Adds a collaborator to an organization project and sets their permission level. You must be an organization owner or a project `admin` to add a collaborator.
     ///
     /// - Remark: HTTP `PUT /projects/{project_id}/collaborators/{username}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)`.
-    func projects_add_collaborator(_ input: Operations.projects_add_collaborator.Input)
-        async throws -> Operations.projects_add_collaborator.Output
+    func projects_add_collaborator(_ input: Operations.projects_add_collaborator.Input) async throws -> Operations.projects_add_collaborator.Output
     /// Remove user as a collaborator
     ///
     /// Removes a collaborator from an organization project. You must be an organization owner or a project `admin` to remove a collaborator.
     ///
     /// - Remark: HTTP `DELETE /projects/{project_id}/collaborators/{username}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
-    func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input)
-        async throws -> Operations.projects_remove_collaborator.Output
+    func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input) async throws -> Operations.projects_remove_collaborator.Output
     /// Get project permission for a user
     ///
     /// Returns the collaborator's permission level for an organization project. Possible values for the `permission` key: `admin`, `write`, `read`, `none`. You must be an organization owner or a project `admin` to review a user's permission level.
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/collaborators/{username}/permission`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
-    func projects_get_permission_for_user(
-        _ input: Operations.projects_get_permission_for_user.Input
-    ) async throws -> Operations.projects_get_permission_for_user.Output
+    func projects_get_permission_for_user(_ input: Operations.projects_get_permission_for_user.Input) async throws -> Operations.projects_get_permission_for_user.Output
     /// List project columns
     ///
     /// Lists the project columns in a project.
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/columns`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)`.
-    func projects_list_columns(_ input: Operations.projects_list_columns.Input) async throws
-        -> Operations.projects_list_columns.Output
+    func projects_list_columns(_ input: Operations.projects_list_columns.Input) async throws -> Operations.projects_list_columns.Output
     /// Create a project column
     ///
     /// Creates a new project column.
     ///
     /// - Remark: HTTP `POST /projects/{project_id}/columns`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)`.
-    func projects_create_column(_ input: Operations.projects_create_column.Input) async throws
-        -> Operations.projects_create_column.Output
+    func projects_create_column(_ input: Operations.projects_create_column.Input) async throws -> Operations.projects_create_column.Output
     /// Get rate limit status for the authenticated user
     ///
     /// **Note:** Accessing this endpoint does not count against your REST API rate limit.
@@ -181,8 +160,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /rate_limit`.
     /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
-    func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws
-        -> Operations.rate_limit_get.Output
+    func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws -> Operations.rate_limit_get.Output
     /// Get a repository
     ///
     /// The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
@@ -225,8 +203,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
-    func repos_list_commits(_ input: Operations.repos_list_commits.Input) async throws
-        -> Operations.repos_list_commits.Output
+    func repos_list_commits(_ input: Operations.repos_list_commits.Input) async throws -> Operations.repos_list_commits.Output
     /// List pull requests associated with a commit
     ///
     /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
@@ -235,10 +212,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
-    func repos_list_pull_requests_associated_with_commit(
-        _ input: Operations.repos_list_pull_requests_associated_with_commit.Input
-    ) async throws
-        -> Operations.repos_list_pull_requests_associated_with_commit.Output
+    func repos_list_pull_requests_associated_with_commit(_ input: Operations.repos_list_pull_requests_associated_with_commit.Input) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output
     /// Compare two commits
     ///
     /// Compares two commits against one another. You can compare branches in the same repository, or you can compare branches that exist in different repositories within the same repository network, including fork branches. For more information about how to view a repository's network, see "[Understanding connections between repositories](https://docs.github.com/repositories/viewing-activity-and-data-for-your-repository/understanding-connections-between-repositories)."
@@ -289,8 +263,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/compare/{basehead}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
-    func repos_compare_commits(_ input: Operations.repos_compare_commits.Input) async throws
-        -> Operations.repos_compare_commits.Output
+    func repos_compare_commits(_ input: Operations.repos_compare_commits.Input) async throws -> Operations.repos_compare_commits.Output
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -299,8 +272,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
-    func repos_list_contributors(_ input: Operations.repos_list_contributors.Input) async throws
-        -> Operations.repos_list_contributors.Output
+    func repos_list_contributors(_ input: Operations.repos_list_contributors.Input) async throws -> Operations.repos_list_contributors.Output
     /// List repository issues
     ///
     /// List issues in a repository. Only open issues will be listed.
@@ -312,8 +284,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
-    func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input)
-        async throws -> Operations.issues_list_for_repo.Output
+    func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input) async throws -> Operations.issues_list_for_repo.Output
     /// Create an issue
     ///
     /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
@@ -322,8 +293,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
-    func issues_create(_ input: Operations.issues_create.Input) async throws
-        -> Operations.issues_create.Output
+    func issues_create(_ input: Operations.issues_create.Input) async throws -> Operations.issues_create.Output
     /// Get an issue
     ///
     /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
@@ -347,8 +317,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
-    func issues_update(_ input: Operations.issues_update.Input) async throws
-        -> Operations.issues_update.Output
+    func issues_update(_ input: Operations.issues_update.Input) async throws -> Operations.issues_update.Output
     /// Create an issue comment
     ///
     ///
@@ -362,17 +331,14 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
-    func issues_create_comment(_ input: Operations.issues_create_comment.Input) async throws
-        -> Operations.issues_create_comment.Output
+    func issues_create_comment(_ input: Operations.issues_create_comment.Input) async throws -> Operations.issues_create_comment.Output
     /// List timeline events for an issue
     ///
     /// List all timeline events for an issue.
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/timeline`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)`.
-    func issues_list_events_for_timeline(
-        _ input: Operations.issues_list_events_for_timeline.Input
-    ) async throws -> Operations.issues_list_events_for_timeline.Output
+    func issues_list_events_for_timeline(_ input: Operations.issues_list_events_for_timeline.Input) async throws -> Operations.issues_list_events_for_timeline.Output
     /// List pull requests
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -386,17 +352,14 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
-    func pulls_list_review_comments(
-        _ input: Operations.pulls_list_review_comments.Input
-    ) async throws -> Operations.pulls_list_review_comments.Output
+    func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input) async throws -> Operations.pulls_list_review_comments.Output
     /// List pull requests files
     ///
     /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
-    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws
-        -> Operations.pulls_list_files.Output
+    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws -> Operations.pulls_list_files.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -405,8 +368,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
-    func repos_list_releases(_ input: Operations.repos_list_releases.Input) async throws
-        -> Operations.repos_list_releases.Output
+    func repos_list_releases(_ input: Operations.repos_list_releases.Input) async throws -> Operations.repos_list_releases.Output
     /// Create a release
     ///
     /// Users with push access to the repository can create a release.
@@ -415,8 +377,7 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/releases`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)`.
-    func repos_create_release(_ input: Operations.repos_create_release.Input) async throws
-        -> Operations.repos_create_release.Output
+    func repos_create_release(_ input: Operations.repos_create_release.Input) async throws -> Operations.repos_create_release.Output
     /// Get the latest release
     ///
     /// View the latest published full release for the repository.
@@ -425,16 +386,14 @@ public protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases/latest`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
-    func repos_get_latest_release(
-        _ input: Operations.repos_get_latest_release.Input
-    ) async throws -> Operations.repos_get_latest_release.Output
+    func repos_get_latest_release(_ input: Operations.repos_get_latest_release.Input) async throws -> Operations.repos_get_latest_release.Output
     /// List repository tags
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
-    func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws
-        -> Operations.repos_list_tags.Output
+    func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws -> Operations.repos_list_tags.Output
 }
+
 /// Convenience overloads for operation inputs.
 extension APIProtocol {
     /// Create an installation access token for an app
@@ -450,13 +409,11 @@ extension APIProtocol {
         headers: Operations.apps_create_installation_access_token.Input.Headers = .init(),
         body: Operations.apps_create_installation_access_token.Input.Body? = nil
     ) async throws -> Operations.apps_create_installation_access_token.Output {
-        try await apps_create_installation_access_token(
-            Operations.apps_create_installation_access_token.Input(
-                path: path,
-                headers: headers,
-                body: body
-            )
-        )
+        try await apps_create_installation_access_token(Operations.apps_create_installation_access_token.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Get an organization
     ///
@@ -470,7 +427,10 @@ extension APIProtocol {
         path: Operations.orgs_get.Input.Path,
         headers: Operations.orgs_get.Input.Headers = .init()
     ) async throws -> Operations.orgs_get.Output {
-        try await orgs_get(Operations.orgs_get.Input(path: path, headers: headers))
+        try await orgs_get(Operations.orgs_get.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Get a project card
     ///
@@ -482,9 +442,10 @@ extension APIProtocol {
         path: Operations.projects_get_card.Input.Path,
         headers: Operations.projects_get_card.Input.Headers = .init()
     ) async throws -> Operations.projects_get_card.Output {
-        try await projects_get_card(
-            Operations.projects_get_card.Input(path: path, headers: headers)
-        )
+        try await projects_get_card(Operations.projects_get_card.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Update an existing project card
     ///
@@ -495,9 +456,11 @@ extension APIProtocol {
         headers: Operations.projects_update_card.Input.Headers = .init(),
         body: Operations.projects_update_card.Input.Body? = nil
     ) async throws -> Operations.projects_update_card.Output {
-        try await projects_update_card(
-            Operations.projects_update_card.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_update_card(Operations.projects_update_card.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Delete a project card
     ///
@@ -509,9 +472,10 @@ extension APIProtocol {
         path: Operations.projects_delete_card.Input.Path,
         headers: Operations.projects_delete_card.Input.Headers = .init()
     ) async throws -> Operations.projects_delete_card.Output {
-        try await projects_delete_card(
-            Operations.projects_delete_card.Input(path: path, headers: headers)
-        )
+        try await projects_delete_card(Operations.projects_delete_card.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Move a project card
     ///
@@ -522,9 +486,11 @@ extension APIProtocol {
         headers: Operations.projects_move_card.Input.Headers = .init(),
         body: Operations.projects_move_card.Input.Body
     ) async throws -> Operations.projects_move_card.Output {
-        try await projects_move_card(
-            Operations.projects_move_card.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_move_card(Operations.projects_move_card.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Get a project column
     ///
@@ -536,9 +502,10 @@ extension APIProtocol {
         path: Operations.projects_get_column.Input.Path,
         headers: Operations.projects_get_column.Input.Headers = .init()
     ) async throws -> Operations.projects_get_column.Output {
-        try await projects_get_column(
-            Operations.projects_get_column.Input(path: path, headers: headers)
-        )
+        try await projects_get_column(Operations.projects_get_column.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Update an existing project column
     ///
@@ -549,9 +516,11 @@ extension APIProtocol {
         headers: Operations.projects_update_column.Input.Headers = .init(),
         body: Operations.projects_update_column.Input.Body
     ) async throws -> Operations.projects_update_column.Output {
-        try await projects_update_column(
-            Operations.projects_update_column.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_update_column(Operations.projects_update_column.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Delete a project column
     ///
@@ -563,9 +532,10 @@ extension APIProtocol {
         path: Operations.projects_delete_column.Input.Path,
         headers: Operations.projects_delete_column.Input.Headers = .init()
     ) async throws -> Operations.projects_delete_column.Output {
-        try await projects_delete_column(
-            Operations.projects_delete_column.Input(path: path, headers: headers)
-        )
+        try await projects_delete_column(Operations.projects_delete_column.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// List project cards
     ///
@@ -578,9 +548,11 @@ extension APIProtocol {
         query: Operations.projects_list_cards.Input.Query = .init(),
         headers: Operations.projects_list_cards.Input.Headers = .init()
     ) async throws -> Operations.projects_list_cards.Output {
-        try await projects_list_cards(
-            Operations.projects_list_cards.Input(path: path, query: query, headers: headers)
-        )
+        try await projects_list_cards(Operations.projects_list_cards.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// Create a project card
     ///
@@ -591,9 +563,11 @@ extension APIProtocol {
         headers: Operations.projects_create_card.Input.Headers = .init(),
         body: Operations.projects_create_card.Input.Body
     ) async throws -> Operations.projects_create_card.Output {
-        try await projects_create_card(
-            Operations.projects_create_card.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_create_card(Operations.projects_create_card.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Move a project column
     ///
@@ -604,9 +578,11 @@ extension APIProtocol {
         headers: Operations.projects_move_column.Input.Headers = .init(),
         body: Operations.projects_move_column.Input.Body
     ) async throws -> Operations.projects_move_column.Output {
-        try await projects_move_column(
-            Operations.projects_move_column.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_move_column(Operations.projects_move_column.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Get a project
     ///
@@ -618,7 +594,10 @@ extension APIProtocol {
         path: Operations.projects_get.Input.Path,
         headers: Operations.projects_get.Input.Headers = .init()
     ) async throws -> Operations.projects_get.Output {
-        try await projects_get(Operations.projects_get.Input(path: path, headers: headers))
+        try await projects_get(Operations.projects_get.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Update a project
     ///
@@ -631,7 +610,11 @@ extension APIProtocol {
         headers: Operations.projects_update.Input.Headers = .init(),
         body: Operations.projects_update.Input.Body? = nil
     ) async throws -> Operations.projects_update.Output {
-        try await projects_update(Operations.projects_update.Input(path: path, headers: headers, body: body))
+        try await projects_update(Operations.projects_update.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Delete a project
     ///
@@ -643,7 +626,10 @@ extension APIProtocol {
         path: Operations.projects_delete.Input.Path,
         headers: Operations.projects_delete.Input.Headers = .init()
     ) async throws -> Operations.projects_delete.Output {
-        try await projects_delete(Operations.projects_delete.Input(path: path, headers: headers))
+        try await projects_delete(Operations.projects_delete.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// List project collaborators
     ///
@@ -656,9 +642,11 @@ extension APIProtocol {
         query: Operations.projects_list_collaborators.Input.Query = .init(),
         headers: Operations.projects_list_collaborators.Input.Headers = .init()
     ) async throws -> Operations.projects_list_collaborators.Output {
-        try await projects_list_collaborators(
-            Operations.projects_list_collaborators.Input(path: path, query: query, headers: headers)
-        )
+        try await projects_list_collaborators(Operations.projects_list_collaborators.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// Add project collaborator
     ///
@@ -671,9 +659,11 @@ extension APIProtocol {
         headers: Operations.projects_add_collaborator.Input.Headers = .init(),
         body: Operations.projects_add_collaborator.Input.Body? = nil
     ) async throws -> Operations.projects_add_collaborator.Output {
-        try await projects_add_collaborator(
-            Operations.projects_add_collaborator.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_add_collaborator(Operations.projects_add_collaborator.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Remove user as a collaborator
     ///
@@ -685,9 +675,10 @@ extension APIProtocol {
         path: Operations.projects_remove_collaborator.Input.Path,
         headers: Operations.projects_remove_collaborator.Input.Headers = .init()
     ) async throws -> Operations.projects_remove_collaborator.Output {
-        try await projects_remove_collaborator(
-            Operations.projects_remove_collaborator.Input(path: path, headers: headers)
-        )
+        try await projects_remove_collaborator(Operations.projects_remove_collaborator.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Get project permission for a user
     ///
@@ -699,9 +690,10 @@ extension APIProtocol {
         path: Operations.projects_get_permission_for_user.Input.Path,
         headers: Operations.projects_get_permission_for_user.Input.Headers = .init()
     ) async throws -> Operations.projects_get_permission_for_user.Output {
-        try await projects_get_permission_for_user(
-            Operations.projects_get_permission_for_user.Input(path: path, headers: headers)
-        )
+        try await projects_get_permission_for_user(Operations.projects_get_permission_for_user.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// List project columns
     ///
@@ -714,9 +706,11 @@ extension APIProtocol {
         query: Operations.projects_list_columns.Input.Query = .init(),
         headers: Operations.projects_list_columns.Input.Headers = .init()
     ) async throws -> Operations.projects_list_columns.Output {
-        try await projects_list_columns(
-            Operations.projects_list_columns.Input(path: path, query: query, headers: headers)
-        )
+        try await projects_list_columns(Operations.projects_list_columns.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// Create a project column
     ///
@@ -729,9 +723,11 @@ extension APIProtocol {
         headers: Operations.projects_create_column.Input.Headers = .init(),
         body: Operations.projects_create_column.Input.Body
     ) async throws -> Operations.projects_create_column.Output {
-        try await projects_create_column(
-            Operations.projects_create_column.Input(path: path, headers: headers, body: body)
-        )
+        try await projects_create_column(Operations.projects_create_column.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Get rate limit status for the authenticated user
     ///
@@ -741,9 +737,9 @@ extension APIProtocol {
     ///
     /// - Remark: HTTP `GET /rate_limit`.
     /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
-    public func rate_limit_get(headers: Operations.rate_limit_get.Input.Headers = .init())
-        async throws -> Operations.rate_limit_get.Output
-    { try await rate_limit_get(Operations.rate_limit_get.Input(headers: headers)) }
+    public func rate_limit_get(headers: Operations.rate_limit_get.Input.Headers = .init()) async throws -> Operations.rate_limit_get.Output {
+        try await rate_limit_get(Operations.rate_limit_get.Input(headers: headers))
+    }
     /// Get a repository
     ///
     /// The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
@@ -756,7 +752,10 @@ extension APIProtocol {
         path: Operations.repos_get.Input.Path,
         headers: Operations.repos_get.Input.Headers = .init()
     ) async throws -> Operations.repos_get.Output {
-        try await repos_get(Operations.repos_get.Input(path: path, headers: headers))
+        try await repos_get(Operations.repos_get.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// List commits
     ///
@@ -796,9 +795,11 @@ extension APIProtocol {
         query: Operations.repos_list_commits.Input.Query = .init(),
         headers: Operations.repos_list_commits.Input.Headers = .init()
     ) async throws -> Operations.repos_list_commits.Output {
-        try await repos_list_commits(
-            Operations.repos_list_commits.Input(path: path, query: query, headers: headers)
-        )
+        try await repos_list_commits(Operations.repos_list_commits.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List pull requests associated with a commit
     ///
@@ -809,22 +810,15 @@ extension APIProtocol {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
     public func repos_list_pull_requests_associated_with_commit(
-        path: Operations.repos_list_pull_requests_associated_with_commit.Input
-            .Path,
-        query: Operations.repos_list_pull_requests_associated_with_commit.Input
-            .Query = .init(),
-        headers: Operations.repos_list_pull_requests_associated_with_commit.Input
-            .Headers = .init()
-    ) async throws
-        -> Operations.repos_list_pull_requests_associated_with_commit.Output
-    {
-        try await repos_list_pull_requests_associated_with_commit(
-            Operations.repos_list_pull_requests_associated_with_commit.Input(
-                path: path,
-                query: query,
-                headers: headers
-            )
-        )
+        path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path,
+        query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query = .init(),
+        headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers = .init()
+    ) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output {
+        try await repos_list_pull_requests_associated_with_commit(Operations.repos_list_pull_requests_associated_with_commit.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// Compare two commits
     ///
@@ -881,9 +875,11 @@ extension APIProtocol {
         query: Operations.repos_compare_commits.Input.Query = .init(),
         headers: Operations.repos_compare_commits.Input.Headers = .init()
     ) async throws -> Operations.repos_compare_commits.Output {
-        try await repos_compare_commits(
-            Operations.repos_compare_commits.Input(path: path, query: query, headers: headers)
-        )
+        try await repos_compare_commits(Operations.repos_compare_commits.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List repository contributors
     ///
@@ -898,9 +894,11 @@ extension APIProtocol {
         query: Operations.repos_list_contributors.Input.Query = .init(),
         headers: Operations.repos_list_contributors.Input.Headers = .init()
     ) async throws -> Operations.repos_list_contributors.Output {
-        try await repos_list_contributors(
-            Operations.repos_list_contributors.Input(path: path, query: query, headers: headers)
-        )
+        try await repos_list_contributors(Operations.repos_list_contributors.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List repository issues
     ///
@@ -918,9 +916,11 @@ extension APIProtocol {
         query: Operations.issues_list_for_repo.Input.Query = .init(),
         headers: Operations.issues_list_for_repo.Input.Headers = .init()
     ) async throws -> Operations.issues_list_for_repo.Output {
-        try await issues_list_for_repo(
-            Operations.issues_list_for_repo.Input(path: path, query: query, headers: headers)
-        )
+        try await issues_list_for_repo(Operations.issues_list_for_repo.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// Create an issue
     ///
@@ -935,7 +935,11 @@ extension APIProtocol {
         headers: Operations.issues_create.Input.Headers = .init(),
         body: Operations.issues_create.Input.Body
     ) async throws -> Operations.issues_create.Output {
-        try await issues_create(Operations.issues_create.Input(path: path, headers: headers, body: body))
+        try await issues_create(Operations.issues_create.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Get an issue
     ///
@@ -957,7 +961,10 @@ extension APIProtocol {
         path: Operations.issues_get.Input.Path,
         headers: Operations.issues_get.Input.Headers = .init()
     ) async throws -> Operations.issues_get.Output {
-        try await issues_get(Operations.issues_get.Input(path: path, headers: headers))
+        try await issues_get(Operations.issues_get.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// Update an issue
     ///
@@ -970,7 +977,11 @@ extension APIProtocol {
         headers: Operations.issues_update.Input.Headers = .init(),
         body: Operations.issues_update.Input.Body? = nil
     ) async throws -> Operations.issues_update.Output {
-        try await issues_update(Operations.issues_update.Input(path: path, headers: headers, body: body))
+        try await issues_update(Operations.issues_update.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Create an issue comment
     ///
@@ -990,9 +1001,11 @@ extension APIProtocol {
         headers: Operations.issues_create_comment.Input.Headers = .init(),
         body: Operations.issues_create_comment.Input.Body
     ) async throws -> Operations.issues_create_comment.Output {
-        try await issues_create_comment(
-            Operations.issues_create_comment.Input(path: path, headers: headers, body: body)
-        )
+        try await issues_create_comment(Operations.issues_create_comment.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// List timeline events for an issue
     ///
@@ -1005,13 +1018,11 @@ extension APIProtocol {
         query: Operations.issues_list_events_for_timeline.Input.Query = .init(),
         headers: Operations.issues_list_events_for_timeline.Input.Headers = .init()
     ) async throws -> Operations.issues_list_events_for_timeline.Output {
-        try await issues_list_events_for_timeline(
-            Operations.issues_list_events_for_timeline.Input(
-                path: path,
-                query: query,
-                headers: headers
-            )
-        )
+        try await issues_list_events_for_timeline(Operations.issues_list_events_for_timeline.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List pull requests
     ///
@@ -1024,7 +1035,11 @@ extension APIProtocol {
         query: Operations.pulls_list.Input.Query = .init(),
         headers: Operations.pulls_list.Input.Headers = .init()
     ) async throws -> Operations.pulls_list.Output {
-        try await pulls_list(Operations.pulls_list.Input(path: path, query: query, headers: headers))
+        try await pulls_list(Operations.pulls_list.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List review comments on a pull request
     ///
@@ -1037,9 +1052,11 @@ extension APIProtocol {
         query: Operations.pulls_list_review_comments.Input.Query = .init(),
         headers: Operations.pulls_list_review_comments.Input.Headers = .init()
     ) async throws -> Operations.pulls_list_review_comments.Output {
-        try await pulls_list_review_comments(
-            Operations.pulls_list_review_comments.Input(path: path, query: query, headers: headers)
-        )
+        try await pulls_list_review_comments(Operations.pulls_list_review_comments.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List pull requests files
     ///
@@ -1052,9 +1069,11 @@ extension APIProtocol {
         query: Operations.pulls_list_files.Input.Query = .init(),
         headers: Operations.pulls_list_files.Input.Headers = .init()
     ) async throws -> Operations.pulls_list_files.Output {
-        try await pulls_list_files(
-            Operations.pulls_list_files.Input(path: path, query: query, headers: headers)
-        )
+        try await pulls_list_files(Operations.pulls_list_files.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// List releases
     ///
@@ -1069,9 +1088,11 @@ extension APIProtocol {
         query: Operations.repos_list_releases.Input.Query = .init(),
         headers: Operations.repos_list_releases.Input.Headers = .init()
     ) async throws -> Operations.repos_list_releases.Output {
-        try await repos_list_releases(
-            Operations.repos_list_releases.Input(path: path, query: query, headers: headers)
-        )
+        try await repos_list_releases(Operations.repos_list_releases.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
     /// Create a release
     ///
@@ -1086,9 +1107,11 @@ extension APIProtocol {
         headers: Operations.repos_create_release.Input.Headers = .init(),
         body: Operations.repos_create_release.Input.Body
     ) async throws -> Operations.repos_create_release.Output {
-        try await repos_create_release(
-            Operations.repos_create_release.Input(path: path, headers: headers, body: body)
-        )
+        try await repos_create_release(Operations.repos_create_release.Input(
+            path: path,
+            headers: headers,
+            body: body
+        ))
     }
     /// Get the latest release
     ///
@@ -1102,9 +1125,10 @@ extension APIProtocol {
         path: Operations.repos_get_latest_release.Input.Path,
         headers: Operations.repos_get_latest_release.Input.Headers = .init()
     ) async throws -> Operations.repos_get_latest_release.Output {
-        try await repos_get_latest_release(
-            Operations.repos_get_latest_release.Input(path: path, headers: headers)
-        )
+        try await repos_get_latest_release(Operations.repos_get_latest_release.Input(
+            path: path,
+            headers: headers
+        ))
     }
     /// List repository tags
     ///
@@ -1115,17 +1139,24 @@ extension APIProtocol {
         query: Operations.repos_list_tags.Input.Query = .init(),
         headers: Operations.repos_list_tags.Input.Headers = .init()
     ) async throws -> Operations.repos_list_tags.Output {
-        try await repos_list_tags(
-            Operations.repos_list_tags.Input(path: path, query: query, headers: headers)
-        )
+        try await repos_list_tags(Operations.repos_list_tags.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
     }
 }
+
 /// Server URLs defined in the OpenAPI document.
 public enum Servers {
     public static func server1() throws -> Foundation.URL {
-        try Foundation.URL(validatingOpenAPIServerURL: "https://api.github.com")
+        try Foundation.URL(
+            validatingOpenAPIServerURL: "https://api.github.com",
+            variables: []
+        )
     }
 }
+
 /// Types generated from the components section of the OpenAPI document.
 public enum Components {
     /// Types generated from the `#/components/schemas` section of the OpenAPI document.
@@ -1350,22 +1381,56 @@ public enum Components {
                 }
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
-                    issues = try container.decodeIfPresent(Swift.String.self, forKey: .issues)
-                    checks = try container.decodeIfPresent(Swift.String.self, forKey: .checks)
-                    metadata = try container.decodeIfPresent(Swift.String.self, forKey: .metadata)
-                    contents = try container.decodeIfPresent(Swift.String.self, forKey: .contents)
-                    deployments = try container.decodeIfPresent(Swift.String.self, forKey: .deployments)
+                    issues = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .issues
+                    )
+                    checks = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .checks
+                    )
+                    metadata = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .metadata
+                    )
+                    contents = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .contents
+                    )
+                    deployments = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .deployments
+                    )
                     additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
-                        "issues", "checks", "metadata", "contents", "deployments",
+                        "issues",
+                        "checks",
+                        "metadata",
+                        "contents",
+                        "deployments"
                     ])
                 }
                 public func encode(to encoder: any Encoder) throws {
                     var container = encoder.container(keyedBy: CodingKeys.self)
-                    try container.encodeIfPresent(issues, forKey: .issues)
-                    try container.encodeIfPresent(checks, forKey: .checks)
-                    try container.encodeIfPresent(metadata, forKey: .metadata)
-                    try container.encodeIfPresent(contents, forKey: .contents)
-                    try container.encodeIfPresent(deployments, forKey: .deployments)
+                    try container.encodeIfPresent(
+                        issues,
+                        forKey: .issues
+                    )
+                    try container.encodeIfPresent(
+                        checks,
+                        forKey: .checks
+                    )
+                    try container.encodeIfPresent(
+                        metadata,
+                        forKey: .metadata
+                    )
+                    try container.encodeIfPresent(
+                        contents,
+                        forKey: .contents
+                    )
+                    try container.encodeIfPresent(
+                        deployments,
+                        forKey: .deployments
+                    )
                     try encoder.encodeAdditionalProperties(additionalProperties)
                 }
             }
@@ -1519,7 +1584,11 @@ public enum Components {
             ///   - message:
             ///   - documentation_url:
             ///   - errors:
-            public init(message: Swift.String, documentation_url: Swift.String, errors: [Swift.String]? = nil) {
+            public init(
+                message: Swift.String,
+                documentation_url: Swift.String,
+                errors: [Swift.String]? = nil
+            ) {
                 self.message = message
                 self.documentation_url = documentation_url
                 self.errors = errors
@@ -1559,28 +1628,39 @@ public enum Components {
                     /// - Remark: Generated from `#/components/schemas/validation-error/errorsPayload/value/case3`.
                     case case3([Swift.String]?)
                     public init(from decoder: any Decoder) throws {
+                        var errors: [any Error] = []
                         do {
                             self = .case1(try decoder.decodeFromSingleValueContainer())
                             return
-                        } catch {}
+                        } catch {
+                            errors.append(error)
+                        }
                         do {
                             self = .case2(try decoder.decodeFromSingleValueContainer())
                             return
-                        } catch {}
+                        } catch {
+                            errors.append(error)
+                        }
                         do {
                             self = .case3(try decoder.decodeFromSingleValueContainer())
                             return
-                        } catch {}
+                        } catch {
+                            errors.append(error)
+                        }
                         throw Swift.DecodingError.failedToDecodeOneOfSchema(
                             type: Self.self,
-                            codingPath: decoder.codingPath
+                            codingPath: decoder.codingPath,
+                            errors: errors
                         )
                     }
                     public func encode(to encoder: any Encoder) throws {
                         switch self {
-                        case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                        case let .case2(value): try encoder.encodeToSingleValueContainer(value)
-                        case let .case3(value): try encoder.encodeToSingleValueContainer(value)
+                        case let .case1(value):
+                            try encoder.encodeToSingleValueContainer(value)
+                        case let .case2(value):
+                            try encoder.encodeToSingleValueContainer(value)
+                        case let .case3(value):
+                            try encoder.encodeToSingleValueContainer(value)
                         }
                     }
                 }
@@ -2130,12 +2210,25 @@ public enum Components {
                     self.value2 = value2
                 }
                 public init(from decoder: any Decoder) throws {
-                    value1 = try? .init(from: decoder)
-                    value2 = try? .init(from: decoder)
+                    var errors: [any Error] = []
+                    do {
+                        value1 = try .init(from: decoder)
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        value2 = try .init(from: decoder)
+                    } catch {
+                        errors.append(error)
+                    }
                     try Swift.DecodingError.verifyAtLeastOneSchemaIsNotNil(
-                        [value1, value2],
+                        [
+                            value1,
+                            value2
+                        ],
                         type: Self.self,
-                        codingPath: decoder.codingPath
+                        codingPath: decoder.codingPath,
+                        errors: errors
                     )
                 }
                 public func encode(to encoder: any Encoder) throws {
@@ -2395,7 +2488,9 @@ public enum Components {
             /// The level of permission to grant the access token to update GitHub Actions workflow files.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/workflows`.
-            @frozen public enum workflowsPayload: String, Codable, Hashable, Sendable { case write = "write" }
+            @frozen public enum workflowsPayload: String, Codable, Hashable, Sendable {
+                case write = "write"
+            }
             /// The level of permission to grant the access token to update GitHub Actions workflow files.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/workflows`.
@@ -2421,8 +2516,7 @@ public enum Components {
             /// The level of permission to grant the access token to manage access to an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_administration`.
-            public var organization_administration:
-                Components.Schemas.app_permissions.organization_administrationPayload?
+            public var organization_administration: Components.Schemas.app_permissions.organization_administrationPayload?
             /// The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
@@ -2433,8 +2527,7 @@ public enum Components {
             /// The level of permission to grant the access token for custom repository roles management. This property is in beta and is subject to change.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_custom_roles`.
-            public var organization_custom_roles:
-                Components.Schemas.app_permissions.organization_custom_rolesPayload?
+            public var organization_custom_roles: Components.Schemas.app_permissions.organization_custom_rolesPayload?
             /// The level of permission to grant the access token to view and manage announcement banners for an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_announcement_banners`.
@@ -2445,8 +2538,7 @@ public enum Components {
             /// The level of permission to grant the access token to view and manage announcement banners for an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_announcement_banners`.
-            public var organization_announcement_banners:
-                Components.Schemas.app_permissions.organization_announcement_bannersPayload?
+            public var organization_announcement_banners: Components.Schemas.app_permissions.organization_announcement_bannersPayload?
             /// The level of permission to grant the access token to manage the post-receive hooks for an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_hooks`.
@@ -2468,25 +2560,24 @@ public enum Components {
             /// The level of permission to grant the access token for viewing and managing fine-grained personal access token requests to an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_tokens`.
-            public var organization_personal_access_tokens:
-                Components.Schemas.app_permissions.organization_personal_access_tokensPayload?
+            public var organization_personal_access_tokens: Components.Schemas.app_permissions.organization_personal_access_tokensPayload?
             /// The level of permission to grant the access token for viewing and managing fine-grained personal access tokens that have been approved by an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
-            @frozen public enum organization_personal_access_token_requestsPayload: String, Codable, Hashable, Sendable
-            {
+            @frozen public enum organization_personal_access_token_requestsPayload: String, Codable, Hashable, Sendable {
                 case read = "read"
                 case write = "write"
             }
             /// The level of permission to grant the access token for viewing and managing fine-grained personal access tokens that have been approved by an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_personal_access_token_requests`.
-            public var organization_personal_access_token_requests:
-                Components.Schemas.app_permissions.organization_personal_access_token_requestsPayload?
+            public var organization_personal_access_token_requests: Components.Schemas.app_permissions.organization_personal_access_token_requestsPayload?
             /// The level of permission to grant the access token for viewing an organization's plan.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
-            @frozen public enum organization_planPayload: String, Codable, Hashable, Sendable { case read = "read" }
+            @frozen public enum organization_planPayload: String, Codable, Hashable, Sendable {
+                case read = "read"
+            }
             /// The level of permission to grant the access token for viewing an organization's plan.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_plan`.
@@ -2535,8 +2626,7 @@ public enum Components {
             /// The level of permission to grant the access token to view and manage GitHub Actions self-hosted runners available to an organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_self_hosted_runners`.
-            public var organization_self_hosted_runners:
-                Components.Schemas.app_permissions.organization_self_hosted_runnersPayload?
+            public var organization_self_hosted_runners: Components.Schemas.app_permissions.organization_self_hosted_runnersPayload?
             /// The level of permission to grant the access token to view and manage users blocked by the organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
@@ -2547,8 +2637,7 @@ public enum Components {
             /// The level of permission to grant the access token to view and manage users blocked by the organization.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/organization_user_blocking`.
-            public var organization_user_blocking:
-                Components.Schemas.app_permissions.organization_user_blockingPayload?
+            public var organization_user_blocking: Components.Schemas.app_permissions.organization_user_blockingPayload?
             /// The level of permission to grant the access token to manage team discussions and related comments.
             ///
             /// - Remark: Generated from `#/components/schemas/app-permissions/team_discussions`.
@@ -2619,25 +2708,18 @@ public enum Components {
                 vulnerability_alerts: Components.Schemas.app_permissions.vulnerability_alertsPayload? = nil,
                 workflows: Components.Schemas.app_permissions.workflowsPayload? = nil,
                 members: Components.Schemas.app_permissions.membersPayload? = nil,
-                organization_administration: Components.Schemas.app_permissions
-                    .organization_administrationPayload? = nil,
-                organization_custom_roles: Components.Schemas.app_permissions.organization_custom_rolesPayload? =
-                    nil,
-                organization_announcement_banners: Components.Schemas.app_permissions
-                    .organization_announcement_bannersPayload? = nil,
+                organization_administration: Components.Schemas.app_permissions.organization_administrationPayload? = nil,
+                organization_custom_roles: Components.Schemas.app_permissions.organization_custom_rolesPayload? = nil,
+                organization_announcement_banners: Components.Schemas.app_permissions.organization_announcement_bannersPayload? = nil,
                 organization_hooks: Components.Schemas.app_permissions.organization_hooksPayload? = nil,
-                organization_personal_access_tokens: Components.Schemas.app_permissions
-                    .organization_personal_access_tokensPayload? = nil,
-                organization_personal_access_token_requests: Components.Schemas.app_permissions
-                    .organization_personal_access_token_requestsPayload? = nil,
+                organization_personal_access_tokens: Components.Schemas.app_permissions.organization_personal_access_tokensPayload? = nil,
+                organization_personal_access_token_requests: Components.Schemas.app_permissions.organization_personal_access_token_requestsPayload? = nil,
                 organization_plan: Components.Schemas.app_permissions.organization_planPayload? = nil,
                 organization_projects: Components.Schemas.app_permissions.organization_projectsPayload? = nil,
                 organization_packages: Components.Schemas.app_permissions.organization_packagesPayload? = nil,
                 organization_secrets: Components.Schemas.app_permissions.organization_secretsPayload? = nil,
-                organization_self_hosted_runners: Components.Schemas.app_permissions
-                    .organization_self_hosted_runnersPayload? = nil,
-                organization_user_blocking: Components.Schemas.app_permissions
-                    .organization_user_blockingPayload? = nil,
+                organization_self_hosted_runners: Components.Schemas.app_permissions.organization_self_hosted_runnersPayload? = nil,
+                organization_user_blocking: Components.Schemas.app_permissions.organization_user_blockingPayload? = nil,
                 team_discussions: Components.Schemas.app_permissions.team_discussionsPayload? = nil
             ) {
                 self.actions = actions
@@ -2739,12 +2821,25 @@ public enum Components {
                     self.value2 = value2
                 }
                 public init(from decoder: any Decoder) throws {
-                    value1 = try? .init(from: decoder)
-                    value2 = try? .init(from: decoder)
+                    var errors: [any Error] = []
+                    do {
+                        value1 = try .init(from: decoder)
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        value2 = try .init(from: decoder)
+                    } catch {
+                        errors.append(error)
+                    }
                     try Swift.DecodingError.verifyAtLeastOneSchemaIsNotNil(
-                        [value1, value2],
+                        [
+                            value1,
+                            value2
+                        ],
                         type: Self.self,
-                        codingPath: decoder.codingPath
+                        codingPath: decoder.codingPath,
+                        errors: errors
                     )
                 }
                 public func encode(to encoder: any Encoder) throws {
@@ -2964,20 +3059,31 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/repository/organization/case2`.
                 case simple_user_nameonly(Components.Schemas.simple_user_nameonly)
                 public init(from decoder: any Decoder) throws {
+                    var errors: [any Error] = []
                     do {
                         self = .nullable_simple_user(try .init(from: decoder))
                         return
-                    } catch {}
+                    } catch {
+                        errors.append(error)
+                    }
                     do {
                         self = .simple_user_nameonly(try decoder.decodeFromSingleValueContainer())
                         return
-                    } catch {}
-                    throw Swift.DecodingError.failedToDecodeOneOfSchema(type: Self.self, codingPath: decoder.codingPath)
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
                 }
                 public func encode(to encoder: any Encoder) throws {
                     switch self {
-                    case let .nullable_simple_user(value): try value.encode(to: encoder)
-                    case let .simple_user_nameonly(value): try encoder.encodeToSingleValueContainer(value)
+                    case let .nullable_simple_user(value):
+                        try value.encode(to: encoder)
+                    case let .simple_user_nameonly(value):
+                        try encoder.encodeToSingleValueContainer(value)
                     }
                 }
             }
@@ -3532,8 +3638,7 @@ public enum Components {
                 /// - `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_title`.
-                public var squash_merge_commit_title:
-                    Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_titlePayload?
+                public var squash_merge_commit_title: Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_titlePayload?
                 /// The default value for a squash merge commit message:
                 ///
                 /// - `PR_BODY` - default to the pull request's body.
@@ -3553,8 +3658,7 @@ public enum Components {
                 /// - `BLANK` - default to a blank commit message.
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/squash_merge_commit_message`.
-                public var squash_merge_commit_message:
-                    Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_messagePayload?
+                public var squash_merge_commit_message: Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_messagePayload?
                 /// The default value for a merge commit title.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -3571,8 +3675,7 @@ public enum Components {
                 /// - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_title`.
-                public var merge_commit_title:
-                    Components.Schemas.repository.template_repositoryPayload.merge_commit_titlePayload?
+                public var merge_commit_title: Components.Schemas.repository.template_repositoryPayload.merge_commit_titlePayload?
                 /// The default value for a merge commit message.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -3592,8 +3695,7 @@ public enum Components {
                 /// - `BLANK` - default to a blank commit message.
                 ///
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/merge_commit_message`.
-                public var merge_commit_message:
-                    Components.Schemas.repository.template_repositoryPayload.merge_commit_messagePayload?
+                public var merge_commit_message: Components.Schemas.repository.template_repositoryPayload.merge_commit_messagePayload?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/allow_merge_commit`.
                 public var allow_merge_commit: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/repository/template_repository/subscribers_count`.
@@ -3771,14 +3873,10 @@ public enum Components {
                     delete_branch_on_merge: Swift.Bool? = nil,
                     allow_update_branch: Swift.Bool? = nil,
                     use_squash_pr_title_as_default: Swift.Bool? = nil,
-                    squash_merge_commit_title: Components.Schemas.repository.template_repositoryPayload
-                        .squash_merge_commit_titlePayload? = nil,
-                    squash_merge_commit_message: Components.Schemas.repository.template_repositoryPayload
-                        .squash_merge_commit_messagePayload? = nil,
-                    merge_commit_title: Components.Schemas.repository.template_repositoryPayload
-                        .merge_commit_titlePayload? = nil,
-                    merge_commit_message: Components.Schemas.repository.template_repositoryPayload
-                        .merge_commit_messagePayload? = nil,
+                    squash_merge_commit_title: Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_titlePayload? = nil,
+                    squash_merge_commit_message: Components.Schemas.repository.template_repositoryPayload.squash_merge_commit_messagePayload? = nil,
+                    merge_commit_title: Components.Schemas.repository.template_repositoryPayload.merge_commit_titlePayload? = nil,
+                    merge_commit_message: Components.Schemas.repository.template_repositoryPayload.merge_commit_messagePayload? = nil,
                     allow_merge_commit: Swift.Bool? = nil,
                     subscribers_count: Swift.Int? = nil,
                     network_count: Swift.Int? = nil
@@ -3984,7 +4082,8 @@ public enum Components {
             /// Whether a squash merge commit can use the pull request title as default. **This property has been deprecated. Please use `squash_merge_commit_title` instead.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/use_squash_pr_title_as_default`.
-            @available(*, deprecated) public var use_squash_pr_title_as_default: Swift.Bool?
+            @available(*, deprecated)
+            public var use_squash_pr_title_as_default: Swift.Bool?
             /// The default value for a squash merge commit title:
             ///
             /// - `PR_TITLE` - default to the pull request's title.
@@ -4499,20 +4598,31 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/string-or-int-date/case2`.
             case int_date(Components.Schemas.int_date)
             public init(from decoder: any Decoder) throws {
+                var errors: [any Error] = []
                 do {
                     self = .string_date(try decoder.decodeFromSingleValueContainer())
                     return
-                } catch {}
+                } catch {
+                    errors.append(error)
+                }
                 do {
                     self = .int_date(try decoder.decodeFromSingleValueContainer())
                     return
-                } catch {}
-                throw Swift.DecodingError.failedToDecodeOneOfSchema(type: Self.self, codingPath: decoder.codingPath)
+                } catch {
+                    errors.append(error)
+                }
+                throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                    type: Self.self,
+                    codingPath: decoder.codingPath,
+                    errors: errors
+                )
             }
             public func encode(to encoder: any Encoder) throws {
                 switch self {
-                case let .string_date(value): try encoder.encodeToSingleValueContainer(value)
-                case let .int_date(value): try encoder.encodeToSingleValueContainer(value)
+                case let .string_date(value):
+                    try encoder.encodeToSingleValueContainer(value)
+                case let .int_date(value):
+                    try encoder.encodeToSingleValueContainer(value)
                 }
             }
         }
@@ -4650,7 +4760,10 @@ public enum Components {
             /// - Parameters:
             ///   - ecosystem: The package's language or package management ecosystem.
             ///   - name: The unique package name within its ecosystem.
-            public init(ecosystem: Swift.String, name: Swift.String) {
+            public init(
+                ecosystem: Swift.String,
+                name: Swift.String
+            ) {
                 self.ecosystem = ecosystem
                 self.name = name
             }
@@ -4660,9 +4773,18 @@ public enum Components {
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                ecosystem = try container.decode(Swift.String.self, forKey: .ecosystem)
-                name = try container.decode(Swift.String.self, forKey: .name)
-                try decoder.ensureNoAdditionalProperties(knownKeys: ["ecosystem", "name"])
+                ecosystem = try container.decode(
+                    Swift.String.self,
+                    forKey: .ecosystem
+                )
+                name = try container.decode(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "ecosystem",
+                    "name"
+                ])
             }
         }
         /// Details pertaining to one vulnerable version range for the advisory.
@@ -4683,8 +4805,7 @@ public enum Components {
             /// The severity of the vulnerability.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/severity`.
-            public var severity:
-                Components.Schemas.dependabot_alert_security_vulnerability.severityPayload
+            public var severity: Components.Schemas.dependabot_alert_security_vulnerability.severityPayload
             /// Conditions that identify vulnerable versions of this vulnerability's package.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/vulnerable_version_range`.
@@ -4701,20 +4822,27 @@ public enum Components {
                 ///
                 /// - Parameters:
                 ///   - identifier: The package version that patches this vulnerability.
-                public init(identifier: Swift.String) { self.identifier = identifier }
-                public enum CodingKeys: String, CodingKey { case identifier }
+                public init(identifier: Swift.String) {
+                    self.identifier = identifier
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case identifier
+                }
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
-                    identifier = try container.decode(Swift.String.self, forKey: .identifier)
-                    try decoder.ensureNoAdditionalProperties(knownKeys: ["identifier"])
+                    identifier = try container.decode(
+                        Swift.String.self,
+                        forKey: .identifier
+                    )
+                    try decoder.ensureNoAdditionalProperties(knownKeys: [
+                        "identifier"
+                    ])
                 }
             }
             /// Details pertaining to the package version that patches this vulnerability.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-vulnerability/first_patched_version`.
-            public var first_patched_version:
-                Components.Schemas.dependabot_alert_security_vulnerability
-                    .first_patched_versionPayload?
+            public var first_patched_version: Components.Schemas.dependabot_alert_security_vulnerability.first_patched_versionPayload?
             /// Creates a new `dependabot_alert_security_vulnerability`.
             ///
             /// - Parameters:
@@ -4724,11 +4852,9 @@ public enum Components {
             ///   - first_patched_version: Details pertaining to the package version that patches this vulnerability.
             public init(
                 package: Components.Schemas.dependabot_alert_package,
-                severity: Components.Schemas.dependabot_alert_security_vulnerability
-                    .severityPayload,
+                severity: Components.Schemas.dependabot_alert_security_vulnerability.severityPayload,
                 vulnerable_version_range: Swift.String,
-                first_patched_version: Components.Schemas.dependabot_alert_security_vulnerability
-                    .first_patched_versionPayload? = nil
+                first_patched_version: Components.Schemas.dependabot_alert_security_vulnerability.first_patched_versionPayload? = nil
             ) {
                 self.package = package
                 self.severity = severity
@@ -4748,18 +4874,22 @@ public enum Components {
                     forKey: .package
                 )
                 severity = try container.decode(
-                    Components.Schemas.dependabot_alert_security_vulnerability.severityPayload
-                        .self,
+                    Components.Schemas.dependabot_alert_security_vulnerability.severityPayload.self,
                     forKey: .severity
                 )
-                vulnerable_version_range = try container.decode(Swift.String.self, forKey: .vulnerable_version_range)
+                vulnerable_version_range = try container.decode(
+                    Swift.String.self,
+                    forKey: .vulnerable_version_range
+                )
                 first_patched_version = try container.decodeIfPresent(
-                    Components.Schemas.dependabot_alert_security_vulnerability
-                        .first_patched_versionPayload.self,
+                    Components.Schemas.dependabot_alert_security_vulnerability.first_patched_versionPayload.self,
                     forKey: .first_patched_version
                 )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
-                    "package", "severity", "vulnerable_version_range", "first_patched_version",
+                    "package",
+                    "severity",
+                    "vulnerable_version_range",
+                    "first_patched_version"
                 ])
             }
         }
@@ -4786,8 +4916,7 @@ public enum Components {
             /// Vulnerable version range information for the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/vulnerabilities`.
-            public var vulnerabilities:
-                [Components.Schemas.dependabot_alert_security_vulnerability]
+            public var vulnerabilities: [Components.Schemas.dependabot_alert_security_vulnerability]
             /// The severity of the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/severity`.
@@ -4800,8 +4929,7 @@ public enum Components {
             /// The severity of the advisory.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/severity`.
-            public var severity:
-                Components.Schemas.dependabot_alert_security_advisory.severityPayload
+            public var severity: Components.Schemas.dependabot_alert_security_advisory.severityPayload
             /// Details for the advisory pertaining to the Common Vulnerability Scoring System.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cvss`.
@@ -4819,7 +4947,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - score: The overall CVSS score of the advisory.
                 ///   - vector_string: The full CVSS vector string for the advisory.
-                public init(score: Swift.Double, vector_string: Swift.String? = nil) {
+                public init(
+                    score: Swift.Double,
+                    vector_string: Swift.String? = nil
+                ) {
                     self.score = score
                     self.vector_string = vector_string
                 }
@@ -4829,9 +4960,18 @@ public enum Components {
                 }
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
-                    score = try container.decode(Swift.Double.self, forKey: .score)
-                    vector_string = try container.decodeIfPresent(Swift.String.self, forKey: .vector_string)
-                    try decoder.ensureNoAdditionalProperties(knownKeys: ["score", "vector_string"])
+                    score = try container.decode(
+                        Swift.Double.self,
+                        forKey: .score
+                    )
+                    vector_string = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .vector_string
+                    )
+                    try decoder.ensureNoAdditionalProperties(knownKeys: [
+                        "score",
+                        "vector_string"
+                    ])
                 }
             }
             /// Details for the advisory pertaining to the Common Vulnerability Scoring System.
@@ -4855,7 +4995,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - cwe_id: The unique CWE ID.
                 ///   - name: The short, plain text name of the CWE.
-                public init(cwe_id: Swift.String, name: Swift.String) {
+                public init(
+                    cwe_id: Swift.String,
+                    name: Swift.String
+                ) {
                     self.cwe_id = cwe_id
                     self.name = name
                 }
@@ -4865,16 +5008,24 @@ public enum Components {
                 }
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
-                    cwe_id = try container.decode(Swift.String.self, forKey: .cwe_id)
-                    name = try container.decode(Swift.String.self, forKey: .name)
-                    try decoder.ensureNoAdditionalProperties(knownKeys: ["cwe_id", "name"])
+                    cwe_id = try container.decode(
+                        Swift.String.self,
+                        forKey: .cwe_id
+                    )
+                    name = try container.decode(
+                        Swift.String.self,
+                        forKey: .name
+                    )
+                    try decoder.ensureNoAdditionalProperties(knownKeys: [
+                        "cwe_id",
+                        "name"
+                    ])
                 }
             }
             /// Details for the advisory pertaining to Common Weakness Enumeration.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cwes`.
-            public typealias cwesPayload = [Components.Schemas.dependabot_alert_security_advisory
-                .cwesPayloadPayload]
+            public typealias cwesPayload = [Components.Schemas.dependabot_alert_security_advisory.cwesPayloadPayload]
             /// Details for the advisory pertaining to Common Weakness Enumeration.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/cwes`.
@@ -4893,9 +5044,7 @@ public enum Components {
                 /// The type of advisory identifier.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload/type`.
-                public var _type:
-                    Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload
-                        ._typePayload
+                public var _type: Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload._typePayload
                 /// The value of the advisory identifer.
                 ///
                 /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiersPayload/value`.
@@ -4906,8 +5055,7 @@ public enum Components {
                 ///   - _type: The type of advisory identifier.
                 ///   - value: The value of the advisory identifer.
                 public init(
-                    _type: Components.Schemas.dependabot_alert_security_advisory
-                        .identifiersPayloadPayload._typePayload,
+                    _type: Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload._typePayload,
                     value: Swift.String
                 ) {
                     self._type = _type
@@ -4920,24 +5068,27 @@ public enum Components {
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
                     _type = try container.decode(
-                        Components.Schemas.dependabot_alert_security_advisory
-                            .identifiersPayloadPayload._typePayload.self,
+                        Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload._typePayload.self,
                         forKey: ._type
                     )
-                    value = try container.decode(Swift.String.self, forKey: .value)
-                    try decoder.ensureNoAdditionalProperties(knownKeys: ["type", "value"])
+                    value = try container.decode(
+                        Swift.String.self,
+                        forKey: .value
+                    )
+                    try decoder.ensureNoAdditionalProperties(knownKeys: [
+                        "type",
+                        "value"
+                    ])
                 }
             }
             /// Values that identify this advisory among security information sources.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiers`.
-            public typealias identifiersPayload = [Components.Schemas
-                .dependabot_alert_security_advisory.identifiersPayloadPayload]
+            public typealias identifiersPayload = [Components.Schemas.dependabot_alert_security_advisory.identifiersPayloadPayload]
             /// Values that identify this advisory among security information sources.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/identifiers`.
-            public var identifiers:
-                Components.Schemas.dependabot_alert_security_advisory.identifiersPayload
+            public var identifiers: Components.Schemas.dependabot_alert_security_advisory.identifiersPayload
             /// A link to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/referencesPayload`.
@@ -4950,24 +5101,31 @@ public enum Components {
                 ///
                 /// - Parameters:
                 ///   - url: The URL of the reference.
-                public init(url: Swift.String) { self.url = url }
-                public enum CodingKeys: String, CodingKey { case url }
+                public init(url: Swift.String) {
+                    self.url = url
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case url
+                }
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
-                    url = try container.decode(Swift.String.self, forKey: .url)
-                    try decoder.ensureNoAdditionalProperties(knownKeys: ["url"])
+                    url = try container.decode(
+                        Swift.String.self,
+                        forKey: .url
+                    )
+                    try decoder.ensureNoAdditionalProperties(knownKeys: [
+                        "url"
+                    ])
                 }
             }
             /// Links to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/references`.
-            public typealias referencesPayload = [Components.Schemas
-                .dependabot_alert_security_advisory.referencesPayloadPayload]
+            public typealias referencesPayload = [Components.Schemas.dependabot_alert_security_advisory.referencesPayloadPayload]
             /// Links to additional advisory information.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/references`.
-            public var references:
-                Components.Schemas.dependabot_alert_security_advisory.referencesPayload
+            public var references: Components.Schemas.dependabot_alert_security_advisory.referencesPayload
             /// The time that the advisory was published in ISO 8601 format: `YYYY-MM-DDTHH:MM:SSZ`.
             ///
             /// - Remark: Generated from `#/components/schemas/dependabot-alert-security-advisory/published_at`.
@@ -5005,10 +5163,8 @@ public enum Components {
                 severity: Components.Schemas.dependabot_alert_security_advisory.severityPayload,
                 cvss: Components.Schemas.dependabot_alert_security_advisory.cvssPayload,
                 cwes: Components.Schemas.dependabot_alert_security_advisory.cwesPayload,
-                identifiers: Components.Schemas.dependabot_alert_security_advisory
-                    .identifiersPayload,
-                references: Components.Schemas.dependabot_alert_security_advisory
-                    .referencesPayload,
+                identifiers: Components.Schemas.dependabot_alert_security_advisory.identifiersPayload,
+                references: Components.Schemas.dependabot_alert_security_advisory.referencesPayload,
                 published_at: Foundation.Date,
                 updated_at: Foundation.Date,
                 withdrawn_at: Foundation.Date? = nil
@@ -5044,10 +5200,22 @@ public enum Components {
             }
             public init(from decoder: any Decoder) throws {
                 let container = try decoder.container(keyedBy: CodingKeys.self)
-                ghsa_id = try container.decode(Swift.String.self, forKey: .ghsa_id)
-                cve_id = try container.decodeIfPresent(Swift.String.self, forKey: .cve_id)
-                summary = try container.decode(Swift.String.self, forKey: .summary)
-                description = try container.decode(Swift.String.self, forKey: .description)
+                ghsa_id = try container.decode(
+                    Swift.String.self,
+                    forKey: .ghsa_id
+                )
+                cve_id = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .cve_id
+                )
+                summary = try container.decode(
+                    Swift.String.self,
+                    forKey: .summary
+                )
+                description = try container.decode(
+                    Swift.String.self,
+                    forKey: .description
+                )
                 vulnerabilities = try container.decode(
                     [Components.Schemas.dependabot_alert_security_vulnerability].self,
                     forKey: .vulnerabilities
@@ -5072,12 +5240,32 @@ public enum Components {
                     Components.Schemas.dependabot_alert_security_advisory.referencesPayload.self,
                     forKey: .references
                 )
-                published_at = try container.decode(Foundation.Date.self, forKey: .published_at)
-                updated_at = try container.decode(Foundation.Date.self, forKey: .updated_at)
-                withdrawn_at = try container.decodeIfPresent(Foundation.Date.self, forKey: .withdrawn_at)
+                published_at = try container.decode(
+                    Foundation.Date.self,
+                    forKey: .published_at
+                )
+                updated_at = try container.decode(
+                    Foundation.Date.self,
+                    forKey: .updated_at
+                )
+                withdrawn_at = try container.decodeIfPresent(
+                    Foundation.Date.self,
+                    forKey: .withdrawn_at
+                )
                 try decoder.ensureNoAdditionalProperties(knownKeys: [
-                    "ghsa_id", "cve_id", "summary", "description", "vulnerabilities", "severity", "cvss", "cwes",
-                    "identifiers", "references", "published_at", "updated_at", "withdrawn_at",
+                    "ghsa_id",
+                    "cve_id",
+                    "summary",
+                    "description",
+                    "vulnerabilities",
+                    "severity",
+                    "cvss",
+                    "cwes",
+                    "identifiers",
+                    "references",
+                    "published_at",
+                    "updated_at",
+                    "withdrawn_at"
                 ])
             }
         }
@@ -5689,22 +5877,56 @@ public enum Components {
                 }
                 public init(from decoder: any Decoder) throws {
                     let container = try decoder.container(keyedBy: CodingKeys.self)
-                    issues = try container.decodeIfPresent(Swift.String.self, forKey: .issues)
-                    checks = try container.decodeIfPresent(Swift.String.self, forKey: .checks)
-                    metadata = try container.decodeIfPresent(Swift.String.self, forKey: .metadata)
-                    contents = try container.decodeIfPresent(Swift.String.self, forKey: .contents)
-                    deployments = try container.decodeIfPresent(Swift.String.self, forKey: .deployments)
+                    issues = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .issues
+                    )
+                    checks = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .checks
+                    )
+                    metadata = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .metadata
+                    )
+                    contents = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .contents
+                    )
+                    deployments = try container.decodeIfPresent(
+                        Swift.String.self,
+                        forKey: .deployments
+                    )
                     additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [
-                        "issues", "checks", "metadata", "contents", "deployments",
+                        "issues",
+                        "checks",
+                        "metadata",
+                        "contents",
+                        "deployments"
                     ])
                 }
                 public func encode(to encoder: any Encoder) throws {
                     var container = encoder.container(keyedBy: CodingKeys.self)
-                    try container.encodeIfPresent(issues, forKey: .issues)
-                    try container.encodeIfPresent(checks, forKey: .checks)
-                    try container.encodeIfPresent(metadata, forKey: .metadata)
-                    try container.encodeIfPresent(contents, forKey: .contents)
-                    try container.encodeIfPresent(deployments, forKey: .deployments)
+                    try container.encodeIfPresent(
+                        issues,
+                        forKey: .issues
+                    )
+                    try container.encodeIfPresent(
+                        checks,
+                        forKey: .checks
+                    )
+                    try container.encodeIfPresent(
+                        metadata,
+                        forKey: .metadata
+                    )
+                    try container.encodeIfPresent(
+                        contents,
+                        forKey: .contents
+                    )
+                    try container.encodeIfPresent(
+                        deployments,
+                        forKey: .deployments
+                    )
                     try encoder.encodeAdditionalProperties(additionalProperties)
                 }
             }
@@ -5989,20 +6211,31 @@ public enum Components {
                 /// - Remark: Generated from `#/components/schemas/issue/labelsPayload/case2`.
                 case case2(Components.Schemas.issue.labelsPayloadPayload.Case2Payload)
                 public init(from decoder: any Decoder) throws {
+                    var errors: [any Error] = []
                     do {
                         self = .case1(try decoder.decodeFromSingleValueContainer())
                         return
-                    } catch {}
+                    } catch {
+                        errors.append(error)
+                    }
                     do {
                         self = .case2(try .init(from: decoder))
                         return
-                    } catch {}
-                    throw Swift.DecodingError.failedToDecodeOneOfSchema(type: Self.self, codingPath: decoder.codingPath)
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
                 }
                 public func encode(to encoder: any Encoder) throws {
                     switch self {
-                    case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                    case let .case2(value): try value.encode(to: encoder)
+                    case let .case1(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    case let .case2(value):
+                        try value.encode(to: encoder)
                     }
                 }
             }
@@ -6351,21 +6584,20 @@ public enum Components {
                     case disabled = "disabled"
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security/status`.
-                public var status:
-                    Components.Schemas.security_and_analysis.advanced_securityPayload.statusPayload?
+                public var status: Components.Schemas.security_and_analysis.advanced_securityPayload.statusPayload?
                 /// Creates a new `advanced_securityPayload`.
                 ///
                 /// - Parameters:
                 ///   - status:
-                public init(
-                    status: Components.Schemas.security_and_analysis.advanced_securityPayload
-                        .statusPayload? = nil
-                ) { self.status = status }
-                public enum CodingKeys: String, CodingKey { case status }
+                public init(status: Components.Schemas.security_and_analysis.advanced_securityPayload.statusPayload? = nil) {
+                    self.status = status
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case status
+                }
             }
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/advanced_security`.
-            public var advanced_security:
-                Components.Schemas.security_and_analysis.advanced_securityPayload?
+            public var advanced_security: Components.Schemas.security_and_analysis.advanced_securityPayload?
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning`.
             public struct secret_scanningPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning/status`.
@@ -6374,17 +6606,17 @@ public enum Components {
                     case disabled = "disabled"
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning/status`.
-                public var status:
-                    Components.Schemas.security_and_analysis.secret_scanningPayload.statusPayload?
+                public var status: Components.Schemas.security_and_analysis.secret_scanningPayload.statusPayload?
                 /// Creates a new `secret_scanningPayload`.
                 ///
                 /// - Parameters:
                 ///   - status:
-                public init(
-                    status: Components.Schemas.security_and_analysis.secret_scanningPayload
-                        .statusPayload? = nil
-                ) { self.status = status }
-                public enum CodingKeys: String, CodingKey { case status }
+                public init(status: Components.Schemas.security_and_analysis.secret_scanningPayload.statusPayload? = nil) {
+                    self.status = status
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case status
+                }
             }
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning`.
             public var secret_scanning: Components.Schemas.security_and_analysis.secret_scanningPayload?
@@ -6396,22 +6628,20 @@ public enum Components {
                     case disabled = "disabled"
                 }
                 /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection/status`.
-                public var status:
-                    Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload
-                        .statusPayload?
+                public var status: Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload.statusPayload?
                 /// Creates a new `secret_scanning_push_protectionPayload`.
                 ///
                 /// - Parameters:
                 ///   - status:
-                public init(
-                    status: Components.Schemas.security_and_analysis
-                        .secret_scanning_push_protectionPayload.statusPayload? = nil
-                ) { self.status = status }
-                public enum CodingKeys: String, CodingKey { case status }
+                public init(status: Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload.statusPayload? = nil) {
+                    self.status = status
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case status
+                }
             }
             /// - Remark: Generated from `#/components/schemas/security-and-analysis/secret_scanning_push_protection`.
-            public var secret_scanning_push_protection:
-                Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload?
+            public var secret_scanning_push_protection: Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload?
             /// Creates a new `security_and_analysis`.
             ///
             /// - Parameters:
@@ -6419,11 +6649,9 @@ public enum Components {
             ///   - secret_scanning:
             ///   - secret_scanning_push_protection:
             public init(
-                advanced_security: Components.Schemas.security_and_analysis.advanced_securityPayload? =
-                    nil,
+                advanced_security: Components.Schemas.security_and_analysis.advanced_securityPayload? = nil,
                 secret_scanning: Components.Schemas.security_and_analysis.secret_scanningPayload? = nil,
-                secret_scanning_push_protection: Components.Schemas.security_and_analysis
-                    .secret_scanning_push_protectionPayload? = nil
+                secret_scanning_push_protection: Components.Schemas.security_and_analysis.secret_scanning_push_protectionPayload? = nil
             ) {
                 self.advanced_security = advanced_security
                 self.secret_scanning = secret_scanning
@@ -6877,14 +7105,11 @@ public enum Components {
                 self.updated_at = updated_at
                 self.advanced_security_enabled_for_new_repositories = advanced_security_enabled_for_new_repositories
                 self.dependabot_alerts_enabled_for_new_repositories = dependabot_alerts_enabled_for_new_repositories
-                self.dependabot_security_updates_enabled_for_new_repositories =
-                    dependabot_security_updates_enabled_for_new_repositories
+                self.dependabot_security_updates_enabled_for_new_repositories = dependabot_security_updates_enabled_for_new_repositories
                 self.dependency_graph_enabled_for_new_repositories = dependency_graph_enabled_for_new_repositories
                 self.secret_scanning_enabled_for_new_repositories = secret_scanning_enabled_for_new_repositories
-                self.secret_scanning_push_protection_enabled_for_new_repositories =
-                    secret_scanning_push_protection_enabled_for_new_repositories
-                self.secret_scanning_push_protection_custom_link_enabled =
-                    secret_scanning_push_protection_custom_link_enabled
+                self.secret_scanning_push_protection_enabled_for_new_repositories = secret_scanning_push_protection_enabled_for_new_repositories
+                self.secret_scanning_push_protection_custom_link_enabled = secret_scanning_push_protection_custom_link_enabled
                 self.secret_scanning_push_protection_custom_link = secret_scanning_push_protection_custom_link
             }
             public enum CodingKeys: String, CodingKey {
@@ -7066,8 +7291,7 @@ public enum Components {
         /// State of a code scanning alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-state-query`.
-        @frozen
-        public enum code_scanning_alert_state_query: String, Codable, Hashable, Sendable {
+        @frozen public enum code_scanning_alert_state_query: String, Codable, Hashable, Sendable {
             case open = "open"
             case closed = "closed"
             case dismissed = "dismissed"
@@ -7100,10 +7324,7 @@ public enum Components {
         /// **Required when the state is dismissed.** The reason for dismissing or closing the alert.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-dismissed-reason`.
-        @frozen
-        public enum code_scanning_alert_dismissed_reason: String, Codable, Hashable,
-            Sendable
-        {
+        @frozen public enum code_scanning_alert_dismissed_reason: String, Codable, Hashable, Sendable {
             case false_space_positive = "false positive"
             case won_apos_t_space_fix = "won't fix"
             case used_space_in_space_tests = "used in tests"
@@ -7147,8 +7368,7 @@ public enum Components {
             /// The security severity of the alert.
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/security_severity_level`.
-            public var security_severity_level:
-                Components.Schemas.code_scanning_alert_rule.security_severity_levelPayload?
+            public var security_severity_level: Components.Schemas.code_scanning_alert_rule.security_severity_levelPayload?
             /// A short description of the rule used to detect the alert.
             ///
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-rule/description`.
@@ -7185,8 +7405,7 @@ public enum Components {
                 id: Swift.String? = nil,
                 name: Swift.String? = nil,
                 severity: Components.Schemas.code_scanning_alert_rule.severityPayload? = nil,
-                security_severity_level: Components.Schemas.code_scanning_alert_rule
-                    .security_severity_levelPayload? = nil,
+                security_severity_level: Components.Schemas.code_scanning_alert_rule.security_severity_levelPayload? = nil,
                 description: Swift.String? = nil,
                 full_description: Swift.String? = nil,
                 tags: [Swift.String]? = nil,
@@ -7311,8 +7530,7 @@ public enum Components {
         /// A classification of the file. For example to identify it as generated.
         ///
         /// - Remark: Generated from `#/components/schemas/code-scanning-alert-classification`.
-        @frozen public enum code_scanning_alert_classification: String, Codable, Hashable, Sendable
-        {
+        @frozen public enum code_scanning_alert_classification: String, Codable, Hashable, Sendable {
             case source = "source"
             case generated = "generated"
             case test = "test"
@@ -7340,8 +7558,12 @@ public enum Components {
                 ///
                 /// - Parameters:
                 ///   - text:
-                public init(text: Swift.String? = nil) { self.text = text }
-                public enum CodingKeys: String, CodingKey { case text }
+                public init(text: Swift.String? = nil) {
+                    self.text = text
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case text
+                }
             }
             /// - Remark: Generated from `#/components/schemas/code-scanning-alert-instance/message`.
             public var message: Components.Schemas.code_scanning_alert_instance.messagePayload?
@@ -7426,11 +7648,9 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/dismissed_at`.
             public var dismissed_at: Components.Schemas.alert_dismissed_at?
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/dismissed_reason`.
-            public var dismissed_reason:
-                Components.Schemas.code_scanning_alert_dismissed_reason?
+            public var dismissed_reason: Components.Schemas.code_scanning_alert_dismissed_reason?
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/dismissed_comment`.
-            public var dismissed_comment:
-                Components.Schemas.code_scanning_alert_dismissed_comment?
+            public var dismissed_comment: Components.Schemas.code_scanning_alert_dismissed_comment?
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/rule`.
             public var rule: Components.Schemas.code_scanning_alert_rule
             /// - Remark: Generated from `#/components/schemas/code-scanning-organization-alert-items/tool`.
@@ -7469,10 +7689,8 @@ public enum Components {
                 fixed_at: Components.Schemas.alert_fixed_at? = nil,
                 dismissed_by: Components.Schemas.nullable_simple_user? = nil,
                 dismissed_at: Components.Schemas.alert_dismissed_at? = nil,
-                dismissed_reason: Components.Schemas.code_scanning_alert_dismissed_reason? =
-                    nil,
-                dismissed_comment: Components.Schemas
-                    .code_scanning_alert_dismissed_comment? = nil,
+                dismissed_reason: Components.Schemas.code_scanning_alert_dismissed_reason? = nil,
+                dismissed_comment: Components.Schemas.code_scanning_alert_dismissed_comment? = nil,
                 rule: Components.Schemas.code_scanning_alert_rule,
                 tool: Components.Schemas.code_scanning_analysis_tool,
                 most_recent_instance: Components.Schemas.code_scanning_alert_instance,
@@ -8526,8 +8744,7 @@ public enum Components {
                     }
                 }
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/permissions`.
-                public var permissions:
-                    Components.Schemas.nullable_repository.template_repositoryPayload.permissionsPayload?
+                public var permissions: Components.Schemas.nullable_repository.template_repositoryPayload.permissionsPayload?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/allow_rebase_merge`.
                 public var allow_rebase_merge: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/temp_clone_token`.
@@ -8558,9 +8775,7 @@ public enum Components {
                 /// - `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_title`.
-                public var squash_merge_commit_title:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .squash_merge_commit_titlePayload?
+                public var squash_merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload.squash_merge_commit_titlePayload?
                 /// The default value for a squash merge commit message:
                 ///
                 /// - `PR_BODY` - default to the pull request's body.
@@ -8580,9 +8795,7 @@ public enum Components {
                 /// - `BLANK` - default to a blank commit message.
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/squash_merge_commit_message`.
-                public var squash_merge_commit_message:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .squash_merge_commit_messagePayload?
+                public var squash_merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload.squash_merge_commit_messagePayload?
                 /// The default value for a merge commit title.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -8599,8 +8812,7 @@ public enum Components {
                 /// - `MERGE_MESSAGE` - default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_title`.
-                public var merge_commit_title:
-                    Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_titlePayload?
+                public var merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_titlePayload?
                 /// The default value for a merge commit message.
                 ///
                 /// - `PR_TITLE` - default to the pull request's title.
@@ -8620,9 +8832,7 @@ public enum Components {
                 /// - `BLANK` - default to a blank commit message.
                 ///
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/merge_commit_message`.
-                public var merge_commit_message:
-                    Components.Schemas.nullable_repository.template_repositoryPayload
-                        .merge_commit_messagePayload?
+                public var merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_messagePayload?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/allow_merge_commit`.
                 public var allow_merge_commit: Swift.Bool?
                 /// - Remark: Generated from `#/components/schemas/nullable-repository/template_repository/subscribers_count`.
@@ -8792,8 +9002,7 @@ public enum Components {
                     pushed_at: Swift.String? = nil,
                     created_at: Swift.String? = nil,
                     updated_at: Swift.String? = nil,
-                    permissions: Components.Schemas.nullable_repository.template_repositoryPayload
-                        .permissionsPayload? = nil,
+                    permissions: Components.Schemas.nullable_repository.template_repositoryPayload.permissionsPayload? = nil,
                     allow_rebase_merge: Swift.Bool? = nil,
                     temp_clone_token: Swift.String? = nil,
                     allow_squash_merge: Swift.Bool? = nil,
@@ -8801,14 +9010,10 @@ public enum Components {
                     delete_branch_on_merge: Swift.Bool? = nil,
                     allow_update_branch: Swift.Bool? = nil,
                     use_squash_pr_title_as_default: Swift.Bool? = nil,
-                    squash_merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload
-                        .squash_merge_commit_titlePayload? = nil,
-                    squash_merge_commit_message: Components.Schemas.nullable_repository
-                        .template_repositoryPayload.squash_merge_commit_messagePayload? = nil,
-                    merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload
-                        .merge_commit_titlePayload? = nil,
-                    merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload
-                        .merge_commit_messagePayload? = nil,
+                    squash_merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload.squash_merge_commit_titlePayload? = nil,
+                    squash_merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload.squash_merge_commit_messagePayload? = nil,
+                    merge_commit_title: Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_titlePayload? = nil,
+                    merge_commit_message: Components.Schemas.nullable_repository.template_repositoryPayload.merge_commit_messagePayload? = nil,
                     allow_merge_commit: Swift.Bool? = nil,
                     subscribers_count: Swift.Int? = nil,
                     network_count: Swift.Int? = nil
@@ -9014,7 +9219,8 @@ public enum Components {
             /// Whether a squash merge commit can use the pull request title as default. **This property has been deprecated. Please use `squash_merge_commit_title` instead.
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/use_squash_pr_title_as_default`.
-            @available(*, deprecated) public var use_squash_pr_title_as_default: Swift.Bool?
+            @available(*, deprecated)
+            public var use_squash_pr_title_as_default: Swift.Bool?
             /// The default value for a squash merge commit title:
             ///
             /// - `PR_TITLE` - default to the pull request's title.
@@ -9031,8 +9237,7 @@ public enum Components {
             /// - `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/squash_merge_commit_title`.
-            public var squash_merge_commit_title:
-                Components.Schemas.nullable_repository.squash_merge_commit_titlePayload?
+            public var squash_merge_commit_title: Components.Schemas.nullable_repository.squash_merge_commit_titlePayload?
             /// The default value for a squash merge commit message:
             ///
             /// - `PR_BODY` - default to the pull request's body.
@@ -9052,8 +9257,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-repository/squash_merge_commit_message`.
-            public var squash_merge_commit_message:
-                Components.Schemas.nullable_repository.squash_merge_commit_messagePayload?
+            public var squash_merge_commit_message: Components.Schemas.nullable_repository.squash_merge_commit_messagePayload?
             /// The default value for a merge commit title.
             ///
             /// - `PR_TITLE` - default to the pull request's title.
@@ -9307,10 +9511,8 @@ public enum Components {
                 delete_branch_on_merge: Swift.Bool? = nil,
                 allow_update_branch: Swift.Bool? = nil,
                 use_squash_pr_title_as_default: Swift.Bool? = nil,
-                squash_merge_commit_title: Components.Schemas.nullable_repository
-                    .squash_merge_commit_titlePayload? = nil,
-                squash_merge_commit_message: Components.Schemas.nullable_repository
-                    .squash_merge_commit_messagePayload? = nil,
+                squash_merge_commit_title: Components.Schemas.nullable_repository.squash_merge_commit_titlePayload? = nil,
+                squash_merge_commit_message: Components.Schemas.nullable_repository.squash_merge_commit_messagePayload? = nil,
                 merge_commit_title: Components.Schemas.nullable_repository.merge_commit_titlePayload? = nil,
                 merge_commit_message: Components.Schemas.nullable_repository.merge_commit_messagePayload? = nil,
                 allow_merge_commit: Swift.Bool? = nil,
@@ -9699,7 +9901,10 @@ public enum Components {
             /// - Parameters:
             ///   - permission:
             ///   - user:
-            public init(permission: Swift.String, user: Components.Schemas.nullable_simple_user? = nil) {
+            public init(
+                permission: Swift.String,
+                user: Components.Schemas.nullable_simple_user? = nil
+            ) {
                 self.permission = permission
                 self.user = user
             }
@@ -9725,7 +9930,12 @@ public enum Components {
             ///   - remaining:
             ///   - reset:
             ///   - used:
-            public init(limit: Swift.Int, remaining: Swift.Int, reset: Swift.Int, used: Swift.Int) {
+            public init(
+                limit: Swift.Int,
+                remaining: Swift.Int,
+                reset: Swift.Int,
+                used: Swift.Int
+            ) {
                 self.limit = limit
                 self.remaining = remaining
                 self.reset = reset
@@ -9853,7 +10063,12 @@ public enum Components {
             ///   - key:
             ///   - name:
             ///   - html_url:
-            public init(url: Swift.String, key: Swift.String, name: Swift.String, html_url: Swift.String? = nil) {
+            public init(
+                url: Swift.String,
+                key: Swift.String,
+                name: Swift.String,
+                html_url: Swift.String? = nil
+            ) {
                 self.url = url
                 self.key = key
                 self.name = name
@@ -10099,8 +10314,7 @@ public enum Components {
             /// - `COMMIT_OR_PR_TITLE` - default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_title`.
-            public var squash_merge_commit_title:
-                Components.Schemas.full_repository.squash_merge_commit_titlePayload?
+            public var squash_merge_commit_title: Components.Schemas.full_repository.squash_merge_commit_titlePayload?
             /// The default value for a squash merge commit message:
             ///
             /// - `PR_BODY` - default to the pull request's body.
@@ -10120,8 +10334,7 @@ public enum Components {
             /// - `BLANK` - default to a blank commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/full-repository/squash_merge_commit_message`.
-            public var squash_merge_commit_message:
-                Components.Schemas.full_repository.squash_merge_commit_messagePayload?
+            public var squash_merge_commit_message: Components.Schemas.full_repository.squash_merge_commit_messagePayload?
             /// The default value for a merge commit title.
             ///
             ///   - `PR_TITLE` - default to the pull request's title.
@@ -10380,10 +10593,8 @@ public enum Components {
                 allow_merge_commit: Swift.Bool? = nil,
                 allow_update_branch: Swift.Bool? = nil,
                 use_squash_pr_title_as_default: Swift.Bool? = nil,
-                squash_merge_commit_title: Components.Schemas.full_repository.squash_merge_commit_titlePayload? =
-                    nil,
-                squash_merge_commit_message: Components.Schemas.full_repository
-                    .squash_merge_commit_messagePayload? = nil,
+                squash_merge_commit_title: Components.Schemas.full_repository.squash_merge_commit_titlePayload? = nil,
+                squash_merge_commit_message: Components.Schemas.full_repository.squash_merge_commit_messagePayload? = nil,
                 merge_commit_title: Components.Schemas.full_repository.merge_commit_titlePayload? = nil,
                 merge_commit_message: Components.Schemas.full_repository.merge_commit_messagePayload? = nil,
                 allow_forking: Swift.Bool? = nil,
@@ -10626,7 +10837,11 @@ public enum Components {
             ///   - name:
             ///   - email:
             ///   - date:
-            public init(name: Swift.String? = nil, email: Swift.String? = nil, date: Swift.String? = nil) {
+            public init(
+                name: Swift.String? = nil,
+                email: Swift.String? = nil,
+                date: Swift.String? = nil
+            ) {
                 self.name = name
                 self.email = email
                 self.date = date
@@ -10798,7 +11013,10 @@ public enum Components {
                     /// - Parameters:
                     ///   - sha:
                     ///   - url:
-                    public init(sha: Swift.String, url: Swift.String) {
+                    public init(
+                        sha: Swift.String,
+                        url: Swift.String
+                    ) {
                         self.sha = sha
                         self.url = url
                     }
@@ -10868,7 +11086,11 @@ public enum Components {
                 ///   - sha:
                 ///   - url:
                 ///   - html_url:
-                public init(sha: Swift.String, url: Swift.String, html_url: Swift.String? = nil) {
+                public init(
+                    sha: Swift.String,
+                    url: Swift.String,
+                    html_url: Swift.String? = nil
+                ) {
                     self.sha = sha
                     self.url = url
                     self.html_url = html_url
@@ -10897,7 +11119,11 @@ public enum Components {
                 ///   - additions:
                 ///   - deletions:
                 ///   - total:
-                public init(additions: Swift.Int? = nil, deletions: Swift.Int? = nil, total: Swift.Int? = nil) {
+                public init(
+                    additions: Swift.Int? = nil,
+                    deletions: Swift.Int? = nil,
+                    total: Swift.Int? = nil
+                ) {
                     self.additions = additions
                     self.deletions = deletions
                     self.total = total
@@ -11002,7 +11228,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - name: Name of the commit's author
                 ///   - email: Git email address of the commit's author
-                public init(name: Swift.String, email: Swift.String? = nil) {
+                public init(
+                    name: Swift.String,
+                    email: Swift.String? = nil
+                ) {
                     self.name = name
                     self.email = email
                 }
@@ -11032,7 +11261,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - name: Name of the commit's committer
                 ///   - email: Git email address of the commit's committer
-                public init(name: Swift.String, email: Swift.String? = nil) {
+                public init(
+                    name: Swift.String,
+                    email: Swift.String? = nil
+                ) {
                     self.name = name
                     self.email = email
                 }
@@ -11185,8 +11417,12 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - href:
-            public init(href: Swift.String) { self.href = href }
-            public enum CodingKeys: String, CodingKey { case href }
+            public init(href: Swift.String) {
+                self.href = href
+            }
+            public enum CodingKeys: String, CodingKey {
+                case href
+            }
         }
         /// The status of auto merging a pull request.
         ///
@@ -11936,7 +12172,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - name:
                 ///   - color:
-                public init(name: Swift.String, color: Swift.String) {
+                public init(
+                    name: Swift.String,
+                    color: Swift.String
+                ) {
                     self.name = name
                     self.color = color
                 }
@@ -12029,7 +12268,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - name:
                 ///   - color:
-                public init(name: Swift.String, color: Swift.String) {
+                public init(
+                    name: Swift.String,
+                    color: Swift.String
+                ) {
                     self.name = name
                     self.color = color
                 }
@@ -12277,8 +12519,12 @@ public enum Components {
                 ///
                 /// - Parameters:
                 ///   - title:
-                public init(title: Swift.String) { self.title = title }
-                public enum CodingKeys: String, CodingKey { case title }
+                public init(title: Swift.String) {
+                    self.title = title
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case title
+                }
             }
             /// - Remark: Generated from `#/components/schemas/milestoned-issue-event/milestone`.
             public var milestone: Components.Schemas.milestoned_issue_event.milestonePayload
@@ -12361,8 +12607,12 @@ public enum Components {
                 ///
                 /// - Parameters:
                 ///   - title:
-                public init(title: Swift.String) { self.title = title }
-                public enum CodingKeys: String, CodingKey { case title }
+                public init(title: Swift.String) {
+                    self.title = title
+                }
+                public enum CodingKeys: String, CodingKey {
+                    case title
+                }
             }
             /// - Remark: Generated from `#/components/schemas/demilestoned-issue-event/milestone`.
             public var milestone: Components.Schemas.demilestoned_issue_event.milestonePayload
@@ -12448,7 +12698,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - from:
                 ///   - to:
-                public init(from: Swift.String, to: Swift.String) {
+                public init(
+                    from: Swift.String,
+                    to: Swift.String
+                ) {
                     self.from = from
                     self.to = to
                 }
@@ -12736,8 +12989,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/review-dismissed-issue-event/dismissed_review`.
-            public var dismissed_review:
-                Components.Schemas.review_dismissed_issue_event.dismissed_reviewPayload
+            public var dismissed_review: Components.Schemas.review_dismissed_issue_event.dismissed_reviewPayload
             /// Creates a new `review_dismissed_issue_event`.
             ///
             /// - Parameters:
@@ -12761,8 +13013,7 @@ public enum Components {
                 commit_url: Swift.String? = nil,
                 created_at: Swift.String,
                 performed_via_github_app: Components.Schemas.nullable_integration? = nil,
-                dismissed_review: Components.Schemas.review_dismissed_issue_event
-                    .dismissed_reviewPayload
+                dismissed_review: Components.Schemas.review_dismissed_issue_event.dismissed_reviewPayload
             ) {
                 self.id = id
                 self.node_id = node_id
@@ -12931,8 +13182,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/added-to-project-issue-event/project_card`.
-            public var project_card:
-                Components.Schemas.added_to_project_issue_event.project_cardPayload?
+            public var project_card: Components.Schemas.added_to_project_issue_event.project_cardPayload?
             /// Creates a new `added_to_project_issue_event`.
             ///
             /// - Parameters:
@@ -12956,8 +13206,7 @@ public enum Components {
                 commit_url: Swift.String? = nil,
                 created_at: Swift.String,
                 performed_via_github_app: Components.Schemas.nullable_integration? = nil,
-                project_card: Components.Schemas.added_to_project_issue_event
-                    .project_cardPayload? = nil
+                project_card: Components.Schemas.added_to_project_issue_event.project_cardPayload? = nil
             ) {
                 self.id = id
                 self.node_id = node_id
@@ -12986,9 +13235,7 @@ public enum Components {
         /// Moved Column in Project Issue Event
         ///
         /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event`.
-        public struct moved_column_in_project_issue_event: Codable, Hashable,
-            Sendable
-        {
+        public struct moved_column_in_project_issue_event: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/id`.
             public var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/node_id`.
@@ -13055,9 +13302,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/moved-column-in-project-issue-event/project_card`.
-            public var project_card:
-                Components.Schemas.moved_column_in_project_issue_event
-                    .project_cardPayload?
+            public var project_card: Components.Schemas.moved_column_in_project_issue_event.project_cardPayload?
             /// Creates a new `moved_column_in_project_issue_event`.
             ///
             /// - Parameters:
@@ -13081,8 +13326,7 @@ public enum Components {
                 commit_url: Swift.String? = nil,
                 created_at: Swift.String,
                 performed_via_github_app: Components.Schemas.nullable_integration? = nil,
-                project_card: Components.Schemas.moved_column_in_project_issue_event
-                    .project_cardPayload? = nil
+                project_card: Components.Schemas.moved_column_in_project_issue_event.project_cardPayload? = nil
             ) {
                 self.id = id
                 self.node_id = node_id
@@ -13178,8 +13422,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/removed-from-project-issue-event/project_card`.
-            public var project_card:
-                Components.Schemas.removed_from_project_issue_event.project_cardPayload?
+            public var project_card: Components.Schemas.removed_from_project_issue_event.project_cardPayload?
             /// Creates a new `removed_from_project_issue_event`.
             ///
             /// - Parameters:
@@ -13203,8 +13446,7 @@ public enum Components {
                 commit_url: Swift.String? = nil,
                 created_at: Swift.String,
                 performed_via_github_app: Components.Schemas.nullable_integration? = nil,
-                project_card: Components.Schemas.removed_from_project_issue_event
-                    .project_cardPayload? = nil
+                project_card: Components.Schemas.removed_from_project_issue_event.project_cardPayload? = nil
             ) {
                 self.id = id
                 self.node_id = node_id
@@ -13233,9 +13475,7 @@ public enum Components {
         /// Converted Note to Issue Issue Event
         ///
         /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event`.
-        public struct converted_note_to_issue_issue_event: Codable, Hashable,
-            Sendable
-        {
+        public struct converted_note_to_issue_issue_event: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/id`.
             public var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/node_id`.
@@ -13302,9 +13542,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/converted-note-to-issue-issue-event/project_card`.
-            public var project_card:
-                Components.Schemas.converted_note_to_issue_issue_event
-                    .project_cardPayload?
+            public var project_card: Components.Schemas.converted_note_to_issue_issue_event.project_cardPayload?
             /// Creates a new `converted_note_to_issue_issue_event`.
             ///
             /// - Parameters:
@@ -13328,8 +13566,7 @@ public enum Components {
                 commit_url: Swift.String? = nil,
                 created_at: Swift.String,
                 performed_via_github_app: Components.Schemas.integration,
-                project_card: Components.Schemas.converted_note_to_issue_issue_event
-                    .project_cardPayload? = nil
+                project_card: Components.Schemas.converted_note_to_issue_issue_event.project_cardPayload? = nil
             ) {
                 self.id = id
                 self.node_id = node_id
@@ -13384,13 +13621,11 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value12`.
             public var value12: Components.Schemas.added_to_project_issue_event?
             /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value13`.
-            public var value13:
-                Components.Schemas.moved_column_in_project_issue_event?
+            public var value13: Components.Schemas.moved_column_in_project_issue_event?
             /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value14`.
             public var value14: Components.Schemas.removed_from_project_issue_event?
             /// - Remark: Generated from `#/components/schemas/issue-event-for-issue/value15`.
-            public var value15:
-                Components.Schemas.converted_note_to_issue_issue_event?
+            public var value15: Components.Schemas.converted_note_to_issue_issue_event?
             /// Creates a new `issue_event_for_issue`.
             ///
             /// - Parameters:
@@ -13422,11 +13657,9 @@ public enum Components {
                 value10: Components.Schemas.review_dismissed_issue_event? = nil,
                 value11: Components.Schemas.locked_issue_event? = nil,
                 value12: Components.Schemas.added_to_project_issue_event? = nil,
-                value13: Components.Schemas.moved_column_in_project_issue_event? =
-                    nil,
+                value13: Components.Schemas.moved_column_in_project_issue_event? = nil,
                 value14: Components.Schemas.removed_from_project_issue_event? = nil,
-                value15: Components.Schemas.converted_note_to_issue_issue_event? =
-                    nil
+                value15: Components.Schemas.converted_note_to_issue_issue_event? = nil
             ) {
                 self.value1 = value1
                 self.value2 = value2
@@ -13445,28 +13678,103 @@ public enum Components {
                 self.value15 = value15
             }
             public init(from decoder: any Decoder) throws {
-                value1 = try? .init(from: decoder)
-                value2 = try? .init(from: decoder)
-                value3 = try? .init(from: decoder)
-                value4 = try? .init(from: decoder)
-                value5 = try? .init(from: decoder)
-                value6 = try? .init(from: decoder)
-                value7 = try? .init(from: decoder)
-                value8 = try? .init(from: decoder)
-                value9 = try? .init(from: decoder)
-                value10 = try? .init(from: decoder)
-                value11 = try? .init(from: decoder)
-                value12 = try? .init(from: decoder)
-                value13 = try? .init(from: decoder)
-                value14 = try? .init(from: decoder)
-                value15 = try? .init(from: decoder)
+                var errors: [any Error] = []
+                do {
+                    value1 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value2 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value3 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value4 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value5 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value6 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value7 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value8 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value9 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value10 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value11 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value12 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value13 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value14 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value15 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
                 try Swift.DecodingError.verifyAtLeastOneSchemaIsNotNil(
                     [
-                        value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11,
-                        value12, value13, value14, value15,
+                        value1,
+                        value2,
+                        value3,
+                        value4,
+                        value5,
+                        value6,
+                        value7,
+                        value8,
+                        value9,
+                        value10,
+                        value11,
+                        value12,
+                        value13,
+                        value14,
+                        value15
                     ],
                     type: Self.self,
-                    codingPath: decoder.codingPath
+                    codingPath: decoder.codingPath,
+                    errors: errors
                 )
             }
             public func encode(to encoder: any Encoder) throws {
@@ -13686,7 +13994,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - _type:
                 ///   - issue:
-                public init(_type: Swift.String? = nil, issue: Components.Schemas.issue? = nil) {
+                public init(
+                    _type: Swift.String? = nil,
+                    issue: Components.Schemas.issue? = nil
+                ) {
                     self._type = _type
                     self.issue = issue
                 }
@@ -13762,7 +14073,11 @@ public enum Components {
                 ///   - date: Timestamp of the commit
                 ///   - email: Git email address of the user
                 ///   - name: Name of the git user
-                public init(date: Foundation.Date, email: Swift.String, name: Swift.String) {
+                public init(
+                    date: Foundation.Date,
+                    email: Swift.String,
+                    name: Swift.String
+                ) {
                     self.date = date
                     self.email = email
                     self.name = name
@@ -13799,7 +14114,11 @@ public enum Components {
                 ///   - date: Timestamp of the commit
                 ///   - email: Git email address of the user
                 ///   - name: Name of the git user
-                public init(date: Foundation.Date, email: Swift.String, name: Swift.String) {
+                public init(
+                    date: Foundation.Date,
+                    email: Swift.String,
+                    name: Swift.String
+                ) {
                     self.date = date
                     self.email = email
                     self.name = name
@@ -13831,7 +14150,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - sha: SHA for the commit
                 ///   - url:
-                public init(sha: Swift.String, url: Swift.String) {
+                public init(
+                    sha: Swift.String,
+                    url: Swift.String
+                ) {
                     self.sha = sha
                     self.url = url
                 }
@@ -13858,7 +14180,11 @@ public enum Components {
                 ///   - sha: SHA for the commit
                 ///   - url:
                 ///   - html_url:
-                public init(sha: Swift.String, url: Swift.String, html_url: Swift.String) {
+                public init(
+                    sha: Swift.String,
+                    url: Swift.String,
+                    html_url: Swift.String
+                ) {
                     self.sha = sha
                     self.url = url
                     self.html_url = html_url
@@ -13870,8 +14196,7 @@ public enum Components {
                 }
             }
             /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parents`.
-            public typealias parentsPayload = [Components.Schemas.timeline_committed_event
-                .parentsPayloadPayload]
+            public typealias parentsPayload = [Components.Schemas.timeline_committed_event.parentsPayloadPayload]
             /// - Remark: Generated from `#/components/schemas/timeline-committed-event/parents`.
             public var parents: Components.Schemas.timeline_committed_event.parentsPayload
             /// - Remark: Generated from `#/components/schemas/timeline-committed-event/verification`.
@@ -14000,8 +14325,12 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    public init(href: Swift.String) {
+                        self.href = href
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/html`.
                 public var html: Components.Schemas.timeline_reviewed_event._linksPayload.htmlPayload
@@ -14013,12 +14342,15 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    public init(href: Swift.String) {
+                        self.href = href
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/timeline-reviewed-event/_links/pull_request`.
-                public var pull_request:
-                    Components.Schemas.timeline_reviewed_event._linksPayload.pull_requestPayload
+                public var pull_request: Components.Schemas.timeline_reviewed_event._linksPayload.pull_requestPayload
                 /// Creates a new `_linksPayload`.
                 ///
                 /// - Parameters:
@@ -14026,8 +14358,7 @@ public enum Components {
                 ///   - pull_request:
                 public init(
                     html: Components.Schemas.timeline_reviewed_event._linksPayload.htmlPayload,
-                    pull_request: Components.Schemas.timeline_reviewed_event._linksPayload
-                        .pull_requestPayload
+                    pull_request: Components.Schemas.timeline_reviewed_event._linksPayload.pull_requestPayload
                 ) {
                     self.html = html
                     self.pull_request = pull_request
@@ -14194,12 +14525,15 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    public init(href: Swift.String) {
+                        self.href = href
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/self`.
-                public var _self:
-                    Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
+                public var _self: Components.Schemas.pull_request_review_comment._linksPayload._selfPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
                 public struct htmlPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html/href`.
@@ -14208,12 +14542,15 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    public init(href: Swift.String) {
+                        self.href = href
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/html`.
-                public var html:
-                    Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
+                public var html: Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
                 public struct pull_requestPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request/href`.
@@ -14222,13 +14559,15 @@ public enum Components {
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    public init(href: Swift.String) {
+                        self.href = href
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/_links/pull_request`.
-                public var pull_request:
-                    Components.Schemas.pull_request_review_comment._linksPayload
-                        .pull_requestPayload
+                public var pull_request: Components.Schemas.pull_request_review_comment._linksPayload.pull_requestPayload
                 /// Creates a new `_linksPayload`.
                 ///
                 /// - Parameters:
@@ -14236,11 +14575,9 @@ public enum Components {
                 ///   - html:
                 ///   - pull_request:
                 public init(
-                    _self: Components.Schemas.pull_request_review_comment._linksPayload
-                        ._selfPayload,
+                    _self: Components.Schemas.pull_request_review_comment._linksPayload._selfPayload,
                     html: Components.Schemas.pull_request_review_comment._linksPayload.htmlPayload,
-                    pull_request: Components.Schemas.pull_request_review_comment._linksPayload
-                        .pull_requestPayload
+                    pull_request: Components.Schemas.pull_request_review_comment._linksPayload.pull_requestPayload
                 ) {
                     self._self = _self
                     self.html = html
@@ -14272,8 +14609,7 @@ public enum Components {
             /// The side of the first line of the range for a multi-line comment.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/start_side`.
-            public var start_side:
-                Components.Schemas.pull_request_review_comment.start_sidePayload?
+            public var start_side: Components.Schemas.pull_request_review_comment.start_sidePayload?
             /// The line of the blob to which the comment applies. The last line of the range for a multi-line comment
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/line`.
@@ -14303,8 +14639,7 @@ public enum Components {
             /// The level at which the comment is targeted, can be a diff line or a file.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/subject_type`.
-            public var subject_type:
-                Components.Schemas.pull_request_review_comment.subject_typePayload?
+            public var subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload?
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/reactions`.
             public var reactions: Components.Schemas.reaction_rollup?
             /// - Remark: Generated from `#/components/schemas/pull-request-review-comment/body_html`.
@@ -14365,13 +14700,11 @@ public enum Components {
                 _links: Components.Schemas.pull_request_review_comment._linksPayload,
                 start_line: Swift.Int? = nil,
                 original_start_line: Swift.Int? = nil,
-                start_side: Components.Schemas.pull_request_review_comment.start_sidePayload? =
-                    nil,
+                start_side: Components.Schemas.pull_request_review_comment.start_sidePayload? = nil,
                 line: Swift.Int? = nil,
                 original_line: Swift.Int? = nil,
                 side: Components.Schemas.pull_request_review_comment.sidePayload? = nil,
-                subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload? =
-                    nil,
+                subject_type: Components.Schemas.pull_request_review_comment.subject_typePayload? = nil,
                 reactions: Components.Schemas.reaction_rollup? = nil,
                 body_html: Swift.String? = nil,
                 body_text: Swift.String? = nil
@@ -14756,13 +15089,11 @@ public enum Components {
             /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value10`.
             public var value10: Components.Schemas.added_to_project_issue_event?
             /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value11`.
-            public var value11:
-                Components.Schemas.moved_column_in_project_issue_event?
+            public var value11: Components.Schemas.moved_column_in_project_issue_event?
             /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value12`.
             public var value12: Components.Schemas.removed_from_project_issue_event?
             /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value13`.
-            public var value13:
-                Components.Schemas.converted_note_to_issue_issue_event?
+            public var value13: Components.Schemas.converted_note_to_issue_issue_event?
             /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value14`.
             public var value14: Components.Schemas.timeline_comment_event?
             /// - Remark: Generated from `#/components/schemas/timeline-issue-events/value15`.
@@ -14817,11 +15148,9 @@ public enum Components {
                 value8: Components.Schemas.review_dismissed_issue_event? = nil,
                 value9: Components.Schemas.locked_issue_event? = nil,
                 value10: Components.Schemas.added_to_project_issue_event? = nil,
-                value11: Components.Schemas.moved_column_in_project_issue_event? =
-                    nil,
+                value11: Components.Schemas.moved_column_in_project_issue_event? = nil,
                 value12: Components.Schemas.removed_from_project_issue_event? = nil,
-                value13: Components.Schemas.converted_note_to_issue_issue_event? =
-                    nil,
+                value13: Components.Schemas.converted_note_to_issue_issue_event? = nil,
                 value14: Components.Schemas.timeline_comment_event? = nil,
                 value15: Components.Schemas.timeline_cross_referenced_event? = nil,
                 value16: Components.Schemas.timeline_committed_event? = nil,
@@ -14856,36 +15185,145 @@ public enum Components {
                 self.value22 = value22
             }
             public init(from decoder: any Decoder) throws {
-                value1 = try? .init(from: decoder)
-                value2 = try? .init(from: decoder)
-                value3 = try? .init(from: decoder)
-                value4 = try? .init(from: decoder)
-                value5 = try? .init(from: decoder)
-                value6 = try? .init(from: decoder)
-                value7 = try? .init(from: decoder)
-                value8 = try? .init(from: decoder)
-                value9 = try? .init(from: decoder)
-                value10 = try? .init(from: decoder)
-                value11 = try? .init(from: decoder)
-                value12 = try? .init(from: decoder)
-                value13 = try? .init(from: decoder)
-                value14 = try? .init(from: decoder)
-                value15 = try? .init(from: decoder)
-                value16 = try? .init(from: decoder)
-                value17 = try? .init(from: decoder)
-                value18 = try? .init(from: decoder)
-                value19 = try? .init(from: decoder)
-                value20 = try? .init(from: decoder)
-                value21 = try? .init(from: decoder)
-                value22 = try? .init(from: decoder)
+                var errors: [any Error] = []
+                do {
+                    value1 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value2 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value3 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value4 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value5 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value6 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value7 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value8 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value9 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value10 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value11 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value12 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value13 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value14 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value15 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value16 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value17 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value18 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value19 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value20 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value21 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    value22 = try .init(from: decoder)
+                } catch {
+                    errors.append(error)
+                }
                 try Swift.DecodingError.verifyAtLeastOneSchemaIsNotNil(
                     [
-                        value1, value2, value3, value4, value5, value6, value7, value8, value9, value10, value11,
-                        value12, value13, value14, value15, value16, value17, value18, value19, value20, value21,
-                        value22,
+                        value1,
+                        value2,
+                        value3,
+                        value4,
+                        value5,
+                        value6,
+                        value7,
+                        value8,
+                        value9,
+                        value10,
+                        value11,
+                        value12,
+                        value13,
+                        value14,
+                        value15,
+                        value16,
+                        value17,
+                        value18,
+                        value19,
+                        value20,
+                        value21,
+                        value22
                     ],
                     type: Self.self,
-                    codingPath: decoder.codingPath
+                    codingPath: decoder.codingPath,
+                    errors: errors
                 )
             }
             public func encode(to encoder: any Encoder) throws {
@@ -15348,8 +15786,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/permissions`.
-                    public var permissions:
-                        Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload?
+                    public var permissions: Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/temp_clone_token`.
                     public var temp_clone_token: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/head/repo/allow_merge_commit`.
@@ -15582,8 +16019,7 @@ public enum Components {
                         mirror_url: Swift.String? = nil,
                         open_issues: Swift.Int,
                         open_issues_count: Swift.Int,
-                        permissions: Components.Schemas.pull_request.headPayload.repoPayload
-                            .permissionsPayload? = nil,
+                        permissions: Components.Schemas.pull_request.headPayload.repoPayload.permissionsPayload? = nil,
                         temp_clone_token: Swift.String? = nil,
                         allow_merge_commit: Swift.Bool? = nil,
                         allow_squash_merge: Swift.Bool? = nil,
@@ -16238,8 +16674,7 @@ public enum Components {
                         }
                     }
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/permissions`.
-                    public var permissions:
-                        Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload?
+                    public var permissions: Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/temp_clone_token`.
                     public var temp_clone_token: Swift.String?
                     /// - Remark: Generated from `#/components/schemas/pull-request/base/repo/allow_merge_commit`.
@@ -16430,8 +16865,7 @@ public enum Components {
                         mirror_url: Swift.String? = nil,
                         open_issues: Swift.Int,
                         open_issues_count: Swift.Int,
-                        permissions: Components.Schemas.pull_request.basePayload.repoPayload
-                            .permissionsPayload? = nil,
+                        permissions: Components.Schemas.pull_request.basePayload.repoPayload.permissionsPayload? = nil,
                         temp_clone_token: Swift.String? = nil,
                         allow_merge_commit: Swift.Bool? = nil,
                         allow_squash_merge: Swift.Bool? = nil,
@@ -17356,7 +17790,10 @@ public enum Components {
                 /// - Parameters:
                 ///   - sha:
                 ///   - url:
-                public init(sha: Swift.String, url: Swift.String) {
+                public init(
+                    sha: Swift.String,
+                    url: Swift.String
+                ) {
                     self.sha = sha
                     self.url = url
                 }
@@ -17419,7 +17856,10 @@ public enum Components {
             /// - Parameters:
             ///   - id: The ID of the installation.
             ///   - node_id: The global node ID of the installation.
-            public init(id: Swift.Int, node_id: Swift.String? = nil) {
+            public init(
+                id: Swift.Int,
+                node_id: Swift.String? = nil
+            ) {
                 self.id = id
                 self.node_id = node_id
             }
@@ -17642,13 +18082,11 @@ public enum Components {
         /// The name of a code scanning tool. Only results by this tool will be listed. You can specify the tool by using either `tool_name` or `tool_guid`, but not both.
         ///
         /// - Remark: Generated from `#/components/parameters/tool-name`.
-        public typealias tool_name = Components.Schemas
-            .code_scanning_analysis_tool_name
+        public typealias tool_name = Components.Schemas.code_scanning_analysis_tool_name
         /// The GUID of a code scanning tool. Only results by this tool will be listed. Note that some code scanning tools may not include a GUID in their analysis data. You can specify the tool by using either `tool_guid` or `tool_name`, but not both.
         ///
         /// - Remark: Generated from `#/components/parameters/tool-guid`.
-        public typealias tool_guid = Components.Schemas
-            .code_scanning_analysis_tool_guid
+        public typealias tool_guid = Components.Schemas.code_scanning_analysis_tool_guid
         /// The unique identifier of the hook.
         ///
         /// - Remark: Generated from `#/components/parameters/hook-id`.
@@ -17883,20 +18321,31 @@ public enum Components {
             /// - Remark: Generated from `#/components/parameters/workflow-id/case2`.
             case case2(Swift.String)
             public init(from decoder: any Decoder) throws {
+                var errors: [any Error] = []
                 do {
                     self = .case1(try decoder.decodeFromSingleValueContainer())
                     return
-                } catch {}
+                } catch {
+                    errors.append(error)
+                }
                 do {
                     self = .case2(try decoder.decodeFromSingleValueContainer())
                     return
-                } catch {}
-                throw Swift.DecodingError.failedToDecodeOneOfSchema(type: Self.self, codingPath: decoder.codingPath)
+                } catch {
+                    errors.append(error)
+                }
+                throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                    type: Self.self,
+                    codingPath: decoder.codingPath,
+                    errors: errors
+                )
             }
             public func encode(to encoder: any Encoder) throws {
                 switch self {
-                case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                case let .case2(value): try encoder.encodeToSingleValueContainer(value)
+                case let .case1(value):
+                    try encoder.encodeToSingleValueContainer(value)
+                case let .case2(value):
+                    try encoder.encodeToSingleValueContainer(value)
                 }
             }
         }
@@ -18085,7 +18534,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18096,7 +18546,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.not_found.Body) { self.body = body }
+            public init(body: Components.Responses.not_found.Body) {
+                self.body = body
+            }
         }
         public struct validation_failed_simple: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/validation_failed_simple/content`.
@@ -18110,7 +18562,8 @@ public enum Components {
                 public var json: Components.Schemas.validation_error_simple {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18121,7 +18574,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.validation_failed_simple.Body) { self.body = body }
+            public init(body: Components.Responses.validation_failed_simple.Body) {
+                self.body = body
+            }
         }
         public struct bad_request: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/bad_request/content`.
@@ -18135,7 +18590,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18146,7 +18602,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.bad_request.Body) { self.body = body }
+            public init(body: Components.Responses.bad_request.Body) {
+                self.body = body
+            }
         }
         public struct validation_failed: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/validation_failed/content`.
@@ -18160,7 +18618,8 @@ public enum Components {
                 public var json: Components.Schemas.validation_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18171,7 +18630,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.validation_failed.Body) { self.body = body }
+            public init(body: Components.Responses.validation_failed.Body) {
+                self.body = body
+            }
         }
         public struct accepted: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/accepted/content`.
@@ -18185,7 +18646,8 @@ public enum Components {
                 public var json: OpenAPIRuntime.OpenAPIObjectContainer {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18196,7 +18658,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.accepted.Body) { self.body = body }
+            public init(body: Components.Responses.accepted.Body) {
+                self.body = body
+            }
         }
         public struct not_modified: Sendable, Hashable {
             /// Creates a new `not_modified`.
@@ -18214,7 +18678,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18225,7 +18690,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.requires_authentication.Body) { self.body = body }
+            public init(body: Components.Responses.requires_authentication.Body) {
+                self.body = body
+            }
         }
         public struct forbidden: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/forbidden/content`.
@@ -18239,7 +18706,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18250,7 +18718,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.forbidden.Body) { self.body = body }
+            public init(body: Components.Responses.forbidden.Body) {
+                self.body = body
+            }
         }
         public struct service_unavailable: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/service_unavailable/content`.
@@ -18293,7 +18763,8 @@ public enum Components {
                 public var json: Components.Responses.service_unavailable.Body.jsonPayload {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18304,7 +18775,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.service_unavailable.Body) { self.body = body }
+            public init(body: Components.Responses.service_unavailable.Body) {
+                self.body = body
+            }
         }
         public struct forbidden_gist: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/forbidden_gist/content`.
@@ -18376,7 +18849,8 @@ public enum Components {
                 public var json: Components.Responses.forbidden_gist.Body.jsonPayload {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18387,7 +18861,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.forbidden_gist.Body) { self.body = body }
+            public init(body: Components.Responses.forbidden_gist.Body) {
+                self.body = body
+            }
         }
         public struct moved_permanently: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/moved_permanently/content`.
@@ -18401,7 +18877,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18412,7 +18889,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.moved_permanently.Body) { self.body = body }
+            public init(body: Components.Responses.moved_permanently.Body) {
+                self.body = body
+            }
         }
         public struct conflict: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/conflict/content`.
@@ -18426,7 +18905,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18437,7 +18917,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.conflict.Body) { self.body = body }
+            public init(body: Components.Responses.conflict.Body) {
+                self.body = body
+            }
         }
         public struct actions_runner_jitconfig: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/actions_runner_jitconfig/content`.
@@ -18455,7 +18937,10 @@ public enum Components {
                     /// - Parameters:
                     ///   - runner:
                     ///   - encoded_jit_config: The base64 encoded runner configuration.
-                    public init(runner: Components.Schemas.runner, encoded_jit_config: Swift.String) {
+                    public init(
+                        runner: Components.Schemas.runner,
+                        encoded_jit_config: Swift.String
+                    ) {
                         self.runner = runner
                         self.encoded_jit_config = encoded_jit_config
                     }
@@ -18473,7 +18958,8 @@ public enum Components {
                 public var json: Components.Responses.actions_runner_jitconfig.Body.jsonPayload {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18484,7 +18970,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.actions_runner_jitconfig.Body) { self.body = body }
+            public init(body: Components.Responses.actions_runner_jitconfig.Body) {
+                self.body = body
+            }
         }
         public struct actions_runner_labels: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/actions_runner_labels/content`.
@@ -18500,7 +18988,10 @@ public enum Components {
                     /// - Parameters:
                     ///   - total_count:
                     ///   - labels:
-                    public init(total_count: Swift.Int, labels: [Components.Schemas.runner_label]) {
+                    public init(
+                        total_count: Swift.Int,
+                        labels: [Components.Schemas.runner_label]
+                    ) {
                         self.total_count = total_count
                         self.labels = labels
                     }
@@ -18518,7 +19009,8 @@ public enum Components {
                 public var json: Components.Responses.actions_runner_labels.Body.jsonPayload {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18529,7 +19021,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.actions_runner_labels.Body) { self.body = body }
+            public init(body: Components.Responses.actions_runner_labels.Body) {
+                self.body = body
+            }
         }
         public struct actions_runner_labels_readonly: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/actions_runner_labels_readonly/content`.
@@ -18545,7 +19039,10 @@ public enum Components {
                     /// - Parameters:
                     ///   - total_count:
                     ///   - labels:
-                    public init(total_count: Swift.Int, labels: [Components.Schemas.runner_label]) {
+                    public init(
+                        total_count: Swift.Int,
+                        labels: [Components.Schemas.runner_label]
+                    ) {
                         self.total_count = total_count
                         self.labels = labels
                     }
@@ -18563,7 +19060,8 @@ public enum Components {
                 public var json: Components.Responses.actions_runner_labels_readonly.Body.jsonPayload {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18574,7 +19072,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.actions_runner_labels_readonly.Body) { self.body = body }
+            public init(body: Components.Responses.actions_runner_labels_readonly.Body) {
+                self.body = body
+            }
         }
         public struct internal_error: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/internal_error/content`.
@@ -18588,7 +19088,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18599,7 +19100,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.internal_error.Body) { self.body = body }
+            public init(body: Components.Responses.internal_error.Body) {
+                self.body = body
+            }
         }
         public struct package_es_list_error: Sendable, Hashable {
             /// Creates a new `package_es_list_error`.
@@ -18621,7 +19124,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18632,7 +19136,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.gone.Body) { self.body = body }
+            public init(body: Components.Responses.gone.Body) {
+                self.body = body
+            }
         }
         public struct temporary_redirect: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/temporary_redirect/content`.
@@ -18646,7 +19152,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18657,7 +19164,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.temporary_redirect.Body) { self.body = body }
+            public init(body: Components.Responses.temporary_redirect.Body) {
+                self.body = body
+            }
         }
         public struct code_scanning_forbidden_read: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_read/content`.
@@ -18671,7 +19180,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18682,7 +19192,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.code_scanning_forbidden_read.Body) { self.body = body }
+            public init(body: Components.Responses.code_scanning_forbidden_read.Body) {
+                self.body = body
+            }
         }
         public struct code_scanning_forbidden_write: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/code_scanning_forbidden_write/content`.
@@ -18696,7 +19208,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18707,7 +19220,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.code_scanning_forbidden_write.Body) { self.body = body }
+            public init(body: Components.Responses.code_scanning_forbidden_write.Body) {
+                self.body = body
+            }
         }
         public struct found: Sendable, Hashable {
             /// Creates a new `found`.
@@ -18725,7 +19240,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18736,7 +19252,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.code_scanning_conflict.Body) { self.body = body }
+            public init(body: Components.Responses.code_scanning_conflict.Body) {
+                self.body = body
+            }
         }
         public struct porter_maintenance: Sendable, Hashable {
             /// - Remark: Generated from `#/components/responses/porter_maintenance/content`.
@@ -18750,7 +19268,8 @@ public enum Components {
                 public var json: Components.Schemas.basic_error {
                     get throws {
                         switch self {
-                        case let .json(body): return body
+                        case let .json(body):
+                            return body
                         }
                     }
                 }
@@ -18761,7 +19280,9 @@ public enum Components {
             ///
             /// - Parameters:
             ///   - body: Received HTTP response body
-            public init(body: Components.Responses.porter_maintenance.Body) { self.body = body }
+            public init(body: Components.Responses.porter_maintenance.Body) {
+                self.body = body
+            }
         }
     }
     /// Types generated from the `#/components/headers` section of the OpenAPI document.
@@ -18773,20 +19294,31 @@ public enum Components {
             /// - Remark: Generated from `#/components/headers/link/case2`.
             case case2([Swift.String])
             public init(from decoder: any Decoder) throws {
+                var errors: [any Error] = []
                 do {
                     self = .case1(try decoder.decodeFromSingleValueContainer())
                     return
-                } catch {}
+                } catch {
+                    errors.append(error)
+                }
                 do {
                     self = .case2(try decoder.decodeFromSingleValueContainer())
                     return
-                } catch {}
-                throw Swift.DecodingError.failedToDecodeOneOfSchema(type: Self.self, codingPath: decoder.codingPath)
+                } catch {
+                    errors.append(error)
+                }
+                throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                    type: Self.self,
+                    codingPath: decoder.codingPath,
+                    errors: errors
+                )
             }
             public func encode(to encoder: any Encoder) throws {
                 switch self {
-                case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                case let .case2(value): try encoder.encodeToSingleValueContainer(value)
+                case let .case1(value):
+                    try encoder.encodeToSingleValueContainer(value)
+                case let .case2(value):
+                    try encoder.encodeToSingleValueContainer(value)
                 }
             }
         }
@@ -18804,6 +19336,7 @@ public enum Components {
         public typealias location = Swift.String
     }
 }
+
 /// API operations, with input and output types, generated from `#/paths` in the OpenAPI document.
 public enum Operations {
     /// Create an installation access token for an app
@@ -18834,19 +19367,14 @@ public enum Operations {
             public var path: Operations.apps_create_installation_access_token.Input.Path
             /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.apps_create_installation_access_token.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.apps_create_installation_access_token.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.apps_create_installation_access_token.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.apps_create_installation_access_token.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.apps_create_installation_access_token.Input.Headers
             /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody`.
@@ -18885,9 +19413,7 @@ public enum Operations {
                     }
                 }
                 /// - Remark: Generated from `#/paths/app/installations/{installation_id}/access_tokens/POST/requestBody/content/application\/json`.
-                case json(
-                    Operations.apps_create_installation_access_token.Input.Body.jsonPayload
-                )
+                case json(Operations.apps_create_installation_access_token.Input.Body.jsonPayload)
             }
             public var body: Operations.apps_create_installation_access_token.Input.Body?
             /// Creates a new `Input`.
@@ -18898,8 +19424,7 @@ public enum Operations {
             ///   - body:
             public init(
                 path: Operations.apps_create_installation_access_token.Input.Path,
-                headers: Operations.apps_create_installation_access_token.Input.Headers =
-                    .init(),
+                headers: Operations.apps_create_installation_access_token.Input.Headers = .init(),
                 body: Operations.apps_create_installation_access_token.Input.Body? = nil
             ) {
                 self.path = path
@@ -18920,21 +19445,21 @@ public enum Operations {
                     public var json: Components.Schemas.installation_token {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
                 }
                 /// Received HTTP response body
-                public var body:
-                    Operations.apps_create_installation_access_token.Output.Created.Body
+                public var body: Operations.apps_create_installation_access_token.Output.Created.Body
                 /// Creates a new `Created`.
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(
-                    body: Operations.apps_create_installation_access_token.Output.Created.Body
-                ) { self.body = body }
+                public init(body: Operations.apps_create_installation_access_token.Output.Created.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -18946,12 +19471,16 @@ public enum Operations {
             ///
             /// - Throws: An error if `self` is not `.created`.
             /// - SeeAlso: `.created`.
-            public var created: Operations.apps_create_installation_access_token.Output.Created
-            {
+            public var created: Operations.apps_create_installation_access_token.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -18968,8 +19497,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -18986,8 +19520,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19004,8 +19543,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19022,8 +19566,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19037,17 +19586,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get an organization
@@ -19071,21 +19628,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - org: The organization name. The name is not case sensitive.
-                public init(org: Components.Parameters.org) { self.org = org }
+                public init(org: Components.Parameters.org) {
+                    self.org = org
+                }
             }
             public var path: Operations.orgs_get.Input.Path
             /// - Remark: Generated from `#/paths/orgs/{org}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.orgs_get.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.orgs_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.orgs_get.AcceptableContentType>] =
-                        .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.orgs_get.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.orgs_get.Input.Headers
             /// Creates a new `Input`.
@@ -19114,7 +19671,8 @@ public enum Operations {
                     public var json: Components.Schemas.organization_full {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -19125,7 +19683,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.orgs_get.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.orgs_get.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -19140,8 +19700,13 @@ public enum Operations {
             public var ok: Operations.orgs_get.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19158,8 +19723,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19173,17 +19743,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get a project card
@@ -19205,24 +19783,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - card_id: The unique identifier of the card.
-                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+                public init(card_id: Components.Parameters.card_id) {
+                    self.card_id = card_id
+                }
             }
             public var path: Operations.projects_get_card.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_card.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_card.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_card.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_get_card.Input.Headers
             /// Creates a new `Input`.
@@ -19251,7 +19826,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_card {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -19262,7 +19838,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_get_card.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.projects_get_card.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -19277,8 +19855,13 @@ public enum Operations {
             public var ok: Operations.projects_get_card.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19295,8 +19878,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19313,8 +19901,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19331,8 +19924,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19349,8 +19947,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19364,17 +19967,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Update an existing project card
@@ -19394,24 +20005,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - card_id: The unique identifier of the card.
-                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+                public init(card_id: Components.Parameters.card_id) {
+                    self.card_id = card_id
+                }
             }
             public var path: Operations.projects_update_card.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update_card.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update_card.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update_card.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_update_card.Input.Headers
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/PATCH/requestBody`.
@@ -19431,7 +20039,10 @@ public enum Operations {
                     /// - Parameters:
                     ///   - note: The project card's note
                     ///   - archived: Whether or not the card is archived
-                    public init(note: Swift.String? = nil, archived: Swift.Bool? = nil) {
+                    public init(
+                        note: Swift.String? = nil,
+                        archived: Swift.Bool? = nil
+                    ) {
                         self.note = note
                         self.archived = archived
                     }
@@ -19473,7 +20084,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_card {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -19484,7 +20096,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_update_card.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.projects_update_card.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -19499,8 +20113,13 @@ public enum Operations {
             public var ok: Operations.projects_update_card.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19517,8 +20136,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19535,8 +20159,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19553,8 +20182,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19571,8 +20205,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19589,8 +20228,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed_simple {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19604,17 +20248,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Delete a project card
@@ -19636,24 +20288,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - card_id: The unique identifier of the card.
-                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+                public init(card_id: Components.Parameters.card_id) {
+                    self.card_id = card_id
+                }
             }
             public var path: Operations.projects_delete_card.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete_card.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete_card.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete_card.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_delete_card.Input.Headers
             /// Creates a new `Input`.
@@ -19687,8 +20336,13 @@ public enum Operations {
             public var noContent: Operations.projects_delete_card.Output.NoContent {
                 get throws {
                     switch self {
-                    case let .noContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "noContent", response: self)
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19705,8 +20359,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19751,7 +20410,8 @@ public enum Operations {
                     public var json: Operations.projects_delete_card.Output.Forbidden.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -19762,7 +20422,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_delete_card.Output.Forbidden.Body) { self.body = body }
+                public init(body: Operations.projects_delete_card.Output.Forbidden.Body) {
+                    self.body = body
+                }
             }
             /// Forbidden
             ///
@@ -19777,8 +20439,13 @@ public enum Operations {
             public var forbidden: Operations.projects_delete_card.Output.Forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19795,8 +20462,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19813,8 +20485,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19828,17 +20505,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Move a project card
@@ -19858,24 +20543,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - card_id: The unique identifier of the card.
-                public init(card_id: Components.Parameters.card_id) { self.card_id = card_id }
+                public init(card_id: Components.Parameters.card_id) {
+                    self.card_id = card_id
+                }
             }
             public var path: Operations.projects_move_card.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_move_card.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_move_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_move_card.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_move_card.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_move_card.Input.Headers
             /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/requestBody`.
@@ -19895,7 +20577,10 @@ public enum Operations {
                     /// - Parameters:
                     ///   - position: The position of the card in a column. Can be one of: `top`, `bottom`, or `after:<card_id>` to place after the specified card.
                     ///   - column_id: The unique identifier of the column the card should be moved to
-                    public init(position: Swift.String, column_id: Swift.Int? = nil) {
+                    public init(
+                        position: Swift.String,
+                        column_id: Swift.Int? = nil
+                    ) {
                         self.position = position
                         self.column_id = column_id
                     }
@@ -19945,7 +20630,8 @@ public enum Operations {
                     public var json: Operations.projects_move_card.Output.Created.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -19956,7 +20642,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_move_card.Output.Created.Body) { self.body = body }
+                public init(body: Operations.projects_move_card.Output.Created.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -19971,8 +20659,13 @@ public enum Operations {
             public var created: Operations.projects_move_card.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -19989,8 +20682,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20039,11 +20737,9 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errors`.
-                        public typealias errorsPayload = [Operations.projects_move_card.Output.Forbidden.Body
-                            .jsonPayload.errorsPayloadPayload]
+                        public typealias errorsPayload = [Operations.projects_move_card.Output.Forbidden.Body.jsonPayload.errorsPayloadPayload]
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/403/content/json/errors`.
-                        public var errors:
-                            Operations.projects_move_card.Output.Forbidden.Body.jsonPayload.errorsPayload?
+                        public var errors: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload.errorsPayload?
                         /// Creates a new `jsonPayload`.
                         ///
                         /// - Parameters:
@@ -20053,8 +20749,7 @@ public enum Operations {
                         public init(
                             message: Swift.String? = nil,
                             documentation_url: Swift.String? = nil,
-                            errors: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload
-                                .errorsPayload? = nil
+                            errors: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload.errorsPayload? = nil
                         ) {
                             self.message = message
                             self.documentation_url = documentation_url
@@ -20075,7 +20770,8 @@ public enum Operations {
                     public var json: Operations.projects_move_card.Output.Forbidden.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -20086,7 +20782,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_move_card.Output.Forbidden.Body) { self.body = body }
+                public init(body: Operations.projects_move_card.Output.Forbidden.Body) {
+                    self.body = body
+                }
             }
             /// Forbidden
             ///
@@ -20101,8 +20799,13 @@ public enum Operations {
             public var forbidden: Operations.projects_move_card.Output.Forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20119,8 +20822,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20146,7 +20854,10 @@ public enum Operations {
                             /// - Parameters:
                             ///   - code:
                             ///   - message:
-                            public init(code: Swift.String? = nil, message: Swift.String? = nil) {
+                            public init(
+                                code: Swift.String? = nil,
+                                message: Swift.String? = nil
+                            ) {
                                 self.code = code
                                 self.message = message
                             }
@@ -20156,12 +20867,9 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errors`.
-                        public typealias errorsPayload = [Operations.projects_move_card.Output
-                            .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
+                        public typealias errorsPayload = [Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
                         /// - Remark: Generated from `#/paths/projects/columns/cards/{card_id}/moves/POST/responses/503/content/json/errors`.
-                        public var errors:
-                            Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
-                                .errorsPayload?
+                        public var errors: Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayload?
                         /// Creates a new `jsonPayload`.
                         ///
                         /// - Parameters:
@@ -20173,8 +20881,7 @@ public enum Operations {
                             code: Swift.String? = nil,
                             message: Swift.String? = nil,
                             documentation_url: Swift.String? = nil,
-                            errors: Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
-                                .errorsPayload? = nil
+                            errors: Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayload? = nil
                         ) {
                             self.code = code
                             self.message = message
@@ -20194,11 +20901,11 @@ public enum Operations {
                     ///
                     /// - Throws: An error if `self` is not `.json`.
                     /// - SeeAlso: `.json`.
-                    public var json: Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload
-                    {
+                    public var json: Operations.projects_move_card.Output.ServiceUnavailable.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -20226,8 +20933,13 @@ public enum Operations {
             public var serviceUnavailable: Operations.projects_move_card.Output.ServiceUnavailable {
                 get throws {
                     switch self {
-                    case let .serviceUnavailable(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "serviceUnavailable", response: self)
+                    case let .serviceUnavailable(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20244,8 +20956,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20259,17 +20976,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get a project column
@@ -20291,24 +21016,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
             }
             public var path: Operations.projects_get_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_column.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_column.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_column.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_get_column.Input.Headers
             /// Creates a new `Input`.
@@ -20337,7 +21059,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_column {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -20348,7 +21071,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_get_column.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.projects_get_column.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -20363,8 +21088,13 @@ public enum Operations {
             public var ok: Operations.projects_get_column.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20381,8 +21111,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20399,8 +21134,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20417,8 +21157,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20435,8 +21180,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20450,17 +21200,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Update an existing project column
@@ -20480,24 +21238,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
             }
             public var path: Operations.projects_update_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update_column.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update_column.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update_column.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_update_column.Input.Headers
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/requestBody`.
@@ -20512,8 +21267,12 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - name: Name of the project column
-                    public init(name: Swift.String) { self.name = name }
-                    public enum CodingKeys: String, CodingKey { case name }
+                    public init(name: Swift.String) {
+                        self.name = name
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case name
+                    }
                 }
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/PATCH/requestBody/content/application\/json`.
                 case json(Operations.projects_update_column.Input.Body.jsonPayload)
@@ -20548,7 +21307,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_column {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -20559,7 +21319,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_update_column.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.projects_update_column.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -20574,8 +21336,13 @@ public enum Operations {
             public var ok: Operations.projects_update_column.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20592,8 +21359,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20610,8 +21382,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20628,8 +21405,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20643,17 +21425,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Delete a project column
@@ -20675,24 +21465,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
             }
             public var path: Operations.projects_delete_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete_column.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete_column.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete_column.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_delete_column.Input.Headers
             /// Creates a new `Input`.
@@ -20726,8 +21513,13 @@ public enum Operations {
             public var noContent: Operations.projects_delete_column.Output.NoContent {
                 get throws {
                     switch self {
-                    case let .noContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "noContent", response: self)
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20744,8 +21536,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20762,8 +21559,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20780,8 +21582,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20795,17 +21602,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List project cards
@@ -20827,7 +21642,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
             }
             public var path: Operations.projects_list_cards.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/query`.
@@ -20869,19 +21686,14 @@ public enum Operations {
             public var query: Operations.projects_list_cards.Input.Query
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_cards.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_cards.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_cards.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_cards.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_list_cards.Input.Headers
             /// Creates a new `Input`.
@@ -20904,13 +21716,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_list_cards.Output.Ok.Headers
@@ -20925,7 +21774,8 @@ public enum Operations {
                     public var json: [Components.Schemas.project_card] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -20958,8 +21808,13 @@ public enum Operations {
             public var ok: Operations.projects_list_cards.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20976,8 +21831,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -20994,8 +21854,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21012,8 +21877,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21027,17 +21897,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Create a project card
@@ -21057,24 +21935,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
             }
             public var path: Operations.projects_create_card.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_create_card.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_create_card.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_create_card.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_create_card.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_create_card.Input.Headers
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody`.
@@ -21091,8 +21966,12 @@ public enum Operations {
                         ///
                         /// - Parameters:
                         ///   - note: The project card's note
-                        public init(note: Swift.String? = nil) { self.note = note }
-                        public enum CodingKeys: String, CodingKey { case note }
+                        public init(note: Swift.String? = nil) {
+                            self.note = note
+                        }
+                        public enum CodingKeys: String, CodingKey {
+                            case note
+                        }
                     }
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case1`.
                     case case1(Operations.projects_create_card.Input.Body.jsonPayload.Case1Payload)
@@ -21111,7 +21990,10 @@ public enum Operations {
                         /// - Parameters:
                         ///   - content_id: The unique identifier of the content associated with the card
                         ///   - content_type: The piece of content associated with the card
-                        public init(content_id: Swift.Int, content_type: Swift.String) {
+                        public init(
+                            content_id: Swift.Int,
+                            content_type: Swift.String
+                        ) {
                             self.content_id = content_id
                             self.content_type = content_type
                         }
@@ -21123,23 +22005,31 @@ public enum Operations {
                     /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/requestBody/json/case2`.
                     case case2(Operations.projects_create_card.Input.Body.jsonPayload.Case2Payload)
                     public init(from decoder: any Decoder) throws {
+                        var errors: [any Error] = []
                         do {
                             self = .case1(try .init(from: decoder))
                             return
-                        } catch {}
+                        } catch {
+                            errors.append(error)
+                        }
                         do {
                             self = .case2(try .init(from: decoder))
                             return
-                        } catch {}
+                        } catch {
+                            errors.append(error)
+                        }
                         throw Swift.DecodingError.failedToDecodeOneOfSchema(
                             type: Self.self,
-                            codingPath: decoder.codingPath
+                            codingPath: decoder.codingPath,
+                            errors: errors
                         )
                     }
                     public func encode(to encoder: any Encoder) throws {
                         switch self {
-                        case let .case1(value): try value.encode(to: encoder)
-                        case let .case2(value): try value.encode(to: encoder)
+                        case let .case1(value):
+                            try value.encode(to: encoder)
+                        case let .case2(value):
+                            try value.encode(to: encoder)
                         }
                     }
                 }
@@ -21176,7 +22066,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_card {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -21187,7 +22078,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_create_card.Output.Created.Body) { self.body = body }
+                public init(body: Operations.projects_create_card.Output.Created.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -21202,8 +22095,13 @@ public enum Operations {
             public var created: Operations.projects_create_card.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21220,8 +22118,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21238,8 +22141,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21256,8 +22164,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21269,27 +22182,33 @@ public enum Operations {
                         /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/json/case1`.
                         case validation_error(Components.Schemas.validation_error)
                         /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/422/content/json/case2`.
-                        case validation_error_simple(
-                            Components.Schemas.validation_error_simple
-                        )
+                        case validation_error_simple(Components.Schemas.validation_error_simple)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .validation_error(try .init(from: decoder))
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .validation_error_simple(try .init(from: decoder))
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .validation_error(value): try value.encode(to: encoder)
-                            case let .validation_error_simple(value): try value.encode(to: encoder)
+                            case let .validation_error(value):
+                                try value.encode(to: encoder)
+                            case let .validation_error_simple(value):
+                                try value.encode(to: encoder)
                             }
                         }
                     }
@@ -21299,12 +22218,11 @@ public enum Operations {
                     ///
                     /// - Throws: An error if `self` is not `.json`.
                     /// - SeeAlso: `.json`.
-                    public var json:
-                        Operations.projects_create_card.Output.UnprocessableContent.Body.jsonPayload
-                    {
+                    public var json: Operations.projects_create_card.Output.UnprocessableContent.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -21332,8 +22250,13 @@ public enum Operations {
             public var unprocessableContent: Operations.projects_create_card.Output.UnprocessableContent {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21359,7 +22282,10 @@ public enum Operations {
                             /// - Parameters:
                             ///   - code:
                             ///   - message:
-                            public init(code: Swift.String? = nil, message: Swift.String? = nil) {
+                            public init(
+                                code: Swift.String? = nil,
+                                message: Swift.String? = nil
+                            ) {
                                 self.code = code
                                 self.message = message
                             }
@@ -21369,12 +22295,9 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errors`.
-                        public typealias errorsPayload = [Operations.projects_create_card.Output
-                            .ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
+                        public typealias errorsPayload = [Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayloadPayload]
                         /// - Remark: Generated from `#/paths/projects/columns/{column_id}/cards/POST/responses/503/content/json/errors`.
-                        public var errors:
-                            Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload
-                                .errorsPayload?
+                        public var errors: Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayload?
                         /// Creates a new `jsonPayload`.
                         ///
                         /// - Parameters:
@@ -21386,8 +22309,7 @@ public enum Operations {
                             code: Swift.String? = nil,
                             message: Swift.String? = nil,
                             documentation_url: Swift.String? = nil,
-                            errors: Operations.projects_create_card.Output.ServiceUnavailable.Body
-                                .jsonPayload.errorsPayload? = nil
+                            errors: Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload.errorsPayload? = nil
                         ) {
                             self.code = code
                             self.message = message
@@ -21407,12 +22329,11 @@ public enum Operations {
                     ///
                     /// - Throws: An error if `self` is not `.json`.
                     /// - SeeAlso: `.json`.
-                    public var json:
-                        Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload
-                    {
+                    public var json: Operations.projects_create_card.Output.ServiceUnavailable.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -21440,8 +22361,13 @@ public enum Operations {
             public var serviceUnavailable: Operations.projects_create_card.Output.ServiceUnavailable {
                 get throws {
                     switch self {
-                    case let .serviceUnavailable(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "serviceUnavailable", response: self)
+                    case let .serviceUnavailable(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21455,17 +22381,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Move a project column
@@ -21485,24 +22419,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - column_id: The unique identifier of the column.
-                public init(column_id: Components.Parameters.column_id) { self.column_id = column_id }
+                public init(column_id: Components.Parameters.column_id) {
+                    self.column_id = column_id
+                }
             }
             public var path: Operations.projects_move_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_move_column.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_move_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_move_column.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_move_column.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_move_column.Input.Headers
             /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/requestBody`.
@@ -21517,8 +22448,12 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - position: The position of the column in a project. Can be one of: `first`, `last`, or `after:<column_id>` to place after the specified column.
-                    public init(position: Swift.String) { self.position = position }
-                    public enum CodingKeys: String, CodingKey { case position }
+                    public init(position: Swift.String) {
+                        self.position = position
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case position
+                    }
                 }
                 /// - Remark: Generated from `#/paths/projects/columns/{column_id}/moves/POST/requestBody/content/application\/json`.
                 case json(Operations.projects_move_column.Input.Body.jsonPayload)
@@ -21561,7 +22496,8 @@ public enum Operations {
                     public var json: Operations.projects_move_column.Output.Created.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -21572,7 +22508,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_move_column.Output.Created.Body) { self.body = body }
+                public init(body: Operations.projects_move_column.Output.Created.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -21587,8 +22525,13 @@ public enum Operations {
             public var created: Operations.projects_move_column.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21605,8 +22548,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21623,8 +22571,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21641,8 +22594,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed_simple {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21659,8 +22617,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21674,17 +22637,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get a project
@@ -21706,22 +22677,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
             }
             public var path: Operations.projects_get.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_get.Input.Headers
             /// Creates a new `Input`.
@@ -21750,7 +22720,8 @@ public enum Operations {
                     public var json: Components.Schemas.project {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -21761,7 +22732,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_get.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.projects_get.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -21776,8 +22749,13 @@ public enum Operations {
             public var ok: Operations.projects_get.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21794,8 +22772,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21812,8 +22795,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21830,8 +22818,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -21845,17 +22838,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Update a project
@@ -21877,22 +22878,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
             }
             public var path: Operations.projects_update.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_update.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_update.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_update.Input.Headers
             /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody`.
@@ -21923,8 +22923,7 @@ public enum Operations {
                     /// The baseline permission that all organization members have on this project
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/organization_permission`.
-                    public var organization_permission:
-                        Operations.projects_update.Input.Body.jsonPayload.organization_permissionPayload?
+                    public var organization_permission: Operations.projects_update.Input.Body.jsonPayload.organization_permissionPayload?
                     /// Whether or not this project can be seen by everyone.
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/PATCH/requestBody/json/private`.
@@ -21941,8 +22940,7 @@ public enum Operations {
                         name: Swift.String? = nil,
                         body: Swift.String? = nil,
                         state: Swift.String? = nil,
-                        organization_permission: Operations.projects_update.Input.Body.jsonPayload
-                            .organization_permissionPayload? = nil,
+                        organization_permission: Operations.projects_update.Input.Body.jsonPayload.organization_permissionPayload? = nil,
                         _private: Swift.Bool? = nil
                     ) {
                         self.name = name
@@ -21992,7 +22990,8 @@ public enum Operations {
                     public var json: Components.Schemas.project {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -22003,7 +23002,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_update.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.projects_update.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -22018,8 +23019,13 @@ public enum Operations {
             public var ok: Operations.projects_update.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22040,8 +23046,13 @@ public enum Operations {
             public var notFound: Operations.projects_update.Output.NotFound {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22058,8 +23069,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22104,7 +23120,8 @@ public enum Operations {
                     public var json: Operations.projects_update.Output.Forbidden.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -22115,7 +23132,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_update.Output.Forbidden.Body) { self.body = body }
+                public init(body: Operations.projects_update.Output.Forbidden.Body) {
+                    self.body = body
+                }
             }
             /// Forbidden
             ///
@@ -22130,8 +23149,13 @@ public enum Operations {
             public var forbidden: Operations.projects_update.Output.Forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22148,8 +23172,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22166,8 +23195,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22184,8 +23218,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed_simple {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22199,17 +23238,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Delete a project
@@ -22231,22 +23278,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
             }
             public var path: Operations.projects_delete.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_delete.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_delete.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_delete.Input.Headers
             /// Creates a new `Input`.
@@ -22280,8 +23326,13 @@ public enum Operations {
             public var noContent: Operations.projects_delete.Output.NoContent {
                 get throws {
                     switch self {
-                    case let .noContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "noContent", response: self)
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22298,8 +23349,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22344,7 +23400,8 @@ public enum Operations {
                     public var json: Operations.projects_delete.Output.Forbidden.Body.jsonPayload {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -22355,7 +23412,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_delete.Output.Forbidden.Body) { self.body = body }
+                public init(body: Operations.projects_delete.Output.Forbidden.Body) {
+                    self.body = body
+                }
             }
             /// Forbidden
             ///
@@ -22370,8 +23429,13 @@ public enum Operations {
             public var forbidden: Operations.projects_delete.Output.Forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22388,8 +23452,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22406,8 +23475,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22424,8 +23498,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22439,17 +23518,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List project collaborators
@@ -22471,7 +23558,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
             }
             public var path: Operations.projects_list_collaborators.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query`.
@@ -22485,8 +23574,7 @@ public enum Operations {
                 /// Filters the collaborators by their affiliation. `outside` means outside collaborators of a project that are not a member of the project's organization. `direct` means collaborators with permissions to a project, regardless of organization membership status. `all` means all collaborators the authenticated user can see.
                 ///
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/affiliation`.
-                public var affiliation:
-                    Operations.projects_list_collaborators.Input.Query.affiliationPayload?
+                public var affiliation: Operations.projects_list_collaborators.Input.Query.affiliationPayload?
                 /// The number of results per page (max 100).
                 ///
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/query/per_page`.
@@ -22502,8 +23590,7 @@ public enum Operations {
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
                 public init(
-                    affiliation: Operations.projects_list_collaborators.Input.Query.affiliationPayload? =
-                        nil,
+                    affiliation: Operations.projects_list_collaborators.Input.Query.affiliationPayload? = nil,
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
                 ) {
@@ -22515,19 +23602,14 @@ public enum Operations {
             public var query: Operations.projects_list_collaborators.Input.Query
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_collaborators.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_collaborators.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_collaborators.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_collaborators.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_list_collaborators.Input.Headers
             /// Creates a new `Input`.
@@ -22550,13 +23632,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_list_collaborators.Output.Ok.Headers
@@ -22571,7 +23690,8 @@ public enum Operations {
                     public var json: [Components.Schemas.simple_user] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -22604,8 +23724,13 @@ public enum Operations {
             public var ok: Operations.projects_list_collaborators.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22622,8 +23747,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22640,8 +23770,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22658,8 +23793,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22676,8 +23816,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22694,8 +23839,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22709,17 +23859,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Add project collaborator
@@ -22757,19 +23915,14 @@ public enum Operations {
             public var path: Operations.projects_add_collaborator.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_add_collaborator.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_add_collaborator.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_add_collaborator.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_add_collaborator.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_add_collaborator.Input.Headers
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody`.
@@ -22787,17 +23940,17 @@ public enum Operations {
                     /// The permission to grant the collaborator.
                     ///
                     /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/json/permission`.
-                    public var permission:
-                        Operations.projects_add_collaborator.Input.Body.jsonPayload.permissionPayload?
+                    public var permission: Operations.projects_add_collaborator.Input.Body.jsonPayload.permissionPayload?
                     /// Creates a new `jsonPayload`.
                     ///
                     /// - Parameters:
                     ///   - permission: The permission to grant the collaborator.
-                    public init(
-                        permission: Operations.projects_add_collaborator.Input.Body.jsonPayload
-                            .permissionPayload? = nil
-                    ) { self.permission = permission }
-                    public enum CodingKeys: String, CodingKey { case permission }
+                    public init(permission: Operations.projects_add_collaborator.Input.Body.jsonPayload.permissionPayload? = nil) {
+                        self.permission = permission
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case permission
+                    }
                 }
                 /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/PUT/requestBody/content/application\/json`.
                 case json(Operations.projects_add_collaborator.Input.Body.jsonPayload)
@@ -22837,8 +23990,13 @@ public enum Operations {
             public var noContent: Operations.projects_add_collaborator.Output.NoContent {
                 get throws {
                     switch self {
-                    case let .noContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "noContent", response: self)
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22855,8 +24013,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22873,8 +24036,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22891,8 +24059,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22909,8 +24082,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22927,8 +24105,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -22942,17 +24125,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Remove user as a collaborator
@@ -22990,19 +24181,14 @@ public enum Operations {
             public var path: Operations.projects_remove_collaborator.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/DELETE/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_remove_collaborator.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_remove_collaborator.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_remove_collaborator.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_remove_collaborator.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_remove_collaborator.Input.Headers
             /// Creates a new `Input`.
@@ -23036,8 +24222,13 @@ public enum Operations {
             public var noContent: Operations.projects_remove_collaborator.Output.NoContent {
                 get throws {
                     switch self {
-                    case let .noContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "noContent", response: self)
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23054,8 +24245,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23072,8 +24268,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23090,8 +24291,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23108,8 +24314,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23126,8 +24337,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23141,17 +24357,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get project permission for a user
@@ -23189,19 +24413,14 @@ public enum Operations {
             public var path: Operations.projects_get_permission_for_user.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/collaborators/{username}/permission/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_permission_for_user.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_permission_for_user.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_get_permission_for_user.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_get_permission_for_user.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_get_permission_for_user.Input.Headers
             /// Creates a new `Input`.
@@ -23230,7 +24449,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_collaborator_permission {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -23258,8 +24478,13 @@ public enum Operations {
             public var ok: Operations.projects_get_permission_for_user.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23276,8 +24501,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23294,8 +24524,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23312,8 +24547,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23330,8 +24570,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23348,8 +24593,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23363,17 +24613,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List project columns
@@ -23395,7 +24653,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
             }
             public var path: Operations.projects_list_columns.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/query`.
@@ -23424,19 +24684,14 @@ public enum Operations {
             public var query: Operations.projects_list_columns.Input.Query
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_columns.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_columns.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_list_columns.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_list_columns.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_list_columns.Input.Headers
             /// Creates a new `Input`.
@@ -23459,13 +24714,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/projects/{project_id}/columns/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.projects_list_columns.Output.Ok.Headers
@@ -23480,7 +24772,8 @@ public enum Operations {
                     public var json: [Components.Schemas.project_column] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -23513,8 +24806,13 @@ public enum Operations {
             public var ok: Operations.projects_list_columns.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23531,8 +24829,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23549,8 +24852,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23567,8 +24875,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23582,17 +24895,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Create a project column
@@ -23614,24 +24935,21 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - project_id: The unique identifier of the project.
-                public init(project_id: Components.Parameters.project_id) { self.project_id = project_id }
+                public init(project_id: Components.Parameters.project_id) {
+                    self.project_id = project_id
+                }
             }
             public var path: Operations.projects_create_column.Input.Path
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_create_column.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_create_column.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.projects_create_column.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.projects_create_column.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.projects_create_column.Input.Headers
             /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/requestBody`.
@@ -23646,8 +24964,12 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - name: Name of the project column
-                    public init(name: Swift.String) { self.name = name }
-                    public enum CodingKeys: String, CodingKey { case name }
+                    public init(name: Swift.String) {
+                        self.name = name
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case name
+                    }
                 }
                 /// - Remark: Generated from `#/paths/projects/{project_id}/columns/POST/requestBody/content/application\/json`.
                 case json(Operations.projects_create_column.Input.Body.jsonPayload)
@@ -23682,7 +25004,8 @@ public enum Operations {
                     public var json: Components.Schemas.project_column {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -23693,7 +25016,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.projects_create_column.Output.Created.Body) { self.body = body }
+                public init(body: Operations.projects_create_column.Output.Created.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -23708,8 +25033,13 @@ public enum Operations {
             public var created: Operations.projects_create_column.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23726,8 +25056,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23744,8 +25079,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23762,8 +25102,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed_simple {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23780,8 +25125,13 @@ public enum Operations {
             public var unauthorized: Components.Responses.requires_authentication {
                 get throws {
                     switch self {
-                    case let .unauthorized(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unauthorized", response: self)
+                    case let .unauthorized(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unauthorized",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23795,17 +25145,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get rate limit status for the authenticated user
@@ -23821,17 +25179,14 @@ public enum Operations {
         public struct Input: Sendable, Hashable {
             /// - Remark: Generated from `#/paths/rate_limit/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.rate_limit_get.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.rate_limit_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.rate_limit_get.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.rate_limit_get.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.rate_limit_get.Input.Headers
             /// Creates a new `Input`.
@@ -23847,14 +25202,11 @@ public enum Operations {
                 /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers/X-RateLimit-Limit`.
-                    public var X_RateLimit_Limit:
-                        Components.Headers.x_rate_limit_limit?
+                    public var X_RateLimit_Limit: Components.Headers.x_rate_limit_limit?
                     /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers/X-RateLimit-Remaining`.
-                    public var X_RateLimit_Remaining:
-                        Components.Headers.x_rate_limit_remaining?
+                    public var X_RateLimit_Remaining: Components.Headers.x_rate_limit_remaining?
                     /// - Remark: Generated from `#/paths/rate_limit/GET/responses/200/headers/X-RateLimit-Reset`.
-                    public var X_RateLimit_Reset:
-                        Components.Headers.x_rate_limit_reset?
+                    public var X_RateLimit_Reset: Components.Headers.x_rate_limit_reset?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
@@ -23862,12 +25214,9 @@ public enum Operations {
                     ///   - X_RateLimit_Remaining:
                     ///   - X_RateLimit_Reset:
                     public init(
-                        X_RateLimit_Limit: Components.Headers.x_rate_limit_limit? =
-                            nil,
-                        X_RateLimit_Remaining: Components.Headers
-                            .x_rate_limit_remaining? = nil,
-                        X_RateLimit_Reset: Components.Headers.x_rate_limit_reset? =
-                            nil
+                        X_RateLimit_Limit: Components.Headers.x_rate_limit_limit? = nil,
+                        X_RateLimit_Remaining: Components.Headers.x_rate_limit_remaining? = nil,
+                        X_RateLimit_Reset: Components.Headers.x_rate_limit_reset? = nil
                     ) {
                         self.X_RateLimit_Limit = X_RateLimit_Limit
                         self.X_RateLimit_Remaining = X_RateLimit_Remaining
@@ -23887,7 +25236,8 @@ public enum Operations {
                     public var json: Components.Schemas.rate_limit_overview {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -23920,8 +25270,13 @@ public enum Operations {
             public var ok: Operations.rate_limit_get.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23938,8 +25293,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23956,8 +25316,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -23971,17 +25336,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get a repository
@@ -24010,7 +25383,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -24018,16 +25394,14 @@ public enum Operations {
             public var path: Operations.repos_get.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get.AcceptableContentType>] =
-                        .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_get.Input.Headers
             /// Creates a new `Input`.
@@ -24056,7 +25430,8 @@ public enum Operations {
                     public var json: Components.Schemas.full_repository {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -24067,7 +25442,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.repos_get.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.repos_get.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -24082,8 +25459,13 @@ public enum Operations {
             public var ok: Operations.repos_get.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24100,8 +25482,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24118,8 +25505,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24136,8 +25528,13 @@ public enum Operations {
             public var movedPermanently: Components.Responses.moved_permanently {
                 get throws {
                     switch self {
-                    case let .movedPermanently(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "movedPermanently", response: self)
+                    case let .movedPermanently(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "movedPermanently",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24151,17 +25548,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List commits
@@ -24215,7 +25620,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -24289,19 +25697,14 @@ public enum Operations {
             public var query: Operations.repos_list_commits.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_commits.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_commits.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_commits.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_commits.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_list_commits.Input.Headers
             /// Creates a new `Input`.
@@ -24324,13 +25727,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_commits.Output.Ok.Headers
@@ -24345,7 +25785,8 @@ public enum Operations {
                     public var json: [Components.Schemas.commit] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -24378,8 +25819,13 @@ public enum Operations {
             public var ok: Operations.repos_list_commits.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24396,8 +25842,13 @@ public enum Operations {
             public var internalServerError: Components.Responses.internal_error {
                 get throws {
                     switch self {
-                    case let .internalServerError(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "internalServerError", response: self)
+                    case let .internalServerError(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "internalServerError",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24414,8 +25865,13 @@ public enum Operations {
             public var badRequest: Components.Responses.bad_request {
                 get throws {
                     switch self {
-                    case let .badRequest(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "badRequest", response: self)
+                    case let .badRequest(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "badRequest",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24432,8 +25888,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24450,8 +25911,13 @@ public enum Operations {
             public var conflict: Components.Responses.conflict {
                 get throws {
                     switch self {
-                    case let .conflict(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "conflict", response: self)
+                    case let .conflict(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "conflict",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24465,17 +25931,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List pull requests associated with a commit
@@ -24519,9 +25993,7 @@ public enum Operations {
                     self.commit_sha = commit_sha
                 }
             }
-            public var path:
-                Operations.repos_list_pull_requests_associated_with_commit.Input
-                    .Path
+            public var path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/query`.
             public struct Query: Sendable, Hashable {
                 /// The number of results per page (max 100).
@@ -24545,32 +26017,19 @@ public enum Operations {
                     self.page = page
                 }
             }
-            public var query:
-                Operations.repos_list_pull_requests_associated_with_commit.Input
-                    .Query
+            public var query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations
-                            .repos_list_pull_requests_associated_with_commit
-                            .AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_pull_requests_associated_with_commit.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations
-                            .repos_list_pull_requests_associated_with_commit
-                            .AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_pull_requests_associated_with_commit.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
-            public var headers:
-                Operations.repos_list_pull_requests_associated_with_commit.Input
-                    .Headers
+            public var headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers
             /// Creates a new `Input`.
             ///
             /// - Parameters:
@@ -24578,13 +26037,9 @@ public enum Operations {
             ///   - query:
             ///   - headers:
             public init(
-                path: Operations.repos_list_pull_requests_associated_with_commit
-                    .Input.Path,
-                query: Operations.repos_list_pull_requests_associated_with_commit
-                    .Input.Query = .init(),
-                headers: Operations
-                    .repos_list_pull_requests_associated_with_commit.Input
-                    .Headers = .init()
+                path: Operations.repos_list_pull_requests_associated_with_commit.Input.Path,
+                query: Operations.repos_list_pull_requests_associated_with_commit.Input.Query = .init(),
+                headers: Operations.repos_list_pull_requests_associated_with_commit.Input.Headers = .init()
             ) {
                 self.path = path
                 self.query = query
@@ -24595,18 +26050,53 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
-                public var headers:
-                    Operations.repos_list_pull_requests_associated_with_commit
-                        .Output.Ok.Headers
+                public var headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/content`.
                 @frozen public enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/{commit_sha}/pulls/GET/responses/200/content/application\/json`.
@@ -24618,27 +26108,22 @@ public enum Operations {
                     public var json: [Components.Schemas.pull_request_simple] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
                 }
                 /// Received HTTP response body
-                public var body:
-                    Operations.repos_list_pull_requests_associated_with_commit
-                        .Output.Ok.Body
+                public var body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
                 /// Creates a new `Ok`.
                 ///
                 /// - Parameters:
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations
-                        .repos_list_pull_requests_associated_with_commit.Output
-                        .Ok.Headers = .init(),
-                    body: Operations
-                        .repos_list_pull_requests_associated_with_commit.Output
-                        .Ok.Body
+                    headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers = .init(),
+                    body: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Body
                 ) {
                     self.headers = headers
                     self.body = body
@@ -24649,22 +26134,21 @@ public enum Operations {
             /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)/responses/200`.
             ///
             /// HTTP response code: `200 ok`.
-            case ok(
-                Operations.repos_list_pull_requests_associated_with_commit.Output
-                    .Ok
-            )
+            case ok(Operations.repos_list_pull_requests_associated_with_commit.Output.Ok)
             /// The associated value of the enum case if `self` is `.ok`.
             ///
             /// - Throws: An error if `self` is not `.ok`.
             /// - SeeAlso: `.ok`.
-            public var ok:
-                Operations.repos_list_pull_requests_associated_with_commit.Output
-                    .Ok
-            {
+            public var ok: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24678,17 +26162,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Compare two commits
@@ -24801,19 +26293,14 @@ public enum Operations {
             public var query: Operations.repos_compare_commits.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/compare/{basehead}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_compare_commits.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_compare_commits.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_compare_commits.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_compare_commits.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_compare_commits.Input.Headers
             /// Creates a new `Input`.
@@ -24845,7 +26332,8 @@ public enum Operations {
                     public var json: Components.Schemas.commit_comparison {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -24856,7 +26344,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.repos_compare_commits.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.repos_compare_commits.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -24871,8 +26361,13 @@ public enum Operations {
             public var ok: Operations.repos_compare_commits.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24889,8 +26384,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24907,8 +26407,13 @@ public enum Operations {
             public var internalServerError: Components.Responses.internal_error {
                 get throws {
                     switch self {
-                    case let .internalServerError(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "internalServerError", response: self)
+                    case let .internalServerError(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "internalServerError",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24925,8 +26430,13 @@ public enum Operations {
             public var serviceUnavailable: Components.Responses.service_unavailable {
                 get throws {
                     switch self {
-                    case let .serviceUnavailable(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "serviceUnavailable", response: self)
+                    case let .serviceUnavailable(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
                     }
                 }
             }
@@ -24940,17 +26450,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List repository contributors
@@ -24979,7 +26497,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -25018,19 +26539,14 @@ public enum Operations {
             public var query: Operations.repos_list_contributors.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_contributors.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_contributors.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_contributors.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_contributors.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_list_contributors.Input.Headers
             /// Creates a new `Input`.
@@ -25053,13 +26569,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/contributors/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_contributors.Output.Ok.Headers
@@ -25074,7 +26627,8 @@ public enum Operations {
                     public var json: [Components.Schemas.contributor] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -25107,8 +26661,13 @@ public enum Operations {
             public var ok: Operations.repos_list_contributors.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25129,8 +26688,13 @@ public enum Operations {
             public var noContent: Operations.repos_list_contributors.Output.NoContent {
                 get throws {
                     switch self {
-                    case let .noContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "noContent", response: self)
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25147,8 +26711,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25165,8 +26734,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25180,17 +26754,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List repository issues
@@ -25222,7 +26804,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -25334,19 +26919,14 @@ public enum Operations {
             public var query: Operations.issues_list_for_repo.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_list_for_repo.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_list_for_repo.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_list_for_repo.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_list_for_repo.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.issues_list_for_repo.Input.Headers
             /// Creates a new `Input`.
@@ -25369,13 +26949,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_list_for_repo.Output.Ok.Headers
@@ -25390,7 +27007,8 @@ public enum Operations {
                     public var json: [Components.Schemas.issue] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -25423,8 +27041,13 @@ public enum Operations {
             public var ok: Operations.issues_list_for_repo.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25441,8 +27064,13 @@ public enum Operations {
             public var movedPermanently: Components.Responses.moved_permanently {
                 get throws {
                     switch self {
-                    case let .movedPermanently(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "movedPermanently", response: self)
+                    case let .movedPermanently(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "movedPermanently",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25459,8 +27087,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25477,8 +27110,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25492,17 +27130,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Create an issue
@@ -25531,7 +27177,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -25539,17 +27188,14 @@ public enum Operations {
             public var path: Operations.issues_create.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_create.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.issues_create.Input.Headers
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody`.
@@ -25565,23 +27211,31 @@ public enum Operations {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/title/case2`.
                         case case2(Swift.Int)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .case1(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .case2(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                            case let .case2(value): try encoder.encodeToSingleValueContainer(value)
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
                             }
                         }
                     }
@@ -25606,23 +27260,31 @@ public enum Operations {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/milestone/case2`.
                         case case2(Swift.Int)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .case1(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .case2(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                            case let .case2(value): try encoder.encodeToSingleValueContainer(value)
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
                             }
                         }
                     }
@@ -25668,35 +27330,40 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labelsPayload/case2`.
-                        case case2(
-                            Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload.Case2Payload
-                        )
+                        case case2(Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload.Case2Payload)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .case1(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .case2(try .init(from: decoder))
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                            case let .case2(value): try value.encode(to: encoder)
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try value.encode(to: encoder)
                             }
                         }
                     }
                     /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labels`.
-                    public typealias labelsPayload = [Operations.issues_create.Input.Body.jsonPayload
-                        .labelsPayloadPayload]
+                    public typealias labelsPayload = [Operations.issues_create.Input.Body.jsonPayload.labelsPayloadPayload]
                     /// Labels to associate with this issue. _NOTE: Only users with push access can set labels for new issues. Labels are silently dropped otherwise._
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/POST/requestBody/json/labels`.
@@ -25768,7 +27435,9 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - Location:
-                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                    public init(Location: Swift.String? = nil) {
+                        self.Location = Location
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_create.Output.Created.Headers
@@ -25783,7 +27452,8 @@ public enum Operations {
                     public var json: Components.Schemas.issue {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -25816,8 +27486,13 @@ public enum Operations {
             public var created: Operations.issues_create.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25834,8 +27509,13 @@ public enum Operations {
             public var badRequest: Components.Responses.bad_request {
                 get throws {
                     switch self {
-                    case let .badRequest(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "badRequest", response: self)
+                    case let .badRequest(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "badRequest",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25852,8 +27532,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25870,8 +27555,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25888,8 +27578,13 @@ public enum Operations {
             public var serviceUnavailable: Components.Responses.service_unavailable {
                 get throws {
                     switch self {
-                    case let .serviceUnavailable(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "serviceUnavailable", response: self)
+                    case let .serviceUnavailable(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25906,8 +27601,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25924,8 +27624,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -25939,17 +27644,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get an issue
@@ -26004,16 +27717,14 @@ public enum Operations {
             public var path: Operations.issues_get.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_get.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_get.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_get.AcceptableContentType>] =
-                        .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_get.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.issues_get.Input.Headers
             /// Creates a new `Input`.
@@ -26042,7 +27753,8 @@ public enum Operations {
                     public var json: Components.Schemas.issue {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -26053,7 +27765,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.issues_get.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.issues_get.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -26068,8 +27782,13 @@ public enum Operations {
             public var ok: Operations.issues_get.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26086,8 +27805,13 @@ public enum Operations {
             public var movedPermanently: Components.Responses.moved_permanently {
                 get throws {
                     switch self {
-                    case let .movedPermanently(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "movedPermanently", response: self)
+                    case let .movedPermanently(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "movedPermanently",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26104,8 +27828,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26122,8 +27851,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26140,8 +27874,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26155,17 +27894,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Update an issue
@@ -26210,17 +27957,14 @@ public enum Operations {
             public var path: Operations.issues_update.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_update.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_update.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_update.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_update.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.issues_update.Input.Headers
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody`.
@@ -26236,23 +27980,31 @@ public enum Operations {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/title/case2`.
                         case case2(Swift.Int)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .case1(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .case2(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                            case let .case2(value): try encoder.encodeToSingleValueContainer(value)
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
                             }
                         }
                     }
@@ -26300,23 +28052,31 @@ public enum Operations {
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/milestone/case2`.
                         case case2(Swift.Int)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .case1(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .case2(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                            case let .case2(value): try encoder.encodeToSingleValueContainer(value)
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
                             }
                         }
                     }
@@ -26362,35 +28122,40 @@ public enum Operations {
                             }
                         }
                         /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labelsPayload/case2`.
-                        case case2(
-                            Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload.Case2Payload
-                        )
+                        case case2(Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload.Case2Payload)
                         public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
                             do {
                                 self = .case1(try decoder.decodeFromSingleValueContainer())
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             do {
                                 self = .case2(try .init(from: decoder))
                                 return
-                            } catch {}
+                            } catch {
+                                errors.append(error)
+                            }
                             throw Swift.DecodingError.failedToDecodeOneOfSchema(
                                 type: Self.self,
-                                codingPath: decoder.codingPath
+                                codingPath: decoder.codingPath,
+                                errors: errors
                             )
                         }
                         public func encode(to encoder: any Encoder) throws {
                             switch self {
-                            case let .case1(value): try encoder.encodeToSingleValueContainer(value)
-                            case let .case2(value): try value.encode(to: encoder)
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try value.encode(to: encoder)
                             }
                         }
                     }
                     /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labels`.
-                    public typealias labelsPayload = [Operations.issues_update.Input.Body.jsonPayload
-                        .labelsPayloadPayload]
+                    public typealias labelsPayload = [Operations.issues_update.Input.Body.jsonPayload.labelsPayloadPayload]
                     /// Labels to associate with this issue. Pass one or more labels to _replace_ the set of labels on this issue. Send an empty array (`[]`) to clear all labels from the issue. Only users with push access can set labels for issues. Without push access to the repository, label changes are silently dropped.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/PATCH/requestBody/json/labels`.
@@ -26473,7 +28238,8 @@ public enum Operations {
                     public var json: Components.Schemas.issue {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -26484,7 +28250,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.issues_update.Output.Ok.Body) { self.body = body }
+                public init(body: Operations.issues_update.Output.Ok.Body) {
+                    self.body = body
+                }
             }
             /// Response
             ///
@@ -26499,8 +28267,13 @@ public enum Operations {
             public var ok: Operations.issues_update.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26517,8 +28290,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26535,8 +28313,13 @@ public enum Operations {
             public var serviceUnavailable: Components.Responses.service_unavailable {
                 get throws {
                     switch self {
-                    case let .serviceUnavailable(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "serviceUnavailable", response: self)
+                    case let .serviceUnavailable(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26553,8 +28336,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26571,8 +28359,13 @@ public enum Operations {
             public var movedPermanently: Components.Responses.moved_permanently {
                 get throws {
                     switch self {
-                    case let .movedPermanently(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "movedPermanently", response: self)
+                    case let .movedPermanently(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "movedPermanently",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26589,8 +28382,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26607,8 +28405,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26622,17 +28425,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Create an issue comment
@@ -26684,19 +28495,14 @@ public enum Operations {
             public var path: Operations.issues_create_comment.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_create_comment.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create_comment.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_create_comment.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_create_comment.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.issues_create_comment.Input.Headers
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody`.
@@ -26711,8 +28517,12 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - body: The contents of the comment.
-                    public init(body: Swift.String) { self.body = body }
-                    public enum CodingKeys: String, CodingKey { case body }
+                    public init(body: Swift.String) {
+                        self.body = body
+                    }
+                    public enum CodingKeys: String, CodingKey {
+                        case body
+                    }
                 }
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/content/application\/json`.
                 case json(Operations.issues_create_comment.Input.Body.jsonPayload)
@@ -26744,7 +28554,9 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - Location:
-                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                    public init(Location: Swift.String? = nil) {
+                        self.Location = Location
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.issues_create_comment.Output.Created.Headers
@@ -26759,7 +28571,8 @@ public enum Operations {
                     public var json: Components.Schemas.issue_comment {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -26792,8 +28605,13 @@ public enum Operations {
             public var created: Operations.issues_create_comment.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26810,8 +28628,13 @@ public enum Operations {
             public var forbidden: Components.Responses.forbidden {
                 get throws {
                     switch self {
-                    case let .forbidden(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "forbidden", response: self)
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26828,8 +28651,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26846,8 +28674,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26864,8 +28697,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -26879,17 +28717,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List timeline events for an issue
@@ -26958,19 +28804,14 @@ public enum Operations {
             public var query: Operations.issues_list_events_for_timeline.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_list_events_for_timeline.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_list_events_for_timeline.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.issues_list_events_for_timeline.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.issues_list_events_for_timeline.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.issues_list_events_for_timeline.Input.Headers
             /// Creates a new `Input`.
@@ -26993,17 +28834,53 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
-                public var headers:
-                    Operations.issues_list_events_for_timeline.Output.Ok.Headers
+                public var headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/content`.
                 @frozen public enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/timeline/GET/responses/200/content/application\/json`.
@@ -27015,7 +28892,8 @@ public enum Operations {
                     public var json: [Components.Schemas.timeline_issue_events] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -27028,8 +28906,7 @@ public enum Operations {
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
                 public init(
-                    headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers =
-                        .init(),
+                    headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers = .init(),
                     body: Operations.issues_list_events_for_timeline.Output.Ok.Body
                 ) {
                     self.headers = headers
@@ -27049,8 +28926,13 @@ public enum Operations {
             public var ok: Operations.issues_list_events_for_timeline.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27067,8 +28949,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27085,8 +28972,13 @@ public enum Operations {
             public var gone: Components.Responses.gone {
                 get throws {
                     switch self {
-                    case let .gone(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "gone", response: self)
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27100,17 +28992,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List pull requests
@@ -27137,7 +29037,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -27222,16 +29125,14 @@ public enum Operations {
             public var query: Operations.pulls_list.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list.AcceptableContentType>]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list.AcceptableContentType>] =
-                        .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.pulls_list.Input.Headers
             /// Creates a new `Input`.
@@ -27254,13 +29155,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list.Output.Ok.Headers
@@ -27275,7 +29213,8 @@ public enum Operations {
                     public var json: [Components.Schemas.pull_request_simple] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -27308,8 +29247,13 @@ public enum Operations {
             public var ok: Operations.pulls_list.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27326,8 +29270,13 @@ public enum Operations {
             public var notModified: Components.Responses.not_modified {
                 get throws {
                     switch self {
-                    case let .notModified(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notModified", response: self)
+                    case let .notModified(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notModified",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27344,8 +29293,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27359,17 +29313,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List review comments on a pull request
@@ -27431,8 +29393,7 @@ public enum Operations {
                 /// The direction to sort results. Ignored without `sort` parameter.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/direction`.
-                public var direction:
-                    Operations.pulls_list_review_comments.Input.Query.directionPayload?
+                public var direction: Operations.pulls_list_review_comments.Input.Query.directionPayload?
                 /// Only show notifications updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/query/since`.
@@ -27455,8 +29416,7 @@ public enum Operations {
                 ///   - page: Page number of the results to fetch.
                 public init(
                     sort: Components.Parameters.sort? = nil,
-                    direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? =
-                        nil,
+                    direction: Operations.pulls_list_review_comments.Input.Query.directionPayload? = nil,
                     since: Components.Parameters.since? = nil,
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
@@ -27471,19 +29431,14 @@ public enum Operations {
             public var query: Operations.pulls_list_review_comments.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_review_comments.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_review_comments.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_review_comments.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_review_comments.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.pulls_list_review_comments.Input.Headers
             /// Creates a new `Input`.
@@ -27506,13 +29461,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/comments/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list_review_comments.Output.Ok.Headers
@@ -27527,7 +29519,8 @@ public enum Operations {
                     public var json: [Components.Schemas.pull_request_review_comment] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -27560,8 +29553,13 @@ public enum Operations {
             public var ok: Operations.pulls_list_review_comments.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27575,17 +29573,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List pull requests files
@@ -27654,19 +29660,14 @@ public enum Operations {
             public var query: Operations.pulls_list_files.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_files.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_files.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_files.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_files.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.pulls_list_files.Input.Headers
             /// Creates a new `Input`.
@@ -27689,13 +29690,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/files/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.pulls_list_files.Output.Ok.Headers
@@ -27710,7 +29748,8 @@ public enum Operations {
                     public var json: [Components.Schemas.diff_entry] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -27743,8 +29782,13 @@ public enum Operations {
             public var ok: Operations.pulls_list_files.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27761,8 +29805,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27779,8 +29828,13 @@ public enum Operations {
             public var internalServerError: Components.Responses.internal_error {
                 get throws {
                     switch self {
-                    case let .internalServerError(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "internalServerError", response: self)
+                    case let .internalServerError(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "internalServerError",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27797,8 +29851,13 @@ public enum Operations {
             public var serviceUnavailable: Components.Responses.service_unavailable {
                 get throws {
                     switch self {
-                    case let .serviceUnavailable(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "serviceUnavailable", response: self)
+                    case let .serviceUnavailable(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27812,17 +29871,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List releases
@@ -27851,7 +29918,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -27883,19 +29953,14 @@ public enum Operations {
             public var query: Operations.repos_list_releases.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_releases.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_releases.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_releases.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_releases.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_list_releases.Input.Headers
             /// Creates a new `Input`.
@@ -27918,13 +29983,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_releases.Output.Ok.Headers
@@ -27939,7 +30041,8 @@ public enum Operations {
                     public var json: [Components.Schemas.release] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -27972,8 +30075,13 @@ public enum Operations {
             public var ok: Operations.repos_list_releases.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -27990,8 +30098,13 @@ public enum Operations {
             public var notFound: Components.Responses.not_found {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -28005,17 +30118,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Create a release
@@ -28044,7 +30165,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -28052,19 +30176,14 @@ public enum Operations {
             public var path: Operations.repos_create_release.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_create_release.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_create_release.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_create_release.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_create_release.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_create_release.Input.Headers
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody`.
@@ -28114,8 +30233,7 @@ public enum Operations {
                     /// Specifies whether this release should be set as the latest release for the repository. Drafts and prereleases cannot be set as latest. Defaults to `true` for newly published releases. `legacy` specifies that the latest release should be determined based on the release creation date and higher semantic version.
                     ///
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/POST/requestBody/json/make_latest`.
-                    public var make_latest:
-                        Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload?
+                    public var make_latest: Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload?
                     /// Creates a new `jsonPayload`.
                     ///
                     /// - Parameters:
@@ -28137,8 +30255,7 @@ public enum Operations {
                         prerelease: Swift.Bool? = nil,
                         discussion_category_name: Swift.String? = nil,
                         generate_release_notes: Swift.Bool? = nil,
-                        make_latest: Operations.repos_create_release.Input.Body.jsonPayload
-                            .make_latestPayload? = nil
+                        make_latest: Operations.repos_create_release.Input.Body.jsonPayload.make_latestPayload? = nil
                     ) {
                         self.tag_name = tag_name
                         self.target_commitish = target_commitish
@@ -28192,7 +30309,9 @@ public enum Operations {
                     ///
                     /// - Parameters:
                     ///   - Location:
-                    public init(Location: Swift.String? = nil) { self.Location = Location }
+                    public init(Location: Swift.String? = nil) {
+                        self.Location = Location
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_create_release.Output.Created.Headers
@@ -28207,7 +30326,8 @@ public enum Operations {
                     public var json: Components.Schemas.release {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -28240,8 +30360,13 @@ public enum Operations {
             public var created: Operations.repos_create_release.Output.Created {
                 get throws {
                     switch self {
-                    case let .created(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "created", response: self)
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
                     }
                 }
             }
@@ -28257,7 +30382,8 @@ public enum Operations {
                     public var json: Components.Schemas.basic_error {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -28268,7 +30394,9 @@ public enum Operations {
                 ///
                 /// - Parameters:
                 ///   - body: Received HTTP response body
-                public init(body: Operations.repos_create_release.Output.NotFound.Body) { self.body = body }
+                public init(body: Operations.repos_create_release.Output.NotFound.Body) {
+                    self.body = body
+                }
             }
             /// Not Found if the discussion category name is invalid
             ///
@@ -28283,8 +30411,13 @@ public enum Operations {
             public var notFound: Operations.repos_create_release.Output.NotFound {
                 get throws {
                     switch self {
-                    case let .notFound(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "notFound", response: self)
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
                     }
                 }
             }
@@ -28301,8 +30434,13 @@ public enum Operations {
             public var unprocessableContent: Components.Responses.validation_failed {
                 get throws {
                     switch self {
-                    case let .unprocessableContent(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "unprocessableContent", response: self)
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
                     }
                 }
             }
@@ -28316,17 +30454,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// Get the latest release
@@ -28355,7 +30501,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -28363,19 +30512,14 @@ public enum Operations {
             public var path: Operations.repos_get_latest_release.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/releases/latest/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_get_latest_release.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get_latest_release.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_get_latest_release.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_get_latest_release.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_get_latest_release.Input.Headers
             /// Creates a new `Input`.
@@ -28404,7 +30548,8 @@ public enum Operations {
                     public var json: Components.Schemas.release {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -28432,8 +30577,13 @@ public enum Operations {
             public var ok: Operations.repos_get_latest_release.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -28447,17 +30597,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List repository tags
@@ -28482,7 +30640,10 @@ public enum Operations {
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
-                public init(owner: Components.Parameters.owner, repo: Components.Parameters.repo) {
+                public init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo
+                ) {
                     self.owner = owner
                     self.repo = repo
                 }
@@ -28514,19 +30675,14 @@ public enum Operations {
             public var query: Operations.repos_list_tags.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/header`.
             public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_tags.AcceptableContentType
-                    >]
+                public var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_tags.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.repos_list_tags.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                public init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.repos_list_tags.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
             public var headers: Operations.repos_list_tags.Input.Headers
             /// Creates a new `Input`.
@@ -28549,13 +30705,50 @@ public enum Operations {
             public struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/responses/200/headers`.
                 public struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen public enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        public init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        public func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/tags/GET/responses/200/headers/Link`.
                     public var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    public init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
                 public var headers: Operations.repos_list_tags.Output.Ok.Headers
@@ -28570,7 +30763,8 @@ public enum Operations {
                     public var json: [Components.Schemas.tag] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
@@ -28603,8 +30797,13 @@ public enum Operations {
             public var ok: Operations.repos_list_tags.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -28618,17 +30817,25 @@ public enum Operations {
             case other(Swift.String)
             public init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
             public var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            public static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
 }

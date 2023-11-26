@@ -11,7 +11,7 @@ struct HandlerContext: Sendable {
         let cachesService: any CachesService
         let discordService: DiscordService
         let renderClient: RenderClient
-        let proposalsChecker: ProposalsChecker
+        let evolutionChecker: EvolutionChecker
         let soChecker: SOChecker
         let reactionCache: ReactionCache
     }
