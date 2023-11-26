@@ -14,13 +14,17 @@ struct MessageHandler {
     }
     
     func handle() async {
+        let isBot = event.author?.bot == true
+
         /// Stop the bot from responding to other bots and itself
-        if event.author?.bot == true { return }
-        
-        await checkForNewCoins()
-        await checkForAutoFaqs()
-        await checkForPings()
-        await checkForGuildSubscriptionCoins()
+        if !isBot {
+            await checkForNewCoins()
+            await checkForAutoFaqs()
+            await checkForPings()
+            await checkForGuildSubscriptionCoins()
+        }
+        /// Check for bot messages like Penny's own messages too
+        await publishAnnouncementMessages()
     }
     
     func checkForNewCoins() async {
@@ -262,6 +266,19 @@ struct MessageHandler {
                 )
             )
         }
+    }
+
+    func publishAnnouncementMessages() async {
+        guard Constants.Channels.announcementChannels.contains(event.channel_id) else {
+            logger.debug("Channel \(event.channel_id) is not an announcement channel")
+            return
+        }
+        logger.debug("Publishing message \(event.id) that was sent in \(event.channel_id)")
+        /// "Publish" the message to other announcement-channel subscribers
+        await context.services.discordService.crosspostMessage(
+            channelId: event.channel_id,
+            messageId: event.id
+        )
     }
 
     func makeAuthorName(nick: String?, user: DiscordUser) -> String {

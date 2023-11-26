@@ -104,13 +104,13 @@ private extension Constants.Channels {
     static func reportingChannel(repoID: Int, createdAt: Date) -> Self {
         /// The change to use `.documentation` was made only after this timestamp.
         if createdAt.timeIntervalSince1970 < 1_696_067_000 {
-            return .issueAndPRs
+            return .issuesAndPRs
         } else {
             switch repoID {
             case 64560805:
                 return .documentation
             default:
-                return .issueAndPRs
+                return .issuesAndPRs
             }
         }
     }

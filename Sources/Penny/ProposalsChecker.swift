@@ -4,7 +4,7 @@ import DiscordModels
 import Models
 import Foundation
 
-actor ProposalsChecker {
+actor EvolutionChecker {
 
     struct Storage: Sendable, Codable {
         var previousProposals: [Proposal] = []
@@ -16,16 +16,16 @@ actor ProposalsChecker {
     /// The minimum time to wait before sending a queued-proposal
     let queuedProposalsWaitTime: Double
 
-    let proposalsService: any ProposalsService
+    let evolutionService: any EvolutionService
     let discordService: DiscordService
-    let logger = Logger(label: "ProposalsChecker")
+    let logger = Logger(label: "EvolutionChecker")
 
     init(
-        proposalsService: any ProposalsService,
+        evolutionService: any EvolutionService,
         discordService: DiscordService,
         queuedProposalsWaitTime: Double = 29 * 60
     ) {
-        self.proposalsService = proposalsService
+        self.evolutionService = evolutionService
         self.discordService = discordService
         self.queuedProposalsWaitTime = queuedProposalsWaitTime
     }
@@ -45,7 +45,7 @@ actor ProposalsChecker {
     }
 
     func check() async throws {
-        let proposals = try await proposalsService.list()
+        let proposals = try await evolutionService.list()
 
         if self.storage.previousProposals.isEmpty {
             self.storage.previousProposals = proposals
@@ -139,7 +139,7 @@ actor ProposalsChecker {
         if Task.isCancelled { return }
         /// Send the message, make sure it is successfully sent
         let response = await discordService.sendMessage(
-            channelId: Constants.Channels.proposals.id,
+            channelId: Constants.Channels.evolution.id,
             payload: payload
         )
         guard let message = try? response?.decode() else { return }
@@ -152,11 +152,6 @@ actor ProposalsChecker {
                 name: name,
                 auto_archive_duration: .threeDays
             )
-        )
-        /// "Publish" the message to other announcement-channel subscribers
-        await discordService.crosspostMessage(
-            channelId: message.channel_id,
-            messageId: message.id
         )
     }
 
@@ -275,7 +270,7 @@ actor ProposalsChecker {
     private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
         let content: String
         do {
-            content = try await proposalsService.getProposalContent(link: link)
+            content = try await evolutionService.getProposalContent(link: link)
         } catch {
             logger.error("Could not fetch proposal content", metadata: [
                 "link": .string(link),

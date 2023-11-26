@@ -9,7 +9,7 @@ public struct FakeCachesService: CachesService {
 
     public func getCachedInfoFromRepositoryAndPopulateServices() async {
         var storage = CachesStorage()
-        storage.proposalsCheckerData = .init(
+        storage.evolutionCheckerData = .init(
             previousProposals: TestData.proposals,
             queuedProposals: []
         )

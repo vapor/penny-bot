@@ -1,7 +1,7 @@
 @testable import Penny
 import Models
 
-public struct FakeProposalsService: ProposalsService {
+public struct FakeEvolutionService: EvolutionService {
 
     public init() { }
 

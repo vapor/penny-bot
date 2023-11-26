@@ -92,11 +92,11 @@ struct PennyService: MainService {
         let pingsService = DefaultPingsService(httpClient: httpClient)
         let faqsService = DefaultFaqsService(httpClient: httpClient)
         let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
-        let proposalsService = DefaultProposalsService(httpClient: httpClient)
+        let evolutionService = DefaultEvolutionService(httpClient: httpClient)
         let soService = DefaultSOService(httpClient: httpClient)
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
-        let proposalsChecker = ProposalsChecker(
-            proposalsService: proposalsService,
+        let evolutionChecker = EvolutionChecker(
+            evolutionService: evolutionService,
             discordService: discordService
         )
         let soChecker = SOChecker(
@@ -108,7 +108,7 @@ struct PennyService: MainService {
             awsClient: awsClient,
             context: .init(
                 autoFaqsService: autoFaqsService,
-                proposalsChecker: proposalsChecker,
+                evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
                 reactionCache: reactionCache
             )
@@ -127,7 +127,7 @@ struct PennyService: MainService {
                     on: httpClient.eventLoopGroup.next()
                 )
             ),
-            proposalsChecker: proposalsChecker,
+            evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             reactionCache: reactionCache
         )
@@ -152,7 +152,7 @@ struct PennyService: MainService {
         /// since it communicates through Discord and will need the Gateway connection.
         await context.botStateManager.start {
             /// These contain cached stuff and need to wait for `BotStateManager`.
-            context.services.proposalsChecker.run()
+            context.services.evolutionChecker.run()
             context.services.soChecker.run()
         }
     }

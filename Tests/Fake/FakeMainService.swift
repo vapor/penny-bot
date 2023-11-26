@@ -73,8 +73,8 @@ public actor FakeMainService: MainService {
             discordClient: manager.client,
             cache: cache
         )
-        let proposalsChecker = ProposalsChecker(
-            proposalsService: FakeProposalsService(),
+        let evolutionChecker = EvolutionChecker(
+            evolutionService: FakeEvolutionService(),
             discordService: discordService,
             queuedProposalsWaitTime: -1
         )
@@ -91,7 +91,7 @@ public actor FakeMainService: MainService {
             autoFaqsService: autoFaqsService,
             cachesService: FakeCachesService(context: .init(
                 autoFaqsService: autoFaqsService,
-                proposalsChecker: proposalsChecker,
+                evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
                 reactionCache: reactionCache
             )),
@@ -103,7 +103,7 @@ public actor FakeMainService: MainService {
                     on: httpClient.eventLoopGroup.next()
                 )
             ),
-            proposalsChecker: proposalsChecker,
+            evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             reactionCache: reactionCache
         )
