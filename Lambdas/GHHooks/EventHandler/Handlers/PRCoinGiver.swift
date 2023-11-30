@@ -81,11 +81,11 @@ struct PRCoinGiver {
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
         try await context.githubClient.repos_list_pull_requests_associated_with_commit(
-            .init(path: .init(
+            path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 commit_sha: commitSHA
-            ))
+            )
         ).ok.body.json
     }
 }

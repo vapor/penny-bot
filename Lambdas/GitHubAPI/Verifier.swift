@@ -1,12 +1,12 @@
 import Crypto
 import Foundation
 
-public enum Verifier {
+package enum Verifier {
 
-    public enum Errors: Error, CustomStringConvertible {
+    package enum Errors: Error, CustomStringConvertible {
         case signaturesDoNotMatch(header: String, expected: String)
 
-        public var description: String {
+        package var description: String {
             switch self {
             case let .signaturesDoNotMatch(header, expected):
                 return "signaturesDoNotMatch(header: \(header), expected: \(expected)"
@@ -14,7 +14,7 @@ public enum Verifier {
         }
     }
 
-    public static func verifyWebhookSignature(
+    package static func verifyWebhookSignature(
         signatureHeader: String,
         requestBody: Data,
         secret: String

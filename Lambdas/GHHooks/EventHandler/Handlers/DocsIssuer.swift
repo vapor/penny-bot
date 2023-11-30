@@ -64,27 +64,27 @@ struct DocsIssuer {
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
         try await context.githubClient.repos_list_pull_requests_associated_with_commit(
-            .init(path: .init(
+            path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name,
                 commit_sha: self.commitSHA
-            ))
+            )
         ).ok.body.json
     }
 
     func getPRFiles(number: Int) async throws -> [DiffEntry] {
-        try await context.githubClient.pulls_list_files(.init(
+        try await context.githubClient.pulls_list_files(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name,
                 pull_number: number
             )
-        )).ok.body.json
+        ).ok.body.json
     }
 
     func fileIssue(number: Int) async throws {
         let description = try await context.renderClient.translationNeededDescription(number: number)
-        _ = try await context.githubClient.issues_create(.init(
+        _ = try await context.githubClient.issues_create(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name
@@ -93,6 +93,6 @@ struct DocsIssuer {
                 title: .case1("Translation needed for #\(number)"),
                 body: description
             ))
-        )).created
+        ).created
     }
 }

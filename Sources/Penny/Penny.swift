@@ -42,11 +42,10 @@ struct Penny {
         )
 
         await bot.connect()
-        let stream = await bot.makeEventsStream()
 
         try await mainService.afterConnectCall(context: context)
 
-        for await event in stream {
+        for await event in await bot.events {
             EventHandler(event: event, context: context).handle()
         }
     }
