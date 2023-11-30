@@ -15,6 +15,7 @@ struct ReleaseMaker {
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
         static let organizationIDAllowList: Set<Int> = [/*vapor:*/ 17364220]
+        static let releaseNoticePrefix = "**These changes are now available"
     }
 
     enum PRErrors: Error, CustomStringConvertible {
@@ -179,6 +180,14 @@ struct ReleaseMaker {
                 pull_number: number
             )
         ).ok.body.json
+        if (current.body ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .hasPrefix(Configuration.releaseNoticePrefix) {
+            logger.debug("Pull request doesn't need to be updated with release notice", metadata: [
+                "current": "\(current)"
+            ])
+            return
+        }
         let updated = try await context.githubClient.pulls_update(
             path: .init(
                 owner: repo.owner.login,
@@ -187,7 +196,7 @@ struct ReleaseMaker {
             ),
             body: .json(.init(
                 body: """
-                **These changes are now available in [\(release.tag_name)](\(release.html_url))**
+                \(Configuration.releaseNoticePrefix) [\(release.tag_name)](\(release.html_url))**
 
 
                 \(current.body ?? "")
@@ -222,13 +231,24 @@ struct ReleaseMaker {
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners).map(\.uiName)
 
-        let body = pr.body.map {
-            $0.formatMarkdown(
-                maxVisualLength: 1_024,
-                hardLimit: 2_048,
-                trailingTextMinLength: 128
-            ).quotedMarkdown()
-        } ?? ""
+        let trimmedBody = (pr.body ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let bodyNoReleaseNotice = if trimmedBody
+            .hasPrefix(Configuration.releaseNoticePrefix) {
+                trimmedBody.split(
+                    separator: "\n",
+                    omittingEmptySubsequences: false
+                )
+                .dropFirst()
+                .joined(separator: "\n")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            } else {
+                trimmedBody
+            }
+        let body = bodyNoReleaseNotice.formatMarkdown(
+            maxVisualLength: 1_024,
+            hardLimit: 2_048,
+            trailingTextMinLength: 128
+        ).quotedMarkdown()
 
         return try await context.renderClient.newReleaseDescription(
             context: .init(
