@@ -89,10 +89,17 @@ struct MessageHandler {
             }
         }
     }
-    
+
+    static let messageGuildSubscriptionTypes: Set<DiscordChannel.Message.Kind> = [
+        .userPremiumGuildSubscription,
+        .userPremiumGuildSubscriptionTier1,
+        .userPremiumGuildSubscriptionTier2,
+        .userPremiumGuildSubscriptionTier3,
+    ]
+
     /// Like server boosts.
     func checkForGuildSubscriptionCoins() async {
-        guard event.type == .userPremiumGuildSubscription else { return }
+        guard Self.messageGuildSubscriptionTypes.contains(event.type) else { return }
         
         guard let author = event.author else {
             logger.error("Cannot find author of the message")
