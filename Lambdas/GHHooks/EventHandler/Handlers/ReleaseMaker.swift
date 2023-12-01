@@ -15,7 +15,7 @@ struct ReleaseMaker {
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
         static let organizationIDAllowList: Set<Int> = [/*vapor:*/ 17364220]
-        static let releaseNoticePrefix = "**These changes are now available"
+        static let releaseNoticePrefix = "**These changes are now available in"
     }
 
     enum PRErrors: Error, CustomStringConvertible {
