@@ -100,29 +100,29 @@ struct ProjectBoardHandler {
     }
 
     func createCard(columnID: Int) async throws {
-        _ = try await self.context.githubClient.projects_create_card(.init(
+        _ = try await self.context.githubClient.projects_create_card(
             path: .init(column_id: columnID),
             body: .json(.case1(.init(note: self.note)))
-        )).created
+        ).created
     }
 
     func move(toColumnID columnID: Int, cardID: Int) async throws {
-        _ = try await self.context.githubClient.projects_move_card(.init(
+        _ = try await self.context.githubClient.projects_move_card(
             path: .init(card_id: cardID),
             body: .json(.init(position: "top", column_id: columnID))
-        )).created
+        ).created
     }
 
     func delete(cardID: Int) async throws {
-        _ = try await self.context.githubClient.projects_delete_card(.init(
+        _ = try await self.context.githubClient.projects_delete_card(
             path: .init(card_id: cardID)
-        )).noContent
+        ).noContent
     }
 
     func getCards(in columnID: Int) async throws -> [ProjectCard] {
-        try await self.context.githubClient.projects_list_cards(.init(
+        try await self.context.githubClient.projects_list_cards(
             path: .init(column_id: columnID)
-        )).ok.body.json
+        ).ok.body.json
     }
 
     private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {

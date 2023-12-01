@@ -44,7 +44,7 @@ extension StringProtocol {
         var remove = [Int]()
         
         for idx in copy.indices {
-            if  copy[idx].unicodeScalars.contains(where: { target.contains($0) }) {
+            if copy[idx].unicodeScalars.contains(where: { target.contains($0) }) {
                 let removeAt = copy.index(idx, offsetBy: -remove.count)
                 remove.append(removeAt)
             }

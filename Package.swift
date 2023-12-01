@@ -112,15 +112,15 @@ let package = Package(
         ),
         .package(
             url: "https://github.com/swift-server/swift-openapi-async-http-client",
-            from: "0.3.0"
+            from: "1.0.0-alpha.1"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-generator",
-            from: "0.3.0"
+            from: "1.0.0-alpha.1"
         ),
         .package(
             url: "https://github.com/apple/swift-openapi-runtime",
-            from: "0.3.0"
+            from: "1.0.0-alpha.1"
         ),
     ],
     targets: [

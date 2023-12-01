@@ -11,7 +11,7 @@ import struct Foundation.Date
 #endif
 import HTTPTypes
 /// GitHub's v3 REST API.
-public struct Client: APIProtocol {
+package struct Client: APIProtocol {
     /// The underlying HTTP client.
     private let client: UniversalClient
     /// Creates a new client.
@@ -22,7 +22,7 @@ public struct Client: APIProtocol {
     ///   - configuration: A set of configuration values for the client.
     ///   - transport: A transport that performs HTTP operations.
     ///   - middlewares: A list of middlewares to call before the transport.
-    public init(
+    package init(
         serverURL: Foundation.URL,
         configuration: Configuration = .init(),
         transport: any ClientTransport,
@@ -46,7 +46,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
     /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
-    public func apps_create_installation_access_token(_ input: Operations.apps_create_installation_access_token.Input) async throws -> Operations.apps_create_installation_access_token.Output {
+    package func apps_create_installation_access_token(_ input: Operations.apps_create_installation_access_token.Input) async throws -> Operations.apps_create_installation_access_token.Output {
         try await client.send(
             input: input,
             forOperation: Operations.apps_create_installation_access_token.id,
@@ -208,7 +208,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /orgs/{org}`.
     /// - Remark: Generated from `#/paths//orgs/{org}/get(orgs/get)`.
-    public func orgs_get(_ input: Operations.orgs_get.Input) async throws -> Operations.orgs_get.Output {
+    package func orgs_get(_ input: Operations.orgs_get.Input) async throws -> Operations.orgs_get.Output {
         try await client.send(
             input: input,
             forOperation: Operations.orgs_get.id,
@@ -291,7 +291,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)`.
-    public func projects_get_card(_ input: Operations.projects_get_card.Input) async throws -> Operations.projects_get_card.Output {
+    package func projects_get_card(_ input: Operations.projects_get_card.Input) async throws -> Operations.projects_get_card.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_get_card.id,
@@ -418,7 +418,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
-    public func projects_update_card(_ input: Operations.projects_update_card.Input) async throws -> Operations.projects_update_card.Output {
+    package func projects_update_card(_ input: Operations.projects_update_card.Input) async throws -> Operations.projects_update_card.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_update_card.id,
@@ -580,7 +580,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `DELETE /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)`.
-    public func projects_delete_card(_ input: Operations.projects_delete_card.Input) async throws -> Operations.projects_delete_card.Output {
+    package func projects_delete_card(_ input: Operations.projects_delete_card.Input) async throws -> Operations.projects_delete_card.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_delete_card.id,
@@ -687,7 +687,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
-    public func projects_move_card(_ input: Operations.projects_move_card.Input) async throws -> Operations.projects_move_card.Output {
+    package func projects_move_card(_ input: Operations.projects_move_card.Input) async throws -> Operations.projects_move_card.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_move_card.id,
@@ -847,7 +847,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
-    public func projects_get_column(_ input: Operations.projects_get_column.Input) async throws -> Operations.projects_get_column.Output {
+    package func projects_get_column(_ input: Operations.projects_get_column.Input) async throws -> Operations.projects_get_column.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_get_column.id,
@@ -974,7 +974,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
-    public func projects_update_column(_ input: Operations.projects_update_column.Input) async throws -> Operations.projects_update_column.Output {
+    package func projects_update_column(_ input: Operations.projects_update_column.Input) async throws -> Operations.projects_update_column.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_update_column.id,
@@ -1090,7 +1090,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `DELETE /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)`.
-    public func projects_delete_column(_ input: Operations.projects_delete_column.Input) async throws -> Operations.projects_delete_column.Output {
+    package func projects_delete_column(_ input: Operations.projects_delete_column.Input) async throws -> Operations.projects_delete_column.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_delete_column.id,
@@ -1177,7 +1177,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)`.
-    public func projects_list_cards(_ input: Operations.projects_list_cards.Input) async throws -> Operations.projects_list_cards.Output {
+    package func projects_list_cards(_ input: Operations.projects_list_cards.Input) async throws -> Operations.projects_list_cards.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_list_cards.id,
@@ -1311,7 +1311,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
-    public func projects_create_card(_ input: Operations.projects_create_card.Input) async throws -> Operations.projects_create_card.Output {
+    package func projects_create_card(_ input: Operations.projects_create_card.Input) async throws -> Operations.projects_create_card.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_create_card.id,
@@ -1469,7 +1469,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
-    public func projects_move_column(_ input: Operations.projects_move_column.Input) async throws -> Operations.projects_move_column.Output {
+    package func projects_move_column(_ input: Operations.projects_move_column.Input) async throws -> Operations.projects_move_column.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_move_column.id,
@@ -1607,7 +1607,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)`.
-    public func projects_get(_ input: Operations.projects_get.Input) async throws -> Operations.projects_get.Output {
+    package func projects_get(_ input: Operations.projects_get.Input) async throws -> Operations.projects_get.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_get.id,
@@ -1714,7 +1714,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `PATCH /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
-    public func projects_update(_ input: Operations.projects_update.Input) async throws -> Operations.projects_update.Output {
+    package func projects_update(_ input: Operations.projects_update.Input) async throws -> Operations.projects_update.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_update.id,
@@ -1878,7 +1878,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `DELETE /projects/{project_id}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
-    public func projects_delete(_ input: Operations.projects_delete.Input) async throws -> Operations.projects_delete.Output {
+    package func projects_delete(_ input: Operations.projects_delete.Input) async throws -> Operations.projects_delete.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_delete.id,
@@ -2009,7 +2009,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/collaborators`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
-    public func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input) async throws -> Operations.projects_list_collaborators.Output {
+    package func projects_list_collaborators(_ input: Operations.projects_list_collaborators.Input) async throws -> Operations.projects_list_collaborators.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_list_collaborators.id,
@@ -2189,7 +2189,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `PUT /projects/{project_id}/collaborators/{username}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)`.
-    public func projects_add_collaborator(_ input: Operations.projects_add_collaborator.Input) async throws -> Operations.projects_add_collaborator.Output {
+    package func projects_add_collaborator(_ input: Operations.projects_add_collaborator.Input) async throws -> Operations.projects_add_collaborator.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_add_collaborator.id,
@@ -2332,7 +2332,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `DELETE /projects/{project_id}/collaborators/{username}`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
-    public func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input) async throws -> Operations.projects_remove_collaborator.Output {
+    package func projects_remove_collaborator(_ input: Operations.projects_remove_collaborator.Input) async throws -> Operations.projects_remove_collaborator.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_remove_collaborator.id,
@@ -2464,7 +2464,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/collaborators/{username}/permission`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
-    public func projects_get_permission_for_user(_ input: Operations.projects_get_permission_for_user.Input) async throws -> Operations.projects_get_permission_for_user.Output {
+    package func projects_get_permission_for_user(_ input: Operations.projects_get_permission_for_user.Input) async throws -> Operations.projects_get_permission_for_user.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_get_permission_for_user.id,
@@ -2616,7 +2616,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /projects/{project_id}/columns`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)`.
-    public func projects_list_columns(_ input: Operations.projects_list_columns.Input) async throws -> Operations.projects_list_columns.Output {
+    package func projects_list_columns(_ input: Operations.projects_list_columns.Input) async throws -> Operations.projects_list_columns.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_list_columns.id,
@@ -2745,7 +2745,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /projects/{project_id}/columns`.
     /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)`.
-    public func projects_create_column(_ input: Operations.projects_create_column.Input) async throws -> Operations.projects_create_column.Output {
+    package func projects_create_column(_ input: Operations.projects_create_column.Input) async throws -> Operations.projects_create_column.Output {
         try await client.send(
             input: input,
             forOperation: Operations.projects_create_column.id,
@@ -2885,7 +2885,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /rate_limit`.
     /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
-    public func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws -> Operations.rate_limit_get.Output {
+    package func rate_limit_get(_ input: Operations.rate_limit_get.Input) async throws -> Operations.rate_limit_get.Output {
         try await client.send(
             input: input,
             forOperation: Operations.rate_limit_get.id,
@@ -2990,7 +2990,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
-    public func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output {
+    package func repos_get(_ input: Operations.repos_get.Input) async throws -> Operations.repos_get.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_get.id,
@@ -3145,7 +3145,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
-    public func repos_list_commits(_ input: Operations.repos_list_commits.Input) async throws -> Operations.repos_list_commits.Output {
+    package func repos_list_commits(_ input: Operations.repos_list_commits.Input) async throws -> Operations.repos_list_commits.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_list_commits.id,
@@ -3361,7 +3361,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
-    public func repos_list_pull_requests_associated_with_commit(_ input: Operations.repos_list_pull_requests_associated_with_commit.Input) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output {
+    package func repos_list_pull_requests_associated_with_commit(_ input: Operations.repos_list_pull_requests_associated_with_commit.Input) async throws -> Operations.repos_list_pull_requests_associated_with_commit.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_list_pull_requests_associated_with_commit.id,
@@ -3490,7 +3490,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/compare/{basehead}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
-    public func repos_compare_commits(_ input: Operations.repos_compare_commits.Input) async throws -> Operations.repos_compare_commits.Output {
+    package func repos_compare_commits(_ input: Operations.repos_compare_commits.Input) async throws -> Operations.repos_compare_commits.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_compare_commits.id,
@@ -3635,7 +3635,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
-    public func repos_list_contributors(_ input: Operations.repos_list_contributors.Input) async throws -> Operations.repos_list_contributors.Output {
+    package func repos_list_contributors(_ input: Operations.repos_list_contributors.Input) async throws -> Operations.repos_list_contributors.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_list_contributors.id,
@@ -3777,7 +3777,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
-    public func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input) async throws -> Operations.issues_list_for_repo.Output {
+    package func issues_list_for_repo(_ input: Operations.issues_list_for_repo.Input) async throws -> Operations.issues_list_for_repo.Output {
         try await client.send(
             input: input,
             forOperation: Operations.issues_list_for_repo.id,
@@ -3992,7 +3992,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
-    public func issues_create(_ input: Operations.issues_create.Input) async throws -> Operations.issues_create.Output {
+    package func issues_create(_ input: Operations.issues_create.Input) async throws -> Operations.issues_create.Output {
         try await client.send(
             input: input,
             forOperation: Operations.issues_create.id,
@@ -4213,7 +4213,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
-    public func issues_get(_ input: Operations.issues_get.Input) async throws -> Operations.issues_get.Output {
+    package func issues_get(_ input: Operations.issues_get.Input) async throws -> Operations.issues_get.Output {
         try await client.send(
             input: input,
             forOperation: Operations.issues_get.id,
@@ -4344,7 +4344,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
-    public func issues_update(_ input: Operations.issues_update.Input) async throws -> Operations.issues_update.Output {
+    package func issues_update(_ input: Operations.issues_update.Input) async throws -> Operations.issues_update.Output {
         try await client.send(
             input: input,
             forOperation: Operations.issues_update.id,
@@ -4557,7 +4557,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
-    public func issues_create_comment(_ input: Operations.issues_create_comment.Input) async throws -> Operations.issues_create_comment.Output {
+    package func issues_create_comment(_ input: Operations.issues_create_comment.Input) async throws -> Operations.issues_create_comment.Output {
         try await client.send(
             input: input,
             forOperation: Operations.issues_create_comment.id,
@@ -4725,7 +4725,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/timeline`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)`.
-    public func issues_list_events_for_timeline(_ input: Operations.issues_list_events_for_timeline.Input) async throws -> Operations.issues_list_events_for_timeline.Output {
+    package func issues_list_events_for_timeline(_ input: Operations.issues_list_events_for_timeline.Input) async throws -> Operations.issues_list_events_for_timeline.Output {
         try await client.send(
             input: input,
             forOperation: Operations.issues_list_events_for_timeline.id,
@@ -4854,7 +4854,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
-    public func pulls_list(_ input: Operations.pulls_list.Input) async throws -> Operations.pulls_list.Output {
+    package func pulls_list(_ input: Operations.pulls_list.Input) async throws -> Operations.pulls_list.Output {
         try await client.send(
             input: input,
             forOperation: Operations.pulls_list.id,
@@ -4991,13 +4991,278 @@ public struct Client: APIProtocol {
             }
         )
     }
+    /// Get a pull request
+    ///
+    /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
+    ///
+    /// Lists details of a pull request by providing its number.
+    ///
+    /// When you get, [create](https://docs.github.com/rest/reference/pulls/#create-a-pull-request), or [edit](https://docs.github.com/rest/reference/pulls#update-a-pull-request) a pull request, GitHub creates a merge commit to test whether the pull request can be automatically merged into the base branch. This test commit is not added to the base branch or the head branch. You can review the status of the test commit using the `mergeable` key. For more information, see "[Checking mergeability of pull requests](https://docs.github.com/rest/guides/getting-started-with-the-git-database-api#checking-mergeability-of-pull-requests)".
+    ///
+    /// The value of the `mergeable` attribute can be `true`, `false`, or `null`. If the value is `null`, then GitHub has started a background job to compute the mergeability. After giving the job time to complete, resubmit the request. When the job finishes, you will see a non-`null` value for the `mergeable` attribute in the response. If `mergeable` is `true`, then `merge_commit_sha` will be the SHA of the _test_ merge commit.
+    ///
+    /// The value of the `merge_commit_sha` attribute changes depending on the state of the pull request. Before merging a pull request, the `merge_commit_sha` attribute holds the SHA of the _test_ merge commit. After merging a pull request, the `merge_commit_sha` attribute changes depending on how you merged the pull request:
+    ///
+    /// *   If merged as a [merge commit](https://docs.github.com/articles/about-merge-methods-on-github/), `merge_commit_sha` represents the SHA of the merge commit.
+    /// *   If merged via a [squash](https://docs.github.com/articles/about-merge-methods-on-github/#squashing-your-merge-commits), `merge_commit_sha` represents the SHA of the squashed commit on the base branch.
+    /// *   If [rebased](https://docs.github.com/articles/about-merge-methods-on-github/#rebasing-and-merging-your-commits), `merge_commit_sha` represents the commit that the base branch was updated to.
+    ///
+    /// Pass the appropriate [media type](https://docs.github.com/rest/overview/media-types/#commits-commit-comparison-and-pull-requests) to fetch diff and patch formats.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/get(pulls/get)`.
+    package func pulls_get(_ input: Operations.pulls_get.Input) async throws -> Operations.pulls_get.Output {
+        try await client.send(
+            input: input,
+            forOperation: Operations.pulls_get.id,
+            serializer: { input in
+                let path = try converter.renderedPath(
+                    template: "/repos/{}/{}/pulls/{}",
+                    parameters: [
+                        input.path.owner,
+                        input.path.repo,
+                        input.path.pull_number
+                    ]
+                )
+                var request: HTTPTypes.HTTPRequest = .init(
+                    soar_path: path,
+                    method: .get
+                )
+                suppressMutabilityWarning(&request)
+                converter.setAcceptHeader(
+                    in: &request.headerFields,
+                    contentTypes: input.headers.accept
+                )
+                return (request, nil)
+            },
+            deserializer: { response, responseBody in
+                switch response.status.code {
+                case 200:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.pulls_get.Output.Ok.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.pull_request.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .ok(.init(body: body))
+                case 304:
+                    return .notModified(.init())
+                case 404:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.not_found.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .notFound(.init(body: body))
+                case 500:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.internal_error.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .internalServerError(.init(body: body))
+                case 503:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.service_unavailable.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Responses.service_unavailable.Body.jsonPayload.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .serviceUnavailable(.init(body: body))
+                default:
+                    return .undocumented(
+                        statusCode: response.status.code,
+                        .init()
+                    )
+                }
+            }
+        )
+    }
+    /// Update a pull request
+    ///
+    /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
+    ///
+    /// To open or update a pull request in a public repository, you must have write access to the head or the source branch. For organization-owned repositories, you must be a member of the organization that owns the repository to open or update a pull request.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/pulls/{pull_number}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/patch(pulls/update)`.
+    package func pulls_update(_ input: Operations.pulls_update.Input) async throws -> Operations.pulls_update.Output {
+        try await client.send(
+            input: input,
+            forOperation: Operations.pulls_update.id,
+            serializer: { input in
+                let path = try converter.renderedPath(
+                    template: "/repos/{}/{}/pulls/{}",
+                    parameters: [
+                        input.path.owner,
+                        input.path.repo,
+                        input.path.pull_number
+                    ]
+                )
+                var request: HTTPTypes.HTTPRequest = .init(
+                    soar_path: path,
+                    method: .patch
+                )
+                suppressMutabilityWarning(&request)
+                converter.setAcceptHeader(
+                    in: &request.headerFields,
+                    contentTypes: input.headers.accept
+                )
+                let body: OpenAPIRuntime.HTTPBody?
+                switch input.body {
+                case .none:
+                    body = nil
+                case let .json(value):
+                    body = try converter.setOptionalRequestBodyAsJSON(
+                        value,
+                        headerFields: &request.headerFields,
+                        contentType: "application/json; charset=utf-8"
+                    )
+                }
+                return (request, body)
+            },
+            deserializer: { response, responseBody in
+                switch response.status.code {
+                case 200:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.pulls_update.Output.Ok.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.pull_request.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .ok(.init(body: body))
+                case 422:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.validation_failed.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.validation_error.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .unprocessableContent(.init(body: body))
+                case 403:
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Components.Responses.forbidden.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            Components.Schemas.basic_error.self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .forbidden(.init(body: body))
+                default:
+                    return .undocumented(
+                        statusCode: response.status.code,
+                        .init()
+                    )
+                }
+            }
+        )
+    }
     /// List review comments on a pull request
     ///
     /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
-    public func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input) async throws -> Operations.pulls_list_review_comments.Output {
+    package func pulls_list_review_comments(_ input: Operations.pulls_list_review_comments.Input) async throws -> Operations.pulls_list_review_comments.Output {
         try await client.send(
             input: input,
             forOperation: Operations.pulls_list_review_comments.id,
@@ -5103,7 +5368,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
-    public func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws -> Operations.pulls_list_files.Output {
+    package func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws -> Operations.pulls_list_files.Output {
         try await client.send(
             input: input,
             forOperation: Operations.pulls_list_files.id,
@@ -5256,7 +5521,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
-    public func repos_list_releases(_ input: Operations.repos_list_releases.Input) async throws -> Operations.repos_list_releases.Output {
+    package func repos_list_releases(_ input: Operations.repos_list_releases.Input) async throws -> Operations.repos_list_releases.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_list_releases.id,
@@ -5364,7 +5629,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/releases`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)`.
-    public func repos_create_release(_ input: Operations.repos_create_release.Input) async throws -> Operations.repos_create_release.Output {
+    package func repos_create_release(_ input: Operations.repos_create_release.Input) async throws -> Operations.repos_create_release.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_create_release.id,
@@ -5489,7 +5754,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases/latest`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
-    public func repos_get_latest_release(_ input: Operations.repos_get_latest_release.Input) async throws -> Operations.repos_get_latest_release.Output {
+    package func repos_get_latest_release(_ input: Operations.repos_get_latest_release.Input) async throws -> Operations.repos_get_latest_release.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_get_latest_release.id,
@@ -5549,7 +5814,7 @@ public struct Client: APIProtocol {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
-    public func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws -> Operations.repos_list_tags.Output {
+    package func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws -> Operations.repos_list_tags.Output {
         try await client.send(
             input: input,
             forOperation: Operations.repos_list_tags.id,

@@ -1,36 +1,36 @@
 import Foundation
 
 /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
-public struct GHEvent: Sendable, Codable {
-    public let action: String?
-    public let sender: User
-    public let repository: Repository?
-    public let organization: Organization?
+package struct GHEvent: Sendable, Codable {
+    package let action: String?
+    package let sender: User
+    package let repository: Repository?
+    package let organization: Organization?
 
-    public let issue: Issue?
-    public let label: Label?
-    public let number: Int?
-    public let changes: Changes?
-    public let pull_request: PullRequest?
-    public let release: Release?
-    public let before: String?
-    public let after: String?
-    public let base_ref: String?
-    public let compare: String?
-    public let created: Bool?
-    public let deleted: Bool?
-    public let forced: Bool?
-    public let commits: [SimpleCommit]?
-    public let head_commit: SimpleCommit?
-    public let installation: Installation?
-    public let pusher: Committer?
-    public let ref: String?
-    public let enterprise: Enterprise?
+    package let issue: Issue?
+    package let label: Label?
+    package let number: Int?
+    package let changes: Changes?
+    package let pull_request: PullRequest?
+    package let release: Release?
+    package let before: String?
+    package let after: String?
+    package let base_ref: String?
+    package let compare: String?
+    package let created: Bool?
+    package let deleted: Bool?
+    package let forced: Bool?
+    package let commits: [SimpleCommit]?
+    package let head_commit: SimpleCommit?
+    package let installation: Installation?
+    package let pusher: Committer?
+    package let ref: String?
+    package let enterprise: Enterprise?
 }
 
 extension GHEvent {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
-    public enum Kind: String, Sendable, Codable {
+    package enum Kind: String, Sendable, Codable {
         case branch_protection_rule
         case check_run
         case check_suite

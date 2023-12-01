@@ -175,13 +175,13 @@ struct IssueHandler: Sendable {
         if action == .closed {
             return (event.sender.id, event.sender.uiName)
         } else {
-            return try await context.githubClient.issues_get(.init(
+            return try await context.githubClient.issues_get(
                 path: .init(
                     owner: repo.owner.login,
                     repo: repo.name,
                     issue_number: issue.number
                 )
-            )).ok.body.json.closed_by.map {
+            ).ok.body.json.closed_by.map {
                 ($0.id, $0.uiName)
             }
         }

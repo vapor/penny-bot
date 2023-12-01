@@ -43,11 +43,11 @@ struct ReleaseReporter {
     }
 
     func getTagBefore() async throws -> String? {
-        let json = try await context.githubClient.repos_list_tags(.init(
+        let json = try await context.githubClient.repos_list_tags(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
-            ))
+            )
         ).ok.body.json
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
@@ -85,31 +85,31 @@ struct ReleaseReporter {
     }
 
     func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
-        try await context.githubClient.repos_compare_commits(.init(
+        try await context.githubClient.repos_compare_commits(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 basehead: "\(tagBefore)...\(release.tag_name)"
-            ))
+            )
         ).ok.body.json.commits.reversed()
     }
 
     func getAllCommits() async throws -> [Commit] {
-        try await context.githubClient.repos_list_commits(.init(
+        try await context.githubClient.repos_list_commits(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             )
-        )).ok.body.json.reversed()
+        ).ok.body.json.reversed()
     }
 
     func getPRsRelatedToCommit(sha: String) async throws -> [SimplePullRequest] {
         try await context.githubClient.repos_list_pull_requests_associated_with_commit(
-            .init(path: .init(
+            path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 commit_sha: sha
-            ))
+            )
         ).ok.body.json
     }
 
