@@ -231,19 +231,7 @@ struct ReleaseMaker {
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners).map(\.uiName)
 
-        let trimmedBody = (pr.body ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        let bodyNoReleaseNotice = if trimmedBody
-            .hasPrefix(Configuration.releaseNoticePrefix) {
-                trimmedBody.split(
-                    separator: "\n",
-                    omittingEmptySubsequences: false
-                )
-                .dropFirst()
-                .joined(separator: "\n")
-                .trimmingCharacters(in: .whitespacesAndNewlines)
-            } else {
-                trimmedBody
-            }
+        let bodyNoReleaseNotice = pr.body.map { $0.trimmingReleaseNoticeFromBody() } ?? ""
         let body = bodyNoReleaseNotice.formatMarkdown(
             maxVisualLength: 1_024,
             hardLimit: 2_048,
@@ -326,6 +314,23 @@ struct ReleaseMaker {
                 "response": "\(response)"
             ])
             return []
+        }
+    }
+}
+
+extension String {
+    func trimmingReleaseNoticeFromBody() -> String {
+        let trimmedBody = self.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedBody.hasPrefix(ReleaseMaker.Configuration.releaseNoticePrefix) {
+            return trimmedBody.split(
+                separator: "\n",
+                omittingEmptySubsequences: false
+            )
+            .dropFirst()
+            .joined(separator: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            return trimmedBody
         }
     }
 }

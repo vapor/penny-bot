@@ -115,7 +115,7 @@ struct ReleaseReporter {
 
     func sendToDiscord(pr: SimplePullRequest) async throws {
         let body = pr.body.map { body -> String in
-            body.formatMarkdown(
+            body.trimmingReleaseNoticeFromBody().formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
                 trailingTextMinLength: 96
