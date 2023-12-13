@@ -36,11 +36,11 @@ struct IssueHandler: Sendable {
         switch self.action {
         case .opened:
             try await self.onOpened()
-        case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
+        case .closed, .deleted, .locked, .reopened, .unlocked, .edited, .labeled, .unlabeled:
             try await self.onEdited()
         case .transferred:
             try await self.onTransferred()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
+        case .assigned, .demilestoned, .milestoned, .pinned, .unassigned, .unpinned:
             break
         }
     }
@@ -191,6 +191,7 @@ struct IssueHandler: Sendable {
 private enum Status: String {
     case done = "Done"
     case notPlanned = "Not Planned"
+    case duplicate = "Duplicate"
     case open = "Open"
 
     var color: DiscordColor {
@@ -199,6 +200,8 @@ private enum Status: String {
             return .teal
         case .notPlanned:
             return .gray(level: .level2, scheme: .dark)
+        case .duplicate:
+            return .mint
         case .open:
             return .yellow
         }
@@ -206,7 +209,7 @@ private enum Status: String {
 
     var titleDescription: String? {
         switch self {
-        case .done, .notPlanned:
+        case .done, .notPlanned, .duplicate:
             return self.rawValue
         case .open:
             return nil
@@ -217,7 +220,7 @@ private enum Status: String {
         switch self {
         case .done:
             return "Resolved"
-        case .notPlanned:
+        case .notPlanned, .duplicate:
             return "Closed"
         case .open:
             return nil
@@ -226,7 +229,11 @@ private enum Status: String {
 
     init(issue: Issue) {
         if issue.state_reason == .not_planned {
-            self = .notPlanned
+            if issue.knownLabels.contains(.duplicate) {
+                self = .duplicate
+            } else {
+                self = .notPlanned
+            }
         } else if issue.closed_at != nil {
             self = .done
         } else {
