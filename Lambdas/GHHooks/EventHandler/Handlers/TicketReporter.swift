@@ -25,6 +25,7 @@ struct TicketReporter {
             channelId: self.channel.id,
             payload: .init(embeds: [embed])
         ).decode()
+        
         try await context.messageLookupRepo.saveMessageID(
             messageID: response.id.rawValue,
             repoID: repoID,
