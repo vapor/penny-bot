@@ -228,12 +228,10 @@ private enum Status: String {
     }
 
     init(issue: Issue) {
-        if issue.state_reason == .not_planned {
-            if issue.knownLabels.contains(.duplicate) {
-                self = .duplicate
-            } else {
-                self = .notPlanned
-            }
+        if issue.knownLabels.contains(.duplicate) {
+            self = .duplicate
+        } else if issue.state_reason == .not_planned {
+            self = .notPlanned
         } else if issue.closed_at != nil {
             self = .done
         } else {

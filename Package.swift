@@ -79,10 +79,7 @@ extension PackageDescription.Target {
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v13)
-    ],
-    products: [
-        .executable(name: "Penny", targets: ["Penny"])
+        .macOS(.v14)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
@@ -94,13 +91,16 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
+        .package(url: "https://github.com/swift-server/swift-openapi-async-http-client", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.0.0"),
+        .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.2"),
         /// Not-released area:
         .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
-        .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0-beta.1"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
@@ -109,18 +109,6 @@ let package = Package(
             url: "https://github.com/swift-server/swift-aws-lambda-events.git",
             // Use 'from: "0.1.0"' when there is tag higher than "0.1.0"
             revision: "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
-        ),
-        .package(
-            url: "https://github.com/swift-server/swift-openapi-async-http-client",
-            from: "1.0.0-alpha.1"
-        ),
-        .package(
-            url: "https://github.com/apple/swift-openapi-generator",
-            from: "1.0.0-alpha.1"
-        ),
-        .package(
-            url: "https://github.com/apple/swift-openapi-runtime",
-            from: "1.0.0-alpha.1"
         ),
     ],
     targets: [
