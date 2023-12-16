@@ -3,12 +3,9 @@
 
 import PackageDescription
 
-/// Bug alert! Don't move this constant to the end of the file, or it won't take effect!
+/// Bug alert! Don't move these constants to the end of the file, or they won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
-    /// `-enable-upcoming-feature` flags will get removed in the future
-    /// and we'll need to remove them from here too.
-
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
     /// Require `any` for existential types.
     .enableUpcomingFeature("ExistentialAny"),
@@ -27,22 +24,16 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     .enableUpcomingFeature("DisableOutwardActorInference"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
-    /// `BareSlashRegexLiterals` not enabled since we don't use regex anywhere.
+    .enableUpcomingFeature("BareSlashRegexLiterals"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
-    /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
+    .enableUpcomingFeature("ImportObjcForwardDeclarations"),
 ]
 
 let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// https://github.com/apple/swift/issues/67214
     .unsafeFlags(
         ["-Xllvm", "-vectorize-slp=false"],
-        .when(platforms: [.linux], configuration: .release)
-    ),
-
-    /// https://github.com/apple/swift/pull/68671
-    .unsafeFlags(
-        ["-Xlinker", "-u", "-Xlinker", "_swift_backtrace_isThunkFunction"],
         .when(platforms: [.linux], configuration: .release)
     ),
 
@@ -79,7 +70,7 @@ extension PackageDescription.Target {
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v13)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
@@ -112,8 +103,6 @@ let package = Package(
         ),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
             name: "Penny",
             dependencies: [
