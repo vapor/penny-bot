@@ -30,7 +30,7 @@ struct DocsIssuer {
             return
         }
         guard let branch = self.event.ref.extractHeadBranchFromRef(),
-              repo.isPrimaryOrReleaseBranch(branch)
+              branch.isPrimaryOrReleaseBranch(repo: repo)
         else { return }
 
         for pr in try await self.getPRsRelatedToCommit() {

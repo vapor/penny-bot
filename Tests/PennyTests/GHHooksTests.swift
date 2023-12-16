@@ -594,23 +594,23 @@ class GHHooksTests: XCTestCase {
         )
         let repo = try XCTUnwrap(context.event.repository)
 
-        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("main"))
+        XCTAssertTrue("main".isPrimaryOrReleaseBranch(repo: repo))
 
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("mainiac"))
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("master"))
+        XCTAssertFalse("mainiac".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("master".isPrimaryOrReleaseBranch(repo: repo))
 
-        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("release/1.0.4"))
-        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("postgres-3.2.x"))
-        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("release/58.x"))
-        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("release/58.1"))
+        XCTAssertTrue("release/1.0.4".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertTrue("postgres-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertTrue("release/58.x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertTrue("release/58.1".isPrimaryOrReleaseBranch(repo: repo))
 
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/x.9"))
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/5.x.9"))
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/x"))
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/3"))
+        XCTAssertFalse("release/x.9".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("release/5.x.9".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("release/x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("release/3".isPrimaryOrReleaseBranch(repo: repo))
         /// No pre-release / build identifiers supported
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("postgres-my/branch#42.99.56-alpha.x"))
-        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("postgres-my/branch#42.99.56-alpha.1345"))
+        XCTAssertFalse("postgres-my/branch#42.99.56-alpha.x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("postgres-my/branch#42.99.56-alpha.1345".isPrimaryOrReleaseBranch(repo: repo))
     }
 
     func testEventHandler() async throws {

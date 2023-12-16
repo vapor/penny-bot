@@ -22,7 +22,7 @@ struct PRCoinGiver {
 
     func handle() async throws {
         guard let branch = self.event.ref.extractHeadBranchFromRef(),
-              repo.isPrimaryOrReleaseBranch(branch)
+              branch.isPrimaryOrReleaseBranch(repo: repo)
         else { return }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
