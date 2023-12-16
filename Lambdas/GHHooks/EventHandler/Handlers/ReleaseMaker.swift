@@ -57,7 +57,7 @@ struct ReleaseMaker {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
               Configuration.organizationIDAllowList.contains(repo.owner.id),
               let mergedBy = pr.merged_by,
-              pr.base.ref == "main",
+              pr.base.ref == repo.primaryBranch,
               let bump = pr.knownLabels.first?.toBump()
         else { return }
 
@@ -222,7 +222,7 @@ struct ReleaseMaker {
     ) async throws -> String {
         let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.full_name,
-            primaryBranch: repo.primaryBranch
+            branch: pr.base.ref
         )
         let contributors = try await getExistingContributorIDs()
         let isNewContributor = isNewContributor(
