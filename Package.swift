@@ -82,9 +82,6 @@ let package = Package(
     platforms: [
         .macOS(.v13)
     ],
-    products: [
-        .executable(name: "Penny", targets: ["Penny"])
-    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
