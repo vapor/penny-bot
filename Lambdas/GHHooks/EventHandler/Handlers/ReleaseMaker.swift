@@ -57,7 +57,7 @@ struct ReleaseMaker {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
               Configuration.organizationIDAllowList.contains(repo.owner.id),
               let mergedBy = pr.merged_by,
-              pr.base.ref == repo.primaryBranch,
+              repo.isPrimaryOrReleaseBranch(pr.base.ref),
               let bump = pr.knownLabels.first?.toBump()
         else { return }
 

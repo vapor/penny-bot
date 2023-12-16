@@ -587,6 +587,32 @@ class GHHooksTests: XCTestCase {
         XCTAssertTrue(body.hasPrefix("## What's Changed"), body)
     }
 
+    func testIsPrimaryOrReleaseBranch() async throws {
+        let context = try makeContext(
+            eventName: .pull_request,
+            eventKey: "pr3"
+        )
+        let repo = try XCTUnwrap(context.event.repository)
+
+        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("main"))
+
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("mainiac"))
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("master"))
+
+        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("release/1.0.4"))
+        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("postgres-3.2.x"))
+        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("release/58.x"))
+        XCTAssertTrue(repo.isPrimaryOrReleaseBranch("release/58.1"))
+
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/x.9"))
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/5.x.9"))
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/x"))
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("release/3"))
+        /// No pre-release / build identifiers supported
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("postgres-my/branch#42.99.56-alpha.x"))
+        XCTAssertFalse(repo.isPrimaryOrReleaseBranch("postgres-my/branch#42.99.56-alpha.1345"))
+    }
+
     func testEventHandler() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
         try await handleEvent(

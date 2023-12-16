@@ -36,7 +36,7 @@ extension Requester {
     /// Returns code owners if the repo contains the file or returns `nil`.
     /// All lowercased.
     /// In form of `["gwynne", "0xtim"]`.
-    func getCodeOwners(repoFullName: String, branch: String) async throws -> CodeOwners {
+    func getCodeOwners(repoFullName: String, branch: some StringProtocol) async throws -> CodeOwners {
         let fullName = repoFullName.urlPathEncoded()
         let url = "https://raw.githubusercontent.com/\(fullName)/\(branch)/.github/CODEOWNERS"
         let request = HTTPClientRequest(url: url)

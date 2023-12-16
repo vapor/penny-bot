@@ -29,9 +29,10 @@ struct DocsIssuer {
         guard self.repo.id == Configuration.docsRepoID else {
             return
         }
-        guard self.event.ref == "refs/heads/\(self.repo.primaryBranch)" else {
-            return
-        }
+        guard let branch = self.event.ref.extractHeadBranchFromRef(),
+              repo.isPrimaryOrReleaseBranch(branch)
+        else { return }
+
         for pr in try await self.getPRsRelatedToCommit() {
             guard self.needsNewIssue(pr: pr) else {
                 self.logger.debug(
