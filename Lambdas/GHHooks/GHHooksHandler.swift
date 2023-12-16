@@ -107,7 +107,7 @@ struct GHHooksHandler: LambdaHandler {
         logger.debug("Got request", metadata: [
             "request": "\(request)"
         ])
-        
+
         try await verifyWebhookSignature(request: request)
 
         guard let _eventName = request.headers.first(name: "x-github-event"),
