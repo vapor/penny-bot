@@ -20,14 +20,24 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
     /// Remove Actor Isolation Inference caused by Property Wrappers
-    /// Won't do much in Penny.
     .enableUpcomingFeature("DisableOutwardActorInference"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
+    /// Support bare-slash Regex literals.
     .enableUpcomingFeature("BareSlashRegexLiterals"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
+    /// Objc, which we don't use.
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
+    .enableUpcomingFeature("InternalImportsByDefault"),
+
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
+    .enableUpcomingFeature("IsolatedDefaultValues"),
+
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
+    .enableUpcomingFeature("FullTypedThrows")
 ]
 
 let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
