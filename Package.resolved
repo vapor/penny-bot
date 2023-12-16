@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "3978bb3298c336bd8712fd06c70348dab67a3f87"
+        "revision" : "91cd22ad2ebb0ca60c00b84e2178e94e5d4dd510"
       }
     },
     {
@@ -274,8 +274,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
       "state" : {
-        "revision" : "0859eada6f622262a61efe5667b0767725a4c786",
-        "version" : "1.0.0-alpha.1"
+        "revision" : "abfe558a66992ef1e896a577010f957915f30591",
+        "version" : "1.0.0"
       }
     },
     {
@@ -283,8 +283,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-generator",
       "state" : {
-        "revision" : "e30691e5d3613994b04b142df5c52158d066b0bb",
-        "version" : "1.0.0-alpha.1"
+        "revision" : "76994bfc77061c6cfa3b82415613a9dfbfb47f28",
+        "version" : "1.1.0"
       }
     },
     {
@@ -292,8 +292,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "7d1644b125c02be1bedcfe1a69b58fae881b2393",
-        "version" : "1.0.0-alpha.1"
+        "revision" : "fd101c320185313bbf9c5a45b827b17eda9ff18a",
+        "version" : "1.1.0"
       }
     },
     {

@@ -3,11 +3,11 @@
 # ================================
 FROM swift:5.9-jammy as build
 
-# Install updates
+# Install OS updates
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get install -y libjemalloc-dev
 
 # Set up a build area
 WORKDIR /build
@@ -17,13 +17,18 @@ WORKDIR /build
 # as long as your Package.swift/Package.resolved
 # files do not change.
 COPY ./Package.* ./
-RUN swift package resolve
+RUN swift package resolve --skip-update \
+        $([ -f ./Package.resolved ] && echo "--force-resolved-versions" || true)
 
 # Copy entire repo into container
 COPY . .
 
-# Build everything, with optimizations
-RUN swift build -c release --static-swift-stdlib --product Penny
+# Build everything, with optimizations, with static linking, and using jemalloc
+# N.B.: The static version of jemalloc is incompatible with the static Swift runtime.
+RUN swift build -c release \
+        --target Penny \
+        --static-swift-stdlib \
+        -Xlinker -ljemalloc
 
 # Switch to the staging area
 WORKDIR /staging
@@ -31,23 +36,29 @@ WORKDIR /staging
 # Copy main executable to staging area
 RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Penny" ./
 
+# Copy static swift backtracer binary to staging area
+RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
+
 # Copy resources bundled by SPM to staging area
 RUN find -L "$(swift build --package-path /build -c release --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
-
-# Move /Templates/Penny directory to staging area
-RUN mkdir -p ./Templates && mv /build/Templates/Penny ./Templates/Penny && chmod -R a-w ./Templates/Penny;
 
 # ================================
 # Run image
 # ================================
 FROM ubuntu:jammy
 
-# Make sure all system packages are up to date, and install only essential packages
+# Make sure all system packages are up to date, and install only essential packages.
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
-    && apt-get -q install -y ca-certificates tzdata \
-    && apt-get -q install -y libcurl4-openssl-dev \
+    && apt-get -q install -y \
+      libjemalloc2 \
+      ca-certificates \
+      tzdata \
+# If your app or its dependencies import FoundationNetworking, also install `libcurl4`.
+      # libcurl4 \
+# If your app or its dependencies import FoundationXML, also install `libxml2`.
+      # libxml2 \
     && rm -r /var/lib/apt/lists/*
 
 # Create a vapor user and group with /app as its home directory
@@ -59,12 +70,14 @@ WORKDIR /app
 # Copy built executable and any staged resources from builder
 COPY --from=build --chown=vapor:vapor /staging /app
 
+# Provide configuration needed by the built-in crash reporter and some sensible default behaviors.
+ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no
+
 # Ensure all further commands run as the vapor user
 USER vapor:vapor
 
 # Let Docker bind to port 8080
 EXPOSE 8080
 
-# Start the Vapor service when the image is run, default to listening on 8080 in production environment
-ENTRYPOINT [ "./Penny" ]
-CMD [ "serve", "--env", "production", "--hostname", "0.0.0.0", "--port", "8080" ]
+# Start the Penny service when the image is run.
+ENTRYPOINT ["./Penny"]

@@ -3,12 +3,9 @@
 
 import PackageDescription
 
-/// Bug alert! Don't move this constant to the end of the file, or it won't take effect!
+/// Bug alert! Don't move these constants to the end of the file, or they won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
-    /// `-enable-upcoming-feature` flags will get removed in the future
-    /// and we'll need to remove them from here too.
-
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
     /// Require `any` for existential types.
     .enableUpcomingFeature("ExistentialAny"),
@@ -23,26 +20,30 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
     /// Remove Actor Isolation Inference caused by Property Wrappers
-    /// Won't do much in Penny.
     .enableUpcomingFeature("DisableOutwardActorInference"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
-    /// `BareSlashRegexLiterals` not enabled since we don't use regex anywhere.
+    /// Support bare-slash Regex literals.
+    .enableUpcomingFeature("BareSlashRegexLiterals"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
-    /// `ImportObjcForwardDeclarations` not enabled because it's objc-related.
+    /// Objc, which we don't use.
+    .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
+    .enableUpcomingFeature("InternalImportsByDefault"),
+
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
+    .enableUpcomingFeature("IsolatedDefaultValues"),
+
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
+    .enableUpcomingFeature("FullTypedThrows")
 ]
 
 let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
     /// https://github.com/apple/swift/issues/67214
     .unsafeFlags(
         ["-Xllvm", "-vectorize-slp=false"],
-        .when(platforms: [.linux], configuration: .release)
-    ),
-
-    /// https://github.com/apple/swift/pull/68671
-    .unsafeFlags(
-        ["-Xlinker", "-u", "-Xlinker", "_swift_backtrace_isThunkFunction"],
         .when(platforms: [.linux], configuration: .release)
     ),
 
@@ -81,9 +82,6 @@ let package = Package(
     platforms: [
         .macOS(.v13)
     ],
-    products: [
-        .executable(name: "Penny", targets: ["Penny"])
-    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.9.0"),
@@ -94,13 +92,16 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
+        .package(url: "https://github.com/swift-server/swift-openapi-async-http-client", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.0.0"),
+        .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.2"),
         /// Not-released area:
         .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
         .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
-        .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0-beta.1"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
             exact: "1.0.0-alpha.1"
@@ -110,22 +111,8 @@ let package = Package(
             // Use 'from: "0.1.0"' when there is tag higher than "0.1.0"
             revision: "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
         ),
-        .package(
-            url: "https://github.com/swift-server/swift-openapi-async-http-client",
-            from: "1.0.0-alpha.1"
-        ),
-        .package(
-            url: "https://github.com/apple/swift-openapi-generator",
-            from: "1.0.0-alpha.1"
-        ),
-        .package(
-            url: "https://github.com/apple/swift-openapi-runtime",
-            from: "1.0.0-alpha.1"
-        ),
     ],
     targets: [
-        // Targets are the basic building blocks of a package. A target can define a module or a test suite.
-        // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
             name: "Penny",
             dependencies: [
