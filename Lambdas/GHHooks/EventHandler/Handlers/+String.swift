@@ -10,8 +10,6 @@ extension String? {
     }
 }
 
-import GitHubAPI
-
 extension StringProtocol where SubSequence == Substring {
     func isPrimaryOrReleaseBranch(repo: Repository) -> Bool {
         repo.primaryBranch == self ||
