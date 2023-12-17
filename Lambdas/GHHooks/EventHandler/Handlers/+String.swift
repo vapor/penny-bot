@@ -22,7 +22,7 @@ extension StringProtocol where SubSequence == Substring {
             .map(\.offset)
 
         /// If there is a valid SemVer suffixed in the string, return `true`.
-        for idx in punctuationIndices.reversed() {
+        for idx in punctuationIndices {
             let nextIndex = self.index(
                 self.startIndex,
                 offsetBy: idx + 1
@@ -39,7 +39,7 @@ extension StringProtocol where SubSequence == Substring {
     private var isStableOrPartialStableSemVer: Bool {
         /// The pattern is from the link below, with modifications:
         /// 1- Allow for some `.x`s.
-        /// 2- Don't care about pre-release and build identifies.
+        /// 2- Reject pre-release and build identifies.
         /// https://github.com/gwynne/swift-semver/blob/main/Sources/SwiftSemver/SemanticVersion.swift
         let pattern = #/^(\d+)(\.(([1-9]+)))?(\.(([1-9]+|x)))$/#
         return self.wholeMatch(of: pattern) != nil
