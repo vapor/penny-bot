@@ -17,23 +17,17 @@ extension StringProtocol where SubSequence == Substring {
     }
 
     private var isSuffixedWithStableOrPartialStableSemVer: Bool {
-        let punctuationIndices = self.enumerated()
+        self.enumerated()
             .filter(\.element.isPunctuation)
             .map(\.offset)
-
-        /// If there is a valid SemVer suffixed in the string, return `true`.
-        for idx in punctuationIndices {
-            let nextIndex = self.index(
-                self.startIndex,
-                offsetBy: idx + 1
-            )
-            let afterThePunctuation = self[nextIndex...]
-            if afterThePunctuation.isStableOrPartialStableSemVer {
-                return true
+            .contains { idx in
+                let nextIndex = self.index(
+                    self.startIndex,
+                    offsetBy: idx + 1
+                )
+                let afterThePunctuation = self[nextIndex...]
+                return afterThePunctuation.isStableOrPartialStableSemVer
             }
-        }
-
-        return false
     }
 
     private var isStableOrPartialStableSemVer: Bool {
