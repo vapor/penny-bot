@@ -2,7 +2,7 @@ import DiscordBM
 import GitHubAPI
 import Logging
 
-/// Sends a "Need translation" message for each PR in a push-commit that needs that.
+/// Gives coins to GitHub users that have a linked Discord account, if their PR is merged.
 struct PRCoinGiver {
     let context: HandlerContext
     let commitSHA: String
@@ -21,14 +21,14 @@ struct PRCoinGiver {
     }
 
     func handle() async throws {
-        guard event.ref == "refs/heads/\(repo.primaryBranch)" else {
-            return
-        }
+        guard let branch = self.event.ref.extractHeadBranchFromRef(),
+              branch.isPrimaryOrReleaseBranch(repo: repo)
+        else { return }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
         let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.full_name,
-            primaryBranch: repo.primaryBranch
+            branch: branch
         )
         for pr in try await getPRsRelatedToCommit() {
             let user = try pr.user.requireValue()
