@@ -16,7 +16,7 @@ extension StringProtocol where Self: Sendable, SubSequence == Substring  {
         let result = repo.primaryBranch == self ||
         self.isSuffixedWithStableOrPartialStableSemVer
         Logger(label: "StringProtocol.isPrimaryOrReleaseBranch").debug(
-            "Checking branch 'isPrimaryOrReleaseBranch' status", metadata: [
+            "Checking branch status for 'isPrimaryOrReleaseBranch'", metadata: [
                 "branch": .stringConvertible(self),
                 "isPrimaryOrReleaseBranch": .stringConvertible(result),
             ]
