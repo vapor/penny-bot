@@ -1,4 +1,5 @@
 import GitHubAPI
+import Logging
 
 extension String? {
     /// Usage example: `context.event.ref.extractHeadBranchFromRef()`
@@ -10,10 +11,17 @@ extension String? {
     }
 }
 
-extension StringProtocol where SubSequence == Substring {
+extension StringProtocol where Self: Sendable, SubSequence == Substring  {
     func isPrimaryOrReleaseBranch(repo: Repository) -> Bool {
-        repo.primaryBranch == self ||
+        let result = repo.primaryBranch == self ||
         self.isSuffixedWithStableOrPartialStableSemVer
+        Logger(label: "StringProtocol.isPrimaryOrReleaseBranch").debug(
+            "Checking branch 'isPrimaryOrReleaseBranch' status", metadata: [
+                "branch": .stringConvertible(self),
+                "isPrimaryOrReleaseBranch": .stringConvertible(result),
+            ]
+        )
+        return result
     }
 
     private var isSuffixedWithStableOrPartialStableSemVer: Bool {
