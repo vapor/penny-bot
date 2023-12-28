@@ -9,7 +9,7 @@ struct TicketReporter {
         static let userIDDenyList: Set<Int> = [ /* dependabot[bot]: */ 49_699_333]
     }
 
-    private static let dynamoDBQueue = SerialProcessor()
+    private static let ticketQueue = SerialProcessor()
 
     let context: HandlerContext
     let embed: Embed
@@ -27,7 +27,7 @@ struct TicketReporter {
     func reportCreation() async throws {
         if Configuration.userIDDenyList.contains(authorID) { return }
 
-        try await TicketReporter.dynamoDBQueue.process(queueKey: ticketKey) {
+        try await TicketReporter.ticketQueue.process(queueKey: ticketKey) {
             try await _reportCreation()
         }
     }
@@ -47,7 +47,7 @@ struct TicketReporter {
 
     func reportEdition() async throws {
         if Configuration.userIDDenyList.contains(authorID) { return }
-        try await TicketReporter.dynamoDBQueue.process(queueKey: ticketKey) {
+        try await TicketReporter.ticketQueue.process(queueKey: ticketKey) {
             try await _reportEdition()
         }
     }
