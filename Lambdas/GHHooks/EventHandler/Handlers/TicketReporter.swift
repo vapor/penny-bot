@@ -1,4 +1,5 @@
 import DiscordBM
+import Shared
 import struct Foundation.Date
 
 /// Reports opened/edited issues and PRs.
@@ -8,12 +9,17 @@ struct TicketReporter {
         static let userIDDenyList: Set<Int> = [ /* dependabot[bot]: */ 49_699_333]
     }
 
+    private static let ticketQueue = SerialProcessor()
+
     let context: HandlerContext
     let embed: Embed
     let createdAt: Date
     let repoID: Int
     let number: Int
     let authorID: Int
+    var ticketKey: String {
+        "\(repoID)_\(number)"
+    }
     var channel: Constants.Channels {
         .reportingChannel(repoID: repoID, createdAt: createdAt)
     }
@@ -21,11 +27,17 @@ struct TicketReporter {
     func reportCreation() async throws {
         if Configuration.userIDDenyList.contains(authorID) { return }
 
+        try await TicketReporter.ticketQueue.process(queueKey: ticketKey) {
+            try await _reportCreation()
+        }
+    }
+
+    private func _reportCreation() async throws {
         let response = try await context.discordClient.createMessage(
             channelId: self.channel.id,
             payload: .init(embeds: [embed])
         ).decode()
-        
+
         try await context.messageLookupRepo.saveMessageID(
             messageID: response.id.rawValue,
             repoID: repoID,
@@ -35,7 +47,12 @@ struct TicketReporter {
 
     func reportEdition() async throws {
         if Configuration.userIDDenyList.contains(authorID) { return }
+        try await TicketReporter.ticketQueue.process(queueKey: ticketKey) {
+            try await _reportEdition()
+        }
+    }
 
+    private func _reportEdition() async throws {
         let messageID: MessageSnowflake
 
         do {
