@@ -63,7 +63,7 @@ struct TicketReporter {
             return
         } catch let error as DynamoMessageRepo.Errors where error == .notFound {
             if requiresPreexistingReport {
-                context.logger.debug(
+                context.logger.warning(
                     "Didn't find a message id from the lookup repo, and the report requires a preexisting report",
                     metadata: [
                         "repoID": .stringConvertible(repoID),
