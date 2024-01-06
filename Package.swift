@@ -30,8 +30,9 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// Objc, which we don't use.
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
 
+    /// Currently causes errors on nightlies. We'll reenable it later.
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-    .enableUpcomingFeature("InternalImportsByDefault"),
+    /// .enableUpcomingFeature("InternalImportsByDefault"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
     .enableUpcomingFeature("IsolatedDefaultValues"),
