@@ -117,8 +117,9 @@ struct TicketReporter {
                 repoID: repoID,
                 number: number
             )
-        default:
-            try response.guardSuccess()
+        case let .some(error):
+            throw error
+        default: break
         }
     }
 }
