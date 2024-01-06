@@ -16,7 +16,7 @@ struct HandlerContext: Sendable {
     let messageLookupRepo: any MessageLookupRepo
     let usersService: any UsersService
     let requester: Requester
-    let logger: Logger
+    var logger: Logger
 
     init(
         eventName: GHEvent.Kind,
