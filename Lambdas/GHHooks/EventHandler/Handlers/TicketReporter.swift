@@ -27,12 +27,6 @@ struct TicketReporter {
     func reportCreation() async throws {
         if Configuration.userIDDenyList.contains(authorID) { return }
 
-        try await TicketReporter.ticketQueue.process(queueKey: ticketKey) {
-            try await _reportCreation()
-        }
-    }
-
-    private func _reportCreation() async throws {
         let response = try await context.discordClient.createMessage(
             channelId: self.channel.id,
             payload: .init(embeds: [embed])
@@ -45,14 +39,11 @@ struct TicketReporter {
         )
     }
 
-    func reportEdition() async throws {
+    /// - Parameter requiresPreexistingReport: Requires a report to have already been done about
+    /// the ticket. If not, this report process will be aborted.
+    func reportEdition(requiresPreexistingReport: Bool) async throws {
         if Configuration.userIDDenyList.contains(authorID) { return }
-        try await TicketReporter.ticketQueue.process(queueKey: ticketKey) {
-            try await _reportEdition()
-        }
-    }
 
-    private func _reportEdition() async throws {
         let messageID: MessageSnowflake
 
         do {
@@ -71,6 +62,16 @@ struct TicketReporter {
             ])
             return
         } catch let error as DynamoMessageRepo.Errors where error == .notFound {
+            if requiresPreexistingReport {
+                context.logger.debug(
+                    "Didn't find a message id from the lookup repo, and the report requires a preexisting report",
+                    metadata: [
+                        "repoID": .stringConvertible(repoID),
+                        "number": .stringConvertible(number),
+                    ]
+                )
+                return
+            }
             context.logger.debug(
                 "Didn't find a message id from the lookup repo, will send a new message",
                 metadata: [

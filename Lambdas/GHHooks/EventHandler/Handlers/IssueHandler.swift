@@ -55,7 +55,9 @@ struct IssueHandler: Sendable {
     }
 
     func onEdited() async throws {
-        try await self.makeReporter().reportEdition()
+        try await self.makeReporter().reportEdition(
+            requiresPreexistingReport: self.action == .labeled
+        )
     }
 
     func onOpened() async throws {
@@ -74,7 +76,9 @@ struct IssueHandler: Sendable {
         try await self.makeReporter(
             embedIssue: newIssue,
             embedRepo: changes.new_repository
-        ).reportEdition()
+        ).reportEdition(
+            requiresPreexistingReport: self.action == .labeled
+        )
         try await self.context.messageLookupRepo.markAsUnavailable(
             repoID: repo.id,
             number: self.issue.number
