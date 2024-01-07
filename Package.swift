@@ -5,6 +5,7 @@ import PackageDescription
 
 /// Bug alert! Don't move these constants to the end of the file, or they won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
+/// Not all of these features are enabled on the version of Swift that Penny is deployed with.
 let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
     /// Require `any` for existential types.
@@ -30,14 +31,20 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// Objc, which we don't use.
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
 
-    /// Currently causes errors on nightlies. We'll reenable it later.
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
+    /// Currently causes errors on nightlies. We'll reenable it later.
     /// .enableUpcomingFeature("InternalImportsByDefault"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
+    /// Data-race-free initial values for stored properties.
     .enableUpcomingFeature("IsolatedDefaultValues"),
 
+    /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
+    /// Enable automatic safety features for global (and some local) variables.
+    .enableUpcomingFeature("GlobalConcurrency"),
+
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
+    /// Enable the full potential of typed throws.
     .enableUpcomingFeature("FullTypedThrows")
 ]
 
