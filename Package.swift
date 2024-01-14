@@ -31,21 +31,22 @@ let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
     /// Objc, which we don't use.
     .enableUpcomingFeature("ImportObjcForwardDeclarations"),
 
+    /// These currently cause errors on nightlies sometimes. We'll reenable them later:
+
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-    /// Currently causes errors on nightlies. We'll reenable it later.
     /// .enableUpcomingFeature("InternalImportsByDefault"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
     /// Data-race-free initial values for stored properties.
-    .enableUpcomingFeature("IsolatedDefaultValues"),
+    /// .enableUpcomingFeature("IsolatedDefaultValues"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
     /// Enable automatic safety features for global (and some local) variables.
-    .enableUpcomingFeature("GlobalConcurrency"),
+    /// .enableUpcomingFeature("GlobalConcurrency"),
 
     /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
     /// Enable the full potential of typed throws.
-    .enableUpcomingFeature("FullTypedThrows")
+    /// .enableUpcomingFeature("FullTypedThrows")
 ]
 
 let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
