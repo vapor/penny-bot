@@ -1,7 +1,7 @@
 import Markdown
 
 extension String {
-    /// Formats markdown in a way that looks nice on Discord, but still good on GitHub.
+    /// Formats markdown in a way that looks nice on Discord, but still looks fine on GitHub.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
     func formatMarkdown(
@@ -13,17 +13,20 @@ extension String {
         assert(hardLimit > 0, "Can't use a non-positive hardLimit '\(hardLimit)'.")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
+        /// Remove all HTML and links-with-empty-destinations elements because they don't look good in Discord.
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        var removedMarkdownElement = false
+        var didRemoveMarkdownElement = false
         var (remaining, prefixed) = markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
+
+        /// Remove the last paragraph if it's too small to be useful.
         if remaining == 0 {
             let document2 = Document(parsing: prefixed)
             var paragraphCounter = ParagraphCounter()
@@ -35,7 +38,9 @@ extension String {
                     ifShorterThan: trailingTextMinLength
                 )
                 if let markup = paragraphRemover.visit(document2) {
-                    removedMarkdownElement = removedMarkdownElement || paragraphRemover.didModify
+                    /// the `||` doesn't do anything as of now, but it might prevent some headache
+                    /// if someone changes something in the code in the future.
+                    didRemoveMarkdownElement = didRemoveMarkdownElement || paragraphRemover.didModify
                     markup2 = markup
                     /// Update `prefixed`
                     prefixed = markup2
@@ -46,10 +51,11 @@ extension String {
             }
         }
 
+        /// Remove the last block-element if it's a heading.
         var document3 = Document(parsing: prefixed)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
-            removedMarkdownElement = true
+            didRemoveMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
             prefixed = document3
                 .format(options: .default)
@@ -57,7 +63,7 @@ extension String {
                 .markdownUnicodesPrefix(maxVisualLength)
         }
 
-        if removedMarkdownElement {
+        if didRemoveMarkdownElement {
             /// Append a new line + dots at the end to suggest that the text has not ended.
             prefixed += "\n\u{2026}"
         }
