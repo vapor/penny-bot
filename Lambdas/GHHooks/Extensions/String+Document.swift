@@ -9,8 +9,8 @@ extension String {
         hardLimit: Int,
         trailingTextMinLength: Int
     ) -> String {
-        assert(maxVisualLength > 0, "Can't request a non-positive maximum.")
-        assert(hardLimit > 0, "Can't use a non-positive maximum.")
+        assert(maxVisualLength > 0, "Can't use a non-positive maxVisualLength '\(maxVisualLength)'.")
+        assert(hardLimit > 0, "Can't use a non-positive hardLimit '\(hardLimit)'.")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
         let document1 = Document(parsing: self)
@@ -19,6 +19,7 @@ extension String {
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
+        var removedMarkdownElement = false
         var (remaining, prefixed) = markup2
             .format(options: .default)
             .trimmingForMarkdown()
@@ -34,6 +35,7 @@ extension String {
                     ifShorterThan: trailingTextMinLength
                 )
                 if let markup = paragraphRemover.visit(document2) {
+                    removedMarkdownElement = removedMarkdownElement || paragraphRemover.didModify
                     markup2 = markup
                     /// Update `prefixed`
                     prefixed = markup2
@@ -47,11 +49,17 @@ extension String {
         var document3 = Document(parsing: prefixed)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
+            removedMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
             prefixed = document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .markdownUnicodesPrefix(maxVisualLength)
+        }
+
+        if removedMarkdownElement {
+            /// Append a new line + dots at the end to suggest that the text has not ended.
+            prefixed += "\n\u{2026}"
         }
 
         return prefixed.unicodesPrefix(hardLimit)
@@ -148,6 +156,7 @@ private struct ParagraphRemover: MarkupRewriter {
     let atCount: Int
     let ifShorterThan: Int
     var count = 0
+    var didModify = false
 
     init(atCount: Int, ifShorterThan: Int) {
         self.atCount = atCount
@@ -161,6 +170,7 @@ private struct ParagraphRemover: MarkupRewriter {
             var lengthCounter = MarkupLengthCounter()
             lengthCounter.visit(paragraph)
             if lengthCounter.length < ifShorterThan {
+                self.didModify = true
                 return nil
             } else {
                 return paragraph
