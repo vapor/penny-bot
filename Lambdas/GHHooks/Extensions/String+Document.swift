@@ -1,39 +1,48 @@
 import Markdown
 
 extension String {
-    /// Formats markdown in a way that looks nice on Discord, but still good on GitHub.
+    /// Formats markdown in a way that looks decent on both Discord and GitHub at the same time.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
+    /// 
+    /// Or, better yet, nag the code author to add more comments to things that are complicated and confusing.
     func formatMarkdown(
         maxVisualLength: Int,
         hardLimit: Int,
         trailingTextMinLength: Int
     ) -> String {
-        assert(maxVisualLength > 0, "Can't request a non-positive maximum.")
-        assert(hardLimit > 0, "Can't use a non-positive maximum.")
+        assert(maxVisualLength > 0, "Maximum visual length must be greater than zero (got \(maxVisualLength)).")
+        assert(hardLimit > 0, "Hard length limit must be greater than zero (got \(hardLimit)).")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
+        /// Remove all HTML elements and all links lacking a destination; they don't look good in Discord.
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
+        var didRemoveMarkdownElement = false
         var (remaining, prefixed) = markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
+
+        /// Remove the last paragraph if it's too small to be useful.
         if remaining == 0 {
             let document2 = Document(parsing: prefixed)
             var paragraphCounter = ParagraphCounter()
             paragraphCounter.visit(document2)
             let paragraphCount = paragraphCounter.count
-            if ![0, 1].contains(paragraphCount) {
+            if paragraphCount > 1 {
                 var paragraphRemover = ParagraphRemover(
                     atCount: paragraphCount,
                     ifShorterThan: trailingTextMinLength
                 )
                 if let markup = paragraphRemover.visit(document2) {
+                    /// the `||` doesn't do anything as of now, but it might prevent some headache
+                    /// if someone changes something in the code in the future.
+                    didRemoveMarkdownElement = didRemoveMarkdownElement || paragraphRemover.didModify
                     markup2 = markup
                     /// Update `prefixed`
                     prefixed = markup2
@@ -44,14 +53,21 @@ extension String {
             }
         }
 
+        /// If the final block element is a heading, remove it (cosmetics again)
         var document3 = Document(parsing: prefixed)
-        if let last = Array(document3.blockChildren).last,
+        if let last = document3.blockChildren.suffix(1).first,
            last is Heading {
+            didRemoveMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
             prefixed = document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .markdownUnicodesPrefix(maxVisualLength)
+        }
+
+        if didRemoveMarkdownElement {
+            /// Append a new line + dots at the end to suggest that the text has not ended.
+            prefixed += "\n\u{2026}"
         }
 
         return prefixed.unicodesPrefix(hardLimit)
@@ -148,6 +164,7 @@ private struct ParagraphRemover: MarkupRewriter {
     let atCount: Int
     let ifShorterThan: Int
     var count = 0
+    var didModify = false
 
     init(atCount: Int, ifShorterThan: Int) {
         self.atCount = atCount
@@ -161,6 +178,7 @@ private struct ParagraphRemover: MarkupRewriter {
             var lengthCounter = MarkupLengthCounter()
             lengthCounter.visit(paragraph)
             if lengthCounter.length < ifShorterThan {
+                self.didModify = true
                 return nil
             } else {
                 return paragraph

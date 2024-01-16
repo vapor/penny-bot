@@ -287,7 +287,7 @@ class GHHooksTests: XCTestCase {
                 hardLimit: 2_048,
                 trailingTextMinLength: 64
             )
-            XCTAssertMultilineStringsEqual(formatted, scalars_206)
+            XCTAssertMultilineStringsEqual(formatted, scalars_206 + "\n\(dots)")
         }
 
         /// Remove html and images + length limits.
@@ -405,6 +405,7 @@ class GHHooksTests: XCTestCase {
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
             Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+            \(dots)
             """)
         }
 
@@ -436,6 +437,7 @@ class GHHooksTests: XCTestCase {
             ### To Reproduce
 
             1.
+            \(dots)
             """)
         }
 
@@ -478,6 +480,7 @@ class GHHooksTests: XCTestCase {
             ### Expected behavior
 
             Expect some contrast between the text and the background.
+            \(dots)
             """)
         }
 
