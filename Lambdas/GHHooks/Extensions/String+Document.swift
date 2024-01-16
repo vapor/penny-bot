@@ -9,8 +9,8 @@ extension String {
         hardLimit: Int,
         trailingTextMinLength: Int
     ) -> String {
-        assert(maxVisualLength > 0, "Can't use a non-positive maxVisualLength '\(maxVisualLength)'.")
-        assert(hardLimit > 0, "Can't use a non-positive hardLimit '\(hardLimit)'.")
+        assert(maxVisualLength > 0, "Maximum visual length must be greater than zero (got \(maxVisualLength)).")
+        assert(hardLimit > 0, "Hard length limit must be greater than zero (got \(hardLimit)).")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
         /// Remove all HTML and links-with-empty-destinations elements because they don't look good in Discord.
