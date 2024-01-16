@@ -1,7 +1,7 @@
 import Markdown
 
 extension String {
-    /// Formats markdown in a way that looks nice on Discord, but still looks fine on GitHub.
+    /// Formats markdown in a way that looks decent on both Discord and GitHub at the same time.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
     func formatMarkdown(
