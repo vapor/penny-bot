@@ -51,7 +51,7 @@ extension String {
             }
         }
 
-        /// Remove the last block-element if it's a heading.
+        /// If the final block element is a heading, remove it (cosmetics again)
         var document3 = Document(parsing: prefixed)
         if let last = Array(document3.blockChildren).last,
            last is Heading {
