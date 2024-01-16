@@ -4,6 +4,8 @@ extension String {
     /// Formats markdown in a way that looks decent on both Discord and GitHub at the same time.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
+    /// 
+    /// Or, better yet, nag the code author to add more comments to things that are complicated and confusing.
     func formatMarkdown(
         maxVisualLength: Int,
         hardLimit: Int,
