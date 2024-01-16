@@ -55,7 +55,7 @@ extension String {
 
         /// If the final block element is a heading, remove it (cosmetics again)
         var document3 = Document(parsing: prefixed)
-        if let last = Array(document3.blockChildren).suffix(1).first,
+        if let last = Array(document3.blockChildren).last,
            last is Heading {
             didRemoveMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
