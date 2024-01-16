@@ -32,7 +32,7 @@ extension String {
             var paragraphCounter = ParagraphCounter()
             paragraphCounter.visit(document2)
             let paragraphCount = paragraphCounter.count
-            if ![0, 1].contains(paragraphCount) {
+            if paragraphCount > 1 {
                 var paragraphRemover = ParagraphRemover(
                     atCount: paragraphCount,
                     ifShorterThan: trailingTextMinLength
@@ -53,7 +53,7 @@ extension String {
 
         /// Remove the last block-element if it's a heading.
         var document3 = Document(parsing: prefixed)
-        if let last = Array(document3.blockChildren).last,
+        if let last = Array(document3.blockChildren).suffix(1).first,
            last is Heading {
             didRemoveMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
