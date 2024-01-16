@@ -15,7 +15,7 @@ extension String {
         assert(hardLimit > 0, "Hard length limit must be greater than zero (got \(hardLimit)).")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
-        /// Remove all HTML and links-with-empty-destinations elements because they don't look good in Discord.
+        /// Remove all HTML elements and all links lacking a destination; they don't look good in Discord.
         let document1 = Document(parsing: self)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }
