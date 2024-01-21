@@ -20,6 +20,7 @@ extension SemanticVersion {
         if version.prereleaseIdentifiers.isEmpty {
             switch bump {
             case .releaseStage:
+                /// A bot shouldn't release a whole library.
                 return nil
             case .patch:
                 version.patch += 1

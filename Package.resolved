@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "91cd22ad2ebb0ca60c00b84e2178e94e5d4dd510"
+        "revision" : "5c045950662a3dd27d472c895d242705e7c909f4"
       }
     },
     {
@@ -283,8 +283,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-generator",
       "state" : {
-        "revision" : "76994bfc77061c6cfa3b82415613a9dfbfb47f28",
-        "version" : "1.1.0"
+        "revision" : "b18becec9d33b8a23d6252b47bb6bf1d45304244",
+        "version" : "1.2.0"
       }
     },
     {
@@ -292,8 +292,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-runtime",
       "state" : {
-        "revision" : "fd101c320185313bbf9c5a45b827b17eda9ff18a",
-        "version" : "1.1.0"
+        "revision" : "76951d77a0609599d2dc233e7e40808a74767c6a",
+        "version" : "1.3.2"
       }
     },
     {
