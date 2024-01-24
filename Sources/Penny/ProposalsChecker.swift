@@ -156,9 +156,9 @@ actor EvolutionChecker {
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) async -> Payloads.CreateMessage {
-        let titleState = proposal.status.state.titleDescription
-        let descriptionState = proposal.status.state.UIDescription
-        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
+        let stateTitle = proposal.status.state.titleDescription.map { $0 + ": " } ?? ""
+        let stateDescription = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(stateTitle)\(proposal.title.sanitized())"
 
         let summary = makeSummary(proposal: proposal)
 
@@ -179,13 +179,20 @@ actor EvolutionChecker {
             proposalLink = "https://github.com/apple/swift-evolution/blob/main/proposals/\(link)"
         }
 
+        var status = ""
+        if let current = stateDescription {
+            status = """
+
+            **Status: \(current)**
+            """
+        }
+
         return .init(
             embeds: [.init(
                 title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
-
-                **Status: \(descriptionState)**
+                \(status)
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -201,9 +208,9 @@ actor EvolutionChecker {
         previousState: Proposal.Status.State
     ) async -> Payloads.CreateMessage {
 
-        let titleState = proposal.status.state.titleDescription
-        let descriptionState = proposal.status.state.UIDescription
-        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
+        let stateTitle = proposal.status.state.titleDescription.map { $0 + ": " } ?? ""
+        let stateDescription = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(stateTitle)\(proposal.title.sanitized())"
 
         let summary = makeSummary(proposal: proposal)
 
@@ -224,13 +231,21 @@ actor EvolutionChecker {
             proposalLink = "https://github.com/apple/swift-evolution/blob/main/proposals/\(link)"
         }
 
+        var status = ""
+        if let previous = previousState.UIDescription,
+           let new = stateDescription {
+            status = """
+
+            **Status:** \(previous) -> **\(new)**
+            """
+        }
+
         return .init(
             embeds: [.init(
                 title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
-
-                **Status:** \(previousState.UIDescription) -> **\(descriptionState)**
+                \(status)
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -446,11 +461,11 @@ private extension Proposal.Status.State {
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
-        case .unknown: return .gray(level: .level6, scheme: .dark)
+        case .error, .unknown: return .gray(level: .level6, scheme: .dark)
         }
     }
 
-    var UIDescription: String {
+    var UIDescription: String? {
         switch self {
         case .accepted: return "Accepted"
         case .activeReview: return "Active Review"
@@ -460,11 +475,11 @@ private extension Proposal.Status.State {
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
-        case let .unknown(unknown): return String(unknown.dropFirst().capitalized)
+        case .error, .unknown: return nil
         }
     }
 
-    var titleDescription: String {
+    var titleDescription: String? {
         switch self {
         case .activeReview: return "In Active Review"
         default: return self.UIDescription
@@ -491,6 +506,7 @@ struct Proposal: Sendable, Codable {
             case rejected
             case returnedForRevision
             case withdrawn
+            case error
             case unknown(String)
 
             var rawValue: String {
@@ -503,6 +519,7 @@ struct Proposal: Sendable, Codable {
                 case .rejected: return ".rejected"
                 case .returnedForRevision: return ".returnedForRevision"
                 case .withdrawn: return ".withdrawn"
+                case .error: return ".error"
                 case let .unknown(unknown): return unknown
                 }
             }
@@ -517,6 +534,7 @@ struct Proposal: Sendable, Codable {
                 case ".rejected": self = .rejected
                 case ".returnedForRevision": self = .returnedForRevision
                 case ".withdrawn": self = .withdrawn
+                case ".error": self = .error
                 default:
                     Logger(label: "\(#file):\(#line)").warning(
                         "New unknown case",
