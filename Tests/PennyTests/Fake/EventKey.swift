@@ -1,7 +1,7 @@
 import DiscordBM
 @testable import Penny
 
-public enum EventKey: String, Sendable {
+package enum EventKey: String, Sendable {
     case thanksMessage
     case thanksMessage2
     case linkInteraction
@@ -28,7 +28,7 @@ public enum EventKey: String, Sendable {
     case autoFaqsTrigger
 
     /// The endpoints from which the bot will send a response, after receiving each event.
-    public var responseEndpoints: [APIEndpoint] {
+    package var responseEndpoints: [APIEndpoint] {
         switch self {
         case .thanksMessage:
             return [.createMessage(channelId: "519613337638797315")]

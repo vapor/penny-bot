@@ -2,17 +2,17 @@
 import Atomics
 import XCTest
 
-public actor FakeResponseStorage {
+package actor FakeResponseStorage {
     
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
     
-    public init() { }
-    public static var shared = FakeResponseStorage()
+    package init() { }
+    package static var shared = FakeResponseStorage()
 
     private static let idGenerator = ManagedAtomic(UInt(0))
 
-    public func awaitResponse(
+    package func awaitResponse(
         at endpoint: APIEndpoint,
         expectFailure: Bool = false,
         file: StaticString = #filePath,
@@ -29,7 +29,7 @@ public actor FakeResponseStorage {
         }
     }
     
-    public func awaitResponse(
+    package func awaitResponse(
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
         file: StaticString = #filePath,

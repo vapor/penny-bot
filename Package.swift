@@ -258,32 +258,6 @@ let package = Package(
             ],
             swiftSettings: targetsSwiftSettings
         ),
-        .target(
-            name: "Fake",
-            dependencies: [
-                .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "SotoS3", package: "soto"),
-                .product(name: "SotoCore", package: "soto-core"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .product(name: "LeafKit", package: "leaf-kit"),
-                .product(name: "Markdown", package: "swift-markdown"),
-                .product(name: "SwiftSemver", package: "swift-semver"),
-                .product(name: "DiscordLogger", package: "DiscordLogger"),
-                .product(name: "JWTKit", package: "jwt-kit"),
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .product(name: "OpenAPIRuntime", package: "swift-openapi-runtime"),
-                .target(name: "GitHubAPI"),
-                .target(name: "LambdasShared"),
-                .target(name: "Shared"),
-                .target(name: "Rendering"),
-                .target(name: "Models"),
-                .target(name: "Penny"),
-                .target(name: "GHHooksLambda"),
-            ],
-            path: "./Tests/Fake",
-            swiftSettings: testsSwiftSettings
-        ),
         .testTarget(
             name: "PennyTests",
             dependencies: [
@@ -304,7 +278,6 @@ let package = Package(
                 .target(name: "Models"),
                 .target(name: "Penny"),
                 .target(name: "GHHooksLambda"),
-                .target(name: "Fake"),
             ],
             swiftSettings: testsSwiftSettings
         ),

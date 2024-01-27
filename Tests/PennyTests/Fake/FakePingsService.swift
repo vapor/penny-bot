@@ -3,9 +3,9 @@ import Models
 import DiscordModels
 import AsyncHTTPClient
 
-public struct FakePingsService: AutoPingsService {
+package struct FakePingsService: AutoPingsService {
     
-    public init() { }
+    package init() { }
 
     private let all = S3AutoPingItems(items: [
         .matches("mongodb driver"): ["432065887202181142", "950695294906007573"],
@@ -18,32 +18,32 @@ public struct FakePingsService: AutoPingsService {
         .contains("cord"): ["432065887202181142"],
     ])
 
-    public func exists(
+    package func exists(
         expression: Expression,
         forDiscordID id: UserSnowflake
     ) async throws -> Bool {
         false
     }
     
-    public func insert(
+    package func insert(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
     ) async throws { }
 
-    public func remove(
+    package func remove(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
     ) async throws { }
 
-    public func get(discordID id: UserSnowflake) async throws -> [Expression] {
+    package func get(discordID id: UserSnowflake) async throws -> [Expression] {
         self.all.items.filter({ $0.value.contains(id) }).map(\.key)
     }
 
-    public func getExpression(hash: Int) async throws -> Expression? {
+    package func getExpression(hash: Int) async throws -> Expression? {
         self.all.items.first(where: { $0.key.hashValue == hash })?.key
     }
 
-    public func getAll() async throws -> S3AutoPingItems {
+    package func getAll() async throws -> S3AutoPingItems {
         self.all
     }
 }
