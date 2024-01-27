@@ -2,7 +2,6 @@
 @testable import DiscordModels
 @testable import Logging
 import DiscordGateway
-import Fake
 import Models
 import XCTest
 
@@ -18,7 +17,7 @@ class GatewayProcessingTests: XCTestCase {
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         let fakeMainService = try await FakeMainService(manager: self.manager)
-        self.context = await fakeMainService.context
+        self.context = fakeMainService.context
         Task {
             try await Penny.start(mainService: fakeMainService)
         }

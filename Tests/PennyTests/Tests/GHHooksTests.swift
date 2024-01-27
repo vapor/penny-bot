@@ -9,7 +9,6 @@ import Rendering
 import Logging
 import SwiftSemver
 import Markdown
-import Fake
 import XCTest
 
 class GHHooksTests: XCTestCase {

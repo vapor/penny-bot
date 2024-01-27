@@ -1,6 +1,5 @@
 @testable import Penny
 @testable import Models
-import Fake
 import Markdown
 import XCTest
 
