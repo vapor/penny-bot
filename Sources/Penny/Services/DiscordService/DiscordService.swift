@@ -388,14 +388,4 @@ actor DiscordService {
             .intersection(Constants.Roles.elevatedRestrictedCommandsAccessSet)
             .isEmpty
     }
-
-#if DEBUG
-    func _tests_addToMessageCache(
-        channelId: ChannelSnowflake,
-        messageId: MessageSnowflake,
-        message: DiscordChannel.Message
-    ) {
-        self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] = message
-    }
-#endif
 }
