@@ -1,17 +1,17 @@
 @testable import GHHooksLambda
 import DiscordModels
 
-package struct FakeMessageLookupRepo: MessageLookupRepo {
+struct FakeMessageLookupRepo: MessageLookupRepo {
 
-    package static let randomMessageID: MessageSnowflake = try! .makeFake()
+    static let randomMessageID: MessageSnowflake = try! .makeFake()
 
-    package init() { }
+    init() { }
 
-    package func getMessageID(repoID: Int, number: Int) async throws -> String {
+    func getMessageID(repoID: Int, number: Int) async throws -> String {
         Self.randomMessageID.rawValue
     }
 
-    package func markAsUnavailable(repoID: Int, number: Int) async throws { }
+    func markAsUnavailable(repoID: Int, number: Int) async throws { }
 
-    package func saveMessageID(messageID: String, repoID: Int, number: Int) async throws { }
+    func saveMessageID(messageID: String, repoID: Int, number: Int) async throws { }
 }

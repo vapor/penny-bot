@@ -1,15 +1,15 @@
 @testable import Penny
 import Models
 
-package struct FakeEvolutionService: EvolutionService {
+struct FakeEvolutionService: EvolutionService {
 
-    package init() { }
+    init() { }
 
-    package func list() async throws -> [Proposal] {
+    func list() async throws -> [Proposal] {
         TestData.proposalsUpdated
     }
 
-    package func getProposalContent(link: String) async throws -> String {
+    func getProposalContent(link: String) async throws -> String {
         TestData.proposalContent
     }
 }

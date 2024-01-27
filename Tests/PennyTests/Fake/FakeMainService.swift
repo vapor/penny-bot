@@ -8,16 +8,16 @@ import SotoCore
 import AsyncHTTPClient
 import XCTest
 
-package actor FakeMainService: MainService {
-    package let manager: FakeManager
-    package let cache: DiscordCache
-    package let httpClient: HTTPClient
-    package let context: HandlerContext
+actor FakeMainService: MainService {
+    let manager: FakeManager
+    let cache: DiscordCache
+    let httpClient: HTTPClient
+    let context: HandlerContext
     var botStateManager: BotStateManager {
         context.botStateManager
     }
 
-    package init(manager: FakeManager) async throws {
+    init(manager: FakeManager) async throws {
         self.manager = manager
         var cacheStorage = DiscordCache.Storage()
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
@@ -39,20 +39,20 @@ package actor FakeMainService: MainService {
         try! httpClient.syncShutdown()
     }
 
-    package func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
+    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
 
-    package func makeBot(
+    func makeBot(
         eventLoopGroup: any EventLoopGroup,
         httpClient: HTTPClient
     ) async throws -> any GatewayManager {
         return manager
     }
 
-    package func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
+    func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
         return cache
     }
 
-    package func beforeConnectCall(
+    func beforeConnectCall(
         bot: any GatewayManager,
         cache: DiscordCache,
         httpClient: HTTPClient,
@@ -62,7 +62,7 @@ package actor FakeMainService: MainService {
         return context
     }
 
-    package func afterConnectCall(context: HandlerContext) async throws { }
+    func afterConnectCall(context: HandlerContext) async throws { }
 
     static func makeContext(
         manager: any GatewayManager,
@@ -116,7 +116,7 @@ package actor FakeMainService: MainService {
         )
     }
 
-    package func waitForStateManagerShutdownAndDidShutdownSignals() async {
+    func waitForStateManagerShutdownAndDidShutdownSignals() async {
         /// Wait for the shutdown signal, then send a `didShutdown` signal.
         /// in practice, the `didShutdown` signal is sent by another Penny that is online.
         while let possibleSignal = await FakeResponseStorage.shared.awaitResponse(

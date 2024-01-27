@@ -1,9 +1,9 @@
 
 /// A box to treat `Any` as a Sendable type.
-package class AnyBox: @unchecked Sendable {
-    package let value: Any
+class AnyBox: @unchecked Sendable {
+    let value: Any
     
-    package init(_ value: Any) {
+    init(_ value: Any) {
         self.value = value
     }
 }

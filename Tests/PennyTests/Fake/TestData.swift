@@ -2,7 +2,7 @@ import Foundation
 import DiscordModels
 @testable import Penny
 
-package enum TestData {
+enum TestData {
 
     private static func resource(named name: String) -> Data {
         let fileManager = FileManager.default
@@ -19,23 +19,23 @@ package enum TestData {
         return try! JSONDecoder().decode(D.self, from: data)
     }
 
-    package static let vaporGuild = resource(
+    static let vaporGuild = resource(
         named: "guild_create.json",
         as: Gateway.GuildCreate.self
     )
-    package static let proposals = TestData.resource(
+    static let proposals = TestData.resource(
         named: "proposals.json",
         as: [Proposal].self
     )
-    package static let proposalsUpdated = TestData.resource(
+    static let proposalsUpdated = TestData.resource(
         named: "proposals_updated.json",
         as: [Proposal].self
     )
-    package static let proposalContent = String(
+    static let proposalContent = String(
         decoding: TestData.resource(named: "proposal_content.md"),
         as: UTF8.self
     )
-    package static let soQuestions = TestData.resource(
+    static let soQuestions = TestData.resource(
         named: "soQuestions.json",
         as: SOQuestions.self
     ).items
@@ -60,7 +60,7 @@ package enum TestData {
         return dataDict
     }()
 
-    package static func `for`(ghEventKey key: String) -> Data? {
+    static func `for`(ghEventKey key: String) -> Data? {
         return ghHooksEvents[key]
     }
 
@@ -72,7 +72,7 @@ package enum TestData {
         return dataDict
     }()
 
-    package static func `for`(ghRequestID key: String) -> Data? {
+    static func `for`(ghRequestID key: String) -> Data? {
         return ghRestOperations[key]
     }
 }
