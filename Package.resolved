@@ -15,7 +15,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "5c045950662a3dd27d472c895d242705e7c909f4"
+        "revision" : "031affd00288977fad1efb3da282a33683f39b80"
       }
     },
     {
@@ -149,7 +149,7 @@
       "location" : "https://github.com/apple/swift-cmark.git",
       "state" : {
         "branch" : "gfm",
-        "revision" : "3bc2f3e25df0cecc5dc269f7ccae65d0f386f06a"
+        "revision" : "9b50a73a7acb87c41a9b336add22a0be59defff3"
       }
     },
     {
@@ -312,6 +312,15 @@
       "state" : {
         "revision" : "ce0141c8f123132dbd02fd45fea448018762df1b",
         "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-syntax",
+      "state" : {
+        "revision" : "64889f0c732f210a935a0ad7cda38f77f876262d",
+        "version" : "509.1.1"
       }
     },
     {
