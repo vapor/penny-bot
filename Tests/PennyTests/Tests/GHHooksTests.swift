@@ -502,6 +502,27 @@ class GHHooksTests: XCTestCase {
             There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
             """)
         }
+
+        /// Test modifying GitHub links
+        do {
+            let text = """
+            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable` at https://github.com/swift-server/swiftly/pull/9.
+
+            There should be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.
+            """
+
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 512,
+                hardLimit: 2_048,
+                trailingTextMinLength: 128
+            )
+
+            XCTAssertMultilineStringsEqual(formatted, """
+            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
+
+            There should be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.
+            """)
+        }
     }
 
     func testHeadingFinder() async throws {
