@@ -456,6 +456,7 @@ private extension Proposal.Status.State {
         case .accepted: return .green
         case .activeReview: return .orange
         case .scheduledForReview: return .yellow
+        case .awaitingReview: return .yellow
         case .implemented: return .blue
         case .previewing: return .teal
         case .rejected: return .red
@@ -470,6 +471,7 @@ private extension Proposal.Status.State {
         case .accepted: return "Accepted"
         case .activeReview: return "Active Review"
         case .scheduledForReview: return "Scheduled For Review"
+        case .awaitingReview: return "Awaiting Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
@@ -501,6 +503,7 @@ struct Proposal: Sendable, Codable {
             case accepted
             case activeReview
             case scheduledForReview
+            case awaitingReview
             case implemented
             case previewing
             case rejected
@@ -514,6 +517,7 @@ struct Proposal: Sendable, Codable {
                 case .accepted: return ".accepted"
                 case .activeReview: return ".activeReview"
                 case .scheduledForReview: return ".scheduledForReview"
+                case .awaitingReview: return ".awaitingReview"
                 case .implemented: return ".implemented"
                 case .previewing: return ".previewing"
                 case .rejected: return ".rejected"
@@ -529,6 +533,7 @@ struct Proposal: Sendable, Codable {
                 case ".accepted": self = .accepted
                 case ".activeReview": self = .activeReview
                 case ".scheduledForReview": self = .scheduledForReview
+                case ".awaitingReview": self = .awaitingReview
                 case ".implemented": self = .implemented
                 case ".previewing": self = .previewing
                 case ".rejected": self = .rejected
