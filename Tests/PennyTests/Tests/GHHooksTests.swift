@@ -508,7 +508,7 @@ class GHHooksTests: XCTestCase {
             let text = """
             https://github.com/swift-server/swiftly/pull/9Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at https://github.com/swift-server/swiftly/pull/9.
 
-            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.https://github.com/vapor/penny-bot/issues/98
+            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.](https://github.com/vapor/penny-bot/issues/98
             """
 
             let formatted = text.formatMarkdown(
@@ -520,7 +520,7 @@ class GHHooksTests: XCTestCase {
             XCTAssertMultilineStringsEqual(formatted, """
             [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9)Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
 
-            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.[vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
+            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.]([vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
             """)
         }
     }

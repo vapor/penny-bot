@@ -30,7 +30,7 @@ extension String {
             let current = self[match.range]
             /// `match.output` is a `Range<Index>` which means it's `..<`.
             /// So the character at `index == upperBound` is not part of the match.
-            if match.range.upperBound <= self.endIndex,
+            if match.range.upperBound < self.endIndex,
                /// `offsetBy: 2` is guaranteed to exist because the string must contain
                /// `https` based on the regex above, so it has more length than 3.
                match.range.lowerBound > self.index(self.startIndex, offsetBy: 2) {
