@@ -1,6 +1,6 @@
 import Foundation
 
-public struct AccountLinkRequest: Codable {
+package struct AccountLinkRequest: Codable {
     let id: UUID
     let createdAt: Date
     let initiationSource: String

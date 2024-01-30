@@ -1,4 +1,4 @@
-public enum GitHubUserResponse {
+package enum GitHubUserResponse {
     case notLinked
     case userName(String)
 }

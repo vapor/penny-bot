@@ -121,11 +121,9 @@ actor BotStateManager {
         "\(text) \(id)"
     }
 
-#if DEBUG
     func _tests_didShutdownSignalEventContent() -> String {
         makeSignalMessage(text: StateManagerSignal.didShutdown.rawValue, id: self.id - 10)
     }
-#endif
 }
 
 enum StateManagerSignal: String {

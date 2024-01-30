@@ -6,7 +6,6 @@ import Rendering
 import AsyncHTTPClient
 import GitHubAPI
 import Logging
-import Fake
 import XCTest
 
 class LeafRenderTests: XCTestCase {

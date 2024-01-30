@@ -11,7 +11,7 @@ private let leafRendererThreadPool: NIOThreadPool = {
 }()
 
 extension LeafRenderer {
-    public convenience init(
+    package convenience init(
         subDirectory: String,
         httpClient: HTTPClient,
         extraSources: [any LeafSource] = [],

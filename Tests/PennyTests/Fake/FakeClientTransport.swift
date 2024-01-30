@@ -2,11 +2,11 @@ import OpenAPIRuntime
 import HTTPTypes
 import Foundation
 
-public struct FakeClientTransport: ClientTransport {
+struct FakeClientTransport: ClientTransport {
 
-    public init() { }
+    init() { }
 
-    public func send(
+    func send(
         _ request: HTTPRequest,
         body: HTTPBody?,
         baseURL: URL,

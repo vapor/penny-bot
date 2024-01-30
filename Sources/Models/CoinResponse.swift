@@ -1,10 +1,10 @@
 
-public struct CoinResponse: Sendable, Codable {
-    public let sender: UserSnowflake
-    public let receiver: UserSnowflake
-    public let newCoinCount: Int
+package struct CoinResponse: Sendable, Codable {
+    package let sender: UserSnowflake
+    package let receiver: UserSnowflake
+    package let newCoinCount: Int
 
-    public init(sender: UserSnowflake, receiver: UserSnowflake, newCoinCount: Int) {
+    package init(sender: UserSnowflake, receiver: UserSnowflake, newCoinCount: Int) {
         self.sender = sender
         self.receiver = receiver
         self.newCoinCount = newCoinCount

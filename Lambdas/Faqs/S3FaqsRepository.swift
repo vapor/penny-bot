@@ -2,7 +2,7 @@ import SotoS3
 import Foundation
 import Models
 
-public struct S3FaqsRepository {
+package struct S3FaqsRepository {
 
     let s3: S3
     let logger: Logger
@@ -12,12 +12,12 @@ public struct S3FaqsRepository {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    public init(awsClient: AWSClient, logger: Logger) {
+    package init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
         self.logger = logger
     }
 
-    public func insert(name: String, value: String) async throws -> [String: String] {
+    package func insert(name: String, value: String) async throws -> [String: String] {
         var all = try await self.getAll()
         if all[name] != value {
             all[name] = value
@@ -26,7 +26,7 @@ public struct S3FaqsRepository {
         return all
     }
 
-    public func remove(name: String) async throws -> [String: String] {
+    package func remove(name: String) async throws -> [String: String] {
         var all = try await self.getAll()
         if all.removeValue(forKey: name) != nil {
             try await self.save(items: all)
@@ -34,7 +34,7 @@ public struct S3FaqsRepository {
         return all
     }
 
-    public func getAll() async throws -> [String: String] {
+    package func getAll() async throws -> [String: String] {
         let response: S3.GetObjectOutput
 
         do {
@@ -61,7 +61,7 @@ public struct S3FaqsRepository {
         }
     }
 
-    public func save(items: [String: String]) async throws {
+    package func save(items: [String: String]) async throws {
         let data = try encoder.encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,

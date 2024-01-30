@@ -1,19 +1,19 @@
 
-public enum UserRequest: Sendable, Codable {
+package enum UserRequest: Sendable, Codable {
     case addCoin(CoinEntryRequest)
     case getOrCreateUser(discordID: UserSnowflake)
     case getUser(githubID: String)
     case linkGitHubID(discordID: UserSnowflake, toGitHubID: String)
     case unlinkGitHubID(discordID: UserSnowflake)
 
-    public struct CoinEntryRequest: Sendable, Codable {
-        public let amount: Int
-        public let fromDiscordID: UserSnowflake
-        public let toDiscordID: UserSnowflake
-        public let source: CoinEntry.Source
-        public let reason: CoinEntry.Reason
+    package struct CoinEntryRequest: Sendable, Codable {
+        package let amount: Int
+        package let fromDiscordID: UserSnowflake
+        package let toDiscordID: UserSnowflake
+        package let source: CoinEntry.Source
+        package let reason: CoinEntry.Reason
 
-        public init(
+        package init(
             amount: Int,
             fromDiscordID: UserSnowflake,
             toDiscordID: UserSnowflake,

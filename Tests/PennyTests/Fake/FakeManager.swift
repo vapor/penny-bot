@@ -4,36 +4,36 @@ import Atomics
 import struct NIOCore.ByteBuffer
 import XCTest
 
-public actor FakeManager: GatewayManager {
-    public nonisolated let client: any DiscordClient = FakeDiscordClient()
-    public nonisolated let id: UInt = 0
-    public nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
+actor FakeManager: GatewayManager {
+    nonisolated let client: any DiscordClient = FakeDiscordClient()
+    nonisolated let id: UInt = 0
+    nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
     var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
     
-    public init() { }
+    init() { }
     
-    public func connect() async { }
+    func connect() async { }
 
-    public func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
-    public func updatePresence(payload: Gateway.Identify.Presence) async { }
-    public func updateVoiceState(payload: VoiceStateUpdate) async { }
-    public func makeEventsStream() async -> AsyncStream<Gateway.Event> {
+    func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
+    func updatePresence(payload: Gateway.Identify.Presence) async { }
+    func updateVoiceState(payload: VoiceStateUpdate) async { }
+    func makeEventsStream() async -> AsyncStream<Gateway.Event> {
         AsyncStream { continuation in
             eventContinuations.append(continuation)
         }
     }
-    public func makeEventsParseFailureStream() async -> AsyncStream<(any Error, ByteBuffer)> {
+    func makeEventsParseFailureStream() async -> AsyncStream<(any Error, ByteBuffer)> {
         AsyncStream { _ in }
     }
-    public func disconnect() { }
+    func disconnect() { }
 
-    public func send(event: Gateway.Event) {
+    func send(event: Gateway.Event) {
         for continuation in eventContinuations {
             continuation.yield(event)
         }
     }
 
-    public func send(key: EventKey) {
+    func send(key: EventKey) {
         let data = TestData.for(gatewayEventKey: key.rawValue)!
         let decoder = JSONDecoder()
         let event: Gateway.Event
@@ -48,7 +48,7 @@ public actor FakeManager: GatewayManager {
     }
     
     @_disfavoredOverload
-    public func sendAndAwaitResponse<T>(
+    func sendAndAwaitResponse<T>(
         key: EventKey,
         endpoint: APIEndpoint? = nil,
         as type: T.Type = T.self,
@@ -64,7 +64,7 @@ public actor FakeManager: GatewayManager {
         )
     }
     
-    public func sendAndAwaitResponse<T>(
+    func sendAndAwaitResponse<T>(
         key: EventKey,
         endpoint: AnyEndpoint? = nil,
         as type: T.Type = T.self,
