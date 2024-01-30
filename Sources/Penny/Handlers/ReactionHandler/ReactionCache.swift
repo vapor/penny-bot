@@ -1,6 +1,6 @@
 import Logging
 import DiscordBM
-@preconcurrency import Collections
+import Collections
 import Foundation
 
 /// Cache for reactions-related stuff.

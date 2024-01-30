@@ -430,7 +430,7 @@ class GatewayProcessingTests: XCTestCase {
             if case let .flags(flags) = response.data {
                 XCTAssertTrue(
                     flags.flags?.contains(.ephemeral) == true,
-                    "\(flags.flags?.representableValues().values ?? [])"
+                    "\(flags.flags?.representableValues() ?? [])"
                 )
             } else {
                 XCTFail("Unexpected response: \(response)")
@@ -491,7 +491,7 @@ class GatewayProcessingTests: XCTestCase {
             if case let .flags(flags) = response.data {
                 XCTAssertTrue(
                     flags.flags?.contains(.ephemeral) == true,
-                    "\(flags.flags?.representableValues().values ?? [])"
+                    "\(flags.flags?.representableValues() ?? [])"
                 )
             } else {
                 XCTFail("Unexpected response: \(response)")
