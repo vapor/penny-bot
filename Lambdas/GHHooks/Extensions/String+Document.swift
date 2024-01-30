@@ -19,7 +19,13 @@ extension String {
         /// For example GitHub changes `https://github.com/vapor/penny-bot/issues/99` to
         /// `[vapor/penny-bot#99](https://github.com/vapor/penny-bot/issues/99)` which
         /// ends up looking like a blue `vapor/penny-bot#99` text linked to the url.
-        let regex = #/https://github\.com/(?<org>[^/<>#%"{}|^\[\]\s]+)/(?<repo>[^/<>#%"{}|^\[\]\s]+)/(pull|issues)/(?<number>\d+)/#
+        let regex = #/
+            https://(?:www\.)?github\.com
+            /(?<org>[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)
+            /(?<repo>[A-Za-z0-9.\-_]+)
+            /(?:pull|issues)
+            /(?<number>\d+)
+        /#
         let withModifiedLinks = self.replacing(regex) { match in
             "[\(match.output.org)/\(match.output.repo)#\(match.output.number)](\(self[match.range]))"
         }
