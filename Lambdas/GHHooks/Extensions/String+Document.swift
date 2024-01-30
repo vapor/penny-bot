@@ -15,8 +15,23 @@ extension String {
         assert(hardLimit > 0, "Hard length limit must be greater than zero (got \(hardLimit)).")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
+        /// Interpret urls like GitHub does.
+        /// For example GitHub changes `https://github.com/vapor/penny-bot/issues/99` to
+        /// `[vapor/penny-bot#99](https://github.com/vapor/penny-bot/issues/99)` which
+        /// ends up looking like a blue `vapor/penny-bot#99` text linked to the url.
+        let regex = #/
+            https://(?:www\.)?github\.com
+            /(?<org>[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)
+            /(?<repo>[A-Za-z0-9.\-_]+)
+            /(?:pull|issues)
+            /(?<number>\d+)
+        /#
+        let withModifiedLinks = self.replacing(regex) { match in
+            "[\(match.output.org)/\(match.output.repo)#\(match.output.number)](\(self[match.range]))"
+        }
+
         /// Remove all HTML elements and all links lacking a destination; they don't look good in Discord.
-        let document1 = Document(parsing: self)
+        let document1 = Document(parsing: withModifiedLinks)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }
         var emptyLinksRemover = EmptyLinksRemover()
