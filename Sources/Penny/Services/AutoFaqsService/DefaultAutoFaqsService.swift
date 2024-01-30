@@ -5,7 +5,7 @@ import Foundation
 #endif
 import DiscordModels
 import Models
-@preconcurrency import Collections
+import Collections
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
