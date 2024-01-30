@@ -506,9 +506,9 @@ class GHHooksTests: XCTestCase {
         /// Test modifying GitHub links
         do {
             let text = """
-            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable` at https://github.com/swift-server/swiftly/pull/9.
+            https://github.com/swift-server/swiftly/pull/9Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at https://github.com/swift-server/swiftly/pull/9.
 
-            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vaporhttps://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.
+            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.https://github.com/vapor/penny-bot/issues/98
             """
 
             let formatted = text.formatMarkdown(
@@ -518,9 +518,9 @@ class GHHooksTests: XCTestCase {
             )
 
             XCTAssertMultilineStringsEqual(formatted, """
-            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
+            [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9)Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
 
-            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor[vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.
+            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.[vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
             """)
         }
     }

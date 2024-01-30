@@ -27,7 +27,26 @@ extension String {
             /(?<number>\d+)
         /#
         let withModifiedLinks = self.replacing(regex) { match in
-            "[\(match.output.org)/\(match.output.repo)#\(match.output.number)](\(self[match.range]))"
+            let current = self[match.range]
+            /// `match.output` is a `Range<Index>` which means it's `..<`.
+            /// So the character at `index == upperBound` is not part of the match.
+            if match.range.upperBound <= self.endIndex,
+               /// `offsetBy: 2` is guaranteed to exist because the string must contain
+               /// `https` based on the regex above, so it has more length than 3.
+               match.range.lowerBound > self.index(self.startIndex, offsetBy: 2) {
+                /// All 3 indexes below are guaranteed to exist based on the range check above.
+                let before = self.index(before: match.range.lowerBound)
+                let beforeBefore = self.index(before: before)
+                /// Is surrounded like `STR` in `](STR)` or not
+                let isSurroundedInSomePuncs = self[beforeBefore] == "]" &&
+                self[before] == "(" &&
+                self[match.range.upperBound] == ")"
+                /// If it's surrounded in the punctuations above, it
+                /// might already be a link, so don't manipulate it.
+                if isSurroundedInSomePuncs { return current }
+            }
+            let output = match.output
+            return "[\(output.org)/\(output.repo)#\(output.number)](\(current))"
         }
 
         /// Remove all HTML elements and all links lacking a destination; they don't look good in Discord.
