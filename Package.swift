@@ -3,93 +3,10 @@
 
 import PackageDescription
 
-/// Bug alert! Don't move these constants to the end of the file, or they won't take effect!
-/// https://github.com/apple/swift-package-manager/issues/6597
-/// Not all of these features are enabled on the version of Swift that Penny is deployed with.
-let upcomingFeaturesSwiftSettings: [SwiftSetting] = [
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
-    /// Require `any` for existential types.
-    .enableUpcomingFeature("ExistentialAny"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0274-magic-file.md
-    /// Nicer `#file`.
-    .enableUpcomingFeature("ConciseMagicFile"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0286-forward-scan-trailing-closures.md
-    /// This one shouldn't do much to be honest, but shouldn't hurt as well.
-    .enableUpcomingFeature("ForwardTrailingClosures"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
-    /// Remove Actor Isolation Inference caused by Property Wrappers
-    .enableUpcomingFeature("DisableOutwardActorInference"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
-    /// Support bare-slash Regex literals.
-    .enableUpcomingFeature("BareSlashRegexLiterals"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
-    /// Objc, which we don't use.
-    .enableUpcomingFeature("ImportObjcForwardDeclarations"),
-
-    /// These currently cause errors on nightlies sometimes. We'll reenable them later:
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-    /// .enableUpcomingFeature("InternalImportsByDefault"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
-    /// Data-race-free initial values for stored properties.
-    /// .enableUpcomingFeature("IsolatedDefaultValues"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
-    /// Enable automatic safety features for global (and some local) variables.
-    /// .enableUpcomingFeature("GlobalConcurrency"),
-
-    /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
-    /// Enable the full potential of typed throws.
-    /// .enableUpcomingFeature("FullTypedThrows")
-]
-
-let targetsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
-    /// https://github.com/apple/swift/issues/67214
-    .unsafeFlags(
-        ["-Xllvm", "-vectorize-slp=false"],
-        .when(platforms: [.linux], configuration: .release)
-    ),
-
-    /// `minimal` / `targeted` / `complete`
-    .enableExperimentalFeature("StrictConcurrency=complete"),
-]
-
-let testsSwiftSettings: [SwiftSetting] = upcomingFeaturesSwiftSettings + [
-    /// `minimal` / `targeted` / `complete`
-    .enableExperimentalFeature("StrictConcurrency=targeted"),
-]
-
-extension PackageDescription.Target {
-    static func lambdaTarget(
-        name: String,
-        additionalDependencies: [PackageDescription.Target.Dependency]
-    ) -> PackageDescription.Target {
-        .executableTarget(
-            name: "\(name)Lambda",
-            dependencies: [
-                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
-                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
-                .product(name: "SotoCore", package: "soto-core"),
-                .product(name: "Logging", package: "swift-log"),
-                .target(name: "LambdasShared"),
-                .target(name: "Models"),
-            ] + additionalDependencies,
-            path: "./Lambdas/\(name)",
-            swiftSettings: targetsSwiftSettings
-        )
-    }
-}
-
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v13)
+        .macOS(.v14)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
@@ -283,3 +200,91 @@ let package = Package(
         ),
     ]
 )
+
+/// Bug alert! Don't make this a constant, or they won't take effect!
+/// https://github.com/apple/swift-package-manager/issues/6597
+var upcomingFeaturesSwiftSettings: [SwiftSetting] {
+    [
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
+        /// Require `any` for existential types.
+            .enableUpcomingFeature("ExistentialAny"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0274-magic-file.md
+        /// Nicer `#file`.
+            .enableUpcomingFeature("ConciseMagicFile"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0286-forward-scan-trailing-closures.md
+        /// This one shouldn't do much to be honest, but shouldn't hurt as well.
+            .enableUpcomingFeature("ForwardTrailingClosures"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
+        /// Remove Actor Isolation Inference caused by Property Wrappers
+            .enableUpcomingFeature("DisableOutwardActorInference"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
+        /// Support bare-slash Regex literals.
+            .enableUpcomingFeature("BareSlashRegexLiterals"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
+        /// Objc, which we don't use.
+            .enableUpcomingFeature("ImportObjcForwardDeclarations"),
+
+        /// These currently cause errors on nightlies sometimes. We'll reenable them later:
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
+        /// .enableUpcomingFeature("InternalImportsByDefault"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
+        /// Data-race-free initial values for stored properties.
+        /// .enableUpcomingFeature("IsolatedDefaultValues"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
+        /// Enable automatic safety features for global (and some local) variables.
+        /// .enableUpcomingFeature("GlobalConcurrency"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
+        /// Enable the full potential of typed throws.
+        /// .enableUpcomingFeature("FullTypedThrows")
+    ]
+}
+
+var targetsSwiftSettings: [SwiftSetting] {
+    upcomingFeaturesSwiftSettings + [
+        /// https://github.com/apple/swift/issues/67214
+        .unsafeFlags(
+            ["-Xllvm", "-vectorize-slp=false"],
+            .when(platforms: [.linux], configuration: .release)
+        ),
+
+        /// `minimal` / `targeted` / `complete`
+        .enableExperimentalFeature("StrictConcurrency=complete"),
+    ]
+}
+
+var testsSwiftSettings: [SwiftSetting] {
+    upcomingFeaturesSwiftSettings + [
+        /// `minimal` / `targeted` / `complete`
+        .enableExperimentalFeature("StrictConcurrency=targeted"),
+    ]
+}
+
+extension PackageDescription.Target {
+    static func lambdaTarget(
+        name: String,
+        additionalDependencies: [PackageDescription.Target.Dependency]
+    ) -> PackageDescription.Target {
+        .executableTarget(
+            name: "\(name)Lambda",
+            dependencies: [
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "SotoCore", package: "soto-core"),
+                .product(name: "Logging", package: "swift-log"),
+                .target(name: "LambdasShared"),
+                .target(name: "Models"),
+            ] + additionalDependencies,
+            path: "./Lambdas/\(name)",
+            swiftSettings: targetsSwiftSettings
+        )
+    }
+}
