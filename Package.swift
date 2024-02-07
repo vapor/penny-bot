@@ -26,16 +26,15 @@ let package = Package(
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.2"),
         /// Not-released area:
         .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
-        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.2"),
-        .package(url: "https://github.com/apple/swift-markdown.git", branch: "main"),
+        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.3"),
+        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.3.0"),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
-            exact: "1.0.0-alpha.1"
+            from: "1.0.0-alpha.2"
         ),
         .package(
             url: "https://github.com/swift-server/swift-aws-lambda-events.git",
-            // Use 'from: "0.1.0"' when there is tag higher than "0.1.0"
-            revision: "3ac078f4d8fe6d9ae8dd05b680a284a423e1578d"
+            from: "0.2.0"
         ),
     ],
     targets: [
