@@ -601,19 +601,27 @@ struct Proposal: Sendable, Codable {
 
         enum Repository: RawRepresentable, Sendable, Codable {
             case swift
+            case swiftEvolution
             case swiftSyntax
             case swiftCorelibsFoundation
             case swiftPackageManager
             case swiftXcodePlaygroundSupport
+            case swiftDocc
+            case swiftDoccPlugin
+            case swiftDoccSymbolKit
             case unknown(String)
 
             var rawValue: String {
                 switch self {
                 case .swift: return "swift"
+                case .swiftEvolution: return "swift-evolution"
                 case .swiftSyntax: return "swift-syntax"
                 case .swiftCorelibsFoundation: return "swift-corelibs-foundation"
                 case .swiftPackageManager: return "swift-package-manager"
                 case .swiftXcodePlaygroundSupport: return "swift-xcode-playground-support"
+                case .swiftDocc: return "swift-docc"
+                case .swiftDoccPlugin: return "swift-docc-plugin"
+                case .swiftDoccSymbolKit: return "swift-docc-symbolkit"
                 case let .unknown(unknown): return unknown
                 }
             }
@@ -625,6 +633,9 @@ struct Proposal: Sendable, Codable {
                 case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
                 case "swift-package-manager": self = .swiftPackageManager
                 case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
+                case "swift-docc": self = .swiftDocc
+                case "swift-docc-plugin": self = .swiftDoccPlugin
+                case "swift-docc-symbolkit": self = .swiftDoccSymbolKit
                 default:
                     Logger(label: "\(#file):\(#line)").warning(
                         "New unknown case",
