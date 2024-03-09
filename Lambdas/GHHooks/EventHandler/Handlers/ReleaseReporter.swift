@@ -33,12 +33,12 @@ struct ReleaseReporter {
     func handleReleasePublished() async throws {
         let (commitCount, relatedPRs) = try await self.getPRsRelatedToRelease()
         if relatedPRs.isEmpty {
-            try await sendToDiscordWithRelease()
+            try await self.sendToDiscordWithRelease()
         } else if relatedPRs.count == 1 || release.author.id == Constants.GitHub.userID {
             /// If there is only 1 PR or if Penny released this, then just mention the last PR.
             try await self.sendToDiscord(pr: relatedPRs[0])
         } else {
-            try await sendToDiscord(prs: relatedPRs, commitCount: commitCount)
+            try await self.sendToDiscord(prs: relatedPRs, commitCount: commitCount)
         }
     }
 
@@ -64,10 +64,10 @@ struct ReleaseReporter {
 
     func getPRsRelatedToRelease() async throws -> (Int, [SimplePullRequest]) {
         let commits: [Commit]
-        if let tagBefore = try await getTagBefore() {
-            commits = try await getCommitsInRelease(tagBefore: tagBefore)
+        if let tagBefore = try await self.getTagBefore() {
+            commits = try await self.getCommitsInRelease(tagBefore: tagBefore)
         } else {
-            commits = try await getAllCommits()
+            commits = try await self.getAllCommits()
         }
 
         let maxCommits = 5
