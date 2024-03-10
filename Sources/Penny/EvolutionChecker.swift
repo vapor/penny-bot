@@ -629,6 +629,7 @@ struct Proposal: Sendable, Codable {
             init? (rawValue: String) {
                 switch rawValue {
                 case "swift": self = .swift
+                case "swift-evolution": self = .swiftEvolution
                 case "swift-syntax": self = .swiftSyntax
                 case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
                 case "swift-package-manager": self = .swiftPackageManager
