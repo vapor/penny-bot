@@ -166,8 +166,8 @@ class GHHooksTests: XCTestCase {
     func testSemVerBump() throws {
         do {
             let version = try XCTUnwrap(SemanticVersion(string: "11.0.0"))
-            let next = try XCTUnwrap(version.next(.major))
-            XCTAssertEqual(next.description, "12.0.0")
+            /// Does not bump major versions to avoid releasing a whole new major version.
+            XCTAssertEqual(version.next(.major), nil)
         }
 
         do {

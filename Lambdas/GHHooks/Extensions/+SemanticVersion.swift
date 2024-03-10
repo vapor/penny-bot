@@ -28,9 +28,8 @@ extension SemanticVersion {
                 version.patch = 0
                 version.minor += 1
             case .major:
-                version.patch = 0
-                version.minor = 0
-                version.major += 1
+                /// A bot shouldn't release a whole library.
+                return nil
             }
         } else {
             guard version.prereleaseIdentifiers.count < 4 else {

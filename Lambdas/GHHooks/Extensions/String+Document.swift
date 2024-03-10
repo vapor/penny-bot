@@ -32,12 +32,12 @@ extension String {
             /// So the character at `index == upperBound` is not part of the match.
             if match.range.upperBound < self.endIndex,
                /// `offsetBy: 2` is guaranteed to exist because the string must contain
-               /// `https` based on the regex above, so it has more length than 3.
+               /// `github` based on the regex above, so it has more length than 3.
                match.range.lowerBound > self.index(self.startIndex, offsetBy: 2) {
                 /// All 3 indexes below are guaranteed to exist based on the range check above.
                 let before = self.index(before: match.range.lowerBound)
                 let beforeBefore = self.index(before: before)
-                /// Is surrounded like `STR` in `](STR)` or not
+                /// Is surrounded like `STR` in `](STR)` or not.
                 let isSurroundedInSomePuncs = self[beforeBefore] == "]" &&
                 self[before] == "(" &&
                 self[match.range.upperBound] == ")"
@@ -167,7 +167,8 @@ extension String {
 }
 
 private extension MarkupFormatter.Options {
-    static let `default` = Self()
+    /// It's safe but apparently the underlying type doesn't declare a proper conditional Sendable conformance.
+    static nonisolated(unsafe) let `default` = Self()
 }
 
 private struct HTMLAndImageRemover: MarkupRewriter {

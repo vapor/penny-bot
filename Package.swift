@@ -1,4 +1,4 @@
-// swift-tools-version:5.9
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -200,7 +200,7 @@ let package = Package(
     ]
 )
 
-/// Bug alert! Don't make this a constant, or they won't take effect!
+/// Bug alert! Don't make these constants, or they won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     [
@@ -228,22 +228,28 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         /// Objc, which we don't use.
             .enableUpcomingFeature("ImportObjcForwardDeclarations"),
 
-        /// These currently cause errors on nightlies sometimes. We'll reenable them later:
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0418-inferring-sendable-for-methods.md
+        /// Inferring `Sendable` for methods and key path literals.
+            .enableUpcomingFeature("InferSendableFromCaptures"),
+
+        /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
+        /// Remove Actor Isolation Inference caused by Property Wrappers
+            .enableUpcomingFeature("DisableOutwardActorInference"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-        /// .enableUpcomingFeature("InternalImportsByDefault"),
+            .enableUpcomingFeature("InternalImportsByDefault"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
         /// Data-race-free initial values for stored properties.
-        /// .enableUpcomingFeature("IsolatedDefaultValues"),
+            .enableUpcomingFeature("IsolatedDefaultValues"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
         /// Enable automatic safety features for global (and some local) variables.
-        /// .enableUpcomingFeature("GlobalConcurrency"),
+            .enableExperimentalFeature("GlobalConcurrency"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
         /// Enable the full potential of typed throws.
-        /// .enableUpcomingFeature("FullTypedThrows")
+            .enableUpcomingFeature("FullTypedThrows")
     ]
 }
 

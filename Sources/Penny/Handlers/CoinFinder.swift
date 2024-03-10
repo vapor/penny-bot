@@ -183,7 +183,9 @@ private let undesiredCharacterSet = CharacterSet.punctuationCharacters.subtracti
 private let splitSigns = CoinFinder.Configuration.coinSigns.map {
     $0.split(whereSeparator: \.isWhitespace)
 }
-private let reversedSplitSigns = splitSigns.map { $0.reversed() }
+
+/// It's safe but apparently the underlying type doesn't declare a proper conditional Sendable conformance.
+private nonisolated(unsafe) let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
 private extension Sequence<Substring> {
     var isPrefixedWithCoinSign: Bool {
