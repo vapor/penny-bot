@@ -11,10 +11,13 @@ struct Penny {
     static func start(mainService: any MainService) async throws {
         /// Use `1` instead of `System.coreCount`.
         /// This is preferred for apps that primarily use structured concurrency.
-        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(eventLoopGroup),
-            configuration: .init(decompression: .enabled(limit: .size(1 << 32)))
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+            configuration: .init(
+                decompression: .enabled(
+                    limit: .size(1 << 32)
+                )
+            )
         )
         let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
 
@@ -23,13 +26,11 @@ struct Penny {
             /// Shutdown in reverse order of dependance.
             try! awsClient.syncShutdown()
             try! httpClient.syncShutdown()
-            try! eventLoopGroup.syncShutdownGracefully()
         }
 
         try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
 
         let bot = try await mainService.makeBot(
-            eventLoopGroup: eventLoopGroup,
             httpClient: httpClient
         )
         let cache = try await mainService.makeCache(bot: bot)

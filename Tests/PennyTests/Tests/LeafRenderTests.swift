@@ -6,16 +6,21 @@ import Rendering
 import AsyncHTTPClient
 import GitHubAPI
 import Logging
+import NIOPosix
 import XCTest
 
 class LeafRenderTests: XCTestCase {
-    let httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+    let httpClient = HTTPClient(
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
+    )
+
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
             httpClient: httpClient,
             logger: Logger(label: "RenderClientGHHooksTests")
         )
     )
+
     lazy var pennyRenderClient = RenderClient(
         renderer: try! .forPenny(
             httpClient: httpClient,

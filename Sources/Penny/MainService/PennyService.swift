@@ -5,6 +5,7 @@ import NIOCore
 import SotoCore
 import Shared
 import Logging
+import NIOPosix
 
 struct PennyService: MainService {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
@@ -44,10 +45,7 @@ struct PennyService: MainService {
         )
     }
 
-    func makeBot(
-        eventLoopGroup: any EventLoopGroup,
-        httpClient: HTTPClient
-    ) async throws -> any GatewayManager {
+    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
@@ -58,7 +56,7 @@ struct PennyService: MainService {
             )
         )
         return await BotGatewayManager(
-            eventLoopGroup: eventLoopGroup,
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
             httpClient: httpClient,
             clientConfiguration: clientConfiguration,
             token: Constants.botToken,
