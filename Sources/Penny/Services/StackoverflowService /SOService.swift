@@ -1,5 +1,5 @@
 import Foundation
 
-protocol SOService {
+protocol SOService: Sendable {
     func listQuestions(after: Date) async throws -> [SOQuestions.Item]
 }

@@ -167,7 +167,8 @@ extension String {
 }
 
 private extension MarkupFormatter.Options {
-    static let `default` = Self()
+    /// It's safe but apparently the underlying type doesn't declare a proper conditional Sendable conformance.
+    static nonisolated(unsafe) let `default` = Self()
 }
 
 private struct HTMLAndImageRemover: MarkupRewriter {
