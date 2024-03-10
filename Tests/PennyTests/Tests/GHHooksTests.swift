@@ -9,15 +9,20 @@ import Rendering
 import Logging
 import SwiftSemver
 import Markdown
+import NIOPosix
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient()
+    let httpClient = HTTPClient(
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
+    )
+
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return decoder
     }()
+    
     /// The `…` (U+2026 Horizontal Ellipsis) character.
     let dots = "\u{2026}"
 
