@@ -200,7 +200,7 @@ let package = Package(
     ]
 )
 
-/// Bug alert! Don't make these a constant, or they won't take effect!
+/// Bug alert! Don't make these constants, or they won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     [
