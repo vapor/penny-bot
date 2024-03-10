@@ -1,4 +1,4 @@
-import LeafKit
+@preconcurrency import LeafKit
 import NIO
 import AsyncHTTPClient
 import Logging
