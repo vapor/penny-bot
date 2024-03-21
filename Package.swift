@@ -233,7 +233,7 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
             .enableUpcomingFeature("InferSendableFromCaptures"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-            .enableUpcomingFeature("InternalImportsByDefault"),
+//            .enableUpcomingFeature("InternalImportsByDefault"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
         /// Data-race-free initial values for stored properties.
