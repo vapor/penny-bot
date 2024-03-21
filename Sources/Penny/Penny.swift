@@ -15,7 +15,7 @@ struct Penny {
             eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
             configuration: .init(
                 decompression: .enabled(
-                    limit: .size(1 << 32)
+                    limit: .size(1 << 30) /// 1 GiB
                 )
             )
         )

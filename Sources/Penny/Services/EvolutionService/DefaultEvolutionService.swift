@@ -28,7 +28,7 @@ struct DefaultEvolutionService: EvolutionService {
             .init(url: "https://download.swift.org/swift-evolution/proposals.json"),
             deadline: .now() + .seconds(15)
         )
-        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MB
+        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MiB
         let proposals = try decoder.decode([Proposal].self, from: buffer)
         if proposals.isEmpty {
             throw Errors.emptyProposals
@@ -49,7 +49,7 @@ struct DefaultEvolutionService: EvolutionService {
             .init(url: link),
             deadline: .now() + .seconds(15)
         )
-        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MB
+        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MiB
         let content = String(buffer: buffer)
         return content
     }
