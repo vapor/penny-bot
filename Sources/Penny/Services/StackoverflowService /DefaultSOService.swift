@@ -25,11 +25,10 @@ struct DefaultSOService: SOService {
         let url = "https://api.stackexchange.com/2.3/search/advanced" + queries.makeForURLQueryUnchecked()
         let request = HTTPClientRequest(url: url)
         let response = try await httpClient.execute(request, deadline: .now() + .seconds(15))
-        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MB
+        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MiB
 
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            let body = collected.map { String(buffer: $0) } ?? "nil"
+            let body = String(buffer: buffer)
             logger.error("SO-service failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
