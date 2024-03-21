@@ -232,10 +232,6 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         /// Inferring `Sendable` for methods and key path literals.
             .enableUpcomingFeature("InferSendableFromCaptures"),
 
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
-        /// Remove Actor Isolation Inference caused by Property Wrappers
-            .enableUpcomingFeature("DisableOutwardActorInference"),
-
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
             .enableUpcomingFeature("InternalImportsByDefault"),
 

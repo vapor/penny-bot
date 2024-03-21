@@ -1,5 +1,5 @@
 {
-  "originHash" : "a274cf00553fb85016f5aef001f234c94278ce478a1432b46723ff2ea49e1f85",
+  "originHash" : "183c58f6f3a9448615b33b321a56cf201bf188713211b401613770c0f64d90c3",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/leaf-kit.git",
       "state" : {
-        "revision" : "547a1340b3a063ca738be4351660f59179c8dc34",
-        "version" : "1.10.3"
+        "revision" : "f6a08a164f19a64262d1d9828403ce4a0b60d970",
+        "version" : "1.10.5"
       }
     },
     {
@@ -103,10 +103,10 @@
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser.git",
+      "location" : "https://github.com/apple/swift-argument-parser",
       "state" : {
-        "revision" : "c8ed701b513cf5177118a175d85fbbbcd707ab41",
-        "version" : "1.3.0"
+        "revision" : "46989693916f56d1186bd59ac15124caef896560",
+        "version" : "1.3.1"
       }
     },
     {
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "cc76b894169a3c86b71bac10c78a4db6beb7a9ad",
-        "version" : "3.2.0"
+        "revision" : "f0525da24dc3c6cbb2b6b338b65042bc91cbc4bb",
+        "version" : "3.3.0"
       }
     },
     {

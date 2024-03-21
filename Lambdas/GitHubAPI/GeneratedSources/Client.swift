@@ -19,13 +19,14 @@ package import struct Foundation.URL
 package import struct Foundation.Data
 package import struct Foundation.Date
 #else
-import struct Foundation.URL
 import struct Foundation.Data
 import struct Foundation.Date
+import struct Foundation.URL
 #endif
 
 #endif
 import HTTPTypes
+
 /// GitHub's v3 REST API.
 package struct Client: APIProtocol {
     /// The underlying HTTP client.
@@ -44,16 +45,18 @@ package struct Client: APIProtocol {
         transport: any ClientTransport,
         middlewares: [any ClientMiddleware] = []
     ) {
-        self.client = .init(
+        client = .init(
             serverURL: serverURL,
             configuration: configuration,
             transport: transport,
             middlewares: middlewares
         )
     }
+
     private var converter: Converter {
         client.converter
     }
+
     /// Create an installation access token for an app
     ///
     /// Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access. To restrict the access to specific repositories, you can provide the `repository_ids` when creating the token. When you omit `repository_ids`, the response does not contain the `repositories` key.
@@ -70,7 +73,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/app/installations/{}/access_tokens",
                     parameters: [
-                        input.path.installation_id
+                        input.path.installation_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -103,7 +106,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -125,7 +128,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -147,7 +150,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -169,7 +172,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -191,7 +194,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -219,6 +222,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get an organization
     ///
     /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).
@@ -235,7 +239,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/orgs/{}",
                     parameters: [
-                        input.path.org
+                        input.path.org,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -257,7 +261,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -279,7 +283,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -307,6 +311,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get a project card
     ///
     /// Gets information about a project card.
@@ -321,7 +326,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/cards/{}",
                     parameters: [
-                        input.path.card_id
+                        input.path.card_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -343,7 +348,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -367,7 +372,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -389,7 +394,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -411,7 +416,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -439,6 +444,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Update an existing project card
     ///
     /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
@@ -451,7 +457,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/cards/{}",
                     parameters: [
-                        input.path.card_id
+                        input.path.card_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -484,7 +490,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -508,7 +514,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -530,7 +536,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -552,7 +558,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -574,7 +580,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -602,6 +608,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Delete a project card
     ///
     /// Deletes a project card
@@ -616,7 +623,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/cards/{}",
                     parameters: [
-                        input.path.card_id
+                        input.path.card_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -642,7 +649,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -664,7 +671,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -686,7 +693,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -714,6 +721,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Move a project card
     ///
     /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
@@ -726,7 +734,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/cards/{}/moves",
                     parameters: [
-                        input.path.card_id
+                        input.path.card_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -757,7 +765,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -781,7 +789,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -803,7 +811,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -825,7 +833,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -847,7 +855,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -875,6 +883,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get a project column
     ///
     /// Gets information about a project column.
@@ -889,7 +898,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/{}",
                     parameters: [
-                        input.path.column_id
+                        input.path.column_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -911,7 +920,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -935,7 +944,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -957,7 +966,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -979,7 +988,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1007,6 +1016,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Update an existing project column
     ///
     /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
@@ -1019,7 +1029,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/{}",
                     parameters: [
-                        input.path.column_id
+                        input.path.column_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1050,7 +1060,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1074,7 +1084,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1096,7 +1106,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1124,6 +1134,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Delete a project column
     ///
     /// Deletes a project column.
@@ -1138,7 +1149,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/{}",
                     parameters: [
-                        input.path.column_id
+                        input.path.column_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1164,7 +1175,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1186,7 +1197,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1214,6 +1225,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List project cards
     ///
     /// Lists the project cards in a project.
@@ -1228,7 +1240,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/{}/cards",
                     parameters: [
-                        input.path.column_id
+                        input.path.column_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1266,7 +1278,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.projects_list_cards.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.projects_list_cards.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -1276,7 +1288,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1303,7 +1315,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1325,7 +1337,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1353,6 +1365,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Create a project card
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
@@ -1365,7 +1378,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/{}/cards",
                     parameters: [
-                        input.path.column_id
+                        input.path.column_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1396,7 +1409,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1420,7 +1433,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1442,7 +1455,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1464,7 +1477,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1486,7 +1499,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1514,6 +1527,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Move a project column
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
@@ -1526,7 +1540,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/columns/{}/moves",
                     parameters: [
-                        input.path.column_id
+                        input.path.column_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1557,7 +1571,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1581,7 +1595,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1603,7 +1617,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1625,7 +1639,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1653,6 +1667,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get a project
     ///
     /// Gets a project by its `id`. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
@@ -1667,7 +1682,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/{}",
                     parameters: [
-                        input.path.project_id
+                        input.path.project_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1689,7 +1704,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1713,7 +1728,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1735,7 +1750,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1763,6 +1778,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Update a project
     ///
     /// Updates a project board's information. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
@@ -1777,7 +1793,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/{}",
                     parameters: [
-                        input.path.project_id
+                        input.path.project_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1810,7 +1826,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1836,7 +1852,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1858,7 +1874,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1880,7 +1896,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1902,7 +1918,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1930,6 +1946,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Delete a project
     ///
     /// Deletes a project board. Returns a `404 Not Found` status if projects are disabled.
@@ -1944,7 +1961,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/{}",
                     parameters: [
-                        input.path.project_id
+                        input.path.project_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -1970,7 +1987,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -1992,7 +2009,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2014,7 +2031,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2036,7 +2053,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2064,6 +2081,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List project collaborators
     ///
     /// Lists the collaborators for an organization project. For a project, the list of collaborators includes outside collaborators, organization members that are direct collaborators, organization members with access through team memberships, organization members with access through default organization permissions, and organization owners. You must be an organization owner or a project `admin` to list collaborators.
@@ -2078,7 +2096,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/{}/collaborators",
                     parameters: [
-                        input.path.project_id
+                        input.path.project_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -2116,7 +2134,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.projects_list_collaborators.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.projects_list_collaborators.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -2126,7 +2144,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2151,7 +2169,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2173,7 +2191,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2197,7 +2215,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2219,7 +2237,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2247,6 +2265,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Add project collaborator
     ///
     /// Adds a collaborator to an organization project and sets their permission level. You must be an organization owner or a project `admin` to add a collaborator.
@@ -2262,7 +2281,7 @@ package struct Client: APIProtocol {
                     template: "/projects/{}/collaborators/{}",
                     parameters: [
                         input.path.project_id,
-                        input.path.username
+                        input.path.username,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -2297,7 +2316,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2319,7 +2338,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2343,7 +2362,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2365,7 +2384,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2393,6 +2412,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Remove user as a collaborator
     ///
     /// Removes a collaborator from an organization project. You must be an organization owner or a project `admin` to remove a collaborator.
@@ -2408,7 +2428,7 @@ package struct Client: APIProtocol {
                     template: "/projects/{}/collaborators/{}",
                     parameters: [
                         input.path.project_id,
-                        input.path.username
+                        input.path.username,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -2434,7 +2454,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2456,7 +2476,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2478,7 +2498,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2500,7 +2520,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2528,6 +2548,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get project permission for a user
     ///
     /// Returns the collaborator's permission level for an organization project. Possible values for the `permission` key: `admin`, `write`, `read`, `none`. You must be an organization owner or a project `admin` to review a user's permission level.
@@ -2543,7 +2564,7 @@ package struct Client: APIProtocol {
                     template: "/projects/{}/collaborators/{}/permission",
                     parameters: [
                         input.path.project_id,
-                        input.path.username
+                        input.path.username,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -2565,7 +2586,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2587,7 +2608,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2609,7 +2630,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2633,7 +2654,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2655,7 +2676,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2683,6 +2704,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List project columns
     ///
     /// Lists the project columns in a project.
@@ -2697,7 +2719,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/{}/columns",
                     parameters: [
-                        input.path.project_id
+                        input.path.project_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -2728,7 +2750,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.projects_list_columns.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.projects_list_columns.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -2738,7 +2760,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2765,7 +2787,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2787,7 +2809,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2815,6 +2837,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Create a project column
     ///
     /// Creates a new project column.
@@ -2829,7 +2852,7 @@ package struct Client: APIProtocol {
                 let path = try converter.renderedPath(
                     template: "/projects/{}/columns",
                     parameters: [
-                        input.path.project_id
+                        input.path.project_id,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -2860,7 +2883,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2884,7 +2907,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2906,7 +2929,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2928,7 +2951,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -2956,6 +2979,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get rate limit status for the authenticated user
     ///
     /// **Note:** Accessing this endpoint does not count against your REST API rate limit.
@@ -2987,18 +3011,18 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.rate_limit_get.Output.Ok.Headers = .init(
-                        X_RateLimit_Limit: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.rate_limit_get.Output.Ok.Headers = try .init(
+                        X_RateLimit_Limit: converter.getOptionalHeaderFieldAsURI(
                             in: response.headerFields,
                             name: "X-RateLimit-Limit",
                             as: Components.Headers.x_rate_limit_limit.self
                         ),
-                        X_RateLimit_Remaining: try converter.getOptionalHeaderFieldAsURI(
+                        X_RateLimit_Remaining: converter.getOptionalHeaderFieldAsURI(
                             in: response.headerFields,
                             name: "X-RateLimit-Remaining",
                             as: Components.Headers.x_rate_limit_remaining.self
                         ),
-                        X_RateLimit_Reset: try converter.getOptionalHeaderFieldAsURI(
+                        X_RateLimit_Reset: converter.getOptionalHeaderFieldAsURI(
                             in: response.headerFields,
                             name: "X-RateLimit-Reset",
                             as: Components.Headers.x_rate_limit_reset.self
@@ -3009,7 +3033,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3036,7 +3060,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3064,6 +3088,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get a repository
     ///
     /// The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
@@ -3081,7 +3106,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -3103,7 +3128,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3125,7 +3150,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3147,7 +3172,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3169,7 +3194,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3197,6 +3222,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List commits
     ///
     /// **Signature verification object**
@@ -3239,7 +3265,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/commits",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -3312,7 +3338,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.repos_list_commits.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.repos_list_commits.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -3322,7 +3348,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3347,7 +3373,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3369,7 +3395,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3391,7 +3417,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3413,7 +3439,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3441,6 +3467,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List pull requests associated with a commit
     ///
     /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
@@ -3459,7 +3486,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.commit_sha
+                        input.path.commit_sha,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -3490,7 +3517,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.repos_list_pull_requests_associated_with_commit.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -3500,7 +3527,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3531,6 +3558,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Compare two commits
     ///
     /// Compares two commits against one another. You can compare branches in the same repository, or you can compare branches that exist in different repositories within the same repository network, including fork branches. For more information about how to view a repository's network, see "[Understanding connections between repositories](https://docs.github.com/repositories/viewing-activity-and-data-for-your-repository/understanding-connections-between-repositories)."
@@ -3591,7 +3619,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.basehead
+                        input.path.basehead,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -3627,7 +3655,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3649,7 +3677,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3671,7 +3699,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3693,7 +3721,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3721,6 +3749,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List repository contributors
     ///
     /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
@@ -3738,7 +3767,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/contributors",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -3776,7 +3805,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.repos_list_contributors.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.repos_list_contributors.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -3786,7 +3815,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3813,7 +3842,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3835,7 +3864,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -3863,6 +3892,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List repository issues
     ///
     /// List issues in a repository. Only open issues will be listed.
@@ -3883,7 +3913,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/issues",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -3977,7 +4007,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.issues_list_for_repo.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.issues_list_for_repo.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -3987,7 +4017,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4012,7 +4042,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4034,7 +4064,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4056,7 +4086,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4084,6 +4114,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Create an issue
     ///
     /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
@@ -4101,7 +4132,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/issues",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -4127,7 +4158,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 201:
-                    let headers: Operations.issues_create.Output.Created.Headers = .init(Location: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.issues_create.Output.Created.Headers = try .init(Location: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Location",
                         as: Swift.String.self
@@ -4137,7 +4168,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4162,7 +4193,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4184,7 +4215,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4206,7 +4237,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4228,7 +4259,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4250,7 +4281,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4272,7 +4303,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4300,6 +4331,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get an issue
     ///
     /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
@@ -4326,7 +4358,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.issue_number
+                        input.path.issue_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -4348,7 +4380,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4370,7 +4402,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4392,7 +4424,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4414,7 +4446,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4444,6 +4476,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Update an issue
     ///
     /// Issue owners and users with push access can edit an issue.
@@ -4460,7 +4493,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.issue_number
+                        input.path.issue_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -4493,7 +4526,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4515,7 +4548,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4537,7 +4570,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4559,7 +4592,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4581,7 +4614,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4603,7 +4636,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4625,7 +4658,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4653,6 +4686,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Create an issue comment
     ///
     ///
@@ -4676,7 +4710,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.issue_number
+                        input.path.issue_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -4702,7 +4736,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 201:
-                    let headers: Operations.issues_create_comment.Output.Created.Headers = .init(Location: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.issues_create_comment.Output.Created.Headers = try .init(Location: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Location",
                         as: Swift.String.self
@@ -4712,7 +4746,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4737,7 +4771,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4759,7 +4793,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4781,7 +4815,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4803,7 +4837,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4831,6 +4865,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List timeline events for an issue
     ///
     /// List all timeline events for an issue.
@@ -4847,7 +4882,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.issue_number
+                        input.path.issue_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -4878,7 +4913,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.issues_list_events_for_timeline.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -4888,7 +4923,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4913,7 +4948,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4935,7 +4970,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -4963,6 +4998,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List pull requests
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -4978,7 +5014,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/pulls",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5044,7 +5080,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.pulls_list.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.pulls_list.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -5054,7 +5090,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5081,7 +5117,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5109,6 +5145,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get a pull request
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -5139,7 +5176,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.pull_number
+                        input.path.pull_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5161,7 +5198,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5185,7 +5222,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5207,7 +5244,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5229,7 +5266,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5257,6 +5294,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Update a pull request
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -5275,7 +5313,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.pull_number
+                        input.path.pull_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5308,7 +5346,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5330,7 +5368,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5352,7 +5390,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5380,6 +5418,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List review comments on a pull request
     ///
     /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
@@ -5396,7 +5435,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.pull_number
+                        input.path.pull_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5448,7 +5487,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.pulls_list_review_comments.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.pulls_list_review_comments.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -5458,7 +5497,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5489,6 +5528,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List pull requests files
     ///
     /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
@@ -5505,7 +5545,7 @@ package struct Client: APIProtocol {
                     parameters: [
                         input.path.owner,
                         input.path.repo,
-                        input.path.pull_number
+                        input.path.pull_number,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5536,7 +5576,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.pulls_list_files.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.pulls_list_files.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -5546,7 +5586,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5571,7 +5611,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5593,7 +5633,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5615,7 +5655,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5643,6 +5683,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -5660,7 +5701,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/releases",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5691,7 +5732,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.repos_list_releases.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.repos_list_releases.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -5701,7 +5742,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5726,7 +5767,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5754,6 +5795,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Create a release
     ///
     /// Users with push access to the repository can create a release.
@@ -5771,7 +5813,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/releases",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5797,7 +5839,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 201:
-                    let headers: Operations.repos_create_release.Output.Created.Headers = .init(Location: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.repos_create_release.Output.Created.Headers = try .init(Location: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Location",
                         as: Swift.String.self
@@ -5807,7 +5849,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5832,7 +5874,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5854,7 +5896,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5882,6 +5924,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// Get the latest release
     ///
     /// View the latest published full release for the repository.
@@ -5899,7 +5942,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/releases/latest",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5921,7 +5964,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
@@ -5949,6 +5992,7 @@ package struct Client: APIProtocol {
             }
         )
     }
+
     /// List repository tags
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
@@ -5962,7 +6006,7 @@ package struct Client: APIProtocol {
                     template: "/repos/{}/{}/tags",
                     parameters: [
                         input.path.owner,
-                        input.path.repo
+                        input.path.repo,
                     ]
                 )
                 var request: HTTPTypes.HTTPRequest = .init(
@@ -5993,7 +6037,7 @@ package struct Client: APIProtocol {
             deserializer: { response, responseBody in
                 switch response.status.code {
                 case 200:
-                    let headers: Operations.repos_list_tags.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                    let headers: Operations.repos_list_tags.Output.Ok.Headers = try .init(Link: converter.getOptionalHeaderFieldAsURI(
                         in: response.headerFields,
                         name: "Link",
                         as: Components.Headers.link.self
@@ -6003,7 +6047,7 @@ package struct Client: APIProtocol {
                     let chosenContentType = try converter.bestContentType(
                         received: contentType,
                         options: [
-                            "application/json"
+                            "application/json",
                         ]
                     )
                     switch chosenContentType {
