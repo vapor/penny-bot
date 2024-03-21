@@ -28,8 +28,7 @@ struct DefaultSOService: SOService {
         let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MB
 
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            let body = collected.map { String(buffer: $0) } ?? "nil"
+            let body = String(buffer: buffer) ?? "nil"
             logger.error("SO-service failed", metadata: [
                 "status": "\(response.status)",
                 "headers": "\(response.headers)",
