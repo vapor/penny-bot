@@ -310,7 +310,14 @@ actor DiscordService {
             }
         }
     }
-    
+
+    func getDeletedMessage(
+        id: MessageSnowflake,
+        channelId: ChannelSnowflake
+    ) async -> Gateway.MessageCreate? {
+        await cache.deletedMessages[channelId]?[id]?.last
+    }
+
     func getChannelMessage(
         channelId: ChannelSnowflake,
         messageId: MessageSnowflake
