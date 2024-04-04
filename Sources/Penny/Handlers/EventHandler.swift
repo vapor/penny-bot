@@ -19,7 +19,24 @@ struct EventHandler: GatewayEventHandler {
     func onMessageCreate(_ message: Gateway.MessageCreate) async {
         await MessageHandler(event: message, context: context).handle()
     }
-    
+
+    func onMessageDelete(_ messageDelete: Gateway.MessageDelete) async throws {
+        try await MessageDeleteHandler(context: context).handle(
+            messageId: messageDelete.id,
+            in: messageDelete.channel_id
+        )
+    }
+
+    func onMessageDeleteBulk(_ messageDeleteBulk: Gateway.MessageDeleteBulk) async throws {
+        let messageDeleteHandler = MessageDeleteHandler(context: context)
+        for id in messageDeleteBulk.ids {
+            try await messageDeleteHandler.handle(
+                messageId: id,
+                in: messageDeleteBulk.channel_id
+            )
+        }
+    }
+
     func onInteractionCreate(_ interaction: Interaction) async {
         await InteractionHandler(event: interaction, context: context).handle()
     }

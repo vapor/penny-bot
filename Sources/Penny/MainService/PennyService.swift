@@ -72,8 +72,9 @@ struct PennyService: MainService {
     func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
         await DiscordCache(
             gatewayManager: bot,
-            intents: [.guilds, .guildMembers],
-            requestAllMembers: .enabled
+            intents: [.guilds, .guildMembers, .messageContent, .guildMessages],
+            requestAllMembers: .enabled,
+            messageCachingPolicy: .saveDeleted
         )
     }
 

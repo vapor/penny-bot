@@ -39,4 +39,15 @@ extension String {
     package func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
         unicodesPrefix(maxUnicodeScalars).result
     }
+
+    package func quotedMarkdown() -> String {
+        self.split(
+            omittingEmptySubsequences: false,
+            whereSeparator: \.isNewline
+        ).map {
+            "> \($0)"
+        }.joined(
+            separator: "\n"
+        )
+    }
 }

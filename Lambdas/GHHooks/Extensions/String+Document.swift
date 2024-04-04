@@ -153,17 +153,6 @@ extension String {
         let newDocument = Document(headingFinder.accumulated)
         return newDocument.format(options: .default)
     }
-
-    func quotedMarkdown() -> String {
-        self.split(
-            omittingEmptySubsequences: false,
-            whereSeparator: \.isNewline
-        ).map {
-            "> \($0)"
-        }.joined(
-            separator: "\n"
-        )
-    }
 }
 
 private extension MarkupFormatter.Options {
