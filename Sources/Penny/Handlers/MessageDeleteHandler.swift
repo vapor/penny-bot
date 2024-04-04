@@ -82,12 +82,10 @@ private extension Payloads.CreateMessage {
                     )
                 ]
             )],
-            files: [
-                .init(
-                    data: ByteBuffer(data: jsonData),
-                    filename: messageName
-                )
-            ],
+            files: [.init(
+                data: ByteBuffer(data: jsonData),
+                filename: messageName
+            )],
             attachments: [.init(
                 index: 0,
                 filename: messageName
