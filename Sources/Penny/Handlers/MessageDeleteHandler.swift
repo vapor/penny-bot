@@ -1,5 +1,8 @@
 import DiscordBM
+import Foundation
 import Logging
+import NIOCore
+import NIOFoundationCompat
 import Models
 
 struct MessageDeleteHandler {
@@ -41,7 +44,7 @@ struct MessageDeleteHandler {
     }
 }
 
-extension Payloads.CreateMessage {
+private extension Payloads.CreateMessage {
     init(
         messageCreate: Gateway.MessageCreate,
         author: DiscordUser
@@ -49,6 +52,8 @@ extension Payloads.CreateMessage {
         let member = messageCreate.member
         let avatarURL = member?.uiAvatarURL ?? author.uiAvatarURL
         let username = member?.uiName ?? author.username
+        let messageName = "message_\(messageCreate.id.rawValue)"
+        let jsonData = (try? JSONEncoder().encode(messageCreate)) ?? Data()
         self.init(
             embeds: [.init(
                 title: "Deleted Message",
@@ -76,6 +81,16 @@ extension Payloads.CreateMessage {
                         inline: true
                     )
                 ]
+            )],
+            files: [
+                .init(
+                    data: ByteBuffer(data: jsonData),
+                    filename: messageName
+                )
+            ],
+            attachments: [.init(
+                index: 0,
+                filename: messageName
             )]
         )
     }
