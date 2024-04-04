@@ -157,7 +157,7 @@ let package = Package(
             dependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
-                .product(name: "DiscordModels", package: "DiscordBM"),
+                .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Models"),
             ],
             swiftSettings: targetsSwiftSettings

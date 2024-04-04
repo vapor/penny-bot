@@ -46,24 +46,36 @@ extension Payloads.CreateMessage {
         messageCreate: Gateway.MessageCreate,
         author: DiscordUser
     ) {
-        let avatarURL = author.avatar.map {
-            CDNEndpoint.userAvatar(
-                userId: author.id,
-                avatar: $0
-            ).url
-        }
+        let member = messageCreate.member
+        let avatarURL = member?.uiAvatarURL ?? author.uiAvatarURL
+        let username = member?.uiName ?? author.username
         self.init(
             embeds: [.init(
-                title: """
-                Message deleted from user \(DiscordUtils.mention(id: author.id)) with id: \(author.id.rawValue)
-                """,
+                title: "Deleted Message",
                 description: messageCreate.content,
                 timestamp: messageCreate.timestamp.date,
                 color: .red,
-                author: .init(
-                    name: author.username,
+                footer: .init(
+                    text: "From @\(username)",
                     icon_url: avatarURL.map { .exact($0) }
-                )
+                ),
+                fields: [
+                    .init(
+                        name: "Author",
+                        value: DiscordUtils.mention(id: author.id),
+                        inline: true
+                    ),
+                    .init(
+                        name: "Author ID",
+                        value: author.id.rawValue,
+                        inline: true
+                    ),
+                    .init(
+                        name: "Channel",
+                        value: DiscordUtils.mention(id: messageCreate.channel_id),
+                        inline: true
+                    )
+                ]
             )]
         )
     }
