@@ -69,7 +69,7 @@ private extension Payloads.CreateMessage {
                 timestamp: messageCreate.timestamp.date,
                 color: .red,
                 footer: .init(
-                    text: "From @\(member?.uiName ?? author.uiName)",
+                    text: "From \(member?.uiName ?? author.uiName)",
                     icon_url: avatarURL.map { .exact($0) }
                 ),
                 fields: [
