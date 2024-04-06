@@ -79,7 +79,7 @@ private extension Payloads.CreateMessage {
                         inline: true
                     ),
                     .init(
-                        name: "Author Username",
+                        name: "Author Nickname",
                         value: member?.uiName ?? author.uiName,
                         inline: true
                     ),
