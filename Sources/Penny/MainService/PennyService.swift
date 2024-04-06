@@ -40,7 +40,10 @@ struct PennyService: MainService {
             address: try! .url(webhookURL),
             level: .trace,
             makeMainLogHandler: { label, metadataProvider in
-                StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)
+                StreamLogHandler.standardOutput(
+                    label: label,
+                    metadataProvider: metadataProvider
+                )
             }
         )
     }
@@ -65,7 +68,14 @@ struct PennyService: MainService {
                 status: .online,
                 afk: false
             ),
-            intents: [.guilds, .guildMembers, .guildMessages, .messageContent, .guildMessageReactions]
+            intents: [
+                .guilds,
+                .guildMembers,
+                .guildMessages,
+                .messageContent,
+                .guildMessageReactions,
+                .guildModeration
+            ]
         )
     }
 
