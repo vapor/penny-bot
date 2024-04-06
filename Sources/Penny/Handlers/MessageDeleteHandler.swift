@@ -57,7 +57,9 @@ private extension Payloads.CreateMessage {
         self.init(
             embeds: [.init(
                 title: "Deleted Message",
-                description: messageCreate.content.quotedMarkdown(),
+                description: DiscordUtils
+                    .escapingSpecialCharacters(messageCreate.content)
+                    .quotedMarkdown(),
                 timestamp: messageCreate.timestamp.date,
                 color: .red,
                 footer: .init(
