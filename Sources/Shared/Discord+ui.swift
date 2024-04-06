@@ -57,6 +57,11 @@ extension Guild.PartialMember {
 }
 
 extension DiscordUser {
+    package var uiName: String {
+        self.global_name ??
+        self.username
+    }
+
     package var uiAvatarURL: String? {
         self.avatar.map {
             CDNEndpoint.userAvatar(
