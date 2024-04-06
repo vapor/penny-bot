@@ -34,6 +34,13 @@ struct MessageDeleteHandler {
             logger.error("Cannot find author of the message")
             return
         }
+        if try await discordService.userIsModerator(userId: author.id) {
+            logger.debug("User is a moderator so won't report message deletion", metadata: [
+                "messageId": .stringConvertible(messageId),
+                "channelId": .stringConvertible(channelId)
+            ])
+            return
+        }
         await discordService.sendMessage(
             channelId: Constants.Channels.moderators.id,
             payload: .init(
