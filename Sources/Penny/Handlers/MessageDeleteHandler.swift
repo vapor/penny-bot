@@ -1,5 +1,8 @@
 import DiscordBM
+import Foundation
 import Logging
+import NIOCore
+import NIOFoundationCompat
 import Models
 
 struct MessageDeleteHandler {
@@ -31,6 +34,13 @@ struct MessageDeleteHandler {
             logger.error("Cannot find author of the message")
             return
         }
+        if try await discordService.userIsModerator(userId: author.id) {
+            logger.debug("User is a moderator so won't report message deletion", metadata: [
+                "messageId": .stringConvertible(messageId),
+                "channelId": .stringConvertible(channelId)
+            ])
+            return
+        }
         await discordService.sendMessage(
             channelId: Constants.Channels.moderators.id,
             payload: .init(
@@ -41,29 +51,53 @@ struct MessageDeleteHandler {
     }
 }
 
-extension Payloads.CreateMessage {
+private extension Payloads.CreateMessage {
     init(
         messageCreate: Gateway.MessageCreate,
         author: DiscordUser
     ) {
-        let avatarURL = author.avatar.map {
-            CDNEndpoint.userAvatar(
-                userId: author.id,
-                avatar: $0
-            ).url
-        }
+        let member = messageCreate.member
+        let avatarURL = member?.uiAvatarURL ?? author.uiAvatarURL
+        let username = member?.uiName ?? author.username
+        let messageName = "message_\(messageCreate.id.rawValue)"
+        let jsonData = (try? JSONEncoder().encode(messageCreate)) ?? Data()
         self.init(
             embeds: [.init(
-                title: """
-                Message deleted from user \(DiscordUtils.mention(id: author.id)) with id: \(author.id.rawValue)
-                """,
-                description: messageCreate.content,
+                title: "Deleted Message",
+                description: DiscordUtils
+                    .escapingSpecialCharacters(messageCreate.content)
+                    .quotedMarkdown(),
                 timestamp: messageCreate.timestamp.date,
                 color: .red,
-                author: .init(
-                    name: author.username,
+                footer: .init(
+                    text: "From @\(username)",
                     icon_url: avatarURL.map { .exact($0) }
-                )
+                ),
+                fields: [
+                    .init(
+                        name: "Author",
+                        value: DiscordUtils.mention(id: author.id),
+                        inline: true
+                    ),
+                    .init(
+                        name: "Author ID",
+                        value: author.id.rawValue,
+                        inline: true
+                    ),
+                    .init(
+                        name: "Channel",
+                        value: DiscordUtils.mention(id: messageCreate.channel_id),
+                        inline: true
+                    )
+                ]
+            )],
+            files: [.init(
+                data: ByteBuffer(data: jsonData),
+                filename: messageName
+            )],
+            attachments: [.init(
+                index: 0,
+                filename: messageName
             )]
         )
     }

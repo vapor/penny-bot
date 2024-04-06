@@ -383,7 +383,14 @@ actor DiscordService {
             permissions: [.viewChannel, .readMessageHistory]
         )
     }
-    
+
+    func userIsModerator(userId: UserSnowflake) async throws -> Bool {
+        try await self.vaporGuild.userHasGuildPermission(
+            userId: userId,
+            permission: .moderateMembers
+        )
+    }
+
     func memberHasRolesForElevatedPublicCommandsAccess(member: Guild.Member) -> Bool {
         Constants.Roles.elevatedPublicCommandsAccess.contains(where: {
             member.roles.contains($0.rawValue)

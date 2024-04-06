@@ -37,6 +37,13 @@ struct EventHandler: GatewayEventHandler {
         }
     }
 
+    func onGuildAuditLogEntryCreate(_ auditLogEntry: AuditLog.Entry) async throws {
+        try await AuditLogHandler(
+            event: auditLogEntry,
+            context: context
+        ).handle()
+    }
+
     func onInteractionCreate(_ interaction: Interaction) async {
         await InteractionHandler(event: interaction, context: context).handle()
     }
