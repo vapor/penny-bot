@@ -79,6 +79,11 @@ private extension Payloads.CreateMessage {
                         inline: true
                     ),
                     .init(
+                        name: "Author ID",
+                        value: author.id.rawValue,
+                        inline: true
+                    ),
+                    .init(
                         name: "Author Username",
                         value: author.username,
                         inline: true
