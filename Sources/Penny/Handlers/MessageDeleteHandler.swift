@@ -58,7 +58,6 @@ private extension Payloads.CreateMessage {
     ) {
         let member = messageCreate.member
         let avatarURL = member?.uiAvatarURL ?? author.uiAvatarURL
-        let username = member?.uiName ?? author.username
         let messageName = "message_\(messageCreate.id.rawValue)"
         let jsonData = (try? JSONEncoder().encode(messageCreate)) ?? Data()
         self.init(
@@ -70,7 +69,7 @@ private extension Payloads.CreateMessage {
                 timestamp: messageCreate.timestamp.date,
                 color: .red,
                 footer: .init(
-                    text: "From @\(username)",
+                    text: "From @\(author.username)",
                     icon_url: avatarURL.map { .exact($0) }
                 ),
                 fields: [
@@ -80,8 +79,8 @@ private extension Payloads.CreateMessage {
                         inline: true
                     ),
                     .init(
-                        name: "Author ID",
-                        value: author.id.rawValue,
+                        name: "Author Username",
+                        value: member?.uiName ?? author.uiName,
                         inline: true
                     ),
                     .init(
