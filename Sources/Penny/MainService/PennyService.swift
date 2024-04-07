@@ -84,7 +84,7 @@ struct PennyService: MainService {
             gatewayManager: bot,
             intents: [.guilds, .guildMembers, .messageContent, .guildMessages],
             requestAllMembers: .enabled,
-            messageCachingPolicy: .saveDeleted
+            messageCachingPolicy: .saveEditHistoryAndDeleted
         )
     }
 
