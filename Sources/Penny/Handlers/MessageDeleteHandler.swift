@@ -92,7 +92,7 @@ private extension Payloads.CreateMessage {
                     ),
                     .init(
                         name: "Edits",
-                        value: "\(messages.count)",
+                        value: "\(messages.count - 1)",
                         inline: true
                     )
                 ]
