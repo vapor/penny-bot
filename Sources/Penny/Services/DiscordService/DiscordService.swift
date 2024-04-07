@@ -293,11 +293,16 @@ actor DiscordService {
         }
     }
 
-    func getDeletedMessage(
+    /// Returns a non-empty array of messages which includes all edits as well, for a deleted message. Otherwise nil.
+    func getDeletedMessageWithEditions(
         id: MessageSnowflake,
         channelId: ChannelSnowflake
-    ) async -> Gateway.MessageCreate? {
-        await cache.deletedMessages[channelId]?[id]?.last
+    ) async -> [Gateway.MessageCreate]? {
+        guard let messages = await cache.deletedMessages[channelId]?[id],
+              !messages.isEmpty else {
+            return nil
+        }
+        return messages
     }
 
     func getChannelMessage(
