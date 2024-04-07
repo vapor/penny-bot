@@ -1,5 +1,6 @@
 import DiscordBM
 
+/// Either a `Gateway.MessageCreate` or a `DiscordChannel.Message`.
 enum AnyMessage {
     /// The message object which is received through the Gateway.
     case messageCreate(Gateway.MessageCreate)
