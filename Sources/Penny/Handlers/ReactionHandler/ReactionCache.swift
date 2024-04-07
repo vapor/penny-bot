@@ -121,8 +121,8 @@ actor ReactionCache {
         channelId: ChannelSnowflake,
         messageId: MessageSnowflake,
         discordService: DiscordService
-    ) async -> DiscordChannel.Message? {
-        guard let message = await discordService.getPossiblyCachedChannelMessage(
+    ) async -> AnyMessage? {
+        guard let message = await discordService.getChannelMessage(
             channelId: channelId,
             messageId: messageId
         ) else {

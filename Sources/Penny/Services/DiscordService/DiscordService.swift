@@ -13,8 +13,6 @@ actor DiscordService {
     private var logger = Logger(label: "DiscordService")
     private var dmChannels: [UserSnowflake: ChannelSnowflake] = [:]
     private var usersAlreadyWarnedAboutClosedDMS: Set<UserSnowflake> = []
-    /// `[[ChannelID, MessageID]: Message]`
-    private var cachedMessages: [[AnySnowflake]: DiscordChannel.Message] = [:]
     private var vaporGuild: Gateway.GuildCreate {
         get async throws {
             guard let guild = await cache.guilds[Constants.vaporGuildId] else {
@@ -294,22 +292,6 @@ actor DiscordService {
             return []
         }
     }
-    
-    func getPossiblyCachedChannelMessage(
-        channelId: ChannelSnowflake,
-        messageId: MessageSnowflake
-    ) async -> DiscordChannel.Message? {
-        if let cached = self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] {
-            return cached
-        } else {
-            if let message = await getChannelMessage(channelId: channelId, messageId: messageId) {
-                self.cachedMessages[[AnySnowflake(channelId), AnySnowflake(messageId)]] = message
-                return message
-            } else {
-                return nil
-            }
-        }
-    }
 
     func getDeletedMessage(
         id: MessageSnowflake,
@@ -321,16 +303,21 @@ actor DiscordService {
     func getChannelMessage(
         channelId: ChannelSnowflake,
         messageId: MessageSnowflake
-    ) async -> DiscordChannel.Message? {
+    ) async -> AnyMessage? {
+        if let fromCache = await cache.messages[channelId]?
+            .first(where: { $0.id == messageId }) {
+            return .init(fromCache)
+        }
         do {
-            return try await discordClient.getMessage(
+            let message = try await discordClient.getMessage(
                 channelId: channelId,
                 messageId: messageId
             ).decode()
+            return .init(message)
         } catch {
             logger.report("Couldn't get channel message", error: error, metadata: [
-                "channelId": .stringConvertible(channelId),
-                "messageId": .stringConvertible(messageId)
+                "channelId": .string(channelId.rawValue),
+                "messageId": .string(messageId.rawValue)
             ])
             return nil
         }

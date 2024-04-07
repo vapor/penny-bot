@@ -25,19 +25,22 @@ struct MessageDeleteHandler {
             channelId: channelId
         ) else {
             logger.warning("Could not find a saved message for deleted message", metadata: [
-                "messageId": .stringConvertible(messageId),
-                "channelId": .stringConvertible(channelId)
+                "messageId": .string(messageId.rawValue),
+                "channelId": .string(channelId.rawValue)
             ])
             return
         }
         guard let author = messageCreate.author else {
-            logger.error("Cannot find author of the message")
+            logger.error("Cannot find author of the message", metadata: [
+                "messageId": .string(messageId.rawValue),
+                "channelId": .string(channelId.rawValue)
+            ])
             return
         }
         if try await discordService.userIsModerator(userId: author.id) {
             logger.debug("User is a moderator so won't report message deletion", metadata: [
-                "messageId": .stringConvertible(messageId),
-                "channelId": .stringConvertible(channelId)
+                "messageId": .string(messageId.rawValue),
+                "channelId": .string(channelId.rawValue)
             ])
             return
         }
@@ -62,7 +65,7 @@ private extension Payloads.CreateMessage {
         let jsonData = (try? JSONEncoder().encode(messageCreate)) ?? Data()
         self.init(
             embeds: [.init(
-                title: "Deleted Message",
+                title: "Deleted Message in \(DiscordUtils.mention(id: messageCreate.channel_id))",
                 description: DiscordUtils
                     .escapingSpecialCharacters(messageCreate.content)
                     .quotedMarkdown(),
@@ -84,8 +87,8 @@ private extension Payloads.CreateMessage {
                         inline: true
                     ),
                     .init(
-                        name: "Channel",
-                        value: DiscordUtils.mention(id: messageCreate.channel_id),
+                        name: "Author ID",
+                        value: author.id.rawValue,
                         inline: true
                     )
                 ]
