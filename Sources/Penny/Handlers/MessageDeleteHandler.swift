@@ -20,31 +20,36 @@ struct MessageDeleteHandler {
         messageId: MessageSnowflake,
         in channelId: ChannelSnowflake
     ) async throws {
-        guard let messageCreate = await discordService.getDeletedMessage(
+        guard let messages = await discordService.getDeletedMessageWithEditions(
             id: messageId,
             channelId: channelId
         ) else {
-            logger.warning("Could not find a saved message for deleted message", metadata: [
-                "messageId": .stringConvertible(messageId),
-                "channelId": .stringConvertible(channelId)
+            logger.warning("Could not find any saved messages for a deleted message", metadata: [
+                "messageId": .string(messageId.rawValue),
+                "channelId": .string(channelId.rawValue)
             ])
             return
         }
-        guard let author = messageCreate.author else {
-            logger.error("Cannot find author of the message")
+        guard let author = messages.last?.author else {
+            logger.error("Cannot find author of a deleted message", metadata: [
+                "messageId": .string(messageId.rawValue),
+                "channelId": .string(channelId.rawValue),
+                "messages": .string("\(messages)")
+            ])
             return
         }
         if try await discordService.userIsModerator(userId: author.id) {
             logger.debug("User is a moderator so won't report message deletion", metadata: [
-                "messageId": .stringConvertible(messageId),
-                "channelId": .stringConvertible(channelId)
+                "messageId": .string(messageId.rawValue),
+                "channelId": .string(channelId.rawValue),
+                "messages": .string("\(messages)")
             ])
             return
         }
         await discordService.sendMessage(
             channelId: Constants.Channels.moderators.id,
             payload: .init(
-                messageCreate: messageCreate,
+                messages: messages,
                 author: author
             )
         )
@@ -53,20 +58,22 @@ struct MessageDeleteHandler {
 
 private extension Payloads.CreateMessage {
     init(
-        messageCreate: Gateway.MessageCreate,
+        messages: [Gateway.MessageCreate],
         author: DiscordUser
     ) {
-        let member = messageCreate.member
+        /// `messages` is non-empty.
+        let lastMessage = messages.last!
+        let member = lastMessage.member
         let avatarURL = member?.uiAvatarURL ?? author.uiAvatarURL
-        let messageName = "message_\(messageCreate.id.rawValue)"
-        let jsonData = (try? JSONEncoder().encode(messageCreate)) ?? Data()
+        let messageName = "message_history_\(lastMessage.id.rawValue)"
+        let jsonData = (try? JSONEncoder().encode(messages)) ?? Data()
         self.init(
             embeds: [.init(
-                title: "Deleted Message",
+                title: "Deleted Message in \(DiscordUtils.mention(id: lastMessage.channel_id))",
                 description: DiscordUtils
-                    .escapingSpecialCharacters(messageCreate.content)
+                    .escapingSpecialCharacters(lastMessage.content)
                     .quotedMarkdown(),
-                timestamp: messageCreate.timestamp.date,
+                timestamp: lastMessage.timestamp.date,
                 color: .red,
                 footer: .init(
                     text: "From \(member?.uiName ?? author.uiName)",
@@ -84,8 +91,8 @@ private extension Payloads.CreateMessage {
                         inline: true
                     ),
                     .init(
-                        name: "Channel",
-                        value: DiscordUtils.mention(id: messageCreate.channel_id),
+                        name: "Edits",
+                        value: "\(messages.count - 1)",
                         inline: true
                     )
                 ]
