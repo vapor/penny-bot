@@ -26,8 +26,8 @@ struct AuditLogHandler {
         switch event.action {
         case .memberBanAdd:
             guard let userId = event.user_id.map({ UserSnowflake($0) }),
-                  let targetId = event.target_id.map({ UserSnowflake($0) }) else {
-                logger.error("User id or target id unavailable in memberBanAdd")
+                  let targetId = event.user_id.map({ UserSnowflake($0) }) else {
+                logger.error("User id or target id unavailable in member ban action")
                 return
             }
             await discordService.sendMessage(
@@ -39,47 +39,6 @@ struct AuditLogHandler {
                         By: \(DiscordUtils.mention(id: userId))
                         Banned User: \(DiscordUtils.mention(id: targetId))
                         Reason: \(event.reason ?? "<not-provided>")
-                        """,
-                        color: .purple
-                    )]
-                )
-            )
-        case let .messageDelete(channelId, count):
-            guard let userId = event.user_id.map({ UserSnowflake($0) }),
-                  let targetId = event.target_id.map({ UserSnowflake($0) }) else {
-                logger.error("User id or target id unavailable in messageDelete")
-                return
-            }
-            await discordService.sendMessage(
-                channelId: Constants.Channels.moderators.id,
-                payload: .init(
-                    embeds: [.init(
-                        title: "A message was deleted",
-                        description: """
-                        By: \(DiscordUtils.mention(id: userId))
-                        From: \(DiscordUtils.mention(id: targetId))
-                        Count: \(count)
-                        In: \(DiscordUtils.mention(id: channelId))
-                        """,
-                        color: .purple
-                    )]
-                )
-            )
-        case let .messageBulkDelete(count):
-            guard let userId = event.user_id.map({ UserSnowflake($0) }),
-                  let targetId = event.target_id.map({ UserSnowflake($0) }) else {
-                logger.error("User id or target id unavailable in messageBulkDelete")
-                return
-            }
-            await discordService.sendMessage(
-                channelId: Constants.Channels.moderators.id,
-                payload: .init(
-                    embeds: [.init(
-                        title: "Messages were bulk-deleted",
-                        description: """
-                        By: \(DiscordUtils.mention(id: userId))
-                        From: \(DiscordUtils.mention(id: targetId))
-                        Count: \(count)
                         """,
                         color: .purple
                     )]
