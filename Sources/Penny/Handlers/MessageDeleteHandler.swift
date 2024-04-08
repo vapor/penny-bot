@@ -119,3 +119,63 @@ private extension Payloads.CreateMessage {
         )
     }
 }
+
+/// Unused for now:
+
+private extension Gateway.MessageCreate {
+    /// Hash of the deterministic content of the message.
+    /// For example doesn't include IDs which will change even if messages are the same.
+    var partialHash: Int {
+        let author = self.author?.id.rawValue.hashValue ?? 0
+        let content = self.content.hashValue
+        let attachments = self.attachments.map(\.filename.hashValue).reduce(into: 0, ^=)
+        let embeds = self.embeds.map(\.partialHash).reduce(into: 0, ^=)
+        let type = self.type.rawValue.hashValue
+        let member = self.member?.user?.id.rawValue.hashValue ?? 0
+
+        return author ^
+        content ^
+        attachments ^
+        embeds ^
+        type ^
+        member
+    }
+}
+
+private extension [Gateway.MessageCreate] {
+    /// Hash of the deterministic content of the messages.
+    /// For example doesn't include IDs which will change even if messages are the same.
+    var partialHash: Int {
+        self.map(\.partialHash).reduce(into: 0, ^=)
+    }
+}
+
+private extension Embed {
+    var partialHash: Int {
+        let title = self.title?.hashValue ?? 0
+        let type = self.type?.rawValue.hashValue ?? 0
+        let description = self.description?.hashValue ?? 0
+        let url = self.url?.hashValue ?? 0
+        let footer = self.footer?.text.hashValue ?? 0
+        let image = self.image?.height.hashValue ?? 0
+        let thumbnail = self.thumbnail?.height.hashValue ?? 0
+        let video = self.video?.height.hashValue ?? 0
+        let provider = self.provider?.name.hashValue ?? 0
+        let author = self.author?.name.hashValue ?? 0
+        let fields = self.fields?.map {
+            $0.name.hashValue ^ $0.value.hashValue
+        }.reduce(into: 0, ^=) ?? 0
+
+        return title ^
+        type ^
+        description ^
+        url ^
+        footer ^
+        image ^
+        thumbnail ^
+        video ^
+        provider ^
+        author ^
+        fields
+    }
+}
