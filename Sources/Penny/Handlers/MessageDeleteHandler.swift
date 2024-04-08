@@ -65,35 +65,8 @@ private extension Payloads.CreateMessage {
         let lastMessage = messages.last!
         let member = lastMessage.member
         let avatarURL = member?.uiAvatarURL ?? author.uiAvatarURL
-        var fields: [Embed.Field] = [
-            .init(
-                name: "Author",
-                value: DiscordUtils.mention(id: author.id),
-                inline: true
-            ),
-            .init(
-                name: "Username",
-                value: author.username,
-                inline: true
-            ),
-            .init(
-                name: "Author ID",
-                value: author.id.rawValue,
-                inline: true
-            ),
-        ]
-        if messages.count > 1 {
-            fields.append(
-                .init(
-                    name: "Edits",
-                    value: "\(messages.count - 1)",
-                    inline: true
-                )
-            )
-        }
-        let attachmentName = "message_history_\(lastMessage.id.rawValue)"
+        let messageName = "message_history_\(lastMessage.id.rawValue)"
         let jsonData = (try? JSONEncoder().encode(messages)) ?? Data()
-
         self.init(
             embeds: [.init(
                 title: "Deleted Message in \(DiscordUtils.mention(id: lastMessage.channel_id))",
@@ -106,15 +79,31 @@ private extension Payloads.CreateMessage {
                     text: "From \(member?.uiName ?? author.uiName)",
                     icon_url: avatarURL.map { .exact($0) }
                 ),
-                fields: fields
+                fields: [
+                    .init(
+                        name: "Author",
+                        value: DiscordUtils.mention(id: author.id),
+                        inline: true
+                    ),
+                    .init(
+                        name: "Author Username",
+                        value: author.username,
+                        inline: true
+                    ),
+                    .init(
+                        name: "Edits",
+                        value: "\(messages.count - 1)",
+                        inline: true
+                    )
+                ]
             )],
             files: [.init(
                 data: ByteBuffer(data: jsonData),
-                filename: attachmentName
+                filename: messageName
             )],
             attachments: [.init(
                 index: 0,
-                filename: attachmentName
+                filename: messageName
             )]
         )
     }
