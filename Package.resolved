@@ -1,13 +1,13 @@
 {
-  "originHash" : "183c58f6f3a9448615b33b321a56cf201bf188713211b401613770c0f64d90c3",
+  "originHash" : "9e05bbadf8fe72a50b646bfc2b9d7f6ddefe673cdd597d02f236e09c93ee4428",
   "pins" : [
     {
       "identity" : "async-http-client",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "291438696abdd48d2a83b52465c176efbd94512b",
-        "version" : "1.20.1"
+        "revision" : "fb308ee72f3d4c082a507033f94afa7395963ef3",
+        "version" : "1.21.0"
       }
     },
     {
@@ -16,7 +16,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "a64e3650a430d7d5a14a86d60de15939ab1ca886"
+        "revision" : "862c408ad0171f19a932018ba24594781b3851c3"
       }
     },
     {
@@ -328,10 +328,10 @@
     {
       "identity" : "yams",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/jpsim/Yams.git",
+      "location" : "https://github.com/jpsim/Yams",
       "state" : {
-        "revision" : "0d9ee7ea8c4ebd4a489ad7a73d5c6cad55d6fed3",
-        "version" : "5.0.6"
+        "revision" : "23b6264b9a822b961f480dfa31a1a0ee9114c052",
+        "version" : "5.1.1"
       }
     }
   ],
