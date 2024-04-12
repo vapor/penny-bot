@@ -28,10 +28,6 @@ class GHHooksTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
 
-    override func tearDown() {
-        try! httpClient.syncShutdown()
-    }
-
     func testUnicodesPrefix() throws {
         do {
             let scalars_16 = "Hello, world! 👍🏾"

@@ -28,10 +28,6 @@ class LeafRenderTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
 
-    override func tearDown() {
-        try! httpClient.syncShutdown()
-    }
-
     func testTranslationNeededDescription() async throws {
         let rendered = try await ghHooksRenderClient.translationNeededDescription(number: 1)
         XCTAssertGreaterThan(rendered.count, 20)
