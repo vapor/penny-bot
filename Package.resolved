@@ -1,5 +1,5 @@
 {
-  "originHash" : "9e05bbadf8fe72a50b646bfc2b9d7f6ddefe673cdd597d02f236e09c93ee4428",
+  "originHash" : "d7c48ade31a3b0a5c80155f226d1d78d74c84f34a24e5f48b0cad20b760bfaea",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordLogger.git",
       "state" : {
-        "revision" : "e097e726b71d5f20656d5d7c294df912a898ae8f",
-        "version" : "1.0.0-rc.2"
+        "revision" : "e78a8de76c7625044d83f79cf34f5397a167e5bc",
+        "version" : "1.0.0-rc.3"
       }
     },
     {
