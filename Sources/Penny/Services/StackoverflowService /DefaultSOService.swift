@@ -4,7 +4,7 @@ import Logging
 import Foundation
 
 struct DefaultSOService: SOService {
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     let logger = Logger(label: "DefaultSOService")
     let decoder = JSONDecoder()
     private static let urlEncodedAPIKey = Constants.StackOverflow.apiKey

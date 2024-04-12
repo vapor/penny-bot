@@ -8,7 +8,7 @@ import Logging
 import NIOPosix
 
 struct PennyService: MainService {
-    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
+    func bootstrapLoggingSystem() async throws {
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
@@ -17,7 +17,6 @@ struct PennyService: MainService {
         let webhookURL = Constants.loggingWebhookURL
 #endif
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
-            httpClient: httpClient,
             configuration: .init(
                 aliveNotice: .init(
                     address: try! .url(webhookURL),
@@ -25,7 +24,7 @@ struct PennyService: MainService {
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
-                sendFullLogAsAttachment: .enabled,
+                sendFullLogsAsAttachment: .enabled,
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
@@ -48,7 +47,7 @@ struct PennyService: MainService {
         )
     }
 
-    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
+    func makeBot() async throws -> any GatewayManager {
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
@@ -59,8 +58,6 @@ struct PennyService: MainService {
             )
         )
         return await BotGatewayManager(
-            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
-            httpClient: httpClient,
             clientConfiguration: clientConfiguration,
             token: Constants.botToken,
             presence: .init(
@@ -90,19 +87,15 @@ struct PennyService: MainService {
 
     func beforeConnectCall(
         bot: any GatewayManager,
-        cache: DiscordCache,
-        httpClient: HTTPClient,
-        awsClient: AWSClient
+        cache: DiscordCache
     ) async throws -> HandlerContext {
-        let usersService = ServiceFactory.makeUsersService(
-            httpClient: httpClient,
-            apiBaseURL: Constants.apiBaseURL
-        )
-        let pingsService = DefaultPingsService(httpClient: httpClient)
-        let faqsService = DefaultFaqsService(httpClient: httpClient)
-        let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
-        let evolutionService = DefaultEvolutionService(httpClient: httpClient)
-        let soService = DefaultSOService(httpClient: httpClient)
+        let awsClient = AWSClient()
+        let usersService = ServiceFactory.makeUsersService(apiBaseURL: Constants.apiBaseURL)
+        let pingsService = DefaultPingsService()
+        let faqsService = DefaultFaqsService()
+        let autoFaqsService = DefaultAutoFaqsService()
+        let evolutionService = DefaultEvolutionService()
+        let soService = DefaultSOService()
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
         let evolutionChecker = EvolutionChecker(
             evolutionService: evolutionService,
@@ -131,9 +124,7 @@ struct PennyService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
-                    httpClient: httpClient,
-                    logger: Logger(label: "Penny+Leaf"),
-                    on: httpClient.eventLoopGroup.next()
+                    logger: Logger(label: "Penny+Leaf")
                 )
             ),
             evolutionChecker: evolutionChecker,

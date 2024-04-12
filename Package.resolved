@@ -1,5 +1,5 @@
 {
-  "originHash" : "9e05bbadf8fe72a50b646bfc2b9d7f6ddefe673cdd597d02f236e09c93ee4428",
+  "originHash" : "d7c48ade31a3b0a5c80155f226d1d78d74c84f34a24e5f48b0cad20b760bfaea",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -16,7 +16,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "862c408ad0171f19a932018ba24594781b3851c3"
+        "revision" : "ddce0d02aa46102499eb713c9b4a8efd3ad6fa87"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/DiscordBM/DiscordLogger.git",
       "state" : {
-        "revision" : "e097e726b71d5f20656d5d7c294df912a898ae8f",
-        "version" : "1.0.0-rc.2"
+        "revision" : "e78a8de76c7625044d83f79cf34f5397a167e5bc",
+        "version" : "1.0.0-rc.3"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "0c043319d9cf9d7fefbecb81755570c11620f1af",
-        "version" : "7.0.0-alpha.1"
+        "revision" : "d7b92b11ee18de64546d7ba19098c30a472d31d8",
+        "version" : "7.0.0-beta.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "da842b43a882e7498e4900c5f6b4062c14207ed0",
-        "version" : "7.0.0-alpha.3"
+        "revision" : "93c2d7196400f3b5f0af9e7c172f88e2dac5ff70",
+        "version" : "7.0.0-beta.1"
       }
     },
     {
@@ -330,8 +330,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams",
       "state" : {
-        "revision" : "23b6264b9a822b961f480dfa31a1a0ee9114c052",
-        "version" : "5.1.1"
+        "revision" : "9234124cff5e22e178988c18d8b95a8ae8007f76",
+        "version" : "5.1.2"
       }
     }
   ],

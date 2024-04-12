@@ -10,31 +10,22 @@ import NIOPosix
 import XCTest
 
 class LeafRenderTests: XCTestCase {
-    let httpClient = HTTPClient(
-        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
-    )
+    let httpClient = HTTPClient.shared
 
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
-            httpClient: httpClient,
             logger: Logger(label: "RenderClientGHHooksTests")
         )
     )
 
     lazy var pennyRenderClient = RenderClient(
         renderer: try! .forPenny(
-            httpClient: httpClient,
-            logger: Logger(label: "Tests_Penny+LeafRendering"),
-            on: httpClient.eventLoopGroup.next()
+            logger: Logger(label: "Tests_Penny+LeafRendering")
         )
     )
 
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
-    }
-
-    override func tearDown() {
-        try! httpClient.syncShutdown()
     }
 
     func testTranslationNeededDescription() async throws {

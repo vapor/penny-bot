@@ -9,15 +9,14 @@ import DiscordModels
 import Models
 
 struct DefaultUsersService: UsersService {
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     let apiBaseURL: String
     let logger = Logger(label: "DefaultUsersService")
 
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
     
-    init(httpClient: HTTPClient, apiBaseURL: String) {
-        self.httpClient = httpClient
+    init(apiBaseURL: String) {
         self.apiBaseURL = apiBaseURL
     }
 
