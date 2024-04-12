@@ -8,7 +8,7 @@ import Logging
 struct Requester: Sendable {
     let eventName: GHEvent.Kind
     let event: GHEvent
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     let discordClient: any DiscordClient
     let githubClient: Client
     let usersService: any UsersService

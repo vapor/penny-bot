@@ -10,7 +10,7 @@ import Shared
 
 actor Authenticator {
     private let secretsRetriever: SecretsRetriever
-    private let httpClient: HTTPClient
+    private let httpClient: HTTPClient = .shared
     let logger: Logger
 
     /// The cached access token.
@@ -18,9 +18,8 @@ actor Authenticator {
 
     private let queue = SerialProcessor()
 
-    init(secretsRetriever: SecretsRetriever, httpClient: HTTPClient, logger: Logger) {
+    init(secretsRetriever: SecretsRetriever, logger: Logger) {
         self.secretsRetriever = secretsRetriever
-        self.httpClient = httpClient
         self.logger = logger
     }
 
@@ -61,7 +60,6 @@ actor Authenticator {
 
     private func makeClient(token: String) throws -> Client {
         try .makeForGitHub(
-            httpClient: self.httpClient,
             authorization: .bearer(token),
             logger: self.logger
         )

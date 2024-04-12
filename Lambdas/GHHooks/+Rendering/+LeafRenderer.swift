@@ -5,16 +5,11 @@ import Logging
 import Foundation
 
 extension LeafRenderer {
-    static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
+    static func forGHHooks(logger: Logger) throws -> LeafRenderer {
         try LeafRenderer(
             subDirectory: "GHHooksLambda",
-            httpClient: httpClient,
-            extraSources: [DocsLeafSource(
-                httpClient: httpClient,
-                logger: logger
-            )],
-            logger: logger,
-            on: httpClient.eventLoopGroup.next()
+            extraSources: [DocsLeafSource(logger: logger)],
+            logger: logger
         )
     }
 }
@@ -44,7 +39,6 @@ private struct DocsLeafSource: LeafSource {
         }
     }
 
-    let httpClient: HTTPClient
     let logger: Logger
 
     func file(
@@ -58,7 +52,7 @@ private struct DocsLeafSource: LeafSource {
         let repoURL = "https://raw.githubusercontent.com/vapor/docs/main"
         let url = "\(repoURL)/.github/\(template.urlPathEncoded())"
         let request = try HTTPClient.Request(url: url)
-        return httpClient.execute(request: request).flatMapThrowing { response in
+        return HTTPClient.shared.execute(request: request).flatMapThrowing { response in
             guard 200..<300 ~= response.status.code else {
                 throw Errors.badStatusCode(response: response)
             }

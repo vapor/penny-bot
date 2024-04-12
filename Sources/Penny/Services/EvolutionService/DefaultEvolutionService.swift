@@ -20,7 +20,7 @@ struct DefaultEvolutionService: EvolutionService {
         }
     }
 
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     let decoder = JSONDecoder()
 
     func list() async throws -> [Proposal] {

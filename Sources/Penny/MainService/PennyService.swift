@@ -89,17 +89,13 @@ struct PennyService: MainService {
         bot: any GatewayManager,
         cache: DiscordCache
     ) async throws -> HandlerContext {
-        let httpClient = HTTPClient.shared
         let awsClient = AWSClient()
-        let usersService = ServiceFactory.makeUsersService(
-            httpClient: httpClient,
-            apiBaseURL: Constants.apiBaseURL
-        )
-        let pingsService = DefaultPingsService(httpClient: httpClient)
-        let faqsService = DefaultFaqsService(httpClient: httpClient)
-        let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
-        let evolutionService = DefaultEvolutionService(httpClient: httpClient)
-        let soService = DefaultSOService(httpClient: httpClient)
+        let usersService = ServiceFactory.makeUsersService(apiBaseURL: Constants.apiBaseURL)
+        let pingsService = DefaultPingsService()
+        let faqsService = DefaultFaqsService()
+        let autoFaqsService = DefaultAutoFaqsService()
+        let evolutionService = DefaultEvolutionService()
+        let soService = DefaultSOService()
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
         let evolutionChecker = EvolutionChecker(
             evolutionService: evolutionService,
@@ -128,9 +124,7 @@ struct PennyService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
-                    httpClient: httpClient,
-                    logger: Logger(label: "Penny+Leaf"),
-                    on: httpClient.eventLoopGroup.next()
+                    logger: Logger(label: "Penny+Leaf")
                 )
             ),
             evolutionChecker: evolutionChecker,

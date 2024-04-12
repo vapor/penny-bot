@@ -19,18 +19,16 @@ struct GHLeafSource: LeafSource {
 
     private actor ActorGHLeafSource {
         let path: String
-        let httpClient: HTTPClient
+        let httpClient: HTTPClient = .shared
         let logger: Logger
         let queue = SerialProcessor()
         var cache: [String: ByteBuffer] = [:]
 
         init(
             path: String,
-            httpClient: HTTPClient,
             logger: Logger
         ) {
             self.path = path
-            self.httpClient = httpClient
             self.logger = logger
         }
 
@@ -70,12 +68,10 @@ struct GHLeafSource: LeafSource {
 
     init(
         path: String,
-        httpClient: HTTPClient,
         logger: Logger
     ) {
         self.underlying = .init(
             path: path,
-            httpClient: httpClient,
             logger: logger
         )
     }

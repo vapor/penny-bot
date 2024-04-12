@@ -63,10 +63,7 @@ struct SponsorsHandler: LambdaHandler {
             context.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
             let apiBaseURL = try requireEnvVar("API_BASE_URL")
-            let userService = ServiceFactory.makeUsersService(
-                httpClient: httpClient,
-                apiBaseURL: apiBaseURL
-            )
+            let userService = ServiceFactory.makeUsersService(apiBaseURL: apiBaseURL)
             guard let user = try await userService.getUser(githubID: "\(newSponsorID)") else {
                 context.logger.error("No user found with GitHub ID \(newSponsorID)")
                 return APIGatewayV2Response(

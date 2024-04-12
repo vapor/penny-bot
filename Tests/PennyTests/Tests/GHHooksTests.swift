@@ -901,7 +901,6 @@ class GHHooksTests: XCTestCase {
         return HandlerContext(
             eventName: eventName,
             event: event,
-            httpClient: httpClient,
             discordClient: FakeDiscordClient(),
             githubClient: Client(
                 serverURL: try Servers.server1(),
@@ -909,7 +908,6 @@ class GHHooksTests: XCTestCase {
             ),
             renderClient: RenderClient(
                 renderer: try .forGHHooks(
-                    httpClient: httpClient,
                     logger: logger
                 )
             ),

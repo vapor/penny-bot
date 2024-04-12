@@ -10,7 +10,7 @@ import NIOHTTP1
 
 actor DefaultFaqsService: FaqsService {
 
-    var httpClient: HTTPClient!
+    let httpClient: HTTPClient = .shared
     var logger = Logger(label: "DefaultFaqsService")
 
     /// Use `getAll()` to retrieve.
@@ -23,8 +23,7 @@ actor DefaultFaqsService: FaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
+    init() {
         Task {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()

@@ -49,7 +49,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
         }
     }
 
-    var httpClient: HTTPClient!
+    let httpClient: HTTPClient = .shared
     var logger = Logger(label: "DefaultAutoFaqsService")
 
     /// Use `getAll()` to retrieve.
@@ -67,8 +67,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
+    init() {
         Task {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()

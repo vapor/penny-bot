@@ -14,16 +14,13 @@ class LeafRenderTests: XCTestCase {
 
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
-            httpClient: httpClient,
             logger: Logger(label: "RenderClientGHHooksTests")
         )
     )
 
     lazy var pennyRenderClient = RenderClient(
         renderer: try! .forPenny(
-            httpClient: httpClient,
-            logger: Logger(label: "Tests_Penny+LeafRendering"),
-            on: httpClient.eventLoopGroup.next()
+            logger: Logger(label: "Tests_Penny+LeafRendering")
         )
     )
 

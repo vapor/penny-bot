@@ -11,7 +11,7 @@ import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
     
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     var logger = Logger(label: "DefaultPingsService")
     
     /// Use `getAll()` to retrieve.
@@ -23,8 +23,7 @@ actor DefaultPingsService: AutoPingsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
+    init() {
         Task {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()
