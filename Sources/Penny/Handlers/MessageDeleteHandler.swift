@@ -73,12 +73,7 @@ private extension Payloads.CreateMessage {
             ),
             .init(
                 name: "Username",
-                value: author.username,
-                inline: true
-            ),
-            .init(
-                name: "Author ID",
-                value: author.id.rawValue,
+                value: DiscordUtils.escapingSpecialCharacters(author.username),
                 inline: true
             ),
         ]
