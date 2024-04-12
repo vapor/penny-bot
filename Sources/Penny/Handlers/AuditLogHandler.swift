@@ -50,6 +50,16 @@ struct AuditLogHandler {
                 logger.error("User id or target id unavailable in messageDelete")
                 return
             }
+            if targetId == Constants.botId {
+                logger.error(
+                    "Will not report a messageDelete because target is Penny",
+                    metadata: [
+                        "userId": .string(userId.rawValue),
+                        "targetId": .string(targetId.rawValue),
+                    ]
+                )
+                return
+            }
             await discordService.sendMessage(
                 channelId: Constants.Channels.moderators.id,
                 payload: .init(
@@ -69,6 +79,16 @@ struct AuditLogHandler {
             guard let userId = event.user_id.map({ UserSnowflake($0) }),
                   let targetId = event.target_id.map({ UserSnowflake($0) }) else {
                 logger.error("User id or target id unavailable in messageBulkDelete")
+                return
+            }
+            if targetId == Constants.botId {
+                logger.error(
+                    "Will not report a messageBulkDelete because target is Penny",
+                    metadata: [
+                        "userId": .string(userId.rawValue),
+                        "targetId": .string(targetId.rawValue),
+                    ]
+                )
                 return
             }
             await discordService.sendMessage(
