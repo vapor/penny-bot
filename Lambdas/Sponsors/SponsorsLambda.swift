@@ -13,8 +13,8 @@ struct SponsorsHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
-    let httpClient: HTTPClient
-    let awsClient: AWSClient
+    let httpClient: HTTPClient = .shared
+    let awsClient: AWSClient = AWSClient()
     let secretsRetriever: SecretsRetriever
     let logger: Logger
 
@@ -23,7 +23,7 @@ struct SponsorsHandler: LambdaHandler {
     var discordClient: any DiscordClient {
         get async throws {
             let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-            return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+            return await DefaultDiscordClient(token: botToken)
         }
     }
 
@@ -32,8 +32,6 @@ struct SponsorsHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
-        self.httpClient = HTTPClient.shared
-        self.awsClient = AWSClient(httpClient: self.httpClient)
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: context.logger)
         self.logger = context.logger
     }
@@ -228,7 +226,10 @@ struct SponsorsHandler: LambdaHandler {
         triggerActionRequest.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))
         
         // Send request to trigger workflow and read response
-        let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
+        let githubResponse = try await httpClient.execute(
+            triggerActionRequest,
+            timeout: .seconds(10)
+        )
         
         guard 200..<300 ~= githubResponse.status.code else {
             let body = try await githubResponse.body.collect(upTo: 1024 * 1024)

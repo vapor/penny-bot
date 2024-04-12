@@ -39,6 +39,7 @@ private struct DocsLeafSource: LeafSource {
         }
     }
 
+    let httpClient: HTTPClient = .shared
     let logger: Logger
 
     func file(
@@ -52,7 +53,7 @@ private struct DocsLeafSource: LeafSource {
         let repoURL = "https://raw.githubusercontent.com/vapor/docs/main"
         let url = "\(repoURL)/.github/\(template.urlPathEncoded())"
         let request = try HTTPClient.Request(url: url)
-        return HTTPClient.shared.execute(request: request).flatMapThrowing { response in
+        return httpClient.execute(request: request).flatMapThrowing { response in
             guard 200..<300 ~= response.status.code else {
                 throw Errors.badStatusCode(response: response)
             }
