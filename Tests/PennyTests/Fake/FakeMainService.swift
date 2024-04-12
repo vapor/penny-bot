@@ -39,7 +39,7 @@ actor FakeMainService: MainService {
         try! httpClient.syncShutdown()
     }
 
-    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
+    func bootstrapLoggingSystem() async throws { }
 
     func makeBot() async throws -> any GatewayManager {
         return manager
@@ -51,9 +51,7 @@ actor FakeMainService: MainService {
 
     func beforeConnectCall(
         bot: any GatewayManager,
-        cache: DiscordCache,
-        httpClient: HTTPClient,
-        awsClient: AWSClient
+        cache: DiscordCache
     ) async throws -> HandlerContext {
         await context.botStateManager.start(onStarted: { })
         return context

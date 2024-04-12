@@ -4,14 +4,12 @@ import AsyncHTTPClient
 import NIOCore
 
 protocol MainService: Sendable {
-    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws
+    func bootstrapLoggingSystem() async throws
     func makeBot() async throws -> any GatewayManager
     func makeCache(bot: any GatewayManager) async throws -> DiscordCache
     func beforeConnectCall(
         bot: any GatewayManager,
-        cache: DiscordCache,
-        httpClient: HTTPClient,
-        awsClient: AWSClient
+        cache: DiscordCache
     ) async throws -> HandlerContext
     func afterConnectCall(context: HandlerContext) async throws
 }

@@ -8,7 +8,7 @@ import Logging
 import NIOPosix
 
 struct PennyService: MainService {
-    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
+    func bootstrapLoggingSystem() async throws {
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
@@ -17,7 +17,6 @@ struct PennyService: MainService {
         let webhookURL = Constants.loggingWebhookURL
 #endif
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
-            httpClient: httpClient,
             configuration: .init(
                 aliveNotice: .init(
                     address: try! .url(webhookURL),
@@ -25,7 +24,7 @@ struct PennyService: MainService {
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
-                sendFullLogAsAttachment: .enabled,
+                sendFullLogsAsAttachment: .enabled,
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
@@ -88,10 +87,10 @@ struct PennyService: MainService {
 
     func beforeConnectCall(
         bot: any GatewayManager,
-        cache: DiscordCache,
-        httpClient: HTTPClient,
-        awsClient: AWSClient
+        cache: DiscordCache
     ) async throws -> HandlerContext {
+        let httpClient = HTTPClient.shared
+        let awsClient = AWSClient()
         let usersService = ServiceFactory.makeUsersService(
             httpClient: httpClient,
             apiBaseURL: Constants.apiBaseURL

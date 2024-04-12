@@ -21,17 +21,12 @@ struct Penny {
             try! httpClient.syncShutdown()
         }
 
-        try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
+        try await mainService.bootstrapLoggingSystem()
 
         let bot = try await mainService.makeBot()
         let cache = try await mainService.makeCache(bot: bot)
 
-        let context = try await mainService.beforeConnectCall(
-            bot: bot,
-            cache: cache,
-            httpClient: httpClient,
-            awsClient: awsClient
-        )
+        let context = try await mainService.beforeConnectCall(bot: bot, cache: cache)
 
         await bot.connect()
 
