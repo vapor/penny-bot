@@ -83,7 +83,7 @@ struct AuditLogHandler {
             }
             if targetId == Constants.botId {
                 logger.error(
-                    "Will not report a messageDelete because target is Penny",
+                    "Will not report a messageBulkDelete because target is Penny",
                     metadata: [
                         "userId": .string(userId.rawValue),
                         "targetId": .string(targetId.rawValue),
