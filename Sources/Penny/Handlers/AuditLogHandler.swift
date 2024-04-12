@@ -50,9 +50,9 @@ struct AuditLogHandler {
                 logger.error("User id or target id unavailable in messageDelete")
                 return
             }
-            if discordService.userIsModerator(userId: targetId) {
+            if targetId == Constants.botId {
                 logger.error(
-                    "Will not report a messageDelete because target is a moderator",
+                    "Will not report a messageDelete because target is Penny",
                     metadata: [
                         "userId": .string(userId.rawValue),
                         "targetId": .string(targetId.rawValue),
@@ -81,9 +81,9 @@ struct AuditLogHandler {
                 logger.error("User id or target id unavailable in messageBulkDelete")
                 return
             }
-            if discordService.userIsModerator(userId: targetId) {
+            if targetId == Constants.botId {
                 logger.error(
-                    "Will not report a messageDelete because target is a moderator",
+                    "Will not report a messageDelete because target is Penny",
                     metadata: [
                         "userId": .string(userId.rawValue),
                         "targetId": .string(targetId.rawValue),
