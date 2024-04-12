@@ -38,10 +38,10 @@ struct GHOAuthHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
-        self.client = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+        self.client = HTTPClient.shared
         self.logger = context.logger
 
-        let awsClient = AWSClient(httpClientProvider: .shared(client))
+        let awsClient = AWSClient(httpClient: self.client)
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         let apiBaseURL = try requireEnvVar("API_BASE_URL")

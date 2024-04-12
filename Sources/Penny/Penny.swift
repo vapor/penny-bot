@@ -11,15 +11,8 @@ struct Penny {
     static func start(mainService: any MainService) async throws {
         /// Use `1` instead of `System.coreCount`.
         /// This is preferred for apps that primarily use structured concurrency.
-        let httpClient = HTTPClient(
-            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
-            configuration: .init(
-                decompression: .enabled(
-                    limit: .size(1 << 30) /// 1 GiB
-                )
-            )
-        )
-        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
+        let httpClient = HTTPClient.shared
+        let awsClient = AWSClient(httpClient: httpClient)
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         defer {
@@ -30,9 +23,7 @@ struct Penny {
 
         try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
 
-        let bot = try await mainService.makeBot(
-            httpClient: httpClient
-        )
+        let bot = try await mainService.makeBot()
         let cache = try await mainService.makeCache(bot: bot)
 
         let context = try await mainService.beforeConnectCall(

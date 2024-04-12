@@ -32,8 +32,8 @@ struct SponsorsHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
-        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
-        self.awsClient = AWSClient(httpClientProvider: .shared(httpClient))
+        self.httpClient = HTTPClient.shared
+        self.awsClient = AWSClient(httpClient: self.httpClient)
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: context.logger)
         self.logger = context.logger
     }

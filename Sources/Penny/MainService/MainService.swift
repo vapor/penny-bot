@@ -5,7 +5,7 @@ import NIOCore
 
 protocol MainService: Sendable {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws
-    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager
+    func makeBot() async throws -> any GatewayManager
     func makeCache(bot: any GatewayManager) async throws -> DiscordCache
     func beforeConnectCall(
         bot: any GatewayManager,

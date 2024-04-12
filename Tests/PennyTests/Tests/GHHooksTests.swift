@@ -13,9 +13,7 @@ import NIOPosix
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient(
-        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
-    )
+    let httpClient = HTTPClient.shared
 
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()

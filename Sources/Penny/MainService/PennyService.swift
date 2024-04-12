@@ -48,7 +48,7 @@ struct PennyService: MainService {
         )
     }
 
-    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
+    func makeBot() async throws -> any GatewayManager {
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
@@ -59,8 +59,6 @@ struct PennyService: MainService {
             )
         )
         return await BotGatewayManager(
-            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
-            httpClient: httpClient,
             clientConfiguration: clientConfiguration,
             token: Constants.botToken,
             presence: .init(

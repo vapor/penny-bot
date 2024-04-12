@@ -14,10 +14,10 @@ struct UsersHandler: LambdaHandler {
     let logger: Logger
 
     init(context: LambdaInitializationContext) async {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
+        self.internalService = InternalUsersService(
+            awsClient: AWSClient(),
+            logger: context.logger
         )
-        self.internalService = InternalUsersService(awsClient: awsClient, logger: context.logger)
         self.logger = context.logger
     }
     

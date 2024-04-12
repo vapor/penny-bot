@@ -10,9 +10,7 @@ import NIOPosix
 import XCTest
 
 class LeafRenderTests: XCTestCase {
-    let httpClient = HTTPClient(
-        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
-    )
+    let httpClient = HTTPClient.shared
 
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(

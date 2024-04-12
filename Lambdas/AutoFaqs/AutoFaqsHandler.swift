@@ -14,10 +14,7 @@ struct AutoFaqsHandler: LambdaHandler {
     let autoFaqsRepo: S3AutoFaqsRepository
 
     init(context: LambdaInitializationContext) async {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
-        )
-        self.awsClient = awsClient
+        self.awsClient = AWSClient()
         self.autoFaqsRepo = S3AutoFaqsRepository(awsClient: awsClient, logger: context.logger)
     }
 

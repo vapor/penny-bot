@@ -27,9 +27,7 @@ actor FakeMainService: MainService {
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
-        self.httpClient = HTTPClient(
-            eventLoopGroup: MultiThreadedEventLoopGroup.singleton
-        )
+        self.httpClient = HTTPClient.shared
         self.context = try Self.makeContext(
             manager: manager,
             cache: cache,
@@ -43,7 +41,7 @@ actor FakeMainService: MainService {
 
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
 
-    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
+    func makeBot() async throws -> any GatewayManager {
         return manager
     }
 
