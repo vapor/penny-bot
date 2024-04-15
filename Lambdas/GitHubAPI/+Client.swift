@@ -14,7 +14,11 @@ extension Client {
         )
         let transport = AsyncHTTPClientTransport(
             configuration: .init(
-                client: HTTPClient.shared,
+                client: HTTPClient(
+                    configuration: .init(
+                        decompression: .enabled(limit: .ratio(20))
+                    )
+                ),
                 timeout: timeout
             )
         )
