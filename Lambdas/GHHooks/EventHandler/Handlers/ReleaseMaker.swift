@@ -303,7 +303,11 @@ struct ReleaseMaker {
         /// to reserve enough capacity for it up-front.
         contributorIds.reserveCapacity(250)
         while let contributors = try await self.getExistingContributorIDs(page: page) {
-            contributorIds.append(contentsOf: contributors.compactMap(\.id))
+            let ids = (consume contributors).compactMap(\.id)
+            if ids.isEmpty {
+                break
+            }
+            contributorIds.append(contentsOf: consume ids)
             page += 1
         }
         return Set(contributorIds)
