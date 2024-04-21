@@ -55,21 +55,6 @@ jobs:
               --body ./zips/${name}/${name}.zip
           done
 
-      - name: Get run-id of tests workflow
-        id: get_run_id
-        uses: mahdibm/get-parallel-workflow-action@main
-        with: { token: "${{ secrets.GH_PAT }}", name: "tests" }
-
-      - name: Await tests success
-        uses: Codex-/await-remote-run@v1.0.0
-        with:
-          token: ${{ secrets.GH_PAT }}
-          repo: ${{ github.event.repository.name }}
-          owner: ${{ github.event.repository.owner.login }}
-          run_id: ${{ steps.get_run_id.outputs.run_id }}
-          run_timeout_seconds: 1800 # 30 minutes
-          poll_interval_ms: 5000 # 5 seconds
-
       - name: Deploy
         run: |
           for name in ${{ steps.find_package_names.outputs.names }}; do
