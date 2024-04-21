@@ -331,13 +331,13 @@ struct ReleaseMaker {
 
         if case let .ok(ok) = response,
            case let .json(json) = ok.body {
-            logger.debug("Found some contributors", metadata: [
+            logger.debug("Fetched some contributors", metadata: [
                 "page": .stringConvertible(page),
                 "count": .stringConvertible(json.compactMap(\.id).count)
             ])
             return json
         } else {
-            logger.warning("Could not find more contributors", metadata: [
+            logger.warning("Error when fetching contributors", metadata: [
                 "page": .stringConvertible(page),
                 "response": "\(response)"
             ])
