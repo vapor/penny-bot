@@ -302,18 +302,19 @@ struct ReleaseMaker {
         /// Hack: Vapor has around this amount of contributors and we know it, so better
         /// to reserve enough capacity for it up-front.
         contributorIds.reserveCapacity(250)
-        while let contributors = try await self.getExistingContributorIDs(page: page) {
-            let ids = (consume contributors).compactMap(\.id)
+        while true {
+            let (ids, hasNext) = try await self.getExistingContributorIDs(page: page)
             if ids.isEmpty {
                 break
             }
             contributorIds.append(contentsOf: consume ids)
+            guard hasNext else { break }
             page += 1
         }
         return Set(contributorIds)
     }
 
-    func getExistingContributorIDs(page: Int) async throws -> [Contributor]? {
+    func getExistingContributorIDs(page: Int) async throws -> (ids: [Int], hasNext: Bool) {
         logger.debug("Will fetch current contributors", metadata: [
             "page": .stringConvertible(page)
         ])
@@ -331,17 +332,26 @@ struct ReleaseMaker {
 
         if case let .ok(ok) = response,
            case let .json(json) = ok.body {
+            let hasNext = switch ok.headers.Link {
+            case let .case1(string):
+                string.contains(#"rel="next""#)
+            case let .case2(strings):
+                strings.contains { $0.contains(#"rel="next""#) }
+            case .none:
+                false
+            }
+            let ids = json.compactMap(\.id)
             logger.debug("Fetched some contributors", metadata: [
                 "page": .stringConvertible(page),
-                "count": .stringConvertible(json.compactMap(\.id).count)
+                "count": .stringConvertible(ids.count)
             ])
-            return json
+            return (ids, hasNext)
         } else {
-            logger.warning("Error when fetching contributors", metadata: [
+            logger.error("Error when fetching contributors but will continue", metadata: [
                 "page": .stringConvertible(page),
                 "response": "\(response)"
             ])
-            return nil
+            return ([], false)
         }
     }
 }
