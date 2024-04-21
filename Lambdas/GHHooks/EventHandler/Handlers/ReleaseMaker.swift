@@ -332,6 +332,8 @@ struct ReleaseMaker {
 
         if case let .ok(ok) = response,
            case let .json(json) = ok.body {
+            /// Example of a `link` header: `<https://api.github.com/repositories/49910095/contributors?page=6>; rel="prev", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="next", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="last", <https://api.github.com/repositories/49910095/contributors?page=1>; rel="first"`
+            /// If the header contains `rel="next"` then we'll have a next page to fetch.
             let hasNext = switch ok.headers.Link {
             case let .case1(string):
                 string.contains(#"rel="next""#)
