@@ -270,12 +270,10 @@ struct ReleaseMaker {
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
-        if pr.author_association == .OWNER ||
-            pr.user.isBot ||
-            codeOwners.contains(user: pr.user) {
-            return false
-        }
-        return !existingContributors.contains(pr.user.id)
+        pr.author_association != .OWNER &&
+        !pr.user.isBot &&
+        !codeOwners.contains(user: pr.user) &&
+        !existingContributors.contains(pr.user.id)
     }
 
     func getReviewComments() async throws -> [PullRequestReviewComment] {
@@ -299,21 +297,47 @@ struct ReleaseMaker {
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
+        var page = 1
+        var contributorIds: [Int] = []
+        /// Hack: Vapor has around this amount of contributors and we know it, so better
+        /// to reserve enough capacity for it up-front.
+        contributorIds.reserveCapacity(250)
+        while let contributors = try await self.getExistingContributorIDs(page: page) {
+            contributorIds.append(contentsOf: contributors.compactMap(\.id))
+            page += 1
+        }
+        return Set(contributorIds)
+    }
+
+    func getExistingContributorIDs(page: Int) async throws -> [Contributor]? {
+        logger.debug("Will fetch current contributors", metadata: [
+            "page": .stringConvertible(page)
+        ])
+
         let response = try await context.githubClient.repos_list_contributors(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
+            ),
+            query: .init(
+                per_page: 100,
+                page: page
             )
         )
 
         if case let .ok(ok) = response,
            case let .json(json) = ok.body {
-            return Set(json.compactMap(\.id))
+            logger.debug("Found some contributors", metadata: [
+                "page": .stringConvertible(page),
+                "count": .stringConvertible(json.compactMap(\.id).count)
+            ])
+            return json
         } else {
-            logger.warning("Could not find current contributors", metadata: [
+            logger.warning("Could not find more contributors", metadata: [
+                "page": .stringConvertible(page),
                 "response": "\(response)"
             ])
-            return []
+            return nil
         }
     }
 }
