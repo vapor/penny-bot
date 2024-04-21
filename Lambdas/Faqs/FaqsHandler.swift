@@ -14,10 +14,7 @@ struct FaqsHandler: LambdaHandler {
     let faqsRepo: S3FaqsRepository
 
     init(context: LambdaInitializationContext) async {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
-        )
-        self.awsClient = awsClient
+        self.awsClient = AWSClient()
         self.faqsRepo = S3FaqsRepository(awsClient: awsClient, logger: context.logger)
     }
 

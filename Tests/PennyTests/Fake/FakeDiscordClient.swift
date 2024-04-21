@@ -2,12 +2,12 @@
 import NIOHTTP1
 import XCTest
 
-public struct FakeDiscordClient: DiscordClient {
-    public var appId: ApplicationSnowflake? = "11111111"
+struct FakeDiscordClient: DiscordClient {
+    var appId: ApplicationSnowflake? = "11111111"
 
-    public init() { }
+    init() { }
 
-    public func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
+    func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(
             to: request.endpoint,
             with: AnyBox(Optional<Never>.none as Any)
@@ -24,7 +24,7 @@ public struct FakeDiscordClient: DiscordClient {
         )
     }
     
-    public func send<E: Encodable & ValidatablePayload>(
+    func send<E: Encodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
     ) async throws -> DiscordHTTPResponse {
@@ -45,7 +45,7 @@ public struct FakeDiscordClient: DiscordClient {
         )
     }
     
-    public func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
+    func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
     ) async throws -> DiscordHTTPResponse {

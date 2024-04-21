@@ -2,7 +2,7 @@ import DiscordBM
 import GitHubAPI
 import Logging
 
-/// Sends a "Need translation" message for each PR in a push-commit that needs that.
+/// Gives coins to GitHub users that have a linked Discord account, if their PR is merged.
 struct PRCoinGiver {
     let context: HandlerContext
     let commitSHA: String
@@ -21,22 +21,23 @@ struct PRCoinGiver {
     }
 
     func handle() async throws {
-        guard event.ref == "refs/heads/\(repo.primaryBranch)" else {
-            return
-        }
+        guard let branch = self.event.ref.extractHeadBranchFromRef(),
+              branch.isPrimaryOrReleaseBranch(repo: repo)
+        else { return }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
         let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.full_name,
-            primaryBranch: repo.primaryBranch
+            branch: branch
         )
         for pr in try await getPRsRelatedToCommit() {
+            let user = try pr.user.requireValue()
             if pr.merged_at == nil ||
-                codeOwners.contains(user: pr.user) {
+                codeOwners.contains(user: user) {
                 continue
             }
             guard let member = try await context.requester.getDiscordMember(
-                githubID: "\(pr.user.id)"
+                githubID: "\(user.id)"
             ), let discordID = member.user?.id else {
                 logger.debug("Found no Discord member for the GitHub user", metadata: [
                     "pr": "\(pr)",
@@ -79,20 +80,12 @@ struct PRCoinGiver {
     }
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
-        let response = try await context.githubClient.repos_list_pull_requests_associated_with_commit(
-            .init(path: .init(
+        try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+            path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 commit_sha: commitSHA
-            ))
-        )
-
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-              else { 
-            throw Errors.httpRequestFailed(response: response)
-        }
-
-        return json
+            )
+        ).ok.body.json
     }
 }

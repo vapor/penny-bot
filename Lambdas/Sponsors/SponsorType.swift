@@ -26,7 +26,7 @@ enum SponsorType: String {
         }
     }
     
-    public static func `for`(sponsorshipAmount: Int) throws -> SponsorType {
+    package static func `for`(sponsorshipAmount: Int) throws -> SponsorType {
         switch sponsorshipAmount {
         case 500...9900: return .backer
         case 10000...: return .sponsor

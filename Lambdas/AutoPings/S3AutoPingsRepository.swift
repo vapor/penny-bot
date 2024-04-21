@@ -2,7 +2,7 @@ import SotoS3
 import Foundation
 import Models
 
-public struct S3AutoPingsRepository {
+package struct S3AutoPingsRepository {
     
     let s3: S3
     let logger: Logger
@@ -12,12 +12,12 @@ public struct S3AutoPingsRepository {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    public init(awsClient: AWSClient, logger: Logger) {
+    package init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
         self.logger = logger
     }
     
-    public func insert(
+    package func insert(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: UserSnowflake
     ) async throws -> S3AutoPingItems {
@@ -29,7 +29,7 @@ public struct S3AutoPingsRepository {
         return all
     }
 
-    public func remove(
+    package func remove(
         expressions: [S3AutoPingItems.Expression],
         forDiscordID id: UserSnowflake
     ) async throws -> S3AutoPingItems {
@@ -44,7 +44,7 @@ public struct S3AutoPingsRepository {
         return all
     }
     
-    public func getAll() async throws -> S3AutoPingItems {
+    package func getAll() async throws -> S3AutoPingItems {
         let response: S3.GetObjectOutput
         
         do {
@@ -71,7 +71,7 @@ public struct S3AutoPingsRepository {
         }
     }
     
-    public func save(items: S3AutoPingItems) async throws {
+    package func save(items: S3AutoPingItems) async throws {
         let data = try encoder.encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,

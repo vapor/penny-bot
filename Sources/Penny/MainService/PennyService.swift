@@ -5,9 +5,10 @@ import NIOCore
 import SotoCore
 import Shared
 import Logging
+import NIOPosix
 
 struct PennyService: MainService {
-    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
+    func bootstrapLoggingSystem() async throws {
 #if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
@@ -16,7 +17,6 @@ struct PennyService: MainService {
         let webhookURL = Constants.loggingWebhookURL
 #endif
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
-            httpClient: httpClient,
             configuration: .init(
                 aliveNotice: .init(
                     address: try! .url(webhookURL),
@@ -24,7 +24,7 @@ struct PennyService: MainService {
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
-                sendFullLogAsAttachment: .enabled,
+                sendFullLogsAsAttachment: .enabled,
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
@@ -39,15 +39,15 @@ struct PennyService: MainService {
             address: try! .url(webhookURL),
             level: .trace,
             makeMainLogHandler: { label, metadataProvider in
-                StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)
+                StreamLogHandler.standardOutput(
+                    label: label,
+                    metadataProvider: metadataProvider
+                )
             }
         )
     }
 
-    func makeBot(
-        eventLoopGroup: any EventLoopGroup,
-        httpClient: HTTPClient
-    ) async throws -> any GatewayManager {
+    func makeBot() async throws -> any GatewayManager {
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
@@ -58,8 +58,6 @@ struct PennyService: MainService {
             )
         )
         return await BotGatewayManager(
-            eventLoopGroup: eventLoopGroup,
-            httpClient: httpClient,
             clientConfiguration: clientConfiguration,
             token: Constants.botToken,
             presence: .init(
@@ -67,36 +65,40 @@ struct PennyService: MainService {
                 status: .online,
                 afk: false
             ),
-            intents: [.guilds, .guildMembers, .guildMessages, .messageContent, .guildMessageReactions]
+            intents: [
+                .guilds,
+                .guildMembers,
+                .guildMessages,
+                .messageContent,
+                .guildMessageReactions,
+                .guildModeration
+            ]
         )
     }
 
     func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
         await DiscordCache(
             gatewayManager: bot,
-            intents: [.guilds, .guildMembers],
-            requestAllMembers: .enabled
+            intents: [.guilds, .guildMembers, .messageContent, .guildMessages],
+            requestAllMembers: .enabled,
+            messageCachingPolicy: .saveEditHistoryAndDeleted
         )
     }
 
     func beforeConnectCall(
         bot: any GatewayManager,
-        cache: DiscordCache,
-        httpClient: HTTPClient,
-        awsClient: AWSClient
+        cache: DiscordCache
     ) async throws -> HandlerContext {
-        let usersService = ServiceFactory.makeUsersService(
-            httpClient: httpClient,
-            apiBaseURL: Constants.apiBaseURL
-        )
-        let pingsService = DefaultPingsService(httpClient: httpClient)
-        let faqsService = DefaultFaqsService(httpClient: httpClient)
-        let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
-        let proposalsService = DefaultProposalsService(httpClient: httpClient)
-        let soService = DefaultSOService(httpClient: httpClient)
+        let awsClient = AWSClient()
+        let usersService = ServiceFactory.makeUsersService(apiBaseURL: Constants.apiBaseURL)
+        let pingsService = DefaultPingsService()
+        let faqsService = DefaultFaqsService()
+        let autoFaqsService = DefaultAutoFaqsService()
+        let evolutionService = DefaultEvolutionService()
+        let soService = DefaultSOService()
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
-        let proposalsChecker = ProposalsChecker(
-            proposalsService: proposalsService,
+        let evolutionChecker = EvolutionChecker(
+            evolutionService: evolutionService,
             discordService: discordService
         )
         let soChecker = SOChecker(
@@ -108,7 +110,7 @@ struct PennyService: MainService {
             awsClient: awsClient,
             context: .init(
                 autoFaqsService: autoFaqsService,
-                proposalsChecker: proposalsChecker,
+                evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
                 reactionCache: reactionCache
             )
@@ -122,12 +124,10 @@ struct PennyService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
-                    httpClient: httpClient,
-                    logger: Logger(label: "Penny+Leaf"),
-                    on: httpClient.eventLoopGroup.next()
+                    logger: Logger(label: "Penny+Leaf")
                 )
             ),
-            proposalsChecker: proposalsChecker,
+            evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             reactionCache: reactionCache
         )
@@ -152,7 +152,7 @@ struct PennyService: MainService {
         /// since it communicates through Discord and will need the Gateway connection.
         await context.botStateManager.start {
             /// These contain cached stuff and need to wait for `BotStateManager`.
-            context.services.proposalsChecker.run()
+            context.services.evolutionChecker.run()
             context.services.soChecker.run()
         }
     }

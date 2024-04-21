@@ -2,7 +2,6 @@
 @testable import DiscordModels
 @testable import Logging
 import DiscordGateway
-import Fake
 import Models
 import XCTest
 
@@ -18,7 +17,7 @@ class GatewayProcessingTests: XCTestCase {
         // reset the storage
         FakeResponseStorage.shared = FakeResponseStorage()
         let fakeMainService = try await FakeMainService(manager: self.manager)
-        self.context = await fakeMainService.context
+        self.context = fakeMainService.context
         Task {
             try await Penny.start(mainService: fakeMainService)
         }
@@ -273,14 +272,14 @@ class GatewayProcessingTests: XCTestCase {
         XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
     }
 
-    func testProposalsChecker() async throws {
+    func testEvolutionChecker() async throws {
         /// This tests expects the `CachesStorage` population to have worked correctly
-        /// and have already populated `ProposalsChecker.previousProposals`.
+        /// and have already populated `EvolutionChecker.previousProposals`.
 
         /// This is so the proposals are send as soon as they're queued, in tests.
-        context.services.proposalsChecker.run()
+        context.services.evolutionChecker.run()
 
-        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.proposals.id)
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.evolution.id)
         let _messages = await [
             responseStorage.awaitResponse(at: endpoint).value,
             responseStorage.awaitResponse(at: endpoint).value
@@ -431,7 +430,7 @@ class GatewayProcessingTests: XCTestCase {
             if case let .flags(flags) = response.data {
                 XCTAssertTrue(
                     flags.flags?.contains(.ephemeral) == true,
-                    "\(flags.flags?.representableValues().values ?? [])"
+                    "\(flags.flags?.representableValues() ?? [])"
                 )
             } else {
                 XCTFail("Unexpected response: \(response)")
@@ -492,7 +491,7 @@ class GatewayProcessingTests: XCTestCase {
             if case let .flags(flags) = response.data {
                 XCTAssertTrue(
                     flags.flags?.contains(.ephemeral) == true,
-                    "\(flags.flags?.representableValues().values ?? [])"
+                    "\(flags.flags?.representableValues() ?? [])"
                 )
             } else {
                 XCTFail("Unexpected response: \(response)")

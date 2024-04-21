@@ -70,9 +70,11 @@ enum Constants {
         case release = "431926479752921098"
         case jobs = "442420282292961282"
         case status = "459521920241500220"
-        case logs = "1067060193982156880"
-        case proposals = "1104650517549953094"
         case thanks = "443074453719744522"
+        case logs = "1067060193982156880"
+        case moderators = "443512396900859904"
+        case issuesAndPRs = "1123702585006768228"
+        case evolution = "1104650517549953094"
         case stackOverflow = "473249028142923787"
 
         var id: ChannelSnowflake {
@@ -89,6 +91,16 @@ enum Constants {
             Channels.jobs,
             Channels.status,
         ].map(\.id))
+
+        static let announcementChannels: Set<ChannelSnowflake> = Set([
+            Channels.news,
+            Channels.publications,
+            Channels.release,
+            Channels.jobs,
+            Channels.stackOverflow,
+            Channels.issuesAndPRs,
+            Channels.evolution,
+        ].map(\.id))
     }
 
     enum Roles: RoleSnowflake {
@@ -97,6 +109,7 @@ enum Constants {
         case sponsor = "444167329748746262"
         case contributor = "431920712505098240"
         case maintainer = "530113860129259521"
+        case automationDev = "1031520606434381824"
         case moderator = "431920836631592980"
         case core = "431919254372089857"
         
@@ -106,6 +119,7 @@ enum Constants {
             .sponsor,
             .contributor,
             .maintainer,
+            .automationDev,
             .moderator,
             .core,
         ]
@@ -113,6 +127,7 @@ enum Constants {
         static let elevatedRestrictedCommandsAccess: [Roles] = [
             .contributor,
             .maintainer,
+            .automationDev,
             .moderator,
             .core,
         ]
@@ -121,7 +136,14 @@ enum Constants {
             Roles.contributor,
             Roles.maintainer,
             Roles.moderator,
+            Roles.automationDev,
             Roles.core,
+        ].map(\.rawValue))
+
+        static let moderators: Set<RoleSnowflake> = Set([
+            Roles.automationDev,
+            Roles.moderator,
+            Roles.core
         ].map(\.rawValue))
     }
 }

@@ -550,7 +550,7 @@
       "referenced_message": null,
       "pinned": false,
       "nonce": "1029637767555973120",
-      "mentions": [ ],
+      "mentions": [],
       "mention_roles": [],
       "mention_everyone": false,
       "member": {
@@ -726,7 +726,8 @@
       },
       "channel_id": "1016614538398937098",
       "application_id": "1016612301262041098",
-      "app_permissions": "1071698665025"
+      "app_permissions": "1071698665025",
+      "entitlements": []
     }
   },
   "howManyCoins2": {
@@ -809,7 +810,8 @@
       },
       "channel_id": "1016614538398937098",
       "application_id": "1016612301262041098",
-      "app_permissions": "1071698665025"
+      "app_permissions": "1071698665025",
+      "entitlements": []
     }
   },
   "serverBoost": {

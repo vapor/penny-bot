@@ -4,21 +4,21 @@ import Foundation
 @preconcurrency import Foundation
 #endif
 
-public struct DynamoDBUser: Sendable, Codable {
-    public let id: UUID
-    public var discordID: UserSnowflake
-    public var githubID: String?
-    public var coinCount: Int
-    public let createdAt: Date
+package struct DynamoDBUser: Sendable, Codable {
+    package let id: UUID
+    package var discordID: UserSnowflake
+    package var githubID: String?
+    package var coinCount: Int
+    package let createdAt: Date
 
-    public enum CodingKeys: String, CodingKey {
+    package enum CodingKeys: String, CodingKey {
         case id
         case discordID
         case githubID
         case coinCount
         case createdAt
 
-        public var description: String {
+        package var description: String {
             self.rawValue
         }
     }
@@ -37,7 +37,7 @@ public struct DynamoDBUser: Sendable, Codable {
         self.createdAt = createdAt
     }
 
-    public static func createNew(forDiscordID discordID: UserSnowflake) -> Self {
+    package static func createNew(forDiscordID discordID: UserSnowflake) -> Self {
         DynamoDBUser(
             id: UUID(),
             discordID: discordID,

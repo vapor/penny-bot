@@ -19,18 +19,16 @@ struct GHLeafSource: LeafSource {
 
     private actor ActorGHLeafSource {
         let path: String
-        let httpClient: HTTPClient
+        let httpClient: HTTPClient = .shared
         let logger: Logger
         let queue = SerialProcessor()
         var cache: [String: ByteBuffer] = [:]
 
         init(
             path: String,
-            httpClient: HTTPClient,
             logger: Logger
         ) {
             self.path = path
-            self.httpClient = httpClient
             self.logger = logger
         }
 
@@ -50,7 +48,7 @@ struct GHLeafSource: LeafSource {
             let url = "https://raw.githubusercontent.com/vapor/penny-bot/main/\(path)/\(template)"
             let request = HTTPClientRequest(url: url)
             let response = try await httpClient.execute(request, timeout: .seconds(5))
-            let body = try await response.body.collect(upTo: 1 << 22)
+            let body = try await response.body.collect(upTo: 1 << 22) /// 4 MiB
             guard 200..<300 ~= response.status.code else {
                 throw Errors.httpRequestFailed(response, body: String(buffer: body))
             }
@@ -70,12 +68,10 @@ struct GHLeafSource: LeafSource {
 
     init(
         path: String,
-        httpClient: HTTPClient,
         logger: Logger
     ) {
         self.underlying = .init(
             path: path,
-            httpClient: httpClient,
             logger: logger
         )
     }

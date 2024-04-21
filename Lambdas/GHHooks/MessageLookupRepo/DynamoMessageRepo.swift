@@ -83,7 +83,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
 
     private func get(id: String) async throws -> Item {
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
-        logger.debug("Will get an item", metadata: [
+        logger.trace("Will get an item", metadata: [
             "id": .string(id),
             "repo-request-id": .stringConvertible(requestID),
         ])
@@ -125,7 +125,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
             logger: self.logger
         )
 
-        logger.debug("Item did save", metadata: [
+        logger.trace("Item did save", metadata: [
             "repo-request-id": .stringConvertible(requestID)
         ])
     }

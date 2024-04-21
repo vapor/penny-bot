@@ -9,15 +9,14 @@ import DiscordModels
 import Models
 
 struct DefaultUsersService: UsersService {
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     let apiBaseURL: String
     let logger = Logger(label: "DefaultUsersService")
 
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
     
-    init(httpClient: HTTPClient, apiBaseURL: String) {
-        self.httpClient = httpClient
+    init(apiBaseURL: String) {
         self.apiBaseURL = apiBaseURL
     }
 
@@ -37,7 +36,7 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        let body = try await response.body.collect(upTo: 1 << 24)
+        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
 
         guard 200..<300 ~= response.status.code else {
             logger.error("Get-coin-count failed", metadata: [
@@ -67,7 +66,7 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        let body = try await response.body.collect(upTo: 1 << 24)
+        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
 
         guard 200..<300 ~= response.status.code else {
             logger.error("Get-coin-count failed", metadata: [
@@ -97,7 +96,7 @@ struct DefaultUsersService: UsersService {
         )
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
-        let body = try await response.body.collect(upTo: 1 << 24)
+        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
 
         guard 200..<300 ~= response.status.code else {
             logger.error( "Post-coin failed", metadata: [
@@ -132,7 +131,7 @@ struct DefaultUsersService: UsersService {
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let collected = try? await response.body.collect(upTo: 1 << 16) /// 64 KiB
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error("Link-GitHub-id failed", metadata: [
                 "status": "\(response.status)",
@@ -160,7 +159,7 @@ struct DefaultUsersService: UsersService {
         logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
 
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let collected = try? await response.body.collect(upTo: 1 << 16) /// 64 KiB
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error("Unlink-GitHub-id failed", metadata: [
                 "status": "\(response.status)",
@@ -193,7 +192,7 @@ struct DefaultUsersService: UsersService {
         ]
 
         let response = try await httpClient.execute(request, timeout: .seconds(5))
-        let body = try await response.body.collect(upTo: 1 << 22)
+        let body = try await response.body.collect(upTo: 1 << 22) /// 4 MiB
 
         logger.debug("Got user response from id", metadata: [
             "status": .stringConvertible(response.status),

@@ -1,6 +1,6 @@
-public enum AuthorizationHeader: Sendable {
+package enum AuthorizationHeader: Sendable {
     /// The `Bool` is `isRetry`.
-    public typealias BearerComputer = @Sendable (Bool) async throws -> String
+    package typealias BearerComputer = @Sendable (Bool) async throws -> String
 
     case bearer(String)
     case computedBearer(BearerComputer)

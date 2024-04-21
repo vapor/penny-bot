@@ -1,6 +1,6 @@
 
 extension User {
-    public var isBot: Bool {
+    package var isBot: Bool {
         self._type == "Bot"
     }
 }

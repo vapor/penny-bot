@@ -36,11 +36,11 @@ struct IssueHandler: Sendable {
         switch self.action {
         case .opened:
             try await self.onOpened()
-        case .closed, .deleted, .locked, .reopened, .unlocked, .edited:
+        case .closed, .deleted, .locked, .reopened, .unlocked, .edited, .labeled, .unlabeled:
             try await self.onEdited()
         case .transferred:
             try await self.onTransferred()
-        case .assigned, .labeled, .demilestoned, .milestoned, .pinned, .unassigned, .unlabeled, .unpinned:
+        case .assigned, .demilestoned, .milestoned, .pinned, .unassigned, .unpinned:
             break
         }
     }
@@ -55,7 +55,9 @@ struct IssueHandler: Sendable {
     }
 
     func onEdited() async throws {
-        try await self.makeReporter().reportEdition()
+        try await self.makeReporter().reportEdition(
+            requiresPreexistingReport: self.action == .labeled
+        )
     }
 
     func onOpened() async throws {
@@ -74,7 +76,9 @@ struct IssueHandler: Sendable {
         try await self.makeReporter(
             embedIssue: newIssue,
             embedRepo: changes.new_repository
-        ).reportEdition()
+        ).reportEdition(
+            requiresPreexistingReport: self.action == .labeled
+        )
         try await self.context.messageLookupRepo.markAsUnavailable(
             repoID: repo.id,
             number: self.issue.number
@@ -99,7 +103,7 @@ struct IssueHandler: Sendable {
             createdAt: self.issue.created_at,
             repoID: self.repo.id,
             number: self.issue.number, 
-            authorID: self.issue.user.id
+            authorID: self.issue.user.requireValue().id
         )
     }
 
@@ -129,15 +133,16 @@ struct IssueHandler: Sendable {
         let status = Status(issue: issue)
         let statusString = status.titleDescription.map { " - \($0)" } ?? ""
         let title = "[\(repo.uiName)] Issue #\(number)\(statusString)".unicodesPrefix(256)
+        let user = try issue.user.requireValue()
 
-        let member = try await context.requester.getDiscordMember(githubID: "\(issue.user.id)")
-        let authorName = (member?.uiName).map { "@\($0)" } ?? issue.user.uiName
+        let member = try await context.requester.getDiscordMember(githubID: "\(user.id)")
+        let authorName = (member?.uiName).map { "@\($0)" } ?? user.uiName
 
-        var iconURL = member?.uiAvatarURL ?? issue.user.avatar_url
+        var iconURL = member?.uiAvatarURL ?? user.avatar_url
         var footer = "By \(authorName)"
         if  let verb = status.closedByVerb,
             let closedBy = try await self.maybeGetClosedByUser() {
-            if closedBy.id == issue.user.id {
+            if closedBy.id == issue.user?.id {
                 /// The same person opened and closed the issue.
                 footer = "Filed & \(verb) by \(authorName)"
             } else {
@@ -174,21 +179,13 @@ struct IssueHandler: Sendable {
         if action == .closed {
             return (event.sender.id, event.sender.uiName)
         } else {
-            let response = try await context.githubClient.issues_get(.init(
+            return try await context.githubClient.issues_get(
                 path: .init(
                     owner: repo.owner.login,
                     repo: repo.name,
                     issue_number: issue.number
                 )
-            ))
-
-            guard case let .ok(ok) = response,
-                  case let .json(json) = ok.body
-            else {
-                throw Errors.httpRequestFailed(response: response)
-            }
-
-            return json.closed_by.map {
+            ).ok.body.json.closed_by.map {
                 ($0.id, $0.uiName)
             }
         }
@@ -198,6 +195,7 @@ struct IssueHandler: Sendable {
 private enum Status: String {
     case done = "Done"
     case notPlanned = "Not Planned"
+    case duplicate = "Duplicate"
     case open = "Open"
 
     var color: DiscordColor {
@@ -206,6 +204,8 @@ private enum Status: String {
             return .teal
         case .notPlanned:
             return .gray(level: .level2, scheme: .dark)
+        case .duplicate:
+            return .mint
         case .open:
             return .yellow
         }
@@ -213,7 +213,7 @@ private enum Status: String {
 
     var titleDescription: String? {
         switch self {
-        case .done, .notPlanned:
+        case .done, .notPlanned, .duplicate:
             return self.rawValue
         case .open:
             return nil
@@ -224,7 +224,7 @@ private enum Status: String {
         switch self {
         case .done:
             return "Resolved"
-        case .notPlanned:
+        case .notPlanned, .duplicate:
             return "Closed"
         case .open:
             return nil
@@ -232,7 +232,9 @@ private enum Status: String {
     }
 
     init(issue: Issue) {
-        if issue.state_reason == .not_planned {
+        if issue.knownLabels.contains(.duplicate) {
+            self = .duplicate
+        } else if issue.state_reason == .not_planned {
             self = .notPlanned
         } else if issue.closed_at != nil {
             self = .done

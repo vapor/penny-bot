@@ -10,7 +10,7 @@ import NIOHTTP1
 
 actor DefaultFaqsService: FaqsService {
 
-    var httpClient: HTTPClient!
+    let httpClient: HTTPClient = .shared
     var logger = Logger(label: "DefaultFaqsService")
 
     /// Use `getAll()` to retrieve.
@@ -23,8 +23,7 @@ actor DefaultFaqsService: FaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
+    init() {
         Task {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()
@@ -81,7 +80,7 @@ actor DefaultFaqsService: FaqsService {
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
 
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let collected = try? await response.body.collect(upTo: 1 << 16) /// 64 KiB
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error("Faqs-service failed", metadata: [
                 "status": "\(response.status)",
@@ -91,7 +90,7 @@ actor DefaultFaqsService: FaqsService {
             throw ServiceError.badStatus(response.status)
         }
 
-        let body = try await response.body.collect(upTo: 1 << 24)
+        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
         let items = try decoder.decode([String: String].self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()

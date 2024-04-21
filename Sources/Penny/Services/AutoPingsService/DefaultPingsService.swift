@@ -11,7 +11,7 @@ import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
     
-    let httpClient: HTTPClient
+    let httpClient: HTTPClient = .shared
     var logger = Logger(label: "DefaultPingsService")
     
     /// Use `getAll()` to retrieve.
@@ -23,8 +23,7 @@ actor DefaultPingsService: AutoPingsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient) {
-        self.httpClient = httpClient
+    init() {
         Task {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()
@@ -118,7 +117,7 @@ actor DefaultPingsService: AutoPingsService {
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
         
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
+            let collected = try? await response.body.collect(upTo: 1 << 16) /// 64 KiB
             let body = collected.map { String(buffer: $0) } ?? "nil"
             logger.error( "Pings-service failed", metadata: [
                 "status": "\(response.status)",
@@ -128,7 +127,7 @@ actor DefaultPingsService: AutoPingsService {
             throw ServiceError.badStatus(response.status)
         }
         
-        let body = try await response.body.collect(upTo: 1 << 24)
+        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
         let items = try decoder.decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()

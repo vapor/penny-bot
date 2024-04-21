@@ -1,57 +1,110 @@
 import Markdown
 
 extension String {
-    /// Formats markdown in a way that looks nice on Discord, but still good on GitHub.
+    /// Formats markdown in a way that looks decent on both Discord and GitHub at the same time.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
+    /// 
+    /// Or, better yet, nag the code author to add more comments to things that are complicated and confusing.
     func formatMarkdown(
         maxVisualLength: Int,
         hardLimit: Int,
         trailingTextMinLength: Int
     ) -> String {
-        assert(maxVisualLength > 0, "Can't request a non-positive maximum.")
-        assert(hardLimit > 0, "Can't use a non-positive maximum.")
+        assert(maxVisualLength > 0, "Maximum visual length must be greater than zero (got \(maxVisualLength)).")
+        assert(hardLimit > 0, "Hard length limit must be greater than zero (got \(hardLimit)).")
         assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
 
-        let document1 = Document(parsing: self)
+        /// Interpret urls like GitHub does.
+        /// For example GitHub changes `https://github.com/vapor/penny-bot/issues/99` to
+        /// `[vapor/penny-bot#99](https://github.com/vapor/penny-bot/issues/99)` which
+        /// ends up looking like a blue `vapor/penny-bot#99` text linked to the url.
+        let regex = #/
+            https://(?:www\.)?github\.com
+            /(?<org>[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)
+            /(?<repo>[A-Za-z0-9.\-_]+)
+            /(?:pull|issues)
+            /(?<number>\d+)
+        /#
+        let withModifiedLinks = self.replacing(regex) { match in
+            let current = self[match.range]
+            /// `match.output` is a `Range<Index>` which means it's `..<`.
+            /// So the character at `index == upperBound` is not part of the match.
+            if match.range.upperBound < self.endIndex,
+               /// `offsetBy: 2` is guaranteed to exist because the string must contain
+               /// `github` based on the regex above, so it has more length than 3.
+               match.range.lowerBound > self.index(self.startIndex, offsetBy: 2) {
+                /// All 3 indexes below are guaranteed to exist based on the range check above.
+                let before = self.index(before: match.range.lowerBound)
+                let beforeBefore = self.index(before: before)
+                /// Is surrounded like `STR` in `](STR)` or not.
+                let isSurroundedInSomePuncs = self[beforeBefore] == "]" &&
+                self[before] == "(" &&
+                self[match.range.upperBound] == ")"
+                /// If it's surrounded in the punctuations above, it
+                /// might already be a link, so don't manipulate it.
+                if isSurroundedInSomePuncs { return current }
+            }
+            let output = match.output
+            return "[\(output.org)/\(output.repo)#\(output.number)](\(current))"
+        }
+
+        /// Remove all HTML elements and all links lacking a destination; they don't look good in Discord.
+        let document1 = Document(parsing: withModifiedLinks)
         var htmlRemover = HTMLAndImageRemover()
         guard let markup1 = htmlRemover.visit(document1) else { return "" }
         var emptyLinksRemover = EmptyLinksRemover()
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
-        let prefixed = markup2
+        var didRemoveMarkdownElement = false
+        var (remaining, prefixed) = markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
-        let document2 = Document(parsing: prefixed)
-        var paragraphCounter = ParagraphCounter()
-        paragraphCounter.visit(document2)
-        let paragraphCount = paragraphCounter.count
-        if ![0, 1].contains(paragraphCount) {
-            var paragraphRemover = ParagraphRemover(
-                atCount: paragraphCount,
-                ifShorterThan: trailingTextMinLength
-            )
-            if let markup = paragraphRemover.visit(document2) {
-                markup2 = markup
+
+        /// Remove the last paragraph if it's too small to be useful.
+        if remaining == 0 {
+            let document2 = Document(parsing: prefixed)
+            var paragraphCounter = ParagraphCounter()
+            paragraphCounter.visit(document2)
+            let paragraphCount = paragraphCounter.count
+            if paragraphCount > 1 {
+                var paragraphRemover = ParagraphRemover(
+                    atCount: paragraphCount,
+                    ifShorterThan: trailingTextMinLength
+                )
+                if let markup = paragraphRemover.visit(document2) {
+                    /// the `||` doesn't do anything as of now, but it might prevent some headache
+                    /// if someone changes something in the code in the future.
+                    didRemoveMarkdownElement = didRemoveMarkdownElement || paragraphRemover.didModify
+                    markup2 = markup
+                    /// Update `prefixed`
+                    prefixed = markup2
+                        .format(options: .default)
+                        .trimmingForMarkdown()
+                        .markdownUnicodesPrefix(maxVisualLength)
+                }
             }
         }
 
-        var prefixed2 = markup2
-            .format(options: .default)
-            .trimmingForMarkdown()
-            .markdownUnicodesPrefix(maxVisualLength)
-        var document3 = Document(parsing: prefixed2)
-        if let last = Array(document3.blockChildren).last,
+        /// If the final block element is a heading, remove it (cosmetics again)
+        var document3 = Document(parsing: prefixed)
+        if let last = document3.blockChildren.suffix(1).first,
            last is Heading {
+            didRemoveMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
-            prefixed2 = document3
+            prefixed = document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .markdownUnicodesPrefix(maxVisualLength)
         }
 
-        return prefixed2.unicodesPrefix(hardLimit)
+        if didRemoveMarkdownElement {
+            /// Append a new line + dots at the end to suggest that the text has not ended.
+            prefixed += "\n\u{2026}"
+        }
+
+        return prefixed.unicodesPrefix(hardLimit)
     }
 
     private func trimmingForMarkdown() -> String {
@@ -100,21 +153,11 @@ extension String {
         let newDocument = Document(headingFinder.accumulated)
         return newDocument.format(options: .default)
     }
-
-    func quotedMarkdown() -> String {
-        self.split(
-            omittingEmptySubsequences: false,
-            whereSeparator: \.isNewline
-        ).map {
-            "> \($0)"
-        }.joined(
-            separator: "\n"
-        )
-    }
 }
 
 private extension MarkupFormatter.Options {
-    static let `default` = Self()
+    /// It's safe but apparently the underlying type doesn't declare a proper conditional Sendable conformance.
+    static nonisolated(unsafe) let `default` = Self()
 }
 
 private struct HTMLAndImageRemover: MarkupRewriter {
@@ -145,6 +188,7 @@ private struct ParagraphRemover: MarkupRewriter {
     let atCount: Int
     let ifShorterThan: Int
     var count = 0
+    var didModify = false
 
     init(atCount: Int, ifShorterThan: Int) {
         self.atCount = atCount
@@ -158,6 +202,7 @@ private struct ParagraphRemover: MarkupRewriter {
             var lengthCounter = MarkupLengthCounter()
             lengthCounter.visit(paragraph)
             if lengthCounter.length < ifShorterThan {
+                self.didModify = true
                 return nil
             } else {
                 return paragraph

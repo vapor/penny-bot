@@ -1,6 +1,6 @@
 import Logging
 import DiscordBM
-@preconcurrency import Collections
+import Collections
 import Foundation
 
 /// Cache for reactions-related stuff.
@@ -121,8 +121,8 @@ actor ReactionCache {
         channelId: ChannelSnowflake,
         messageId: MessageSnowflake,
         discordService: DiscordService
-    ) async -> DiscordChannel.Message? {
-        guard let message = await discordService.getPossiblyCachedChannelMessage(
+    ) async -> AnyMessage? {
+        guard let message = await discordService.getChannelMessage(
             channelId: channelId,
             messageId: messageId
         ) else {
