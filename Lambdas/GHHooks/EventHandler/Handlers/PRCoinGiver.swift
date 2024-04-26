@@ -62,13 +62,21 @@ struct PRCoinGiver {
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
                     content: DiscordUtils.mention(id: discordID),
-                    embeds: [.init(
-                        description: """
-                        Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
-                        You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
-                        """,
-                        color: .blue
-                    )]
+                    embeds: [
+                        .init(
+                            description: """
+                            Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
+                            You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
+                            """,
+                            color: .blue
+                        ),
+                        .init(
+                            description: """
+                            Want coins too? Link your GitHub account to take credit for your contributions. Try `/github link` for more info.
+                            """,
+                            color: .green
+                        ),
+                    ]
                 )
             ).guardSuccess()
         }

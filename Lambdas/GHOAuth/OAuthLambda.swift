@@ -162,7 +162,7 @@ struct GHOAuthHandler: LambdaHandler {
             """
         )
 
-        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
+        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now.")
     }
 
     func getGHAccessToken(code: String) async throws -> String {
