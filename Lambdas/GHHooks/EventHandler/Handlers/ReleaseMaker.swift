@@ -270,12 +270,10 @@ struct ReleaseMaker {
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
-        if pr.author_association == .OWNER ||
-            pr.user.isBot ||
-            codeOwners.contains(user: pr.user) {
-            return false
-        }
-        return !existingContributors.contains(pr.user.id)
+        pr.author_association != .OWNER &&
+        !pr.user.isBot &&
+        !codeOwners.contains(user: pr.user) &&
+        !existingContributors.contains(pr.user.id)
     }
 
     func getReviewComments() async throws -> [PullRequestReviewComment] {
@@ -299,21 +297,63 @@ struct ReleaseMaker {
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
+        var page = 1
+        var contributorIds: [Int] = []
+        /// Hack: Vapor has around this amount of contributors and we know it, so better
+        /// to reserve enough capacity for it up-front.
+        contributorIds.reserveCapacity(250)
+        while true {
+            let (ids, hasNext) = try await self.getExistingContributorIDs(page: page)
+            if ids.isEmpty {
+                break
+            }
+            contributorIds.append(contentsOf: consume ids)
+            guard hasNext else { break }
+            page += 1
+        }
+        return Set(contributorIds)
+    }
+
+    func getExistingContributorIDs(page: Int) async throws -> (ids: [Int], hasNext: Bool) {
+        logger.debug("Will fetch current contributors", metadata: [
+            "page": .stringConvertible(page)
+        ])
+
         let response = try await context.githubClient.repos_list_contributors(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
+            ),
+            query: .init(
+                per_page: 100,
+                page: page
             )
         )
 
         if case let .ok(ok) = response,
            case let .json(json) = ok.body {
-            return Set(json.compactMap(\.id))
+            /// Example of a `link` header: `<https://api.github.com/repositories/49910095/contributors?page=6>; rel="prev", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="next", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="last", <https://api.github.com/repositories/49910095/contributors?page=1>; rel="first"`
+            /// If the header contains `rel="next"` then we'll have a next page to fetch.
+            let hasNext = switch ok.headers.Link {
+            case let .case1(string):
+                string.contains(#"rel="next""#)
+            case let .case2(strings):
+                strings.contains { $0.contains(#"rel="next""#) }
+            case .none:
+                false
+            }
+            let ids = json.compactMap(\.id)
+            logger.debug("Fetched some contributors", metadata: [
+                "page": .stringConvertible(page),
+                "count": .stringConvertible(ids.count)
+            ])
+            return (ids, hasNext)
         } else {
-            logger.warning("Could not find current contributors", metadata: [
+            logger.error("Error when fetching contributors but will continue", metadata: [
+                "page": .stringConvertible(page),
                 "response": "\(response)"
             ])
-            return []
+            return ([], false)
         }
     }
 }
