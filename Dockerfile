@@ -25,7 +25,8 @@ COPY . .
 
 # Build everything, with optimizations, with static linking, and using jemalloc
 # N.B.: The static version of jemalloc is incompatible with the static Swift runtime.
-RUN swift build -c release \
+RUN swift build \
+        -c release \
         --product Penny \
         --static-swift-stdlib \
         -Xlinker -ljemalloc

@@ -6,21 +6,26 @@ on:
   push: { branches: [main] }
 
 jobs:
-  deploy: 
+  deploy:
     name: Deploy Stack
+
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
-          aws-region: 'eu-west-1'
+          aws-region: "eu-west-1"
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
@@ -33,7 +38,8 @@ jobs:
           # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >>"${GITHUB_OUTPUT}"
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -41,12 +47,14 @@ jobs:
           task-definition: ./deploy/penny-discord-bot-task.json
           container-name: penny-bot
           image: ${{ steps.build-image.outputs.image }}
+
       - name: Deploy to Amazon ECS Service
         id: task-dep
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           wait-for-service-stability: true
+
       - name: Deploy to AWS cloudformation
         uses: aws-actions/aws-cloudformation-github-deploy@v1
         with:

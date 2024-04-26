@@ -1,10 +1,10 @@
-name: test
+name: tests
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 on:
   pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
-  push: { branches: [ main ] }
+  push: { branches: [main] }
 
 jobs:
   unit-tests:
@@ -13,15 +13,16 @@ jobs:
       with_coverage: false
       with_tsan: false
       with_public_api_check: false
+      with_deps_submission: true
       with_gh_codeql: false # Temporary, until the action actually works
 
   cloudformation-lint:
     name: Check CloudFormation
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-    - name: Setup and run CloudFormation lint
-      uses: ScottBrenner/cfn-lint-action@v2
-      with:
-        command: cfn-lint -t ./deploy/penny-discord-bot-stack.yml
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup and run CloudFormation lint
+        uses: ScottBrenner/cfn-lint-action@v2
+        with:
+          command: cfn-lint -t ./deploy/penny-discord-bot-stack.yml
