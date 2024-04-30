@@ -454,6 +454,7 @@ private extension Proposal.Status.State {
     var color: DiscordColor {
         switch self {
         case .accepted: return .green
+        case .acceptedWithRevisions: return .green(scheme: .dark)
         case .activeReview: return .orange
         case .scheduledForReview: return .yellow
         case .awaitingReview: return .yellow
@@ -469,6 +470,7 @@ private extension Proposal.Status.State {
     var UIDescription: String? {
         switch self {
         case .accepted: return "Accepted"
+        case .acceptedWithRevisions: return "Accepted With Revisions"
         case .activeReview: return "Active Review"
         case .scheduledForReview: return "Scheduled For Review"
         case .awaitingReview: return "Awaiting Review"
@@ -501,6 +503,7 @@ struct Proposal: Sendable, Codable {
 
         enum State: RawRepresentable, Equatable, Sendable, Codable {
             case accepted
+            case acceptedWithRevisions
             case activeReview
             case scheduledForReview
             case awaitingReview
@@ -515,6 +518,7 @@ struct Proposal: Sendable, Codable {
             var rawValue: String {
                 switch self {
                 case .accepted: return ".accepted"
+                case .acceptedWithRevisions: return ".acceptedWithRevisions"
                 case .activeReview: return ".activeReview"
                 case .scheduledForReview: return ".scheduledForReview"
                 case .awaitingReview: return ".awaitingReview"
@@ -531,6 +535,7 @@ struct Proposal: Sendable, Codable {
             init? (rawValue: String) {
                 switch rawValue {
                 case ".accepted": self = .accepted
+                case ".acceptedWithRevisions": self = .acceptedWithRevisions
                 case ".activeReview": self = .activeReview
                 case ".scheduledForReview": self = .scheduledForReview
                 case ".awaitingReview": self = .awaitingReview

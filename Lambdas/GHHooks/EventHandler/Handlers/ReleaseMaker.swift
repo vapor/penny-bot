@@ -203,7 +203,7 @@ struct ReleaseMaker {
                 """
             ))
         ).ok.body.json
-        logger.debug("Update a pull request with a release notice", metadata: [
+        logger.debug("Updated a pull request with a release notice", metadata: [
             "before": "\(current)",
             "after": "\(updated)"
         ])
