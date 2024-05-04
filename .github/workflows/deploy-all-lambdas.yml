@@ -38,7 +38,8 @@ jobs:
                 .type == "executable"
               and
                 (.name | endswith("Lambda"))
-              ).name'
+              ).name' | \
+            tr '\n' ' '
           )" >> $GITHUB_OUTPUT
 
       - name: Build and package
