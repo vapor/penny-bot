@@ -38,6 +38,8 @@ package protocol APIProtocol: Sendable {
     func projects_get_card(_ input: Operations.projects_get_card.Input) async throws -> Operations.projects_get_card.Output
     /// Update an existing project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
     func projects_update_card(_ input: Operations.projects_update_card.Input) async throws -> Operations.projects_update_card.Output
@@ -50,6 +52,8 @@ package protocol APIProtocol: Sendable {
     func projects_delete_card(_ input: Operations.projects_delete_card.Input) async throws -> Operations.projects_delete_card.Output
     /// Move a project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
     func projects_move_card(_ input: Operations.projects_move_card.Input) async throws -> Operations.projects_move_card.Output
@@ -61,6 +65,8 @@ package protocol APIProtocol: Sendable {
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
     func projects_get_column(_ input: Operations.projects_get_column.Input) async throws -> Operations.projects_get_column.Output
     /// Update an existing project column
+    ///
+    ///
     ///
     /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
@@ -81,10 +87,14 @@ package protocol APIProtocol: Sendable {
     func projects_list_cards(_ input: Operations.projects_list_cards.Input) async throws -> Operations.projects_list_cards.Output
     /// Create a project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
     func projects_create_card(_ input: Operations.projects_create_card.Input) async throws -> Operations.projects_create_card.Output
     /// Move a project column
+    ///
+    ///
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
@@ -419,6 +429,8 @@ package protocol APIProtocol: Sendable {
     func repos_get_latest_release(_ input: Operations.repos_get_latest_release.Input) async throws -> Operations.repos_get_latest_release.Output
     /// List repository tags
     ///
+    ///
+    ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
     func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws -> Operations.repos_list_tags.Output
@@ -479,6 +491,8 @@ extension APIProtocol {
     }
     /// Update an existing project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
     package func projects_update_card(
@@ -509,6 +523,8 @@ extension APIProtocol {
     }
     /// Move a project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
     package func projects_move_card(
@@ -538,6 +554,8 @@ extension APIProtocol {
         ))
     }
     /// Update an existing project column
+    ///
+    ///
     ///
     /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
@@ -586,6 +604,8 @@ extension APIProtocol {
     }
     /// Create a project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
     package func projects_create_card(
@@ -600,6 +620,8 @@ extension APIProtocol {
         ))
     }
     /// Move a project column
+    ///
+    ///
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
@@ -1209,6 +1231,8 @@ extension APIProtocol {
         ))
     }
     /// List repository tags
+    ///
+    ///
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
@@ -20068,6 +20092,8 @@ package enum Operations {
     }
     /// Update an existing project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
     package enum projects_update_card {
@@ -20605,6 +20631,8 @@ package enum Operations {
         }
     }
     /// Move a project card
+    ///
+    ///
     ///
     /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
@@ -21300,6 +21328,8 @@ package enum Operations {
         }
     }
     /// Update an existing project column
+    ///
+    ///
     ///
     /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
@@ -21998,6 +22028,8 @@ package enum Operations {
     }
     /// Create a project card
     ///
+    ///
+    ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
     package enum projects_create_card {
@@ -22481,6 +22513,8 @@ package enum Operations {
         }
     }
     /// Move a project column
+    ///
+    ///
     ///
     /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
     /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
@@ -31214,6 +31248,8 @@ package enum Operations {
         }
     }
     /// List repository tags
+    ///
+    ///
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
