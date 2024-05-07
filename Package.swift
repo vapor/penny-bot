@@ -237,11 +237,11 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
         /// Data-race-free initial values for stored properties.
-            .enableUpcomingFeature("IsolatedDefaultValues"),
+//            .enableUpcomingFeature("IsolatedDefaultValues"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
         /// Enable automatic safety features for global (and some local) variables.
-            .enableExperimentalFeature("GlobalConcurrency"),
+//            .enableExperimentalFeature("GlobalConcurrency"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
         /// Enable the full potential of typed throws.
