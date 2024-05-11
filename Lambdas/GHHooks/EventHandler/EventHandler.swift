@@ -30,7 +30,7 @@ struct EventHandler: Sendable {
 
     func onPing() async throws {
         try await context.discordClient.createMessage(
-            channelId: Constants.Channels.logs.id,
+            channelId: Constants.Channels.botLogs.id,
             payload: .init(embeds: [.init(
                 title: "Ping events should not reach here",
                 description: """
@@ -45,7 +45,7 @@ struct EventHandler: Sendable {
 
     func onSponsorship() async throws {
         try await context.discordClient.createMessage(
-            channelId: Constants.Channels.logs.id,
+            channelId: Constants.Channels.botLogs.id,
             payload: .init(embeds: [.init(
                 title: "Got Sponsorship payload. Check the logs!",
                 description: """
@@ -59,7 +59,7 @@ struct EventHandler: Sendable {
 
     func onDefault() async throws {
         try await context.discordClient.createMessage(
-            channelId: Constants.Channels.logs.id,
+            channelId: Constants.Channels.botLogs.id,
             payload: .init(embeds: [.init(
                 title: "Received UNHANDLED event \(context.eventName)",
                 description: """

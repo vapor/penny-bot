@@ -71,7 +71,7 @@ struct GHHooksHandler: LambdaHandler {
             do {
                 /// Report to Discord server for easier notification of maintainers
                 try await discordClient.createMessage(
-                    channelId: Constants.Channels.logs.id,
+                    channelId: Constants.Channels.botLogs.id,
                     payload: .init(
                         content: DiscordUtils.mention(id: Constants.botDevUserID),
                         embeds: [.init(

@@ -47,7 +47,7 @@ struct MessageDeleteHandler {
             return
         }
         await discordService.sendMessage(
-            channelId: Constants.Channels.moderators.id,
+            channelId: Constants.Channels.modLogs.id,
             payload: .init(
                 messages: messages,
                 author: author
