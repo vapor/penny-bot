@@ -242,7 +242,7 @@ struct GHOAuthHandler: LambdaHandler {
     func logErrorToDiscord(_ error: String) async {
         do {
             try await discordClient.createMessage(
-                channelId: Constants.Channels.logs.id,
+                channelId: Constants.Channels.botLogs.id,
                 payload: .init(embeds: [.init(
                     description: """
                     Error in GHHooks Lambda:

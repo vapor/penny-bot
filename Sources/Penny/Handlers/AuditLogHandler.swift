@@ -31,7 +31,7 @@ struct AuditLogHandler {
                 return
             }
             await discordService.sendMessage(
-                channelId: Constants.Channels.moderators.id,
+                channelId: Constants.Channels.modLogs.id,
                 payload: .init(
                     embeds: [.init(
                         title: "A user was banned",
@@ -61,7 +61,7 @@ struct AuditLogHandler {
                 return
             }
             await discordService.sendMessage(
-                channelId: Constants.Channels.moderators.id,
+                channelId: Constants.Channels.modLogs.id,
                 payload: .init(
                     embeds: [.init(
                         title: "A message was deleted",
@@ -92,7 +92,7 @@ struct AuditLogHandler {
                 return
             }
             await discordService.sendMessage(
-                channelId: Constants.Channels.moderators.id,
+                channelId: Constants.Channels.modLogs.id,
                 payload: .init(
                     embeds: [.init(
                         title: "Messages were bulk-deleted",

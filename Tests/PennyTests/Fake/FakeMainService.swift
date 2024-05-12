@@ -112,7 +112,7 @@ actor FakeMainService: MainService {
         /// Wait for the shutdown signal, then send a `didShutdown` signal.
         /// in practice, the `didShutdown` signal is sent by another Penny that is online.
         while let possibleSignal = await FakeResponseStorage.shared.awaitResponse(
-            at: .createMessage(channelId: Constants.Channels.logs.id)
+            at: .createMessage(channelId: Constants.Channels.botLogs.id)
         ).value as? Payloads.CreateMessage {
             if let signal = possibleSignal.content,
                StateManagerSignal.shutdown.isInMessage(signal) {
@@ -121,7 +121,7 @@ actor FakeMainService: MainService {
                     opcode: .dispatch,
                     data: .messageCreate(.init(
                         id: try! .makeFake(),
-                        channel_id: Constants.Channels.logs.id,
+                        channel_id: Constants.Channels.botLogs.id,
                         author: DiscordUser(
                             id: Snowflake(Constants.botId),
                             username: "Penny",

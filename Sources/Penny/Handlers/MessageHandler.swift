@@ -232,7 +232,7 @@ struct MessageHandler {
 
             /// Identify if this could be a test message by the bot-dev.
             let mightBeATestMessage = userId == Constants.botDevUserId
-            && event.channel_id == Constants.Channels.logs.id
+            && event.channel_id == Constants.Channels.botLogs.id
             
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.

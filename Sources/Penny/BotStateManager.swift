@@ -65,7 +65,7 @@ actor BotStateManager {
     
     private func checkIfItsASignal(event: Gateway.Event) {
         guard case let .messageCreate(message) = event.data,
-              message.channel_id == Constants.Channels.logs.id,
+              message.channel_id == Constants.Channels.botLogs.id,
               let author = message.author,
               author.id == Constants.botId,
               let otherId = message.content.split(whereSeparator: \.isWhitespace).last
@@ -112,7 +112,7 @@ actor BotStateManager {
     private func send(_ signal: StateManagerSignal) async {
         let content = makeSignalMessage(text: signal.rawValue, id: self.id)
         await services.discordService.sendMessage(
-            channelId: Constants.Channels.logs.id,
+            channelId: Constants.Channels.botLogs.id,
             payload: .init(content: content)
         )
     }
