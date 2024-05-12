@@ -1,5 +1,5 @@
 {
-  "originHash" : "d7c48ade31a3b0a5c80155f226d1d78d74c84f34a24e5f48b0cad20b760bfaea",
+  "originHash" : "0992b6258fbc9ce0910245e4efa7688e1527f3d32738a11879cf5e2557078069",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -16,7 +16,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "88a9002310724ddb51346b54fc8caf9ce77e32da"
+        "revision" : "52fe13121d24dc9a250fec4fc969ccec06357961"
       }
     },
     {
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "d7b92b11ee18de64546d7ba19098c30a472d31d8",
-        "version" : "7.0.0-beta.1"
+        "revision" : "07da2b32eecf20ed5ffa21723ec7b2d5429009b7",
+        "version" : "7.0.0-rc.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "93c2d7196400f3b5f0af9e7c172f88e2dac5ff70",
-        "version" : "7.0.0-beta.1"
+        "revision" : "86145a0e6a5091bf124fc18aa029698c4c419b1a",
+        "version" : "7.0.0-rc.1"
       }
     },
     {
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "f0525da24dc3c6cbb2b6b338b65042bc91cbc4bb",
-        "version" : "3.3.0"
+        "revision" : "bc1c29221f6dfeb0ebbfbc98eb95cd3d4967868e",
+        "version" : "3.4.0"
       }
     },
     {
