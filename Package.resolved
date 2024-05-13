@@ -16,7 +16,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "52fe13121d24dc9a250fec4fc969ccec06357961"
+        "revision" : "f24949ac28742c9c4da8a669ec22628ca299a23b"
       }
     },
     {
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/leaf-kit.git",
       "state" : {
-        "revision" : "f6a08a164f19a64262d1d9828403ce4a0b60d970",
-        "version" : "1.10.5"
+        "revision" : "547e48cc5f8d98380dd8a7226ce630d3aa3b2245",
+        "version" : "1.10.6"
       }
     },
     {
@@ -168,8 +168,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-distributed-tracing.git",
       "state" : {
-        "revision" : "7fbb8b23b77ee548b3d0686b6faf735c1b3c7cb8",
-        "version" : "1.1.0"
+        "revision" : "11c756c5c4d7de0eeed8595695cadd7fa107aa19",
+        "version" : "1.1.1"
       }
     },
     {
