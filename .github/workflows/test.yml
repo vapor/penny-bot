@@ -12,7 +12,7 @@ jobs:
     with:
       with_coverage: false
       with_tsan: false
-      with_public_api_check: false
+      with_api_check: false
       with_deps_submission: true
       with_gh_codeql: false # Temporary, until the action actually works
 
