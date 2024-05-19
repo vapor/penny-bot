@@ -19,7 +19,7 @@ struct GHOAuthHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
-    let client: HTTPClient = .shared
+    let client: HTTPClient
     let secretsRetriever: SecretsRetriever
     let userService: any UsersService
     let signers: JWTSigners
@@ -38,13 +38,17 @@ struct GHOAuthHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
+        self.client = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
         self.logger = context.logger
 
-        let awsClient = AWSClient()
+        let awsClient = AWSClient(httpClientProvider: .shared(client))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         let apiBaseURL = try requireEnvVar("API_BASE_URL")
-        self.userService = ServiceFactory.makeUsersService(apiBaseURL: apiBaseURL)
+        self.userService = ServiceFactory.makeUsersService(
+            httpClient: client,
+            apiBaseURL: apiBaseURL
+        )
 
         signers = JWTSigners()
         signers.use(.es256(key: try getJWTSignersPublicKey()))

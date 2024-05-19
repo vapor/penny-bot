@@ -14,7 +14,10 @@ struct AutoPingsHandler: LambdaHandler {
     let pingsRepo: S3AutoPingsRepository
 
     init(context: LambdaInitializationContext) async {
-        self.awsClient = AWSClient()
+        let awsClient = AWSClient(
+            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
+        )
+        self.awsClient = awsClient
         self.pingsRepo = S3AutoPingsRepository(awsClient: awsClient, logger: context.logger)
     }
     

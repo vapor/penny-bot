@@ -7,8 +7,10 @@ import Foundation
 extension LeafRenderer {
     package convenience init(
         subDirectory: String,
+        httpClient: HTTPClient,
         extraSources: [any LeafSource] = [],
-        logger: Logger
+        logger: Logger,
+        on eventLoop: any EventLoop
     ) throws {
         let path = "Templates/\(subDirectory)"
         let workingDirectory = FileManager.default.currentDirectoryPath
@@ -23,6 +25,7 @@ extension LeafRenderer {
         )
         let ghSource = GHLeafSource(
             path: path,
+            httpClient: httpClient,
             logger: logger
         )
         let sources = LeafSources()
@@ -37,7 +40,7 @@ extension LeafRenderer {
             configuration: configuration,
             tags: tags,
             sources: sources,
-            eventLoop: HTTPClient.shared.eventLoopGroup.next()
+            eventLoop: eventLoop
         )
     }
 }

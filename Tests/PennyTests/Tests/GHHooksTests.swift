@@ -13,7 +13,9 @@ import NIOPosix
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient.shared
+    let httpClient = HTTPClient(
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
+    )
 
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
@@ -26,6 +28,10 @@ class GHHooksTests: XCTestCase {
 
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
+    }
+
+    override func tearDown() {
+        try! httpClient.syncShutdown()
     }
 
     func testUnicodesPrefix() throws {
@@ -897,6 +903,7 @@ class GHHooksTests: XCTestCase {
         return HandlerContext(
             eventName: eventName,
             event: event,
+            httpClient: httpClient,
             discordClient: FakeDiscordClient(),
             githubClient: Client(
                 serverURL: try Servers.server1(),
@@ -904,6 +911,7 @@ class GHHooksTests: XCTestCase {
             ),
             renderClient: RenderClient(
                 renderer: try .forGHHooks(
+                    httpClient: httpClient,
                     logger: logger
                 )
             ),

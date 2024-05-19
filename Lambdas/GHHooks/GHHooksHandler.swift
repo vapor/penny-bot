@@ -16,6 +16,7 @@ struct GHHooksHandler: LambdaHandler {
     typealias Event = APIGatewayV2Request
     typealias Output = APIGatewayV2Response
 
+    let httpClient: HTTPClient
     let githubClient: Client
     let secretsRetriever: SecretsRetriever
     let messageLookupRepo: any MessageLookupRepo
@@ -26,7 +27,7 @@ struct GHHooksHandler: LambdaHandler {
     var discordClient: any DiscordClient {
         get async throws {
             let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-            return await DefaultDiscordClient(token: botToken)
+            return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
         }
     }
 
@@ -36,15 +37,19 @@ struct GHHooksHandler: LambdaHandler {
         /// bootstrapping the logging system which it appears to not have.
         DiscordGlobalConfiguration.makeLogger = { _ in context.logger }
 
-        let awsClient = AWSClient()
+        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+
+        let awsClient = AWSClient(httpClientProvider: .shared(self.httpClient))
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         let authenticator = Authenticator(
             secretsRetriever: secretsRetriever,
+            httpClient: httpClient,
             logger: logger
         )
 
         self.githubClient = try .makeForGitHub(
+            httpClient: httpClient,
             authorization: .computedBearer { isRetry in
                 try await authenticator.generateAccessToken(
                     forceRefreshToken: isRetry
@@ -130,15 +135,20 @@ struct GHHooksHandler: LambdaHandler {
             context: .init(
                 eventName: eventName,
                 event: event,
+                httpClient: httpClient,
                 discordClient: discordClient,
                 githubClient: githubClient,
                 renderClient: RenderClient(
                     renderer: try .forGHHooks(
+                        httpClient: httpClient,
                         logger: logger
                     )
                 ),
                 messageLookupRepo: self.messageLookupRepo,
-                usersService: ServiceFactory.makeUsersService(apiBaseURL: apiBaseURL),
+                usersService: ServiceFactory.makeUsersService(
+                    httpClient: httpClient,
+                    apiBaseURL: apiBaseURL
+                ),
                 logger: logger
             )
         ).handle()
