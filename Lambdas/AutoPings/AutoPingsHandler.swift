@@ -1,8 +1,10 @@
 import AWSLambdaRuntime
 import AWSLambdaEvents
+import AsyncHTTPClient
 import Foundation
 import SotoCore
 import Models
+import Shared
 import LambdasShared
 
 @main
@@ -14,11 +16,12 @@ struct AutoPingsHandler: LambdaHandler {
     let pingsRepo: S3AutoPingsRepository
 
     init(context: LambdaInitializationContext) async {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(context.eventLoop),
+            configuration: .forPenny
         )
-        self.awsClient = awsClient
-        self.pingsRepo = S3AutoPingsRepository(awsClient: awsClient, logger: context.logger)
+        self.awsClient = AWSClient(httpClient: httpClient)
+        self.pingsRepo = S3AutoPingsRepository(awsClient: self.awsClient, logger: context.logger)
     }
     
     func handle(

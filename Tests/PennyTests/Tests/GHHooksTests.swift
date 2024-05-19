@@ -14,7 +14,8 @@ import XCTest
 
 class GHHooksTests: XCTestCase {
     let httpClient = HTTPClient(
-        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+        configuration: .forPenny
     )
 
     let decoder: JSONDecoder = {

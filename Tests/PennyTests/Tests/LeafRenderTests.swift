@@ -11,7 +11,8 @@ import XCTest
 
 class LeafRenderTests: XCTestCase {
     let httpClient = HTTPClient(
-        eventLoopGroup: MultiThreadedEventLoopGroup.singleton
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+        configuration: .forPenny
     )
 
     lazy var ghHooksRenderClient = RenderClient(

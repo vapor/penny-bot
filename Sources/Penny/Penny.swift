@@ -1,5 +1,6 @@
 import NIOPosix
 import AsyncHTTPClient
+import Shared
 import SotoS3
 
 @main
@@ -13,13 +14,9 @@ struct Penny {
         /// This is preferred for apps that primarily use structured concurrency.
         let httpClient = HTTPClient(
             eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
-            configuration: .init(
-                decompression: .enabled(
-                    limit: .size(1 << 30) /// 1 GiB
-                )
-            )
+            configuration: .forPenny
         )
-        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
+        let awsClient = AWSClient(httpClient: httpClient)
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         defer {

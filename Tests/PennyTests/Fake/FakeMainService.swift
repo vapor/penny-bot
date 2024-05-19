@@ -28,7 +28,8 @@ actor FakeMainService: MainService {
             storage: cacheStorage
         )
         self.httpClient = HTTPClient(
-            eventLoopGroup: MultiThreadedEventLoopGroup.singleton
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+            configuration: .forPenny
         )
         self.context = try Self.makeContext(
             manager: manager,
