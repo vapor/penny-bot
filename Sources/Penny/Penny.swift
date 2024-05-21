@@ -18,13 +18,6 @@ struct Penny {
         )
         let awsClient = AWSClient(httpClient: httpClient)
 
-        /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
-        defer {
-            /// Shutdown in reverse order of dependance.
-            try! awsClient.syncShutdown()
-            try! httpClient.syncShutdown()
-        }
-
         try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
 
         let bot = try await mainService.makeBot(
@@ -46,5 +39,10 @@ struct Penny {
         for await event in await bot.events {
             EventHandler(event: event, context: context).handle()
         }
+
+        /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
+        /// Shutdown in reverse order of dependance.
+        try! await awsClient.shutdown()
+        try! await httpClient.shutdown()
     }
 }

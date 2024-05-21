@@ -34,8 +34,8 @@ class LeafRenderTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
 
-    override func tearDown() {
-        try! httpClient.syncShutdown()
+    override func tearDown() async throws {
+        try! await httpClient.shutdown()
     }
 
     func testTranslationNeededDescription() async throws {

@@ -38,10 +38,6 @@ actor FakeMainService: MainService {
         )
     }
 
-    deinit {
-        try! httpClient.syncShutdown()
-    }
-
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
 
     func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
