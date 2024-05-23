@@ -1,4 +1,5 @@
 import AWSLambdaEvents
+import HTTPTypes
 import Crypto
 import Foundation
 
@@ -30,7 +31,7 @@ extension APIGatewayV2Request {
 }
 
 extension APIGatewayV2Response {
-    package init(status: HTTPResponseStatus, content: some Encodable) {
+    package init(status: HTTPResponse.Status, content: some Encodable) {
         do {
             let data = try jsonEncoder.encode(content)
             let string = String(data: data, encoding: .utf8)
@@ -38,9 +39,9 @@ extension APIGatewayV2Response {
         } catch {
             if let data = try? jsonEncoder.encode(content) {
                 let string = String(data: data, encoding: .utf8)
-                self.init(statusCode: .failedDependency, body: string)
+                self.init(statusCode: .preconditionFailed, body: string)
             } else {
-                self.init(statusCode: .failedDependency, body: "Plain Error: \(error)")
+                self.init(statusCode: .preconditionFailed, body: "Plain Error: \(error)")
             }
         }
     }

@@ -36,7 +36,7 @@ struct AutoPingsHandler: LambdaHandler {
             }
         } else if event.rawPath.hasSuffix("users") {
             switch event.context.http.method {
-            case .PUT:
+            case .put:
                 do {
                     let request = try event.decode(as: AutoPingsRequest.self)
                     newItems = try await pingsRepo.insert(
@@ -51,7 +51,7 @@ struct AutoPingsHandler: LambdaHandler {
                         )
                     )
                 }
-            case .DELETE:
+            case .delete:
                 do {
                     let request = try event.decode(as: AutoPingsRequest.self)
                     newItems = try await pingsRepo.remove(
