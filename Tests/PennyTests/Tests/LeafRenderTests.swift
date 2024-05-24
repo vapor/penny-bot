@@ -35,7 +35,7 @@ class LeafRenderTests: XCTestCase {
     }
 
     override func tearDown() async throws {
-        try! await httpClient.shutdown()
+        try await httpClient.shutdown()
     }
 
     func testTranslationNeededDescription() async throws {

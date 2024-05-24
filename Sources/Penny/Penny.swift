@@ -42,7 +42,7 @@ struct Penny {
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
         /// Shutdown in reverse order of dependance.
-        try! await awsClient.shutdown()
-        try! await httpClient.shutdown()
+        try await awsClient.shutdown()
+        try await httpClient.shutdown()
     }
 }
