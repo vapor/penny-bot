@@ -5,11 +5,16 @@ import Logging
 import Foundation
 
 extension LeafRenderer {
-    static func forGHHooks(logger: Logger) throws -> LeafRenderer {
+    static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {
         try LeafRenderer(
             subDirectory: "GHHooksLambda",
-            extraSources: [DocsLeafSource(logger: logger)],
-            logger: logger
+            httpClient: httpClient,
+            extraSources: [DocsLeafSource(
+                httpClient: httpClient,
+                logger: logger
+            )],
+            logger: logger,
+            on: httpClient.eventLoopGroup.next()
         )
     }
 }
@@ -39,7 +44,7 @@ private struct DocsLeafSource: LeafSource {
         }
     }
 
-    let httpClient: HTTPClient = .shared
+    let httpClient: HTTPClient
     let logger: Logger
 
     func file(

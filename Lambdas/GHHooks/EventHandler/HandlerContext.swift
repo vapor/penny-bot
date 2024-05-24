@@ -9,7 +9,7 @@ import Logging
 struct HandlerContext: Sendable {
     let eventName: GHEvent.Kind
     let event: GHEvent
-    let httpClient: HTTPClient = .shared
+    let httpClient: HTTPClient
     let discordClient: any DiscordClient
     let githubClient: Client
     let renderClient: RenderClient
@@ -21,6 +21,7 @@ struct HandlerContext: Sendable {
     init(
         eventName: GHEvent.Kind,
         event: GHEvent,
+        httpClient: HTTPClient,
         discordClient: any DiscordClient,
         githubClient: Client,
         renderClient: RenderClient,
@@ -30,6 +31,7 @@ struct HandlerContext: Sendable {
     ) {
         self.eventName = eventName
         self.event = event
+        self.httpClient = httpClient
         self.discordClient = discordClient
         self.githubClient = githubClient
         self.renderClient = renderClient
@@ -38,6 +40,7 @@ struct HandlerContext: Sendable {
         self.requester = .init(
             eventName: eventName,
             event: event,
+            httpClient: httpClient,
             discordClient: discordClient,
             githubClient: githubClient,
             usersService: usersService,

@@ -11,7 +11,7 @@ import XCTest
 actor FakeMainService: MainService {
     let manager: FakeManager
     let cache: DiscordCache
-    let httpClient: HTTPClient = .shared
+    let httpClient: HTTPClient
     let context: HandlerContext
     var botStateManager: BotStateManager {
         context.botStateManager
@@ -27,6 +27,10 @@ actor FakeMainService: MainService {
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
+        self.httpClient = HTTPClient(
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+            configuration: .forPenny
+        )
         self.context = try Self.makeContext(
             manager: manager,
             cache: cache,
@@ -34,13 +38,9 @@ actor FakeMainService: MainService {
         )
     }
 
-    deinit {
-        try! httpClient.syncShutdown()
-    }
+    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
 
-    func bootstrapLoggingSystem() async throws { }
-
-    func makeBot() async throws -> any GatewayManager {
+    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
         return manager
     }
 
@@ -50,7 +50,9 @@ actor FakeMainService: MainService {
 
     func beforeConnectCall(
         bot: any GatewayManager,
-        cache: DiscordCache
+        cache: DiscordCache,
+        httpClient: HTTPClient,
+        awsClient: AWSClient
     ) async throws -> HandlerContext {
         await context.botStateManager.start(onStarted: { })
         return context
@@ -92,7 +94,9 @@ actor FakeMainService: MainService {
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
-                    logger: Logger(label: "Tests_Penny+Leaf+FakeService")
+                    httpClient: httpClient,
+                    logger: Logger(label: "Tests_Penny+Leaf+FakeService"),
+                    on: httpClient.eventLoopGroup.next()
                 )
             ),
             evolutionChecker: evolutionChecker,

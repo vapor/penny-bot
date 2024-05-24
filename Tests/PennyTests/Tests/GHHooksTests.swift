@@ -13,7 +13,10 @@ import NIOPosix
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient.shared
+    let httpClient = HTTPClient(
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+        configuration: .forPenny
+    )
 
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
@@ -897,6 +900,7 @@ class GHHooksTests: XCTestCase {
         return HandlerContext(
             eventName: eventName,
             event: event,
+            httpClient: httpClient,
             discordClient: FakeDiscordClient(),
             githubClient: Client(
                 serverURL: try Servers.server1(),
@@ -904,6 +908,7 @@ class GHHooksTests: XCTestCase {
             ),
             renderClient: RenderClient(
                 renderer: try .forGHHooks(
+                    httpClient: httpClient,
                     logger: logger
                 )
             ),

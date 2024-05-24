@@ -1,5 +1,6 @@
 import AWSLambdaRuntime
 import AWSLambdaEvents
+import AsyncHTTPClient
 import Foundation
 import SotoCore
 import Models
@@ -14,7 +15,12 @@ struct FaqsHandler: LambdaHandler {
     let faqsRepo: S3FaqsRepository
 
     init(context: LambdaInitializationContext) async {
-        self.awsClient = AWSClient()
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(context.eventLoop),
+            configuration: .forPenny
+        )
+        let awsClient = AWSClient(httpClient: httpClient)
+        self.awsClient = awsClient
         self.faqsRepo = S3FaqsRepository(awsClient: awsClient, logger: context.logger)
     }
 
