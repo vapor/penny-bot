@@ -1,5 +1,5 @@
 {
-  "originHash" : "45d029d986213a5f485422b597979732b076c3dcd7fd31a5033433666f247963",
+  "originHash" : "2f90ffc8d620d5c1564b95bf103917f03c6c2c4d74a302f0f783907f510cf94f",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -123,8 +123,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-events.git",
       "state" : {
-        "revision" : "f015dbfffaf52f456732460ff0a70d6349faa828",
-        "version" : "0.3.0"
+        "revision" : "a0b64e9d0d5de872169ef645fda2e33575ee42d0",
+        "version" : "0.4.0"
       }
     },
     {
