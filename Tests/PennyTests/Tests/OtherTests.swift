@@ -108,20 +108,29 @@ class OtherTests: XCTestCase {
             }
         }
     }
-
+    
     func testRepairMarkdownLinks() throws {
         let proposal = TestData.proposalContent
         let document = Document(parsing: proposal)
-
+        
         let originalLink = try XCTUnwrap(document.child(through: 1, 0, 0, 1) as? Link)
         XCTAssertEqual(originalLink.destination, "0400-init-accessors.md")
-
+        
         var repairer = LinkRepairer(
             relativeTo: "https://github.com/apple/swift-evolution/blob/main/proposals"
         )
         let newMarkup = repairer.visit(document)
-
+        
         let editedLink = try XCTUnwrap(newMarkup?.child(through: 1, 0, 0, 1) as? Link)
         XCTAssertEqual(editedLink.destination, "https://github.com/apple/swift-evolution/blob/main/proposals/0400-init-accessors.md")
+    }
+    
+    func testDecodeEvolutionProposals() throws {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        _ = try decoder.decode(
+            Evolution.self,
+            from: TestData.newProposalsSample
+        )
     }
 }

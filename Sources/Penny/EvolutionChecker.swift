@@ -170,13 +170,15 @@ actor EvolutionChecker {
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
+            .nilIfEmpty
+        let authorsString = authors.map({ "\n**Author(s):** \($0)" }) ?? ""
 
         let reviewManagers = proposal.reviewManagers?
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let reviewManagersString = reviewManagers.map({ "\n**Review Managers:** \($0)" }) ?? ""
+            .nilIfEmpty
+        let reviewManagersString = reviewManagers.map({ "\n**Review Manager(s):** \($0)" }) ?? ""
 
         let link = proposal.link.sanitized()
         var proposalLink: String?
@@ -228,13 +230,15 @@ actor EvolutionChecker {
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
+            .nilIfEmpty
+        let authorsString = authors.map({ "\n**Author(s):** \($0)" }) ?? ""
 
         let reviewManagers = proposal.reviewManagers?
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let reviewManagersString = reviewManagers.map({ "\n**Review Managers:** \($0)" }) ?? ""
+            .nilIfEmpty
+        let reviewManagersString = reviewManagers.map({ "\n**Review Manager(s):** \($0)" }) ?? ""
 
         let link = proposal.link.sanitized()
         var proposalLink: String?
@@ -431,7 +435,7 @@ private extension Proposal.Status.State {
 
 struct Evolution: Codable {
     let commit: String
-    let creationDate: Date
+    let creationDate: Date /// Needs ISO8601 date decoding strategy
     let implementationVersions: [String]
     let proposals: [Proposal]
 }
@@ -509,7 +513,6 @@ struct Proposal: Sendable, Codable {
     struct TrackingBug: Sendable, Codable {
         let id: String
         let link: String
-        let updated: String
     }
 
     struct Warning: Sendable, Codable {
@@ -641,4 +644,10 @@ struct Proposal: Sendable, Codable {
     let implementation: [Implementation]?
     let discussions: [Media]?
     let upcomingFeatureFlag: UpcomingFeature?
+}
+
+private extension Collection {
+    var nilIfEmpty: Self? {
+        self.isEmpty ? nil : self
+    }
 }

@@ -21,7 +21,11 @@ struct DefaultEvolutionService: EvolutionService {
     }
 
     let httpClient: HTTPClient
-    let decoder = JSONDecoder()
+    let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
     func list() async throws -> [Proposal] {
         let response = try await httpClient.execute(

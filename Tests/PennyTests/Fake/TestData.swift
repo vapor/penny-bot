@@ -39,6 +39,7 @@ enum TestData {
         named: "soQuestions.json",
         as: SOQuestions.self
     ).items
+    static let newProposalsSample = TestData.resource(named: "new_proposals_sample.json")
 
     private static let gatewayEvents: [String: Data] = {
         let data = resource(named: "gatewayEvents.json")
