@@ -399,20 +399,14 @@ package protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
-<<<<<<< Updated upstream
     func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws -> Operations.pulls_list_files.Output
-=======
-    func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws
-        -> Operations.pulls_list_files.Output
     /// List reviews for a pull request
     ///
     /// The list of reviews returns in chronological order.
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
-    func pulls_list_reviews(_ input: Operations.pulls_list_reviews.Input) async throws
-        -> Operations.pulls_list_reviews.Output
->>>>>>> Stashed changes
+    func pulls_list_reviews(_ input: Operations.pulls_list_reviews.Input) async throws -> Operations.pulls_list_reviews.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -446,712 +440,7 @@ package protocol APIProtocol: Sendable {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
-<<<<<<< Updated upstream
     func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws -> Operations.repos_list_tags.Output
-=======
-    func repos_list_tags(_ input: Operations.repos_list_tags.Input) async throws
-        -> Operations.repos_list_tags.Output
-}
-/// Convenience overloads for operation inputs.
-extension APIProtocol {
-    /// Create an installation access token for an app
-    ///
-    /// Creates an installation access token that enables a GitHub App to make authenticated API requests for the app's installation on an organization or individual account. Installation tokens expire one hour from the time you create them. Using an expired token produces a status code of `401 - Unauthorized`, and requires creating a new installation token. By default the installation token has access to all repositories that the installation can access. To restrict the access to specific repositories, you can provide the `repository_ids` when creating the token. When you omit `repository_ids`, the response does not contain the `repositories` key.
-    ///
-    /// You must use a [JWT](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/#authenticating-as-a-github-app) to access this endpoint.
-    ///
-    /// - Remark: HTTP `POST /app/installations/{installation_id}/access_tokens`.
-    /// - Remark: Generated from `#/paths//app/installations/{installation_id}/access_tokens/post(apps/create-installation-access-token)`.
-    public func apps_create_installation_access_token(
-        path: Operations.apps_create_installation_access_token.Input.Path,
-        headers: Operations.apps_create_installation_access_token.Input.Headers = .init(),
-        body: Operations.apps_create_installation_access_token.Input.Body? = nil
-    ) async throws -> Operations.apps_create_installation_access_token.Output {
-        try await apps_create_installation_access_token(
-            Operations.apps_create_installation_access_token.Input(
-                path: path,
-                headers: headers,
-                body: body
-            )
-        )
-    }
-    /// Get an organization
-    ///
-    /// To see many of the organization response values, you need to be an authenticated organization owner with the `admin:org` scope. When the value of `two_factor_requirement_enabled` is `true`, the organization requires all members, billing managers, and outside collaborators to enable [two-factor authentication](https://docs.github.com/articles/securing-your-account-with-two-factor-authentication-2fa/).
-    ///
-    /// GitHub Apps with the `Organization plan` permission can use this endpoint to retrieve information about an organization's GitHub plan. See "[Authenticating with GitHub Apps](https://docs.github.com/apps/building-github-apps/authenticating-with-github-apps/)" for details. For an example response, see 'Response with GitHub plan information' below."
-    ///
-    /// - Remark: HTTP `GET /orgs/{org}`.
-    /// - Remark: Generated from `#/paths//orgs/{org}/get(orgs/get)`.
-    public func orgs_get(
-        path: Operations.orgs_get.Input.Path,
-        headers: Operations.orgs_get.Input.Headers = .init()
-    ) async throws -> Operations.orgs_get.Output {
-        try await orgs_get(Operations.orgs_get.Input(path: path, headers: headers))
-    }
-    /// Get a project card
-    ///
-    /// Gets information about a project card.
-    ///
-    /// - Remark: HTTP `GET /projects/columns/cards/{card_id}`.
-    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/get(projects/get-card)`.
-    public func projects_get_card(
-        path: Operations.projects_get_card.Input.Path,
-        headers: Operations.projects_get_card.Input.Headers = .init()
-    ) async throws -> Operations.projects_get_card.Output {
-        try await projects_get_card(
-            Operations.projects_get_card.Input(path: path, headers: headers)
-        )
-    }
-    /// Update an existing project card
-    ///
-    /// - Remark: HTTP `PATCH /projects/columns/cards/{card_id}`.
-    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/patch(projects/update-card)`.
-    public func projects_update_card(
-        path: Operations.projects_update_card.Input.Path,
-        headers: Operations.projects_update_card.Input.Headers = .init(),
-        body: Operations.projects_update_card.Input.Body? = nil
-    ) async throws -> Operations.projects_update_card.Output {
-        try await projects_update_card(
-            Operations.projects_update_card.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Delete a project card
-    ///
-    /// Deletes a project card
-    ///
-    /// - Remark: HTTP `DELETE /projects/columns/cards/{card_id}`.
-    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/delete(projects/delete-card)`.
-    public func projects_delete_card(
-        path: Operations.projects_delete_card.Input.Path,
-        headers: Operations.projects_delete_card.Input.Headers = .init()
-    ) async throws -> Operations.projects_delete_card.Output {
-        try await projects_delete_card(
-            Operations.projects_delete_card.Input(path: path, headers: headers)
-        )
-    }
-    /// Move a project card
-    ///
-    /// - Remark: HTTP `POST /projects/columns/cards/{card_id}/moves`.
-    /// - Remark: Generated from `#/paths//projects/columns/cards/{card_id}/moves/post(projects/move-card)`.
-    public func projects_move_card(
-        path: Operations.projects_move_card.Input.Path,
-        headers: Operations.projects_move_card.Input.Headers = .init(),
-        body: Operations.projects_move_card.Input.Body
-    ) async throws -> Operations.projects_move_card.Output {
-        try await projects_move_card(
-            Operations.projects_move_card.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Get a project column
-    ///
-    /// Gets information about a project column.
-    ///
-    /// - Remark: HTTP `GET /projects/columns/{column_id}`.
-    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/get(projects/get-column)`.
-    public func projects_get_column(
-        path: Operations.projects_get_column.Input.Path,
-        headers: Operations.projects_get_column.Input.Headers = .init()
-    ) async throws -> Operations.projects_get_column.Output {
-        try await projects_get_column(
-            Operations.projects_get_column.Input(path: path, headers: headers)
-        )
-    }
-    /// Update an existing project column
-    ///
-    /// - Remark: HTTP `PATCH /projects/columns/{column_id}`.
-    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/patch(projects/update-column)`.
-    public func projects_update_column(
-        path: Operations.projects_update_column.Input.Path,
-        headers: Operations.projects_update_column.Input.Headers = .init(),
-        body: Operations.projects_update_column.Input.Body
-    ) async throws -> Operations.projects_update_column.Output {
-        try await projects_update_column(
-            Operations.projects_update_column.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Delete a project column
-    ///
-    /// Deletes a project column.
-    ///
-    /// - Remark: HTTP `DELETE /projects/columns/{column_id}`.
-    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/delete(projects/delete-column)`.
-    public func projects_delete_column(
-        path: Operations.projects_delete_column.Input.Path,
-        headers: Operations.projects_delete_column.Input.Headers = .init()
-    ) async throws -> Operations.projects_delete_column.Output {
-        try await projects_delete_column(
-            Operations.projects_delete_column.Input(path: path, headers: headers)
-        )
-    }
-    /// List project cards
-    ///
-    /// Lists the project cards in a project.
-    ///
-    /// - Remark: HTTP `GET /projects/columns/{column_id}/cards`.
-    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/get(projects/list-cards)`.
-    public func projects_list_cards(
-        path: Operations.projects_list_cards.Input.Path,
-        query: Operations.projects_list_cards.Input.Query = .init(),
-        headers: Operations.projects_list_cards.Input.Headers = .init()
-    ) async throws -> Operations.projects_list_cards.Output {
-        try await projects_list_cards(
-            Operations.projects_list_cards.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// Create a project card
-    ///
-    /// - Remark: HTTP `POST /projects/columns/{column_id}/cards`.
-    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/cards/post(projects/create-card)`.
-    public func projects_create_card(
-        path: Operations.projects_create_card.Input.Path,
-        headers: Operations.projects_create_card.Input.Headers = .init(),
-        body: Operations.projects_create_card.Input.Body
-    ) async throws -> Operations.projects_create_card.Output {
-        try await projects_create_card(
-            Operations.projects_create_card.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Move a project column
-    ///
-    /// - Remark: HTTP `POST /projects/columns/{column_id}/moves`.
-    /// - Remark: Generated from `#/paths//projects/columns/{column_id}/moves/post(projects/move-column)`.
-    public func projects_move_column(
-        path: Operations.projects_move_column.Input.Path,
-        headers: Operations.projects_move_column.Input.Headers = .init(),
-        body: Operations.projects_move_column.Input.Body
-    ) async throws -> Operations.projects_move_column.Output {
-        try await projects_move_column(
-            Operations.projects_move_column.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Get a project
-    ///
-    /// Gets a project by its `id`. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
-    ///
-    /// - Remark: HTTP `GET /projects/{project_id}`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/get(projects/get)`.
-    public func projects_get(
-        path: Operations.projects_get.Input.Path,
-        headers: Operations.projects_get.Input.Headers = .init()
-    ) async throws -> Operations.projects_get.Output {
-        try await projects_get(Operations.projects_get.Input(path: path, headers: headers))
-    }
-    /// Update a project
-    ///
-    /// Updates a project board's information. Returns a `404 Not Found` status if projects are disabled. If you do not have sufficient privileges to perform this action, a `401 Unauthorized` or `410 Gone` status is returned.
-    ///
-    /// - Remark: HTTP `PATCH /projects/{project_id}`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/patch(projects/update)`.
-    public func projects_update(
-        path: Operations.projects_update.Input.Path,
-        headers: Operations.projects_update.Input.Headers = .init(),
-        body: Operations.projects_update.Input.Body? = nil
-    ) async throws -> Operations.projects_update.Output {
-        try await projects_update(Operations.projects_update.Input(path: path, headers: headers, body: body))
-    }
-    /// Delete a project
-    ///
-    /// Deletes a project board. Returns a `404 Not Found` status if projects are disabled.
-    ///
-    /// - Remark: HTTP `DELETE /projects/{project_id}`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/delete(projects/delete)`.
-    public func projects_delete(
-        path: Operations.projects_delete.Input.Path,
-        headers: Operations.projects_delete.Input.Headers = .init()
-    ) async throws -> Operations.projects_delete.Output {
-        try await projects_delete(Operations.projects_delete.Input(path: path, headers: headers))
-    }
-    /// List project collaborators
-    ///
-    /// Lists the collaborators for an organization project. For a project, the list of collaborators includes outside collaborators, organization members that are direct collaborators, organization members with access through team memberships, organization members with access through default organization permissions, and organization owners. You must be an organization owner or a project `admin` to list collaborators.
-    ///
-    /// - Remark: HTTP `GET /projects/{project_id}/collaborators`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/get(projects/list-collaborators)`.
-    public func projects_list_collaborators(
-        path: Operations.projects_list_collaborators.Input.Path,
-        query: Operations.projects_list_collaborators.Input.Query = .init(),
-        headers: Operations.projects_list_collaborators.Input.Headers = .init()
-    ) async throws -> Operations.projects_list_collaborators.Output {
-        try await projects_list_collaborators(
-            Operations.projects_list_collaborators.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// Add project collaborator
-    ///
-    /// Adds a collaborator to an organization project and sets their permission level. You must be an organization owner or a project `admin` to add a collaborator.
-    ///
-    /// - Remark: HTTP `PUT /projects/{project_id}/collaborators/{username}`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/put(projects/add-collaborator)`.
-    public func projects_add_collaborator(
-        path: Operations.projects_add_collaborator.Input.Path,
-        headers: Operations.projects_add_collaborator.Input.Headers = .init(),
-        body: Operations.projects_add_collaborator.Input.Body? = nil
-    ) async throws -> Operations.projects_add_collaborator.Output {
-        try await projects_add_collaborator(
-            Operations.projects_add_collaborator.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Remove user as a collaborator
-    ///
-    /// Removes a collaborator from an organization project. You must be an organization owner or a project `admin` to remove a collaborator.
-    ///
-    /// - Remark: HTTP `DELETE /projects/{project_id}/collaborators/{username}`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/delete(projects/remove-collaborator)`.
-    public func projects_remove_collaborator(
-        path: Operations.projects_remove_collaborator.Input.Path,
-        headers: Operations.projects_remove_collaborator.Input.Headers = .init()
-    ) async throws -> Operations.projects_remove_collaborator.Output {
-        try await projects_remove_collaborator(
-            Operations.projects_remove_collaborator.Input(path: path, headers: headers)
-        )
-    }
-    /// Get project permission for a user
-    ///
-    /// Returns the collaborator's permission level for an organization project. Possible values for the `permission` key: `admin`, `write`, `read`, `none`. You must be an organization owner or a project `admin` to review a user's permission level.
-    ///
-    /// - Remark: HTTP `GET /projects/{project_id}/collaborators/{username}/permission`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/collaborators/{username}/permission/get(projects/get-permission-for-user)`.
-    public func projects_get_permission_for_user(
-        path: Operations.projects_get_permission_for_user.Input.Path,
-        headers: Operations.projects_get_permission_for_user.Input.Headers = .init()
-    ) async throws -> Operations.projects_get_permission_for_user.Output {
-        try await projects_get_permission_for_user(
-            Operations.projects_get_permission_for_user.Input(path: path, headers: headers)
-        )
-    }
-    /// List project columns
-    ///
-    /// Lists the project columns in a project.
-    ///
-    /// - Remark: HTTP `GET /projects/{project_id}/columns`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/columns/get(projects/list-columns)`.
-    public func projects_list_columns(
-        path: Operations.projects_list_columns.Input.Path,
-        query: Operations.projects_list_columns.Input.Query = .init(),
-        headers: Operations.projects_list_columns.Input.Headers = .init()
-    ) async throws -> Operations.projects_list_columns.Output {
-        try await projects_list_columns(
-            Operations.projects_list_columns.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// Create a project column
-    ///
-    /// Creates a new project column.
-    ///
-    /// - Remark: HTTP `POST /projects/{project_id}/columns`.
-    /// - Remark: Generated from `#/paths//projects/{project_id}/columns/post(projects/create-column)`.
-    public func projects_create_column(
-        path: Operations.projects_create_column.Input.Path,
-        headers: Operations.projects_create_column.Input.Headers = .init(),
-        body: Operations.projects_create_column.Input.Body
-    ) async throws -> Operations.projects_create_column.Output {
-        try await projects_create_column(
-            Operations.projects_create_column.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Get rate limit status for the authenticated user
-    ///
-    /// **Note:** Accessing this endpoint does not count against your REST API rate limit.
-    ///
-    /// **Note:** The `rate` object is deprecated. If you're writing new API client code or updating existing code, you should use the `core` object instead of the `rate` object. The `core` object contains the same information that is present in the `rate` object.
-    ///
-    /// - Remark: HTTP `GET /rate_limit`.
-    /// - Remark: Generated from `#/paths//rate_limit/get(rate-limit/get)`.
-    public func rate_limit_get(headers: Operations.rate_limit_get.Input.Headers = .init())
-        async throws -> Operations.rate_limit_get.Output
-    { try await rate_limit_get(Operations.rate_limit_get.Input(headers: headers)) }
-    /// Get a repository
-    ///
-    /// The `parent` and `source` objects are present when the repository is a fork. `parent` is the repository this repository was forked from, `source` is the ultimate source for the network.
-    ///
-    /// **Note:** In order to see the `security_and_analysis` block for a repository you must have admin permissions for the repository or be an owner or security manager for the organization that owns the repository. For more information, see "[Managing security managers in your organization](https://docs.github.com/organizations/managing-peoples-access-to-your-organization-with-roles/managing-security-managers-in-your-organization)."
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/get(repos/get)`.
-    public func repos_get(
-        path: Operations.repos_get.Input.Path,
-        headers: Operations.repos_get.Input.Headers = .init()
-    ) async throws -> Operations.repos_get.Output {
-        try await repos_get(Operations.repos_get.Input(path: path, headers: headers))
-    }
-    /// List commits
-    ///
-    /// **Signature verification object**
-    ///
-    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The following fields are included in the `verification` object:
-    ///
-    /// | Name | Type | Description |
-    /// | ---- | ---- | ----------- |
-    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
-    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
-    /// | `signature` | `string` | The signature that was extracted from the commit. |
-    /// | `payload` | `string` | The value that was signed. |
-    ///
-    /// These are the possible values for `reason` in the `verification` object:
-    ///
-    /// | Value | Description |
-    /// | ----- | ----------- |
-    /// | `expired_key` | The key that made the signature is expired. |
-    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
-    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
-    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
-    /// | `unsigned` | The object does not include a signature. |
-    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
-    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
-    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
-    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
-    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
-    /// | `malformed_signature` | There was an error parsing the signature. |
-    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
-    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/get(repos/list-commits)`.
-    public func repos_list_commits(
-        path: Operations.repos_list_commits.Input.Path,
-        query: Operations.repos_list_commits.Input.Query = .init(),
-        headers: Operations.repos_list_commits.Input.Headers = .init()
-    ) async throws -> Operations.repos_list_commits.Output {
-        try await repos_list_commits(
-            Operations.repos_list_commits.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// List pull requests associated with a commit
-    ///
-    /// Lists the merged pull request that introduced the commit to the repository. If the commit is not present in the default branch, will only return open pull requests associated with the commit.
-    ///
-    /// To list the open or merged pull requests associated with a branch, you can set the `commit_sha` parameter to the branch name.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/commits/{commit_sha}/pulls`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/commits/{commit_sha}/pulls/get(repos/list-pull-requests-associated-with-commit)`.
-    public func repos_list_pull_requests_associated_with_commit(
-        path: Operations.repos_list_pull_requests_associated_with_commit.Input
-            .Path,
-        query: Operations.repos_list_pull_requests_associated_with_commit.Input
-            .Query = .init(),
-        headers: Operations.repos_list_pull_requests_associated_with_commit.Input
-            .Headers = .init()
-    ) async throws
-        -> Operations.repos_list_pull_requests_associated_with_commit.Output
-    {
-        try await repos_list_pull_requests_associated_with_commit(
-            Operations.repos_list_pull_requests_associated_with_commit.Input(
-                path: path,
-                query: query,
-                headers: headers
-            )
-        )
-    }
-    /// Compare two commits
-    ///
-    /// Compares two commits against one another. You can compare branches in the same repository, or you can compare branches that exist in different repositories within the same repository network, including fork branches. For more information about how to view a repository's network, see "[Understanding connections between repositories](https://docs.github.com/repositories/viewing-activity-and-data-for-your-repository/understanding-connections-between-repositories)."
-    ///
-    /// This endpoint is equivalent to running the `git log BASE..HEAD` command, but it returns commits in a different order. The `git log BASE..HEAD` command returns commits in reverse chronological order, whereas the API returns commits in chronological order. You can pass the appropriate [media type](https://docs.github.com/rest/overview/media-types/#commits-commit-comparison-and-pull-requests) to fetch diff and patch formats.
-    ///
-    /// The API response includes details about the files that were changed between the two commits. This includes the status of the change (if a file was added, removed, modified, or renamed), and details of the change itself. For example, files with a `renamed` status have a `previous_filename` field showing the previous filename of the file, and files with a `modified` status have a `patch` field showing the changes made to the file.
-    ///
-    /// When calling this endpoint without any paging parameter (`per_page` or `page`), the returned list is limited to 250 commits, and the last commit in the list is the most recent of the entire comparison.
-    ///
-    /// **Working with large comparisons**
-    ///
-    /// To process a response with a large number of commits, use a query parameter (`per_page` or `page`) to paginate the results. When using pagination:
-    ///
-    /// - The list of changed files is only shown on the first page of results, but it includes all changed files for the entire comparison.
-    /// - The results are returned in chronological order, but the last commit in the returned list may not be the most recent one in the entire set if there are more pages of results.
-    ///
-    /// For more information on working with pagination, see "[Using pagination in the REST API](https://docs.github.com/rest/guides/using-pagination-in-the-rest-api)."
-    ///
-    /// **Signature verification object**
-    ///
-    /// The response will include a `verification` object that describes the result of verifying the commit's signature. The `verification` object includes the following fields:
-    ///
-    /// | Name | Type | Description |
-    /// | ---- | ---- | ----------- |
-    /// | `verified` | `boolean` | Indicates whether GitHub considers the signature in this commit to be verified. |
-    /// | `reason` | `string` | The reason for verified value. Possible values and their meanings are enumerated in table below. |
-    /// | `signature` | `string` | The signature that was extracted from the commit. |
-    /// | `payload` | `string` | The value that was signed. |
-    ///
-    /// These are the possible values for `reason` in the `verification` object:
-    ///
-    /// | Value | Description |
-    /// | ----- | ----------- |
-    /// | `expired_key` | The key that made the signature is expired. |
-    /// | `not_signing_key` | The "signing" flag is not among the usage flags in the GPG key that made the signature. |
-    /// | `gpgverify_error` | There was an error communicating with the signature verification service. |
-    /// | `gpgverify_unavailable` | The signature verification service is currently unavailable. |
-    /// | `unsigned` | The object does not include a signature. |
-    /// | `unknown_signature_type` | A non-PGP signature was found in the commit. |
-    /// | `no_user` | No user was associated with the `committer` email address in the commit. |
-    /// | `unverified_email` | The `committer` email address in the commit was associated with a user, but the email address is not verified on their account. |
-    /// | `bad_email` | The `committer` email address in the commit is not included in the identities of the PGP key that made the signature. |
-    /// | `unknown_key` | The key that made the signature has not been registered with any user's account. |
-    /// | `malformed_signature` | There was an error parsing the signature. |
-    /// | `invalid` | The signature could not be cryptographically verified using the key whose key-id was found in the signature. |
-    /// | `valid` | None of the above errors applied, so the signature is considered to be verified. |
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/compare/{basehead}`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/compare/{basehead}/get(repos/compare-commits)`.
-    public func repos_compare_commits(
-        path: Operations.repos_compare_commits.Input.Path,
-        query: Operations.repos_compare_commits.Input.Query = .init(),
-        headers: Operations.repos_compare_commits.Input.Headers = .init()
-    ) async throws -> Operations.repos_compare_commits.Output {
-        try await repos_compare_commits(
-            Operations.repos_compare_commits.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// List repository contributors
-    ///
-    /// Lists contributors to the specified repository and sorts them by the number of commits per contributor in descending order. This endpoint may return information that is a few hours old because the GitHub REST API caches contributor data to improve performance.
-    ///
-    /// GitHub identifies contributors by author email address. This endpoint groups contribution counts by GitHub user, which includes all associated email addresses. To improve performance, only the first 500 author email addresses in the repository link to GitHub users. The rest will appear as anonymous contributors without associated GitHub user information.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/contributors`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/contributors/get(repos/list-contributors)`.
-    public func repos_list_contributors(
-        path: Operations.repos_list_contributors.Input.Path,
-        query: Operations.repos_list_contributors.Input.Query = .init(),
-        headers: Operations.repos_list_contributors.Input.Headers = .init()
-    ) async throws -> Operations.repos_list_contributors.Output {
-        try await repos_list_contributors(
-            Operations.repos_list_contributors.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// List repository issues
-    ///
-    /// List issues in a repository. Only open issues will be listed.
-    ///
-    /// **Note**: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this
-    /// reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by
-    /// the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull
-    /// request id, use the "[List pull requests](https://docs.github.com/rest/reference/pulls#list-pull-requests)" endpoint.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/get(issues/list-for-repo)`.
-    public func issues_list_for_repo(
-        path: Operations.issues_list_for_repo.Input.Path,
-        query: Operations.issues_list_for_repo.Input.Query = .init(),
-        headers: Operations.issues_list_for_repo.Input.Headers = .init()
-    ) async throws -> Operations.issues_list_for_repo.Output {
-        try await issues_list_for_repo(
-            Operations.issues_list_for_repo.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// Create an issue
-    ///
-    /// Any user with pull access to a repository can create an issue. If [issues are disabled in the repository](https://docs.github.com/articles/disabling-issues/), the API returns a `410 Gone` status.
-    ///
-    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
-    ///
-    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
-    public func issues_create(
-        path: Operations.issues_create.Input.Path,
-        headers: Operations.issues_create.Input.Headers = .init(),
-        body: Operations.issues_create.Input.Body
-    ) async throws -> Operations.issues_create.Output {
-        try await issues_create(Operations.issues_create.Input(path: path, headers: headers, body: body))
-    }
-    /// Get an issue
-    ///
-    /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/overview/resources-in-the-rest-api#http-redirects-redirects) if the issue was
-    /// [transferred](https://docs.github.com/articles/transferring-an-issue-to-another-repository/) to another repository. If
-    /// the issue was transferred to or deleted from a repository where the authenticated user lacks read access, the API
-    /// returns a `404 Not Found` status. If the issue was deleted from a repository where the authenticated user has read
-    /// access, the API returns a `410 Gone` status. To receive webhook events for transferred and deleted issues, subscribe
-    /// to the [`issues`](https://docs.github.com/webhooks/event-payloads/#issues) webhook.
-    ///
-    /// **Note**: GitHub's REST API considers every pull request an issue, but not every issue is a pull request. For this
-    /// reason, "Issues" endpoints may return both issues and pull requests in the response. You can identify pull requests by
-    /// the `pull_request` key. Be aware that the `id` of a pull request returned from "Issues" endpoints will be an _issue id_. To find out the pull
-    /// request id, use the "[List pull requests](https://docs.github.com/rest/reference/pulls#list-pull-requests)" endpoint.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
-    public func issues_get(
-        path: Operations.issues_get.Input.Path,
-        headers: Operations.issues_get.Input.Headers = .init()
-    ) async throws -> Operations.issues_get.Output {
-        try await issues_get(Operations.issues_get.Input(path: path, headers: headers))
-    }
-    /// Update an issue
-    ///
-    /// Issue owners and users with push access can edit an issue.
-    ///
-    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/{issue_number}`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/patch(issues/update)`.
-    public func issues_update(
-        path: Operations.issues_update.Input.Path,
-        headers: Operations.issues_update.Input.Headers = .init(),
-        body: Operations.issues_update.Input.Body? = nil
-    ) async throws -> Operations.issues_update.Output {
-        try await issues_update(Operations.issues_update.Input(path: path, headers: headers, body: body))
-    }
-    /// Create an issue comment
-    ///
-    ///
-    /// You can use the REST API to create comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
-    ///
-    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications).
-    /// Creating content too quickly using this endpoint may result in secondary rate limiting.
-    /// See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)"
-    /// and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)"
-    /// for details.
-    ///
-    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
-    public func issues_create_comment(
-        path: Operations.issues_create_comment.Input.Path,
-        headers: Operations.issues_create_comment.Input.Headers = .init(),
-        body: Operations.issues_create_comment.Input.Body
-    ) async throws -> Operations.issues_create_comment.Output {
-        try await issues_create_comment(
-            Operations.issues_create_comment.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// List timeline events for an issue
-    ///
-    /// List all timeline events for an issue.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/timeline`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/timeline/get(issues/list-events-for-timeline)`.
-    public func issues_list_events_for_timeline(
-        path: Operations.issues_list_events_for_timeline.Input.Path,
-        query: Operations.issues_list_events_for_timeline.Input.Query = .init(),
-        headers: Operations.issues_list_events_for_timeline.Input.Headers = .init()
-    ) async throws -> Operations.issues_list_events_for_timeline.Output {
-        try await issues_list_events_for_timeline(
-            Operations.issues_list_events_for_timeline.Input(
-                path: path,
-                query: query,
-                headers: headers
-            )
-        )
-    }
-    /// List pull requests
-    ///
-    /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/get(pulls/list)`.
-    public func pulls_list(
-        path: Operations.pulls_list.Input.Path,
-        query: Operations.pulls_list.Input.Query = .init(),
-        headers: Operations.pulls_list.Input.Headers = .init()
-    ) async throws -> Operations.pulls_list.Output {
-        try await pulls_list(Operations.pulls_list.Input(path: path, query: query, headers: headers))
-    }
-    /// List review comments on a pull request
-    ///
-    /// Lists all review comments for a pull request. By default, review comments are in ascending order by ID.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/comments`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/comments/get(pulls/list-review-comments)`.
-    public func pulls_list_review_comments(
-        path: Operations.pulls_list_review_comments.Input.Path,
-        query: Operations.pulls_list_review_comments.Input.Query = .init(),
-        headers: Operations.pulls_list_review_comments.Input.Headers = .init()
-    ) async throws -> Operations.pulls_list_review_comments.Output {
-        try await pulls_list_review_comments(
-            Operations.pulls_list_review_comments.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// List pull requests files
-    ///
-    /// **Note:** Responses include a maximum of 3000 files. The paginated response returns 30 files per page by default.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
-    public func pulls_list_files(
-        path: Operations.pulls_list_files.Input.Path,
-        query: Operations.pulls_list_files.Input.Query = .init(),
-        headers: Operations.pulls_list_files.Input.Headers = .init()
-    ) async throws -> Operations.pulls_list_files.Output {
-        try await pulls_list_files(
-            Operations.pulls_list_files.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// List reviews for a pull request
-    ///
-    /// The list of reviews returns in chronological order.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
-    public func pulls_list_reviews(
-        path: Operations.pulls_list_reviews.Input.Path,
-        query: Operations.pulls_list_reviews.Input.Query = .init(),
-        headers: Operations.pulls_list_reviews.Input.Headers = .init()
-    ) async throws -> Operations.pulls_list_reviews.Output {
-        try await pulls_list_reviews(
-            Operations.pulls_list_reviews.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// List releases
-    ///
-    /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
-    ///
-    /// Information about published releases are available to everyone. Only users with push access will receive listings for draft releases.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/get(repos/list-releases)`.
-    public func repos_list_releases(
-        path: Operations.repos_list_releases.Input.Path,
-        query: Operations.repos_list_releases.Input.Query = .init(),
-        headers: Operations.repos_list_releases.Input.Headers = .init()
-    ) async throws -> Operations.repos_list_releases.Output {
-        try await repos_list_releases(
-            Operations.repos_list_releases.Input(path: path, query: query, headers: headers)
-        )
-    }
-    /// Create a release
-    ///
-    /// Users with push access to the repository can create a release.
-    ///
-    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications). Creating content too quickly using this endpoint may result in secondary rate limiting. See "[Secondary rate limits](https://docs.github.com/rest/overview/resources-in-the-rest-api#secondary-rate-limits)" and "[Dealing with secondary rate limits](https://docs.github.com/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits)" for details.
-    ///
-    /// - Remark: HTTP `POST /repos/{owner}/{repo}/releases`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/post(repos/create-release)`.
-    public func repos_create_release(
-        path: Operations.repos_create_release.Input.Path,
-        headers: Operations.repos_create_release.Input.Headers = .init(),
-        body: Operations.repos_create_release.Input.Body
-    ) async throws -> Operations.repos_create_release.Output {
-        try await repos_create_release(
-            Operations.repos_create_release.Input(path: path, headers: headers, body: body)
-        )
-    }
-    /// Get the latest release
-    ///
-    /// View the latest published full release for the repository.
-    ///
-    /// The latest release is the most recent non-prerelease, non-draft release, sorted by the `created_at` attribute. The `created_at` attribute is the date of the commit used for the release, and not the date when the release was drafted or published.
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/releases/latest`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/releases/latest/get(repos/get-latest-release)`.
-    public func repos_get_latest_release(
-        path: Operations.repos_get_latest_release.Input.Path,
-        headers: Operations.repos_get_latest_release.Input.Headers = .init()
-    ) async throws -> Operations.repos_get_latest_release.Output {
-        try await repos_get_latest_release(
-            Operations.repos_get_latest_release.Input(path: path, headers: headers)
-        )
-    }
-    /// List repository tags
-    ///
-    /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
-    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
-    public func repos_list_tags(
-        path: Operations.repos_list_tags.Input.Path,
-        query: Operations.repos_list_tags.Input.Query = .init(),
-        headers: Operations.repos_list_tags.Input.Headers = .init()
-    ) async throws -> Operations.repos_list_tags.Output {
-        try await repos_list_tags(
-            Operations.repos_list_tags.Input(path: path, query: query, headers: headers)
-        )
-    }
->>>>>>> Stashed changes
 }
 
 /// Convenience overloads for operation inputs.
@@ -1888,6 +1177,23 @@ extension APIProtocol {
         headers: Operations.pulls_list_files.Input.Headers = .init()
     ) async throws -> Operations.pulls_list_files.Output {
         try await pulls_list_files(Operations.pulls_list_files.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// List reviews for a pull request
+    ///
+    /// The list of reviews returns in chronological order.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
+    package func pulls_list_reviews(
+        path: Operations.pulls_list_reviews.Input.Path,
+        query: Operations.pulls_list_reviews.Input.Query = .init(),
+        headers: Operations.pulls_list_reviews.Input.Headers = .init()
+    ) async throws -> Operations.pulls_list_reviews.Output {
+        try await pulls_list_reviews(Operations.pulls_list_reviews.Input(
             path: path,
             query: query,
             headers: headers
@@ -18333,85 +17639,92 @@ package enum Components {
         /// Pull Request Reviews are reviews on pull requests.
         ///
         /// - Remark: Generated from `#/components/schemas/pull-request-review`.
-        public struct pull_request_review: Codable, Hashable, Sendable {
+        package struct pull_request_review: Codable, Hashable, Sendable {
             /// Unique identifier of the review
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review/id`.
-            public var id: Swift.Int
+            package var id: Swift.Int
             /// - Remark: Generated from `#/components/schemas/pull-request-review/node_id`.
-            public var node_id: Swift.String
+            package var node_id: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-review/user`.
-            public var user: Components.Schemas.nullable_simple_user?
+            package var user: Components.Schemas.nullable_simple_user?
             /// The text of the review.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review/body`.
-            public var body: Swift.String
+            package var body: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-review/state`.
-            public var state: Swift.String
+            package var state: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-review/html_url`.
-            public var html_url: Swift.String
+            package var html_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-review/pull_request_url`.
-            public var pull_request_url: Swift.String
+            package var pull_request_url: Swift.String
             /// - Remark: Generated from `#/components/schemas/pull-request-review/_links`.
-            public struct _linksPayload: Codable, Hashable, Sendable {
+            package struct _linksPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/html`.
-                public struct htmlPayload: Codable, Hashable, Sendable {
+                package struct htmlPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/html/href`.
-                    public var href: Swift.String
+                    package var href: Swift.String
                     /// Creates a new `htmlPayload`.
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    package init(href: Swift.String) {
+                        self.href = href
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/html`.
-                public var html: Components.Schemas.pull_request_review._linksPayload.htmlPayload
+                package var html: Components.Schemas.pull_request_review._linksPayload.htmlPayload
                 /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/pull_request`.
-                public struct pull_requestPayload: Codable, Hashable, Sendable {
+                package struct pull_requestPayload: Codable, Hashable, Sendable {
                     /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/pull_request/href`.
-                    public var href: Swift.String
+                    package var href: Swift.String
                     /// Creates a new `pull_requestPayload`.
                     ///
                     /// - Parameters:
                     ///   - href:
-                    public init(href: Swift.String) { self.href = href }
-                    public enum CodingKeys: String, CodingKey { case href }
+                    package init(href: Swift.String) {
+                        self.href = href
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case href
+                    }
                 }
                 /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/pull_request`.
-                public var pull_request:
-                    Components.Schemas.pull_request_review._linksPayload.pull_requestPayload
+                package var pull_request: Components.Schemas.pull_request_review._linksPayload.pull_requestPayload
                 /// Creates a new `_linksPayload`.
                 ///
                 /// - Parameters:
                 ///   - html:
                 ///   - pull_request:
-                public init(
+                package init(
                     html: Components.Schemas.pull_request_review._linksPayload.htmlPayload,
                     pull_request: Components.Schemas.pull_request_review._linksPayload.pull_requestPayload
                 ) {
                     self.html = html
                     self.pull_request = pull_request
                 }
-                public enum CodingKeys: String, CodingKey {
+                package enum CodingKeys: String, CodingKey {
                     case html
                     case pull_request
                 }
             }
             /// - Remark: Generated from `#/components/schemas/pull-request-review/_links`.
-            public var _links: Components.Schemas.pull_request_review._linksPayload
+            package var _links: Components.Schemas.pull_request_review._linksPayload
             /// - Remark: Generated from `#/components/schemas/pull-request-review/submitted_at`.
-            public var submitted_at: Foundation.Date?
+            package var submitted_at: Foundation.Date?
             /// A commit SHA for the review. If the commit object was garbage collected or forcibly deleted, then it no longer exists in Git and this value will be `null`.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review/commit_id`.
-            public var commit_id: Swift.String?
+            package var commit_id: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-review/body_html`.
-            public var body_html: Swift.String?
+            package var body_html: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-review/body_text`.
-            public var body_text: Swift.String?
+            package var body_text: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-review/author_association`.
-            public var author_association: Components.Schemas.author_association
+            package var author_association: Components.Schemas.author_association
             /// Creates a new `pull_request_review`.
             ///
             /// - Parameters:
@@ -18428,7 +17741,7 @@ package enum Components {
             ///   - body_html:
             ///   - body_text:
             ///   - author_association:
-            public init(
+            package init(
                 id: Swift.Int,
                 node_id: Swift.String,
                 user: Components.Schemas.nullable_simple_user? = nil,
@@ -18457,7 +17770,7 @@ package enum Components {
                 self.body_text = body_text
                 self.author_association = author_association
             }
-            public enum CodingKeys: String, CodingKey {
+            package enum CodingKeys: String, CodingKey {
                 case id
                 case node_id
                 case user
@@ -31388,30 +30701,30 @@ package enum Operations {
     ///
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
-    public enum pulls_list_reviews {
-        public static let id: Swift.String = "pulls/list-reviews"
-        public struct Input: Sendable, Hashable {
+    package enum pulls_list_reviews {
+        package static let id: Swift.String = "pulls/list-reviews"
+        package struct Input: Sendable, Hashable {
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path`.
-            public struct Path: Sendable, Hashable {
+            package struct Path: Sendable, Hashable {
                 /// The account owner of the repository. The name is not case sensitive.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path/owner`.
-                public var owner: Components.Parameters.owner
+                package var owner: Components.Parameters.owner
                 /// The name of the repository without the `.git` extension. The name is not case sensitive.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path/repo`.
-                public var repo: Components.Parameters.repo
+                package var repo: Components.Parameters.repo
                 /// The number that identifies the pull request.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path/pull_number`.
-                public var pull_number: Components.Parameters.pull_number
+                package var pull_number: Components.Parameters.pull_number
                 /// Creates a new `Path`.
                 ///
                 /// - Parameters:
                 ///   - owner: The account owner of the repository. The name is not case sensitive.
                 ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
                 ///   - pull_number: The number that identifies the pull request.
-                public init(
+                package init(
                     owner: Components.Parameters.owner,
                     repo: Components.Parameters.repo,
                     pull_number: Components.Parameters.pull_number
@@ -31421,23 +30734,23 @@ package enum Operations {
                     self.pull_number = pull_number
                 }
             }
-            public var path: Operations.pulls_list_reviews.Input.Path
+            package var path: Operations.pulls_list_reviews.Input.Path
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/query`.
-            public struct Query: Sendable, Hashable {
+            package struct Query: Sendable, Hashable {
                 /// The number of results per page (max 100).
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/query/per_page`.
-                public var per_page: Components.Parameters.per_page?
+                package var per_page: Components.Parameters.per_page?
                 /// Page number of the results to fetch.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/query/page`.
-                public var page: Components.Parameters.page?
+                package var page: Components.Parameters.page?
                 /// Creates a new `Query`.
                 ///
                 /// - Parameters:
                 ///   - per_page: The number of results per page (max 100).
                 ///   - page: Page number of the results to fetch.
-                public init(
+                package init(
                     per_page: Components.Parameters.per_page? = nil,
                     page: Components.Parameters.page? = nil
                 ) {
@@ -31445,31 +30758,26 @@ package enum Operations {
                     self.page = page
                 }
             }
-            public var query: Operations.pulls_list_reviews.Input.Query
+            package var query: Operations.pulls_list_reviews.Input.Query
             /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/header`.
-            public struct Headers: Sendable, Hashable {
-                public var accept:
-                    [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_reviews.AcceptableContentType
-                    >]
+            package struct Headers: Sendable, Hashable {
+                package var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_reviews.AcceptableContentType>]
                 /// Creates a new `Headers`.
                 ///
                 /// - Parameters:
                 ///   - accept:
-                public init(
-                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
-                        Operations.pulls_list_reviews.AcceptableContentType
-                    >] = .defaultValues()
-                ) { self.accept = accept }
+                package init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_reviews.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
             }
-            public var headers: Operations.pulls_list_reviews.Input.Headers
+            package var headers: Operations.pulls_list_reviews.Input.Headers
             /// Creates a new `Input`.
             ///
             /// - Parameters:
             ///   - path:
             ///   - query:
             ///   - headers:
-            public init(
+            package init(
                 path: Operations.pulls_list_reviews.Input.Path,
                 query: Operations.pulls_list_reviews.Input.Query = .init(),
                 headers: Operations.pulls_list_reviews.Input.Headers = .init()
@@ -31479,44 +30787,82 @@ package enum Operations {
                 self.headers = headers
             }
         }
-        @frozen public enum Output: Sendable, Hashable {
-            public struct Ok: Sendable, Hashable {
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/headers`.
-                public struct Headers: Sendable, Hashable {
+                package struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen package enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        package init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        package func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/headers/Link`.
-                    public var Link: Components.Headers.link?
+                    package var Link: Components.Headers.link?
                     /// Creates a new `Headers`.
                     ///
                     /// - Parameters:
                     ///   - Link:
-                    public init(Link: Components.Headers.link? = nil) { self.Link = Link }
+                    package init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
                 }
                 /// Received HTTP response headers
-                public var headers: Operations.pulls_list_reviews.Output.Ok.Headers
+                package var headers: Operations.pulls_list_reviews.Output.Ok.Headers
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/content`.
-                @frozen public enum Body: Sendable, Hashable {
+                @frozen package enum Body: Sendable, Hashable {
                     /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/content/application\/json`.
                     case json([Components.Schemas.pull_request_review])
                     /// The associated value of the enum case if `self` is `.json`.
                     ///
                     /// - Throws: An error if `self` is not `.json`.
                     /// - SeeAlso: `.json`.
-                    public var json: [Components.Schemas.pull_request_review] {
+                    package var json: [Components.Schemas.pull_request_review] {
                         get throws {
                             switch self {
-                            case let .json(body): return body
+                            case let .json(body):
+                                return body
                             }
                         }
                     }
                 }
                 /// Received HTTP response body
-                public var body: Operations.pulls_list_reviews.Output.Ok.Body
+                package var body: Operations.pulls_list_reviews.Output.Ok.Body
                 /// Creates a new `Ok`.
                 ///
                 /// - Parameters:
                 ///   - headers: Received HTTP response headers
                 ///   - body: Received HTTP response body
-                public init(
+                package init(
                     headers: Operations.pulls_list_reviews.Output.Ok.Headers = .init(),
                     body: Operations.pulls_list_reviews.Output.Ok.Body
                 ) {
@@ -31534,11 +30880,16 @@ package enum Operations {
             ///
             /// - Throws: An error if `self` is not `.ok`.
             /// - SeeAlso: `.ok`.
-            public var ok: Operations.pulls_list_reviews.Output.Ok {
+            package var ok: Operations.pulls_list_reviews.Output.Ok {
                 get throws {
                     switch self {
-                    case let .ok(response): return response
-                    default: try throwUnexpectedResponseStatus(expectedStatus: "ok", response: self)
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
                     }
                 }
             }
@@ -31547,22 +30898,30 @@ package enum Operations {
             /// A response with a code that is not documented in the OpenAPI document.
             case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
         }
-        @frozen public enum AcceptableContentType: AcceptableProtocol {
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
             case json
             case other(Swift.String)
-            public init?(rawValue: Swift.String) {
+            package init?(rawValue: Swift.String) {
                 switch rawValue.lowercased() {
-                case "application/json": self = .json
-                default: self = .other(rawValue)
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
                 }
             }
-            public var rawValue: Swift.String {
+            package var rawValue: Swift.String {
                 switch self {
-                case let .other(string): return string
-                case .json: return "application/json"
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
                 }
             }
-            public static var allCases: [Self] { [.json] }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
         }
     }
     /// List releases
