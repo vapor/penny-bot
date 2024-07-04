@@ -1,6 +1,6 @@
 import Collections
 
-public actor SerialProcessor {
+package actor SerialProcessor {
 
     enum Errors: Error, CustomStringConvertible {
         case overloaded(limit: Int)
@@ -19,11 +19,11 @@ public actor SerialProcessor {
     private var queue: [String: Deque<CheckedContinuation<Void, Never>>] = [:]
     private let limit: Int
 
-    public init(queueLimit: Int = 10) {
+    package init(queueLimit: Int = 10) {
         self.limit = queueLimit
     }
 
-    public func process<T: Sendable>(
+    package func process<T: Sendable>(
         queueKey: String,
         block: @Sendable () async throws -> T
     ) async throws -> T {

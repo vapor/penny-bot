@@ -1,4 +1,5 @@
 import AWSLambdaEvents
+import HTTPTypes
 import Crypto
 import Foundation
 
@@ -12,7 +13,7 @@ private let jsonEncoder = JSONEncoder()
 
 extension APIGatewayV2Request {
     
-    public func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
+    package func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body else {
             throw APIGatewayErrors.emptyBody(self)
         }
@@ -20,7 +21,7 @@ extension APIGatewayV2Request {
         return try jsonDecoder.decode(D.self, from: data)
     }
 
-    public func decodeWithISO8601<D: Decodable>(as type: D.Type = D.self) throws -> D {
+    package func decodeWithISO8601<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body else {
             throw APIGatewayErrors.emptyBody(self)
         }
@@ -30,7 +31,7 @@ extension APIGatewayV2Request {
 }
 
 extension APIGatewayV2Response {
-    public init(status: HTTPResponseStatus, content: some Encodable) {
+    package init(status: HTTPResponse.Status, content: some Encodable) {
         do {
             let data = try jsonEncoder.encode(content)
             let string = String(data: data, encoding: .utf8)
@@ -38,26 +39,26 @@ extension APIGatewayV2Response {
         } catch {
             if let data = try? jsonEncoder.encode(content) {
                 let string = String(data: data, encoding: .utf8)
-                self.init(statusCode: .failedDependency, body: string)
+                self.init(statusCode: .preconditionFailed, body: string)
             } else {
-                self.init(statusCode: .failedDependency, body: "Plain Error: \(error)")
+                self.init(statusCode: .preconditionFailed, body: "Plain Error: \(error)")
             }
         }
     }
 }
 
-public struct GatewayFailure: Encodable {
+package struct GatewayFailure: Encodable {
     var reason: String
     
-    public init(reason: String) {
+    package init(reason: String) {
         self.reason = reason
     }
 }
 
-public enum APIGatewayErrors: Error, CustomStringConvertible {
+package enum APIGatewayErrors: Error, CustomStringConvertible {
     case emptyBody(APIGatewayV2Request)
 
-    public var description: String {
+    package var description: String {
         switch self {
         case let .emptyBody(request):
             return "emptyBody(\(request))"

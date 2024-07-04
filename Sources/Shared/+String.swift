@@ -1,13 +1,13 @@
 
 extension String {
-    public func urlPathEncoded() -> String {
+    package func urlPathEncoded() -> String {
         self.addingPercentEncoding(
             withAllowedCharacters: .urlPathAllowed
         ) ?? self
     }
 
     @_disfavoredOverload
-    public func unicodesPrefix(_ maxUnicodeScalars: Int) -> (remaining: Int, result: String) {
+    package func unicodesPrefix(_ maxUnicodeScalars: Int) -> (remaining: Int, result: String) {
         /// Well, I mean, you _can_, but you won't like the resulting infinite loop!
         assert(maxUnicodeScalars > 0, "Can't request a non-positive maximum.")
 
@@ -36,7 +36,18 @@ extension String {
         return (0, String(trimmed))
     }
 
-    public func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
+    package func unicodesPrefix(_ maxUnicodeScalars: Int) -> String {
         unicodesPrefix(maxUnicodeScalars).result
+    }
+
+    package func quotedMarkdown() -> String {
+        self.split(
+            omittingEmptySubsequences: false,
+            whereSeparator: \.isNewline
+        ).map {
+            "> \($0)"
+        }.joined(
+            separator: "\n"
+        )
     }
 }

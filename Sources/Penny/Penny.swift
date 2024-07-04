@@ -1,5 +1,6 @@
 import NIOPosix
 import AsyncHTTPClient
+import Shared
 import SotoS3
 
 @main
@@ -11,25 +12,15 @@ struct Penny {
     static func start(mainService: any MainService) async throws {
         /// Use `1` instead of `System.coreCount`.
         /// This is preferred for apps that primarily use structured concurrency.
-        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         let httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(eventLoopGroup),
-            configuration: .init(decompression: .enabled(limit: .size(1 << 32)))
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+            configuration: .forPenny
         )
-        let awsClient = AWSClient(httpClientProvider: .shared(httpClient))
-
-        /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
-        defer {
-            /// Shutdown in reverse order of dependance.
-            try! awsClient.syncShutdown()
-            try! httpClient.syncShutdown()
-            try! eventLoopGroup.syncShutdownGracefully()
-        }
+        let awsClient = AWSClient(httpClient: httpClient)
 
         try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
 
         let bot = try await mainService.makeBot(
-            eventLoopGroup: eventLoopGroup,
             httpClient: httpClient
         )
         let cache = try await mainService.makeCache(bot: bot)
@@ -42,12 +33,16 @@ struct Penny {
         )
 
         await bot.connect()
-        let stream = await bot.makeEventsStream()
 
         try await mainService.afterConnectCall(context: context)
 
-        for await event in stream {
+        for await event in await bot.events {
             EventHandler(event: event, context: context).handle()
         }
+
+        /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
+        /// Shutdown in reverse order of dependance.
+        try await awsClient.shutdown()
+        try await httpClient.shutdown()
     }
 }

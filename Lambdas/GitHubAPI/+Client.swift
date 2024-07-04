@@ -3,7 +3,7 @@ import Logging
 import struct NIOCore.TimeAmount
 
 extension Client {
-    public static func makeForGitHub(
+    package static func makeForGitHub(
         httpClient: HTTPClient,
         authorization: AuthorizationHeader,
         timeout: TimeAmount = .seconds(5),

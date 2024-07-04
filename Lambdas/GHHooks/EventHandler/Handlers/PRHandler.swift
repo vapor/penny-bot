@@ -9,6 +9,7 @@ import SwiftSemver
 
 struct PRHandler {
     let context: HandlerContext
+    let action: PullRequest.Action
     let pr: PullRequest
     var event: GHEvent {
         self.context.event
@@ -22,14 +23,14 @@ struct PRHandler {
 
     init(context: HandlerContext) throws {
         self.context = context
+        self.action = try context.event.action
+            .flatMap { PullRequest.Action(rawValue: $0) }
+            .requireValue()
         self.pr = try context.event.pull_request.requireValue()
     }
 
     func handle() async throws {
-        let action = try event.action
-            .flatMap { PullRequest.Action(rawValue: $0) }
-            .requireValue()
-        switch action {
+        switch self.action {
         case .opened:
             try await self.onOpened()
         case .closed:
@@ -65,7 +66,9 @@ struct PRHandler {
     }
 
     func editPRReport() async throws {
-        try await self.makeReporter().reportEdition()
+        try await self.makeReporter().reportEdition(
+            requiresPreexistingReport: self.action == .labeled
+        )
     }
 
     func makeReporter() async throws -> TicketReporter {

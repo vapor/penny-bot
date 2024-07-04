@@ -4,7 +4,7 @@ import DiscordModels
 import Models
 import Foundation
 
-actor ProposalsChecker {
+actor EvolutionChecker {
 
     struct Storage: Sendable, Codable {
         var previousProposals: [Proposal] = []
@@ -16,16 +16,16 @@ actor ProposalsChecker {
     /// The minimum time to wait before sending a queued-proposal
     let queuedProposalsWaitTime: Double
 
-    let proposalsService: any ProposalsService
+    let evolutionService: any EvolutionService
     let discordService: DiscordService
-    let logger = Logger(label: "ProposalsChecker")
+    let logger = Logger(label: "EvolutionChecker")
 
     init(
-        proposalsService: any ProposalsService,
+        evolutionService: any EvolutionService,
         discordService: DiscordService,
         queuedProposalsWaitTime: Double = 29 * 60
     ) {
-        self.proposalsService = proposalsService
+        self.evolutionService = evolutionService
         self.discordService = discordService
         self.queuedProposalsWaitTime = queuedProposalsWaitTime
     }
@@ -45,7 +45,7 @@ actor ProposalsChecker {
     }
 
     func check() async throws {
-        let proposals = try await proposalsService.list()
+        let proposals = try await evolutionService.list()
 
         if self.storage.previousProposals.isEmpty {
             self.storage.previousProposals = proposals
@@ -139,7 +139,7 @@ actor ProposalsChecker {
         if Task.isCancelled { return }
         /// Send the message, make sure it is successfully sent
         let response = await discordService.sendMessage(
-            channelId: Constants.Channels.proposals.id,
+            channelId: Constants.Channels.evolution.id,
             payload: payload
         )
         guard let message = try? response?.decode() else { return }
@@ -153,17 +153,12 @@ actor ProposalsChecker {
                 auto_archive_duration: .threeDays
             )
         )
-        /// "Publish" the message to other announcement-channel subscribers
-        await discordService.crosspostMessage(
-            channelId: message.channel_id,
-            messageId: message.id
-        )
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) async -> Payloads.CreateMessage {
-        let titleState = proposal.status.state.titleDescription
-        let descriptionState = proposal.status.state.UIDescription
-        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
+        let stateTitle = proposal.status.state.titleDescription.map { $0 + ": " } ?? ""
+        let stateDescription = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(stateTitle)\(proposal.title.sanitized())"
 
         let summary = makeSummary(proposal: proposal)
 
@@ -184,13 +179,20 @@ actor ProposalsChecker {
             proposalLink = "https://github.com/apple/swift-evolution/blob/main/proposals/\(link)"
         }
 
+        var status = ""
+        if let current = stateDescription {
+            status = """
+
+            **Status: \(current)**
+            """
+        }
+
         return .init(
             embeds: [.init(
                 title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
-
-                **Status: \(descriptionState)**
+                \(status)
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -206,9 +208,9 @@ actor ProposalsChecker {
         previousState: Proposal.Status.State
     ) async -> Payloads.CreateMessage {
 
-        let titleState = proposal.status.state.titleDescription
-        let descriptionState = proposal.status.state.UIDescription
-        let title = "[\(proposal.id.sanitized())] \(titleState): \(proposal.title.sanitized())"
+        let stateTitle = proposal.status.state.titleDescription.map { $0 + ": " } ?? ""
+        let stateDescription = proposal.status.state.UIDescription
+        let title = "[\(proposal.id.sanitized())] \(stateTitle)\(proposal.title.sanitized())"
 
         let summary = makeSummary(proposal: proposal)
 
@@ -229,13 +231,21 @@ actor ProposalsChecker {
             proposalLink = "https://github.com/apple/swift-evolution/blob/main/proposals/\(link)"
         }
 
+        var status = ""
+        if let previous = previousState.UIDescription,
+           let new = stateDescription {
+            status = """
+
+            **Status:** \(previous) -> **\(new)**
+            """
+        }
+
         return .init(
             embeds: [.init(
                 title: title.unicodesPrefix(256),
                 description: """
                 > \(summary)
-
-                **Status:** \(previousState.UIDescription) -> **\(descriptionState)**
+                \(status)
                 \(authorsString)
                 \(reviewManagerString)
                 """,
@@ -275,7 +285,7 @@ actor ProposalsChecker {
     private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
         let content: String
         do {
-            content = try await proposalsService.getProposalContent(link: link)
+            content = try await evolutionService.getProposalContent(link: link)
         } catch {
             logger.error("Could not fetch proposal content", metadata: [
                 "link": .string(link),
@@ -444,32 +454,36 @@ private extension Proposal.Status.State {
     var color: DiscordColor {
         switch self {
         case .accepted: return .green
+        case .acceptedWithRevisions: return .green(scheme: .dark)
         case .activeReview: return .orange
         case .scheduledForReview: return .yellow
+        case .awaitingReview: return .yellow
         case .implemented: return .blue
         case .previewing: return .teal
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
-        case .unknown: return .gray(level: .level6, scheme: .dark)
+        case .error, .unknown: return .gray(level: .level6, scheme: .dark)
         }
     }
 
-    var UIDescription: String {
+    var UIDescription: String? {
         switch self {
         case .accepted: return "Accepted"
+        case .acceptedWithRevisions: return "Accepted With Revisions"
         case .activeReview: return "Active Review"
         case .scheduledForReview: return "Scheduled For Review"
+        case .awaitingReview: return "Awaiting Review"
         case .implemented: return "Implemented"
         case .previewing: return "Previewing"
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
-        case let .unknown(unknown): return String(unknown.dropFirst().capitalized)
+        case .error, .unknown: return nil
         }
     }
 
-    var titleDescription: String {
+    var titleDescription: String? {
         switch self {
         case .activeReview: return "In Active Review"
         default: return self.UIDescription
@@ -489,25 +503,31 @@ struct Proposal: Sendable, Codable {
 
         enum State: RawRepresentable, Equatable, Sendable, Codable {
             case accepted
+            case acceptedWithRevisions
             case activeReview
             case scheduledForReview
+            case awaitingReview
             case implemented
             case previewing
             case rejected
             case returnedForRevision
             case withdrawn
+            case error
             case unknown(String)
 
             var rawValue: String {
                 switch self {
                 case .accepted: return ".accepted"
+                case .acceptedWithRevisions: return ".acceptedWithRevisions"
                 case .activeReview: return ".activeReview"
                 case .scheduledForReview: return ".scheduledForReview"
+                case .awaitingReview: return ".awaitingReview"
                 case .implemented: return ".implemented"
                 case .previewing: return ".previewing"
                 case .rejected: return ".rejected"
                 case .returnedForRevision: return ".returnedForRevision"
                 case .withdrawn: return ".withdrawn"
+                case .error: return ".error"
                 case let .unknown(unknown): return unknown
                 }
             }
@@ -515,13 +535,16 @@ struct Proposal: Sendable, Codable {
             init? (rawValue: String) {
                 switch rawValue {
                 case ".accepted": self = .accepted
+                case ".acceptedWithRevisions": self = .acceptedWithRevisions
                 case ".activeReview": self = .activeReview
                 case ".scheduledForReview": self = .scheduledForReview
+                case ".awaitingReview": self = .awaitingReview
                 case ".implemented": self = .implemented
                 case ".previewing": self = .previewing
                 case ".rejected": self = .rejected
                 case ".returnedForRevision": self = .returnedForRevision
                 case ".withdrawn": self = .withdrawn
+                case ".error": self = .error
                 default:
                     Logger(label: "\(#file):\(#line)").warning(
                         "New unknown case",
@@ -583,19 +606,27 @@ struct Proposal: Sendable, Codable {
 
         enum Repository: RawRepresentable, Sendable, Codable {
             case swift
+            case swiftEvolution
             case swiftSyntax
             case swiftCorelibsFoundation
             case swiftPackageManager
             case swiftXcodePlaygroundSupport
+            case swiftDocc
+            case swiftDoccPlugin
+            case swiftDoccSymbolKit
             case unknown(String)
 
             var rawValue: String {
                 switch self {
                 case .swift: return "swift"
+                case .swiftEvolution: return "swift-evolution"
                 case .swiftSyntax: return "swift-syntax"
                 case .swiftCorelibsFoundation: return "swift-corelibs-foundation"
                 case .swiftPackageManager: return "swift-package-manager"
                 case .swiftXcodePlaygroundSupport: return "swift-xcode-playground-support"
+                case .swiftDocc: return "swift-docc"
+                case .swiftDoccPlugin: return "swift-docc-plugin"
+                case .swiftDoccSymbolKit: return "swift-docc-symbolkit"
                 case let .unknown(unknown): return unknown
                 }
             }
@@ -603,10 +634,14 @@ struct Proposal: Sendable, Codable {
             init? (rawValue: String) {
                 switch rawValue {
                 case "swift": self = .swift
+                case "swift-evolution": self = .swiftEvolution
                 case "swift-syntax": self = .swiftSyntax
                 case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
                 case "swift-package-manager": self = .swiftPackageManager
                 case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
+                case "swift-docc": self = .swiftDocc
+                case "swift-docc-plugin": self = .swiftDoccPlugin
+                case "swift-docc-symbolkit": self = .swiftDoccSymbolKit
                 default:
                     Logger(label: "\(#file):\(#line)").warning(
                         "New unknown case",

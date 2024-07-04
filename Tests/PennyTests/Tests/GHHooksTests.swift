@@ -9,25 +9,26 @@ import Rendering
 import Logging
 import SwiftSemver
 import Markdown
-import Fake
+import NIOPosix
 import XCTest
 
 class GHHooksTests: XCTestCase {
-    let httpClient = HTTPClient()
+    let httpClient = HTTPClient(
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+        configuration: .forPenny
+    )
+
     let decoder: JSONDecoder = {
         var decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return decoder
     }()
+    
     /// The `…` (U+2026 Horizontal Ellipsis) character.
     let dots = "\u{2026}"
 
     override func setUp() async throws {
         FakeResponseStorage.shared = FakeResponseStorage()
-    }
-
-    override func tearDown() {
-        try! httpClient.syncShutdown()
     }
 
     func testUnicodesPrefix() throws {
@@ -167,8 +168,8 @@ class GHHooksTests: XCTestCase {
     func testSemVerBump() throws {
         do {
             let version = try XCTUnwrap(SemanticVersion(string: "11.0.0"))
-            let next = try XCTUnwrap(version.next(.major))
-            XCTAssertEqual(next.description, "12.0.0")
+            /// Does not bump major versions to avoid releasing a whole new major version.
+            XCTAssertEqual(version.next(.major), nil)
         }
 
         do {
@@ -287,7 +288,7 @@ class GHHooksTests: XCTestCase {
                 hardLimit: 2_048,
                 trailingTextMinLength: 64
             )
-            XCTAssertMultilineStringsEqual(formatted, scalars_206)
+            XCTAssertMultilineStringsEqual(formatted, scalars_206 + "\n\(dots)")
         }
 
         /// Remove html and images + length limits.
@@ -405,6 +406,7 @@ class GHHooksTests: XCTestCase {
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
 
             Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+            \(dots)
             """)
         }
 
@@ -436,6 +438,7 @@ class GHHooksTests: XCTestCase {
             ### To Reproduce
 
             1.
+            \(dots)
             """)
         }
 
@@ -459,6 +462,7 @@ class GHHooksTests: XCTestCase {
             * Vapor Toolbox version: N/A
             * OS version: N/A
             """
+
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
@@ -477,6 +481,48 @@ class GHHooksTests: XCTestCase {
             ### Expected behavior
 
             Expect some contrast between the text and the background.
+            \(dots)
+            """)
+        }
+
+        do {
+            let text = """
+            Final stage of Vapor's `Sendable` journey as `Request` is now `Sendable`.
+
+            There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
+            """
+
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 256,
+                hardLimit: 2_048,
+                trailingTextMinLength: 128
+            )
+
+            XCTAssertMultilineStringsEqual(formatted, """
+            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable`.
+
+            There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
+            """)
+        }
+
+        /// Test modifying GitHub links
+        do {
+            let text = """
+            https://github.com/swift-server/swiftly/pull/9Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at https://github.com/swift-server/swiftly/pull/9.
+
+            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.](https://github.com/vapor/penny-bot/issues/98
+            """
+
+            let formatted = text.formatMarkdown(
+                maxVisualLength: 512,
+                hardLimit: 2_048,
+                trailingTextMinLength: 128
+            )
+
+            XCTAssertMultilineStringsEqual(formatted, """
+            [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9)Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
+
+            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.]([vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
             """)
         }
     }
@@ -566,12 +612,38 @@ class GHHooksTests: XCTestCase {
         XCTAssertTrue(body.hasPrefix("## What's Changed"), body)
     }
 
+    func testIsPrimaryOrReleaseBranch() async throws {
+        let context = try makeContext(
+            eventName: .pull_request,
+            eventKey: "pr3"
+        )
+        let repo = try XCTUnwrap(context.event.repository)
+
+        XCTAssertTrue("main".isPrimaryOrReleaseBranch(repo: repo))
+
+        XCTAssertFalse("mainiac".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("master".isPrimaryOrReleaseBranch(repo: repo))
+
+        XCTAssertTrue("release/1.0.4".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertTrue("postgres-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertTrue("release/58.x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertTrue("release/58.1".isPrimaryOrReleaseBranch(repo: repo))
+
+        XCTAssertFalse("release/x.9".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("release/5.x.9".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("release/x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("release/3".isPrimaryOrReleaseBranch(repo: repo))
+        /// No pre-release / build identifiers supported
+        XCTAssertFalse("postgres-my/branch#42.99.56-alpha.x".isPrimaryOrReleaseBranch(repo: repo))
+        XCTAssertFalse("postgres-my/branch#42.99.56-alpha.1345".isPrimaryOrReleaseBranch(repo: repo))
+    }
+
     func testEventHandler() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
         try await handleEvent(
             key: "issue2",
             eventName: .issues,
-            expect: .response(at: .issueAndPRs)
+            expect: .response(at: .issuesAndPRs)
         )
         try await handleEvent(key: "issue3", eventName: .issues, expect: .noResponse)
         try await handleEvent(key: "issue4", eventName: .issues, expect: .noResponse)
@@ -580,7 +652,7 @@ class GHHooksTests: XCTestCase {
             key: "issue5",
             eventName: .issues,
             expect: .response(
-                at: .issueAndPRs,
+                at: .issuesAndPRs,
                 type: .edit(messageId: FakeMessageLookupRepo.randomMessageID)
             )
         )
@@ -655,7 +727,7 @@ class GHHooksTests: XCTestCase {
         try await handleEvent(
             key: "pr13",
             eventName: .pull_request,
-            expect: .response(at: .issueAndPRs, type: .create)
+            expect: .response(at: .issuesAndPRs, type: .create)
         )
 
         try await handleEvent(

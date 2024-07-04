@@ -1,9 +1,9 @@
 
-public struct AutoPingsRequest: Codable {
-    public let discordID: UserSnowflake
-    public let expressions: [S3AutoPingItems.Expression]
+package struct AutoPingsRequest: Codable {
+    package let discordID: UserSnowflake
+    package let expressions: [S3AutoPingItems.Expression]
     
-    public init(
+    package init(
         discordID: UserSnowflake,
         expressions: [S3AutoPingItems.Expression]
     ) {

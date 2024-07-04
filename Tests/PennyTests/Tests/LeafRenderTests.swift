@@ -6,17 +6,22 @@ import Rendering
 import AsyncHTTPClient
 import GitHubAPI
 import Logging
-import Fake
+import NIOPosix
 import XCTest
 
 class LeafRenderTests: XCTestCase {
-    let httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+    let httpClient = HTTPClient(
+        eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+        configuration: .forPenny
+    )
+
     lazy var ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
             httpClient: httpClient,
             logger: Logger(label: "RenderClientGHHooksTests")
         )
     )
+
     lazy var pennyRenderClient = RenderClient(
         renderer: try! .forPenny(
             httpClient: httpClient,
@@ -29,8 +34,8 @@ class LeafRenderTests: XCTestCase {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
 
-    override func tearDown() {
-        try! httpClient.syncShutdown()
+    override func tearDown() async throws {
+        try await httpClient.shutdown()
     }
 
     func testTranslationNeededDescription() async throws {

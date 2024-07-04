@@ -1,7 +1,7 @@
 import DiscordModels
 import Models
 
-public protocol UsersService: Sendable {
+package protocol UsersService: Sendable {
     func getUser(githubID: String) async throws -> DynamoDBUser?
     func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse
     func getCoinCount(of discordID: UserSnowflake) async throws -> Int

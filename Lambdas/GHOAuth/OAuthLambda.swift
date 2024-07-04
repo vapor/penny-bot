@@ -38,10 +38,13 @@ struct GHOAuthHandler: LambdaHandler {
     }
 
     init(context: LambdaInitializationContext) async throws {
-        self.client = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+        self.client = HTTPClient(
+            eventLoopGroupProvider: .shared(context.eventLoop),
+            configuration: .forPenny
+        )
         self.logger = context.logger
 
-        let awsClient = AWSClient(httpClientProvider: .shared(client))
+        let awsClient = AWSClient(httpClient: client)
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         let apiBaseURL = try requireEnvVar("API_BASE_URL")
@@ -166,7 +169,7 @@ struct GHOAuthHandler: LambdaHandler {
             """
         )
 
-        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now")
+        return .init(statusCode: .ok, body: "Account linking successful, you can return to Discord now.")
     }
 
     func getGHAccessToken(code: String) async throws -> String {
@@ -246,7 +249,7 @@ struct GHOAuthHandler: LambdaHandler {
     func logErrorToDiscord(_ error: String) async {
         do {
             try await discordClient.createMessage(
-                channelId: Constants.Channels.logs.id,
+                channelId: Constants.Channels.botLogs.id,
                 payload: .init(embeds: [.init(
                     description: """
                     Error in GHHooks Lambda:

@@ -8,35 +8,44 @@ on:
 jobs:
   deploy-lambdas:
     runs-on: ubuntu-latest
-    container: swift:5.9-amazonlinux2
+    container: swift:5.10-amazonlinux2
+
     env:
       AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+
     steps:
       - name: Install additional dependencies and AWSCLI v2
         run: |
-          echo "::add_mask::$AWS_ACCESS_KEY_ID"
-          echo "::add_mask::$AWS_SECRET_ACCESS_KEY"
           yum -y install \
             {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
             libtool jq zip
           curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
           unzip awscliv2.zip
           ./aws/install
+
       - name: Check out repository
         uses: actions/checkout@v3
-      - name: Build, package, and deploy
+
+      - name: Find package names
+        id: find_package_names
+        run: |
+          echo "names=$(
+            swift package describe --type json | \
+            jq -r '.targets[] |
+              select(
+                .type == "executable"
+              and
+                (.name | endswith("Lambda"))
+              ).name' | \
+            tr '\n' ' '
+          )" >> $GITHUB_OUTPUT
+
+      - name: Build and package
         run: |
           mkdir zips
-          for name in $(
-            swift package dump-package | \
-              jq '.targets' | \
-              jq 'map(select(.type == "executable"))' | \
-              jq 'map(select(.path != null))' | \
-              jq 'map(select(.path | startswith("./Lambdas")))' | \
-              jq -r '.[].name'
-            ); do
+          for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package archive \
               --output-path ./zips \
               --products "${name}"
@@ -44,6 +53,11 @@ jobs:
               --bucket penny-lambdas-store \
               --key "${name}.zip" \
               --body ./zips/${name}/${name}.zip
+          done
+
+      - name: Deploy
+        run: |
+          for name in ${{ steps.find_package_names.outputs.names }}; do
             aws lambda update-function-code \
               --function-name "${name}" \
               --s3-bucket "penny-lambdas-store" \

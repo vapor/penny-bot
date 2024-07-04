@@ -20,7 +20,7 @@ struct S3CachesRepository {
         let request = S3.GetObjectRequest(bucket: bucket, key: key)
         let response = try await s3.getObject(request, logger: logger)
 
-        let body = try await response.body.collect(upTo: 1 << 24)
+        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
         if body.readableBytes == 0 {
             logger.error("Cannot find any data in the bucket")
             return CachesStorage()

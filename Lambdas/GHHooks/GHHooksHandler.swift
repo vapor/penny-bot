@@ -37,9 +37,12 @@ struct GHHooksHandler: LambdaHandler {
         /// bootstrapping the logging system which it appears to not have.
         DiscordGlobalConfiguration.makeLogger = { _ in context.logger }
 
-        self.httpClient = HTTPClient(eventLoopGroupProvider: .shared(context.eventLoop))
+        self.httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(context.eventLoop),
+            configuration: .forPenny
+        )
 
-        let awsClient = AWSClient(httpClientProvider: .shared(self.httpClient))
+        let awsClient = AWSClient(httpClient: self.httpClient)
         self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
 
         let authenticator = Authenticator(
@@ -76,7 +79,7 @@ struct GHHooksHandler: LambdaHandler {
             do {
                 /// Report to Discord server for easier notification of maintainers
                 try await discordClient.createMessage(
-                    channelId: Constants.Channels.logs.id,
+                    channelId: Constants.Channels.botLogs.id,
                     payload: .init(
                         content: DiscordUtils.mention(id: Constants.botDevUserID),
                         embeds: [.init(
@@ -107,7 +110,7 @@ struct GHHooksHandler: LambdaHandler {
         logger.debug("Got request", metadata: [
             "request": "\(request)"
         ])
-        
+
         try await verifyWebhookSignature(request: request)
 
         guard let _eventName = request.headers.first(name: "x-github-event"),

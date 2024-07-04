@@ -28,8 +28,8 @@ extension Collection<S3AutoPingItems.Expression> {
             return nil
         } else {
             let list = elements
-                .sorted(by: { $0.innerValue > $1.innerValue })
                 .map(\.innerValue)
+                .sorted()
                 .makeExpressionListItems()
             return """
             - **\(kind.UIDescription)**

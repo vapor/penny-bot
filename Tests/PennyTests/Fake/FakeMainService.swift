@@ -8,16 +8,16 @@ import SotoCore
 import AsyncHTTPClient
 import XCTest
 
-public actor FakeMainService: MainService {
-    public let manager: FakeManager
-    public let cache: DiscordCache
-    public let httpClient: HTTPClient
-    public let context: HandlerContext
+actor FakeMainService: MainService {
+    let manager: FakeManager
+    let cache: DiscordCache
+    let httpClient: HTTPClient
+    let context: HandlerContext
     var botStateManager: BotStateManager {
         context.botStateManager
     }
 
-    public init(manager: FakeManager) async throws {
+    init(manager: FakeManager) async throws {
         self.manager = manager
         var cacheStorage = DiscordCache.Storage()
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
@@ -27,7 +27,10 @@ public actor FakeMainService: MainService {
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
-        self.httpClient = HTTPClient(eventLoopGroupProvider: .singleton)
+        self.httpClient = HTTPClient(
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
+            configuration: .forPenny
+        )
         self.context = try Self.makeContext(
             manager: manager,
             cache: cache,
@@ -35,24 +38,17 @@ public actor FakeMainService: MainService {
         )
     }
 
-    deinit {
-        try! httpClient.syncShutdown()
-    }
+    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
 
-    public func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
-
-    public func makeBot(
-        eventLoopGroup: any EventLoopGroup,
-        httpClient: HTTPClient
-    ) async throws -> any GatewayManager {
+    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
         return manager
     }
 
-    public func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
+    func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
         return cache
     }
 
-    public func beforeConnectCall(
+    func beforeConnectCall(
         bot: any GatewayManager,
         cache: DiscordCache,
         httpClient: HTTPClient,
@@ -62,7 +58,7 @@ public actor FakeMainService: MainService {
         return context
     }
 
-    public func afterConnectCall(context: HandlerContext) async throws { }
+    func afterConnectCall(context: HandlerContext) async throws { }
 
     static func makeContext(
         manager: any GatewayManager,
@@ -73,8 +69,8 @@ public actor FakeMainService: MainService {
             discordClient: manager.client,
             cache: cache
         )
-        let proposalsChecker = ProposalsChecker(
-            proposalsService: FakeProposalsService(),
+        let evolutionChecker = EvolutionChecker(
+            evolutionService: FakeEvolutionService(),
             discordService: discordService,
             queuedProposalsWaitTime: -1
         )
@@ -91,7 +87,7 @@ public actor FakeMainService: MainService {
             autoFaqsService: autoFaqsService,
             cachesService: FakeCachesService(context: .init(
                 autoFaqsService: autoFaqsService,
-                proposalsChecker: proposalsChecker,
+                evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
                 reactionCache: reactionCache
             )),
@@ -103,7 +99,7 @@ public actor FakeMainService: MainService {
                     on: httpClient.eventLoopGroup.next()
                 )
             ),
-            proposalsChecker: proposalsChecker,
+            evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             reactionCache: reactionCache
         )
@@ -116,11 +112,11 @@ public actor FakeMainService: MainService {
         )
     }
 
-    public func waitForStateManagerShutdownAndDidShutdownSignals() async {
+    func waitForStateManagerShutdownAndDidShutdownSignals() async {
         /// Wait for the shutdown signal, then send a `didShutdown` signal.
         /// in practice, the `didShutdown` signal is sent by another Penny that is online.
         while let possibleSignal = await FakeResponseStorage.shared.awaitResponse(
-            at: .createMessage(channelId: Constants.Channels.logs.id)
+            at: .createMessage(channelId: Constants.Channels.botLogs.id)
         ).value as? Payloads.CreateMessage {
             if let signal = possibleSignal.content,
                StateManagerSignal.shutdown.isInMessage(signal) {
@@ -129,7 +125,7 @@ public actor FakeMainService: MainService {
                     opcode: .dispatch,
                     data: .messageCreate(.init(
                         id: try! .makeFake(),
-                        channel_id: Constants.Channels.logs.id,
+                        channel_id: Constants.Channels.botLogs.id,
                         author: DiscordUser(
                             id: Snowflake(Constants.botId),
                             username: "Penny",
@@ -140,11 +136,11 @@ public actor FakeMainService: MainService {
                         tts: false,
                         mention_everyone: false,
                         mention_roles: [],
+                        mentions: [],
                         attachments: [],
                         embeds: [],
                         pinned: false,
-                        type: .default,
-                        mentions: []
+                        type: .default
                     ))
                 ))
                 break

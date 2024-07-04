@@ -1,8 +1,10 @@
 import AWSLambdaRuntime
 import AWSLambdaEvents
+import AsyncHTTPClient
 import Foundation
 import SotoCore
 import Models
+import Shared
 import LambdasShared
 
 @main
@@ -14,9 +16,11 @@ struct UsersHandler: LambdaHandler {
     let logger: Logger
 
     init(context: LambdaInitializationContext) async {
-        let awsClient = AWSClient(
-            httpClientProvider: .createNewWithEventLoopGroup(context.eventLoop)
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(context.eventLoop),
+            configuration: .forPenny
         )
+        let awsClient = AWSClient(httpClient: httpClient)
         self.internalService = InternalUsersService(awsClient: awsClient, logger: context.logger)
         self.logger = context.logger
     }

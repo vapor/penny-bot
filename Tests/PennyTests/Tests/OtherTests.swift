@@ -1,6 +1,5 @@
 @testable import Penny
 @testable import Models
-import Fake
 import Markdown
 import XCTest
 
@@ -73,7 +72,7 @@ class OtherTests: XCTestCase {
     func testAutoPingItemExpressionCodable() throws {
         typealias Expression = S3AutoPingItems.Expression
         
-        do { /// Expression.text
+        do { /// Expression.matches
             let exp = Expression.matches("Hello-world")
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(exp)
@@ -91,7 +90,7 @@ class OtherTests: XCTestCase {
             }
         }
         
-        do { /// Expression.contain
+        do { /// Expression.contains
             let exp = Expression.contains("Hello-world")
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(exp)

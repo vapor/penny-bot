@@ -15,6 +15,7 @@ struct ReleaseMaker {
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
         static let organizationIDAllowList: Set<Int> = [/*vapor:*/ 17364220]
+        static let releaseNoticePrefix = "**These changes are now available in"
     }
 
     enum PRErrors: Error, CustomStringConvertible {
@@ -56,7 +57,7 @@ struct ReleaseMaker {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
               Configuration.organizationIDAllowList.contains(repo.owner.id),
               let mergedBy = pr.merged_by,
-              pr.base.ref == "main",
+              pr.base.ref.isPrimaryOrReleaseBranch(repo: repo),
               let bump = pr.knownLabels.first?.toBump()
         else { return }
 
@@ -79,24 +80,18 @@ struct ReleaseMaker {
             isPrerelease: !version.prereleaseIdentifiers.isEmpty
         )
 
-        try await sendComment(release: release)
+        try await updatePRBodyWithReleaseNotice(release: release)
     }
 
     func getLastRelease() async throws -> Release {
         let latest = try await self.getLatestRelease()
 
-        let response = try await context.githubClient.repos_list_releases(.init(
+        let releases = try await context.githubClient.repos_list_releases(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             )
-        ))
-
-        guard case let .ok(ok) = response,
-              case let .json(releases) = ok.body
-        else {
-            throw Errors.httpRequestFailed(response: response)
-        }
+        ).ok.body.json
 
         let filteredReleases: [Release] = releases.compactMap {
             release -> (Release, SemanticVersion)? in
@@ -128,20 +123,16 @@ struct ReleaseMaker {
     }
 
     private func getLatestRelease() async throws -> Release? {
-        let response = try await context.githubClient.repos_get_latest_release(.init(
+        let response = try await context.githubClient.repos_get_latest_release(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             )
-        ))
+        )
 
-        switch response {
-        case let .ok(ok):
-            switch ok.body {
-            case let .json(json):
-                return json
-            }
-        default: break
+        if case let .ok(ok) = response,
+           case let .json(json) = ok.body {
+            return json
         }
 
         logger.warning("Could not find a 'latest' release", metadata: [
@@ -164,7 +155,7 @@ struct ReleaseMaker {
             previousVersion: previousVersion,
             newVersion: newVersion
         )
-        let response = try await context.githubClient.repos_create_release(.init(
+        return try await context.githubClient.repos_create_release(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
@@ -178,40 +169,44 @@ struct ReleaseMaker {
                 prerelease: isPrerelease,
                 make_latest: isPrerelease ? ._false : ._true
             ))
-        ))
-
-        switch response {
-        case let .created(created):
-            switch created.body {
-            case let .json(release):
-                return release
-            }
-        default: break
-        }
-
-        throw Errors.httpRequestFailed(response: response)
+        ).created.body.json
     }
 
-    func sendComment(release: Release) async throws {
-        /// `"Issues" create comment`, but works for PRs too. Didn't find an endpoint for PRs.
-        let response = try await context.githubClient.issues_create_comment(.init(
+    func updatePRBodyWithReleaseNotice(release: Release) async throws {
+        let current = try await context.githubClient.pulls_get(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                issue_number: number
+                pull_number: number
+            )
+        ).ok.body.json
+        if (current.body ?? "")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .hasPrefix(Configuration.releaseNoticePrefix) {
+            logger.debug("Pull request doesn't need to be updated with release notice", metadata: [
+                "current": "\(current)"
+            ])
+            return
+        }
+        let updated = try await context.githubClient.pulls_update(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name,
+                pull_number: number
             ),
             body: .json(.init(
                 body: """
-                These changes are now available in [\(release.tag_name)](\(release.html_url))
+                \(Configuration.releaseNoticePrefix) [\(release.tag_name)](\(release.html_url))**
+
+
+                \(current.body ?? "")
                 """
             ))
-        ))
-
-        switch response {
-        case .created: return
-        default:
-            throw Errors.httpRequestFailed(response: response)
-        }
+        ).ok.body.json
+        logger.debug("Updated a pull request with a release notice", metadata: [
+            "before": "\(current)",
+            "after": "\(updated)"
+        ])
     }
 
     /**
@@ -227,7 +222,7 @@ struct ReleaseMaker {
     ) async throws -> String {
         let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.full_name,
-            primaryBranch: repo.primaryBranch
+            branch: pr.base.ref
         )
         let contributors = try await getExistingContributorIDs()
         let isNewContributor = isNewContributor(
@@ -236,13 +231,12 @@ struct ReleaseMaker {
         )
         let reviewers = try await getReviewersToCredit(codeOwners: codeOwners).map(\.uiName)
 
-        let body = pr.body.map {
-            $0.formatMarkdown(
-                maxVisualLength: 1_024,
-                hardLimit: 2_048,
-                trailingTextMinLength: 128
-            ).quotedMarkdown()
-        } ?? ""
+        let bodyNoReleaseNotice = pr.body.map { $0.trimmingReleaseNoticeFromBody() } ?? ""
+        let body = bodyNoReleaseNotice.formatMarkdown(
+            maxVisualLength: 1_024,
+            hardLimit: 2_048,
+            trailingTextMinLength: 128
+        ).quotedMarkdown()
 
         return try await context.renderClient.newReleaseDescription(
             context: .init(
@@ -276,12 +270,10 @@ struct ReleaseMaker {
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
-        if pr.author_association == .OWNER ||
-            pr.user.isBot ||
-            codeOwners.contains(user: pr.user) {
-            return false
-        }
-        return !existingContributors.contains(pr.user.id)
+        pr.author_association != .OWNER &&
+        !pr.user.isBot &&
+        !codeOwners.contains(user: pr.user) &&
+        !existingContributors.contains(pr.user.id)
     }
 
     func getReviews() async throws -> [PullRequestReview] {
@@ -290,46 +282,94 @@ struct ReleaseMaker {
                 owner: repo.owner.login,
                 repo: repo.name,
                 pull_number: number
-            ))
+            )
         )
 
-<<<<<<< Updated upstream
         guard case let .ok(ok) = response,
               case let .json(json) = ok.body
         else {
-            logger.warning("Could not find review comments", metadata: [
-=======
-        if case let .ok(ok) = response,
-           case let .json(json) = ok.body {
-            return json
-        } else {
             logger.warning("Could not find reviews", metadata: [
->>>>>>> Stashed changes
                 "response": "\(response)"
             ])
             return []
         }
-
-        return json
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
+        var page = 1
+        var contributorIds: [Int] = []
+        /// Hack: Vapor has around this amount of contributors and we know it, so better
+        /// to reserve enough capacity for it up-front.
+        contributorIds.reserveCapacity(250)
+        while true {
+            let (ids, hasNext) = try await self.getExistingContributorIDs(page: page)
+            if ids.isEmpty {
+                break
+            }
+            contributorIds.append(contentsOf: consume ids)
+            guard hasNext else { break }
+            page += 1
+        }
+        return Set(contributorIds)
+    }
+
+    func getExistingContributorIDs(page: Int) async throws -> (ids: [Int], hasNext: Bool) {
+        logger.debug("Will fetch current contributors", metadata: [
+            "page": .stringConvertible(page)
+        ])
+
         let response = try await context.githubClient.repos_list_contributors(
-            .init(path: .init(
+            path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
-            ))
+            ),
+            query: .init(
+                per_page: 100,
+                page: page
+            )
         )
 
-        guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
-        else {
-            logger.warning("Could not find current contributors", metadata: [
+        if case let .ok(ok) = response,
+           case let .json(json) = ok.body {
+            /// Example of a `link` header: `<https://api.github.com/repositories/49910095/contributors?page=6>; rel="prev", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="next", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="last", <https://api.github.com/repositories/49910095/contributors?page=1>; rel="first"`
+            /// If the header contains `rel="next"` then we'll have a next page to fetch.
+            let hasNext = switch ok.headers.Link {
+            case let .case1(string):
+                string.contains(#"rel="next""#)
+            case let .case2(strings):
+                strings.contains { $0.contains(#"rel="next""#) }
+            case .none:
+                false
+            }
+            let ids = json.compactMap(\.id)
+            logger.debug("Fetched some contributors", metadata: [
+                "page": .stringConvertible(page),
+                "count": .stringConvertible(ids.count)
+            ])
+            return (ids, hasNext)
+        } else {
+            logger.error("Error when fetching contributors but will continue", metadata: [
+                "page": .stringConvertible(page),
                 "response": "\(response)"
             ])
-            return []
+            return ([], false)
         }
+    }
+}
 
-        return Set(json.compactMap(\.id))
+extension String {
+    func trimmingReleaseNoticeFromBody() -> String {
+        let trimmedBody = self.trimmingCharacters(in: .whitespacesAndNewlines)
+        if trimmedBody.hasPrefix(ReleaseMaker.Configuration.releaseNoticePrefix) {
+            return trimmedBody.split(
+                separator: "\n",
+                omittingEmptySubsequences: false
+            )
+            .dropFirst()
+            .joined(separator: "\n")
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+        } else {
+            return trimmedBody
+        }
     }
 }

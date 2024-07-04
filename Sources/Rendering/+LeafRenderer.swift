@@ -1,17 +1,11 @@
-import LeafKit
+@preconcurrency import LeafKit
 import NIO
 import AsyncHTTPClient
 import Logging
 import Foundation
 
-private let leafRendererThreadPool: NIOThreadPool = {
-    let pool = NIOThreadPool(numberOfThreads: 1)
-    pool.start()
-    return pool
-}()
-
 extension LeafRenderer {
-    public convenience init(
+    package convenience init(
         subDirectory: String,
         httpClient: HTTPClient,
         extraSources: [any LeafSource] = [],
@@ -22,7 +16,7 @@ extension LeafRenderer {
         let workingDirectory = FileManager.default.currentDirectoryPath
         let rootDirectory = "\(workingDirectory)/\(path)"
         let configuration = LeafConfiguration(rootDirectory: rootDirectory)
-        let fileIO = NonBlockingFileIO(threadPool: leafRendererThreadPool)
+        let fileIO = NonBlockingFileIO(threadPool: NIOThreadPool.singleton)
         let fileIOSource = NIOLeafFiles(
             fileio: fileIO,
             limits: .default,

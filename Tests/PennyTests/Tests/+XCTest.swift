@@ -28,8 +28,8 @@ extension XCTestCase {
                         XCTFail(
                             """
                             Not equal at line \(idx + 1):
-                            Expected: \(line1.debugDescription)
-                            Got:      \(line2.debugDescription)
+                            Got:      \(line1.debugDescription)
+                            Expected: \(line2.debugDescription)
                             """,
                             file: file,
                             line: line

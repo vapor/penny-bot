@@ -4,7 +4,7 @@ import Logging
 import Shared
 import Foundation
 
-public actor SecretsRetriever {
+package actor SecretsRetriever {
 
     enum Errors: Error, CustomStringConvertible {
         case secretNotFound(arn: String)
@@ -24,12 +24,12 @@ public actor SecretsRetriever {
 
     private let queue = SerialProcessor()
 
-    public init(awsClient: AWSClient, logger: Logger) {
+    package init(awsClient: AWSClient, logger: Logger) {
         self.secretsManager = SecretsManager(client: awsClient)
         self.logger = logger
     }
 
-    public func getSecret(arnEnvVarKey: String) async throws -> String {
+    package func getSecret(arnEnvVarKey: String) async throws -> String {
         logger.trace("Get secret start", metadata: [
             "arnEnvVarKey": .string(arnEnvVarKey)
         ])

@@ -5,6 +5,7 @@ import NIOCore
 import SotoCore
 import Shared
 import Logging
+import NIOPosix
 
 struct PennyService: MainService {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
@@ -24,7 +25,7 @@ struct PennyService: MainService {
                     message: "I'm Alive! :)",
                     initialNoticeMention: .user(Constants.botDevUserId)
                 ),
-                sendFullLogAsAttachment: .enabled,
+                sendFullLogsAsAttachment: .enabled,
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
@@ -39,15 +40,15 @@ struct PennyService: MainService {
             address: try! .url(webhookURL),
             level: .trace,
             makeMainLogHandler: { label, metadataProvider in
-                StreamLogHandler.standardOutput(label: label, metadataProvider: metadataProvider)
+                StreamLogHandler.standardOutput(
+                    label: label,
+                    metadataProvider: metadataProvider
+                )
             }
         )
     }
 
-    func makeBot(
-        eventLoopGroup: any EventLoopGroup,
-        httpClient: HTTPClient
-    ) async throws -> any GatewayManager {
+    func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
         /// Custom caching for the `getApplicationGlobalCommands` endpoint.
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
@@ -58,7 +59,7 @@ struct PennyService: MainService {
             )
         )
         return await BotGatewayManager(
-            eventLoopGroup: eventLoopGroup,
+            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
             httpClient: httpClient,
             clientConfiguration: clientConfiguration,
             token: Constants.botToken,
@@ -67,15 +68,23 @@ struct PennyService: MainService {
                 status: .online,
                 afk: false
             ),
-            intents: [.guilds, .guildMembers, .guildMessages, .messageContent, .guildMessageReactions]
+            intents: [
+                .guilds,
+                .guildMembers,
+                .guildMessages,
+                .messageContent,
+                .guildMessageReactions,
+                .guildModeration
+            ]
         )
     }
 
     func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
         await DiscordCache(
             gatewayManager: bot,
-            intents: [.guilds, .guildMembers],
-            requestAllMembers: .enabled
+            intents: [.guilds, .guildMembers, .messageContent, .guildMessages],
+            requestAllMembers: .enabled,
+            messageCachingPolicy: .saveEditHistoryAndDeleted
         )
     }
 
@@ -92,11 +101,11 @@ struct PennyService: MainService {
         let pingsService = DefaultPingsService(httpClient: httpClient)
         let faqsService = DefaultFaqsService(httpClient: httpClient)
         let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
-        let proposalsService = DefaultProposalsService(httpClient: httpClient)
+        let evolutionService = DefaultEvolutionService(httpClient: httpClient)
         let soService = DefaultSOService(httpClient: httpClient)
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
-        let proposalsChecker = ProposalsChecker(
-            proposalsService: proposalsService,
+        let evolutionChecker = EvolutionChecker(
+            evolutionService: evolutionService,
             discordService: discordService
         )
         let soChecker = SOChecker(
@@ -108,7 +117,7 @@ struct PennyService: MainService {
             awsClient: awsClient,
             context: .init(
                 autoFaqsService: autoFaqsService,
-                proposalsChecker: proposalsChecker,
+                evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
                 reactionCache: reactionCache
             )
@@ -127,7 +136,7 @@ struct PennyService: MainService {
                     on: httpClient.eventLoopGroup.next()
                 )
             ),
-            proposalsChecker: proposalsChecker,
+            evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             reactionCache: reactionCache
         )
@@ -152,7 +161,7 @@ struct PennyService: MainService {
         /// since it communicates through Discord and will need the Gateway connection.
         await context.botStateManager.start {
             /// These contain cached stuff and need to wait for `BotStateManager`.
-            context.services.proposalsChecker.run()
+            context.services.evolutionChecker.run()
             context.services.soChecker.run()
         }
     }
