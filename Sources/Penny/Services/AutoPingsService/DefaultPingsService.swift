@@ -10,7 +10,9 @@ import DiscordBM
 import NIOHTTP1
 
 actor DefaultPingsService: AutoPingsService {
-    
+
+    typealias Expression = S3AutoPingItems.Expression
+
     let httpClient: HTTPClient
     var logger = Logger(label: "DefaultPingsService")
     

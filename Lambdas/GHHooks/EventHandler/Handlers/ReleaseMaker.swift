@@ -259,10 +259,10 @@ struct ReleaseMaker {
     }
 
     func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [NullableUser] {
-        let usernames = codeOwners.union([pr.user.login])
+        let noCreditUsers = codeOwners.union([pr.user.login])
         let reviews = try await getReviews()
         let reviewers = reviews.compactMap(\.user).filter { user in
-            !(usernames.contains(user: user) || user.isBot)
+            !(noCreditUsers.contains(user: user) || user.isBot)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
         let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
@@ -282,7 +282,7 @@ struct ReleaseMaker {
                 owner: repo.owner.login,
                 repo: repo.name,
                 pull_number: number
-            )
+            ))
         )
 
         guard case let .ok(ok) = response,
@@ -293,6 +293,8 @@ struct ReleaseMaker {
             ])
             return []
         }
+
+        return json
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
