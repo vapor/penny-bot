@@ -23,7 +23,7 @@ extension String {
             https://(?:www\.)?github\.com
             /(?<org>[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)
             /(?<repo>[A-Za-z0-9.\-_]+)
-            /(?:pull|issues)
+            /(?:pull|issues|discussions)
             /(?<number>\d+)
         /#
         let withModifiedLinks = self.replacing(regex) { match in
@@ -74,7 +74,7 @@ extension String {
                     ifShorterThan: trailingTextMinLength
                 )
                 if let markup = paragraphRemover.visit(document2) {
-                    /// the `||` doesn't do anything as of now, but it might prevent some headache
+                    /// The `||` doesn't do anything as of now, but it might prevent some headache
                     /// if someone changes something in the code in the future.
                     didRemoveMarkdownElement = didRemoveMarkdownElement || paragraphRemover.didModify
                     markup2 = markup
@@ -338,4 +338,4 @@ private struct HeadingFinder: MarkupWalker {
             }
         }
     }
-    }
+}
