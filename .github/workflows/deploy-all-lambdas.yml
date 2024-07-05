@@ -36,7 +36,6 @@ jobs:
           echo "RUNNER_WORKSPACE=/__w/${{ github.event.repository.name }}/${{ github.event.repository.name }}" >> $GITHUB_ENV
 
       - name: Find package names
-        working-directory: ${{ github.repository_id }}
         id: find_package_names
         run: |
           echo "names=$(
@@ -51,7 +50,6 @@ jobs:
           )" >> $GITHUB_OUTPUT
 
       - name: Build and package
-        working-directory: ${{ github.repository_id }}
         run: |
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
@@ -65,7 +63,6 @@ jobs:
           done
 
       - name: Deploy
-        working-directory: ${{ github.repository_id }}
         run: |
           for name in ${{ steps.find_package_names.outputs.names }}; do
             aws lambda update-function-code \
