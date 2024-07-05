@@ -400,6 +400,13 @@ package protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/files`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/files/get(pulls/list-files)`.
     func pulls_list_files(_ input: Operations.pulls_list_files.Input) async throws -> Operations.pulls_list_files.Output
+    /// List reviews for a pull request
+    ///
+    /// The list of reviews returns in chronological order.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
+    func pulls_list_reviews(_ input: Operations.pulls_list_reviews.Input) async throws -> Operations.pulls_list_reviews.Output
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).
@@ -1170,6 +1177,23 @@ extension APIProtocol {
         headers: Operations.pulls_list_files.Input.Headers = .init()
     ) async throws -> Operations.pulls_list_files.Output {
         try await pulls_list_files(Operations.pulls_list_files.Input(
+            path: path,
+            query: query,
+            headers: headers
+        ))
+    }
+    /// List reviews for a pull request
+    ///
+    /// The list of reviews returns in chronological order.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
+    package func pulls_list_reviews(
+        path: Operations.pulls_list_reviews.Input.Path,
+        query: Operations.pulls_list_reviews.Input.Query = .init(),
+        headers: Operations.pulls_list_reviews.Input.Headers = .init()
+    ) async throws -> Operations.pulls_list_reviews.Output {
+        try await pulls_list_reviews(Operations.pulls_list_reviews.Input(
             path: path,
             query: query,
             headers: headers
@@ -17612,6 +17636,156 @@ package enum Components {
                 case changed_files
             }
         }
+        /// Pull Request Reviews are reviews on pull requests.
+        ///
+        /// - Remark: Generated from `#/components/schemas/pull-request-review`.
+        package struct pull_request_review: Codable, Hashable, Sendable {
+            /// Unique identifier of the review
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/id`.
+            package var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/node_id`.
+            package var node_id: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/user`.
+            package var user: Components.Schemas.nullable_simple_user?
+            /// The text of the review.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/body`.
+            package var body: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/state`.
+            package var state: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/html_url`.
+            package var html_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/pull_request_url`.
+            package var pull_request_url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/_links`.
+            package struct _linksPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/html`.
+                package struct htmlPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/html/href`.
+                    package var href: Swift.String
+                    /// Creates a new `htmlPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    package init(href: Swift.String) {
+                        self.href = href
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case href
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/html`.
+                package var html: Components.Schemas.pull_request_review._linksPayload.htmlPayload
+                /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/pull_request`.
+                package struct pull_requestPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/pull_request/href`.
+                    package var href: Swift.String
+                    /// Creates a new `pull_requestPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - href:
+                    package init(href: Swift.String) {
+                        self.href = href
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case href
+                    }
+                }
+                /// - Remark: Generated from `#/components/schemas/pull-request-review/_links/pull_request`.
+                package var pull_request: Components.Schemas.pull_request_review._linksPayload.pull_requestPayload
+                /// Creates a new `_linksPayload`.
+                ///
+                /// - Parameters:
+                ///   - html:
+                ///   - pull_request:
+                package init(
+                    html: Components.Schemas.pull_request_review._linksPayload.htmlPayload,
+                    pull_request: Components.Schemas.pull_request_review._linksPayload.pull_requestPayload
+                ) {
+                    self.html = html
+                    self.pull_request = pull_request
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case html
+                    case pull_request
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/_links`.
+            package var _links: Components.Schemas.pull_request_review._linksPayload
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/submitted_at`.
+            package var submitted_at: Foundation.Date?
+            /// A commit SHA for the review. If the commit object was garbage collected or forcibly deleted, then it no longer exists in Git and this value will be `null`.
+            ///
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/commit_id`.
+            package var commit_id: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/body_html`.
+            package var body_html: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/body_text`.
+            package var body_text: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/pull-request-review/author_association`.
+            package var author_association: Components.Schemas.author_association
+            /// Creates a new `pull_request_review`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the review
+            ///   - node_id:
+            ///   - user:
+            ///   - body: The text of the review.
+            ///   - state:
+            ///   - html_url:
+            ///   - pull_request_url:
+            ///   - _links:
+            ///   - submitted_at:
+            ///   - commit_id: A commit SHA for the review. If the commit object was garbage collected or forcibly deleted, then it no longer exists in Git and this value will be `null`.
+            ///   - body_html:
+            ///   - body_text:
+            ///   - author_association:
+            package init(
+                id: Swift.Int,
+                node_id: Swift.String,
+                user: Components.Schemas.nullable_simple_user? = nil,
+                body: Swift.String,
+                state: Swift.String,
+                html_url: Swift.String,
+                pull_request_url: Swift.String,
+                _links: Components.Schemas.pull_request_review._linksPayload,
+                submitted_at: Foundation.Date? = nil,
+                commit_id: Swift.String? = nil,
+                body_html: Swift.String? = nil,
+                body_text: Swift.String? = nil,
+                author_association: Components.Schemas.author_association
+            ) {
+                self.id = id
+                self.node_id = node_id
+                self.user = user
+                self.body = body
+                self.state = state
+                self.html_url = html_url
+                self.pull_request_url = pull_request_url
+                self._links = _links
+                self.submitted_at = submitted_at
+                self.commit_id = commit_id
+                self.body_html = body_html
+                self.body_text = body_text
+                self.author_association = author_association
+            }
+            package enum CodingKeys: String, CodingKey {
+                case id
+                case node_id
+                case user
+                case body
+                case state
+                case html_url
+                case pull_request_url
+                case _links
+                case submitted_at
+                case commit_id
+                case body_html
+                case body_text
+                case author_association
+            }
+        }
         /// Data related to a release.
         ///
         /// - Remark: Generated from `#/components/schemas/release-asset`.
@@ -30485,6 +30659,235 @@ package enum Operations {
                     default:
                         try throwUnexpectedResponseStatus(
                             expectedStatus: "serviceUnavailable",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
+    /// List reviews for a pull request
+    ///
+    /// The list of reviews returns in chronological order.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
+    package enum pulls_list_reviews {
+        package static let id: Swift.String = "pulls/list-reviews"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path/owner`.
+                package var owner: Components.Parameters.owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path/repo`.
+                package var repo: Components.Parameters.repo
+                /// The number that identifies the pull request.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/path/pull_number`.
+                package var pull_number: Components.Parameters.pull_number
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - pull_number: The number that identifies the pull request.
+                package init(
+                    owner: Components.Parameters.owner,
+                    repo: Components.Parameters.repo,
+                    pull_number: Components.Parameters.pull_number
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.pull_number = pull_number
+                }
+            }
+            package var path: Operations.pulls_list_reviews.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/query`.
+            package struct Query: Sendable, Hashable {
+                /// The number of results per page (max 100).
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/query/per_page`.
+                package var per_page: Components.Parameters.per_page?
+                /// Page number of the results to fetch.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/query/page`.
+                package var page: Components.Parameters.page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - per_page: The number of results per page (max 100).
+                ///   - page: Page number of the results to fetch.
+                package init(
+                    per_page: Components.Parameters.per_page? = nil,
+                    page: Components.Parameters.page? = nil
+                ) {
+                    self.per_page = per_page
+                    self.page = page
+                }
+            }
+            package var query: Operations.pulls_list_reviews.Input.Query
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_reviews.AcceptableContentType>]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.pulls_list_reviews.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.pulls_list_reviews.Input.Headers
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            package init(
+                path: Operations.pulls_list_reviews.Input.Path,
+                query: Operations.pulls_list_reviews.Input.Query = .init(),
+                headers: Operations.pulls_list_reviews.Input.Headers = .init()
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/headers`.
+                package struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/components/headers/link`.
+                    @frozen package enum link: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/components/headers/link/case1`.
+                        case case1(Swift.String)
+                        /// - Remark: Generated from `#/components/headers/link/case2`.
+                        case case2([Swift.String])
+                        package init(from decoder: any Decoder) throws {
+                            var errors: [any Error] = []
+                            do {
+                                self = .case1(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            do {
+                                self = .case2(try decoder.decodeFromSingleValueContainer())
+                                return
+                            } catch {
+                                errors.append(error)
+                            }
+                            throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                                type: Self.self,
+                                codingPath: decoder.codingPath,
+                                errors: errors
+                            )
+                        }
+                        package func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let .case1(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            case let .case2(value):
+                                try encoder.encodeToSingleValueContainer(value)
+                            }
+                        }
+                    }
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/headers/Link`.
+                    package var Link: Components.Headers.link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - Link:
+                    package init(Link: Components.Headers.link? = nil) {
+                        self.Link = Link
+                    }
+                }
+                /// Received HTTP response headers
+                package var headers: Operations.pulls_list_reviews.Output.Ok.Headers
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/pulls/{pull_number}/reviews/GET/responses/200/content/application\/json`.
+                    case json([Components.Schemas.pull_request_review])
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: [Components.Schemas.pull_request_review] {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.pulls_list_reviews.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                package init(
+                    headers: Operations.pulls_list_reviews.Output.Ok.Headers = .init(),
+                    body: Operations.pulls_list_reviews.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// The list of reviews returns in chronological order.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.pulls_list_reviews.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            package var ok: Operations.pulls_list_reviews.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
                             response: self
                         )
                     }

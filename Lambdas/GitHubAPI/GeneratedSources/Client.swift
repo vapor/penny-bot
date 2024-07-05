@@ -5637,6 +5637,94 @@ package struct Client: APIProtocol {
             }
         )
     }
+    /// List reviews for a pull request
+    ///
+    /// The list of reviews returns in chronological order.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/pulls/{pull_number}/reviews`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/pulls/{pull_number}/reviews/get(pulls/list-reviews)`.
+    package func pulls_list_reviews(_ input: Operations.pulls_list_reviews.Input) async throws -> Operations.pulls_list_reviews.Output {
+        try await client.send(
+            input: input,
+            forOperation: Operations.pulls_list_reviews.id,
+            serializer: { input in
+                let path = try converter.renderedPath(
+                    template: "/repos/{}/{}/pulls/{}/reviews",
+                    parameters: [
+                        input.path.owner,
+                        input.path.repo,
+                        input.path.pull_number
+                    ]
+                )
+                var request: HTTPTypes.HTTPRequest = .init(
+                    soar_path: path,
+                    method: .get
+                )
+                suppressMutabilityWarning(&request)
+                try converter.setQueryItemAsURI(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "per_page",
+                    value: input.query.per_page
+                )
+                try converter.setQueryItemAsURI(
+                    in: &request,
+                    style: .form,
+                    explode: true,
+                    name: "page",
+                    value: input.query.page
+                )
+                converter.setAcceptHeader(
+                    in: &request.headerFields,
+                    contentTypes: input.headers.accept
+                )
+                return (request, nil)
+            },
+            deserializer: { response, responseBody in
+                switch response.status.code {
+                case 200:
+                    let headers: Operations.pulls_list_reviews.Output.Ok.Headers = .init(Link: try converter.getOptionalHeaderFieldAsURI(
+                        in: response.headerFields,
+                        name: "Link",
+                        as: Components.Headers.link.self
+                    ))
+                    let contentType = converter.extractContentTypeIfPresent(in: response.headerFields)
+                    let body: Operations.pulls_list_reviews.Output.Ok.Body
+                    let chosenContentType = try converter.bestContentType(
+                        received: contentType,
+                        options: [
+                            "application/json"
+                        ]
+                    )
+                    switch chosenContentType {
+                    case "application/json":
+                        body = try await converter.getResponseBodyAsJSON(
+                            [Components.Schemas.pull_request_review].self,
+                            from: responseBody,
+                            transforming: { value in
+                                .json(value)
+                            }
+                        )
+                    default:
+                        preconditionFailure("bestContentType chose an invalid content type.")
+                    }
+                    return .ok(.init(
+                        headers: headers,
+                        body: body
+                    ))
+                default:
+                    return .undocumented(
+                        statusCode: response.status.code,
+                        .init(
+                            headerFields: response.headerFields,
+                            body: responseBody
+                        )
+                    )
+                }
+            }
+        )
+    }
     /// List releases
     ///
     /// This returns a list of releases, which does not include regular Git tags that have not been associated with a release. To get a list of Git tags, use the [Repository Tags API](https://docs.github.com/rest/reference/repos#list-repository-tags).

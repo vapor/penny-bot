@@ -258,11 +258,11 @@ struct ReleaseMaker {
         )
     }
 
-    func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [User] {
-        let usernames = codeOwners.union([pr.user.login])
-        let reviewComments = try await getReviewComments()
-        let reviewers = reviewComments.map(\.user).filter { user in
-            !(usernames.contains(user: user) || user.isBot)
+    func getReviewersToCredit(codeOwners: CodeOwners) async throws -> [NullableUser] {
+        let noCreditUsers = codeOwners.union([pr.user.login])
+        let reviews = try await getReviews()
+        let reviewers = reviews.compactMap(\.user).filter { user in
+            !(noCreditUsers.contains(user: user) || user.isBot)
         }
         let groupedReviewers = Dictionary(grouping: reviewers, by: \.id)
         let sorted = groupedReviewers.values.sorted(by: { $0.count > $1.count }).map(\.[0])
@@ -276,24 +276,25 @@ struct ReleaseMaker {
         !existingContributors.contains(pr.user.id)
     }
 
-    func getReviewComments() async throws -> [PullRequestReviewComment] {
-        let response = try await context.githubClient.pulls_list_review_comments(
-            path: .init(
+    func getReviews() async throws -> [PullRequestReview] {
+        let response = try await context.githubClient.pulls_list_reviews(
+            .init(path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
                 pull_number: number
-            )
+            ))
         )
 
-        if case let .ok(ok) = response,
-           case let .json(json) = ok.body {
-            return json
-        } else {
-            logger.warning("Could not find review comments", metadata: [
+        guard case let .ok(ok) = response,
+              case let .json(json) = ok.body
+        else {
+            logger.warning("Could not find reviews", metadata: [
                 "response": "\(response)"
             ])
             return []
         }
+
+        return json
     }
 
     func getExistingContributorIDs() async throws -> Set<Int> {
