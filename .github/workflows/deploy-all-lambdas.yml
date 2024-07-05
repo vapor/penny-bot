@@ -29,7 +29,7 @@ jobs:
         # uses: actions/checkout@v3 Needs node 20 which amazonlinux2 doesn't have
         run: |
           printenv
-          git clone ${{ github.repositoryUrl }}
+          git clone https://github.com/${{ github.repository }}
           cd ${{ github.repository_id }}
           git checkout ${{ github.sha }}
 
