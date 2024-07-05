@@ -28,11 +28,13 @@ jobs:
       - name: Check out repository
         # uses: actions/checkout@v3 Needs node 20 which amazonlinux2 doesn't have
         run: |
-          git clone https://github.com/${{ github.repository }}
-          cd penny-bot
+          printenv
+          git clone ${{ github.repositoryUrl }}
+          cd ${{ github.repository_id }}
           git checkout ${{ github.sha }}
 
       - name: Find package names
+        working-directory: ${{ github.repository_id }}
         id: find_package_names
         run: |
           echo "names=$(
@@ -47,6 +49,7 @@ jobs:
           )" >> $GITHUB_OUTPUT
 
       - name: Build and package
+        working-directory: ${{ github.repository_id }}
         run: |
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
@@ -60,6 +63,7 @@ jobs:
           done
 
       - name: Deploy
+        working-directory: ${{ github.repository_id }}
         run: |
           for name in ${{ steps.find_package_names.outputs.names }}; do
             aws lambda update-function-code \
