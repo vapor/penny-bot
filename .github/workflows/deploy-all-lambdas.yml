@@ -16,17 +16,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
 
     steps:
-      - name: Install NodeJS 2021.10.0
-        run: |
-          # installs nvm (Node Version Manager)
-          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-          # download and install Node.js (you may need to restart the terminal)
-          nvm install 20
-          # verifies the right Node.js version is in the environment
-          node -v # should print `v20.15.0`
-          # verifies the right NPM version is in the environment
-          npm -v # should print `10.7.0`
-
       - name: Install additional dependencies and AWSCLI v2
         run: |
           yum -y install \
@@ -37,7 +26,10 @@ jobs:
           ./aws/install
 
       - name: Check out repository
-        uses: actions/checkout@v3
+        # uses: actions/checkout@v3
+        run: |
+          git clone https://github.com/${{ github.repository }}
+          git checkout ${{ github.sha }}
 
       - name: Find package names
         id: find_package_names
