@@ -26,9 +26,10 @@ jobs:
           ./aws/install
 
       - name: Check out repository
-        # uses: actions/checkout@v3
+        # uses: actions/checkout@v3 Needs node 20 which amazonlinux2 doesn't have
         run: |
           git clone https://github.com/${{ github.repository }}
+          cd penny-bot
           git checkout ${{ github.sha }}
 
       - name: Find package names
