@@ -26,7 +26,10 @@ jobs:
           ./aws/install
 
       - name: Check out repository
-        uses: actions/checkout@v3
+        # uses: actions/checkout@v3
+        run: |
+          git clone https://github.com/${{ github.repository }}
+          git checkout ${{ github.sha }}
 
       - name: Find package names
         id: find_package_names
