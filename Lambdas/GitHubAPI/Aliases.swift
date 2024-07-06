@@ -1,4 +1,3 @@
-
 package typealias Repository = Components.Schemas.repository
 package typealias User = Components.Schemas.simple_user
 package typealias Organization = Components.Schemas.organization_simple
@@ -11,6 +10,7 @@ package typealias InstallationToken = Components.Schemas.installation_token
 package typealias NullableUser = Components.Schemas.nullable_simple_user
 package typealias Contributor = Components.Schemas.contributor
 package typealias PullRequestReviewComment = Components.Schemas.pull_request_review_comment
+package typealias PullRequestReview = Components.Schemas.pull_request_review
 package typealias DiffEntry = Components.Schemas.diff_entry
 package typealias Commit = Components.Schemas.commit
 package typealias SimpleCommit = Components.Schemas.simple_commit
