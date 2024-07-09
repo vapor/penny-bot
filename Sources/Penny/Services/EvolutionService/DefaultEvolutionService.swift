@@ -21,19 +21,23 @@ struct DefaultEvolutionService: EvolutionService {
     }
 
     let httpClient: HTTPClient
-    let decoder = JSONDecoder()
+    let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
     func list() async throws -> [Proposal] {
         let response = try await httpClient.execute(
-            .init(url: "https://download.swift.org/swift-evolution/proposals.json"),
+            .init(url: "https://download.swift.org/swift-evolution/v1/evolution.json"),
             deadline: .now() + .seconds(15)
         )
         let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MiB
-        let proposals = try decoder.decode([Proposal].self, from: buffer)
-        if proposals.isEmpty {
+        let evolution = try decoder.decode(Evolution.self, from: buffer)
+        if evolution.proposals.isEmpty {
             throw Errors.emptyProposals
         }
-        return proposals
+        return evolution.proposals
     }
 
     func getProposalContent(link: String) async throws -> String {

@@ -1,11 +1,11 @@
 # Init Accessors
 
-* Proposal: [SE-0400](0400-init-accessors.md)
-* Authors: [Holly Borla](https://github.com/hborla), [Doug Gregor](https://github.com/douggregor)
-* Review Manager: [Frederick Kellison-Linn](https://github.com/Jumhyn)
-* Status: **Active review (June 14th...June 26th, 2023)**
-* Implementation: On `main` behind experimental feature flag `InitAccessors`
-* Review: ([pitch](https://forums.swift.org/t/pitch-init-accessors/64881)) ([review](https://forums.swift.org/t/se-0400-init-accessors/65583))
+- Proposal: [SE-0400](0400-init-accessors.md)
+- Authors: [Holly Borla](https://github.com/hborla), [Doug Gregor](https://github.com/douggregor)
+- Review Manager: [Frederick Kellison-Linn](https://github.com/Jumhyn)
+- Status: **Active review (June 14th...June 26th, 2023)**
+- Implementation: On `main` behind experimental feature flag `InitAccessors`
+- Review: ([pitch](https://forums.swift.org/t/pitch-init-accessors/64881)) ([review](https://forums.swift.org/t/se-0400-init-accessors/65583))
 
 ## Introduction
 
@@ -144,9 +144,10 @@ S(value: 10)
 ```
 
 This proposal allows macros to model the following property-wrapper-like patterns including out-of-line initialization of the computed property:
-* A wrapped property with attribute arguments
-* A wrapped property that is backed by an explicit stored property
-* A set of wrapped properties that are backed by a single stored property
+
+- A wrapped property with attribute arguments
+- A wrapped property that is backed by an explicit stored property
+- A set of wrapped properties that are backed by a single stored property
 
 ## Detailed design
 
@@ -213,8 +214,9 @@ Init accessors can also require a set of stored properties to already be initial
 The semantics of an assignment inside of a type's initializer depend on whether or not all of `self` is initialized on all paths at the point of assignment. Before all of `self` is initialized, assignment to a computed property with an `init` accessor is re-written to an `init` accessor call; after `self` has been initialized, assignment to a computed property is re-written to a setter call.
 
 With this proposal, all of `self` is initialized if:
-* All stored properties are initialized on all paths, and
-* All computed properties with `init` accessors are initialized on all paths.
+
+- All stored properties are initialized on all paths, and
+- All computed properties with `init` accessors are initialized on all paths.
 
 An assignment to a computed property with an `init` accessor before all of `self` is initialized will call the computed property's `init` accessor and initialize all of the stored properties specified in its `initializes` clause:
 
@@ -396,10 +398,10 @@ This syntax choice is misleading because the effects look like function paramete
 
 Other syntax suggestions from pitch reviewers included:
 
-* Using a capture-list-style clause, e.g. `init { [&x, y] in ... }`
-* Attributes on the computed property itself, e.g. `@initializes(_x) var x: Int { ... }`
-* Using more concise effect names, e.g. `writes` and `reads` instead of `initializes` and `accesses`
-* And more!
+- Using a capture-list-style clause, e.g. `init { [&x, y] in ... }`
+- Attributes on the computed property itself, e.g. `@initializes(_x) var x: Int { ... }`
+- Using more concise effect names, e.g. `writes` and `reads` instead of `initializes` and `accesses`
+- And more!
 
 However, the current synatx in this proposal most accurately models the semantics of initialization effects. An `init` accessor is a function -- not a closure -- that has side-effects related to initialization. _Only_ the `init` accessor has these effects; though the `set` accessor often contains code that looks the same as the code in the `init` accessor, the effects of these accessors are different. Because `init` accessors are called before all of `self` is initialized, they do not recieve a fully-initialized `self` as a parameter like `set` accessors do, and assignments to `initializes` stored properties in `init` accessors have the same semantics as that of a standard initializer, such as suppressing `willSet` and `didSet` observers. These reasons reinforce the decision to specify `initializes` and `accesses` in the effects clause of an `init` accessor.
 

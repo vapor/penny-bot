@@ -1,0 +1,272 @@
+{
+  "commit": "9de040cfdab159b7228e640499a821870b6379ff",
+  "creationDate": "2024-04-22T00:35:44Z",
+  "implementationVersions": ["5.10", "6.0"],
+  "proposals": [
+    {
+      "authors": [
+        {
+          "link": "https://github.com/lorentey",
+          "name": "Karoy Lorentey"
+        },
+        {
+          "link": "https://github.com/Azoy",
+          "name": "Alejandro Alonso"
+        }
+      ],
+      "discussions": [
+        {
+          "link": "https://forums.swift.org/t/atomics/67350",
+          "name": "pitch"
+        },
+        {
+          "link": "https://forums.swift.org/t/se-0410-atomics/68007",
+          "name": "first review"
+        },
+        {
+          "link": "https://forums.swift.org/t/returned-for-revision-se-0410-atomics/68522",
+          "name": "first return for revision"
+        },
+        {
+          "link": "https://forums.swift.org/t/second-review-se-0410-atomics/68810",
+          "name": "second review"
+        },
+        {
+          "link": "https://forums.swift.org/t/accepted-with-modifications-se-0410-atomics/69244",
+          "name": "acceptance"
+        }
+      ],
+      "id": "SE-0410",
+      "implementation": [
+        {
+          "account": "apple",
+          "id": "68857",
+          "repository": "swift",
+          "type": "pull"
+        }
+      ],
+      "link": "0410-atomics.md",
+      "reviewManagers": [
+        {
+          "link": "https://github.com/jckarter",
+          "name": "Joe Groff"
+        }
+      ],
+      "sha": "38b8c99ce8c4a2fda498199bf75e38d1e16088c6",
+      "status": {
+        "state": "implemented",
+        "version": "6.0"
+      },
+      "summary": "This proposal adds a limited set of low-level atomic operations to the Standard Library, including native spellings for C++-style memory orderings. Our goal is to enable intrepid library authors and developers writing system level code to start building synchronization constructs directly in Swift.",
+      "title": "Low-Level Atomic Operations ⚛︎",
+      "trackingBugs": [
+        {
+          "id": "SR-9144",
+          "link": "https://github.com/apple/swift/issues/51640"
+        }
+      ]
+    },
+    {
+      "authors": [
+        {
+          "link": "https://github.com/hborla",
+          "name": "Holly Borla"
+        }
+      ],
+      "discussions": [
+        {
+          "link": "https://forums.swift.org/t/pitch-isolated-default-value-expressions/67714",
+          "name": "pitch"
+        },
+        {
+          "link": "https://forums.swift.org/t/se-0411/68065",
+          "name": "review"
+        },
+        {
+          "link": "https://forums.swift.org/t/accepted-se-0411-isolated-default-value-expressions/68806",
+          "name": "acceptance"
+        }
+      ],
+      "id": "SE-0411",
+      "implementation": [
+        {
+          "account": "apple",
+          "id": "68794",
+          "repository": "swift",
+          "type": "pull"
+        }
+      ],
+      "link": "0411-isolated-default-values.md",
+      "reviewManagers": [
+        {
+          "link": "https://github.com/DougGregor",
+          "name": "Doug Gregor"
+        }
+      ],
+      "sha": "02280a41bed55c8f571e19ded7fee845d3a0de00",
+      "status": {
+        "state": "implemented",
+        "version": "5.10"
+      },
+      "summary": "Default value expressions are permitted for default arguments and default stored property values. There are several issues with the current actor isolation rules for default value expressions: the rules for stored properties admit data races, the rules for default argument values are overly restrictive, and the rules between the different places you can use default value expressions are inconsistent with each other, making the actor isolation model harder to understand. This proposal unifies the actor isolation rules for default value expressions, eliminates data races, and improves expressivity by safely allowing isolation for default values.",
+      "title": "Isolated default value expressions",
+      "trackingBugs": [
+        {
+          "id": "apple/swift#58177",
+          "link": "https://github.com/apple/swift/issues/58177"
+        }
+      ],
+      "upcomingFeatureFlag": {
+        "flag": "IsolatedDefaultValues"
+      }
+    },
+    {
+      "authors": [
+        {
+          "link": "https://github.com/rjmccall",
+          "name": "John McCall"
+        },
+        {
+          "link": "https://github.com/sophiapoirier",
+          "name": "Sophia Poirier"
+        }
+      ],
+      "discussions": [
+        {
+          "link": "https://forums.swift.org/t/pitch-strict-concurrency-for-global-variables/66908",
+          "name": "pitch"
+        },
+        {
+          "link": "https://forums.swift.org/t/se-0412-strict-concurrency-for-global-variables/68352",
+          "name": "review"
+        },
+        {
+          "link": "https://forums.swift.org/t/accepted-se-0412-strict-concurrency-for-global-variables/69004",
+          "name": "acceptance"
+        }
+      ],
+      "id": "SE-0412",
+      "link": "0412-strict-concurrency-for-global-variables.md",
+      "previousProposalIDs": [
+        "SE-0302",
+        "SE-0306",
+        "SE-0316",
+        "SE-0337",
+        "SE-0343"
+      ],
+      "reviewManagers": [
+        {
+          "link": "https://github.com/hborla",
+          "name": "Holly Borla"
+        }
+      ],
+      "sha": "d045827598766aacb408346c7916e9367d89acc5",
+      "status": {
+        "state": "implemented",
+        "version": "5.10"
+      },
+      "summary": "This proposal defines options for the usage of global variables free of data races. Within this proposal, global variables encompass any storage of static duration: `let`s and stored `var`s that are either declared at global scope or as static member variables.",
+      "title": "Strict concurrency for global variables",
+      "upcomingFeatureFlag": {
+        "enabledInLanguageMode": "6",
+        "flag": "GlobalConcurrency"
+      }
+    },
+    {
+      "authors": [
+        {
+          "link": "https://github.com/jckarter",
+          "name": "Joe Groff"
+        }
+      ],
+      "discussions": [],
+      "errors": [
+        {
+          "code": 0,
+          "kind": "error",
+          "message": "Missing Review field.",
+          "suggestion": ""
+        }
+      ],
+      "id": "SE-0432",
+      "link": "0432-noncopyable-switch.md",
+      "reviewManagers": [
+        {
+          "link": "https://github.com/airspeedswift",
+          "name": "Ben Cohen"
+        }
+      ],
+      "sha": "fee567b5384640a8b4d996815f36e9537a6669b7",
+      "status": {
+        "end": "2024-04-22T00:00:00Z",
+        "start": "2024-04-09T00:00:00Z",
+        "state": "activeReview"
+      },
+      "summary": "Pattern matching over noncopyable types, particularly noncopyable enums, can be generalized to allow for pattern matches that borrow their subject, in addition to the existing support for consuming pattern matches.",
+      "title": "Borrowing and consuming pattern matching for noncopyable types",
+      "upcomingFeatureFlag": {
+        "flag": "BorrowingSwitch"
+      },
+      "warnings": [
+        {
+          "code": 0,
+          "kind": "warning",
+          "message": "Review ended on 2024-04-22 00:00:00 +0000.",
+          "suggestion": ""
+        }
+      ]
+    },
+    {
+      "authors": [
+        {
+          "link": "https://github.com/simanerush",
+          "name": "Sima Nerush"
+        },
+        {
+          "link": "https://github.com/mattmassicotte",
+          "name": "Matt Massicotte"
+        },
+        {
+          "link": "https://github.com/hborla",
+          "name": "Holly Borla"
+        }
+      ],
+      "discussions": [
+        {
+          "link": "https://forums.swift.org/t/pitch-usability-of-global-actor-isolated-types/70799",
+          "name": "pitch"
+        },
+        {
+          "link": "https://forums.swift.org/t/se-0434-usability-of-global-actor-isolated-types/71187",
+          "name": "review"
+        }
+      ],
+      "id": "SE-0434",
+      "link": "0434-global-actor-isolated-types-usability.md",
+      "reviewManagers": [
+        {
+          "link": "https://github.com/rjmccall",
+          "name": "John McCall"
+        }
+      ],
+      "sha": "fbd2e246eb8468a54b05f17d85394d58e2b50bea",
+      "status": {
+        "end": "2024-04-22T00:00:00Z",
+        "start": "2024-04-10T00:00:00Z",
+        "state": "activeReview"
+      },
+      "summary": "This proposal encompasses a collection of changes to concurrency rules concerning global-actor-isolated types to improve their usability.",
+      "title": "Usability of global-actor-isolated types",
+      "warnings": [
+        {
+          "code": 0,
+          "kind": "warning",
+          "message": "Review ended on 2024-04-22 00:00:00 +0000.",
+          "suggestion": ""
+        }
+      ]
+    }
+  ],
+  "schemaVersion": "0.1.0",
+  "toolVersion": "0.1.0"
+}

@@ -162,16 +162,23 @@ actor EvolutionChecker {
 
         let summary = makeSummary(proposal: proposal)
 
+        let upcomingFeatureFlag = proposal.upcomingFeatureFlag.map {
+            "\n**Upcoming Feature Flag:** \($0.flag)"
+        } ?? ""
+
         let authors = proposal.authors
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
+            .nilIfEmpty
+        let authorsString = authors.map({ "\n**Author(s):** \($0)" }) ?? ""
 
-        let reviewManager = proposal.reviewManager.isRealPerson
-        ? proposal.reviewManager.makeStringForDiscord()
-        : nil
-        let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
+        let reviewManagers = proposal.reviewManagers?
+            .filter(\.isRealPerson)
+            .map { $0.makeStringForDiscord() }
+            .joined(separator: ", ")
+            .nilIfEmpty
+        let reviewManagersString = reviewManagers.map({ "\n**Review Manager(s):** \($0)" }) ?? ""
 
         let link = proposal.link.sanitized()
         var proposalLink: String?
@@ -193,13 +200,14 @@ actor EvolutionChecker {
                 description: """
                 > \(summary)
                 \(status)
+                \(upcomingFeatureFlag)
                 \(authorsString)
-                \(reviewManagerString)
+                \(reviewManagersString)
                 """,
                 url: proposalLink,
                 color: proposal.status.state.color
             )],
-            components: await makeComponents(proposal: proposal, proposalLink: proposalLink)
+            components: await makeComponents(proposal: proposal)
         )
     }
 
@@ -214,16 +222,23 @@ actor EvolutionChecker {
 
         let summary = makeSummary(proposal: proposal)
 
+        let upcomingFeatureFlag = proposal.upcomingFeatureFlag.map {
+            "\n**Upcoming Feature Flag:** \($0.flag)"
+        } ?? ""
+
         let authors = proposal.authors
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
-        let authorsString = authors.isEmpty ? "" : "\n**Authors:** \(authors)"
+            .nilIfEmpty
+        let authorsString = authors.map({ "\n**Author(s):** \($0)" }) ?? ""
 
-        let reviewManager = proposal.reviewManager.isRealPerson
-        ? proposal.reviewManager.makeStringForDiscord()
-        : nil
-        let reviewManagerString = reviewManager.map({ "\n**Review Manager:** \($0)" }) ?? ""
+        let reviewManagers = proposal.reviewManagers?
+            .filter(\.isRealPerson)
+            .map { $0.makeStringForDiscord() }
+            .joined(separator: ", ")
+            .nilIfEmpty
+        let reviewManagersString = reviewManagers.map({ "\n**Review Manager(s):** \($0)" }) ?? ""
 
         let link = proposal.link.sanitized()
         var proposalLink: String?
@@ -246,29 +261,25 @@ actor EvolutionChecker {
                 description: """
                 > \(summary)
                 \(status)
+                \(upcomingFeatureFlag)
                 \(authorsString)
-                \(reviewManagerString)
+                \(reviewManagersString)
                 """,
                 url: proposalLink,
                 color: proposal.status.state.color
             )],
-            components: await makeComponents(proposal: proposal, proposalLink: proposalLink)
+            components: await makeComponents(proposal: proposal)
         )
     }
 
-    private func makeComponents(
-        proposal: Proposal,
-        proposalLink: String?
-    ) async -> [Interaction.ActionRow] {
+    private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
         var buttons: [Interaction.ActionRow] = [[]]
 
-        if let proposalLink,
-           let link = await findForumPostLink(link: proposalLink) {
-            let description = link.description.trimmingCharacters(in: .punctuationCharacters).capitalized
+        if let discussion = proposal.discussions?.last {
             buttons[0].components.append(
                 .button(.init(
-                    label: "\(description) Post",
-                    url: link.destination
+                    label: "\(discussion.name.capitalized) Post",
+                    url: discussion.link
                 ))
             )
         }
@@ -280,32 +291,6 @@ actor EvolutionChecker {
         }
 
         return buttons
-    }
-
-    private func findForumPostLink(link: String) async -> ReviewLinksFinder.SimpleLink? {
-        let content: String
-        do {
-            content = try await evolutionService.getProposalContent(link: link)
-        } catch {
-            logger.error("Could not fetch proposal content", metadata: [
-                "link": .string(link),
-                "error": "\(error)"
-            ])
-            return nil
-        }
-
-        let document = Document(parsing: content)
-        var finder = ReviewLinksFinder()
-        finder.visit(document)
-
-        guard let lastLink = finder.links.last else {
-            logger.warning("Couldn't find forums link for proposal", metadata: [
-                "link": .string(link),
-                "content": .string(content)
-            ])
-            return nil
-        }
-        return lastLink
     }
 
     private func makeForumSearchLink(proposal: Proposal) -> String? {
@@ -350,7 +335,7 @@ private extension String {
     }
 }
 
-private extension Proposal.User {
+private extension Proposal.Media {
     var isRealPerson: Bool {
         !["", "TBD", "N/A"].contains(self.name.sanitized())
     }
@@ -383,49 +368,6 @@ struct LinkRepairer: MarkupRewriter {
             return link
         }
         return link
-    }
-}
-
-// MARK: - ReviewLinksFinder
-
-/// Finds the review links of a proposal.
-struct ReviewLinksFinder: MarkupWalker {
-
-    struct SimpleLink: Equatable {
-        let description: String
-        let destination: String
-    }
-
-    private struct LinksFinder: MarkupWalker {
-        var links = [SimpleLink]()
-
-        mutating func visitLink(_ link: Link) {
-            guard let destination = link.destination?
-                .trimmingCharacters(in: .whitespacesAndNewlines),
-                  destination.hasPrefix("https"),
-                  let text = link.children.first(where: { _ in true }) as? Text else {
-                return
-            }
-            self.links.append(SimpleLink(
-                description: text.string.trimmingCharacters(in: .whitespacesAndNewlines),
-                destination: destination
-            ))
-        }
-    }
-
-    var links = [SimpleLink]()
-
-    mutating func visitParagraph(_ paragraph: Paragraph) {
-        guard let text = paragraph.children.first(where: { _ in true }) as? Text else {
-            return
-        }
-        let trimmed = text.string.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard ["Review:", "Decision Notes:"].contains(where: { trimmed.hasPrefix($0) }) else {
-            return
-        }
-        var linkFinder = LinksFinder()
-        linkFinder.visitParagraph(paragraph)
-        self.links = linkFinder.links
     }
 }
 
@@ -491,10 +433,17 @@ private extension Proposal.Status.State {
     }
 }
 
+struct Evolution: Codable {
+    let commit: String
+    let creationDate: Date /// Needs ISO8601 date decoding strategy
+    let implementationVersions: [String]
+    let proposals: [Proposal]
+}
+
 // MARK: - Proposal
 struct Proposal: Sendable, Codable {
 
-    struct User: Sendable, Codable {
+    struct Media: Sendable, Codable {
         let link: String
         let name: String
     }
@@ -517,34 +466,34 @@ struct Proposal: Sendable, Codable {
 
             var rawValue: String {
                 switch self {
-                case .accepted: return ".accepted"
-                case .acceptedWithRevisions: return ".acceptedWithRevisions"
-                case .activeReview: return ".activeReview"
-                case .scheduledForReview: return ".scheduledForReview"
-                case .awaitingReview: return ".awaitingReview"
-                case .implemented: return ".implemented"
-                case .previewing: return ".previewing"
-                case .rejected: return ".rejected"
-                case .returnedForRevision: return ".returnedForRevision"
-                case .withdrawn: return ".withdrawn"
-                case .error: return ".error"
+                case .accepted: return "accepted"
+                case .acceptedWithRevisions: return "acceptedWithRevisions"
+                case .activeReview: return "activeReview"
+                case .scheduledForReview: return "scheduledForReview"
+                case .awaitingReview: return "awaitingReview"
+                case .implemented: return "implemented"
+                case .previewing: return "previewing"
+                case .rejected: return "rejected"
+                case .returnedForRevision: return "returnedForRevision"
+                case .withdrawn: return "withdrawn"
+                case .error: return "error"
                 case let .unknown(unknown): return unknown
                 }
             }
 
             init? (rawValue: String) {
                 switch rawValue {
-                case ".accepted": self = .accepted
-                case ".acceptedWithRevisions": self = .acceptedWithRevisions
-                case ".activeReview": self = .activeReview
-                case ".scheduledForReview": self = .scheduledForReview
-                case ".awaitingReview": self = .awaitingReview
-                case ".implemented": self = .implemented
-                case ".previewing": self = .previewing
-                case ".rejected": self = .rejected
-                case ".returnedForRevision": self = .returnedForRevision
-                case ".withdrawn": self = .withdrawn
-                case ".error": self = .error
+                case "accepted": self = .accepted
+                case "acceptedWithRevisions": self = .acceptedWithRevisions
+                case "activeReview": self = .activeReview
+                case "scheduledForReview": self = .scheduledForReview
+                case "awaitingReview": self = .awaitingReview
+                case "implemented": self = .implemented
+                case "previewing": self = .previewing
+                case "rejected": self = .rejected
+                case "returnedForRevision": self = .returnedForRevision
+                case "withdrawn": self = .withdrawn
+                case "error": self = .error
                 default:
                     Logger(label: "\(#file):\(#line)").warning(
                         "New unknown case",
@@ -562,20 +511,13 @@ struct Proposal: Sendable, Codable {
     }
 
     struct TrackingBug: Sendable, Codable {
-        let assignee: String
         let id: String
         let link: String
-        let radar: String
-        let resolution: String
-        let status: String
-        let title: String
-        let updated: String
     }
 
     struct Warning: Sendable, Codable {
         let kind: String
         let message: String
-        let stage: String
     }
 
     struct Implementation: Sendable, Codable {
@@ -685,10 +627,14 @@ struct Proposal: Sendable, Codable {
         let type: Kind
     }
 
-    let authors: [User]
+    struct UpcomingFeature: Codable {
+        let flag: String
+    }
+
+    let authors: [Media]
     let id: String
     let link: String
-    let reviewManager: User
+    let reviewManagers: [Media]?
     let sha: String
     let status: Status
     let summary: String
@@ -696,4 +642,12 @@ struct Proposal: Sendable, Codable {
     let trackingBugs: [TrackingBug]?
     let warnings: [Warning]?
     let implementation: [Implementation]?
+    let discussions: [Media]?
+    let upcomingFeatureFlag: UpcomingFeature?
+}
+
+private extension Collection {
+    var nilIfEmpty: Self? {
+        self.isEmpty ? nil : self
+    }
 }

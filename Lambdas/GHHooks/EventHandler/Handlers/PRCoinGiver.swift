@@ -72,7 +72,8 @@ struct PRCoinGiver {
                         ),
                         .init(
                             description: """
-                            Want coins too? Link your GitHub account to take credit for your contributions. Try `/github link` for more info.
+                            Want coins too? Link your GitHub account to take credit for your contributions.
+                            Try `/github link` for more info, it's private.
                             """,
                             color: .green
                         ),
