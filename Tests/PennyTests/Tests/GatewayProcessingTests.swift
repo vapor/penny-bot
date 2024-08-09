@@ -80,7 +80,7 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
     
-    func testReactionHandler3() async throws {
+    func testReactionHandler2() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction3,
