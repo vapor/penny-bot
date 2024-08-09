@@ -2,6 +2,7 @@ import Logging
 import Markdown
 import DiscordModels
 import Models
+import EvolutionMetadataModel
 import Foundation
 
 actor EvolutionChecker {
@@ -75,11 +76,11 @@ actor EvolutionChecker {
 
         /// Queue proposals with change of status
         let previousStates = Dictionary(
-            self.storage.previousProposals.map({ ($0.id, $0.status.state) }),
+            self.storage.previousProposals.map({ ($0.id, $0.status) }),
             uniquingKeysWith: { l, _ in l }
         )
         let updatedProposals = olds.filter {
-            previousStates[$0.id] != $0.status.state
+            previousStates[$0.id] != $0.status
         }
 
         for updated in updatedProposals {
@@ -156,8 +157,8 @@ actor EvolutionChecker {
     }
 
     private func makePayloadForNewProposal(_ proposal: Proposal) async -> Payloads.CreateMessage {
-        let stateTitle = proposal.status.state.titleDescription.map { $0 + ": " } ?? ""
-        let stateDescription = proposal.status.state.UIDescription
+        let stateTitle = proposal.status.titleDescription.map { $0 + ": " } ?? ""
+        let stateDescription = proposal.status.UIDescription
         let title = "[\(proposal.id.sanitized())] \(stateTitle)\(proposal.title.sanitized())"
 
         let summary = makeSummary(proposal: proposal)
@@ -173,7 +174,7 @@ actor EvolutionChecker {
             .nilIfEmpty
         let authorsString = authors.map({ "\n**Author(s):** \($0)" }) ?? ""
 
-        let reviewManagers = proposal.reviewManagers?
+        let reviewManagers = proposal.reviewManagers
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
@@ -203,9 +204,9 @@ actor EvolutionChecker {
                 \(upcomingFeatureFlag)
                 \(authorsString)
                 \(reviewManagersString)
-                """,
+                """.replaceDoubleNewlinesWithSingleNewline(),
                 url: proposalLink,
-                color: proposal.status.state.color
+                color: proposal.status.color
             )],
             components: await makeComponents(proposal: proposal)
         )
@@ -213,11 +214,11 @@ actor EvolutionChecker {
 
     private func makePayloadForUpdatedProposal(
         _ proposal: Proposal,
-        previousState: Proposal.Status.State
+        previousState: Proposal.Status
     ) async -> Payloads.CreateMessage {
 
-        let stateTitle = proposal.status.state.titleDescription.map { $0 + ": " } ?? ""
-        let stateDescription = proposal.status.state.UIDescription
+        let stateTitle = proposal.status.titleDescription.map { $0 + ": " } ?? ""
+        let stateDescription = proposal.status.UIDescription
         let title = "[\(proposal.id.sanitized())] \(stateTitle)\(proposal.title.sanitized())"
 
         let summary = makeSummary(proposal: proposal)
@@ -233,7 +234,7 @@ actor EvolutionChecker {
             .nilIfEmpty
         let authorsString = authors.map({ "\n**Author(s):** \($0)" }) ?? ""
 
-        let reviewManagers = proposal.reviewManagers?
+        let reviewManagers = proposal.reviewManagers
             .filter(\.isRealPerson)
             .map { $0.makeStringForDiscord() }
             .joined(separator: ", ")
@@ -264,9 +265,9 @@ actor EvolutionChecker {
                 \(upcomingFeatureFlag)
                 \(authorsString)
                 \(reviewManagersString)
-                """,
+                """.replaceDoubleNewlinesWithSingleNewline(),
                 url: proposalLink,
-                color: proposal.status.state.color
+                color: proposal.status.color
             )],
             components: await makeComponents(proposal: proposal)
         )
@@ -275,7 +276,7 @@ actor EvolutionChecker {
     private func makeComponents(proposal: Proposal) async -> [Interaction.ActionRow] {
         var buttons: [Interaction.ActionRow] = [[]]
 
-        if let discussion = proposal.discussions?.last {
+        if let discussion = proposal.discussions.last {
             buttons[0].components.append(
                 .button(.init(
                     label: "\(discussion.name.capitalized) Post",
@@ -335,7 +336,7 @@ private extension String {
     }
 }
 
-private extension Proposal.Media {
+private extension Proposal.Person {
     var isRealPerson: Bool {
         !["", "TBD", "N/A"].contains(self.name.sanitized())
     }
@@ -374,13 +375,13 @@ struct LinkRepairer: MarkupRewriter {
 // MARK: - QueuedProposal
 struct QueuedProposal: Sendable, Codable {
     let uuid: UUID
-    let firstKnownStateBeforeQueue: Proposal.Status.State?
+    let firstKnownStateBeforeQueue: Proposal.Status?
     var updatedAt: Date
     var proposal: Proposal
 
     init(
         uuid: UUID = UUID(),
-        firstKnownStateBeforeQueue: Proposal.Status.State?,
+        firstKnownStateBeforeQueue: Proposal.Status?,
         updatedAt: Date,
         proposal: Proposal
     ) {
@@ -392,7 +393,7 @@ struct QueuedProposal: Sendable, Codable {
 }
 
 // MARK: - +Proposal
-private extension Proposal.Status.State {
+private extension Proposal.Status {
     var color: DiscordColor {
         switch self {
         case .accepted: return .green
@@ -405,7 +406,7 @@ private extension Proposal.Status.State {
         case .rejected: return .red
         case .returnedForRevision: return .purple
         case .withdrawn: return .brown
-        case .error, .unknown: return .gray(level: .level6, scheme: .dark)
+        case .error: return .gray(level: .level6, scheme: .dark)
         }
     }
 
@@ -421,7 +422,7 @@ private extension Proposal.Status.State {
         case .rejected: return "Rejected"
         case .returnedForRevision: return "Returned For Revision"
         case .withdrawn: return "Withdrawn"
-        case .error, .unknown: return nil
+        case .error: return nil
         }
     }
 
@@ -433,224 +434,14 @@ private extension Proposal.Status.State {
     }
 }
 
-struct Evolution: Codable {
-    let commit: String
-    let creationDate: Date /// Needs ISO8601 date decoding strategy
-    let implementationVersions: [String]
-    let proposals: [Proposal]
-}
-
-// MARK: - Proposal
-struct Proposal: Sendable, Codable {
-
-    struct Media: Sendable, Codable {
-        let link: String
-        let name: String
-    }
-
-    struct Status: Sendable, Codable {
-
-        enum State: RawRepresentable, Equatable, Sendable, Codable {
-            case accepted
-            case acceptedWithRevisions
-            case activeReview
-            case scheduledForReview
-            case awaitingReview
-            case implemented
-            case previewing
-            case rejected
-            case returnedForRevision
-            case withdrawn
-            case error
-            case unknown(String)
-
-            var rawValue: String {
-                switch self {
-                case .accepted: return "accepted"
-                case .acceptedWithRevisions: return "acceptedWithRevisions"
-                case .activeReview: return "activeReview"
-                case .scheduledForReview: return "scheduledForReview"
-                case .awaitingReview: return "awaitingReview"
-                case .implemented: return "implemented"
-                case .previewing: return "previewing"
-                case .rejected: return "rejected"
-                case .returnedForRevision: return "returnedForRevision"
-                case .withdrawn: return "withdrawn"
-                case .error: return "error"
-                case let .unknown(unknown): return unknown
-                }
-            }
-
-            init? (rawValue: String) {
-                switch rawValue {
-                case "accepted": self = .accepted
-                case "acceptedWithRevisions": self = .acceptedWithRevisions
-                case "activeReview": self = .activeReview
-                case "scheduledForReview": self = .scheduledForReview
-                case "awaitingReview": self = .awaitingReview
-                case "implemented": self = .implemented
-                case "previewing": self = .previewing
-                case "rejected": self = .rejected
-                case "returnedForRevision": self = .returnedForRevision
-                case "withdrawn": self = .withdrawn
-                case "error": self = .error
-                default:
-                    Logger(label: "\(#file):\(#line)").warning(
-                        "New unknown case",
-                        metadata: ["rawValue": .string(rawValue)]
-                    )
-                    self = .unknown(rawValue)
-                }
-            }
-        }
-
-        let state: State
-        let version: String?
-        let end: String?
-        let start: String?
-    }
-
-    struct TrackingBug: Sendable, Codable {
-        let id: String
-        let link: String
-    }
-
-    struct Warning: Sendable, Codable {
-        let kind: String
-        let message: String
-    }
-
-    struct Implementation: Sendable, Codable {
-
-        enum Account: RawRepresentable, Sendable, Codable {
-            case apple
-            case swiftlang
-            case unknown(String)
-
-            var rawValue: String {
-                switch self {
-                case .apple: return "apple"
-                case .swiftlang: return "swiftlang"
-                case let .unknown(unknown): return unknown
-                }
-            }
-
-            init? (rawValue: String) {
-                switch rawValue {
-                case "apple": self = .apple
-                case "swiftlang": self = .swiftlang
-                default:
-                    Logger(label: "\(#file):\(#line)").warning(
-                        "New unknown case",
-                        metadata: ["rawValue": .string(rawValue)]
-                    )
-                    self = .unknown(rawValue)
-                }
-            }
-        }
-
-        enum Repository: RawRepresentable, Sendable, Codable {
-            case swift
-            case swiftEvolution
-            case swiftSyntax
-            case swiftCorelibsFoundation
-            case swiftPackageManager
-            case swiftXcodePlaygroundSupport
-            case swiftDocc
-            case swiftDoccPlugin
-            case swiftDoccSymbolKit
-            case unknown(String)
-
-            var rawValue: String {
-                switch self {
-                case .swift: return "swift"
-                case .swiftEvolution: return "swift-evolution"
-                case .swiftSyntax: return "swift-syntax"
-                case .swiftCorelibsFoundation: return "swift-corelibs-foundation"
-                case .swiftPackageManager: return "swift-package-manager"
-                case .swiftXcodePlaygroundSupport: return "swift-xcode-playground-support"
-                case .swiftDocc: return "swift-docc"
-                case .swiftDoccPlugin: return "swift-docc-plugin"
-                case .swiftDoccSymbolKit: return "swift-docc-symbolkit"
-                case let .unknown(unknown): return unknown
-                }
-            }
-
-            init? (rawValue: String) {
-                switch rawValue {
-                case "swift": self = .swift
-                case "swift-evolution": self = .swiftEvolution
-                case "swift-syntax": self = .swiftSyntax
-                case "swift-corelibs-foundation": self = .swiftCorelibsFoundation
-                case "swift-package-manager": self = .swiftPackageManager
-                case "swift-xcode-playground-support": self = .swiftXcodePlaygroundSupport
-                case "swift-docc": self = .swiftDocc
-                case "swift-docc-plugin": self = .swiftDoccPlugin
-                case "swift-docc-symbolkit": self = .swiftDoccSymbolKit
-                default:
-                    Logger(label: "\(#file):\(#line)").warning(
-                        "New unknown case",
-                        metadata: ["rawValue": .string(rawValue)]
-                    )
-                    self = .unknown(rawValue)
-                }
-            }
-        }
-
-        enum Kind: RawRepresentable, Sendable, Codable {
-            case commit
-            case pull
-            case unknown(String)
-
-            var rawValue: String {
-                switch self {
-                case .commit: return "commit"
-                case .pull: return "pull"
-                case let .unknown(unknown): return unknown
-                }
-            }
-
-            init? (rawValue: String) {
-                switch rawValue {
-                case "commit": self = .commit
-                case "pull": self = .pull
-                default:
-                    Logger(label: "\(#file):\(#line)").warning(
-                        "New unknown case",
-                        metadata: ["rawValue": .string(rawValue)]
-                    )
-                    self = .unknown(rawValue)
-                }
-            }
-        }
-
-        let account: Account
-        let id: String
-        let repository: Repository
-        let type: Kind
-    }
-
-    struct UpcomingFeature: Codable {
-        let flag: String
-    }
-
-    let authors: [Media]
-    let id: String
-    let link: String
-    let reviewManagers: [Media]?
-    let sha: String
-    let status: Status
-    let summary: String
-    let title: String
-    let trackingBugs: [TrackingBug]?
-    let warnings: [Warning]?
-    let implementation: [Implementation]?
-    let discussions: [Media]?
-    let upcomingFeatureFlag: UpcomingFeature?
-}
-
 private extension Collection {
     var nilIfEmpty: Self? {
         self.isEmpty ? nil : self
+    }
+}
+
+private extension String {
+    func replaceDoubleNewlinesWithSingleNewline() -> String {
+        self.replacingOccurrences(of: "\n\n", with: "\n")
     }
 }

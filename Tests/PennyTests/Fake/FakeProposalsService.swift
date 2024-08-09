@@ -1,5 +1,6 @@
 @testable import Penny
 import Models
+import EvolutionMetadataModel
 
 struct FakeEvolutionService: EvolutionService {
 

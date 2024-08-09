@@ -5,6 +5,7 @@ import Foundation
 #endif
 import AsyncHTTPClient
 import Models
+import EvolutionMetadataModel
 import NIOCore
 
 struct DefaultEvolutionService: EvolutionService {
@@ -33,7 +34,7 @@ struct DefaultEvolutionService: EvolutionService {
             deadline: .now() + .seconds(15)
         )
         let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MiB
-        let evolution = try decoder.decode(Evolution.self, from: buffer)
+        let evolution = try decoder.decode(EvolutionMetadata.self, from: buffer)
         if evolution.proposals.isEmpty {
             throw Errors.emptyProposals
         }

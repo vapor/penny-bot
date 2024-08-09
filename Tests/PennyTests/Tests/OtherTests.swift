@@ -1,5 +1,6 @@
 @testable import Penny
 @testable import Models
+import EvolutionMetadataModel
 import Markdown
 import XCTest
 
@@ -129,7 +130,7 @@ class OtherTests: XCTestCase {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         _ = try decoder.decode(
-            Evolution.self,
+            EvolutionMetadata.self,
             from: TestData.newProposalsSample
         )
     }

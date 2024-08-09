@@ -1,5 +1,6 @@
 import Foundation
 import DiscordModels
+import EvolutionMetadataModel
 @testable import Penny
 
 enum TestData {
