@@ -524,11 +524,13 @@ struct Proposal: Sendable, Codable {
 
         enum Account: RawRepresentable, Sendable, Codable {
             case apple
+            case swiftlang
             case unknown(String)
 
             var rawValue: String {
                 switch self {
                 case .apple: return "apple"
+                case .swiftlang: return "swiftlang"
                 case let .unknown(unknown): return unknown
                 }
             }
@@ -536,6 +538,7 @@ struct Proposal: Sendable, Codable {
             init? (rawValue: String) {
                 switch rawValue {
                 case "apple": self = .apple
+                case "swiftlang": self = .swiftlang
                 default:
                     Logger(label: "\(#file):\(#line)").warning(
                         "New unknown case",
