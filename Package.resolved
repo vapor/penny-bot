@@ -1,5 +1,5 @@
 {
-  "originHash" : "6c0824897739c32393726a94d5949e88ad971383cff496e9db8d94c7e77119be",
+  "originHash" : "0992b6258fbc9ce0910245e4efa7688e1527f3d32738a11879cf5e2557078069",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -222,8 +222,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-extras.git",
       "state" : {
-        "revision" : "05c36b57453d23ea63785d58a7dbc7b70ba1745e",
-        "version" : "1.23.0"
+        "revision" : "d1ead62745cc3269e482f1c51f27608057174379",
+        "version" : "1.24.0"
       }
     },
     {
