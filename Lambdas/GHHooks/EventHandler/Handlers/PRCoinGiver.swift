@@ -45,10 +45,10 @@ struct PRCoinGiver {
                 continue
             }
 
-            /// Core-team members get no coin at all.
+            /// Core-team members get no coins at all.
             if member.roles.contains(Constants.Roles.core.id) { continue }
 
-            let amount = 3
+            let amount = 5
             let coinResponse = try await context.usersService.postCoin(with: .init(
                 amount: amount,
                 /// GuildID because this is automated.
@@ -85,7 +85,7 @@ struct PRCoinGiver {
 
     /// Should not contain any labels that indicate no need for a new issue.
     func needsNewIssue(pr: SimplePullRequest) -> Bool {
-        Set(pr.knownLabels).intersection([.translationUpdate, .noTranslationNeeded]).isEmpty
+        !pr.knownLabels.contains(where: { [.translationUpdate, .noTranslationNeeded].contains($0) })
     }
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
