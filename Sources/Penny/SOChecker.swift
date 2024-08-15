@@ -21,6 +21,10 @@ actor SOChecker {
     }
 
     nonisolated func run() {
+        #if !DEBUG
+        /// Cloudflare seems to be blocking us although we have a auth token.
+        return
+        #endif
         Task { [self] in
             if Task.isCancelled { return }
             do {
@@ -28,7 +32,7 @@ actor SOChecker {
             } catch {
                 logger.report("Couldn't check SO questions", error: error)
             }
-            try await Task.sleep(for: .seconds(60 * 60)) /// an hour
+            try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
             self.run()
         }
     }
