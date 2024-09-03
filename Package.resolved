@@ -1,5 +1,5 @@
 {
-  "originHash" : "ff153daf42de75b0067cb3229a508c3fd4f1c79421db8f8c1f6977f13bf7b2aa",
+  "originHash" : "01110ba2cf5e31c822b1a63f1cfa096eadc5516504d92d4f661cf91773e579d0",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -51,8 +51,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/leaf-kit.git",
       "state" : {
-        "revision" : "c04e54753fb30a985b42c3be8530bb94442da9c6",
-        "version" : "1.11.0"
+        "revision" : "d0ca4417166ef7868d28ad21bc77d36b8735a0fc",
+        "version" : "1.11.1"
       }
     },
     {
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "a53a7e8f858902659d4784322bede34f4e49097e",
-        "version" : "3.6.1"
+        "revision" : "9f95b4d033a4edd3814b48608db3f2ca90c7218b",
+        "version" : "3.7.0"
       }
     },
     {
