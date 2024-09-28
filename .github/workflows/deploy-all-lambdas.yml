@@ -8,7 +8,7 @@ on:
 jobs:
   deploy-lambdas:
     runs-on: ubuntu-latest
-    container: swift:5.10-amazonlinux2
+    container: swift:6.0-amazonlinux2
 
     env:
       AWS_DEFAULT_REGION: eu-west-1
@@ -26,7 +26,7 @@ jobs:
           ./aws/install
 
       - name: Check out repository
-        # uses: actions/checkout@v3 Needs node 20 which amazonlinux2 doesn't have
+        # uses: actions/checkout@v3 ❌ Needs node 20 which amazonlinux2 doesn't have
         run: |
           git clone https://github.com/${{ github.repository }}
           cd ${{ github.event.repository.name }}
