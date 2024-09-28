@@ -208,26 +208,6 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         /// Require `any` for existential types.
             .enableUpcomingFeature("ExistentialAny"),
 
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0274-magic-file.md
-        /// Nicer `#file`.
-            .enableUpcomingFeature("ConciseMagicFile"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0286-forward-scan-trailing-closures.md
-        /// This one shouldn't do much to be honest, but shouldn't hurt as well.
-            .enableUpcomingFeature("ForwardTrailingClosures"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
-        /// Remove Actor Isolation Inference caused by Property Wrappers
-            .enableUpcomingFeature("DisableOutwardActorInference"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
-        /// Support bare-slash Regex literals.
-            .enableUpcomingFeature("BareSlashRegexLiterals"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0418-inferring-sendable-for-methods.md
-        /// Inferring `Sendable` for methods and key path literals.
-            .enableUpcomingFeature("InferSendableFromCaptures"),
-
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
 //            .enableUpcomingFeature("InternalImportsByDefault"),
 
