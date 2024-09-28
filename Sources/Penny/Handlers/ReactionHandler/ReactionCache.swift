@@ -201,7 +201,8 @@ private extension Calendar {
 }
 
 // MARK: +Emoji
-extension Emoji: Hashable {
+extension Emoji: @retroactive Equatable {}
+extension Emoji: @retroactive Hashable {
     public static func == (lhs: Emoji, rhs: Emoji) -> Bool {
         switch (lhs.id, rhs.id) {
         case let (.some(id1), .some(id2)):
