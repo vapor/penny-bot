@@ -10,8 +10,6 @@ struct Penny {
     }
 
     static func start(mainService: any MainService) async throws {
-        /// Use `1` instead of `System.coreCount`.
-        /// This is preferred for apps that primarily use structured concurrency.
         let httpClient = HTTPClient(
             eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
             configuration: .forPenny
@@ -41,7 +39,7 @@ struct Penny {
         }
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
-        /// Shutdown in reverse order of dependance.
+        /// Shutdown in reverse order of dependence.
         try await awsClient.shutdown()
         try await httpClient.shutdown()
     }
