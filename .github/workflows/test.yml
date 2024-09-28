@@ -18,7 +18,7 @@ jobs:
 
   cloudformation-lint:
     name: Check CloudFormation
-    runs-on: ubuntu-latest-arm64
+    runs-on: ubuntu-22.04-arm64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
