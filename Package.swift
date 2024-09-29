@@ -208,12 +208,9 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         /// Require `any` for existential types.
             .enableUpcomingFeature("ExistentialAny"),
 
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-//            .enableUpcomingFeature("InternalImportsByDefault"),
-
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
         /// Enable the full potential of typed throws.
-            .enableUpcomingFeature("FullTypedThrows")
+            .enableUpcomingFeature("FullTypedThrows"),
     ]
 }
 
