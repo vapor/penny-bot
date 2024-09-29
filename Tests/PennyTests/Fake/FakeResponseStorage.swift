@@ -15,16 +15,14 @@ actor FakeResponseStorage {
     func awaitResponse(
         at endpoint: APIEndpoint,
         expectFailure: Bool = false,
-        file: StaticString = #filePath,
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async -> AnyBox {
         await withCheckedContinuation { continuation in
             self.expect(
                 at: .api(endpoint),
                 expectFailure: expectFailure,
                 continuation: continuation,
-                file: file,
-                line: line
+                sourceLocation: sourceLocation
             )
         }
     }
@@ -32,16 +30,14 @@ actor FakeResponseStorage {
     func awaitResponse(
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
-        file: StaticString = #filePath,
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async -> AnyBox {
         await withCheckedContinuation { continuation in
             self.expect(
                 at: endpoint,
                 expectFailure: expectFailure,
                 continuation: continuation,
-                file: file,
-                line: line
+                sourceLocation: sourceLocation
             )
         }
     }
@@ -50,16 +46,14 @@ actor FakeResponseStorage {
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
         continuation: CheckedContinuation<AnyBox, Never>,
-        file: StaticString,
-        line: UInt
+        sourceLocation: Testing.SourceLocation
     ) {
         Task {
             await _expect(
                 at: endpoint,
                 expectFailure: expectFailure,
                 continuation: continuation,
-                file: file,
-                line: line
+                sourceLocation: sourceLocation
             )
         }
     }
@@ -68,12 +62,14 @@ actor FakeResponseStorage {
         at endpoint: any Endpoint,
         expectFailure: Bool = false,
         continuation: CheckedContinuation<AnyBox, Never>,
-        file: StaticString,
-        line: UInt
+        sourceLocation: Testing.SourceLocation
     ) {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
-                Issue.record("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
+                Issue.record(
+                    "Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                    sourceLocation: sourceLocation
+                )
                 continuation.resume(returning: AnyBox(Optional<Never>.none as Any))
             } else {
                 continuation.resume(returning: response)
@@ -87,8 +83,7 @@ actor FakeResponseStorage {
                     if !expectFailure {
                         Issue.record(
                             "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
-                            file: file,
-                            line: line
+                            sourceLocation: sourceLocation
                         )
                     }
                     continuation.resume(with: .success(AnyBox(Optional<Never>.none as Any)))
@@ -97,8 +92,7 @@ actor FakeResponseStorage {
                     if expectFailure {
                         Issue.record(
                             "Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
-                            file: file,
-                            line: line
+                            sourceLocation: sourceLocation
                         )
                     }
                 }
@@ -108,7 +102,6 @@ actor FakeResponseStorage {
     
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: any Endpoint, with payload: AnyBox) {
-
         if let continuation = continuations.retrieve(endpoint: endpoint) {
             continuation.resume(returning: payload)
         } else {

@@ -1,5 +1,6 @@
 @testable import Penny
 @testable import Models
+import Foundation
 import Markdown
 import Testing
 
@@ -7,7 +8,7 @@ import Testing
 struct OtherTests {
     
     @Test
-    func ContainsSequence() throws {
+    func containsSequence() throws {
         let array = ["a", "bc", "def", "g", "hi"]
         
         #expect(array.containsSequence(["bc"]))
@@ -28,7 +29,7 @@ struct OtherTests {
     }
     
     @Test
-    func RemovingOccurrencesCharacterSetInString() throws {
+    func removingOccurrencesCharacterSetInString() throws {
         #expect("".removingOccurrences(of: CharacterSet.punctuationCharacters) == "")
         #expect("a".removingOccurrences(of: CharacterSet.punctuationCharacters) == "a")
         #expect("a,".removingOccurrences(of: CharacterSet.punctuationCharacters) == "a")
@@ -42,7 +43,7 @@ struct OtherTests {
     /// The `Codable` logic of `S3AutoPingItems.Expression` is manual, so we
     /// need to make sure it actually works or it might corrupt the repository file
     @Test
-    func AutoPingItemExpressionCodable() throws {
+    func autoPingItemExpressionCodable() throws {
         typealias Expression = S3AutoPingItems.Expression
         
         do { /// Expression.matches
@@ -83,7 +84,7 @@ struct OtherTests {
     }
     
     @Test
-    func RepairMarkdownLinks() throws {
+    func repairMarkdownLinks() throws {
         let proposal = TestData.proposalContent
         let document = Document(parsing: proposal)
         
@@ -100,7 +101,7 @@ struct OtherTests {
     }
     
     @Test
-    func DecodeEvolutionProposals() throws {
+    func decodeEvolutionProposals() throws {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         _ = try decoder.decode(

@@ -7,8 +7,7 @@ import Testing
 func expectMultilineStringsEqual(
     _ expression1: String,
     _ expression2: String,
-    file: StaticString = #filePath,
-    line: UInt = #line
+    sourceLocation: Testing.SourceLocation = #_sourceLocation
 ) {
     let expression1 = expression1.trimmingSuffix(while: \.isNewline)
     let expression2 = expression2.trimmingSuffix(while: \.isNewline)
@@ -30,13 +29,12 @@ func expectMultilineStringsEqual(
                         Got:      \(line1.debugDescription)
                         Expected: \(line2.debugDescription)
                         """,
-                        file: file,
-                        line: line
+                        sourceLocation: sourceLocation
                     )
                 }
             }
         } else {
-            #expect(expression1 == expression2, file: file, line: line)
+            #expect(expression1 == expression2, sourceLocation: sourceLocation)
         }
     }
 }

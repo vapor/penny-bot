@@ -8,6 +8,7 @@ import OpenAPIRuntime
 import Rendering
 import Logging
 import SwiftSemver
+import Foundation
 import Markdown
 import NIOPosix
 import Testing
@@ -28,12 +29,12 @@ struct GHHooksTests {
     /// The `…` (U+2026 Horizontal Ellipsis) character.
     let dots = "\u{2026}"
     
-    override func setUp() async throws {
+    init() {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
     
     @Test
-    func UnicodesPrefix() throws {
+    func unicodesPrefix() throws {
         do {
             let scalars_16 = "Hello, world! 👍🏾"
             let scalars_14 = "Hello, world! "
@@ -87,7 +88,7 @@ struct GHHooksTests {
     }
     
     @Test
-    func MarkdownUnicodesPrefix() async throws {
+    func markdownUnicodesPrefix() async throws {
         do {
             let scalars_16 = "Hello, world! 👍🏾"
             let scalars_14 = "Hello, world! "
@@ -162,14 +163,14 @@ struct GHHooksTests {
     func expectTuplesEqual(
         _ expression1: (Int, String),
         _ expression2: (Int, String),
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) {
-        #expect(expression1.0 == expression2.0, line: line)
-        #expect(expression1.1 == expression2.1, line: line)
+        #expect(expression1.0 == expression2.0, sourceLocation: sourceLocation)
+        #expect(expression1.1 == expression2.1, sourceLocation: sourceLocation)
     }
     
     @Test
-    func SemVerBump() throws {
+    func semVerBump() throws {
         do {
             let version = try #require(SemanticVersion(string: "11.0.0"))
             /// Does not bump major versions to avoid releasing a whole new major version.
@@ -220,7 +221,7 @@ struct GHHooksTests {
     }
     
     @Test
-    func MarkdownFormatting() async throws {
+    func markdownFormatting() async throws {
         do {
             let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let formatted = scalars_206.formatMarkdown(
@@ -533,7 +534,7 @@ struct GHHooksTests {
     }
     
     @Test
-    func HeadingFinder() async throws {
+    func headingFinder() async throws {
         /// Goes into the `What's Changed` heading.
         let text = """
         ## What's Changed
@@ -558,7 +559,7 @@ struct GHHooksTests {
     }
     
     @Test
-    func ParseCodeOwners() async throws {
+    func parseCodeOwners() async throws {
         let text = """
         # This is a comment.
         # Each line is a file pattern followed by one or more owners.
@@ -600,7 +601,7 @@ struct GHHooksTests {
     }
     
     @Test
-    func MakeReleaseBody() async throws {
+    func makeReleaseBody() async throws {
         let context = try makeContext(
             eventName: .pull_request,
             eventKey: "pr4"
@@ -615,11 +616,11 @@ struct GHHooksTests {
             previousVersion: "v2.3.1",
             newVersion: "v2.4.5"
         )
-        #expect(body.hasPrefix("## What's Changed"), body)
+        #expect(body.hasPrefix("## What's Changed"), "\(body)")
     }
     
     @Test
-    func IsPrimaryOrReleaseBranch() async throws {
+    func isPrimaryOrReleaseBranch() async throws {
         let context = try makeContext(
             eventName: .pull_request,
             eventKey: "pr3"
@@ -646,7 +647,7 @@ struct GHHooksTests {
     }
     
     @Test
-    func EventHandler() async throws {
+    func eventHandler() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
         try await handleEvent(
             key: "issue2",
@@ -808,7 +809,7 @@ struct GHHooksTests {
         key: String,
         eventName: GHEvent.Kind,
         expect: Expectation,
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async throws {
         let data = TestData.for(ghEventKey: key)!
         do {
@@ -825,20 +826,20 @@ struct GHHooksTests {
                 case .create:
                     let response = await FakeResponseStorage.shared.awaitResponse(
                         at: .createMessage(channelId: channel.id),
-                        line: line
+                        sourceLocation: sourceLocation
                     ).value
                     #expect(
                         "\(type(of: response))" == "\(Payloads.CreateMessage.self)",
-                        line: line
+                        sourceLocation: sourceLocation
                     )
                 case let .edit(messageId):
                     let response = await FakeResponseStorage.shared.awaitResponse(
                         at: .updateMessage(channelId: channel.id, messageId: messageId),
-                        line: line
+                        sourceLocation: sourceLocation
                     ).value
                     #expect(
                         "\(type(of: response))" == "\(Payloads.EditMessage.self)",
-                        line: line
+                        sourceLocation: sourceLocation
                     )
                 }
             case let .failure(failures):
@@ -858,9 +859,12 @@ struct GHHooksTests {
                             let response = await FakeResponseStorage.shared.awaitResponse(
                                 at: endpoint,
                                 expectFailure: true,
-                                line: line
+                                sourceLocation: sourceLocation
                             ).value
-                            #expect("\(type(of: response))" == "Optional<Never>", line: line)
+                            #expect(
+                                "\(type(of: response))" == "Optional<Never>",
+                                sourceLocation: sourceLocation
+                            )
                         }
                     }
                 }
@@ -886,7 +890,7 @@ struct GHHooksTests {
                 Event name: \(eventName).
                 Event: \(event).
                 """,
-                line: line
+                sourceLocation: sourceLocation
             )
         }
     }

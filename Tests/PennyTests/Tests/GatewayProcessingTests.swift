@@ -12,7 +12,7 @@ struct GatewayProcessingTests {
     let manager = FakeManager()
     var context: HandlerContext!
     
-    override func setUp() async throws {
+    init() async throws {
         /// Disable logging
         LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
         // reset the storage
@@ -26,7 +26,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func CommandsRegisterOnStartup() async throws {
+    func commandsRegisterOnStartup() async throws {
         await CommandsManager(context: context).registerCommands()
         
         let response = await responseStorage.awaitResponse(
@@ -39,19 +39,19 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func MessageHandler() async throws {
+    func messageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
             as: Payloads.CreateMessage.self
         )
         
         let description = try #require(response.embeds?.first?.description)
-        #expect(description.hasPrefix("<@950695294906007573> now has "), description)
-        #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"), description)
+        #expect(description.hasPrefix("<@950695294906007573> now has "), "\(description)")
+        #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"), "\(description)")
     }
     
     @Test
-    func ReactionHandler() async throws {
+    func reactionHandler() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
@@ -61,7 +61,7 @@ struct GatewayProcessingTests {
             let description = try #require(response.embeds?.first?.description)
             #expect(description.hasPrefix(
                 "Mahdi BM gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has "
-            ), description)
+            ), "\(description)")
             #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
         }
         
@@ -85,7 +85,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func ReactionHandler3() async throws {
+    func reactionHandler3() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction3,
@@ -95,10 +95,10 @@ struct GatewayProcessingTests {
             let description = try #require(response.embeds?.first?.description)
             #expect(description.hasPrefix("""
             0xTim gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has
-            """), description)
+            """), "\(description)")
             #expect(description.hasSuffix("""
             \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
-            """), description)
+            """), "\(description)")
         }
         
         // We need to wait a little bit to make sure Discord's response
@@ -116,7 +116,7 @@ struct GatewayProcessingTests {
             let description = try #require(response.embeds?.first?.description)
             #expect(description.hasPrefix("""
             0xTim & Mahdi BM gave 2 \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has
-            """), description)
+            """), "\(description)")
             #expect(description.hasSuffix("""
             \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
             """))
@@ -124,7 +124,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func RespondsInThanksChannelWhenDoesNotHavePermission() async throws {
+    func respondsInThanksChannelWhenDoesNotHavePermission() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage2,
             as: Payloads.CreateMessage.self
@@ -132,14 +132,15 @@ struct GatewayProcessingTests {
         
         let description = try #require(response.embeds?.first?.description)
         
-        #expect(description.hasPrefix("<@950695294906007573> now has "), description)
-        #expect(description.hasSuffix("""
+        #expect(description.hasPrefix("<@950695294906007573> now has "), "\(description)")
+        let expectedSuffix = """
         \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042)
-        """), description)
+        """
+        #expect(description.hasSuffix(expectedSuffix), "\(description)")
     }
     
     @Test
-    func BotStateManagerReceivesSignal() async throws {
+    func botStateManagerReceivesSignal() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
             as: Payloads.CreateMessage.self
@@ -165,7 +166,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func AutoPings() async throws {
+    func autoPings() async throws {
         let event = EventKey.autoPingsTrigger
         await manager.send(key: event)
         let createDMEndpoint = event.responseEndpoints[0]
@@ -186,10 +187,10 @@ struct GatewayProcessingTests {
         
         let dmMessage1 = try #require(sendDM1 as? Payloads.CreateMessage, "\(sendDM1)")
         let message1 = try #require(dmMessage1.embeds?.first?.description)
-        #expect(message1.hasPrefix("There is a new message"), message1)
+        #expect(message1.hasPrefix("There is a new message"), "\(message1)")
         /// Check to make sure the expected ping-words are mentioned in the message
-        #expect(message1.contains("- mongodb driver"), message1)
-        
+        #expect(message1.contains("- mongodb driver"), "\(message1)")
+
         do {
             /// These two must not fail. The user does not have any
             /// significant roles but they still should receive the pings.
@@ -199,10 +200,10 @@ struct GatewayProcessingTests {
         
         let dmMessage2 = try #require(sendDM2 as? Payloads.CreateMessage, "\(sendDM1)")
         let message2 = try #require(dmMessage2.embeds?.first?.description)
-        #expect(message2.hasPrefix("There is a new message"), message2)
+        #expect(message2.hasPrefix("There is a new message"), "\(message2)")
         /// Check to make sure the expected ping-words are mentioned in the message
-        #expect(message2.contains("- mongodb driver"), message2)
-        
+        #expect(message2.contains("- mongodb driver"), "\(message2)")
+
         /// Contains `godb dr` (part of `mongodb driver`).
         /// Tests `Expression.contain("godb dr")`.
         #expect(
@@ -210,8 +211,8 @@ struct GatewayProcessingTests {
             #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
         )
         
-        #expect(message2.hasSuffix(">>> need help with some MongoDB Driver"), message2)
-        
+        #expect(message2.hasSuffix(">>> need help with some MongoDB Driver"), "\(message2)")
+
         let event2 = EventKey.autoPingsTrigger2
         let createDMEndpoint2 = event2.responseEndpoints[0]
         let responseEndpoint2 = event2.responseEndpoints[1]
@@ -231,19 +232,19 @@ struct GatewayProcessingTests {
         do {
             let dmMessage = try #require(sendDM as? Payloads.CreateMessage, "\(sendDM)")
             let message = try #require(dmMessage.embeds?.first?.description)
-            #expect(message.hasPrefix("There is a new message"), message)
+            #expect(message.hasPrefix("There is a new message"), "\(message)")
             /// Check to make sure the expected ping-words are mentioned in the message
-            #expect(message.contains("- blog"), message)
-            #expect(message.contains("- discord"), message)
-            #expect(message.contains("- discord-kit"), message)
-            #expect(message.contains("- cord"), message)
-            
-            #expect(message.hasSuffix(">>> I want to use the discord-kit library\nhttps://www.swift.org/blog/swift-certificates-and-asn1/"), message)
+            #expect(message.contains("- blog"), "\(message)")
+            #expect(message.contains("- discord"), "\(message)")
+            #expect(message.contains("- discord-kit"), "\(message)")
+            #expect(message.contains("- cord"), "\(message)")
+
+            #expect(message.hasSuffix(">>> I want to use the discord-kit library\nhttps://www.swift.org/blog/swift-certificates-and-asn1/"), "\(message)")
         }
     }
     
     @Test
-    func HowManyCoins() async throws {
+    func howManyCoins() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .howManyCoins1,
@@ -264,7 +265,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func ServerBoostCoins() async throws {
+    func serverBoostCoins() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .serverBoost,
             as: Payloads.CreateMessage.self
@@ -283,7 +284,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func EvolutionChecker() async throws {
+    func evolutionChecker() async throws {
         /// This tests expects the `CachesStorage` population to have worked correctly
         /// and have already populated `EvolutionChecker.previousProposals`.
         
@@ -358,7 +359,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func SOChecker() async throws {
+    func soChecker() async throws {
         context.services.soChecker.run()
         
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.stackOverflow.id)
@@ -374,7 +375,7 @@ struct GatewayProcessingTests {
         
         #expect(messages[0].embeds?.first?.title == "Vapor Logger doesn't log any messages into System Log")
         #expect(messages[1].embeds?.first?.title == "Postgre-Kit: Unable to complete code access to PostgreSQL DB")
-        #expect(messages[2].embeds?.first?.title = ="How to decide to use siblings or parent/children relations in vapor?")
+        #expect(messages[2].embeds?.first?.title == "How to decide to use siblings or parent/children relations in vapor?")
         #expect(messages[3].embeds?.first?.title == "How to make a optional query filter in Vapor")
 
         let lastCheckDate = await context.services.soChecker.storage.lastCheckDate
@@ -382,7 +383,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func FaqsCommand() async throws {
+    func faqsCommand() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .faqsAdd,
@@ -401,7 +402,7 @@ struct GatewayProcessingTests {
                 as: Payloads.EditWebhookMessage.self
             )
             let message = try #require(response.embeds?.first?.description)
-            #expect(message.hasPrefix("You don't have access to this command; it is only available to"), message)
+            #expect(message.hasPrefix("You don't have access to this command; it is only available to"), "\(message)")
         }
         
         do {
@@ -444,7 +445,7 @@ struct GatewayProcessingTests {
     }
     
     @Test
-    func AutoFaqsCommand() async throws {
+    func autoFaqsCommand() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .autoFaqsAdd,
@@ -463,7 +464,7 @@ struct GatewayProcessingTests {
                 as: Payloads.EditWebhookMessage.self
             )
             let message = try #require(response.embeds?.first?.description)
-            #expect(message.hasPrefix("You don't have access to this command; it is only available to"), message)
+            #expect(message.hasPrefix("You don't have access to this command; it is only available to"), "\(message)")
         }
         
         do {

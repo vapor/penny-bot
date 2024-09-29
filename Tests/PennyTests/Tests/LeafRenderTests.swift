@@ -10,7 +10,7 @@ import NIOPosix
 import Testing
 
 @Suite
-struct LeafRenderTests {
+final class LeafRenderTests {
     let httpClient = HTTPClient(
         eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
         configuration: .forPenny
@@ -31,22 +31,22 @@ struct LeafRenderTests {
         )
     )
     
-    override func setUp() async throws {
+    init() {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
     
-    override func tearDown() async throws {
-        try await httpClient.shutdown()
+    deinit {
+        try! httpClient.syncShutdown()
     }
     
     @Test
-    func TranslationNeededDescription() async throws {
+    func translationNeededDescription() async throws {
         let rendered = try await ghHooksRenderClient.translationNeededDescription(number: 1)
         #expect(rendered.count > 20)
     }
     
     @Test
-    func NewReleaseDescription() async throws {
+    func newReleaseDescription() async throws {
         do {
             let rendered = try await ghHooksRenderClient.newReleaseDescription(
                 context: .init(
@@ -131,7 +131,7 @@ struct LeafRenderTests {
     }
     
     @Test
-    func TicketReport() async throws {
+    func ticketReport() async throws {
         do {
             let rendered = try await ghHooksRenderClient.ticketReport(
                 title: "Some more improvements",
@@ -160,7 +160,7 @@ struct LeafRenderTests {
     }
     
     @Test
-    func AutoPingsHelp() async throws {
+    func autoPingsHelp() async throws {
         let rendered = try await pennyRenderClient.autoPingsHelp(
             context: .init(
                 commands: .init(

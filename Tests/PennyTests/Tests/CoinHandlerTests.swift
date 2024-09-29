@@ -1,5 +1,6 @@
 @testable import Penny
 import DiscordBM
+import Foundation
 import Testing
 
 @Suite
@@ -11,8 +12,8 @@ struct CoinHandlerTests {
     let user2Snowflake: UserSnowflake = "49123000123984550"
 
     /// Pattern `@mahdi thanks!`
-        @Test
-    func UserAndCoinSignTheWholeMessage() throws {
+    @Test
+    func userAndCoinSignTheWholeMessage() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -23,7 +24,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -35,10 +36,10 @@ struct CoinHandlerTests {
             #expect(users == [user1Snowflake])
         }
     }
-    
+
     /// Pattern `@mahdi xxxx thanks!`
-        @Test
-    func UserAtTheBeginningAndCoinSignAtTheEnd() throws {
+    @Test
+    func userAtTheBeginningAndCoinSignAtTheEnd() throws {
         let coinHandler = CoinFinder(
             text: """
             \(user1) xxxx xxxx \(user2) xxxx thank you so MUCH!
@@ -48,10 +49,10 @@ struct CoinHandlerTests {
         let users = coinHandler.findUsers()
         #expect(users == [user1Snowflake])
     }
-    
+
     /// Pattern `thank you xxxx @mahdi!`
-        @Test
-    func UserAtTheEndAndCoinSignAtTheBeginning() throws {
+    @Test
+    func userAtTheEndAndCoinSignAtTheBeginning() throws {
         let coinHandler = CoinFinder(
             text: """
             thaNk you xxxx xxxx \(user2) xxxx xxxx \(user1)!
@@ -61,11 +62,11 @@ struct CoinHandlerTests {
         let users = coinHandler.findUsers()
         #expect(users == [user1Snowflake])
     }
-    
+
     /// Patterns `xxxx @mahdi thanks!`
     /// `xxxx thanks! @mahdi`
-        @Test
-    func UserAndCoinSignAtTheEnd() throws {
+    @Test
+    func userAndCoinSignAtTheEnd() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -76,7 +77,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -87,7 +88,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -98,7 +99,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -110,11 +111,11 @@ struct CoinHandlerTests {
             #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
-    
+
     /// Patterns `xxxx @mahdi thanks! xxxx`
     /// `xxxx thanks! @mahdi xxxx`
-        @Test
-    func UserAndCoinSignInTheMiddle() throws {
+    @Test
+    func userAndCoinSignInTheMiddle() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -125,7 +126,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -136,7 +137,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -147,7 +148,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -158,7 +159,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -170,9 +171,9 @@ struct CoinHandlerTests {
             #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
-    
-        @Test
-    func NotReallyACoinSign() throws {
+
+    @Test
+    func notReallyACoinSign() throws {
         do {
             /// `+` is not a coin sign, unlike `++`/`+++`/`++++`... .
             let coinHandler = CoinFinder(
@@ -184,7 +185,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [])
         }
-        
+
         do {
             /// `++` is too far.
             let coinHandler = CoinFinder(
@@ -197,7 +198,7 @@ struct CoinHandlerTests {
             #expect(users == [])
         }
     }
-    
+
     /// Patterns `xxxx @mahdi thanks! xxxx @benny thanks! xxxx`
     /// `@mahdi thanks! xxxx @benny thanks! xxxx`
     /// `thanks! @mahdi xxxx thanks! @benny xxxx`
@@ -205,8 +206,8 @@ struct CoinHandlerTests {
     /// `@mahdi thanks! xxxx @benny thanks!`
     /// `@mahdi thanks! @benny thanks!`
     /// `thanks! @mahdi thanks! @benny`
-        @Test
-    func MultipleUsersWithCoinSign() throws {
+    @Test
+    func multipleUsersWithCoinSign() throws {
         /// `xxxx @mahdi thanks! xxxx @benny thanks! xxxx`
         do {
             let coinHandler = CoinFinder(
@@ -218,7 +219,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         /// `@mahdi thanks! xxxx @benny thanks! xxxx`
         do {
             let coinHandler = CoinFinder(
@@ -230,7 +231,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         /// `thanks! @mahdi xxxx thanks! @benny xxxx`
         do {
             let coinHandler = CoinFinder(
@@ -242,7 +243,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         /// `xxxx @mahdi thanks! xxxx @benny thanks!`
         do {
             let coinHandler = CoinFinder(
@@ -254,7 +255,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         /// `@mahdi thanks! xxxx @benny thanks!`
         do {
             let coinHandler = CoinFinder(
@@ -266,7 +267,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         /// `@mahdi thanks! @benny thanks!`
         do {
             let coinHandler = CoinFinder(
@@ -278,7 +279,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         /// `thanks! @mahdi thanks! @benny`
         do {
             let coinHandler = CoinFinder(
@@ -291,9 +292,9 @@ struct CoinHandlerTests {
             #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
-    
-        @Test
-    func RepliedUser() throws {
+
+    @Test
+    func repliedUser() throws {
         /// thanks!
         do {
             let coinHandler = CoinFinder(
@@ -305,7 +306,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         /// thanks! @tim xxxx xxxx
         do {
             let coinHandler = CoinFinder(
@@ -318,7 +319,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         /// xxxx xxxx thanks!
         do {
             let coinHandler = CoinFinder(
@@ -330,7 +331,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         /// xxxx xxxx \n xxxx xxxx thanks!
         do {
             let coinHandler = CoinFinder(
@@ -343,7 +344,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         /// thanks!
         /// But replied user is in excluded users.
         do {
@@ -358,11 +359,11 @@ struct CoinHandlerTests {
             #expect(users == [])
         }
     }
-    
+
     /// User-id strings that are not in `mentionedUsers` won't get any coins,
     /// because Discord has not verified the mention.
-        @Test
-    func MentionedUsers() throws {
+    @Test
+    func mentionedUsers() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -373,7 +374,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -385,9 +386,9 @@ struct CoinHandlerTests {
             #expect(users == [])
         }
     }
-    
-        @Test
-    func ExcludedUsers() throws {
+
+    @Test
+    func excludedUsers() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -398,7 +399,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -410,9 +411,9 @@ struct CoinHandlerTests {
             #expect(users == [])
         }
     }
-    
-        @Test
-    func UniqueUsers() throws {
+
+    @Test
+    func uniqueUsers() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -423,7 +424,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -434,7 +435,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -446,9 +447,9 @@ struct CoinHandlerTests {
             #expect(users == [user1Snowflake])
         }
     }
-    
-        @Test
-    func MultipleLines() throws {
+
+    @Test
+    func multipleLines() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -460,7 +461,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users == [user1Snowflake, user2Snowflake])
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -473,9 +474,9 @@ struct CoinHandlerTests {
             #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
-    
-        @Test
-    func MaxUserCount() throws {
+
+    @Test
+    func maxUserCount() throws {
         let count = 55
         let coinedUsers = try (0..<count).map { _ in
             try UserSnowflake.makeFake(
@@ -491,7 +492,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
-        
+
         do {
             let coinHandler = CoinFinder(
                 text: coinStrings.joined(separator: " "),
@@ -500,7 +501,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
-        
+
         do {
             let part1 = coinStrings[0..<5]
             let part2 = coinStrings[5..<count]
@@ -511,7 +512,7 @@ struct CoinHandlerTests {
             let users = coinHandler.findUsers()
             #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
-        
+
         do {
             let part1 = coinStrings[0..<15]
             let part2 = coinStrings[15..<count]
