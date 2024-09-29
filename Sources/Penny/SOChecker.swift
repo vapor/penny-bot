@@ -21,10 +21,6 @@ actor SOChecker {
     }
 
     nonisolated func run() {
-        #if !DEBUG
-        /// Cloudflare seems to be blocking us although we have a auth token.
-        return
-        #endif
         Task { [self] in
             if Task.isCancelled { return }
             do {
