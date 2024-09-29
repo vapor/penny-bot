@@ -1,6 +1,6 @@
 @testable import Penny
 import DiscordBM
-import SwiftTesting
+import Testing
 
 @Suite
 struct CoinHandlerTests {

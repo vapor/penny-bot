@@ -1,6 +1,6 @@
 @testable import DiscordBM
 import NIOHTTP1
-import SwiftTesting
+import Testing
 
 struct FakeDiscordClient: DiscordClient {
     var appId: ApplicationSnowflake? = "11111111"

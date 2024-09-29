@@ -2,7 +2,7 @@ import DiscordBM
 @testable import Penny
 import Atomics
 import struct NIOCore.ByteBuffer
-import SwiftTesting
+import Testing
 
 actor FakeManager: GatewayManager {
     nonisolated let client: any DiscordClient = FakeDiscordClient()

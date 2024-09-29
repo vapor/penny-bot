@@ -6,7 +6,7 @@ import NIO
 import DiscordLogger
 import SotoCore
 import AsyncHTTPClient
-import SwiftTesting
+import Testing
 
 actor FakeMainService: MainService {
     let manager: FakeManager

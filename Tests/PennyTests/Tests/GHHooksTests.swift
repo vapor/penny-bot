@@ -10,7 +10,7 @@ import Logging
 import SwiftSemver
 import Markdown
 import NIOPosix
-import SwiftTesting
+import Testing
 
 @Suite
 struct GHHooksTests {

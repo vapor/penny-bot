@@ -7,7 +7,7 @@ import AsyncHTTPClient
 import GitHubAPI
 import Logging
 import NIOPosix
-import SwiftTesting
+import Testing
 
 @Suite
 struct LeafRenderTests {

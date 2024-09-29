@@ -1,6 +1,6 @@
 @testable import DiscordBM
 import Atomics
-import SwiftTesting
+import Testing
 
 actor FakeResponseStorage {
     

@@ -1,7 +1,7 @@
 @testable import Penny
 @testable import Models
 import Markdown
-import SwiftTesting
+import Testing
 
 @Suite
 struct OtherTests {

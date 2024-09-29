@@ -1,4 +1,4 @@
-import SwiftTesting
+import Testing
 
 /// Fancy footwork to:
 /// 1- Avoid test failures just because of a new empty line at the end of a file.

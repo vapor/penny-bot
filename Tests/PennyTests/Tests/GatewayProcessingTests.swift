@@ -3,7 +3,7 @@
 @testable import Logging
 import DiscordGateway
 import Models
-import SwiftTesting
+import Testing
 
 @Suite
 struct GatewayProcessingTests {
