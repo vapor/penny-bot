@@ -1,6 +1,6 @@
 @testable import DiscordBM
 import Atomics
-import XCTest
+import SwiftTesting
 
 actor FakeResponseStorage {
     
@@ -73,7 +73,7 @@ actor FakeResponseStorage {
     ) {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
-                XCTFail("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
+                Issue.record("Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)", file: file, line: line)
                 continuation.resume(returning: AnyBox(Optional<Never>.none as Any))
             } else {
                 continuation.resume(returning: response)
@@ -85,7 +85,7 @@ actor FakeResponseStorage {
                 try await Task.sleep(for: .seconds(3))
                 if continuations.retrieve(id: id) != nil {
                     if !expectFailure {
-                        XCTFail(
+                        Issue.record(
                             "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
                             file: file,
                             line: line
@@ -95,7 +95,7 @@ actor FakeResponseStorage {
                     return
                 } else {
                     if expectFailure {
-                        XCTFail(
+                        Issue.record(
                             "Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
                             file: file,
                             line: line

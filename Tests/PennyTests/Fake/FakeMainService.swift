@@ -6,7 +6,7 @@ import NIO
 import DiscordLogger
 import SotoCore
 import AsyncHTTPClient
-import XCTest
+import SwiftTesting
 
 actor FakeMainService: MainService {
     let manager: FakeManager
@@ -152,7 +152,7 @@ actor FakeMainService: MainService {
             try? await Task.sleep(for: .milliseconds(50))
         }
         let canRespond = await botStateManager.canRespond
-        XCTAssert(canRespond, "BotStateManager cache was too late to populate and enable responding")
+        #expect(canRespond, "BotStateManager cache was too late to populate and enable responding")
     }
 }
 

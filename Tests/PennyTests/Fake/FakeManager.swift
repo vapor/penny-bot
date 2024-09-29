@@ -2,7 +2,7 @@ import DiscordBM
 @testable import Penny
 import Atomics
 import struct NIOCore.ByteBuffer
-import XCTest
+import SwiftTesting
 
 actor FakeManager: GatewayManager {
     nonisolated let client: any DiscordClient = FakeDiscordClient()
@@ -81,7 +81,7 @@ actor FakeManager: GatewayManager {
             )
             self.send(key: key)
         }
-        let unwrapped = try XCTUnwrap(
+        let unwrapped = try #require(
             box.value as? T,
             "Value '\(box.value)' can't be cast to '\(_typeName(T.self))'",
             file: file,

@@ -1,9 +1,9 @@
 @testable import Penny
 import DiscordBM
-import XCTest
+import SwiftTesting
 
-class CoinHandlerTests: XCTestCase {
-    
+@Suite
+struct CoinHandlerTests {
     let user1 = "<@21939123912932193>"
     let user2 = "<@49123000123984550>"
 
@@ -11,7 +11,8 @@ class CoinHandlerTests: XCTestCase {
     let user2Snowflake: UserSnowflake = "49123000123984550"
 
     /// Pattern `@mahdi thanks!`
-    func testUserAndCoinSignTheWholeMessage() throws {
+        @Test
+    func UserAndCoinSignTheWholeMessage() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -20,7 +21,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -31,12 +32,13 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
     }
     
     /// Pattern `@mahdi xxxx thanks!`
-    func testUserAtTheBeginningAndCoinSignAtTheEnd() throws {
+        @Test
+    func UserAtTheBeginningAndCoinSignAtTheEnd() throws {
         let coinHandler = CoinFinder(
             text: """
             \(user1) xxxx xxxx \(user2) xxxx thank you so MUCH!
@@ -44,11 +46,12 @@ class CoinHandlerTests: XCTestCase {
             mentionedUsers: [user1Snowflake, user2Snowflake]
         )
         let users = coinHandler.findUsers()
-        XCTAssertEqual(users, [user1Snowflake])
+        #expect(users == [user1Snowflake])
     }
     
     /// Pattern `thank you xxxx @mahdi!`
-    func testUserAtTheEndAndCoinSignAtTheBeginning() throws {
+        @Test
+    func UserAtTheEndAndCoinSignAtTheBeginning() throws {
         let coinHandler = CoinFinder(
             text: """
             thaNk you xxxx xxxx \(user2) xxxx xxxx \(user1)!
@@ -56,12 +59,13 @@ class CoinHandlerTests: XCTestCase {
             mentionedUsers: [user2Snowflake, user1Snowflake]
         )
         let users = coinHandler.findUsers()
-        XCTAssertEqual(users, [user1Snowflake])
+        #expect(users == [user1Snowflake])
     }
     
     /// Patterns `xxxx @mahdi thanks!`
     /// `xxxx thanks! @mahdi`
-    func testUserAndCoinSignAtTheEnd() throws {
+        @Test
+    func UserAndCoinSignAtTheEnd() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -70,7 +74,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -81,7 +85,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -92,7 +96,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -103,13 +107,14 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
     
     /// Patterns `xxxx @mahdi thanks! xxxx`
     /// `xxxx thanks! @mahdi xxxx`
-    func testUserAndCoinSignInTheMiddle() throws {
+        @Test
+    func UserAndCoinSignInTheMiddle() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -118,7 +123,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -129,7 +134,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -140,7 +145,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -151,7 +156,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -162,11 +167,12 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
     
-    func testNotReallyACoinSign() throws {
+        @Test
+    func NotReallyACoinSign() throws {
         do {
             /// `+` is not a coin sign, unlike `++`/`+++`/`++++`... .
             let coinHandler = CoinFinder(
@@ -176,7 +182,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
         
         do {
@@ -188,7 +194,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
     }
     
@@ -199,7 +205,8 @@ class CoinHandlerTests: XCTestCase {
     /// `@mahdi thanks! xxxx @benny thanks!`
     /// `@mahdi thanks! @benny thanks!`
     /// `thanks! @mahdi thanks! @benny`
-    func testMultipleUsersWithCoinSign() throws {
+        @Test
+    func MultipleUsersWithCoinSign() throws {
         /// `xxxx @mahdi thanks! xxxx @benny thanks! xxxx`
         do {
             let coinHandler = CoinFinder(
@@ -209,7 +216,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         /// `@mahdi thanks! xxxx @benny thanks! xxxx`
@@ -221,7 +228,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         /// `thanks! @mahdi xxxx thanks! @benny xxxx`
@@ -233,7 +240,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         /// `xxxx @mahdi thanks! xxxx @benny thanks!`
@@ -245,7 +252,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         /// `@mahdi thanks! xxxx @benny thanks!`
@@ -257,7 +264,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         /// `@mahdi thanks! @benny thanks!`
@@ -269,7 +276,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         /// `thanks! @mahdi thanks! @benny`
@@ -281,11 +288,12 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
     
-    func testRepliedUser() throws {
+        @Test
+    func RepliedUser() throws {
         /// thanks!
         do {
             let coinHandler = CoinFinder(
@@ -295,7 +303,7 @@ class CoinHandlerTests: XCTestCase {
                 replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         /// thanks! @tim xxxx xxxx
@@ -308,7 +316,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         /// xxxx xxxx thanks!
@@ -320,7 +328,7 @@ class CoinHandlerTests: XCTestCase {
                 replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         /// xxxx xxxx \n xxxx xxxx thanks!
@@ -333,7 +341,7 @@ class CoinHandlerTests: XCTestCase {
                 replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         /// thanks!
@@ -347,13 +355,14 @@ class CoinHandlerTests: XCTestCase {
                 excludedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
     }
     
     /// User-id strings that are not in `mentionedUsers` won't get any coins,
     /// because Discord has not verified the mention.
-    func testMentionedUsers() throws {
+        @Test
+    func MentionedUsers() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -362,7 +371,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: []
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
         
         do {
@@ -373,11 +382,12 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: []
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
     }
     
-    func testExcludedUsers() throws {
+        @Test
+    func ExcludedUsers() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -386,7 +396,7 @@ class CoinHandlerTests: XCTestCase {
                 excludedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
         
         do {
@@ -397,11 +407,12 @@ class CoinHandlerTests: XCTestCase {
                 excludedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [])
+            #expect(users == [])
         }
     }
     
-    func testUniqueUsers() throws {
+        @Test
+    func UniqueUsers() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -410,7 +421,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -421,7 +432,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
         
         do {
@@ -432,11 +443,12 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake])
+            #expect(users == [user1Snowflake])
         }
     }
     
-    func testMultipleLines() throws {
+        @Test
+    func MultipleLines() throws {
         do {
             let coinHandler = CoinFinder(
                 text: """
@@ -446,7 +458,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
         
         do {
@@ -458,11 +470,12 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users, [user1Snowflake, user2Snowflake])
+            #expect(users == [user1Snowflake, user2Snowflake])
         }
     }
     
-    func testMaxUserCount() throws {
+        @Test
+    func MaxUserCount() throws {
         let count = 55
         let coinedUsers = try (0..<count).map { _ in
             try UserSnowflake.makeFake(
@@ -476,7 +489,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
+            #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
         
         do {
@@ -485,7 +498,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
+            #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
         
         do {
@@ -496,7 +509,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
+            #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
         
         do {
@@ -507,7 +520,7 @@ class CoinHandlerTests: XCTestCase {
                 mentionedUsers: coinedUsers
             )
             let users = coinHandler.findUsers()
-            XCTAssertEqual(users.count, CoinFinder.Configuration.maxUsers)
+            #expect(users.count == CoinFinder.Configuration.maxUsers)
         }
     }
 }
