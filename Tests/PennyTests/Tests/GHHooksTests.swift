@@ -46,13 +46,13 @@ final class GHHooksTests {
             let scalars_12 = "Hello, world"
             let scalars_11 = "Hello, worl"
             let scalars_6 = "Hello,"
-            expectTuplesEqual(scalars_16.unicodesPrefix(17), (1, scalars_16))
-            expectTuplesEqual(scalars_16.unicodesPrefix(16), (0, scalars_16))
-            expectTuplesEqual(scalars_16.unicodesPrefix(15), (0, scalars_14 + dots))
-            expectTuplesEqual(scalars_16.unicodesPrefix(14), (0, scalars_13 + dots))
-            expectTuplesEqual(scalars_16.unicodesPrefix(13), (0, scalars_12 + dots))
-            expectTuplesEqual(scalars_16.unicodesPrefix(12), (0, scalars_11 + dots))
-            expectTuplesEqual(scalars_16.unicodesPrefix(7), (0, scalars_6 + dots))
+            #expect(scalars_16.unicodesPrefix(17) == (1, scalars_16))
+            #expect(scalars_16.unicodesPrefix(16) == (0, scalars_16))
+            #expect(scalars_16.unicodesPrefix(15) == (0, scalars_14 + dots))
+            #expect(scalars_16.unicodesPrefix(14) == (0, scalars_13 + dots))
+            #expect(scalars_16.unicodesPrefix(13) == (0, scalars_12 + dots))
+            #expect(scalars_16.unicodesPrefix(12) == (0, scalars_11 + dots))
+            #expect(scalars_16.unicodesPrefix(7) == (0, scalars_6 + dots))
         }
         
         do {
@@ -61,33 +61,33 @@ final class GHHooksTests {
             let scalars_6 = "👍🏿👍🏾👍🏽"
             let scalars_4 = "👍🏿👍🏾"
             let scalars_2 = "👍🏿"
-            expectTuplesEqual(scalars_11.unicodesPrefix(12), (1, scalars_11))
-            expectTuplesEqual(scalars_11.unicodesPrefix(11), (0, scalars_11))
-            expectTuplesEqual(scalars_11.unicodesPrefix(10), (0, scalars_8 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(9), (0, scalars_8 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(8), (0, scalars_6 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(7), (0, scalars_6 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(6), (0, scalars_4 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(4), (0, scalars_2 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(3), (0, scalars_2 + dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(2), (0, dots))
-            expectTuplesEqual(scalars_11.unicodesPrefix(1), (0, dots))
+            #expect(scalars_11.unicodesPrefix(12) == (1, scalars_11))
+            #expect(scalars_11.unicodesPrefix(11) == (0, scalars_11))
+            #expect(scalars_11.unicodesPrefix(10) == (0, scalars_8 + dots))
+            #expect(scalars_11.unicodesPrefix(9) == (0, scalars_8 + dots))
+            #expect(scalars_11.unicodesPrefix(8) == (0, scalars_6 + dots))
+            #expect(scalars_11.unicodesPrefix(7) == (0, scalars_6 + dots))
+            #expect(scalars_11.unicodesPrefix(6) == (0, scalars_4 + dots))
+            #expect(scalars_11.unicodesPrefix(4) == (0, scalars_2 + dots))
+            #expect(scalars_11.unicodesPrefix(3) == (0, scalars_2 + dots))
+            #expect(scalars_11.unicodesPrefix(2) == (0, dots))
+            #expect(scalars_11.unicodesPrefix(1) == (0, dots))
         }
         
         do {
             let scalars_14 = "👩‍👩‍👧‍👦👨‍👨‍👧‍👦"
             let scalars_7 = "👩‍👩‍👧‍👦"
-            expectTuplesEqual(scalars_14.unicodesPrefix(15), (1, scalars_14))
-            expectTuplesEqual(scalars_14.unicodesPrefix(14), (0, scalars_14))
-            expectTuplesEqual(scalars_14.unicodesPrefix(13), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(10), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(9), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(8), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(7), (0, dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(6), (0, dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(3), (0, dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(2), (0, dots))
-            expectTuplesEqual(scalars_14.unicodesPrefix(1), (0, dots))
+            #expect(scalars_14.unicodesPrefix(15) == (1, scalars_14))
+            #expect(scalars_14.unicodesPrefix(14) == (0, scalars_14))
+            #expect(scalars_14.unicodesPrefix(13) == (0, scalars_7 + dots))
+            #expect(scalars_14.unicodesPrefix(10) == (0, scalars_7 + dots))
+            #expect(scalars_14.unicodesPrefix(9) == (0, scalars_7 + dots))
+            #expect(scalars_14.unicodesPrefix(8) == (0, scalars_7 + dots))
+            #expect(scalars_14.unicodesPrefix(7) == (0, dots))
+            #expect(scalars_14.unicodesPrefix(6) == (0, dots))
+            #expect(scalars_14.unicodesPrefix(3) == (0, dots))
+            #expect(scalars_14.unicodesPrefix(2) == (0, dots))
+            #expect(scalars_14.unicodesPrefix(1) == (0, dots))
         }
     }
     
@@ -100,13 +100,13 @@ final class GHHooksTests {
             let scalars_12 = "Hello, world"
             let scalars_11 = "Hello, worl"
             let scalars_6 = "Hello,"
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(17), (1, scalars_16))
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(16), (0, scalars_16))
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(15), (0, scalars_14 + dots))
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(14), (0, scalars_13 + dots))
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(13), (0, scalars_12 + dots))
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(12), (0, scalars_11 + dots))
-            expectTuplesEqual(scalars_16.markdownUnicodesPrefix(7), (0, scalars_6 + dots))
+            #expect(scalars_16.markdownUnicodesPrefix(17) == (1, scalars_16))
+            #expect(scalars_16.markdownUnicodesPrefix(16) == (0, scalars_16))
+            #expect(scalars_16.markdownUnicodesPrefix(15) == (0, scalars_14 + dots))
+            #expect(scalars_16.markdownUnicodesPrefix(14) == (0, scalars_13 + dots))
+            #expect(scalars_16.markdownUnicodesPrefix(13) == (0, scalars_12 + dots))
+            #expect(scalars_16.markdownUnicodesPrefix(12) == (0, scalars_11 + dots))
+            #expect(scalars_16.markdownUnicodesPrefix(7) == (0, scalars_6 + dots))
         }
         
         do {
@@ -115,33 +115,33 @@ final class GHHooksTests {
             let scalars_6 = "👍🏿👍🏾👍🏽"
             let scalars_4 = "👍🏿👍🏾"
             let scalars_2 = "👍🏿"
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(12), (1, scalars_11))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(11), (0, scalars_11))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(10), (0, scalars_8 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(9), (0, scalars_8 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(8), (0, scalars_6 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(7), (0, scalars_6 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(6), (0, scalars_4 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(4), (0, scalars_2 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(3), (0, scalars_2 + dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(2), (0, dots))
-            expectTuplesEqual(scalars_11.markdownUnicodesPrefix(1), (0, dots))
+            #expect(scalars_11.markdownUnicodesPrefix(12) == (1, scalars_11))
+            #expect(scalars_11.markdownUnicodesPrefix(11) == (0, scalars_11))
+            #expect(scalars_11.markdownUnicodesPrefix(10) == (0, scalars_8 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(9) == (0, scalars_8 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(8) == (0, scalars_6 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(7) == (0, scalars_6 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(6) == (0, scalars_4 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(4) == (0, scalars_2 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(3) == (0, scalars_2 + dots))
+            #expect(scalars_11.markdownUnicodesPrefix(2) == (0, dots))
+            #expect(scalars_11.markdownUnicodesPrefix(1) == (0, dots))
         }
         
         do {
             let scalars_14 = "👩‍👩‍👧‍👦👨‍👨‍👧‍👦"
             let scalars_7 = "👩‍👩‍👧‍👦"
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(15), (1, scalars_14))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(14), (0, scalars_14))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(13), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(10), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(9), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(8), (0, scalars_7 + dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(7), (0, dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(6), (0, dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(3), (0, dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(2), (0, dots))
-            expectTuplesEqual(scalars_14.markdownUnicodesPrefix(1), (0, dots))
+            #expect(scalars_14.markdownUnicodesPrefix(15) == (1, scalars_14))
+            #expect(scalars_14.markdownUnicodesPrefix(14) == (0, scalars_14))
+            #expect(scalars_14.markdownUnicodesPrefix(13) == (0, scalars_7 + dots))
+            #expect(scalars_14.markdownUnicodesPrefix(10) == (0, scalars_7 + dots))
+            #expect(scalars_14.markdownUnicodesPrefix(9) == (0, scalars_7 + dots))
+            #expect(scalars_14.markdownUnicodesPrefix(8) == (0, scalars_7 + dots))
+            #expect(scalars_14.markdownUnicodesPrefix(7) == (0, dots))
+            #expect(scalars_14.markdownUnicodesPrefix(6) == (0, dots))
+            #expect(scalars_14.markdownUnicodesPrefix(3) == (0, dots))
+            #expect(scalars_14.markdownUnicodesPrefix(2) == (0, dots))
+            #expect(scalars_14.markdownUnicodesPrefix(1) == (0, dots))
         }
         
         /// Testing with markdown text
@@ -162,15 +162,6 @@ final class GHHooksTests {
             #expect(scalars_9.markdownUnicodesPrefix(2) == scalars_6)
             #expect(scalars_9.markdownUnicodesPrefix(1) == scalars_5)
         }
-    }
-    
-    func expectTuplesEqual(
-        _ expression1: (Int, String),
-        _ expression2: (Int, String),
-        sourceLocation: Testing.SourceLocation = #_sourceLocation
-    ) {
-        #expect(expression1.0 == expression2.0, sourceLocation: sourceLocation)
-        #expect(expression1.1 == expression2.1, sourceLocation: sourceLocation)
     }
     
     @Test
