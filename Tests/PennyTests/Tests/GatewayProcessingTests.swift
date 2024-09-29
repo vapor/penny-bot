@@ -5,26 +5,29 @@ import DiscordGateway
 import Models
 import Testing
 
-@Suite(.serialized)
-struct GatewayProcessingTests {
-    
-    var responseStorage: FakeResponseStorage { .shared }
-    let manager = FakeManager()
-    var context: HandlerContext!
-    
-    init() async throws {
-        /// Disable logging
-        LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-        // reset the storage
-        FakeResponseStorage.shared = FakeResponseStorage()
-        let fakeMainService = try await FakeMainService(manager: self.manager)
-        self.context = fakeMainService.context
-        Task {
-            try await Penny.start(mainService: fakeMainService)
+extension SerializationNamespace {
+    @Suite
+    struct GatewayProcessingTests {
+        var responseStorage: FakeResponseStorage { .shared }
+        let manager = FakeManager()
+        var context: HandlerContext!
+
+        init() async throws {
+            /// Disable logging
+            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+            // reset the storage
+            FakeResponseStorage.shared = FakeResponseStorage()
+            let fakeMainService = try await FakeMainService(manager: self.manager)
+            self.context = fakeMainService.context
+            Task {
+                try await Penny.start(mainService: fakeMainService)
+            }
+            await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
         }
-        await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
     }
-    
+}
+
+extension SerializationNamespace.GatewayProcessingTests {
     @Test
     func commandsRegisterOnStartup() async throws {
         await CommandsManager(context: context).registerCommands()
