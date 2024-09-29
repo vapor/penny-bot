@@ -5,7 +5,7 @@ import DiscordGateway
 import Models
 import Testing
 
-@Suite
+@Suite(.serialized)
 struct GatewayProcessingTests {
     
     var responseStorage: FakeResponseStorage { .shared }
