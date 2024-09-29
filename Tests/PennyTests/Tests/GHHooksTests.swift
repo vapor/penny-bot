@@ -14,7 +14,7 @@ import NIOPosix
 import Testing
 
 @Suite
-struct GHHooksTests {
+final class GHHooksTests {
     let httpClient = HTTPClient(
         eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
         configuration: .forPenny
@@ -32,7 +32,11 @@ struct GHHooksTests {
     init() {
         FakeResponseStorage.shared = FakeResponseStorage()
     }
-    
+
+    deinit {
+        try! httpClient.syncShutdown()
+    }
+
     @Test
     func unicodesPrefix() throws {
         do {
