@@ -30,10 +30,8 @@ final class LeafRenderTests {
             on: httpClient.eventLoopGroup.next()
         )
     )
-    
-    init() {
-        FakeResponseStorage.shared = FakeResponseStorage()
-    }
+
+    init() {}
     
     deinit {
         try! httpClient.syncShutdown()
