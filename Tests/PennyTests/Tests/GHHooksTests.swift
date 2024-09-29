@@ -13,7 +13,7 @@ import Markdown
 import NIOPosix
 import Testing
 
-@Suite
+@Suite(.serialized)
 final class GHHooksTests {
     let httpClient = HTTPClient(
         eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
