@@ -1,5 +1,5 @@
 {
-  "originHash" : "53a08cb33954dce5b71919786ad48248eb93e959462b77115e24b964651cc4a3",
+  "originHash" : "0992b6258fbc9ce0910245e4efa7688e1527f3d32738a11879cf5e2557078069",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattpolzin/OpenAPIKit",
       "state" : {
-        "revision" : "4991b7e39a19cd1d0d11fe24fc64a601b4820144",
-        "version" : "3.2.0"
+        "revision" : "35dd374038497a8118d89300851861fb40c36209",
+        "version" : "3.2.2"
       }
     },
     {
@@ -213,8 +213,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "1b33db2dea6a64d5b619b9e888175133c6d7f410",
-        "version" : "2.73.0"
+        "revision" : "665206000b8307cab5ac51203d29b0f232d7e31b",
+        "version" : "2.74.0"
       }
     },
     {
