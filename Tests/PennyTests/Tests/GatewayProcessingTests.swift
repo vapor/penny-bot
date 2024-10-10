@@ -3,62 +3,69 @@
 @testable import Logging
 import DiscordGateway
 import Models
-import XCTest
+import Testing
 
-class GatewayProcessingTests: XCTestCase {
+extension SerializationNamespace {
+    @Suite
+    struct GatewayProcessingTests {
+        var responseStorage: FakeResponseStorage { .shared }
+        let manager = FakeManager()
+        var context: HandlerContext!
 
-    var responseStorage: FakeResponseStorage { .shared }
-    let manager = FakeManager()
-    var context: HandlerContext!
-
-    override func setUp() async throws {
-        /// Disable logging
-        LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-        // reset the storage
-        FakeResponseStorage.shared = FakeResponseStorage()
-        let fakeMainService = try await FakeMainService(manager: self.manager)
-        self.context = fakeMainService.context
-        Task {
-            try await Penny.start(mainService: fakeMainService)
+        init() async throws {
+            /// Disable logging
+            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+            // reset the storage
+            FakeResponseStorage.shared = FakeResponseStorage()
+            let fakeMainService = try await FakeMainService(manager: self.manager)
+            self.context = fakeMainService.context
+            Task {
+                try await Penny.start(mainService: fakeMainService)
+            }
+            await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
         }
-        await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
     }
+}
 
-    func testCommandsRegisterOnStartup() async throws {
+extension SerializationNamespace.GatewayProcessingTests {
+    @Test
+    func commandsRegisterOnStartup() async throws {
         await CommandsManager(context: context).registerCommands()
-
+        
         let response = await responseStorage.awaitResponse(
             at: .bulkSetApplicationCommands(applicationId: "11111111")
         ).value
         
         let commandNames = SlashCommand.allCases.map(\.rawValue)
-        let commands = try XCTUnwrap(response as? [Payloads.ApplicationCommandCreate])
-        XCTAssertEqual(commands.map(\.name).sorted(), commandNames.sorted())
+        let commands = try #require(response as? [Payloads.ApplicationCommandCreate])
+        #expect(commands.map(\.name).sorted() == commandNames.sorted())
     }
     
-    func testMessageHandler() async throws {
+    @Test
+    func messageHandler() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage,
             as: Payloads.CreateMessage.self
         )
         
-        let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "), description)
-        XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"), description)
+        let description = try #require(response.embeds?.first?.description)
+        #expect(description.hasPrefix("<@950695294906007573> now has "), "\(description)")
+        #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"), "\(description)")
     }
-
-    func testReactionHandler() async throws {
+    
+    @Test
+    func reactionHandler() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction,
                 as: Payloads.CreateMessage.self
             )
             
-            let description = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(description.hasPrefix(
+            let description = try #require(response.embeds?.first?.description)
+            #expect(description.hasPrefix(
                 "Mahdi BM gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has "
-            ), description)
-            XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
+            ), "\(description)")
+            #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
         }
         
         // For consistency with `testReactionHandler2()`
@@ -72,28 +79,29 @@ class GatewayProcessingTests: XCTestCase {
                 as: Payloads.EditMessage.self
             )
             
-            let description = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(description.hasPrefix(
+            let description = try #require(response.embeds?.first?.description)
+            #expect(description.hasPrefix(
                 "Mahdi BM & 0xTim gave 2 \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has "
             ))
-            XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
+            #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
         }
     }
-    
-    func testReactionHandler2() async throws {
+
+    @Test
+    func reactionHandler3() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction3,
                 as: Payloads.CreateMessage.self
             )
             
-            let description = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(description.hasPrefix("""
+            let description = try #require(response.embeds?.first?.description)
+            #expect(description.hasPrefix("""
             0xTim gave a \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has
-            """), description)
-            XCTAssertTrue(description.hasSuffix("""
+            """), "\(description)")
+            #expect(description.hasSuffix("""
             \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
-            """), description)
+            """), "\(description)")
         }
         
         // We need to wait a little bit to make sure Discord's response
@@ -108,44 +116,47 @@ class GatewayProcessingTests: XCTestCase {
                 as: Payloads.EditMessage.self
             )
             
-            let description = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(description.hasPrefix("""
+            let description = try #require(response.embeds?.first?.description)
+            #expect(description.hasPrefix("""
             0xTim & Mahdi BM gave 2 \(Constants.ServerEmojis.coin.emoji) to <@1030118727418646629>, who now has
-            """), description)
-            XCTAssertTrue(description.hasSuffix("""
+            """), "\(description)")
+            #expect(description.hasSuffix("""
             \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431926479752921098/1031112115928442034)
             """))
         }
     }
     
-    func testRespondsInThanksChannelWhenDoesNotHavePermission() async throws {
+    @Test
+    func respondsInThanksChannelWhenDoesNotHavePermission() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .thanksMessage2,
             as: Payloads.CreateMessage.self
         )
         
-        let description = try XCTUnwrap(response.embeds?.first?.description)
-
-        XCTAssertTrue(description.hasPrefix("<@950695294906007573> now has "), description)
-        XCTAssertTrue(description.hasSuffix("""
+        let description = try #require(response.embeds?.first?.description)
+        
+        #expect(description.hasPrefix("<@950695294906007573> now has "), "\(description)")
+        let expectedSuffix = """
         \(Constants.ServerEmojis.coin.emoji)! (https://discord.com/channels/431917998102675485/431917998102675487/1029637770005717042)
-        """), description)
+        """
+        #expect(description.hasSuffix(expectedSuffix), "\(description)")
     }
     
-    func testBotStateManagerReceivesSignal() async throws {
+    @Test
+    func botStateManagerReceivesSignal() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .stopRespondingToMessages,
             as: Payloads.CreateMessage.self
         )
         
-        XCTAssertGreaterThan(response.content?.count ?? -1, 20)
+        #expect(response.content?.count ?? -1 > 20)
         
         // Wait to make sure BotBotStateManager.shared has had enough time to process
         try await Task.sleep(for: .milliseconds(800))
         let testEvent = Gateway.Event(opcode: .dispatch)
         do {
             let canRespond = await context.botStateManager.canRespond(to: testEvent)
-            XCTAssertEqual(canRespond, false)
+            #expect(canRespond == false)
         }
         
         // After 3 seconds, the state manager should allow responses again, because
@@ -153,11 +164,12 @@ class GatewayProcessingTests: XCTestCase {
         try await Task.sleep(for: .milliseconds(2600))
         do {
             let canRespond = await context.botStateManager.canRespond(to: testEvent)
-            XCTAssertEqual(canRespond, true)
+            #expect(canRespond == true)
         }
     }
     
-    func testAutoPings() async throws {
+    @Test
+    func autoPings() async throws {
         let event = EventKey.autoPingsTrigger
         await manager.send(key: event)
         let createDMEndpoint = event.responseEndpoints[0]
@@ -168,41 +180,41 @@ class GatewayProcessingTests: XCTestCase {
             responseStorage.awaitResponse(at: responseEndpoint).value,
             responseStorage.awaitResponse(at: responseEndpoint).value
         )
-
+        
         let recipients: [UserSnowflake] = ["950695294906007573", "432065887202181142"]
         
         do {
-            let dmPayload = try XCTUnwrap(createDM1 as? Payloads.CreateDM, "\(createDM1)")
-            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), "\(dmPayload.recipient_id)")
+            let dmPayload = try #require(createDM1 as? Payloads.CreateDM, "\(createDM1)")
+            #expect(recipients.contains(dmPayload.recipient_id), "\(dmPayload.recipient_id)")
         }
         
-        let dmMessage1 = try XCTUnwrap(sendDM1 as? Payloads.CreateMessage, "\(sendDM1)")
-        let message1 = try XCTUnwrap(dmMessage1.embeds?.first?.description)
-        XCTAssertTrue(message1.hasPrefix("There is a new message"), message1)
+        let dmMessage1 = try #require(sendDM1 as? Payloads.CreateMessage, "\(sendDM1)")
+        let message1 = try #require(dmMessage1.embeds?.first?.description)
+        #expect(message1.hasPrefix("There is a new message"), "\(message1)")
         /// Check to make sure the expected ping-words are mentioned in the message
-        XCTAssertTrue(message1.contains("- mongodb driver"), message1)
-        
+        #expect(message1.contains("- mongodb driver"), "\(message1)")
+
         do {
             /// These two must not fail. The user does not have any
             /// significant roles but they still should receive the pings.
-            let dmPayload = try XCTUnwrap(createDM2 as? Payloads.CreateDM, "\(createDM1)")
-            XCTAssertTrue(recipients.contains(dmPayload.recipient_id), "\(dmPayload.recipient_id)")
+            let dmPayload = try #require(createDM2 as? Payloads.CreateDM, "\(createDM1)")
+            #expect(recipients.contains(dmPayload.recipient_id), "\(dmPayload.recipient_id)")
         }
         
-        let dmMessage2 = try XCTUnwrap(sendDM2 as? Payloads.CreateMessage, "\(sendDM1)")
-        let message2 = try XCTUnwrap(dmMessage2.embeds?.first?.description)
-        XCTAssertTrue(message2.hasPrefix("There is a new message"), message2)
+        let dmMessage2 = try #require(sendDM2 as? Payloads.CreateMessage, "\(sendDM1)")
+        let message2 = try #require(dmMessage2.embeds?.first?.description)
+        #expect(message2.hasPrefix("There is a new message"), "\(message2)")
         /// Check to make sure the expected ping-words are mentioned in the message
-        XCTAssertTrue(message2.contains("- mongodb driver"), message2)
-        
+        #expect(message2.contains("- mongodb driver"), "\(message2)")
+
         /// Contains `godb dr` (part of `mongodb driver`).
         /// Tests `Expression.contain("godb dr")`.
-        XCTAssertTrue(
+        #expect(
             [message1, message2].contains(where: { $0.contains("- godb dr") }),
             #"None of the 2 payloads contained "godb dr". Messages: \#([message1, message2]))"#
         )
-
-        XCTAssertTrue(message2.hasSuffix(">>> need help with some MongoDB Driver"), message2)
+        
+        #expect(message2.hasSuffix(">>> need help with some MongoDB Driver"), "\(message2)")
 
         let event2 = EventKey.autoPingsTrigger2
         let createDMEndpoint2 = event2.responseEndpoints[0]
@@ -216,32 +228,33 @@ class GatewayProcessingTests: XCTestCase {
         /// The DM channel has already been created for the last tests,
         /// so should not be created again since it should have been cached.
         do {
-            let payload: Never? = try XCTUnwrap(createDM as? Optional<Never>)
-            XCTAssertEqual(payload, .none)
+            let payload: Never? = try #require(createDM as? Optional<Never>)
+            #expect(payload == .none)
         }
         
         do {
-            let dmMessage = try XCTUnwrap(sendDM as? Payloads.CreateMessage, "\(sendDM)")
-            let message = try XCTUnwrap(dmMessage.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("There is a new message"), message)
+            let dmMessage = try #require(sendDM as? Payloads.CreateMessage, "\(sendDM)")
+            let message = try #require(dmMessage.embeds?.first?.description)
+            #expect(message.hasPrefix("There is a new message"), "\(message)")
             /// Check to make sure the expected ping-words are mentioned in the message
-            XCTAssertTrue(message.contains("- blog"), message)
-            XCTAssertTrue(message.contains("- discord"), message)
-            XCTAssertTrue(message.contains("- discord-kit"), message)
-            XCTAssertTrue(message.contains("- cord"), message)
+            #expect(message.contains("- blog"), "\(message)")
+            #expect(message.contains("- discord"), "\(message)")
+            #expect(message.contains("- discord-kit"), "\(message)")
+            #expect(message.contains("- cord"), "\(message)")
 
-            XCTAssertTrue(message.hasSuffix(">>> I want to use the discord-kit library\nhttps://www.swift.org/blog/swift-certificates-and-asn1/"), message)
+            #expect(message.hasSuffix(">>> I want to use the discord-kit library\nhttps://www.swift.org/blog/swift-certificates-and-asn1/"), "\(message)")
         }
     }
     
-    func testHowManyCoins() async throws {
+    @Test
+    func howManyCoins() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .howManyCoins1,
                 as: Payloads.EditWebhookMessage.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertEqual(message, "<@290483761559240704> has 2591 \(Constants.ServerEmojis.coin.emoji)!")
+            let message = try #require(response.embeds?.first?.description)
+            #expect(message == "<@290483761559240704> has 2591 \(Constants.ServerEmojis.coin.emoji)!")
         }
         
         do {
@@ -249,19 +262,20 @@ class GatewayProcessingTests: XCTestCase {
                 key: .howManyCoins2,
                 as: Payloads.EditWebhookMessage.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertEqual(message, "<@961607141037326386> has 2591 \(Constants.ServerEmojis.coin.emoji)!")
+            let message = try #require(response.embeds?.first?.description)
+            #expect(message == "<@961607141037326386> has 2591 \(Constants.ServerEmojis.coin.emoji)!")
         }
     }
     
-    func testServerBoostCoins() async throws {
+    @Test
+    func serverBoostCoins() async throws {
         let response = try await manager.sendAndAwaitResponse(
             key: .serverBoost,
             as: Payloads.CreateMessage.self
         )
-        XCTAssertEqual(response.content, "<@432065887202181142>")
-        let description = try XCTUnwrap(response.embeds?.first?.description)
-        XCTAssertTrue(
+        #expect(response.content == "<@432065887202181142>")
+        let description = try #require(response.embeds?.first?.description)
+        #expect(
             description.hasPrefix(
                 """
                 Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
@@ -269,92 +283,87 @@ class GatewayProcessingTests: XCTestCase {
                 """
             )
         )
-        XCTAssertTrue(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
+        #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
     }
-
-    func testEvolutionChecker() async throws {
+    
+    @Test
+    func evolutionChecker() async throws {
         /// This tests expects the `CachesStorage` population to have worked correctly
         /// and have already populated `EvolutionChecker.previousProposals`.
-
+        
         /// This is so the proposals are send as soon as they're queued, in tests.
         context.services.evolutionChecker.run()
-
+        
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.evolution.id)
         let _messages = await [
             responseStorage.awaitResponse(at: endpoint).value,
             responseStorage.awaitResponse(at: endpoint).value
         ]
         let messages = try _messages.map {
-            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
+            try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
         }
-
+        
         /// New proposal message
         do {
-            let message = try XCTUnwrap(messages.first(where: {
+            let message = try #require(messages.first(where: {
                 $0.embeds?.first?.title?.contains("stride") == true
             }), "\(messages)")
+            
+            #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md")
 
-            XCTAssertEqual(
-                message.embeds?.first?.url,
-                "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md"
-            )
-
-            let buttons = try XCTUnwrap(message.components?.first?.components, "\(message)")
-            XCTAssertEqual(buttons.count, 2, "\(buttons)")
+            let buttons = try #require(message.components?.first?.components, "\(message)")
+            #expect(buttons.count == 2, "\(buttons)")
             let expectedLinks = [
                 "https://forums.swift.org/t/accepted-se-0400-init-accessors/66212",
                 "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
             ]
             for (idx, buttonComponent) in buttons.enumerated() {
                 if let url = try buttonComponent.requireButton().url {
-                    XCTAssertEqual(expectedLinks[idx], url)
+                    #expect(expectedLinks[idx] == url)
                 } else {
-                    XCTFail("\(buttonComponent) was not a button")
+                    Issue.record("\(buttonComponent) was not a button")
                 }
             }
 
-            let embed = try XCTUnwrap(message.embeds?.first)
-            XCTAssertEqual(embed.title, "[SE-0051] Withdrawn: Conventionalizing stride semantics")
-            XCTAssertEqual(embed.description, "> \n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
-            XCTAssertEqual(embed.color, .brown)
+            let embed = try #require(message.embeds?.first)
+            #expect(embed.title == "[SE-0051] Withdrawn: Conventionalizing stride semantics")
+            #expect(embed.description == "> \n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
+            #expect(embed.color == .brown)
         }
-
+        
         /// Updated proposal message
         do {
-            let message = try XCTUnwrap(messages.first(where: {
+            let message = try #require(messages.first(where: {
                 $0.embeds?.first?.title?.contains("(most)") == true
             }), "\(messages)")
+            
+            #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md")
 
-            XCTAssertEqual(
-                message.embeds?.first?.url,
-                "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md"
-            )
-
-            let buttons = try XCTUnwrap(message.components?.first?.components)
-            XCTAssertEqual(buttons.count, 2, "\(buttons)")
+            let buttons = try #require(message.components?.first?.components)
+            #expect(buttons.count == 2, "\(buttons)")
             let expectedLinks = [
                 "https://forums.swift.org/t/accepted-se-0400-init-accessors/66212",
                 "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
             ]
             for (idx, buttonComponent) in buttons.enumerated() {
                 if let url = try buttonComponent.requireButton().url {
-                    XCTAssertEqual(expectedLinks[idx], url)
+                    #expect(expectedLinks[idx] == url)
                 } else {
-                    XCTFail("\(buttonComponent) was not a button")
+                    Issue.record("\(buttonComponent) was not a button")
                 }
             }
 
-
-            let embed = try XCTUnwrap(message.embeds?.first)
-            XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
-            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
-            XCTAssertEqual(embed.color, .orange)
+            let embed = try #require(message.embeds?.first)
+            #expect(embed.title == "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
+            #expect(embed.description == "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
+            #expect(embed.color == .orange)
         }
     }
-
-    func testSOChecker() async throws {
+    
+    @Test
+    func soChecker() async throws {
         context.services.soChecker.run()
-
+        
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.stackOverflow.id)
         let _messages = await [
             responseStorage.awaitResponse(at: endpoint).value,
@@ -363,31 +372,20 @@ class GatewayProcessingTests: XCTestCase {
             responseStorage.awaitResponse(at: endpoint).value,
         ]
         let messages = try _messages.map {
-            try XCTUnwrap($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
+            try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
         }
-
-        XCTAssertEqual(
-            messages[0].embeds?.first?.title,
-            "Vapor Logger doesn't log any messages into System Log"
-        )
-        XCTAssertEqual(
-            messages[1].embeds?.first?.title,
-            "Postgre-Kit: Unable to complete code access to PostgreSQL DB"
-        )
-        XCTAssertEqual(
-            messages[2].embeds?.first?.title,
-            "How to decide to use siblings or parent/children relations in vapor?"
-        )
-        XCTAssertEqual(
-            messages[3].embeds?.first?.title,
-            "How to make a optional query filter in Vapor"
-        )
+        
+        #expect(messages[0].embeds?.first?.title == "Vapor Logger doesn't log any messages into System Log")
+        #expect(messages[1].embeds?.first?.title == "Postgre-Kit: Unable to complete code access to PostgreSQL DB")
+        #expect(messages[2].embeds?.first?.title == "How to decide to use siblings or parent/children relations in vapor?")
+        #expect(messages[3].embeds?.first?.title == "How to make a optional query filter in Vapor")
 
         let lastCheckDate = await context.services.soChecker.storage.lastCheckDate
-        XCTAssertNotNil(lastCheckDate)
+        #expect(lastCheckDate != nil)
     }
-
-    func testFaqsCommand() async throws {
+    
+    @Test
+    func faqsCommand() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .faqsAdd,
@@ -396,28 +394,28 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .modal: break
             default:
-                XCTFail("Wrong response data type for `/faqs add`: \(response.data as Any)")
+                Issue.record("Wrong response data type for `/faqs add`: \(response.data as Any)")
             }
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .faqsAddFailure,
                 as: Payloads.EditWebhookMessage.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("You don't have access to this command; it is only available to"), message)
+            let message = try #require(response.embeds?.first?.description)
+            #expect(message.hasPrefix("You don't have access to this command; it is only available to"), "\(message)")
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .faqsGet,
                 as: Payloads.EditWebhookMessage.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertEqual(message, "Test working directory help")
+            let message = try #require(response.embeds?.first?.description)
+            #expect(message == "Test working directory help")
         }
-
+        
         do {
             let key = EventKey.faqsGetEphemeral
             let response = try await manager.sendAndAwaitResponse(
@@ -426,15 +424,15 @@ class GatewayProcessingTests: XCTestCase {
                 as: Payloads.InteractionResponse.self
             )
             if case let .flags(flags) = response.data {
-                XCTAssertTrue(
+                #expect(
                     flags.flags?.contains(.ephemeral) == true,
                     "\(flags.flags?.representableValues() ?? [])"
                 )
             } else {
-                XCTFail("Unexpected response: \(response)")
+                Issue.record("Unexpected response: \(response)")
             }
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .faqsGetAutocomplete,
@@ -443,12 +441,13 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .autocomplete: break
             default:
-                XCTFail("Wrong response data type for `/faqs get`: \(response.data as Any)")
+                Issue.record("Wrong response data type for `/faqs get`: \(response.data as Any)")
             }
         }
     }
-
-    func testAutoFaqsCommand() async throws {
+    
+    @Test
+    func autoFaqsCommand() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .autoFaqsAdd,
@@ -457,28 +456,28 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .modal: break
             default:
-                XCTFail("Wrong response data type for `/auto-faqs add`: \(response.data as Any)")
+                Issue.record("Wrong response data type for `/auto-faqs add`: \(response.data as Any)")
             }
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .autoFaqsAddFailure,
                 as: Payloads.EditWebhookMessage.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertTrue(message.hasPrefix("You don't have access to this command; it is only available to"), message)
+            let message = try #require(response.embeds?.first?.description)
+            #expect(message.hasPrefix("You don't have access to this command; it is only available to"), "\(message)")
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .autoFaqsGet,
                 as: Payloads.EditWebhookMessage.self
             )
-            let message = try XCTUnwrap(response.embeds?.first?.description)
-            XCTAssertEqual(message, "Update your PostgresNIO!")
+            let message = try #require(response.embeds?.first?.description)
+            #expect(message == "Update your PostgresNIO!")
         }
-
+        
         do {
             let key = EventKey.autoFaqsGetEphemeral
             let response = try await manager.sendAndAwaitResponse(
@@ -487,15 +486,15 @@ class GatewayProcessingTests: XCTestCase {
                 as: Payloads.InteractionResponse.self
             )
             if case let .flags(flags) = response.data {
-                XCTAssertTrue(
+                #expect(
                     flags.flags?.contains(.ephemeral) == true,
                     "\(flags.flags?.representableValues() ?? [])"
                 )
             } else {
-                XCTFail("Unexpected response: \(response)")
+                Issue.record("Unexpected response: \(response)")
             }
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .autoFaqsGetAutocomplete,
@@ -504,22 +503,22 @@ class GatewayProcessingTests: XCTestCase {
             switch response.data {
             case .autocomplete: break
             default:
-                XCTFail("Wrong response data type for `/auto-faqs get`: \(response.data as Any)")
+                Issue.record("Wrong response data type for `/auto-faqs get`: \(response.data as Any)")
             }
         }
-
+        
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .autoFaqsTrigger,
                 as: Payloads.CreateMessage.self
             )
-
-            let embed = try XCTUnwrap(response.embeds?.first)
-
-            XCTAssertEqual(embed.title, "🤖 Automated Answer")
-            XCTAssertEqual(embed.description, "Update your PostgresNIO!")
+            
+            let embed = try #require(response.embeds?.first)
+            
+            #expect(embed.title == "🤖 Automated Answer")
+            #expect(embed.description == "Update your PostgresNIO!")
         }
-
+        
         /// This one should fail since there is a rate-limiter
         do {
             let key: EventKey = .autoFaqsTrigger
@@ -528,8 +527,8 @@ class GatewayProcessingTests: XCTestCase {
                 at: key.responseEndpoints[0],
                 expectFailure: true
             ).value
-            let payload: Never? = try XCTUnwrap(response as? Optional<Never>, "\(response)")
-            XCTAssertEqual(payload, .none)
+            let payload: Never? = try #require(response as? Optional<Never>, "\(response)")
+            #expect(payload == .none)
         }
     }
 }
