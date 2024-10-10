@@ -15,12 +15,7 @@ import Testing
 
 extension SerializationNamespace {
     @Suite
-    final class GHHooksTests {
-        let httpClient = HTTPClient(
-            eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
-            configuration: .forPenny
-        )
-
+    struct GHHooksTests {
         let decoder: JSONDecoder = {
             var decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
@@ -32,10 +27,6 @@ extension SerializationNamespace {
 
         init() {
             FakeResponseStorage.shared = FakeResponseStorage()
-        }
-
-        deinit {
-            try! httpClient.syncShutdown()
         }
     }
 }
@@ -908,7 +899,7 @@ extension SerializationNamespace.GHHooksTests {
         return HandlerContext(
             eventName: eventName,
             event: event,
-            httpClient: httpClient,
+            httpClient: .shared,
             discordClient: FakeDiscordClient(),
             githubClient: Client(
                 serverURL: try Servers.server1(),
@@ -916,7 +907,7 @@ extension SerializationNamespace.GHHooksTests {
             ),
             renderClient: RenderClient(
                 renderer: try .forGHHooks(
-                    httpClient: httpClient,
+                    httpClient: .shared,
                     logger: logger
                 )
             ),

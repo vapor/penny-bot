@@ -10,32 +10,23 @@ import NIOPosix
 import Testing
 
 @Suite
-final class LeafRenderTests {
-    let httpClient = HTTPClient(
-        eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
-        configuration: .forPenny
-    )
-    
-    lazy var ghHooksRenderClient = RenderClient(
+struct LeafRenderTests {
+    let ghHooksRenderClient = RenderClient(
         renderer: try! .forGHHooks(
-            httpClient: httpClient,
+            httpClient: .shared,
             logger: Logger(label: "RenderClientGHHooksTests")
         )
     )
     
-    lazy var pennyRenderClient = RenderClient(
+    let pennyRenderClient = RenderClient(
         renderer: try! .forPenny(
-            httpClient: httpClient,
+            httpClient: .shared,
             logger: Logger(label: "Tests_Penny+LeafRendering"),
-            on: httpClient.eventLoopGroup.next()
+            on: HTTPClient.shared.eventLoopGroup.next()
         )
     )
 
     init() {}
-    
-    deinit {
-        try! httpClient.syncShutdown()
-    }
     
     @Test
     func translationNeededDescription() async throws {
