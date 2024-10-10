@@ -80,7 +80,7 @@ class GatewayProcessingTests: XCTestCase {
         }
     }
     
-    func testReactionHandler3() async throws {
+    func testReactionHandler2() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(
                 key: .thanksReaction3,
@@ -315,7 +315,7 @@ class GatewayProcessingTests: XCTestCase {
 
             let embed = try XCTUnwrap(message.embeds?.first)
             XCTAssertEqual(embed.title, "[SE-0051] Withdrawn: Conventionalizing stride semantics")
-            XCTAssertEqual(embed.description, "> \n\n**Status: Withdrawn**\n\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
+            XCTAssertEqual(embed.description, "> \n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
             XCTAssertEqual(embed.color, .brown)
         }
 
@@ -347,7 +347,7 @@ class GatewayProcessingTests: XCTestCase {
 
             let embed = try XCTUnwrap(message.embeds?.first)
             XCTAssertEqual(embed.title, "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
-            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
+            XCTAssertEqual(embed.description, "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
             XCTAssertEqual(embed.color, .orange)
         }
     }

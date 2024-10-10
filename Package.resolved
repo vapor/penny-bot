@@ -173,6 +173,15 @@
       }
     },
     {
+      "identity" : "swift-evolution-metadata-extractor",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-evolution-metadata-extractor.git",
+      "state" : {
+        "revision" : "6c6e7154a2338a694467f060b7dbcbc21006e93e",
+        "version" : "0.1.0"
+      }
+    },
+    {
       "identity" : "swift-http-types",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-http-types.git",
