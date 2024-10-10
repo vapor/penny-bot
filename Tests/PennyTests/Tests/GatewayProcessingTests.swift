@@ -86,7 +86,7 @@ extension SerializationNamespace.GatewayProcessingTests {
             #expect(description.hasSuffix(" \(Constants.ServerEmojis.coin.emoji)!"))
         }
     }
-    
+
     @Test
     func reactionHandler3() async throws {
         do {
@@ -324,10 +324,10 @@ extension SerializationNamespace.GatewayProcessingTests {
                     Issue.record("\(buttonComponent) was not a button")
                 }
             }
-            
+
             let embed = try #require(message.embeds?.first)
             #expect(embed.title == "[SE-0051] Withdrawn: Conventionalizing stride semantics")
-            #expect(embed.description == "> \n\n**Status: Withdrawn**\n\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
+            #expect(embed.description == "> \n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
             #expect(embed.color == .brown)
         }
         
@@ -352,11 +352,10 @@ extension SerializationNamespace.GatewayProcessingTests {
                     Issue.record("\(buttonComponent) was not a button")
                 }
             }
-            
-            
+
             let embed = try #require(message.embeds?.first)
             #expect(embed.title == "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
-            #expect(embed.description == "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
+            #expect(embed.description == "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
             #expect(embed.color == .orange)
         }
     }

@@ -1,6 +1,7 @@
 @testable import Penny
 @testable import Models
 import Foundation
+import EvolutionMetadataModel
 import Markdown
 import Testing
 
@@ -105,7 +106,7 @@ struct OtherTests {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         _ = try decoder.decode(
-            Evolution.self,
+            EvolutionMetadata.self,
             from: TestData.newProposalsSample
         )
     }

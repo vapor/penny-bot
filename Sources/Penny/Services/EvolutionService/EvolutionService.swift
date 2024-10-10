@@ -1,4 +1,4 @@
-import Models
+import EvolutionMetadataModel
 
 protocol EvolutionService: Sendable {
     func list() async throws -> [Proposal]

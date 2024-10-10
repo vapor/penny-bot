@@ -41,10 +41,13 @@
         "link": "https://bugs.swift.org/browse/SR-344"
       }
     ],
+    "reviewManagers": [],
     "warnings": [
       {
         "kind": "warning",
-        "message": "Missing review manager."
+        "message": "Missing review manager.",
+        "code": 0,
+        "suggestion": ""
       }
     ]
   }
