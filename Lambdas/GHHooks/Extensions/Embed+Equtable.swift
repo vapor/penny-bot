@@ -1,6 +1,6 @@
 import DiscordModels
 
-extension Embed: Equatable {
+extension Embed: @retroactive Equatable {
     public static func == (lhs: Embed, rhs: Embed) -> Bool {
         lhs.title == rhs.title &&
         lhs.type == rhs.type &&
@@ -18,7 +18,7 @@ extension Embed: Equatable {
     }
 }
 
-extension Embed.Media: Equatable {
+extension Embed.Media: @retroactive Equatable {
     public static func == (lhs: Embed.Media, rhs: Embed.Media) -> Bool {
         lhs.url.asString == rhs.url.asString &&
         lhs.proxy_url ?== rhs.proxy_url &&
@@ -27,7 +27,7 @@ extension Embed.Media: Equatable {
     }
 }
 
-extension Embed.Footer: Equatable {
+extension Embed.Footer: @retroactive Equatable {
     public static func == (lhs: Embed.Footer, rhs: Embed.Footer) -> Bool {
         lhs.icon_url?.asString == rhs.icon_url?.asString &&
         lhs.text == rhs.text &&
@@ -35,14 +35,14 @@ extension Embed.Footer: Equatable {
     }
 }
 
-extension Embed.Provider: Equatable {
+extension Embed.Provider: @retroactive Equatable {
     public static func == (lhs: Embed.Provider, rhs: Embed.Provider) -> Bool {
         lhs.url == rhs.url &&
         lhs.name == rhs.name
     }
 }
 
-extension Embed.Author: Equatable {
+extension Embed.Author: @retroactive Equatable {
     public static func == (lhs: Embed.Author, rhs: Embed.Author) -> Bool {
         lhs.url == rhs.url &&
         lhs.icon_url?.asString == rhs.icon_url?.asString &&
@@ -51,7 +51,7 @@ extension Embed.Author: Equatable {
     }
 }
 
-extension Embed.Field: Equatable {
+extension Embed.Field: @retroactive Equatable {
     public static func == (lhs: Embed.Field, rhs: Embed.Field) -> Bool {
         lhs.name == rhs.name &&
         lhs.value == rhs.value &&

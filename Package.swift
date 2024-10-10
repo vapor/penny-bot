@@ -1,4 +1,4 @@
-// swift-tools-version:5.10
+// swift-tools-version:6.0
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -220,44 +220,9 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         /// Require `any` for existential types.
             .enableUpcomingFeature("ExistentialAny"),
 
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0274-magic-file.md
-        /// Nicer `#file`.
-            .enableUpcomingFeature("ConciseMagicFile"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0286-forward-scan-trailing-closures.md
-        /// This one shouldn't do much to be honest, but shouldn't hurt as well.
-            .enableUpcomingFeature("ForwardTrailingClosures"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0401-remove-property-wrapper-isolation.md
-        /// Remove Actor Isolation Inference caused by Property Wrappers
-            .enableUpcomingFeature("DisableOutwardActorInference"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0354-regex-literals.md
-        /// Support bare-slash Regex literals.
-            .enableUpcomingFeature("BareSlashRegexLiterals"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0384-importing-forward-declared-objc-interfaces-and-protocols.md
-        /// Objc, which we don't use.
-            .enableUpcomingFeature("ImportObjcForwardDeclarations"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0418-inferring-sendable-for-methods.md
-        /// Inferring `Sendable` for methods and key path literals.
-            .enableUpcomingFeature("InferSendableFromCaptures"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0409-access-level-on-imports.md
-//            .enableUpcomingFeature("InternalImportsByDefault"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0411-isolated-default-values.md
-        /// Data-race-free initial values for stored properties.
-            .enableUpcomingFeature("IsolatedDefaultValues"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0412-strict-concurrency-for-global-variables.md
-        /// Enable automatic safety features for global (and some local) variables.
-            .enableExperimentalFeature("GlobalConcurrency"),
-
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
         /// Enable the full potential of typed throws.
-            .enableUpcomingFeature("FullTypedThrows")
+            .enableUpcomingFeature("FullTypedThrows"),
     ]
 }
 
@@ -268,20 +233,15 @@ var targetsSwiftSettings: [SwiftSetting] {
             ["-Xllvm", "-vectorize-slp=false"],
             .when(platforms: [.linux], configuration: .release)
         ),
-
-        /// `minimal` / `targeted` / `complete`
-        .enableExperimentalFeature("StrictConcurrency=complete"),
     ]
 }
 
 var testsSwiftSettings: [SwiftSetting] {
-    upcomingFeaturesSwiftSettings + [
-        /// `minimal` / `targeted` / `complete`
-        .enableExperimentalFeature("StrictConcurrency=targeted"),
-    ]
+    upcomingFeaturesSwiftSettings
 }
 
 extension PackageDescription.Target {
+    @MainActor
     static func lambdaTarget(
         name: String,
         additionalDependencies: [PackageDescription.Target.Dependency]

@@ -1,4 +1,5 @@
 import NIOPosix
+import NIOCore
 import AsyncHTTPClient
 import Shared
 import SotoS3
@@ -6,12 +7,14 @@ import SotoS3
 @main
 struct Penny {
     static func main() async throws {
+        let success = NIOSingletons
+            .unsafeTryInstallSingletonPosixEventLoopGroupAsConcurrencyGlobalExecutor()
+        print("*** Tried to install singleton Posix ELG as Concurrency global executor. Success: \(success)***")
+
         try await start(mainService: PennyService())
     }
 
     static func start(mainService: any MainService) async throws {
-        /// Use `1` instead of `System.coreCount`.
-        /// This is preferred for apps that primarily use structured concurrency.
         let httpClient = HTTPClient(
             eventLoopGroup: MultiThreadedEventLoopGroup.singleton,
             configuration: .forPenny
@@ -41,7 +44,7 @@ struct Penny {
         }
 
         /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
-        /// Shutdown in reverse order of dependance.
+        /// Shutdown in reverse order of dependence.
         try await awsClient.shutdown()
         try await httpClient.shutdown()
     }
