@@ -1,5 +1,5 @@
 {
-  "originHash" : "c31b694988cdb7bfc2ea31c5bb49c37ecf2f4dcbc3e746c9d3514888cd26361c",
+  "originHash" : "0b3218e7c17a00767ce49e066ff4020da674300aa6fc271b8e535b7bc2c70b16",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/jwt-kit.git",
       "state" : {
-        "revision" : "c2595b9ad7f512d7f334830b4df1fed6e917946a",
-        "version" : "4.13.4"
+        "revision" : "39788cea76b2905595c7493ad0e84214624b32b9",
+        "version" : "5.0.1"
       }
     },
     {
@@ -110,6 +110,15 @@
       }
     },
     {
+      "identity" : "swift-asn1",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-asn1.git",
+      "state" : {
+        "revision" : "df5d2fcd22e3f480e3ef85bf23e277a4a0ef524d",
+        "version" : "1.2.0"
+      }
+    },
+    {
       "identity" : "swift-atomics",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-atomics.git",
@@ -134,6 +143,15 @@
       "state" : {
         "revision" : "5ecc24fa54e61756fe7a7a01f2451da1cffa916e",
         "version" : "1.0.0-alpha.3"
+      }
+    },
+    {
+      "identity" : "swift-certificates",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-certificates.git",
+      "state" : {
+        "revision" : "2f797305c1b5b982acaa6005d8a9f970cc4e97ff",
+        "version" : "1.5.0"
       }
     },
     {

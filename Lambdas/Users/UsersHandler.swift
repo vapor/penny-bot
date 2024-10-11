@@ -1,7 +1,11 @@
 import AWSLambdaRuntime
 import AWSLambdaEvents
 import AsyncHTTPClient
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import SotoCore
 import Models
 import Shared

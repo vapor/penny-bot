@@ -1,7 +1,11 @@
 import AWSLambdaEvents
 import HTTPTypes
 import Crypto
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 private let jsonDecoder = JSONDecoder()
 private let iso8601jsonDecoder: JSONDecoder = {

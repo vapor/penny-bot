@@ -1,7 +1,11 @@
 import DiscordBM
 import Logging
 import Models
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 struct ReactionHandler {
 

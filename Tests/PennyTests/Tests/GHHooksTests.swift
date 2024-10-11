@@ -8,7 +8,11 @@ import OpenAPIRuntime
 import Rendering
 import Logging
 import SwiftSemver
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import Markdown
 import NIOPosix
 import Testing

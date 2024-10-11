@@ -1,6 +1,10 @@
 import AsyncHTTPClient
 import DiscordBM
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import GitHubAPI
 import Markdown
 import NIOCore

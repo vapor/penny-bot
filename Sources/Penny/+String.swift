@@ -1,4 +1,8 @@
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import Models
 
 /// `StringProtocol` is basically either `String` or `Substring`.

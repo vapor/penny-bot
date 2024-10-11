@@ -9,7 +9,11 @@ import DiscordUtilities
 import Logging
 import LambdasShared
 import Shared
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 @main
 struct GHHooksHandler: LambdaHandler {

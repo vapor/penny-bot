@@ -2,7 +2,11 @@ import DiscordBM
 import Logging
 import Models
 import JWTKit
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 private typealias Expression = S3AutoPingItems.Expression
 
@@ -30,12 +34,12 @@ struct InteractionHandler {
         self.logger[metadataKey: "event"] = "\(event)"
     }
 
-    private func makeJWTSigners() throws -> JWTSigners? {
+    private func makeJWTSigners() async throws -> JWTKeyCollection {
         let privateKeyString = Constants.accountLinkOAuthPrivKey
-        let privateKey = try ECDSAKey.private(pem: privateKeyString)
-        let signers = JWTSigners()
-        signers.use(.es256(key: privateKey))
-        return signers
+        let privateKey = try ES256PrivateKey(pem: privateKeyString)
+        let jwtKeys = JWTKeyCollection()
+        await jwtKeys.add(ecdsa: privateKey)
+        return jwtKeys
     }
     
     func handle() async {
@@ -681,12 +685,9 @@ private extension InteractionHandler {
                 discordID: discordID, 
                 interactionToken: event.token
             )
-            guard let signers = try makeJWTSigners() else {
-                logger.error("Failed to make JWT signer")
-                return oops
-            }
+            let signers = try await makeJWTSigners()
             let clientID = Constants.ghOAuthClientID
-            let state = try signers.sign(jwt)
+            let state = try await signers.sign(jwt)
             let url = "https://github.com/login/oauth/authorize?client_id=\(clientID)&state=\(state)"
             return """
             Click the link below to authorize Vapor:

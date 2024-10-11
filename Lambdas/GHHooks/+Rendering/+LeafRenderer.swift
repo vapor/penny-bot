@@ -2,7 +2,11 @@ import NIOCore
 import Rendering
 import Logging
 @preconcurrency import AsyncHTTPClient
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 extension LeafRenderer {
     static func forGHHooks(httpClient: HTTPClient, logger: Logger) throws -> LeafRenderer {

@@ -1,5 +1,6 @@
 import DiscordBM
 import JWTKit
+import struct Foundation.Date
 
 /// This Payload will get sent along with the OAuth redirect to the GitHub OAuth page,
 /// specifically inside the `state` query parameter.
@@ -17,7 +18,7 @@ package struct GHOAuthPayload: JWTPayload {
         self.expiration = .init(value: Date().addingTimeInterval(10 * 60)) // 10 minutes
     }
 
-    package func verify(using signer: JWTSigner) throws {
+    package func verify(using algorithm: some JWTAlgorithm) async throws {
         try self.expiration.verifyNotExpired()
     }
 }

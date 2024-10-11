@@ -1,6 +1,10 @@
 @testable import Penny
 @testable import Models
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import EvolutionMetadataModel
 import Markdown
 import Testing

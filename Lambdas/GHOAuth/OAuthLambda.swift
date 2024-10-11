@@ -1,7 +1,7 @@
-#if canImport(Darwin)
-import Foundation
+#if canImport(FoundationEssentials)
+import FoundationEssentials
 #else
-@preconcurrency import Foundation
+import Foundation
 #endif
 import AsyncHTTPClient
 import AWSLambdaRuntime
@@ -22,7 +22,7 @@ struct GHOAuthHandler: LambdaHandler {
     let client: HTTPClient
     let secretsRetriever: SecretsRetriever
     let userService: any UsersService
-    let signers: JWTSigners
+    let jwtKeys: JWTKeyCollection
     let logger: Logger
 
     let jsonDecoder = JSONDecoder()
@@ -53,17 +53,17 @@ struct GHOAuthHandler: LambdaHandler {
             apiBaseURL: apiBaseURL
         )
 
-        signers = JWTSigners()
-        signers.use(.es256(key: try getJWTSignersPublicKey()))
+        jwtKeys = JWTKeyCollection()
+        await jwtKeys.add(ecdsa: try getJWTSignersPublicKey())
     }
 
-    private func getJWTSignersPublicKey() throws -> ECDSAKey {
+    private func getJWTSignersPublicKey() throws -> some ECDSAKey {
         logger.debug("Retrieving JWT signer secrets")
         let key = try requireEnvVar("ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
         guard let data = Data(base64Encoded: key) else {
             throw Errors.invalidPublicKey
         }
-        let ecdsa = try ECDSAKey.public(pem: data)
+        let ecdsa = try ES256PublicKey(pem: data)
         return ecdsa
     }
 
@@ -91,7 +91,7 @@ struct GHOAuthHandler: LambdaHandler {
 
         logger.debug("Verifying state")
         do {
-            jwt = try signers.verify(state, as: GHOAuthPayload.self)
+            jwt = try await jwtKeys.verify(state, as: GHOAuthPayload.self)
         } catch {
             logger.error("Error during state verification", metadata: [
                 "error": "\(String(reflecting: error))",

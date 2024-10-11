@@ -1,7 +1,11 @@
 import Logging
 import DiscordBM
 import Collections
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// Cache for reactions-related stuff.
 actor ReactionCache {

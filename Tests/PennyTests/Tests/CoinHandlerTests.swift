@@ -1,6 +1,10 @@
 @testable import Penny
 import DiscordBM
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import Testing
 
 @Suite

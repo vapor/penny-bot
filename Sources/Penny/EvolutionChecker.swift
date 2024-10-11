@@ -3,7 +3,11 @@ import Markdown
 import DiscordModels
 import Models
 import EvolutionMetadataModel
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 actor EvolutionChecker {
 

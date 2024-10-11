@@ -1,5 +1,9 @@
 @testable import Penny
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 struct FakeSOService: SOService {
 

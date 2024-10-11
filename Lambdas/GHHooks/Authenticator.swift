@@ -1,5 +1,9 @@
 import AsyncHTTPClient
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import GitHubAPI
 import JWTKit
 import LambdasShared
@@ -32,13 +36,13 @@ actor Authenticator {
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> String {
         try await self.queue.process(queueKey: "default") {
             if !forceRefreshToken,
-               let cachedAccessToken = await cachedAccessToken
+               let cachedAccessToken = await self.cachedAccessToken
             {
                 return cachedAccessToken.token
             } else {
-                let token = try await makeJWTToken()
-                let client = try await makeClient(token: token)
-                let accessToken = try await createAccessToken(client: client)
+                let token = try await self.makeJWTToken()
+                let client = try await self.makeClient(token: token)
+                let accessToken = try await self.createAccessToken(client: client)
                 await self.setCachedAccessToken(to: accessToken)
                 return accessToken.token
             }
@@ -72,14 +76,17 @@ actor Authenticator {
         encoder.dateEncodingStrategy = .integerSecondsSince1970
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .integerSecondsSince1970
-        let signers = JWTSigners(
-            defaultJSONEncoder: encoder,
-            defaultJSONDecoder: decoder
+        let jwtKeys = JWTKeyCollection(
+            defaultJWTParser: DefaultJWTParser(jsonDecoder: decoder),
+            defaultJWTSerializer: DefaultJWTSerializer(jsonEncoder: encoder)
         )
         let key = try await getPrivKey()
-        try signers.use(.rs256(key: .private(pem: key)))
+        await jwtKeys.add(
+            rsa: try Insecure.RSA.PrivateKey(pem: key),
+            digestAlgorithm: .sha256
+        )
         let payload = TokenPayload()
-        let token = try signers.sign(payload)
+        let token = try await jwtKeys.sign(payload)
         return token
     }
 
@@ -125,7 +132,7 @@ private struct TokenPayload: JWTPayload, Equatable {
     // signature verification here.
     // Since we have an ExpirationClaim, we will
     // call its verify method.
-    func verify(using _: JWTSigner) throws {
+    func verify(using algorithm: some JWTAlgorithm) async throws {
         try self.expiresAt.verifyNotExpired()
     }
 }

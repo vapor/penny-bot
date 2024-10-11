@@ -2,7 +2,11 @@ import SotoCore
 import SotoSecretsManager
 import Logging
 import Shared
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 package actor SecretsRetriever {
 

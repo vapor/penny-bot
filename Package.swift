@@ -13,7 +13,7 @@ let package = Package(
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "4.13.0"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.1"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
