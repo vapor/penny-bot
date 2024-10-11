@@ -1,5 +1,6 @@
-#if canImport(FoundationEssentials)
+#if canImport(FoundationEssentials) && canImport(FoundationInternationalization)
 import FoundationEssentials
+import FoundationInternationalization
 #else
 import Foundation
 #endif
