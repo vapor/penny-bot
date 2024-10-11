@@ -1,8 +1,9 @@
-import DiscordBM
 @testable import Penny
-import Atomics
 import struct NIOCore.ByteBuffer
-import XCTest
+import DiscordBM
+import Atomics
+import Foundation
+import Testing
 
 actor FakeManager: GatewayManager {
     nonisolated let client: any DiscordClient = FakeDiscordClient()
@@ -52,15 +53,13 @@ actor FakeManager: GatewayManager {
         key: EventKey,
         endpoint: APIEndpoint? = nil,
         as type: T.Type = T.self,
-        file: StaticString = #filePath,
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async throws -> T {
         try await self.sendAndAwaitResponse(
             key: key,
             endpoint: endpoint.map { .api($0) },
             as: T.self,
-            file: file,
-            line: line
+            sourceLocation: sourceLocation
         )
     }
     
@@ -68,24 +67,21 @@ actor FakeManager: GatewayManager {
         key: EventKey,
         endpoint: AnyEndpoint? = nil,
         as type: T.Type = T.self,
-        file: StaticString = #filePath,
-        line: UInt = #line
+        sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async throws -> T {
         let box = await withCheckedContinuation {
             (continuation: CheckedContinuation<AnyBox, Never>) in
             FakeResponseStorage.shared.expect(
                 at: endpoint ?? .api(key.responseEndpoints[0]),
                 continuation: continuation,
-                file: file,
-                line: line
+                sourceLocation: sourceLocation
             )
             self.send(key: key)
         }
-        let unwrapped = try XCTUnwrap(
+        let unwrapped = try #require(
             box.value as? T,
             "Value '\(box.value)' can't be cast to '\(_typeName(T.self))'",
-            file: file,
-            line: line
+            sourceLocation: sourceLocation
         )
         return unwrapped
     }

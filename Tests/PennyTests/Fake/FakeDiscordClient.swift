@@ -1,6 +1,6 @@
 @testable import DiscordBM
 import NIOHTTP1
-import XCTest
+import Testing
 
 struct FakeDiscordClient: DiscordClient {
     var appId: ApplicationSnowflake? = "11111111"
@@ -30,7 +30,9 @@ struct FakeDiscordClient: DiscordClient {
     ) async throws -> DiscordHTTPResponse {
         /// Catches invalid payloads in tests, instead of in production.
         /// Useful for validating for example the application/slash commands.
-        XCTAssertNoThrow(try payload.validate().throw(model: payload))
+        #expect(throws: Never.self) {
+            try payload.validate().throw(model: payload)
+        }
 
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
         
@@ -51,7 +53,9 @@ struct FakeDiscordClient: DiscordClient {
     ) async throws -> DiscordHTTPResponse {
         /// Catches invalid payloads in tests, instead of in production.
         /// Useful for validating for example the application/slash commands.
-        XCTAssertNoThrow(try payload.validate().throw(model: payload))
+        #expect(throws: Never.self) {
+            try payload.validate().throw(model: payload)
+        }
 
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
 
