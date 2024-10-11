@@ -1,9 +1,4 @@
-#if canImport(FoundationEssentials) && canImport(FoundationInternationalization)
-import FoundationEssentials
-import FoundationInternationalization
-#else
-import Foundation
-#endif
+import Foundation /// Need to import the whole thing for the `String.split()` function call below?
 import DiscordBM
 
 struct CoinFinder {
