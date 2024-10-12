@@ -23,7 +23,7 @@ package struct Client: APIProtocol {
     ///   - transport: A transport that performs HTTP operations.
     ///   - middlewares: A list of middlewares to call before the transport.
     package init(
-        serverURL: FoundationEssentials.URL,
+        serverURL: FoundationURL,
         configuration: Configuration = .init(),
         transport: any ClientTransport,
         middlewares: [any ClientMiddleware] = []

@@ -1,3 +1,19 @@
+#if canImport(FoundationEssentials)
+    import FoundationEssentials
+
+    typealias FoundationData = FoundationEssentials.Data
+    typealias FoundationDate = FoundationEssentials.Date
+    typealias FoundationURL = FoundationEssentials.URL
+#else
+    import struct Foundation.Data
+    import struct Foundation.Date
+    import struct Foundation.URL
+
+    typealias FoundationData = Foundation.Data
+    typealias FoundationDate = Foundation.Date
+    typealias FoundationURL = Foundation.URL
+#endif
+
 package typealias Repository = Components.Schemas.repository
 package typealias User = Components.Schemas.simple_user
 package typealias Organization = Components.Schemas.organization_simple
