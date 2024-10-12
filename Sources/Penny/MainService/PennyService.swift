@@ -103,6 +103,7 @@ struct PennyService: MainService {
         let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
         let evolutionService = DefaultEvolutionService(httpClient: httpClient)
         let soService = DefaultSOService(httpClient: httpClient)
+        let swiftReleasesService = DefaultSwiftReleasesService(httpClient: httpClient)
         let discordService = DiscordService(discordClient: bot.client, cache: cache)
         let evolutionChecker = EvolutionChecker(
             evolutionService: evolutionService,
@@ -112,6 +113,10 @@ struct PennyService: MainService {
             soService: soService,
             discordService: discordService
         )
+        let swiftReleasesChecker = SwiftReleasesChecker(
+            swiftReleasesService: swiftReleasesService,
+            discordService: discordService
+        )
         let reactionCache = ReactionCache()
         let cachesService = DefaultCachesService(
             awsClient: awsClient,
@@ -119,6 +124,7 @@ struct PennyService: MainService {
                 autoFaqsService: autoFaqsService,
                 evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
+                swiftReleasesChecker: swiftReleasesChecker,
                 reactionCache: reactionCache
             )
         )
@@ -138,6 +144,7 @@ struct PennyService: MainService {
             ),
             evolutionChecker: evolutionChecker,
             soChecker: soChecker,
+            swiftReleasesChecker: swiftReleasesChecker,
             reactionCache: reactionCache
         )
         let context = HandlerContext(

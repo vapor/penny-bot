@@ -13,6 +13,9 @@ struct FakeCachesService: CachesService {
             previousProposals: TestData.proposals,
             queuedProposals: []
         )
+        storage.swiftReleasesData = .init(
+            currentReleases: TestData.swiftReleases
+        )
         await storage.populateServicesAndReport(context: context)
     }
 
