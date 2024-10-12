@@ -1,4 +1,9 @@
-import Foundation /// Need to import the whole thing for some String processing stuff, apparently.
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+import struct Foundation.CharacterSet
+#else
+import Foundation
+#endif
 import DiscordBM
 
 struct CoinFinder {
