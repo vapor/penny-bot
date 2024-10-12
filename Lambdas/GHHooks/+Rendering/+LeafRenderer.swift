@@ -1,7 +1,7 @@
 import NIOCore
 import Rendering
 import Logging
-@preconcurrency import AsyncHTTPClient
+import AsyncHTTPClient
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
