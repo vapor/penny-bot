@@ -87,6 +87,7 @@ actor Authenticator {
         )
         let payload = TokenPayload()
         let token = try await jwtKeys.sign(payload)
+        logger.trace("Signed a JWT token for GitHub", metadata: ["token": .string(token)])
         return token
     }
 
@@ -102,9 +103,9 @@ actor Authenticator {
 /// https://docs.github.com/en/apps/creating-github-apps/authenticating-with-a-github-app/generating-a-json-web-token-jwt-for-a-github-app#about-json-web-tokens-jwts
 private struct TokenPayload: JWTPayload, Equatable {
     /// When the token was issued.
-    let issuedAt: IssuedAtClaim
+    let issuedAt: Int
     /// When the token will expire.
-    let expiresAt: ExpirationClaim
+    let expiresAt: Int
     /// Penny's GitHub app-id.
     let issuer: String
     /// The algorithm. GitHub says `RS256`.
@@ -119,9 +120,9 @@ private struct TokenPayload: JWTPayload, Equatable {
 
     init() {
         /// 60s in the past, per GitHub docs.
-        self.issuedAt = .init(value: Date().addingTimeInterval(-60))
+        self.issuedAt = Int(Date().addingTimeInterval(-60).timeIntervalSince1970.rounded(.towardZero))
         /// 5 mins into the future. GitHub docs says no more than 10 mins.
-        self.expiresAt = .init(value: Date().addingTimeInterval(5 * 60))
+        self.expiresAt = Int(Date().addingTimeInterval(5 * 60).timeIntervalSince1970.rounded(.towardZero))
         /// The app-id, per GitHub docs.
         self.issuer = "\(Constants.GitHub.appID)"
         /// `RS256`, per GitHub docs.
@@ -133,6 +134,7 @@ private struct TokenPayload: JWTPayload, Equatable {
     // Since we have an ExpirationClaim, we will
     // call its verify method.
     func verify(using algorithm: some JWTAlgorithm) async throws {
-        try self.expiresAt.verifyNotExpired()
+        let expiresAt = Date(timeIntervalSince1970: Double(self.expiresAt))
+        try ExpirationClaim(value: expiresAt).verifyNotExpired()
     }
 }
