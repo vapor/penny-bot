@@ -1,17 +1,17 @@
 #if canImport(FoundationEssentials)
-    import FoundationEssentials
+import FoundationEssentials
 
-    package typealias FoundationData = FoundationEssentials.Data
-    package typealias FoundationDate = FoundationEssentials.Date
-    package typealias FoundationURL = FoundationEssentials.URL
+package typealias FoundationData = FoundationEssentials.Data
+package typealias FoundationDate = FoundationEssentials.Date
+package typealias FoundationURL = FoundationEssentials.URL
 #else
-    import struct Foundation.Data
-    import struct Foundation.Date
-    import struct Foundation.URL
+import struct Foundation.Data
+import struct Foundation.Date
+import struct Foundation.URL
 
-    package typealias FoundationData = Foundation.Data
-    package typealias FoundationDate = Foundation.Date
-    package typealias FoundationURL = Foundation.URL
+package typealias FoundationData = Foundation.Data
+package typealias FoundationDate = Foundation.Date
+package typealias FoundationURL = Foundation.URL
 #endif
 
 package typealias Repository = Components.Schemas.repository
