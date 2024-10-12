@@ -1,6 +1,10 @@
 import OpenAPIRuntime
 import HTTPTypes
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 struct FakeClientTransport: ClientTransport {
 

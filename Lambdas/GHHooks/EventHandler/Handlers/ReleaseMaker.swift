@@ -6,7 +6,11 @@ import GitHubAPI
 import SwiftSemver
 import Markdown
 import Logging
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 struct ReleaseMaker {
 

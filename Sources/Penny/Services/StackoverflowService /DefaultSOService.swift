@@ -1,7 +1,11 @@
 import AsyncHTTPClient
 import NIOCore
 import Logging
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 struct DefaultSOService: SOService {
     let httpClient: HTTPClient

@@ -1,7 +1,7 @@
-#if canImport(Darwin)
-import Foundation
+#if canImport(FoundationEssentials)
+import FoundationEssentials
 #else
-@preconcurrency import Foundation
+import Foundation
 #endif
 import OpenAPIRuntime
 import Atomics

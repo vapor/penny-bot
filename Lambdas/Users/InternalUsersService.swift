@@ -1,5 +1,9 @@
 import SotoDynamoDB
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import Models
 
 package struct InternalUsersService {

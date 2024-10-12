@@ -1,7 +1,11 @@
 import Logging
 import DiscordBM
 import Markdown
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 actor SOChecker {
 

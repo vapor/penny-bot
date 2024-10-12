@@ -1,4 +1,8 @@
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
 package struct GHEvent: Sendable, Codable {

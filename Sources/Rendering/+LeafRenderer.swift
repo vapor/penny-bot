@@ -2,7 +2,11 @@
 import NIO
 import AsyncHTTPClient
 import Logging
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 extension LeafRenderer {
     package convenience init(

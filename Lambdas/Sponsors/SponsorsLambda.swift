@@ -6,7 +6,11 @@ import NIOHTTP1
 import DiscordBM
 import LambdasShared
 import Shared
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 @main
 struct SponsorsHandler: LambdaHandler {

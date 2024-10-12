@@ -2,7 +2,11 @@ import LeafKit
 import NIO
 import AsyncHTTPClient
 import Logging
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 extension LeafRenderer {
     static func forPenny(

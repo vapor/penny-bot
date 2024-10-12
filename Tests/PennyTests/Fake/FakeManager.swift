@@ -2,7 +2,11 @@
 import struct NIOCore.ByteBuffer
 import DiscordBM
 import Atomics
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 import Testing
 
 actor FakeManager: GatewayManager {

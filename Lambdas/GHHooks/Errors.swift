@@ -1,5 +1,9 @@
 import AWSLambdaEvents
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 enum Errors: Error, CustomStringConvertible {
     case httpRequestFailed(response: any Sendable, file: String = #filePath, line: UInt = #line)

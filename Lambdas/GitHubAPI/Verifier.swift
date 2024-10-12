@@ -1,5 +1,9 @@
 import Crypto
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 package enum Verifier {
 

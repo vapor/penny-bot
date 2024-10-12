@@ -2,7 +2,11 @@ import GitHubAPI
 import DiscordBM
 import Logging
 import Algorithms
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
 import Foundation
+#endif
 
 struct ReleaseReporter {
     let context: HandlerContext

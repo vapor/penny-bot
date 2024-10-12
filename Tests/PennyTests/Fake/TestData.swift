@@ -1,4 +1,9 @@
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+import class Foundation.JSONSerialization
+#else
 import Foundation
+#endif
 import DiscordModels
 import EvolutionMetadataModel
 @testable import Penny
