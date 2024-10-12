@@ -31,7 +31,7 @@ actor SwiftReleasesChecker {
             } catch {
                 logger.report("Couldn't check Swift releases", error: error)
             }
-            try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
+            try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
             self.run()
         }
     }
