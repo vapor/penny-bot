@@ -13,6 +13,7 @@ struct HandlerContext: Sendable {
         let renderClient: RenderClient
         let evolutionChecker: EvolutionChecker
         let soChecker: SOChecker
+        let swiftReleasesChecker: SwiftReleasesChecker
         let reactionCache: ReactionCache
     }
 

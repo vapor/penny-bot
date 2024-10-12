@@ -78,6 +78,10 @@ actor FakeMainService: MainService {
             soService: FakeSOService(),
             discordService: discordService
         )
+        let swiftReleasesChecker = SwiftReleasesChecker(
+            swiftReleasesService: FakeSwiftReleasesService(),
+            discordService: discordService
+        )
         let reactionCache = ReactionCache()
         let autoFaqsService = FakeAutoFaqsService()
         let services = HandlerContext.Services(
@@ -89,6 +93,7 @@ actor FakeMainService: MainService {
                 autoFaqsService: autoFaqsService,
                 evolutionChecker: evolutionChecker,
                 soChecker: soChecker,
+                swiftReleasesChecker: swiftReleasesChecker,
                 reactionCache: reactionCache
             )),
             discordService: discordService,
@@ -101,6 +106,7 @@ actor FakeMainService: MainService {
             ),
             evolutionChecker: evolutionChecker,
             soChecker: soChecker,
+            swiftReleasesChecker: swiftReleasesChecker,
             reactionCache: reactionCache
         )
         return HandlerContext(

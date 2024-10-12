@@ -383,7 +383,18 @@ extension SerializationNamespace.GatewayProcessingTests {
         let lastCheckDate = await context.services.soChecker.storage.lastCheckDate
         #expect(lastCheckDate != nil)
     }
-    
+
+    @Test
+    func swiftReleasesChecker() async throws {
+        context.services.swiftReleasesChecker.run()
+
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.release.id)
+        let _message = await responseStorage.awaitResponse(at: endpoint).value
+        let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
+
+        #expect(message.embeds?.first?.title == "Swift Release 6.0.1")
+    }
+
     @Test
     func faqsCommand() async throws {
         do {
