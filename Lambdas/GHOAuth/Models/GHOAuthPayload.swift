@@ -1,6 +1,6 @@
 import DiscordBM
 import JWTKit
-import struct Foundation.Date
+import struct FoundationEssentials.Date
 
 /// This Payload will get sent along with the OAuth redirect to the GitHub OAuth page,
 /// specifically inside the `state` query parameter.

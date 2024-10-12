@@ -1,6 +1,6 @@
 import DiscordBM
 import Shared
-import struct Foundation.Date
+import struct FoundationEssentials.Date
 
 /// Reports opened/edited issues and PRs.
 struct TicketReporter {
