@@ -393,6 +393,14 @@ extension SerializationNamespace.GatewayProcessingTests {
         let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
 
         #expect(message.embeds?.first?.title == "Swift Release 6.0.1")
+
+        /// No more messages should be sent
+        let _newMessage = await responseStorage.awaitResponse(
+            at: endpoint,
+            expectFailure: true
+        ).value
+        let newMessage: Never? = try #require(_newMessage as? Optional<Never>)
+        #expect(newMessage == .none)
     }
 
     @Test
