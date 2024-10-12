@@ -5,7 +5,7 @@ import FoundationEssentials
 import Foundation
 #endif
 
-enum Errors: Error, CustomStringConvertible {
+enum Errors: Error, CustomStringConvertible, LocalizedError {
     case httpRequestFailed(response: any Sendable, file: String = #filePath, line: UInt = #line)
     case headerNotFound(name: String, headers: AWSLambdaEvents.HTTPHeaders)
     case multipleErrors([any Error])
@@ -19,5 +19,9 @@ enum Errors: Error, CustomStringConvertible {
         case let .multipleErrors(errors):
             return "multipleErrors(\(errors.map({ "\($0)" })))"
         }
+    }
+
+    var errorDescription: String? {
+        self.description
     }
 }
