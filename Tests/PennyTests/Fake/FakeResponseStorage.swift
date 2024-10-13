@@ -6,7 +6,7 @@ actor FakeResponseStorage {
     
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
-    
+
     init() { }
     static var shared = FakeResponseStorage()
 

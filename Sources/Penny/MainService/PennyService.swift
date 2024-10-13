@@ -94,17 +94,31 @@ struct PennyService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
+        let backgroundRunner = BackgroundRunner()
         let usersService = ServiceFactory.makeUsersService(
             httpClient: httpClient,
             apiBaseURL: Constants.apiBaseURL
         )
-        let pingsService = DefaultPingsService(httpClient: httpClient)
-        let faqsService = DefaultFaqsService(httpClient: httpClient)
-        let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
+        let pingsService = DefaultPingsService(
+            httpClient: httpClient,
+            backgroundRunner: backgroundRunner
+        )
+        let faqsService = DefaultFaqsService(
+            httpClient: httpClient,
+            backgroundRunner: backgroundRunner
+        )
+        let autoFaqsService = DefaultAutoFaqsService(
+            httpClient: httpClient,
+            backgroundRunner: backgroundRunner
+        )
         let evolutionService = DefaultEvolutionService(httpClient: httpClient)
         let soService = DefaultSOService(httpClient: httpClient)
         let swiftReleasesService = DefaultSwiftReleasesService(httpClient: httpClient)
-        let discordService = DiscordService(discordClient: bot.client, cache: cache)
+        let discordService = DiscordService(
+            discordClient: bot.client,
+            cache: cache,
+            backgroundRunner: backgroundRunner
+        )
         let evolutionChecker = EvolutionChecker(
             evolutionService: evolutionService,
             discordService: discordService
@@ -130,6 +144,7 @@ struct PennyService: MainService {
         )
         
         let context = HandlerContext(
+            backgroundRunner: backgroundRunner,
             usersService: usersService,
             pingsService: pingsService,
             faqsService: faqsService,

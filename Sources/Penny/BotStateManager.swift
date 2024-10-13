@@ -48,26 +48,30 @@ actor BotStateManager {
 
     func start(onStarted: @Sendable @escaping () async -> Void) async {
         self.onStarted = onStarted
-        Task { await send(.shutdown) }
-        cancelIfCachePopulationTakesTooLong()
-    }
-
-    private func cancelIfCachePopulationTakesTooLong() {
-        Task {
-            try await Task.sleep(for: .seconds(120))
-            if !canRespond {
-                await startAllowingResponses()
-                logger.error("No CachesStorage-population was done in-time")
-            }
+        self.context.backgroundRunner.process {
+            await self.send(.shutdown)
+        }
+        self.context.backgroundRunner.process {
+            await self.cancelIfCachePopulationTakesTooLong()
         }
     }
 
-    func canRespond(to event: Gateway.Event) -> Bool {
-        checkIfItsASignal(event: event)
+    private func cancelIfCachePopulationTakesTooLong() async {
+        guard (try? await Task.sleep(for: .seconds(120))) != nil else {
+            return /// cancelled
+        }
+        if !canRespond {
+            await startAllowingResponses()
+            logger.error("No CachesStorage-population was done in-time")
+        }
+    }
+
+    func canRespond(to event: Gateway.Event) async -> Bool {
+        await checkIfItsASignal(event: event)
         return canRespond
     }
     
-    private func checkIfItsASignal(event: Gateway.Event) {
+    private func checkIfItsASignal(event: Gateway.Event) async {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.botLogs.id,
               let author = message.author,
@@ -78,33 +82,34 @@ actor BotStateManager {
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
             logger.trace("Received 'shutdown' signal")
-            shutdown()
+            await shutdown()
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             logger.trace("Received 'didShutdown' signal")
-            populateCache()
-        }
-    }
-
-    private func shutdown() {
-        Task {
-            await context.cachesService.gatherCachedInfoAndSaveToRepository()
-            await send(.didShutdown)
-            self.canRespond = false
-
-            try await Task.sleep(for: disableDuration)
-            await startAllowingResponses()
-            logger.critical("AWS has not yet shutdown this instance of Penny! Why?!")
-        }
-    }
-
-    private func populateCache() {
-        Task {
-            if canRespond {
-                logger.warning("Received a did-shutdown signal but Cache is already populated")
-            } else {
-                await context.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
-                await startAllowingResponses()
+            self.context.backgroundRunner.process {
+                await self.populateCache()
             }
+        }
+    }
+
+    private func shutdown() async {
+        await context.cachesService.gatherCachedInfoAndSaveToRepository()
+        await send(.didShutdown)
+        self.canRespond = false
+
+        guard (try? await Task.sleep(for: disableDuration)) != nil else {
+            return /// cancelled
+        }
+
+        await startAllowingResponses()
+        logger.critical("AWS has not yet shutdown this instance of Penny! Why?!")
+    }
+
+    private func populateCache() async {
+        if canRespond {
+            logger.warning("Received a did-shutdown signal but Cache is already populated")
+        } else {
+            await context.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
+            await startAllowingResponses()
         }
     }
 

@@ -1,6 +1,8 @@
+import Foundation
+
 /// Accumulates errors while performing the tasks concurrently.
 /// The primary purpose of this is so e.g. if the first task fails, the next tasks still run.
-func withThrowingAccumulatingVoidTaskGroup(
+package func withThrowingAccumulatingVoidTaskGroup(
     tasks: [@Sendable () async throws -> Void]
 ) async throws {
     try await withThrowingTaskGroup(of: Void.self) { group in
@@ -20,7 +22,23 @@ func withThrowingAccumulatingVoidTaskGroup(
         }
 
         guard errors.isEmpty else {
-            throw Errors.multipleErrors(errors)
+            throw MultipleErrors(errors)
         }
+    }
+}
+
+struct MultipleErrors: CustomStringConvertible, LocalizedError {
+    let errors: [any Error]
+
+    init(_ errors: [any Error]) {
+        self.errors = errors
+    }
+
+    var description: String {
+        "MultipleErrors { \(errors.map({ String(reflecting: $0) }).joined(separator: "; ")) }"
+    }
+
+    var errorDescription: String? {
+        self.description
     }
 }

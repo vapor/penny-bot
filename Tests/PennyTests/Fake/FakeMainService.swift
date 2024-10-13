@@ -65,9 +65,11 @@ actor FakeMainService: MainService {
         cache: DiscordCache,
         httpClient: HTTPClient
     ) throws -> HandlerContext {
+        let backgroundRunner = BackgroundRunner()
         let discordService = DiscordService(
             discordClient: manager.client,
-            cache: cache
+            cache: cache,
+            backgroundRunner: backgroundRunner
         )
         let evolutionChecker = EvolutionChecker(
             evolutionService: FakeEvolutionService(),
@@ -86,6 +88,7 @@ actor FakeMainService: MainService {
         let autoFaqsService = FakeAutoFaqsService()
 
         let context = HandlerContext(
+            backgroundRunner: BackgroundRunner(),
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),

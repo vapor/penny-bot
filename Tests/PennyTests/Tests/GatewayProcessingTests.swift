@@ -19,10 +19,15 @@ extension SerializationNamespace {
             FakeResponseStorage.shared = FakeResponseStorage()
             let fakeMainService = try await FakeMainService(manager: self.manager)
             self.context = fakeMainService.context
-            Task {
-                try await Penny.start(mainService: fakeMainService)
+            try await withThrowingTaskGroup(of: Void.self) { taskGroup in
+                taskGroup.addTask {
+                    try await Penny.start(mainService: fakeMainService)
+                }
+                taskGroup.addTask {
+                    await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
+                }
+                try await taskGroup.waitForAll()
             }
-            await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
         }
     }
 }

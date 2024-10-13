@@ -10,6 +10,7 @@ import Markdown
 import NIOCore
 import NIOFoundationCompat
 import SwiftSemver
+import Shared
 
 struct PRHandler {
     let context: HandlerContext
