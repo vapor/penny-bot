@@ -45,6 +45,14 @@ enum TestData {
         named: "soQuestions.json",
         as: SOQuestions.self
     ).items
+    static let swiftReleases = TestData.resource(
+        named: "swiftReleases.json",
+        as: [SwiftOrgRelease].self
+    )
+    static let swiftReleasesUpdated = TestData.resource(
+        named: "swiftReleases_updated.json",
+        as: [SwiftOrgRelease].self
+    )
     static let newProposalsSample = TestData.resource(named: "new_proposals_sample.json")
 
     private static let gatewayEvents: [String: Data] = {

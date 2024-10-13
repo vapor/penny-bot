@@ -7,12 +7,14 @@ struct CachesStorage: Sendable, Codable {
         let autoFaqsService: any AutoFaqsService
         let evolutionChecker: EvolutionChecker
         let soChecker: SOChecker
+        let swiftReleasesChecker: SwiftReleasesChecker
         let reactionCache: ReactionCache
     }
 
     var reactionCacheData: ReactionCache.Storage?
     var evolutionCheckerData: EvolutionChecker.Storage?
     var soCheckerData: SOChecker.Storage?
+    var swiftReleasesData: SwiftReleasesChecker.Storage?
     var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
     init() { }
@@ -22,6 +24,7 @@ struct CachesStorage: Sendable, Codable {
         storage.reactionCacheData = await context.reactionCache.getCachedDataForCachesStorage()
         storage.evolutionCheckerData = await context.evolutionChecker.getCachedDataForCachesStorage()
         storage.soCheckerData = await context.soChecker.getCachedDataForCachesStorage()
+        storage.swiftReleasesData = await context.swiftReleasesChecker.getCachedDataForCachesStorage()
         storage.autoFaqsResponseRateLimiter = await context.autoFaqsService.getCachedDataForCachesStorage()
         return storage
     }
@@ -35,6 +38,9 @@ struct CachesStorage: Sendable, Codable {
         }
         if let soCheckerData {
             await context.soChecker.consumeCachesStorageData(soCheckerData)
+        }
+        if let swiftReleasesData {
+            await context.swiftReleasesChecker.consumeCachesStorageData(swiftReleasesData)
         }
         if let autoFaqsResponseRateLimiter {
             await context.autoFaqsService.consumeCachesStorageData(autoFaqsResponseRateLimiter)
@@ -55,6 +61,7 @@ struct CachesStorage: Sendable, Codable {
             "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
             "evolutionChecker_counts": .stringConvertible(evolutionCheckerDataCounts),
             "soChecker_isNotNil": .stringConvertible(soCheckerData != nil),
+            "releasesChecker_isNotEmpty": .stringConvertible(swiftReleasesData?.currentReleases.isEmpty == false),
             "autoFaqsLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
         ])
     }

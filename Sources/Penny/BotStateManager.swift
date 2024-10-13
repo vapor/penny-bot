@@ -54,7 +54,7 @@ actor BotStateManager {
 
     private func cancelIfCachePopulationTakesTooLong() {
         Task {
-            try await Task.sleep(for: .seconds(60))
+            try await Task.sleep(for: .seconds(120))
             if !canRespond {
                 await startAllowingResponses()
                 logger.error("No CachesStorage-population was done in-time")
