@@ -8,6 +8,7 @@ import Foundation
 enum Errors: Error, CustomStringConvertible, LocalizedError {
     case httpRequestFailed(response: any Sendable, file: String = #filePath, line: UInt = #line)
     case headerNotFound(name: String, headers: AWSLambdaEvents.HTTPHeaders)
+    case multipleErrors(errors: [any Error])
 
     var description: String {
         switch self {
@@ -15,6 +16,8 @@ enum Errors: Error, CustomStringConvertible, LocalizedError {
             return "httpRequestFailed(response: \(response), file: \(file), line: \(line))"
         case let .headerNotFound(name, headers):
             return "headerNotFound(name: \(name), headers: \(headers))"
+        case let .multipleErrors(errors):
+            return "multipleErrors(errors: \(errors.map({ String(reflecting: $0) }).joined(separator: ";\n")))"
         }
     }
 

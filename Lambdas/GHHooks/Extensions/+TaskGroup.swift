@@ -1,5 +1,3 @@
-import Foundation
-
 /// Accumulates errors while performing the tasks concurrently.
 /// The primary purpose of this is so e.g. if the first task fails, the next tasks still run.
 package func withThrowingAccumulatingVoidTaskGroup(
@@ -22,23 +20,7 @@ package func withThrowingAccumulatingVoidTaskGroup(
         }
 
         guard errors.isEmpty else {
-            throw MultipleErrors(errors)
+            throw Errors.multipleErrors(errors)
         }
-    }
-}
-
-struct MultipleErrors: CustomStringConvertible, LocalizedError {
-    let errors: [any Error]
-
-    init(_ errors: [any Error]) {
-        self.errors = errors
-    }
-
-    var description: String {
-        "MultipleErrors { \(errors.map({ String(reflecting: $0) }).joined(separator: "; ")) }"
-    }
-
-    var errorDescription: String? {
-        self.description
     }
 }
