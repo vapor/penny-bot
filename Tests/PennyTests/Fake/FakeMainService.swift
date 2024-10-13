@@ -65,7 +65,7 @@ actor FakeMainService: MainService {
         cache: DiscordCache,
         httpClient: HTTPClient
     ) throws -> HandlerContext {
-        let backgroundRunner = BackgroundRunner()
+        let backgroundRunner = BackgroundRunner.sharedForTests
         let discordService = DiscordService(
             discordClient: manager.client,
             cache: cache,

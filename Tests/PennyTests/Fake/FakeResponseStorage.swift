@@ -1,14 +1,15 @@
 @testable import DiscordBM
+@testable import Penny
 import Atomics
 import Testing
 
 actor FakeResponseStorage {
-    
+
+    private let backgroundRunner: BackgroundRunner = .sharedForTests
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
 
-    init() { }
-    static var shared = FakeResponseStorage()
+    static var shared: FakeResponseStorage!
 
     private static let idGenerator = ManagedAtomic(UInt(0))
 
@@ -48,7 +49,7 @@ actor FakeResponseStorage {
         continuation: CheckedContinuation<AnyBox, Never>,
         sourceLocation: Testing.SourceLocation
     ) {
-        Task {
+        self.backgroundRunner.process {
             await _expect(
                 at: endpoint,
                 expectFailure: expectFailure,
@@ -77,8 +78,8 @@ actor FakeResponseStorage {
         } else {
             let id = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
-            Task {
-                try await Task.sleep(for: .seconds(3))
+            self.backgroundRunner.process {
+                try? await Task.sleep(for: .seconds(3))
                 if continuations.retrieve(id: id) != nil {
                     if !expectFailure {
                         Issue.record(
