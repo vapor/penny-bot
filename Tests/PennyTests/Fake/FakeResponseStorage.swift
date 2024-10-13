@@ -9,7 +9,7 @@ actor FakeResponseStorage {
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
 
-    static var shared: FakeResponseStorage!
+    static var shared = FakeResponseStorage()
 
     private static let idGenerator = ManagedAtomic(UInt(0))
 
@@ -50,7 +50,7 @@ actor FakeResponseStorage {
         sourceLocation: Testing.SourceLocation
     ) {
         self.backgroundRunner.process {
-            await _expect(
+            await self._expect(
                 at: endpoint,
                 expectFailure: expectFailure,
                 continuation: continuation,
@@ -68,7 +68,7 @@ actor FakeResponseStorage {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
                 Issue.record(
-                    "Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                    "Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(self.continuations) | unhandledResponses: \(self.unhandledResponses)",
                     sourceLocation: sourceLocation
                 )
                 continuation.resume(returning: AnyBox(Optional<Never>.none as Any))
@@ -80,10 +80,10 @@ actor FakeResponseStorage {
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
             self.backgroundRunner.process {
                 try? await Task.sleep(for: .seconds(3))
-                if continuations.retrieve(id: id) != nil {
+                if await self.retrieveFromContinuations(id: id) != nil {
                     if !expectFailure {
                         Issue.record(
-                            "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(await self.continuations) | unhandledResponses: \(await self.unhandledResponses)",
                             sourceLocation: sourceLocation
                         )
                     }
@@ -92,7 +92,7 @@ actor FakeResponseStorage {
                 } else {
                     if expectFailure {
                         Issue.record(
-                            "Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            "Expected a failure at '\(endpoint.testingKey)'. continuations: \(await self.continuations) | unhandledResponses: \(await self.unhandledResponses)",
                             sourceLocation: sourceLocation
                         )
                     }
@@ -100,7 +100,11 @@ actor FakeResponseStorage {
             }
         }
     }
-    
+
+    private func retrieveFromContinuations(id: UInt) -> Continuations.Cont? {
+        self.continuations.retrieve(id: id)
+    }
+
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: any Endpoint, with payload: AnyBox) {
         if let continuation = continuations.retrieve(endpoint: endpoint) {
