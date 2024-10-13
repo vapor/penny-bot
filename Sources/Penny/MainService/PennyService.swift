@@ -170,6 +170,7 @@ struct PennyService: MainService {
             /// These contain cached stuff and need to wait for `BotStateManager`.
             context.services.evolutionChecker.run()
             context.services.soChecker.run()
+            context.services.swiftReleasesChecker.run()
         }
     }
 }
