@@ -13,7 +13,7 @@ struct AuditLogHandler {
     let event: AuditLog.Entry
     let context: HandlerContext
     var discordService: DiscordService {
-        context.services.discordService
+        context.discordService
     }
     var logger = Logger(label: "AuditLogHandler")
 

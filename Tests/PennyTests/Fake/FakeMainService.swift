@@ -84,7 +84,8 @@ actor FakeMainService: MainService {
         )
         let reactionCache = ReactionCache()
         let autoFaqsService = FakeAutoFaqsService()
-        let services = HandlerContext.Services(
+
+        let context = HandlerContext(
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
@@ -109,13 +110,13 @@ actor FakeMainService: MainService {
             swiftReleasesChecker: swiftReleasesChecker,
             reactionCache: reactionCache
         )
-        return HandlerContext(
-            services: services,
-            botStateManager: BotStateManager(
-                services: services,
-                disabledDuration: .seconds(3)
-            )
+        context.botStateManager = BotStateManager(
+            context: context,
+            disabledDuration: .seconds(3)
         )
+        context.discordEventListener = DiscordEventListener(bot: manager, context: context)
+
+        return context
     }
 
     func waitForStateManagerShutdownAndDidShutdownSignals() async {

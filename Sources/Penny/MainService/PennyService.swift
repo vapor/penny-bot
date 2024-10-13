@@ -128,7 +128,8 @@ struct PennyService: MainService {
                 reactionCache: reactionCache
             )
         )
-        let services = HandlerContext.Services(
+        
+        let context = HandlerContext(
             usersService: usersService,
             pingsService: pingsService,
             faqsService: faqsService,
@@ -147,10 +148,8 @@ struct PennyService: MainService {
             swiftReleasesChecker: swiftReleasesChecker,
             reactionCache: reactionCache
         )
-        let context = HandlerContext(
-            services: services,
-            botStateManager: BotStateManager(services: services)
-        )
+        context.botStateManager = BotStateManager(context: context)
+        context.discordEventListener = DiscordEventListener(bot: bot, context: context)
 
         await CommandsManager(context: context).registerCommands()
 
@@ -162,15 +161,31 @@ struct PennyService: MainService {
         /// and so it can receive events already.
         /// This is here until when/if DiscordBM gains better support for notifying you
         /// of the first connection.
-        /// We could manually handle that here too, but i'd like it to be available in DiscordBM.
+        /// We could manually handle that here too, but I'd like it to be available in DiscordBM.
         try await Task.sleep(for: .seconds(5))
         /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
         /// since it communicates through Discord and will need the Gateway connection.
+//        ServiceGroup(
+//            services: [
+//                context.evolutionChecker,
+//                context.soChecker,
+//                context.swiftReleasesChecker,
+//                context.discordEventListener
+//            ],
+//            logger: Logger(label: "ServiceGroup")
+//        )
         await context.botStateManager.start {
-            /// These contain cached stuff and need to wait for `BotStateManager`.
-            context.services.evolutionChecker.run()
-            context.services.soChecker.run()
-            context.services.swiftReleasesChecker.run()
+            do {
+                /// These contain cached stuff and need to wait for `BotStateManager`.
+                try await context.evolutionChecker.run()
+                try await context.soChecker.run()
+                try await context.swiftReleasesChecker.run()
+            } catch {
+                context.botStateManager.logger.report(
+                    "Failed to run services after BotStateManager readiness",
+                    error: error
+                )
+            }
         }
     }
 }

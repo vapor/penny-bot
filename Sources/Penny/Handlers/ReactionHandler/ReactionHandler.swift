@@ -28,7 +28,7 @@ struct ReactionHandler {
     let context: HandlerContext
     var logger = Logger(label: "ReactionHandler")
     var cache: ReactionCache {
-        context.services.reactionCache
+        context.reactionCache
     }
 
     init(event: Gateway.MessageReactionAdd, context: HandlerContext) {
@@ -66,7 +66,7 @@ struct ReactionHandler {
         
         var response: CoinResponse?
         do {
-            response = try await context.services.usersService.postCoin(with: coinRequest)
+            response = try await context.usersService.postCoin(with: coinRequest)
         } catch {
             logger.report("Error when posting coins", error: error)
             response = nil
@@ -140,7 +140,7 @@ struct ReactionHandler {
         senderName: String?,
         isFailureMessage: Bool
     ) async {
-        let apiResponse = await context.services.discordService.sendThanksResponse(
+        let apiResponse = await context.discordService.sendThanksResponse(
             channelId: event.channel_id,
             replyingToMessageId: event.message_id,
             isFailureMessage: isFailureMessage,
@@ -179,7 +179,7 @@ struct ReactionHandler {
         amount: Int,
         senderName: String?
     ) async {
-        let apiResponse = await context.services.discordService.editMessage(
+        let apiResponse = await context.discordService.editMessage(
             messageId: messageId,
             channelId: forcedInThanksChannel ? Constants.Channels.thanks.id : event.channel_id,
             payload: .init(
