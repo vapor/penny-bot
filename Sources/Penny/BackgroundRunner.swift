@@ -4,15 +4,13 @@ import Synchronization
 final class BackgroundRunner: Service {
     typealias WorkItem = @Sendable () async -> Void
     private let stream: AsyncStream<WorkItem>
-    private let continuation: Mutex<AsyncStream<WorkItem>.Continuation>
+    private let continuation: AsyncStream<WorkItem>.Continuation
 
     init() {
-        let (stream, continuation) = AsyncStream.makeStream(
+        (stream, continuation) = AsyncStream.makeStream(
             of: WorkItem.self,
             bufferingPolicy: .unbounded
         )
-        self.stream = stream
-        self.continuation = Mutex(continuation)
     }
 
     func run() async {
@@ -28,8 +26,6 @@ final class BackgroundRunner: Service {
     }
 
     func process(_ workItem: @escaping WorkItem) {
-        _ = self.continuation.withLock {
-            $0.yield(workItem)
-        }
+        self.continuation.yield(workItem)
     }
 }
