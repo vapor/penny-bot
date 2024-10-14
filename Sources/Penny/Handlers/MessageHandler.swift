@@ -55,7 +55,7 @@ struct MessageHandler {
                 reason: .userProvided
             )
             do {
-                let response = try await context.services.usersService.postCoin(with: coinRequest)
+                let response = try await context.usersService.postCoin(with: coinRequest)
                 let responseString = "\(DiscordUtils.mention(id: response.receiver)) now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!"
                 successfulResponses.append(responseString)
             } catch {
@@ -116,7 +116,7 @@ struct MessageHandler {
             reason: .automationProvided
         )
         do {
-            let response = try await context.services.usersService.postCoin(with: coinRequest)
+            let response = try await context.usersService.postCoin(with: coinRequest)
             await self.respondToThanks(
                 with: """
                 Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
@@ -142,7 +142,7 @@ struct MessageHandler {
 
         let autoFaqsDict: [String: String]
         do {
-            autoFaqsDict = try await context.services.autoFaqsService.getAllFolded()
+            autoFaqsDict = try await context.autoFaqsService.getAllFolded()
         } catch {
             logger.report("Can't retrieve auto-faqs", error: error)
             return
@@ -155,11 +155,11 @@ struct MessageHandler {
         }).map(\.value)
 
         for value in matches {
-            guard await context.services.autoFaqsService.canRespond(
+            guard await context.autoFaqsService.canRespond(
                 receiverID: author.id,
                 faqHash: value.hash
             ) else { continue }
-            await context.services.discordService.sendMessage(
+            await context.discordService.sendMessage(
                 channelId: event.channel_id,
                 payload: .init(
                     embeds: [.init(
@@ -188,7 +188,7 @@ struct MessageHandler {
 
         let expUsersDict: [S3AutoPingItems.Expression: Set<UserSnowflake>]
         do {
-            expUsersDict = try await context.services.pingsService.getAll().items
+            expUsersDict = try await context.pingsService.getAll().items
         } catch {
             logger.report("Can't retrieve ping-words", error: error)
             return
@@ -206,7 +206,7 @@ struct MessageHandler {
                 for userId in users {
                     /// Checks if the user is in the guild at all,
                     /// + if the user has read access of the channel.
-                    if (try? await context.services.discordService.userHasReadAccess(
+                    if (try? await context.discordService.userHasReadAccess(
                         userId: Snowflake(userId),
                         channelId: event.channel_id
                     )) == true {
@@ -251,7 +251,7 @@ struct MessageHandler {
                     avatar: avatar
                 )
             }
-            await context.services.discordService.sendDM(
+            await context.discordService.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
                     embeds: [.init(
@@ -282,7 +282,7 @@ struct MessageHandler {
         }
         logger.debug("Publishing message \(event.id) that was sent in \(event.channel_id)")
         /// "Publish" the message to other announcement-channel subscribers
-        await context.services.discordService.crosspostMessage(
+        await context.discordService.crosspostMessage(
             channelId: event.channel_id,
             messageId: event.id
         )
@@ -317,7 +317,7 @@ struct MessageHandler {
         isFailureMessage: Bool,
         userToExplicitlyMention: UserSnowflake? = nil
     ) async {
-        await context.services.discordService.sendThanksResponse(
+        await context.discordService.sendThanksResponse(
             channelId: channelId ?? event.channel_id,
             replyingToMessageId: event.id,
             isFailureMessage: isFailureMessage,
