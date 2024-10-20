@@ -1,6 +1,5 @@
 import DiscordBM
 import GitHubAPI
-import Shared
 
 struct IssueHandler: Sendable {
     let context: HandlerContext
