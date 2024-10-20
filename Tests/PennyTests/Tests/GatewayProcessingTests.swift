@@ -3,31 +3,36 @@
 @testable import Logging
 import DiscordGateway
 import Models
+import Shared
 import Testing
 
 extension SerializationNamespace {
     @Suite
-    struct GatewayProcessingTests {
+    final class GatewayProcessingTests: Sendable {
         var responseStorage: FakeResponseStorage { .shared }
         let manager = FakeManager()
-        var context: HandlerContext!
+        let fakeMainService: FakeMainService
+        let context: HandlerContext
+        let mainServiceTask: Task<Void, any Error>
 
         init() async throws {
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-            // reset the storage
+            /// First reset the background runner
+            BackgroundRunner.sharedForTests = BackgroundRunner()
+            /// Then reset the storage
             FakeResponseStorage.shared = FakeResponseStorage()
             let fakeMainService = try await FakeMainService(manager: self.manager)
+            self.fakeMainService = fakeMainService
             self.context = fakeMainService.context
-            try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-                taskGroup.addTask {
-                    try await Penny.start(mainService: fakeMainService)
-                }
-                taskGroup.addTask {
-                    await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
-                }
-                try await taskGroup.waitForAll()
+            mainServiceTask = Task<Void, any Error> {
+                try await Penny.start(mainService: fakeMainService)
             }
+            await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
+        }
+
+        deinit {
+            mainServiceTask.cancel()
         }
     }
 }
@@ -293,143 +298,132 @@ extension SerializationNamespace.GatewayProcessingTests {
     
     @Test
     func evolutionChecker() async throws {
-        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-            /// This tests expects the `CachesStorage` population to have worked correctly
-            /// and have already populated `EvolutionChecker.previousProposals`.
+        /// This tests expects the `CachesStorage` population to have worked correctly
+        /// and have already populated `EvolutionChecker.previousProposals`.
 
-            /// This is so the proposals are send as soon as they're queued, in tests.
-            taskGroup.addTask {
-                try await context.evolutionChecker.run()
-            }
-
-            taskGroup.addTask {
-                let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.evolution.id)
-                let _messages = await [
-                    responseStorage.awaitResponse(at: endpoint).value,
-                    responseStorage.awaitResponse(at: endpoint).value
-                ]
-                let messages = try _messages.map {
-                    try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
-                }
-
-                /// New proposal message
-                do {
-                    let message = try #require(messages.first(where: {
-                        $0.embeds?.first?.title?.contains("stride") == true
-                    }), "\(messages)")
-
-                    #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md")
-
-                    let buttons = try #require(message.components?.first?.components, "\(message)")
-                    #expect(buttons.count == 2, "\(buttons)")
-                    let expectedLinks = [
-                        "https://forums.swift.org/t/accepted-se-0400-init-accessors/66212",
-                        "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
-                    ]
-                    for (idx, buttonComponent) in buttons.enumerated() {
-                        if let url = try buttonComponent.requireButton().url {
-                            #expect(expectedLinks[idx] == url)
-                        } else {
-                            Issue.record("\(buttonComponent) was not a button")
-                        }
-                    }
-
-                    let embed = try #require(message.embeds?.first)
-                    #expect(embed.title == "[SE-0051] Withdrawn: Conventionalizing stride semantics")
-                    #expect(embed.description == "> \n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
-                    #expect(embed.color == .brown)
-                }
-
-                /// Updated proposal message
-                do {
-                    let message = try #require(messages.first(where: {
-                        $0.embeds?.first?.title?.contains("(most)") == true
-                    }), "\(messages)")
-
-                    #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md")
-
-                    let buttons = try #require(message.components?.first?.components)
-                    #expect(buttons.count == 2, "\(buttons)")
-                    let expectedLinks = [
-                        "https://forums.swift.org/t/accepted-se-0400-init-accessors/66212",
-                        "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
-                    ]
-                    for (idx, buttonComponent) in buttons.enumerated() {
-                        if let url = try buttonComponent.requireButton().url {
-                            #expect(expectedLinks[idx] == url)
-                        } else {
-                            Issue.record("\(buttonComponent) was not a button")
-                        }
-                    }
-
-                    let embed = try #require(message.embeds?.first)
-                    #expect(embed.title == "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
-                    #expect(embed.description == "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
-                    #expect(embed.color == .orange)
-                }
-            }
-
-            try await taskGroup.waitForAll()
+        /// This is so the proposals are send as soon as they're queued, in tests.
+        let serviceTask = Task<Void, any Error> { [self] in
+            try await self.context.evolutionChecker.run()
         }
+
+
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.evolution.id)
+        let _messages = await [
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value
+        ]
+        let messages = try _messages.map {
+            try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
+        }
+
+        /// New proposal message
+        do {
+            let message = try #require(messages.first(where: {
+                $0.embeds?.first?.title?.contains("stride") == true
+            }), "\(messages)")
+
+            #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md")
+
+            let buttons = try #require(message.components?.first?.components, "\(message)")
+            #expect(buttons.count == 2, "\(buttons)")
+            let expectedLinks = [
+                "https://forums.swift.org/t/accepted-se-0400-init-accessors/66212",
+                "https://forums.swift.org/search?q=Conventionalizing%20stride%20semantics%20%23evolution"
+            ]
+            for (idx, buttonComponent) in buttons.enumerated() {
+                if let url = try buttonComponent.requireButton().url {
+                    #expect(expectedLinks[idx] == url)
+                } else {
+                    Issue.record("\(buttonComponent) was not a button")
+                }
+            }
+
+            let embed = try #require(message.embeds?.first)
+            #expect(embed.title == "[SE-0051] Withdrawn: Conventionalizing stride semantics")
+            #expect(embed.description == "> \n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
+            #expect(embed.color == .brown)
+        }
+
+        /// Updated proposal message
+        do {
+            let message = try #require(messages.first(where: {
+                $0.embeds?.first?.title?.contains("(most)") == true
+            }), "\(messages)")
+
+            #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md")
+
+            let buttons = try #require(message.components?.first?.components)
+            #expect(buttons.count == 2, "\(buttons)")
+            let expectedLinks = [
+                "https://forums.swift.org/t/accepted-se-0400-init-accessors/66212",
+                "https://forums.swift.org/search?q=Allow%20(most)%20keywords%20as%20argument%20labels%20%23evolution"
+            ]
+            for (idx, buttonComponent) in buttons.enumerated() {
+                if let url = try buttonComponent.requireButton().url {
+                    #expect(expectedLinks[idx] == url)
+                } else {
+                    Issue.record("\(buttonComponent) was not a button")
+                }
+            }
+
+            let embed = try #require(message.embeds?.first)
+            #expect(embed.title == "[SE-0001] In Active Review: Allow (most) keywords as argument labels")
+            #expect(embed.description == "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
+            #expect(embed.color == .orange)
+        }
+
+        serviceTask.cancel()
     }
     
     @Test
     func soChecker() async throws {
-        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask {
-                try await context.soChecker.run()
-            }
-
-            taskGroup.addTask {
-                let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.stackOverflow.id)
-                let _messages = await [
-                    responseStorage.awaitResponse(at: endpoint).value,
-                    responseStorage.awaitResponse(at: endpoint).value,
-                    responseStorage.awaitResponse(at: endpoint).value,
-                    responseStorage.awaitResponse(at: endpoint).value,
-                ]
-                let messages = try _messages.map {
-                    try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
-                }
-
-                #expect(messages[0].embeds?.first?.title == "Vapor Logger doesn't log any messages into System Log")
-                #expect(messages[1].embeds?.first?.title == "Postgre-Kit: Unable to complete code access to PostgreSQL DB")
-                #expect(messages[2].embeds?.first?.title == "How to decide to use siblings or parent/children relations in vapor?")
-                #expect(messages[3].embeds?.first?.title == "How to make a optional query filter in Vapor")
-
-                let lastCheckDate = await context.soChecker.storage.lastCheckDate
-                #expect(lastCheckDate != nil)
-            }
-
-            try await taskGroup.waitForAll()
+        let serviceTask = Task<Void, any Error> { [self] in
+            try await self.context.soChecker.run()
         }
+
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.stackOverflow.id)
+        let _messages = await [
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
+        ]
+        let messages = try _messages.map {
+            try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
+        }
+
+        #expect(messages[0].embeds?.first?.title == "Vapor Logger doesn't log any messages into System Log")
+        #expect(messages[1].embeds?.first?.title == "Postgre-Kit: Unable to complete code access to PostgreSQL DB")
+        #expect(messages[2].embeds?.first?.title == "How to decide to use siblings or parent/children relations in vapor?")
+        #expect(messages[3].embeds?.first?.title == "How to make a optional query filter in Vapor")
+
+        let lastCheckDate = await self.context.soChecker.storage.lastCheckDate
+        #expect(lastCheckDate != nil)
+
+        serviceTask.cancel()
     }
 
     @Test
     func swiftReleasesChecker() async throws {
-        try await withThrowingTaskGroup(of: Void.self) { taskGroup in
-            taskGroup.addTask {
-                try await context.swiftReleasesChecker.run()
-            }
-
-            taskGroup.addTask {
-                let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.release.id)
-                let _message = await responseStorage.awaitResponse(at: endpoint).value
-                let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
-
-                #expect(message.embeds?.first?.title == "Swift Release 6.0.1")
-
-                /// No more messages should be sent
-                let _newMessage = await responseStorage.awaitResponse(
-                    at: endpoint,
-                    expectFailure: true
-                ).value
-                let newMessage: Never? = try #require(_newMessage as? Optional<Never>)
-                #expect(newMessage == .none)
-            }
-
-            try await taskGroup.waitForAll()
+        let serviceTask = Task<Void, any Error> { [self] in
+            try await self.context.swiftReleasesChecker.run()
         }
+
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.release.id)
+        let _message = await responseStorage.awaitResponse(at: endpoint).value
+        let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
+
+        #expect(message.embeds?.first?.title == "Swift Release 6.0.1")
+
+        /// No more messages should be sent
+        let _newMessage = await responseStorage.awaitResponse(
+            at: endpoint,
+            expectFailure: true
+        ).value
+        let newMessage: Never? = try #require(_newMessage as? Optional<Never>)
+        #expect(newMessage == .none)
+
+        serviceTask.cancel()
     }
 
     @Test

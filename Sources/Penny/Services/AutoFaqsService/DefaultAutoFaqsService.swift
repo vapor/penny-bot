@@ -9,6 +9,7 @@ import Collections
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
+import Shared
 
 actor DefaultAutoFaqsService: AutoFaqsService {
 

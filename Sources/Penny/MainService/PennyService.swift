@@ -5,6 +5,7 @@ import NIOCore
 import SotoCore
 import Shared
 import Logging
+import ServiceLifecycle
 import NIOPosix
 
 struct PennyService: MainService {
@@ -171,7 +172,7 @@ struct PennyService: MainService {
         return context
     }
 
-    func afterConnectCall(context: HandlerContext) async throws {
+    func runServices(context: HandlerContext) async throws {
         /// Wait 5 seconds to make sure the bot is completely connected to Discord through websocket,
         /// and so it can receive events already.
         /// This is here until when/if DiscordBM gains better support for notifying you
@@ -180,27 +181,18 @@ struct PennyService: MainService {
         try await Task.sleep(for: .seconds(5))
         /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
         /// since it communicates through Discord and will need the Gateway connection.
-//        ServiceGroup(
-//            services: [
-//                context.evolutionChecker,
+        let services = ServiceGroup(
+            services: [
+                context.backgroundRunner,
+                context.botStateManager,
+                context.evolutionChecker,
 //                context.soChecker,
-//                context.swiftReleasesChecker,
-//                context.discordEventListener
-//            ],
-//            logger: Logger(label: "ServiceGroup")
-//        )
-        await context.botStateManager.start {
-            do {
-                /// These contain cached stuff and need to wait for `BotStateManager`.
-                try await context.evolutionChecker.run()
-                try await context.soChecker.run()
-                try await context.swiftReleasesChecker.run()
-            } catch {
-                context.botStateManager.logger.report(
-                    "Failed to run services after BotStateManager readiness",
-                    error: error
-                )
-            }
-        }
+                context.swiftReleasesChecker,
+                context.discordEventListener
+            ],
+            logger: Logger(label: "ServiceGroup")
+        )
+
+        try await services.run()
     }
 }

@@ -1,5 +1,5 @@
-@testable import Penny
+@testable import Shared
 
 extension BackgroundRunner {
-    static let sharedForTests = BackgroundRunner()
+    nonisolated(unsafe) static var sharedForTests = BackgroundRunner()
 }

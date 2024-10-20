@@ -5,6 +5,7 @@ import FoundationEssentials
 import Foundation
 #endif
 import Logging
+import ServiceLifecycle
 
 /**
  When we update Penny, AWS waits a few minutes before taking down the old Penny instance to
@@ -25,7 +26,7 @@ import Logging
    * If the old instance is too slow to make the process happen, the process is aborted and
      the new instance will start handling events without waiting more for the old instance.
  */
-actor BotStateManager {
+actor BotStateManager: Service {
 
     let id = Int(Date().timeIntervalSince1970)
     let context: HandlerContext
@@ -33,7 +34,6 @@ actor BotStateManager {
     let logger: Logger
 
     var canRespond = false
-    var onStarted: (() async -> Void)?
 
     init(
         context: HandlerContext,
@@ -46,14 +46,14 @@ actor BotStateManager {
         self.logger = logger
     }
 
-    func start(onStarted: @Sendable @escaping () async -> Void) async {
-        self.onStarted = onStarted
-        self.context.backgroundRunner.process {
-            await self.send(.shutdown)
-        }
+    func run() async throws {
         self.context.backgroundRunner.process {
             await self.cancelIfCachePopulationTakesTooLong()
         }
+        await self.send(.shutdown)
+        /// Waits forever:
+        let (stream, _) = AsyncStream.makeStream(of: Void.self)
+        await stream.first { _ in true }
     }
 
     private func cancelIfCachePopulationTakesTooLong() async {
@@ -76,9 +76,9 @@ actor BotStateManager {
               message.channel_id == Constants.Channels.botLogs.id,
               let author = message.author,
               author.id == Constants.botId,
-              let otherId = message.content.split(whereSeparator: \.isWhitespace).last
+              let otherId = message.content.split(whereSeparator: \.isWhitespace).last,
+              otherId != "\(self.id)"
         else { return }
-        if otherId == "\(self.id)" { return }
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
             logger.trace("Received 'shutdown' signal")
@@ -115,7 +115,6 @@ actor BotStateManager {
 
     private func startAllowingResponses() async {
         canRespond = true
-        await onStarted?()
     }
 
     private func send(_ signal: StateManagerSignal) async {

@@ -7,6 +7,7 @@ import Models
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
+import Shared
 
 actor DefaultFaqsService: FaqsService {
 

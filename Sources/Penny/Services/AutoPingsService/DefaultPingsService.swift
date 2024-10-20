@@ -8,6 +8,7 @@ import AsyncHTTPClient
 import Logging
 import DiscordBM
 import NIOHTTP1
+import Shared
 
 actor DefaultPingsService: AutoPingsService {
 

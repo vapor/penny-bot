@@ -2,6 +2,7 @@
 @testable import Penny
 import Atomics
 import Testing
+import Shared
 
 actor FakeResponseStorage {
 

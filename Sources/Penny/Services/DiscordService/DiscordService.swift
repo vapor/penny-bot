@@ -1,5 +1,6 @@
 import DiscordBM
 import Logging
+import Shared
 
 actor DiscordService {
 

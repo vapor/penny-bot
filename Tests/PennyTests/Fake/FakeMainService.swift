@@ -6,6 +6,8 @@ import NIO
 import DiscordLogger
 import SotoCore
 import AsyncHTTPClient
+import ServiceLifecycle
+import Shared
 import Testing
 
 actor FakeMainService: MainService {
@@ -23,7 +25,7 @@ actor FakeMainService: MainService {
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
         self.cache = await DiscordCache(
             gatewayManager: manager,
-            intents: [.guilds, .guildMembers],
+            intents: [.guilds, .guildMembers, .messageContent, .guildMessages],
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
@@ -54,11 +56,20 @@ actor FakeMainService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        await context.botStateManager.start(onStarted: { })
         return context
     }
 
-    func afterConnectCall(context: HandlerContext) async throws { }
+    func runServices(context: HandlerContext) async throws {
+        let group = ServiceGroup(
+            services: [
+                context.backgroundRunner,
+                context.botStateManager,
+                context.discordEventListener
+            ],
+            logger: Logger(label: "TestsServiceGroup")
+        )
+        try await group.run()
+    }
 
     static func makeContext(
         manager: any GatewayManager,
@@ -88,7 +99,7 @@ actor FakeMainService: MainService {
         let autoFaqsService = FakeAutoFaqsService()
 
         let context = HandlerContext(
-            backgroundRunner: BackgroundRunner(),
+            backgroundRunner: backgroundRunner,
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
