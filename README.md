@@ -29,7 +29,7 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
     </a>
     <a href="https://swift.org">
         <img
-            src="https://design.vapor.codes/images/swift510up.svg"
+            src="https://design.vapor.codes/images/swift60up.svg"
             alt="Swift 6.0+"
         >
     </a>
