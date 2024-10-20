@@ -1,6 +1,6 @@
 /// Accumulates errors while performing the tasks concurrently.
 /// The primary purpose of this is so e.g. if the first task fails, the next tasks still run.
-package func withThrowingAccumulatingVoidTaskGroup(
+func withThrowingAccumulatingVoidTaskGroup(
     tasks: [@Sendable () async throws -> Void]
 ) async throws {
     try await withThrowingTaskGroup(of: Void.self) { group in
