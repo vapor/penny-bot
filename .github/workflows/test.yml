@@ -8,6 +8,10 @@ on:
 
 jobs:
   unit-tests:
+    env:
+      DEPLOYMENT_ENVIRONMENT: local
+
+    name: Run unit tests
     uses: vapor/ci/.github/workflows/run-unit-tests.yml@main
     with:
       with_coverage: false
