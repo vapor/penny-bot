@@ -47,10 +47,15 @@ actor BotStateManager: Service {
     }
 
     func run() async throws {
-        self.context.backgroundRunner.process {
-            await self.cancelIfCachePopulationTakesTooLong()
+        switch Constants.deploymentEnvironment {
+        case .local:
+            break
+        case .prod:
+            self.context.backgroundRunner.process {
+                await self.cancelIfCachePopulationTakesTooLong()
+            }
+            await self.send(.shutdown)
         }
-        await self.send(.shutdown)
         /// Waits forever:
         let (stream, _) = AsyncStream.makeStream(of: Void.self)
         await stream.first { _ in true }
@@ -118,6 +123,8 @@ actor BotStateManager: Service {
     }
 
     private func send(_ signal: StateManagerSignal) async {
+        guard Constants.deploymentEnvironment == .prod else { return }
+
         let content = makeSignalMessage(text: signal.rawValue, id: self.id)
         await context.discordService.sendMessage(
             channelId: Constants.Channels.botLogs.id,

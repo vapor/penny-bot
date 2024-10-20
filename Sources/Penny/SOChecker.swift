@@ -28,7 +28,9 @@ actor SOChecker: Service {
     func run() async throws {
         #if !DEBUG
         /// Cloudflare seems to be blocking us although we have an auth token.
-        return
+        /// Waits forever:
+        let (stream, _) = AsyncStream.makeStream(of: Void.self)
+        await stream.first { _ in true }
         #endif
         if Task.isCancelled { return }
         do {

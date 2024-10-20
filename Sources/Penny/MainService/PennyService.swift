@@ -186,7 +186,7 @@ struct PennyService: MainService {
                 context.backgroundRunner,
                 context.botStateManager,
                 context.evolutionChecker,
-//                context.soChecker,
+                context.soChecker,
                 context.swiftReleasesChecker,
                 context.discordEventListener
             ],
