@@ -19,12 +19,12 @@ enum Constants {
             case "prod": self = .prod
             default:
                 Logger(label: "Environment.init").critical(
-                    "Invalid environment value provided", metadata: [
+                    "Invalid deployment environment env var provided", metadata: [
                         "value": .string(value ?? "<null>")
                     ]
                 )
                 fatalError("""
-                Invalid environment value provided: '\(value ?? "<null>")'.
+                Invalid deployment environment env var provided: '\(value ?? "<null>")'.
                 Set 'DEPLOYMENT_ENVIRONMENT' to 'local' for local developments.
                 """)
             }
