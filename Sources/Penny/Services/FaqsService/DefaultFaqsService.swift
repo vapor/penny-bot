@@ -27,8 +27,10 @@ actor DefaultFaqsService: FaqsService {
     init(httpClient: HTTPClient, backgroundProcessor: BackgroundProcessor) {
         self.httpClient = httpClient
         backgroundProcessor.process {
-            await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()
+        }
+        backgroundProcessor.process {
+            await self.setUpResetItemsTask()
         }
     }
 
