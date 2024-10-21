@@ -9,12 +9,7 @@ import OpenAPIRuntime
 import Rendering
 import SwiftSemver
 import Shared
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-import class Foundation.JSONSerialization
-#else
 import Foundation
-#endif
 import Markdown
 import NIOPosix
 import Testing
