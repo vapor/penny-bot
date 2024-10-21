@@ -36,8 +36,6 @@ struct Penny {
                 awsClient: awsClient
             )
 
-            await bot.connect()
-
             try await mainService.runServices(context: context)
 
             /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly

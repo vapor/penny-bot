@@ -7,6 +7,10 @@ struct DiscordEventListener: Service {
 
     func run() async {
         await withDiscardingTaskGroup { taskGroup in
+            taskGroup.addTask {
+                await bot.connect()
+            }
+            
             for await event in await bot.events.cancelOnGracefulShutdown() {
                 taskGroup.addTask {
                     await EventHandler(

@@ -202,10 +202,10 @@ struct PennyService: MainService {
         let services = ServiceGroup(
             services: [
                 context.backgroundProcessor,
+                context.discordEventListener,
                 evolutionCheckerWrappedService,
                 soCheckerWrappedService,
-                swiftReleasesCheckerWrappedService,
-                context.discordEventListener
+                swiftReleasesCheckerWrappedService
             ],
             logger: Logger(label: "ServiceGroup")
         )
