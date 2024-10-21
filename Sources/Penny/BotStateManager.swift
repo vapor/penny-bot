@@ -5,7 +5,6 @@ import FoundationEssentials
 import Foundation
 #endif
 import Logging
-import ServiceLifecycle
 
 /**
  When we update Penny, AWS waits a few minutes before taking down the old Penny instance to
