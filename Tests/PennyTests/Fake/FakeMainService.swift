@@ -60,10 +60,10 @@ actor FakeMainService: MainService {
     }
 
     func runServices(context: HandlerContext) async throws {
+        await context.botStateManager.start()
         let group = ServiceGroup(
             services: [
                 context.backgroundRunner,
-                context.botStateManager,
                 context.discordEventListener
             ],
             logger: Logger(label: "TestsServiceGroup")

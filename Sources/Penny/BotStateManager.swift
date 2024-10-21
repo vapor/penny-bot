@@ -26,12 +26,12 @@ import ServiceLifecycle
    * If the old instance is too slow to make the process happen, the process is aborted and
      the new instance will start handling events without waiting more for the old instance.
  */
-actor BotStateManager: Service {
-
+actor BotStateManager {
     let id = Int(Date().timeIntervalSince1970)
     let context: HandlerContext
     let disableDuration: Duration
     let logger: Logger
+    private var cachesPopulationContinuations: [CheckedContinuation<Void, Never>] = []
 
     var canRespond = false
 
@@ -46,7 +46,7 @@ actor BotStateManager: Service {
         self.logger = logger
     }
 
-    func run() async throws {
+    func start() {
         switch Constants.deploymentEnvironment {
         case .local:
             break
@@ -54,11 +54,19 @@ actor BotStateManager: Service {
             self.context.backgroundRunner.process {
                 await self.cancelIfCachePopulationTakesTooLong()
             }
-            await self.send(.shutdown)
+            self.context.backgroundRunner.process {
+                await self.send(.shutdown)
+            }
         }
-        /// Waits forever:
-        let (stream, _) = AsyncStream.makeStream(of: Void.self)
-        await stream.first { _ in true }
+    }
+
+    func addContinuation(_ cont: CheckedContinuation<Void, Never>) {
+        switch self.canRespond {
+        case true:
+            cont.resume()
+        case false:
+            self.cachesPopulationContinuations.append(cont)
+        }
     }
 
     private func cancelIfCachePopulationTakesTooLong() async {
@@ -72,7 +80,9 @@ actor BotStateManager: Service {
     }
 
     func canRespond(to event: Gateway.Event) async -> Bool {
-        await checkIfItsASignal(event: event)
+        if Constants.deploymentEnvironment == .prod {
+            await checkIfItsASignal(event: event)
+        }
         return canRespond
     }
     
@@ -119,7 +129,12 @@ actor BotStateManager: Service {
     }
 
     private func startAllowingResponses() async {
-        canRespond = true
+        let continuations = self.cachesPopulationContinuations
+        self.cachesPopulationContinuations.removeAll()
+        self.canRespond = true
+        for continuation in continuations {
+            continuation.resume()
+        }
     }
 
     private func send(_ signal: StateManagerSignal) async {

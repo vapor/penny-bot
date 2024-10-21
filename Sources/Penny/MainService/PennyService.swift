@@ -179,15 +179,38 @@ struct PennyService: MainService {
         /// of the first connection.
         /// We could manually handle that here too, but I'd like it to be available in DiscordBM.
         try await Task.sleep(for: .seconds(5))
+        /// Start the state manager
+        await context.botStateManager.start()
+
+        let evolutionCheckerWrappedService = WaiterService(underlyingService: context.evolutionChecker) {
+            await withCheckedContinuation { cont in
+                context.backgroundRunner.process {
+                    await context.botStateManager.addContinuation(cont)
+                }
+            }
+        }
+        let soCheckerWrappedService = WaiterService(underlyingService: context.soChecker) {
+            await withCheckedContinuation { cont in
+                context.backgroundRunner.process {
+                    await context.botStateManager.addContinuation(cont)
+                }
+            }
+        }
+        let swiftReleasesCheckerWrappedService = WaiterService(underlyingService: context.swiftReleasesChecker) {
+            await withCheckedContinuation { cont in
+                context.backgroundRunner.process {
+                    await context.botStateManager.addContinuation(cont)
+                }
+            }
+        }
         /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
         /// since it communicates through Discord and will need the Gateway connection.
         let services = ServiceGroup(
             services: [
                 context.backgroundRunner,
-                context.botStateManager,
-                context.evolutionChecker,
-                context.soChecker,
-                context.swiftReleasesChecker,
+                evolutionCheckerWrappedService,
+                soCheckerWrappedService,
+                swiftReleasesCheckerWrappedService,
                 context.discordEventListener
             ],
             logger: Logger(label: "ServiceGroup")
