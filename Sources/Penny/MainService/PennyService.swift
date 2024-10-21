@@ -173,12 +173,6 @@ struct PennyService: MainService {
     }
 
     func runServices(context: HandlerContext) async throws {
-        /// Wait 5 seconds to make sure the bot is completely connected to Discord through websocket,
-        /// and so it can receive events already.
-        /// This is here until when/if DiscordBM gains better support for notifying you
-        /// of the first connection.
-        /// We could manually handle that here too, but I'd like it to be available in DiscordBM.
-        try await Task.sleep(for: .seconds(5))
         /// Start the state manager
         await context.botStateManager.start()
 

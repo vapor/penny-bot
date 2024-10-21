@@ -54,6 +54,12 @@ actor BotStateManager {
                 await self.cancelIfCachePopulationTakesTooLong()
             }
             self.context.backgroundProcessor.process {
+                /// Wait 3 seconds to make sure the bot is completely connected to Discord through websocket,
+                /// and so it can receive events already.
+                /// This is here until when/if DiscordBM gains better support for notifying you
+                /// of the first connection.
+                /// We could manually handle that here too, but I'd like it to be available in DiscordBM.
+                try await Task.sleep(for: .seconds(3))
                 await self.send(.shutdown)
             }
         }
@@ -128,12 +134,11 @@ actor BotStateManager {
     }
 
     private func startAllowingResponses() async {
-        let continuations = self.cachesPopulationContinuations
-        self.cachesPopulationContinuations.removeAll()
         self.canRespond = true
-        for continuation in continuations {
+        for continuation in self.cachesPopulationContinuations {
             continuation.resume()
         }
+        self.cachesPopulationContinuations.removeAll()
     }
 
     private func send(_ signal: StateManagerSignal) async {
