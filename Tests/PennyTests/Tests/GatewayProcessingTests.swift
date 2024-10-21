@@ -85,8 +85,8 @@ extension SerializationNamespace.GatewayProcessingTests {
             passingContinuationWith: { _ in /* Do nothing */ }
         )
 
-        let runningService = Task {
-            try await wrappedService.run()
+        let runningService = Task<Void, Never> {
+            try! await wrappedService.run()
         }
 
         try await Task.sleep(for: .seconds(5))
