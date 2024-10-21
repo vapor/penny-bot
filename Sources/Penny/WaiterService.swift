@@ -2,11 +2,18 @@ import Logging
 import ServiceLifecycle
 import Shared
 
+/// A service that waits until `canRun` is over, then runs the underlying service.
 struct WaiterService<UnderlyingService: Service>: Service {
     private let underlying: UnderlyingService
     private let logger: Logger
     private let canRun: @Sendable () async -> Void
 
+    /// - Parameters:
+    ///   - underlyingService: The underlying service to be run after the continuation is resolved.
+    ///   - logger: A logger to log with.
+    ///   - backgroundProcessor: To process the continuation with.
+    ///   - passContinuation: Passes continuation using this closure to any other service you'd like.
+    ///   Then the other service is responsible for correctly and timely resolving the continuation.
     init(
         underlyingService: UnderlyingService,
         logger: Logger = Logger(label: _typeName(Self.self)),
