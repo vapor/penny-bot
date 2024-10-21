@@ -47,7 +47,7 @@ extension SerializationNamespace {
 
 extension SerializationNamespace.GatewayProcessingTests {
     @Test
-    func waiterServiceWorks() async throws {
+    func waiterServiceRunsUnderlyingService() async throws {
         actor SampleService: Service {
             var didRun = false
             func run() async throws {
@@ -66,6 +66,34 @@ extension SerializationNamespace.GatewayProcessingTests {
         try await wrappedService.run()
 
         #expect(await sampleService.didRun == true)
+    }
+
+    @Test
+    func waiterServiceWaitsForUnderlyingService() async throws {
+        actor SampleService: Service {
+            var didRun = false
+            func run() async throws {
+                self.didRun = true
+            }
+        }
+
+        let sampleService = SampleService()
+
+        let wrappedService = WaiterService(
+            underlyingService: sampleService,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { _ in /* Do nothing */ }
+        )
+
+        let runningService = Task {
+            try await wrappedService.run()
+        }
+
+        try await Task.sleep(for: .seconds(5))
+
+        runningService.cancel()
+
+        #expect(await sampleService.didRun == false)
     }
 
     @Test
