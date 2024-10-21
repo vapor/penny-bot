@@ -95,22 +95,22 @@ struct PennyService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        let backgroundRunner = BackgroundRunner()
+        let backgroundProcessor = BackgroundProcessor()
         let usersService = ServiceFactory.makeUsersService(
             httpClient: httpClient,
             apiBaseURL: Constants.apiBaseURL
         )
         let pingsService = DefaultPingsService(
             httpClient: httpClient,
-            backgroundRunner: backgroundRunner
+            backgroundProcessor: backgroundProcessor
         )
         let faqsService = DefaultFaqsService(
             httpClient: httpClient,
-            backgroundRunner: backgroundRunner
+            backgroundProcessor: backgroundProcessor
         )
         let autoFaqsService = DefaultAutoFaqsService(
             httpClient: httpClient,
-            backgroundRunner: backgroundRunner
+            backgroundProcessor: backgroundProcessor
         )
         let evolutionService = DefaultEvolutionService(httpClient: httpClient)
         let soService = DefaultSOService(httpClient: httpClient)
@@ -118,7 +118,7 @@ struct PennyService: MainService {
         let discordService = DiscordService(
             discordClient: bot.client,
             cache: cache,
-            backgroundRunner: backgroundRunner
+            backgroundProcessor: backgroundProcessor
         )
         let evolutionChecker = EvolutionChecker(
             evolutionService: evolutionService,
@@ -145,7 +145,7 @@ struct PennyService: MainService {
         )
         
         let context = HandlerContext(
-            backgroundRunner: backgroundRunner,
+            backgroundProcessor: backgroundProcessor,
             usersService: usersService,
             pingsService: pingsService,
             faqsService: faqsService,
@@ -182,32 +182,26 @@ struct PennyService: MainService {
         /// Start the state manager
         await context.botStateManager.start()
 
-        let evolutionCheckerWrappedService = WaiterService(underlyingService: context.evolutionChecker) {
-            await withCheckedContinuation { cont in
-                context.backgroundRunner.process {
-                    await context.botStateManager.addContinuation(cont)
-                }
-            }
-        }
-        let soCheckerWrappedService = WaiterService(underlyingService: context.soChecker) {
-            await withCheckedContinuation { cont in
-                context.backgroundRunner.process {
-                    await context.botStateManager.addContinuation(cont)
-                }
-            }
-        }
-        let swiftReleasesCheckerWrappedService = WaiterService(underlyingService: context.swiftReleasesChecker) {
-            await withCheckedContinuation { cont in
-                context.backgroundRunner.process {
-                    await context.botStateManager.addContinuation(cont)
-                }
-            }
-        }
+        let evolutionCheckerWrappedService = WaiterService(
+            underlyingService: context.evolutionChecker,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
+        )
+        let soCheckerWrappedService = WaiterService(
+            underlyingService: context.soChecker,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
+        )
+        let swiftReleasesCheckerWrappedService = WaiterService(
+            underlyingService: context.swiftReleasesChecker,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
+        )
         /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
         /// since it communicates through Discord and will need the Gateway connection.
         let services = ServiceGroup(
             services: [
-                context.backgroundRunner,
+                context.backgroundProcessor,
                 evolutionCheckerWrappedService,
                 soCheckerWrappedService,
                 swiftReleasesCheckerWrappedService,

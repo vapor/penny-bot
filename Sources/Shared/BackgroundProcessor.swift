@@ -1,7 +1,7 @@
 import ServiceLifecycle
 import Synchronization
 
-package final class BackgroundRunner: Service {
+package final class BackgroundProcessor: Service {
     package typealias WorkItem = @Sendable () async -> Void
     private let stream: AsyncStream<WorkItem>
     private let continuation: AsyncStream<WorkItem>.Continuation

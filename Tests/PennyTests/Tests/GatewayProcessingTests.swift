@@ -1,7 +1,13 @@
 @testable import Penny
 @testable import DiscordModels
 @testable import Logging
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 import DiscordGateway
+import ServiceLifecycle
 import Models
 import Shared
 import Testing
@@ -16,10 +22,12 @@ extension SerializationNamespace {
         let mainServiceTask: Task<Void, any Error>
 
         init() async throws {
+            /// Simulate prod
+            setenv("DEPLOYMENT_ENVIRONMENT", "prod", 1)
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
             /// First reset the background runner
-            BackgroundRunner.sharedForTests = BackgroundRunner()
+            BackgroundProcessor.sharedForTests = BackgroundProcessor()
             /// Then reset the storage
             FakeResponseStorage.shared = FakeResponseStorage()
             let fakeMainService = try await FakeMainService(manager: self.manager)
@@ -38,6 +46,28 @@ extension SerializationNamespace {
 }
 
 extension SerializationNamespace.GatewayProcessingTests {
+    @Test
+    func waiterServiceWorks() async throws {
+        actor SampleService: Service {
+            var didRun = false
+            func run() async throws {
+                self.didRun = true
+            }
+        }
+
+        let sampleService = SampleService()
+
+        let wrappedService = WaiterService(
+            underlyingService: sampleService,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { await self.context.botStateManager.addCachesPopulationWaiter($0) }
+        )
+
+        try await wrappedService.run()
+
+        #expect(await sampleService.didRun == true)
+    }
+
     @Test
     func commandsRegisterOnStartup() async throws {
         await CommandsManager(context: context).registerCommands()

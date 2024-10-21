@@ -63,7 +63,7 @@ actor FakeMainService: MainService {
         await context.botStateManager.start()
         let group = ServiceGroup(
             services: [
-                context.backgroundRunner,
+                context.backgroundProcessor,
                 context.discordEventListener
             ],
             logger: Logger(label: "TestsServiceGroup")
@@ -76,11 +76,11 @@ actor FakeMainService: MainService {
         cache: DiscordCache,
         httpClient: HTTPClient
     ) throws -> HandlerContext {
-        let backgroundRunner = BackgroundRunner.sharedForTests
+        let backgroundProcessor = BackgroundProcessor.sharedForTests
         let discordService = DiscordService(
             discordClient: manager.client,
             cache: cache,
-            backgroundRunner: backgroundRunner
+            backgroundProcessor: backgroundProcessor
         )
         let evolutionChecker = EvolutionChecker(
             evolutionService: FakeEvolutionService(),
@@ -99,7 +99,7 @@ actor FakeMainService: MainService {
         let autoFaqsService = FakeAutoFaqsService()
 
         let context = HandlerContext(
-            backgroundRunner: backgroundRunner,
+            backgroundProcessor: backgroundProcessor,
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),

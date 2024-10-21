@@ -31,22 +31,24 @@ extension SerializationNamespace {
         /// The `…` (U+2026 Horizontal Ellipsis) character.
         let dots = "\u{2026}"
 
-        let backgroundRunnerTask: Task<Void, Never>
+        let backgroundProcessorTask: Task<Void, Never>
 
         init() {
+            /// Simulate prod
+            setenv("DEPLOYMENT_ENVIRONMENT", "prod", 1)
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
             /// First reset the background runner
-            BackgroundRunner.sharedForTests = BackgroundRunner()
+            BackgroundProcessor.sharedForTests = BackgroundProcessor()
             /// Then reset the storage
             FakeResponseStorage.shared = FakeResponseStorage()
-            backgroundRunnerTask = Task<Void, Never> {
-                await BackgroundRunner.sharedForTests.run()
+            backgroundProcessorTask = Task<Void, Never> {
+                await BackgroundProcessor.sharedForTests.run()
             }
         }
 
         deinit {
-            backgroundRunnerTask.cancel()
+            backgroundProcessorTask.cancel()
         }
     }
 }

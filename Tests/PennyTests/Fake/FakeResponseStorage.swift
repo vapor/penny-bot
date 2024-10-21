@@ -6,7 +6,7 @@ import Shared
 
 actor FakeResponseStorage {
 
-    private let backgroundRunner: BackgroundRunner = .sharedForTests
+    private let backgroundProcessor: BackgroundProcessor = .sharedForTests
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
 
@@ -50,7 +50,7 @@ actor FakeResponseStorage {
         continuation: CheckedContinuation<AnyBox, Never>,
         sourceLocation: Testing.SourceLocation
     ) {
-        self.backgroundRunner.process {
+        self.backgroundProcessor.process {
             await self._expect(
                 at: endpoint,
                 expectFailure: expectFailure,
@@ -79,7 +79,7 @@ actor FakeResponseStorage {
         } else {
             let id = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
-            self.backgroundRunner.process {
+            self.backgroundProcessor.process {
                 try? await Task.sleep(for: .seconds(3))
                 if await self.retrieveFromContinuations(id: id) != nil {
                     if !expectFailure {

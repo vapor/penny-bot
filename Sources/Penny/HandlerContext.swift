@@ -7,7 +7,7 @@ final class HandlerContext: Sendable {
     nonisolated(unsafe) var botStateManager: BotStateManager!
     nonisolated(unsafe) var discordEventListener: DiscordEventListener!
 
-    let backgroundRunner: BackgroundRunner
+    let backgroundProcessor: BackgroundProcessor
     let usersService: any UsersService
     let pingsService: any AutoPingsService
     let faqsService: any FaqsService
@@ -21,7 +21,7 @@ final class HandlerContext: Sendable {
     let reactionCache: ReactionCache
 
     init(
-        backgroundRunner: BackgroundRunner,
+        backgroundProcessor: BackgroundProcessor,
         usersService: any UsersService,
         pingsService: any AutoPingsService,
         faqsService: any FaqsService,
@@ -34,7 +34,7 @@ final class HandlerContext: Sendable {
         swiftReleasesChecker: SwiftReleasesChecker,
         reactionCache: ReactionCache
     ) {
-        self.backgroundRunner = backgroundRunner
+        self.backgroundProcessor = backgroundProcessor
         self.usersService = usersService
         self.pingsService = pingsService
         self.faqsService = faqsService

@@ -51,16 +51,16 @@ actor BotStateManager {
         case .local:
             break
         case .prod:
-            self.context.backgroundRunner.process {
+            self.context.backgroundProcessor.process {
                 await self.cancelIfCachePopulationTakesTooLong()
             }
-            self.context.backgroundRunner.process {
+            self.context.backgroundProcessor.process {
                 await self.send(.shutdown)
             }
         }
     }
 
-    func addContinuation(_ cont: CheckedContinuation<Void, Never>) {
+    func addCachesPopulationWaiter(_ cont: CheckedContinuation<Void, Never>) {
         switch self.canRespond {
         case true:
             cont.resume()
@@ -100,7 +100,7 @@ actor BotStateManager {
             await shutdown()
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             logger.trace("Received 'didShutdown' signal")
-            self.context.backgroundRunner.process {
+            self.context.backgroundProcessor.process {
                 await self.populateCache()
             }
         }

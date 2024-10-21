@@ -24,9 +24,9 @@ actor DefaultFaqsService: FaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient, backgroundRunner: BackgroundRunner) {
+    init(httpClient: HTTPClient, backgroundProcessor: BackgroundProcessor) {
         self.httpClient = httpClient
-        backgroundRunner.process {
+        backgroundProcessor.process {
             await self.setUpResetItemsTask()
             await self.getFreshItemsForCache()
         }

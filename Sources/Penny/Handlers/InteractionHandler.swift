@@ -635,7 +635,7 @@ private extension InteractionHandler {
         function: String = #function,
         line: UInt = #line
     ) {
-        self.context.backgroundRunner.process {
+        self.context.backgroundProcessor.process {
             do {
                 try await operation()
             } catch {
