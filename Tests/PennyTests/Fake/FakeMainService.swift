@@ -60,15 +60,25 @@ actor FakeMainService: MainService {
     }
 
     func runServices(context: HandlerContext) async throws {
-        await context.botStateManager.start()
-        let group = ServiceGroup(
+        /// Services that need to wait for bot connection
+        let botStateManagerWrappedService = WaiterService(
+            underlyingService: context.botStateManager,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.discordEventListener.addConnectionWaiterContinuation($0)
+            }
+        )
+
+        let services = ServiceGroup(
             services: [
                 context.backgroundProcessor,
-                context.discordEventListener
+                context.discordEventListener,
+                botStateManagerWrappedService
             ],
-            logger: Logger(label: "TestsServiceGroup")
+            logger: Logger(label: "TestServiceGroup")
         )
-        try await group.run()
+
+        try await services.run()
     }
 
     static func makeContext(

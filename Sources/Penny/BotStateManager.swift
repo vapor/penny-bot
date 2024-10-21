@@ -5,6 +5,7 @@ import FoundationEssentials
 import Foundation
 #endif
 import Logging
+import ServiceLifecycle
 
 /**
  When we update Penny, AWS waits a few minutes before taking down the old Penny instance to
@@ -25,7 +26,7 @@ import Logging
    * If the old instance is too slow to make the process happen, the process is aborted and
      the new instance will start handling events without waiting more for the old instance.
  */
-actor BotStateManager {
+actor BotStateManager: Service {
     let id = Int(Date().timeIntervalSince1970)
     let context: HandlerContext
     let disableDuration: Duration
@@ -45,7 +46,7 @@ actor BotStateManager {
         self.logger = logger
     }
 
-    func start() {
+    func run() async {
         switch Constants.deploymentEnvironment {
         case .local:
             break
@@ -54,18 +55,16 @@ actor BotStateManager {
                 await self.cancelIfCachePopulationTakesTooLong()
             }
             self.context.backgroundProcessor.process {
-                /// Wait 3 seconds to make sure the bot is completely connected to Discord through websocket,
-                /// and so it can receive events already.
-                /// This is here until when/if DiscordBM gains better support for notifying you
-                /// of the first connection.
-                /// We could manually handle that here too, but I'd like it to be available in DiscordBM.
-                try await Task.sleep(for: .seconds(3))
                 await self.send(.shutdown)
             }
         }
+
+        /// Wait indefinitely
+        let (stream, _) = AsyncStream.makeStream(of: Void.self)
+        await stream.first(where: { _ in true })
     }
 
-    func addCachesPopulationWaiter(_ cont: CheckedContinuation<Void, Never>) {
+    func addCachesPopulationContinuation(_ cont: CheckedContinuation<Void, Never>) {
         switch self.canRespond {
         case true:
             cont.resume()

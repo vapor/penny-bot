@@ -173,30 +173,43 @@ struct PennyService: MainService {
     }
 
     func runServices(context: HandlerContext) async throws {
-        /// Start the state manager
-        await context.botStateManager.start()
+        /// Services that need to wait for bot connection
+        let botStateManagerWrappedService = WaiterService(
+            underlyingService: context.botStateManager,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.discordEventListener.addConnectionWaiterContinuation($0)
+            }
+        )
 
         /// Services that need to wait for caches population
         let evolutionCheckerWrappedService = WaiterService(
             underlyingService: context.evolutionChecker,
             processingOn: context.backgroundProcessor,
-            passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
+            passingContinuationWith: {
+                await context.botStateManager.addCachesPopulationContinuation($0)
+            }
         )
         let soCheckerWrappedService = WaiterService(
             underlyingService: context.soChecker,
             processingOn: context.backgroundProcessor,
-            passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
+            passingContinuationWith: {
+                await context.botStateManager.addCachesPopulationContinuation($0)
+            }
         )
         let swiftReleasesCheckerWrappedService = WaiterService(
             underlyingService: context.swiftReleasesChecker,
             processingOn: context.backgroundProcessor,
-            passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
+            passingContinuationWith: {
+                await context.botStateManager.addCachesPopulationContinuation($0)
+            }
         )
 
         let services = ServiceGroup(
             services: [
                 context.backgroundProcessor,
                 context.discordEventListener,
+                botStateManagerWrappedService,
                 evolutionCheckerWrappedService,
                 soCheckerWrappedService,
                 swiftReleasesCheckerWrappedService

@@ -56,7 +56,7 @@ extension SerializationNamespace.GatewayProcessingTests {
         let wrappedService = WaiterService(
             underlyingService: sampleService,
             processingOn: context.backgroundProcessor,
-            passingContinuationWith: { await self.context.botStateManager.addCachesPopulationWaiter($0) }
+            passingContinuationWith: { await self.context.botStateManager.addCachesPopulationContinuation($0) }
         )
 
         try await wrappedService.run()
