@@ -182,6 +182,7 @@ struct PennyService: MainService {
         /// Start the state manager
         await context.botStateManager.start()
 
+        /// Services that need to wait for caches population
         let evolutionCheckerWrappedService = WaiterService(
             underlyingService: context.evolutionChecker,
             processingOn: context.backgroundProcessor,
@@ -197,8 +198,7 @@ struct PennyService: MainService {
             processingOn: context.backgroundProcessor,
             passingContinuationWith: { await context.botStateManager.addCachesPopulationWaiter($0) }
         )
-        /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
-        /// since it communicates through Discord and will need the Gateway connection.
+
         let services = ServiceGroup(
             services: [
                 context.backgroundProcessor,
