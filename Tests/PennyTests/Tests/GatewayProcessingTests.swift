@@ -1,11 +1,7 @@
 @testable import Penny
 @testable import DiscordModels
 @testable import Logging
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
 import Foundation
-#endif
 import DiscordGateway
 import ServiceLifecycle
 import Models
