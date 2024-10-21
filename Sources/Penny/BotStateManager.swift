@@ -65,6 +65,10 @@ actor BotStateManager: Service {
     }
 
     func addCachesPopulationContinuation(_ cont: CheckedContinuation<Void, Never>) {
+        guard Constants.deploymentEnvironment == .prod else {
+            cont.resume()
+            return
+        }
         switch self.canRespond {
         case true:
             cont.resume()
