@@ -1,4 +1,5 @@
 import Logging
+import ServiceLifecycle
 import Markdown
 import DiscordModels
 import Models
@@ -9,7 +10,7 @@ import FoundationEssentials
 import Foundation
 #endif
 
-actor EvolutionChecker {
+actor EvolutionChecker: Service {
 
     struct Storage: Sendable, Codable {
         var previousProposals: [Proposal] = []
@@ -35,18 +36,16 @@ actor EvolutionChecker {
         self.queuedProposalsWaitTime = queuedProposalsWaitTime
     }
 
-    nonisolated func run() {
-        Task { [self] in
-            if Task.isCancelled { return }
-            do {
-                try await self.check()
-                try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
-            } catch {
-                logger.report("Couldn't check proposals", error: error)
-                try await Task.sleep(for: .seconds(60 * 5))
-            }
-            self.run()
+    func run() async throws {
+        if Task.isCancelled { return }
+        do {
+            try await self.check()
+            try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
+        } catch {
+            logger.report("Couldn't check proposals", error: error)
+            try await Task.sleep(for: .seconds(60 * 5))
         }
+        try await self.run()
     }
 
     func check() async throws {

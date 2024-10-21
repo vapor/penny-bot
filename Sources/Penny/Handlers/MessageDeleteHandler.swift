@@ -12,7 +12,7 @@ import Models
 struct MessageDeleteHandler {
     let context: HandlerContext
     var discordService: DiscordService {
-        context.services.discordService
+        context.discordService
     }
     let logger = Logger(label: "MessageDeleteHandler")
 

@@ -98,7 +98,7 @@ actor ReactionCache {
         guard let message = await self.getMessage(
             channelId: channelId,
             messageId: messageId,
-            discordService: context.services.discordService
+            discordService: context.discordService
         ) else {
             return false
         }

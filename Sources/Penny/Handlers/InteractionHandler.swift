@@ -111,7 +111,7 @@ private extension InteractionHandler {
                 }
 
                 let (existingExpressions, newExpressions) = try await allExpressions.divided {
-                    try await context.services.pingsService.exists(
+                    try await context.pingsService.exists(
                         expression: $0,
                         forDiscordID: discordId
                     )
@@ -125,8 +125,8 @@ private extension InteractionHandler {
                     """
                 }
 
-                let current = try await context.services.pingsService.get(discordID: discordId)
-                let limit = await context.services.discordService.memberHasRolesForElevatedPublicCommandsAccess(
+                let current = try await context.pingsService.get(discordID: discordId)
+                let limit = await context.discordService.memberHasRolesForElevatedPublicCommandsAccess(
                     member: member
                 ) ? Configuration.autoPingsMaxLimit : Configuration.autoPingsLowLimit
                 if newExpressions.count + current.count > limit {
@@ -140,7 +140,7 @@ private extension InteractionHandler {
 
                 discardingResult {
                     /// Always try to insert `allExpressions` just incase our data is out of sync
-                    try await context.services.pingsService.insert(
+                    try await context.pingsService.insert(
                         allExpressions,
                         forDiscordID: discordId
                     )
@@ -179,7 +179,7 @@ private extension InteractionHandler {
                 }
 
                 let (existingExpressions, newExpressions) = try await allExpressions.divided {
-                    try await context.services.pingsService.exists(
+                    try await context.pingsService.exists(
                         expression: $0,
                         forDiscordID: discordId
                     )
@@ -187,7 +187,7 @@ private extension InteractionHandler {
 
                 discardingResult {
                     /// Always try to remove `allExpressions` just incase our data is out of sync
-                    try await context.services.pingsService.remove(
+                    try await context.pingsService.remove(
                         allExpressions,
                         forDiscordID: discordId
                     )
@@ -270,7 +270,7 @@ private extension InteractionHandler {
 
                     return response
                 } else {
-                    let currentExpressions = try await context.services.pingsService.get(discordID: discordId)
+                    let currentExpressions = try await context.pingsService.get(discordID: discordId)
 
                     let divided = message.divideForPingCommandExactMatchChecking()
                     let folded = message.foldedForPingCommandContainmentChecking()
@@ -340,7 +340,7 @@ private extension InteractionHandler {
                     """
                 }
 
-                let all = try await context.services.faqsService.getAll()
+                let all = try await context.faqsService.getAll()
 
                 if let similar = all.first(where: {
                     $0.key.heavyFolded().filter({ !$0.isWhitespace }) == name &&
@@ -378,7 +378,7 @@ private extension InteractionHandler {
                 ])
 
                 discardingResult {
-                    try await context.services.faqsService.insert(name: name, value: newValue)
+                    try await context.faqsService.insert(name: name, value: newValue)
                 }
 
                 return """
@@ -387,7 +387,7 @@ private extension InteractionHandler {
                 \(newValue)
                 """
             case let .edit(nameHash, _):
-                guard let name = try await context.services.faqsService.getName(hash: nameHash) else {
+                guard let name = try await context.faqsService.getName(hash: nameHash) else {
                     logger.warning(
                         "This should be very rare ... a name doesn't exist anymore to edit",
                         metadata: ["nameHash": .stringConvertible(nameHash)]
@@ -410,7 +410,7 @@ private extension InteractionHandler {
                 ])
 
                 discardingResult {
-                    try await context.services.faqsService.insert(name: name, value: newValue)
+                    try await context.faqsService.insert(name: name, value: newValue)
                 }
 
                 return """
@@ -419,14 +419,14 @@ private extension InteractionHandler {
                 \(newValue)
                 """
             case let .rename(nameHash, _):
-                guard let oldName = try await context.services.faqsService.getName(hash: nameHash) else {
+                guard let oldName = try await context.faqsService.getName(hash: nameHash) else {
                     logger.warning(
                         "This should be very rare ... a name doesn't exist anymore to edit",
                         metadata: ["nameHash": .stringConvertible(nameHash)]
                     )
                     return "The name no longer exists!"
                 }
-                guard let value = try await context.services.faqsService.get(name: oldName) else {
+                guard let value = try await context.faqsService.get(name: oldName) else {
                     logger.warning(
                         "This should be very rare ... a name doesn't have a value anymore",
                         metadata: ["nameHash": .stringConvertible(nameHash)]
@@ -449,8 +449,8 @@ private extension InteractionHandler {
                 ])
 
                 discardingResult {
-                    try await context.services.faqsService.insert(name: name, value: value)
-                    try await context.services.faqsService.remove(name: oldName)
+                    try await context.faqsService.insert(name: name, value: value)
+                    try await context.faqsService.remove(name: oldName)
                 }
 
                 return """
@@ -490,7 +490,7 @@ private extension InteractionHandler {
                     """
                 }
 
-                let all = try await context.services.faqsService.getAll()
+                let all = try await context.faqsService.getAll()
 
                 if let similar = all.first(where: {
                     $0.key.heavyFolded().filter({ !$0.isWhitespace }) == expression &&
@@ -528,7 +528,7 @@ private extension InteractionHandler {
                 ])
 
                 discardingResult {
-                    try await context.services.autoFaqsService.insert(
+                    try await context.autoFaqsService.insert(
                         expression: expression,
                         value: newValue
                     )
@@ -540,7 +540,7 @@ private extension InteractionHandler {
                 \(newValue)
                 """
             case let .edit(expressionHash, _):
-                guard let expression = try await context.services.autoFaqsService.getName(
+                guard let expression = try await context.autoFaqsService.getName(
                     hash: expressionHash
                 ) else {
                     logger.warning(
@@ -565,7 +565,7 @@ private extension InteractionHandler {
                 ])
 
                 discardingResult {
-                    try await context.services.autoFaqsService.insert(
+                    try await context.autoFaqsService.insert(
                         expression: expression,
                         value: newValue
                     )
@@ -577,7 +577,7 @@ private extension InteractionHandler {
                 \(newValue)
                 """
             case let .rename(expressionHash, _):
-                guard let oldExpression = try await context.services.autoFaqsService.getName(
+                guard let oldExpression = try await context.autoFaqsService.getName(
                     hash: expressionHash
                 ) else {
                     logger.warning(
@@ -586,7 +586,7 @@ private extension InteractionHandler {
                     )
                     return "The expression no longer exists!"
                 }
-                guard let value = try await context.services.autoFaqsService.get(
+                guard let value = try await context.autoFaqsService.get(
                     expression: oldExpression
                 ) else {
                     logger.warning(
@@ -611,11 +611,11 @@ private extension InteractionHandler {
                 ])
 
                 discardingResult {
-                    try await context.services.autoFaqsService.insert(
+                    try await context.autoFaqsService.insert(
                         expression: expression,
                         value: value
                     )
-                    try await context.services.autoFaqsService.remove(expression: oldExpression)
+                    try await context.autoFaqsService.remove(expression: oldExpression)
                 }
 
                 return """
@@ -635,7 +635,7 @@ private extension InteractionHandler {
         function: String = #function,
         line: UInt = #line
     ) {
-        Task {
+        self.context.backgroundProcessor.process {
             do {
                 try await operation()
             } catch {
@@ -699,18 +699,18 @@ private extension InteractionHandler {
             [**Authorize**](\(url))
             """
         case .unlink:
-            let response = try await context.services.usersService.getGitHubName(of: discordID)
+            let response = try await context.usersService.getGitHubName(of: discordID)
             switch response {
             case .notLinked:
                 return "You don't have any linked GitHub accounts, so there is nothing to unlink."
             case .userName(let username):
                 let encodedUsername = username.urlPathEncoded()
                 let url = "https://github.com/\(encodedUsername)"
-                try await context.services.usersService.unlinkGitHubID(discordID: discordID)
+                try await context.usersService.unlinkGitHubID(discordID: discordID)
                 return "Successfully unlinked your GitHub account: [\(username)](\(url))"
             }
         case .whoAmI:
-            let response = try await context.services.usersService.getGitHubName(of: discordID)
+            let response = try await context.usersService.getGitHubName(of: discordID)
             switch response {
             case .notLinked:
                 return "You don't have any linked GitHub accounts."
@@ -739,7 +739,7 @@ private extension InteractionHandler {
 
         switch subcommand {
         case .help:
-            let commands = await context.services.discordService.getCommands()
+            let commands = await context.discordService.getCommands()
             let commandId = commands.first(where: { $0.name == "auto-pings" })?.id
             func command(_ subcommand: String) -> String {
                 guard let id = commandId else {
@@ -748,7 +748,7 @@ private extension InteractionHandler {
                 return DiscordUtils.slashCommand(name: "auto-pings", id: id, subcommand: subcommand)
             }
 
-            return try await context.services.renderClient.autoPingsHelp(
+            return try await context.renderClient.autoPingsHelp(
                 context: .init(
                     commands: .init(
                         add: command("add"),
@@ -764,7 +764,7 @@ private extension InteractionHandler {
                 )
             )
         case .list:
-            let items = try await context.services.pingsService.get(discordID: discordId)
+            let items = try await context.pingsService.get(discordID: discordId)
             if items.isEmpty {
                 return "You have not set any expressions to be pinged for."
             } else {
@@ -780,13 +780,13 @@ private extension InteractionHandler {
             guard let hash = Int(expressionInput) else {
                 return "Malformed expression value: '\(expressionInput)'"
             }
-            guard let expression = try await context.services.pingsService.getExpression(
+            guard let expression = try await context.pingsService.getExpression(
                 hash: hash
             ) else {
                 return "Could not find any expression matching your input"
             }
             discardingResult {
-                try await context.services.pingsService.remove(
+                try await context.pingsService.remove(
                     [expression],
                     forDiscordID: discordId
                 )
@@ -838,7 +838,7 @@ private extension InteractionHandler {
                 .requireValue()
                 .requireOption(named: "name")
                 .requireString()
-            if let value = try await context.services.faqsService.get(name: name) {
+            if let value = try await context.faqsService.get(name: name) {
                 return value
             } else {
                 return "No FAQ with name '\(name)' exists at all"
@@ -849,7 +849,7 @@ private extension InteractionHandler {
                 .requireOption(named: "name")
                 .requireString()
             let member = try event.member.requireValue()
-            guard await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+            guard await context.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
                 member: member
             ) else {
                 let rolesString = Constants.Roles
@@ -859,7 +859,7 @@ private extension InteractionHandler {
                     .joined(separator: " ")
                 return "You don't have access to this command; it is only available to \(rolesString)"
             }
-            guard let value = try await context.services.faqsService.get(name: name) else {
+            guard let value = try await context.faqsService.get(name: name) else {
                 return "No FAQ with name '\(name)' exists at all"
             }
             logger.warning("Will remove a FAQ", metadata: [
@@ -868,7 +868,7 @@ private extension InteractionHandler {
             ])
 
             discardingResult {
-                try await context.services.faqsService.remove(name: name)
+                try await context.faqsService.remove(name: name)
             }
 
             return "Removed a FAQ with name '\(name)'"
@@ -886,7 +886,7 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if let value = try await context.services.faqsService.get(name: name) {
+            if let value = try await context.faqsService.get(name: name) {
                 let modalId = ModalID.faqs(.edit(nameHash: name.hash, value: value))
                 return modalId.makeModal()
             } else {
@@ -900,7 +900,7 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if try await context.services.faqsService.get(name: name) != nil {
+            if try await context.faqsService.get(name: name) != nil {
                 let modalId = ModalID.faqs(.rename(nameHash: name.hash, name: name))
                 return modalId.makeModal()
             } else {
@@ -936,7 +936,7 @@ private extension InteractionHandler {
                 .requireValue()
                 .requireOption(named: "expression")
                 .requireString()
-            if let value = try await context.services.autoFaqsService.get(expression: expression) {
+            if let value = try await context.autoFaqsService.get(expression: expression) {
                 return value
             } else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
@@ -947,7 +947,7 @@ private extension InteractionHandler {
                 .requireOption(named: "expression")
                 .requireString()
             let member = try event.member.requireValue()
-            guard await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+            guard await context.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
                 member: member
             ) else {
                 let rolesString = Constants.Roles
@@ -957,7 +957,7 @@ private extension InteractionHandler {
                     .joined(separator: " ")
                 return "You don't have access to this command; it is only available to \(rolesString)"
             }
-            guard let value = try await context.services.autoFaqsService.get(
+            guard let value = try await context.autoFaqsService.get(
                 expression: expression
             ) else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
@@ -968,7 +968,7 @@ private extension InteractionHandler {
             ])
 
             discardingResult {
-                try await context.services.autoFaqsService.remove(expression: expression)
+                try await context.autoFaqsService.remove(expression: expression)
             }
 
             return "Removed an Auto-FAQ with expression '\(expression)'"
@@ -986,7 +986,7 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if let value = try await context.services.autoFaqsService.get(expression: expression) {
+            if let value = try await context.autoFaqsService.get(expression: expression) {
                 let modalId = ModalID.autoFaqs(.edit(expressionHash: expression.hash, value: value))
                 return modalId.makeModal()
             } else {
@@ -1000,7 +1000,7 @@ private extension InteractionHandler {
             if let accessLevelError = try await faqsCommandAccessLevelErrorIfNeeded() {
                 return accessLevelError
             }
-            if try await context.services.autoFaqsService.get(expression: expression) != nil {
+            if try await context.autoFaqsService.get(expression: expression) != nil {
                 let modalId = ModalID.autoFaqs(.rename(
                     expressionHash: expression.hash,
                     expression: expression
@@ -1014,7 +1014,7 @@ private extension InteractionHandler {
 
     /// Returns a `String` if there is an access-levelerror. Otherwise `nil`.
     func faqsCommandAccessLevelErrorIfNeeded() async throws -> String? {
-        if await context.services.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
+        if await context.discordService.memberHasRolesForElevatedRestrictedCommandsAccess(
             member: try event.member.requireValue()
         ) {
             return nil
@@ -1070,7 +1070,7 @@ private extension InteractionHandler {
 
         let foldedName = name.heavyFolded()
         let userId = try (event.member?.user?.id).requireValue()
-        let all = try await context.services.pingsService.get(discordID: userId)
+        let all = try await context.pingsService.get(discordID: userId)
         let queried: ArraySlice<S3AutoPingItems.Expression>
         if foldedName.isEmpty {
             queried = ArraySlice(all
@@ -1105,7 +1105,7 @@ private extension InteractionHandler {
             .requireOption(named: "name")
             .requireString()
         let foldedName = name.heavyFolded()
-        let all = try await context.services.faqsService.getAll().map(\.key)
+        let all = try await context.faqsService.getAll().map(\.key)
         let queried: ArraySlice<String>
         if foldedName.isEmpty {
             queried = ArraySlice(all.sorted { $0 > $1 }.prefix(25))
@@ -1134,7 +1134,7 @@ private extension InteractionHandler {
             .requireOption(named: "expression")
             .requireString()
         let foldedExpression = expression.heavyFolded()
-        let all = try await context.services.autoFaqsService.getAll().map(\.key)
+        let all = try await context.autoFaqsService.getAll().map(\.key)
         let queried: ArraySlice<String>
         if foldedExpression.isEmpty {
             queried = ArraySlice(all.sorted { $0 > $1 }.prefix(25))
@@ -1184,13 +1184,13 @@ private extension InteractionHandler {
     }
     
     func getCoinCount(of discordID: UserSnowflake) async throws -> String {
-        let coinCount = try await context.services.usersService.getCoinCount(of: discordID)
+        let coinCount = try await context.usersService.getCoinCount(of: discordID)
         return "\(DiscordUtils.mention(id: discordID)) has \(coinCount) \(Constants.ServerEmojis.coin.emoji)!"
     }
     
     /// Returns `true` if the acknowledgement was successfully sent
     private func sendAcknowledgement(isEphemeral: Bool) async -> Bool {
-        await context.services.discordService.respondToInteraction(
+        await context.discordService.respondToInteraction(
             id: event.id,
             token: event.token,
             payload: .deferredChannelMessageWithSource(isEphemeral: isEphemeral)
@@ -1198,7 +1198,7 @@ private extension InteractionHandler {
     }
     
     private func sendInteractionResolveFailure() async {
-        await context.services.discordService.respondToInteraction(
+        await context.discordService.respondToInteraction(
             id: event.id,
             token: event.token,
             payload: .channelMessageWithSource(.init(
@@ -1217,12 +1217,12 @@ private extension InteractionHandler {
         forceEphemeral: Bool = false
     ) async {
         if shouldEdit, response.isEditable {
-            await context.services.discordService.editInteraction(
+            await context.discordService.editInteraction(
                 token: event.token,
                 payload: response.makeEditPayload()
             )
         } else {
-            await context.services.discordService.respondToInteraction(
+            await context.discordService.respondToInteraction(
                 id: event.id,
                 token: event.token,
                 payload: response.makeResponse(isEphemeral: forceEphemeral)
