@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v15)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
