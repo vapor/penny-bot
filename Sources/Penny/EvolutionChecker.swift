@@ -48,7 +48,7 @@ actor EvolutionChecker: Service {
         try await self.run()
     }
 
-    func check() async throws {
+    private func check() async throws {
         let proposals = try await evolutionService.list()
 
         if self.storage.previousProposals.isEmpty {
