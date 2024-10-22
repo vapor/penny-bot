@@ -1856,5 +1856,47 @@
     },
     "mute": false,
     "deaf": false
+  },
+  "ready": {
+    "t": "READY",
+    "s": 1,
+    "op": 0,
+    "d": {
+      "v": 10,
+      "user_settings": {},
+      "user": {
+        "verified": true,
+        "username": "Penny",
+        "mfa_enabled": true,
+        "id": "950695294906007573",
+        "global_name": null,
+        "flags": 0,
+        "email": null,
+        "discriminator": "9194",
+        "clan": null,
+        "bot": true,
+        "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
+      },
+      "session_type": "normal",
+      "session_id": "9881166e343123123242qerfwe8f",
+      "resume_gateway_url": "wss://gateway-us-east1-c.discord.gg",
+      "relationships": [],
+      "private_channels": [],
+      "presences": [],
+      "guilds": [{ "unavailable": true, "id": "431917998102675485" }],
+      "guild_join_requests": [],
+      "geo_ordered_rtc_regions": [
+        "frankfurt",
+        "frankfurt-two",
+        "rotterdam",
+        "paris",
+        "milan"
+      ],
+      "auth": {},
+      "application": { "id": "950695294906007573", "flags": 27820032 },
+      "_trace": [
+        "[\"gateway-prd-us-east1-c-r4l1\",{\"micros\":85114,\"calls\":[\"id_created\",{\"micros\":1421,\"calls\":[]},\"session_lookup_time\",{\"micros\":495,\"calls\":[]},\"session_lookup_finished\",{\"micros\":27,\"calls\":[]},\"discord-sessions-prd-1-278\",{\"micros\":82777,\"calls\":[\"start_session\",{\"micros\":60329,\"calls\":[\"discord-api-rpc-69d77b56f9-zjhtc\",{\"micros\":56900,\"calls\":[\"get_user\",{\"micros\":5178},\"get_guilds\",{\"micros\":19200},\"send_scheduled_deletion_message\",{\"micros\":9},\"guild_join_requests\",{\"micros\":1},\"authorized_ip_coro\",{\"micros\":10}]}]},\"starting_guild_connect\",{\"micros\":98,\"calls\":[]},\"presence_started\",{\"micros\":404,\"calls\":[]},\"guilds_started\",{\"micros\":98,\"calls\":[]},\"guilds_connect\",{\"micros\":1,\"calls\":[]},\"presence_connect\",{\"micros\":21819,\"calls\":[]},\"connect_finished\",{\"micros\":21823,\"calls\":[]},\"build_ready\",{\"micros\":20,\"calls\":[]},\"clean_ready\",{\"micros\":1,\"calls\":[]},\"optimize_ready\",{\"micros\":0,\"calls\":[]},\"split_ready\",{\"micros\":1,\"calls\":[]}]}]}]"
+      ]
+    }
   }
 }

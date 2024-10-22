@@ -1,4 +1,5 @@
 @testable import Penny
+import Synchronization
 @testable import DiscordModels
 @testable import Logging
 import Foundation
@@ -75,10 +76,13 @@ extension SerializationNamespace.GatewayProcessingTests {
 
         let sampleService = SampleService()
 
+        let continuation = Mutex<CheckedContinuation<Void, Never>?>(nil)
         let wrappedService = WaiterService(
             underlyingService: sampleService,
             processingOn: context.backgroundProcessor,
-            passingContinuationWith: { _ in /* Do nothing */ }
+            passingContinuationWith: { cont in
+                continuation.withLock { $0 = cont }
+            }
         )
 
         let runningService = Task<Void, Never> {
@@ -90,6 +94,11 @@ extension SerializationNamespace.GatewayProcessingTests {
         runningService.cancel()
 
         #expect(await sampleService.didRun == false)
+
+        /// Don't leak the continuation even considering we are in tests
+        continuation.withLock {
+            $0?.resume()
+        }
     }
 
     @Test

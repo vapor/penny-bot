@@ -17,11 +17,14 @@ actor DiscordEventListener: Service {
         await withDiscardingTaskGroup { taskGroup in
             taskGroup.addTask {
                 await self.bot.connect()
-                await self.afterConnect()
             }
 
             for await event in await bot.events.cancelOnGracefulShutdown() {
                 taskGroup.addTask {
+                    if case .ready = event.data {
+                        await self.afterConnect()
+                    }
+
                     await EventHandler(
                         event: event,
                         context: self.context
@@ -42,6 +45,7 @@ actor DiscordEventListener: Service {
         }
     }
 
+    /// Only needs to be triggered for the first connection
     private func afterConnect() {
         for continuation in self.connectionWaiterContinuations {
             continuation.resume()
