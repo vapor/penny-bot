@@ -47,6 +47,7 @@ actor DiscordEventListener: Service {
 
     /// Only needs to be triggered for the first connection
     private func afterConnect() {
+        if self.isConnected { return }
         for continuation in self.connectionWaiterContinuations {
             continuation.resume()
         }
