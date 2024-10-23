@@ -6,6 +6,8 @@ import NIO
 import DiscordLogger
 import SotoCore
 import AsyncHTTPClient
+import ServiceLifecycle
+import Shared
 import Testing
 
 actor FakeMainService: MainService {
@@ -23,7 +25,7 @@ actor FakeMainService: MainService {
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
         self.cache = await DiscordCache(
             gatewayManager: manager,
-            intents: [.guilds, .guildMembers],
+            intents: [.guilds, .guildMembers, .messageContent, .guildMessages],
             requestAllMembers: .enabled,
             storage: cacheStorage
         )
@@ -54,20 +56,41 @@ actor FakeMainService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        await context.botStateManager.start(onStarted: { })
         return context
     }
 
-    func afterConnectCall(context: HandlerContext) async throws { }
+    func runServices(context: HandlerContext) async throws {
+        /// Services that need to wait for bot connection
+        let botStateManagerWrappedService = WaiterService(
+            underlyingService: context.botStateManager,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.discordEventListener.addConnectionWaiterContinuation($0)
+            }
+        )
+
+        let services = ServiceGroup(
+            services: [
+                context.backgroundProcessor,
+                context.discordEventListener,
+                botStateManagerWrappedService
+            ],
+            logger: Logger(label: "TestServiceGroup")
+        )
+
+        try await services.run()
+    }
 
     static func makeContext(
         manager: any GatewayManager,
         cache: DiscordCache,
         httpClient: HTTPClient
     ) throws -> HandlerContext {
+        let backgroundProcessor = BackgroundProcessor.sharedForTests
         let discordService = DiscordService(
             discordClient: manager.client,
-            cache: cache
+            cache: cache,
+            backgroundProcessor: backgroundProcessor
         )
         let evolutionChecker = EvolutionChecker(
             evolutionService: FakeEvolutionService(),
@@ -84,7 +107,9 @@ actor FakeMainService: MainService {
         )
         let reactionCache = ReactionCache()
         let autoFaqsService = FakeAutoFaqsService()
-        let services = HandlerContext.Services(
+
+        let context = HandlerContext(
+            backgroundProcessor: backgroundProcessor,
             usersService: FakeUsersService(),
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
@@ -109,13 +134,13 @@ actor FakeMainService: MainService {
             swiftReleasesChecker: swiftReleasesChecker,
             reactionCache: reactionCache
         )
-        return HandlerContext(
-            services: services,
-            botStateManager: BotStateManager(
-                services: services,
-                disabledDuration: .seconds(3)
-            )
+        context.botStateManager = BotStateManager(
+            context: context,
+            disabledDuration: .seconds(3)
         )
+        context.discordEventListener = DiscordEventListener(bot: manager, context: context)
+
+        return context
     }
 
     func waitForStateManagerShutdownAndDidShutdownSignals() async {

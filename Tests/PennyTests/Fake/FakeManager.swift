@@ -17,7 +17,13 @@ actor FakeManager: GatewayManager {
     
     init() { }
     
-    func connect() async { }
+    func connect() async {
+        for continuation in eventContinuations {
+            continuation.yield(
+                TestData.decodedFor(gatewayEventKey: "ready")
+            )
+        }
+    }
 
     func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
     func updatePresence(payload: Gateway.Identify.Presence) async { }

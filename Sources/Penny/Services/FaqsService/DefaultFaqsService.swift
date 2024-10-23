@@ -7,6 +7,7 @@ import Models
 import AsyncHTTPClient
 import Logging
 import NIOHTTP1
+import Shared
 
 actor DefaultFaqsService: FaqsService {
 
@@ -23,11 +24,13 @@ actor DefaultFaqsService: FaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient) {
+    init(httpClient: HTTPClient, backgroundProcessor: BackgroundProcessor) {
         self.httpClient = httpClient
-        Task {
-            await self.setUpResetItemsTask()
+        backgroundProcessor.process {
             await self.getFreshItemsForCache()
+        }
+        backgroundProcessor.process {
+            await self.setUpResetItemsTask()
         }
     }
 
@@ -108,31 +111,31 @@ actor DefaultFaqsService: FaqsService {
         self.resetItemsTask?.cancel()
     }
 
-    private func getFreshItemsForCache() {
-        Task {
-            do {
-                /// To freshen the cache
-                _ = try await self.send(request: .all)
-            } catch {
-                logger.report("Couldn't automatically freshen faqs cache", error: error)
-            }
+    private func getFreshItemsForCache() async {
+        do {
+            /// To freshen the cache
+            _ = try await self.send(request: .all)
+        } catch {
+            logger.report("Couldn't automatically freshen faqs cache", error: error)
         }
     }
 
-    private func setUpResetItemsTask() {
+    private func setUpResetItemsTask() async {
         self.resetItemsTask?.cancel()
-        self.resetItemsTask = Task {
+        let task = Task<Void, Never> {
             /// Force-refresh cache after 6 hours of no activity
             if (try? await Task.sleep(for: .seconds(60 * 60 * 6))) != nil {
                 self._cachedItems = nil
-                self.getFreshItemsForCache()
-                self.setUpResetItemsTask()
+                await self.getFreshItemsForCache()
+                await self.setUpResetItemsTask()
             } else {
                 /// If canceled, set up the task again.
                 /// This way, the functions above can cancel this when they've got fresh items
                 /// and this will just reschedule itself for a later time.
-                self.setUpResetItemsTask()
+                await self.setUpResetItemsTask()
             }
         }
+        self.resetItemsTask = task
+        await task.value
     }
 }

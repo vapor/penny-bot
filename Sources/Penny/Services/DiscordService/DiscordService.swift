@@ -1,5 +1,6 @@
 import DiscordBM
 import Logging
+import Shared
 
 actor DiscordService {
 
@@ -10,7 +11,9 @@ actor DiscordService {
     
     private let discordClient: any DiscordClient
     private let cache: DiscordCache
+    private let backgroundProcessor: BackgroundProcessor
     private var logger = Logger(label: "DiscordService")
+
     private var dmChannels: [UserSnowflake: ChannelSnowflake] = [:]
     private var usersAlreadyWarnedAboutClosedDMS: Set<UserSnowflake> = []
     private var vaporGuild: Gateway.GuildCreate {
@@ -33,9 +36,14 @@ actor DiscordService {
         }
     }
     
-    init(discordClient: any DiscordClient, cache: DiscordCache) {
+    init(
+        discordClient: any DiscordClient,
+        cache: DiscordCache,
+        backgroundProcessor: BackgroundProcessor
+    ) {
         self.discordClient = discordClient
         self.cache = cache
+        self.backgroundProcessor = backgroundProcessor
     }
     
     func sendDM(userId: UserSnowflake, payload: Payloads.CreateMessage) async {
@@ -60,11 +68,11 @@ actor DiscordService {
                         "jsonError": "\(jsonError)"
                     ])
                     
-                    Task {
+                    self.backgroundProcessor.process {
                         let userMention = DiscordUtils.mention(id: userId)
                         /// Make it wait 1 to 10 minutes so it's not too
                         /// obvious what message the user was DMed about.
-                        try await Task.sleep(for: .seconds(.random(in: 60...600)))
+                        try? await Task.sleep(for: .seconds(.random(in: 60...600)))
                         await self.sendMessage(
                             channelId: Constants.Channels.thanks.id,
                             payload: .init(

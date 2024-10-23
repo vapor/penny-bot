@@ -6,9 +6,12 @@ import Foundation
 #endif
 import DiscordModels
 import EvolutionMetadataModel
+import GitHubAPI
 @testable import Penny
 
 enum TestData {
+
+    private static let decoder = JSONDecoder()
 
     private static func resource(named name: String) -> Data {
         let fileManager = FileManager.default
@@ -65,6 +68,12 @@ enum TestData {
 
     static func `for`(gatewayEventKey key: String) -> Data? {
         return gatewayEvents[key]
+    }
+
+    static func decodedFor(gatewayEventKey key: String) -> Gateway.Event {
+        let data = gatewayEvents[key]!
+        let decoded = try! decoder.decode(Gateway.Event.self, from: data)
+        return decoded
     }
 
     private static let ghHooksEvents: [String: Data] = {

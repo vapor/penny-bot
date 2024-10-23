@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v14)
+        .macOS(.v15)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
@@ -22,6 +22,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-openapi-generator", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-openapi-runtime", from: "1.0.0"),
         .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0"),
+        .package(url: "https://github.com/swift-server/swift-service-lifecycle.git", from: "2.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.2"),
         .package(
@@ -47,6 +48,7 @@ let package = Package(
             dependencies: [
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "DiscordLogger", package: "DiscordLogger"),
+                .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Markdown", package: "swift-markdown"),
                 .product(name: "SotoS3", package: "soto"),
@@ -165,6 +167,7 @@ let package = Package(
             dependencies: [
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
+                .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Models"),
             ],
