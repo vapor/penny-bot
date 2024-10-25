@@ -18,6 +18,8 @@ actor EvolutionChecker {
 
     var storage = Storage()
 
+    var reportedProposalIDsThatContainErrors: Set<String> = []
+
     /// The minimum time to wait before sending a queued-proposal
     let queuedProposalsWaitTime: Double
 
@@ -40,7 +42,7 @@ actor EvolutionChecker {
             if Task.isCancelled { return }
             do {
                 try await self.check()
-                try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
+                try await Task.sleep(for: .seconds(60 * 30)) /// 30 mins
             } catch {
                 logger.report("Couldn't check proposals", error: error)
                 try await Task.sleep(for: .seconds(60 * 5))
@@ -54,6 +56,24 @@ actor EvolutionChecker {
 
         if self.storage.previousProposals.isEmpty {
             self.storage.previousProposals = proposals
+            return
+        }
+
+        let proposalIDsWithError = proposals.filter {
+            !($0.errors ?? []).isEmpty
+        }.map(\.id)
+        if !proposalIDsWithError.isEmpty {
+            let allAreAlreadyReported = proposalIDsWithError.allSatisfy {
+                self.reportedProposalIDsThatContainErrors.contains($0)
+            }
+            self.reportedProposalIDsThatContainErrors.formUnion(proposalIDsWithError)
+            self.logger.log(
+                level: allAreAlreadyReported ? .debug : .warning,
+                "Will not continue checking proposals because there is an error in one of them",
+                metadata: [
+                    "proposalsWithError": .stringConvertible(proposalIDsWithError)
+                ]
+            )
             return
         }
 
@@ -208,7 +228,7 @@ actor EvolutionChecker {
                 \(upcomingFeatureFlag)
                 \(authorsString)
                 \(reviewManagersString)
-                """.replaceDoubleNewlinesWithSingleNewline(),
+                """.replaceTripleNewlinesWithDoubleNewlines(),
                 url: proposalLink,
                 color: proposal.status.color
             )],
@@ -269,7 +289,7 @@ actor EvolutionChecker {
                 \(upcomingFeatureFlag)
                 \(authorsString)
                 \(reviewManagersString)
-                """.replaceDoubleNewlinesWithSingleNewline(),
+                """.replaceTripleNewlinesWithDoubleNewlines(),
                 url: proposalLink,
                 color: proposal.status.color
             )],
@@ -445,7 +465,7 @@ private extension Collection {
 }
 
 private extension String {
-    func replaceDoubleNewlinesWithSingleNewline() -> String {
-        self.replacingOccurrences(of: "\n\n", with: "\n")
+    func replaceTripleNewlinesWithDoubleNewlines() -> String {
+        self.replacingOccurrences(of: "\n\n\n", with: "\n\n")
     }
 }
