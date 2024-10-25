@@ -69,7 +69,7 @@ actor EvolutionChecker {
             self.reportedProposalIDsThatContainErrors.formUnion(proposalIDsWithError)
             self.logger.log(
                 level: allAreAlreadyReported ? .debug : .warning,
-                "Will not continue checking proposals because there is an error in one of them",
+                "Will not continue checking proposals because there is an error in some of them",
                 metadata: [
                     "proposalsWithError": .stringConvertible(proposalIDsWithError)
                 ]
