@@ -63,9 +63,8 @@ actor EvolutionChecker {
             !($0.errors ?? []).isEmpty
         }.map(\.id)
         if !proposalIDsWithError.isEmpty {
-            let allAreAlreadyReported = proposalIDsWithError.allSatisfy {
-                self.reportedProposalIDsThatContainErrors.contains($0)
-            }
+            let allAreAlreadyReported = self.reportedProposalIDsThatContainErrors
+                .isSuperset(of: proposalIDsWithError) 
             self.reportedProposalIDsThatContainErrors.formUnion(proposalIDsWithError)
             self.logger.log(
                 level: allAreAlreadyReported ? .debug : .warning,
