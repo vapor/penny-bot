@@ -18,6 +18,8 @@ actor EvolutionChecker {
 
     var storage = Storage()
 
+    var reportedProposalIDsThatContainErrors: Set<String> = []
+
     /// The minimum time to wait before sending a queued-proposal
     let queuedProposalsWaitTime: Double
 
@@ -54,6 +56,23 @@ actor EvolutionChecker {
 
         if self.storage.previousProposals.isEmpty {
             self.storage.previousProposals = proposals
+            return
+        }
+
+        let proposalIDsWithError = proposals.filter {
+            !($0.errors ?? []).isEmpty
+        }.map(\.id)
+        if !proposalIDsWithError.isEmpty {
+            let allAreAlreadyReported = self.reportedProposalIDsThatContainErrors
+                .isSuperset(of: proposalIDsWithError) 
+            self.reportedProposalIDsThatContainErrors.formUnion(proposalIDsWithError)
+            self.logger.log(
+                level: allAreAlreadyReported ? .debug : .warning,
+                "Will not continue checking proposals because there are errors in some of them",
+                metadata: [
+                    "proposalsWithError": .stringConvertible(proposalIDsWithError)
+                ]
+            )
             return
         }
 
@@ -208,7 +227,7 @@ actor EvolutionChecker {
                 \(upcomingFeatureFlag)
                 \(authorsString)
                 \(reviewManagersString)
-                """.replaceDoubleNewlinesWithSingleNewline(),
+                """.replaceTripleNewlinesWithDoubleNewlines(),
                 url: proposalLink,
                 color: proposal.status.color
             )],
@@ -269,7 +288,7 @@ actor EvolutionChecker {
                 \(upcomingFeatureFlag)
                 \(authorsString)
                 \(reviewManagersString)
-                """.replaceDoubleNewlinesWithSingleNewline(),
+                """.replaceTripleNewlinesWithDoubleNewlines(),
                 url: proposalLink,
                 color: proposal.status.color
             )],
@@ -445,7 +464,7 @@ private extension Collection {
 }
 
 private extension String {
-    func replaceDoubleNewlinesWithSingleNewline() -> String {
-        self.replacingOccurrences(of: "\n\n", with: "\n")
+    func replaceTripleNewlinesWithDoubleNewlines() -> String {
+        self.replacingOccurrences(of: "\n\n\n", with: "\n\n")
     }
 }
