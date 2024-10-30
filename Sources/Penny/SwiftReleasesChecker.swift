@@ -50,9 +50,9 @@ actor SwiftReleasesChecker {
         for release in newReleases {
             let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/swiftlang/swift/releases/tag/\(release.tag)"
             await discordService.sendMessage(
-                channelId: Constants.Channels.release.id,
+                channelId: Constants.Channels.news.id,
                 payload: .init(embeds: [.init(
-                    title: "Swift Release \(release.stableName)".unicodesPrefix(256),
+                    title: "Swift \(release.stableName) Release".unicodesPrefix(256),
                     url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
                     color: .green(scheme: .dark),
                     image: .init(url: .exact(image))
