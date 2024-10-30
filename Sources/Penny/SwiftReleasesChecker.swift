@@ -54,7 +54,7 @@ actor SwiftReleasesChecker {
                 payload: .init(embeds: [.init(
                     title: "Swift \(release.stableName) Release".unicodesPrefix(256),
                     url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
-                    color: .green(scheme: .dark),
+                    color: .cyan,
                     image: .init(url: .exact(image))
                 )])
             )
