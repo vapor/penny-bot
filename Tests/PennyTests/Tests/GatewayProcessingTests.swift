@@ -388,7 +388,7 @@ extension SerializationNamespace.GatewayProcessingTests {
     func swiftReleasesChecker() async throws {
         context.services.swiftReleasesChecker.run()
 
-        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.release.id)
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.news.id)
         let _message = await responseStorage.awaitResponse(at: endpoint).value
         let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
 
