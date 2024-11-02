@@ -75,7 +75,10 @@ struct SwiftOrgRelease: Codable, Hashable {
     let tag: String
 
     var stableName: String {
-        let components = self.name.components(separatedBy: ".")
+        let components = self.name.split(
+            separator: ".",
+            omittingEmptySubsequences: false
+        )
         if components.count == 2 {
             return self.name + ".0"
         } else {
