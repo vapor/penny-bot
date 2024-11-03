@@ -50,11 +50,11 @@ actor SwiftReleasesChecker: Service {
         for release in newReleases {
             let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/swiftlang/swift/releases/tag/\(release.tag)"
             await discordService.sendMessage(
-                channelId: Constants.Channels.release.id,
+                channelId: Constants.Channels.news.id,
                 payload: .init(embeds: [.init(
-                    title: "Swift Release \(release.stableName)".unicodesPrefix(256),
+                    title: "Swift \(release.stableName) Release".unicodesPrefix(256),
                     url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
-                    color: .green(scheme: .dark),
+                    color: .cyan,
                     image: .init(url: .exact(image))
                 )])
             )
@@ -75,7 +75,10 @@ struct SwiftOrgRelease: Codable, Hashable {
     let tag: String
 
     var stableName: String {
-        let components = self.name.components(separatedBy: ".")
+        let components = self.name.split(
+            separator: ".",
+            omittingEmptySubsequences: false
+        )
         if components.count == 2 {
             return self.name + ".0"
         } else {

@@ -472,11 +472,11 @@ extension SerializationNamespace.GatewayProcessingTests {
             try await self.context.swiftReleasesChecker.run()
         }
 
-        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.release.id)
+        let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.news.id)
         let _message = await responseStorage.awaitResponse(at: endpoint).value
         let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
 
-        #expect(message.embeds?.first?.title == "Swift Release 6.0.1")
+        #expect(message.embeds?.first?.title == "Swift 6.0.1 Release")
 
         /// No more messages should be sent
         let _newMessage = await responseStorage.awaitResponse(
