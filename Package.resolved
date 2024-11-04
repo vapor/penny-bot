@@ -69,8 +69,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattpolzin/OpenAPIKit",
       "state" : {
-        "revision" : "35dd374038497a8118d89300851861fb40c36209",
-        "version" : "3.2.2"
+        "revision" : "5b5ee49624dda5b3e3b85aff184f44a007862fb7",
+        "version" : "3.3.0"
       }
     },
     {
@@ -177,8 +177,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-crypto.git",
       "state" : {
-        "revision" : "8fa345c2081cfbd4851dffff5dd5bed48efe6081",
-        "version" : "3.9.0"
+        "revision" : "06dc63c6d8da54ee11ceb268cde1fa68161afc96",
+        "version" : "3.9.1"
       }
     },
     {
