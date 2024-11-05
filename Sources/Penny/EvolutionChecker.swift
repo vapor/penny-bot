@@ -62,10 +62,12 @@ actor EvolutionChecker {
         let proposalIDsWithError = proposals.filter {
             !($0.errors ?? []).isEmpty
         }.map(\.id)
-        if !proposalIDsWithError.isEmpty {
+        switch proposalIDsWithError.isEmpty {
+        case false:
             let allAreAlreadyReported = self.reportedProposalIDsThatContainErrors
-                .isSuperset(of: proposalIDsWithError) 
+                .isSuperset(of: proposalIDsWithError)
             self.reportedProposalIDsThatContainErrors.formUnion(proposalIDsWithError)
+
             self.logger.log(
                 level: allAreAlreadyReported ? .debug : .warning,
                 "Will not continue checking proposals because there are errors in some of them",
@@ -73,7 +75,10 @@ actor EvolutionChecker {
                     "proposalsWithError": .stringConvertible(proposalIDsWithError)
                 ]
             )
+
             return
+        case true:
+            self.reportedProposalIDsThatContainErrors.removeAll()
         }
 
         /// Queue newly-added proposals
