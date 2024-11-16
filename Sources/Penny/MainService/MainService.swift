@@ -13,5 +13,5 @@ protocol MainService: Sendable {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext
-    func afterConnectCall(context: HandlerContext) async throws
+    func runServices(context: HandlerContext) async throws
 }
