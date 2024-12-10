@@ -9,12 +9,14 @@ import Logging
 enum Constants {
 
     enum DeploymentEnvironment {
+        case testing
         case local
         case prod
 
         init() {
             let value = ProcessInfo.processInfo.environment["DEPLOYMENT_ENVIRONMENT"]
             switch value?.lowercased() {
+            case "testing": self = .testing
             case "local": self = .local
             case "prod": self = .prod
             default:

@@ -20,7 +20,7 @@ extension SerializationNamespace {
 
         init() async throws {
             /// Simulate prod
-            setenv("DEPLOYMENT_ENVIRONMENT", "prod", 1)
+            setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
             /// First reset the background runner

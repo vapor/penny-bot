@@ -50,7 +50,7 @@ actor BotStateManager: Service {
         switch Constants.deploymentEnvironment {
         case .local:
             break
-        case .prod:
+        case .testing, .prod:
             self.context.backgroundProcessor.process {
                 await self.cancelIfCachePopulationTakesTooLong()
             }
@@ -65,7 +65,9 @@ actor BotStateManager: Service {
     }
 
     func addCachesPopulationContinuation(_ cont: CheckedContinuation<Void, Never>) {
-        guard Constants.deploymentEnvironment == .prod else {
+        switch Constants.deploymentEnvironment {
+        case .local: break
+        case .testing, .prod:
             cont.resume()
             return
         }
@@ -88,7 +90,9 @@ actor BotStateManager: Service {
     }
 
     func canRespond(to event: Gateway.Event) async -> Bool {
-        if Constants.deploymentEnvironment == .prod {
+        switch Constants.deploymentEnvironment {
+        case .local: break
+        case .testing, .prod:
             await checkIfItsASignal(event: event)
         }
         return canRespond
@@ -147,7 +151,10 @@ actor BotStateManager: Service {
     }
 
     private func send(_ signal: StateManagerSignal) async {
-        guard Constants.deploymentEnvironment == .prod else { return }
+        switch Constants.deploymentEnvironment {
+        case .local: break
+        case .testing, .prod: return
+        }
 
         let content = makeSignalMessage(text: signal.rawValue, id: self.id)
         await context.discordService.sendMessage(
