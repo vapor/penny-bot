@@ -105,7 +105,9 @@ actor BotStateManager: Service {
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
             logger.trace("Received 'shutdown' signal")
-            await shutdown()
+            self.context.backgroundProcessor.process {
+                await self.shutdown()
+            }
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             logger.trace("Received 'didShutdown' signal")
             self.context.backgroundProcessor.process {
