@@ -35,10 +35,6 @@ extension SerializationNamespace {
             }
             await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
         }
-
-        deinit {
-            mainServiceTask.cancel()
-        }
     }
 }
 
