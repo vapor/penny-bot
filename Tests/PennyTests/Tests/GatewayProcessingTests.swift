@@ -11,7 +11,7 @@ import Testing
 
 extension SerializationNamespace {
     @Suite
-    final class GatewayProcessingTests: Sendable {
+    struct GatewayProcessingTests: Sendable {
         var responseStorage: FakeResponseStorage { .shared }
         let manager = FakeManager()
         let fakeMainService: FakeMainService
