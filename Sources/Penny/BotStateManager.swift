@@ -79,7 +79,7 @@ actor BotStateManager: Service {
 
     private func cancelIfCachePopulationTakesTooLong() async {
         guard (try? await Task.sleep(for: .seconds(120))) != nil else {
-            return /// cancelled
+            return /// Somewhere else cancelled the Task
         }
         if !canRespond {
             await startAllowingResponses()
@@ -122,7 +122,7 @@ actor BotStateManager: Service {
         self.canRespond = false
 
         guard (try? await Task.sleep(for: disableDuration)) != nil else {
-            return /// cancelled
+            return /// Somewhere else cancelled the Task
         }
 
         await startAllowingResponses()
