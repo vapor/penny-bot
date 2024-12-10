@@ -152,8 +152,8 @@ actor BotStateManager: Service {
 
     private func send(_ signal: StateManagerSignal) async {
         switch Constants.deploymentEnvironment {
-        case .local: break
-        case .testing, .prod: return
+        case .local: return
+        case .testing, .prod: break
         }
 
         let content = makeSignalMessage(text: signal.rawValue, id: self.id)
