@@ -11,7 +11,7 @@ import Testing
 
 extension SerializationNamespace {
     @Suite
-    struct GatewayProcessingTests: Sendable {
+    final class GatewayProcessingTests: Sendable {
         var responseStorage: FakeResponseStorage { .shared }
         let manager = FakeManager()
         let fakeMainService: FakeMainService
@@ -34,6 +34,10 @@ extension SerializationNamespace {
                 try await Penny.start(mainService: fakeMainService)
             }
             await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
+        }
+
+        deinit {
+            mainServiceTask.cancel()
         }
     }
 }
