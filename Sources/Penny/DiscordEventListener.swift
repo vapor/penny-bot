@@ -19,8 +19,8 @@ actor DiscordEventListener: Service {
                 await self.bot.connect()
             }
 
-            for await event in await bot.events.cancelOnGracefulShutdown() {
-                taskGroup.addTask {
+            taskGroup.addTask {
+                for await event in await self.bot.events.cancelOnGracefulShutdown() {
                     if case .ready = event.data {
                         await self.afterConnect()
                     }
