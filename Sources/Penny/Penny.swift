@@ -21,31 +21,31 @@ struct Penny {
         )
         let awsClient = AWSClient(httpClient: httpClient)
 
-        try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
+        do {
+            try await mainService.bootstrapLoggingSystem(httpClient: httpClient)
 
-        let bot = try await mainService.makeBot(
-            httpClient: httpClient
-        )
-        let cache = try await mainService.makeCache(bot: bot)
+            let bot = try await mainService.makeBot(
+                httpClient: httpClient
+            )
+            let cache = try await mainService.makeCache(bot: bot)
 
-        let context = try await mainService.beforeConnectCall(
-            bot: bot,
-            cache: cache,
-            httpClient: httpClient,
-            awsClient: awsClient
-        )
+            let context = try await mainService.beforeConnectCall(
+                bot: bot,
+                cache: cache,
+                httpClient: httpClient,
+                awsClient: awsClient
+            )
 
-        await bot.connect()
+            try await mainService.runServices(context: context)
 
-        try await mainService.afterConnectCall(context: context)
-
-        for await event in await bot.events {
-            EventHandler(event: event, context: context).handle()
+            /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
+            /// Shutdown in reverse order of dependence.
+            try await awsClient.shutdown()
+            try await httpClient.shutdown()
+        } catch {
+            try await awsClient.shutdown()
+            try await httpClient.shutdown()
+            throw error
         }
-
-        /// These shutdown calls are only useful for tests where we call `Penny.main()` repeatedly
-        /// Shutdown in reverse order of dependence.
-        try await awsClient.shutdown()
-        try await httpClient.shutdown()
     }
 }

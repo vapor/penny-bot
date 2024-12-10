@@ -1,13 +1,15 @@
 @testable import DiscordBM
+@testable import Penny
 import Atomics
 import Testing
+import Shared
 
 actor FakeResponseStorage {
-    
+
+    private let backgroundProcessor: BackgroundProcessor = .sharedForTests
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
-    
-    init() { }
+
     static var shared = FakeResponseStorage()
 
     private static let idGenerator = ManagedAtomic(UInt(0))
@@ -48,8 +50,8 @@ actor FakeResponseStorage {
         continuation: CheckedContinuation<AnyBox, Never>,
         sourceLocation: Testing.SourceLocation
     ) {
-        Task {
-            await _expect(
+        self.backgroundProcessor.process {
+            await self._expect(
                 at: endpoint,
                 expectFailure: expectFailure,
                 continuation: continuation,
@@ -67,7 +69,7 @@ actor FakeResponseStorage {
         if let response = unhandledResponses.retrieve(endpoint: endpoint) {
             if expectFailure {
                 Issue.record(
-                    "Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                    "Was expecting a failure at '\(endpoint.testingKey)'. continuations: \(self.continuations) | unhandledResponses: \(self.unhandledResponses)",
                     sourceLocation: sourceLocation
                 )
                 continuation.resume(returning: AnyBox(Optional<Never>.none as Any))
@@ -77,12 +79,12 @@ actor FakeResponseStorage {
         } else {
             let id = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
             continuations.append(endpoint: endpoint, id: id, continuation: continuation)
-            Task {
-                try await Task.sleep(for: .seconds(3))
-                if continuations.retrieve(id: id) != nil {
+            self.backgroundProcessor.process {
+                try? await Task.sleep(for: .seconds(3))
+                if await self.retrieveFromContinuations(id: id) != nil {
                     if !expectFailure {
                         Issue.record(
-                            "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            "Penny did not respond in-time at '\(endpoint.testingKey)'. continuations: \(await self.continuations) | unhandledResponses: \(await self.unhandledResponses)",
                             sourceLocation: sourceLocation
                         )
                     }
@@ -91,7 +93,7 @@ actor FakeResponseStorage {
                 } else {
                     if expectFailure {
                         Issue.record(
-                            "Expected a failure at '\(endpoint.testingKey)'. continuations: \(continuations) | unhandledResponses: \(unhandledResponses)",
+                            "Expected a failure at '\(endpoint.testingKey)'. continuations: \(await self.continuations) | unhandledResponses: \(await self.unhandledResponses)",
                             sourceLocation: sourceLocation
                         )
                     }
@@ -99,7 +101,11 @@ actor FakeResponseStorage {
             }
         }
     }
-    
+
+    private func retrieveFromContinuations(id: UInt) -> Continuations.Cont? {
+        self.continuations.retrieve(id: id)
+    }
+
     /// Used to notify this storage that a response have been received.
     func respond(to endpoint: any Endpoint, with payload: AnyBox) {
         if let continuation = continuations.retrieve(endpoint: endpoint) {

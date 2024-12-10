@@ -17,7 +17,7 @@ actor DefaultCachesService: CachesService {
         do {
             let storage = try await self.cachesRepo.get()
             await storage.populateServicesAndReport(context: context)
-            self.delete()
+            await self.delete()
         } catch {
             logger.report("Couldn't get CachesStorage", error: error)
         }
@@ -25,13 +25,11 @@ actor DefaultCachesService: CachesService {
 
     /// Delete the object from the repository.
     /// We don't care if it succeeds or not.
-    private func delete() {
-        Task {
-            do {
-                try await self.cachesRepo.delete()
-            } catch {
-                logger.report("Couldn't delete CachesStorage", error: error)
-            }
+    private func delete() async {
+        do {
+            try await self.cachesRepo.delete()
+        } catch {
+            logger.report("Couldn't delete CachesStorage", error: error)
         }
     }
 

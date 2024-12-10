@@ -1,4 +1,5 @@
 import Logging
+import ServiceLifecycle
 import DiscordBM
 import Collections
 #if canImport(FoundationEssentials)
@@ -7,7 +8,8 @@ import FoundationEssentials
 import Foundation
 #endif
 
-actor SwiftReleasesChecker {
+actor SwiftReleasesChecker: Service {
+    
     struct Storage: Sendable, Codable {
         var currentReleases: [SwiftOrgRelease] = []
     }
@@ -23,17 +25,15 @@ actor SwiftReleasesChecker {
         self.discordService = discordService
     }
 
-    nonisolated func run() {
-        Task { [self] in
-            if Task.isCancelled { return }
-            do {
-                try await self.check()
-            } catch {
-                logger.report("Couldn't check Swift releases", error: error)
-            }
-            try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
-            self.run()
+    func run() async throws {
+        if Task.isCancelled { return }
+        do {
+            try await self.check()
+        } catch {
+            logger.report("Couldn't check Swift releases", error: error)
         }
+        try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
+        try await self.run()
     }
 
     private func check() async throws {

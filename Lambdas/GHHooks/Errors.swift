@@ -17,7 +17,7 @@ enum Errors: Error, CustomStringConvertible, LocalizedError {
         case let .headerNotFound(name, headers):
             return "headerNotFound(name: \(name), headers: \(headers))"
         case let .multipleErrors(errors):
-            return "multipleErrors(\(errors.map({ "\($0)" })))"
+            return "multipleErrors(\(errors.map({ String(reflecting: $0) }).joined(separator: ";\n")))"
         }
     }
 

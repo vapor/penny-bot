@@ -1,4 +1,5 @@
 import Logging
+import ServiceLifecycle
 import DiscordBM
 import Markdown
 #if canImport(FoundationEssentials)
@@ -7,8 +8,8 @@ import FoundationEssentials
 import Foundation
 #endif
 
-actor SOChecker {
-
+actor SOChecker: Service {
+    
     struct Storage: Sendable, Codable {
         var lastCheckDate: Date?
     }
@@ -24,21 +25,24 @@ actor SOChecker {
         self.discordService = discordService
     }
 
-    nonisolated func run() {
-        #if !DEBUG
-        /// Cloudflare seems to be blocking us although we have an auth token.
-        return
-        #endif
-        Task { [self] in
-            if Task.isCancelled { return }
-            do {
-                try await self.check()
-            } catch {
-                logger.report("Couldn't check SO questions", error: error)
-            }
-            try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
-            self.run()
+    func run() async throws {
+        switch Constants.deploymentEnvironment {
+        case .testing, .local: break
+        case .prod:
+            /// Cloudflare seems to be blocking us although we have an auth token.
+            /// Waits forever:
+            let (stream, _) = AsyncStream.makeStream(of: Void.self)
+            await stream.first { _ in true }
+            return /// Just in case
         }
+        if Task.isCancelled { return }
+        do {
+            try await self.check()
+        } catch {
+            logger.report("Couldn't check SO questions", error: error)
+        }
+        try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
+        try await self.run()
     }
 
     func check() async throws {

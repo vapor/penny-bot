@@ -10,11 +10,11 @@ jobs:
   unit-tests:
     uses: vapor/ci/.github/workflows/run-unit-tests.yml@main
     with:
+      with_release_mode_testing: true
       with_coverage: false
       with_tsan: false
       with_api_check: false
       with_deps_submission: true
-      with_gh_codeql: false # Temporary, until the action actually works
 
   cloudformation-lint:
     name: Check CloudFormation

@@ -1,33 +1,106 @@
 @testable import Penny
+import Synchronization
 @testable import DiscordModels
 @testable import Logging
+import Foundation
 import DiscordGateway
+import ServiceLifecycle
 import Models
+import Shared
 import Testing
 
 extension SerializationNamespace {
     @Suite
-    struct GatewayProcessingTests {
+    final class GatewayProcessingTests: Sendable {
         var responseStorage: FakeResponseStorage { .shared }
         let manager = FakeManager()
-        var context: HandlerContext!
+        let fakeMainService: FakeMainService
+        let context: HandlerContext
+        let mainServiceTask: Task<Void, any Error>
 
         init() async throws {
+            /// Simulate prod
+            setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-            // reset the storage
+            /// First reset the background runner
+            BackgroundProcessor.sharedForTests = BackgroundProcessor()
+            /// Then reset the storage
             FakeResponseStorage.shared = FakeResponseStorage()
             let fakeMainService = try await FakeMainService(manager: self.manager)
+            self.fakeMainService = fakeMainService
             self.context = fakeMainService.context
-            Task {
+            mainServiceTask = Task<Void, any Error> {
                 try await Penny.start(mainService: fakeMainService)
             }
             await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
+        }
+
+        deinit {
+            mainServiceTask.cancel()
         }
     }
 }
 
 extension SerializationNamespace.GatewayProcessingTests {
+    @Test
+    func waiterServiceRunsUnderlyingService() async throws {
+        actor SampleService: Service {
+            var didRun = false
+            func run() async throws {
+                self.didRun = true
+            }
+        }
+
+        let sampleService = SampleService()
+
+        let wrappedService = WaiterService(
+            underlyingService: sampleService,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { await self.context.botStateManager.addCachesPopulationContinuation($0) }
+        )
+
+        try await wrappedService.run()
+
+        #expect(await sampleService.didRun == true)
+    }
+
+    @Test
+    func waiterServiceWaitsForUnderlyingService() async throws {
+        actor SampleService: Service {
+            var didRun = false
+            func run() async throws {
+                self.didRun = true
+            }
+        }
+
+        let sampleService = SampleService()
+
+        let continuation = Mutex<CheckedContinuation<Void, Never>?>(nil)
+        let wrappedService = WaiterService(
+            underlyingService: sampleService,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: { cont in
+                continuation.withLock { $0 = cont }
+            }
+        )
+
+        let runningService = Task<Void, Never> {
+            try! await wrappedService.run()
+        }
+
+        try await Task.sleep(for: .seconds(5))
+
+        runningService.cancel()
+
+        #expect(await sampleService.didRun == false)
+
+        /// Don't leak the continuation even considering we are in tests
+        continuation.withLock {
+            $0?.resume()
+        }
+    }
+
     @Test
     func commandsRegisterOnStartup() async throws {
         await CommandsManager(context: context).registerCommands()
@@ -290,25 +363,28 @@ extension SerializationNamespace.GatewayProcessingTests {
     func evolutionChecker() async throws {
         /// This tests expects the `CachesStorage` population to have worked correctly
         /// and have already populated `EvolutionChecker.previousProposals`.
-        
+
         /// This is so the proposals are send as soon as they're queued, in tests.
-        context.services.evolutionChecker.run()
-        
+        let serviceTask = Task<Void, any Error> { [self] in
+            try await self.context.evolutionChecker.run()
+        }
+
+
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.evolution.id)
         let _messages = await [
-            responseStorage.awaitResponse(at: endpoint).value,
-            responseStorage.awaitResponse(at: endpoint).value
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value
         ]
         let messages = try _messages.map {
             try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
         }
-        
+
         /// New proposal message
         do {
             let message = try #require(messages.first(where: {
                 $0.embeds?.first?.title?.contains("stride") == true
             }), "\(messages)")
-            
+
             #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0051-stride-semantics.md")
 
             let buttons = try #require(message.components?.first?.components, "\(message)")
@@ -330,13 +406,13 @@ extension SerializationNamespace.GatewayProcessingTests {
             #expect(embed.description == "> \n\n**Status: Withdrawn**\n\n**Author(s):** [Erica Sadun](http://github.com/erica)\n")
             #expect(embed.color == .brown)
         }
-        
+
         /// Updated proposal message
         do {
             let message = try #require(messages.first(where: {
                 $0.embeds?.first?.title?.contains("(most)") == true
             }), "\(messages)")
-            
+
             #expect(message.embeds?.first?.url == "https://github.com/apple/swift-evolution/blob/main/proposals/0001-keywords-as-argument-labels.md")
 
             let buttons = try #require(message.components?.first?.components)
@@ -358,35 +434,43 @@ extension SerializationNamespace.GatewayProcessingTests {
             #expect(embed.description == "> Argument labels are an important part of the interface of a Swift function, describing what particular arguments to the function do and improving readability. Sometimes, the most natural label for an argument coincides with a language keyword, such as `in`, `repeat`, or `defer`. Such keywords should be allowed as argument labels, allowing better expression of these interfaces.\n\n**Status:** Implemented -> **Active Review**\n\n**Author(s):** [Doug Gregor](https://github.com/DougGregor)\n")
             #expect(embed.color == .orange)
         }
+
+        serviceTask.cancel()
     }
     
     @Test
     func soChecker() async throws {
-        context.services.soChecker.run()
-        
+        let serviceTask = Task<Void, any Error> { [self] in
+            try await self.context.soChecker.run()
+        }
+
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.stackOverflow.id)
         let _messages = await [
-            responseStorage.awaitResponse(at: endpoint).value,
-            responseStorage.awaitResponse(at: endpoint).value,
-            responseStorage.awaitResponse(at: endpoint).value,
-            responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
+            self.responseStorage.awaitResponse(at: endpoint).value,
         ]
         let messages = try _messages.map {
             try #require($0 as? Payloads.CreateMessage, "\($0), messages: \(_messages)")
         }
-        
+
         #expect(messages[0].embeds?.first?.title == "Vapor Logger doesn't log any messages into System Log")
         #expect(messages[1].embeds?.first?.title == "Postgre-Kit: Unable to complete code access to PostgreSQL DB")
         #expect(messages[2].embeds?.first?.title == "How to decide to use siblings or parent/children relations in vapor?")
         #expect(messages[3].embeds?.first?.title == "How to make a optional query filter in Vapor")
 
-        let lastCheckDate = await context.services.soChecker.storage.lastCheckDate
+        let lastCheckDate = await self.context.soChecker.storage.lastCheckDate
         #expect(lastCheckDate != nil)
+
+        serviceTask.cancel()
     }
 
     @Test
     func swiftReleasesChecker() async throws {
-        context.services.swiftReleasesChecker.run()
+        let serviceTask = Task<Void, any Error> { [self] in
+            try await self.context.swiftReleasesChecker.run()
+        }
 
         let endpoint = APIEndpoint.createMessage(channelId: Constants.Channels.news.id)
         let _message = await responseStorage.awaitResponse(at: endpoint).value
@@ -401,6 +485,8 @@ extension SerializationNamespace.GatewayProcessingTests {
         ).value
         let newMessage: Never? = try #require(_newMessage as? Optional<Never>)
         #expect(newMessage == .none)
+
+        serviceTask.cancel()
     }
 
     @Test

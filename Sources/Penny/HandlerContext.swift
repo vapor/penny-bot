@@ -1,22 +1,50 @@
 import Rendering
 import Shared
+import ServiceLifecycle
 
-struct HandlerContext: Sendable {
+final class HandlerContext: Sendable {
+    /// Contain references to this class so need to be initialized separately
+    nonisolated(unsafe) var botStateManager: BotStateManager!
+    nonisolated(unsafe) var discordEventListener: DiscordEventListener!
 
-    struct Services: Sendable {
-        let usersService: any UsersService
-        let pingsService: any AutoPingsService
-        let faqsService: any FaqsService
-        let autoFaqsService: any AutoFaqsService
-        let cachesService: any CachesService
-        let discordService: DiscordService
-        let renderClient: RenderClient
-        let evolutionChecker: EvolutionChecker
-        let soChecker: SOChecker
-        let swiftReleasesChecker: SwiftReleasesChecker
-        let reactionCache: ReactionCache
+    let backgroundProcessor: BackgroundProcessor
+    let usersService: any UsersService
+    let pingsService: any AutoPingsService
+    let faqsService: any FaqsService
+    let autoFaqsService: any AutoFaqsService
+    let cachesService: any CachesService
+    let discordService: DiscordService
+    let renderClient: RenderClient
+    let evolutionChecker: EvolutionChecker
+    let soChecker: SOChecker
+    let swiftReleasesChecker: SwiftReleasesChecker
+    let reactionCache: ReactionCache
+
+    init(
+        backgroundProcessor: BackgroundProcessor,
+        usersService: any UsersService,
+        pingsService: any AutoPingsService,
+        faqsService: any FaqsService,
+        autoFaqsService: any AutoFaqsService,
+        cachesService: any CachesService,
+        discordService: DiscordService,
+        renderClient: RenderClient,
+        evolutionChecker: EvolutionChecker,
+        soChecker: SOChecker,
+        swiftReleasesChecker: SwiftReleasesChecker,
+        reactionCache: ReactionCache
+    ) {
+        self.backgroundProcessor = backgroundProcessor
+        self.usersService = usersService
+        self.pingsService = pingsService
+        self.faqsService = faqsService
+        self.autoFaqsService = autoFaqsService
+        self.cachesService = cachesService
+        self.discordService = discordService
+        self.renderClient = renderClient
+        self.evolutionChecker = evolutionChecker
+        self.soChecker = soChecker
+        self.swiftReleasesChecker = swiftReleasesChecker
+        self.reactionCache = reactionCache
     }
-
-    let services: Services
-    let botStateManager: BotStateManager
 }

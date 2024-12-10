@@ -35,7 +35,7 @@ struct OtherTests {
     }
 
     @Test
-    func removingOccurrencesCharacterSetInString() throws {
+    func removingOccurrencesOfCharacterSetInString() throws {
         #expect("".removingOccurrences(of: CharacterSet.punctuationCharacters) == "")
         #expect("a".removingOccurrences(of: CharacterSet.punctuationCharacters) == "a")
         #expect("a,".removingOccurrences(of: CharacterSet.punctuationCharacters) == "a")

@@ -5,6 +5,7 @@ import FoundationEssentials
 import Foundation
 #endif
 import Logging
+import ServiceLifecycle
 
 /**
  When we update Penny, AWS waits a few minutes before taking down the old Penny instance to
@@ -25,97 +26,138 @@ import Logging
    * If the old instance is too slow to make the process happen, the process is aborted and
      the new instance will start handling events without waiting more for the old instance.
  */
-actor BotStateManager {
-
+actor BotStateManager: Service {
     let id = Int(Date().timeIntervalSince1970)
-    let services: HandlerContext.Services
+    let context: HandlerContext
     let disableDuration: Duration
     let logger: Logger
+    private var cachesPopulationContinuations: [CheckedContinuation<Void, Never>] = []
 
     var canRespond = false
-    var onStarted: (() async -> Void)?
 
     init(
-        services: HandlerContext.Services,
+        context: HandlerContext,
         disabledDuration: Duration = .seconds(3 * 60)
     ) {
-        self.services = services
+        self.context = context
         self.disableDuration = disabledDuration
         var logger = Logger(label: "BotStateManager")
         logger[metadataKey: "id"] = "\(self.id)"
         self.logger = logger
     }
 
-    func start(onStarted: @Sendable @escaping () async -> Void) async {
-        self.onStarted = onStarted
-        Task { await send(.shutdown) }
-        cancelIfCachePopulationTakesTooLong()
+    func run() async {
+        switch Constants.deploymentEnvironment {
+        case .local:
+            break
+        case .testing, .prod:
+            self.context.backgroundProcessor.process {
+                await self.cancelIfCachePopulationTakesTooLong()
+            }
+            self.context.backgroundProcessor.process {
+                await self.send(.shutdown)
+            }
+        }
+
+        /// Wait indefinitely
+        let (stream, _) = AsyncStream.makeStream(of: Void.self)
+        await stream.first(where: { _ in true })
     }
 
-    private func cancelIfCachePopulationTakesTooLong() {
-        Task {
-            try await Task.sleep(for: .seconds(120))
-            if !canRespond {
-                await startAllowingResponses()
-                logger.error("No CachesStorage-population was done in-time")
-            }
+    func addCachesPopulationContinuation(_ cont: CheckedContinuation<Void, Never>) {
+        switch Constants.deploymentEnvironment {
+        case .local: break
+        case .testing, .prod:
+            cont.resume()
+            return
+        }
+        switch self.canRespond {
+        case true:
+            cont.resume()
+        case false:
+            self.cachesPopulationContinuations.append(cont)
         }
     }
 
-    func canRespond(to event: Gateway.Event) -> Bool {
-        checkIfItsASignal(event: event)
+    private func cancelIfCachePopulationTakesTooLong() async {
+        guard (try? await Task.sleep(for: .seconds(120))) != nil else {
+            return /// Somewhere else cancelled the Task
+        }
+        if !canRespond {
+            await startAllowingResponses()
+            logger.error("No CachesStorage-population was done in-time")
+        }
+    }
+
+    func canRespond(to event: Gateway.Event) async -> Bool {
+        switch Constants.deploymentEnvironment {
+        case .local: break
+        case .testing, .prod:
+            await checkIfItsASignal(event: event)
+        }
         return canRespond
     }
     
-    private func checkIfItsASignal(event: Gateway.Event) {
+    private func checkIfItsASignal(event: Gateway.Event) async {
         guard case let .messageCreate(message) = event.data,
               message.channel_id == Constants.Channels.botLogs.id,
               let author = message.author,
               author.id == Constants.botId,
-              let otherId = message.content.split(whereSeparator: \.isWhitespace).last
+              let otherId = message.content.split(whereSeparator: \.isWhitespace).last,
+              otherId != "\(self.id)"
         else { return }
-        if otherId == "\(self.id)" { return }
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
             logger.trace("Received 'shutdown' signal")
-            shutdown()
+            self.context.backgroundProcessor.process {
+                await self.shutdown()
+            }
         } else if StateManagerSignal.didShutdown.isInMessage(message.content) {
             logger.trace("Received 'didShutdown' signal")
-            populateCache()
-        }
-    }
-
-    private func shutdown() {
-        Task {
-            await services.cachesService.gatherCachedInfoAndSaveToRepository()
-            await send(.didShutdown)
-            self.canRespond = false
-
-            try await Task.sleep(for: disableDuration)
-            await startAllowingResponses()
-            logger.critical("AWS has not yet shutdown this instance of Penny! Why?!")
-        }
-    }
-
-    private func populateCache() {
-        Task {
-            if canRespond {
-                logger.warning("Received a did-shutdown signal but Cache is already populated")
-            } else {
-                await services.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
-                await startAllowingResponses()
+            self.context.backgroundProcessor.process {
+                await self.populateCache()
             }
         }
     }
 
+    private func shutdown() async {
+        await context.cachesService.gatherCachedInfoAndSaveToRepository()
+        await send(.didShutdown)
+        self.canRespond = false
+
+        guard (try? await Task.sleep(for: disableDuration)) != nil else {
+            return /// Somewhere else cancelled the Task
+        }
+
+        await startAllowingResponses()
+        logger.critical("AWS has not yet shutdown this instance of Penny! Why?!")
+    }
+
+    private func populateCache() async {
+        if canRespond {
+            logger.warning("Received a did-shutdown signal but Cache is already populated")
+        } else {
+            await context.cachesService.getCachedInfoFromRepositoryAndPopulateServices()
+            await startAllowingResponses()
+        }
+    }
+
     private func startAllowingResponses() async {
-        canRespond = true
-        await onStarted?()
+        self.canRespond = true
+        for continuation in self.cachesPopulationContinuations {
+            continuation.resume()
+        }
+        self.cachesPopulationContinuations.removeAll()
     }
 
     private func send(_ signal: StateManagerSignal) async {
+        switch Constants.deploymentEnvironment {
+        case .local: return
+        case .testing, .prod: break
+        }
+
         let content = makeSignalMessage(text: signal.rawValue, id: self.id)
-        await services.discordService.sendMessage(
+        await context.discordService.sendMessage(
             channelId: Constants.Channels.botLogs.id,
             payload: .init(content: content)
         )

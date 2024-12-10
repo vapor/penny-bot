@@ -1,4 +1,5 @@
 @testable import GHHooksLambda
+@testable import Logging
 import AsyncHTTPClient
 import GitHubAPI
 import SotoCore
@@ -6,21 +7,16 @@ import DiscordModels
 import DiscordHTTP
 import OpenAPIRuntime
 import Rendering
-import Logging
 import SwiftSemver
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-import class Foundation.JSONSerialization
-#else
+import Shared
 import Foundation
-#endif
 import Markdown
 import NIOPosix
 import Testing
 
 extension SerializationNamespace {
     @Suite
-    struct GHHooksTests {
+    final class GHHooksTests {
         let decoder: JSONDecoder = {
             var decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
@@ -30,8 +26,24 @@ extension SerializationNamespace {
         /// The `…` (U+2026 Horizontal Ellipsis) character.
         let dots = "\u{2026}"
 
+        let backgroundProcessorTask: Task<Void, Never>
+
         init() {
+            /// Simulate prod
+            setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
+            /// Disable logging
+            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+            /// First reset the background runner
+            BackgroundProcessor.sharedForTests = BackgroundProcessor()
+            /// Then reset the storage
             FakeResponseStorage.shared = FakeResponseStorage()
+            backgroundProcessorTask = Task<Void, Never> {
+                await BackgroundProcessor.sharedForTests.run()
+            }
+        }
+
+        deinit {
+            backgroundProcessorTask.cancel()
         }
     }
 }
@@ -272,15 +284,15 @@ extension SerializationNamespace.GHHooksTests {
             let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let text = """
             <!-- 🚀 Thank you for contributing! -->
-
+            
             ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-
+            
             <!-- Describe your changes clearly and use examples if possible -->
-
+            
             \(scalars_206)
-
+            
             <img width="1273" alt="Vapor_docs_dark" src="https://gthub.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-
+            
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
@@ -297,15 +309,15 @@ extension SerializationNamespace.GHHooksTests {
             let scalars_200 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not int"
             let text = """
             <!-- 🚀 Thank you for contributing! -->
-
+            
             ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-
+            
             <!-- Describe your changes clearly and use examples if possible -->
-
+            
             \(scalars_200)
-
+            
             <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-
+            
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
@@ -316,8 +328,8 @@ extension SerializationNamespace.GHHooksTests {
             )
             let scalars_66 = "Custom coders specified for a single `JWTSigner` affect token par…"
             expectMultilineStringsEqual(formatted, scalars_200 + """
-
-
+            
+            
             \(scalars_66)
             """)
         }
@@ -327,15 +339,15 @@ extension SerializationNamespace.GHHooksTests {
             let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
             let text = """
             <!-- 🚀 Thank you for contributing! -->
-
+            
             ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-
+            
             <!-- Describe your changes clearly and use examples if possible -->
-
+            
             \(scalars_190)
-
+            
             <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-
+            
             Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
@@ -346,8 +358,8 @@ extension SerializationNamespace.GHHooksTests {
             )
             let scalars_76 = "Custom coders specified for a single `JWTSigner` affect token parsing and s…"
             expectMultilineStringsEqual(formatted, scalars_190 + """
-
-
+            
+            
             \(scalars_76)
             """)
         }
@@ -357,15 +369,15 @@ extension SerializationNamespace.GHHooksTests {
             let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
             let text = """
             <!-- 🚀 Thank you for contributing! -->
-
+            
             ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-
+            
             <!-- Describe your changes clearly and use examples if possible -->
-
+            
             \(scalars_aLot)
-
+            
             <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-
+            
             on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
             """
 
@@ -381,20 +393,20 @@ extension SerializationNamespace.GHHooksTests {
         do {
             let text = """
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
-
+            
             [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=sass&package-manager=npm_and_yarn&previous-version=1.63.6&new-version=1.64.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
-
+            
             Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
-
+            
             [//]: # (dependabot-automerge-start)
             [//]: # (dependabot-automerge-end)
-
+            
             ---
-
+            
             <details>
             <summary>Dependabot commands and options</summary>
             <br />
-
+            
             You can trigger Dependabot actions by commenting on this PR:
             """
 
@@ -405,7 +417,7 @@ extension SerializationNamespace.GHHooksTests {
             )
             expectMultilineStringsEqual(formatted, """
             Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
-
+            
             Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
             \(dots)
             """)
@@ -414,11 +426,11 @@ extension SerializationNamespace.GHHooksTests {
         do {
             let text = """
             ### Describe the bug
-
+            
             I've got a custom `Codable` type that throws an error when decoding... because it's being asked to decode an empty string, rather than being skipped because I've got `T?` rather than `T` as the type in my `Content`.
-
+            
             ### To Reproduce
-
+            
             1. Declare some custom `Codable` type that throws an error if told to decode from an empty string.
             2. Declare some custom `Content` struct that has an `Optional` of your custom type as a parameter.
             3. Have a browser submit a request that includes `yourThing: ` in the body. (Doable in Safari by creating an HTML form, giving it a date input with the right `name`, and then... not selecting a date before hitting submit)
@@ -433,11 +445,11 @@ extension SerializationNamespace.GHHooksTests {
             // TODO: Handle this situation better os we don't end up with an empty list item.
             expectMultilineStringsEqual(formatted, """
             ### Describe the bug
-
+            
             I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
-
+            
             ### To Reproduce
-
+            
             1.
             \(dots)
             """)
@@ -446,19 +458,19 @@ extension SerializationNamespace.GHHooksTests {
         do {
             let text = """
             ### Describe the bug
-
+            
             White text on white background is not readable.
-
+            
             ### To Reproduce
-
+            
             Go to [https://api.vapor.codes/fluent/documentation/fluent/](https://api.vapor.codes/fluent/documentation/fluent/)
-
+            
             ### Expected behavior
-
+            
             Expect some contrast between the text and the background.
-
+            
             ### Environment
-
+            
             * Vapor Framework version: current [https://api.vapor.codes/](https://api.vapor.codes/) website
             * Vapor Toolbox version: N/A
             * OS version: N/A
@@ -472,15 +484,15 @@ extension SerializationNamespace.GHHooksTests {
 
             expectMultilineStringsEqual(formatted, """
             ### Describe the bug
-
+            
             White text on white background is not readable.
-
+            
             ### To Reproduce
-
+            
             Go to <https://api.vapor.codes/fluent/documentation/fluent/>
-
+            
             ### Expected behavior
-
+            
             Expect some contrast between the text and the background.
             \(dots)
             """)
@@ -489,7 +501,7 @@ extension SerializationNamespace.GHHooksTests {
         do {
             let text = """
             Final stage of Vapor's `Sendable` journey as `Request` is now `Sendable`.
-
+            
             There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
             """
 
@@ -501,7 +513,7 @@ extension SerializationNamespace.GHHooksTests {
 
             expectMultilineStringsEqual(formatted, """
             Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable`.
-
+            
             There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
             """)
         }
@@ -510,7 +522,7 @@ extension SerializationNamespace.GHHooksTests {
         do {
             let text = """
             https://github.com/swift-server/swiftly/pull/9Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at https://github.com/swift-server/swiftly/pull/9.
-
+            
             There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.](https://github.com/vapor/penny-bot/issues/98
             """
 
@@ -522,7 +534,7 @@ extension SerializationNamespace.GHHooksTests {
 
             expectMultilineStringsEqual(formatted, """
             [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9)Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
-
+            
             There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.]([vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
             """)
         }
@@ -537,10 +549,10 @@ extension SerializationNamespace.GHHooksTests {
         * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
         * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
         * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
-
+        
         ## New Contributors
         * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
-
+        
         **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
         """
 
@@ -558,27 +570,27 @@ extension SerializationNamespace.GHHooksTests {
         let text = """
         # This is a comment.
         # Each line is a file pattern followed by one or more owners.
-
+        
         # These owners will be the default owners for everything in
         *       @global-owner1 @global-owner2
-
+        
         *.js    @js-owner #This is an inline comment.
-
+        
         *.go docs@example.com
-
+        
         *.txt @octo-org/octocats
         /build/logs/ @doctocat
-
+        
         # The `docs/*` pattern will match files like
         # `docs/getting-started.md` but not further nested files like
         # `docs/build-app/troubleshooting.md`.
         docs/*  docs@example.com
-
+        
         apps/ @octocat
         /docs/ @doctocat
         /scripts/ @doctocat @octocat
         **/logs @octocat
-
+        
         /apps/ @octocat
         /apps/github
         """
@@ -642,7 +654,7 @@ extension SerializationNamespace.GHHooksTests {
     }
 
     @Test
-    func eventHandler() async throws {
+    func handleIssueEvents() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
         try await handleEvent(
             key: "issue2",
@@ -674,7 +686,10 @@ extension SerializationNamespace.GHHooksTests {
         /// The message isn't public (doesn't contain anything too special tbh),
         /// only Penny maintainers can see it.
         try await handleEvent(key: "issue8", eventName: .issues, expect: .noResponse)
+    }
 
+    @Test
+    func handlePREvents() async throws {
         try await handleEvent(key: "pr1", eventName: .pull_request, expect: .noResponse)
         try await handleEvent(key: "pr2", eventName: .pull_request, expect: .noResponse)
         try await handleEvent(key: "pr3", eventName: .pull_request, expect: .noResponse)
@@ -733,19 +748,10 @@ extension SerializationNamespace.GHHooksTests {
             eventName: .pull_request,
             expect: .response(at: .issuesAndPRs, type: .create)
         )
+    }
 
-        try await handleEvent(
-            key: "projects_v2_item1",
-            eventName: .projects_v2_item,
-            expect: .noResponse
-        )
-
-        try await handleEvent(
-            key: "installation_repos1",
-            eventName: .installation_repositories,
-            expect: .noResponse
-        )
-
+    @Test
+    func handlePushEvents() async throws {
         try await handleEvent(
             key: "push1",
             eventName: .push,
@@ -767,7 +773,10 @@ extension SerializationNamespace.GHHooksTests {
             eventName: .push,
             expect: .noResponse
         )
+    }
 
+    @Test
+    func handleReleaseEvents() async throws {
         try await handleEvent(
             key: "release1",
             eventName: .release,
@@ -797,6 +806,21 @@ extension SerializationNamespace.GHHooksTests {
             key: "release6",
             eventName: .release,
             expect: .response(at: .release, type: .create)
+        )
+    }
+
+    @Test
+    func handleOtherEvents() async throws {
+        try await handleEvent(
+            key: "projects_v2_item1",
+            eventName: .projects_v2_item,
+            expect: .noResponse
+        )
+
+        try await handleEvent(
+            key: "installation_repos1",
+            eventName: .installation_repositories,
+            expect: .noResponse
         )
     }
 

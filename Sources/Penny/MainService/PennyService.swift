@@ -5,17 +5,17 @@ import NIOCore
 import SotoCore
 import Shared
 import Logging
+import ServiceLifecycle
 import NIOPosix
 
 struct PennyService: MainService {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
-#if DEBUG
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
-        let webhookURL = "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
-#else
-        let webhookURL = Constants.loggingWebhookURL
-#endif
+        let webhookURL = Constants.deploymentEnvironment == .prod ?
+        Constants.loggingWebhookURL :
+        "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
+
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
             httpClient: httpClient,
             configuration: .init(
@@ -94,17 +94,31 @@ struct PennyService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
+        let backgroundProcessor = BackgroundProcessor()
         let usersService = ServiceFactory.makeUsersService(
             httpClient: httpClient,
             apiBaseURL: Constants.apiBaseURL
         )
-        let pingsService = DefaultPingsService(httpClient: httpClient)
-        let faqsService = DefaultFaqsService(httpClient: httpClient)
-        let autoFaqsService = DefaultAutoFaqsService(httpClient: httpClient)
+        let pingsService = DefaultPingsService(
+            httpClient: httpClient,
+            backgroundProcessor: backgroundProcessor
+        )
+        let faqsService = DefaultFaqsService(
+            httpClient: httpClient,
+            backgroundProcessor: backgroundProcessor
+        )
+        let autoFaqsService = DefaultAutoFaqsService(
+            httpClient: httpClient,
+            backgroundProcessor: backgroundProcessor
+        )
         let evolutionService = DefaultEvolutionService(httpClient: httpClient)
         let soService = DefaultSOService(httpClient: httpClient)
         let swiftReleasesService = DefaultSwiftReleasesService(httpClient: httpClient)
-        let discordService = DiscordService(discordClient: bot.client, cache: cache)
+        let discordService = DiscordService(
+            discordClient: bot.client,
+            cache: cache,
+            backgroundProcessor: backgroundProcessor
+        )
         let evolutionChecker = EvolutionChecker(
             evolutionService: evolutionService,
             discordService: discordService
@@ -128,7 +142,9 @@ struct PennyService: MainService {
                 reactionCache: reactionCache
             )
         )
-        let services = HandlerContext.Services(
+        
+        let context = HandlerContext(
+            backgroundProcessor: backgroundProcessor,
             usersService: usersService,
             pingsService: pingsService,
             faqsService: faqsService,
@@ -147,30 +163,59 @@ struct PennyService: MainService {
             swiftReleasesChecker: swiftReleasesChecker,
             reactionCache: reactionCache
         )
-        let context = HandlerContext(
-            services: services,
-            botStateManager: BotStateManager(services: services)
-        )
+        context.botStateManager = BotStateManager(context: context)
+        context.discordEventListener = DiscordEventListener(bot: bot, context: context)
 
         await CommandsManager(context: context).registerCommands()
 
         return context
     }
 
-    func afterConnectCall(context: HandlerContext) async throws {
-        /// Wait 5 seconds to make sure the bot is completely connected to Discord through websocket,
-        /// and so it can receive events already.
-        /// This is here until when/if DiscordBM gains better support for notifying you
-        /// of the first connection.
-        /// We could manually handle that here too, but i'd like it to be available in DiscordBM.
-        try await Task.sleep(for: .seconds(5))
-        /// Initialize `BotStateManager` after `bot.connect()` and `bot.makeEventsStream()`.
-        /// since it communicates through Discord and will need the Gateway connection.
-        await context.botStateManager.start {
-            /// These contain cached stuff and need to wait for `BotStateManager`.
-            context.services.evolutionChecker.run()
-            context.services.soChecker.run()
-            context.services.swiftReleasesChecker.run()
-        }
+    func runServices(context: HandlerContext) async throws {
+        /// Services that need to wait for bot connection
+        let botStateManagerWrappedService = WaiterService(
+            underlyingService: context.botStateManager,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.discordEventListener.addConnectionWaiterContinuation($0)
+            }
+        )
+
+        /// Services that need to wait for caches population
+        let evolutionCheckerWrappedService = WaiterService(
+            underlyingService: context.evolutionChecker,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.botStateManager.addCachesPopulationContinuation($0)
+            }
+        )
+        let soCheckerWrappedService = WaiterService(
+            underlyingService: context.soChecker,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.botStateManager.addCachesPopulationContinuation($0)
+            }
+        )
+        let swiftReleasesCheckerWrappedService = WaiterService(
+            underlyingService: context.swiftReleasesChecker,
+            processingOn: context.backgroundProcessor,
+            passingContinuationWith: {
+                await context.botStateManager.addCachesPopulationContinuation($0)
+            }
+        )
+
+        let services = ServiceGroup(
+            services: [
+                context.backgroundProcessor,
+                context.discordEventListener,
+                botStateManagerWrappedService,
+                evolutionCheckerWrappedService,
+                soCheckerWrappedService,
+                swiftReleasesCheckerWrappedService
+            ],
+            logger: Logger(label: "ServiceGroup")
+        )
+
+        try await services.run()
     }
 }

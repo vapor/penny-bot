@@ -4,8 +4,34 @@ import FoundationEssentials
 import Foundation
 #endif
 import DiscordBM
+import Logging
 
 enum Constants {
+
+    enum DeploymentEnvironment {
+        case testing
+        case local
+        case prod
+
+        init() {
+            let value = ProcessInfo.processInfo.environment["DEPLOYMENT_ENVIRONMENT"]
+            switch value?.lowercased() {
+            case "testing": self = .testing
+            case "local": self = .local
+            case "prod": self = .prod
+            default:
+                Logger(label: "Environment.init").critical(
+                    "Invalid deployment environment env var provided", metadata: [
+                        "value": .string(value ?? "<null>")
+                    ]
+                )
+                fatalError("""
+                Invalid deployment environment env var provided: '\(value ?? "<null>")'.
+                Set 'DEPLOYMENT_ENVIRONMENT' to 'local' for local developments.
+                """)
+            }
+        }
+    }
     static func env(_ key: String) -> String {
         if let value = ProcessInfo.processInfo.environment[key] {
             return value
@@ -13,6 +39,7 @@ enum Constants {
             fatalError("""
             Set an environment value for key '\(key)'.
             In tests you usually can set dummy values.
+            For a local run, 'BOT_TOKEN' is required.
             """)
         }
     }
@@ -24,6 +51,7 @@ enum Constants {
     static let apiBaseURL = env("API_BASE_URL")
     static let ghOAuthClientID = env("GH_OAUTH_CLIENT_ID")
     static let accountLinkOAuthPrivKey = env("ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY")
+    static let deploymentEnvironment = DeploymentEnvironment()
 
     /// U+1F3FB EMOJI MODIFIER FITZPATRICK TYPE-1-2...TYPE-6
     static var emojiSkins: [String] {

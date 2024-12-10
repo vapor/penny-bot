@@ -7,7 +7,7 @@ struct CommandsManager {
 
     func registerCommands() async {
         let commands = makeCommands()
-        await context.services.discordService.overwriteCommands(commands)
+        await context.discordService.overwriteCommands(commands)
     }
 
     private func makeCommands() -> [Payloads.ApplicationCommandCreate] {
