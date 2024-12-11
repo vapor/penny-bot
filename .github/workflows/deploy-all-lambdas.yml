@@ -53,6 +53,7 @@ jobs:
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package archive \
+              --verbose \
               --output-path ./zips \
               --products "${name}"
             aws s3api put-object \
