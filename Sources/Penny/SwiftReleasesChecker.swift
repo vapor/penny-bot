@@ -99,7 +99,7 @@ struct SwiftOrgRelease: Codable {
 
 extension SwiftOrgRelease: Hashable {
     static func == (lhs: SwiftOrgRelease, rhs: SwiftOrgRelease) -> Bool {
-        return lhs.tag == rhs.tag
+        lhs.tag == rhs.tag
     }
 
     func hash(into hasher: inout Hasher) {
