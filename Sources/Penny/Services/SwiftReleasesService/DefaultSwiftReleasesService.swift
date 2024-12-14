@@ -11,7 +11,11 @@ import Foundation
 struct DefaultSwiftReleasesService: SwiftReleasesService {
     let httpClient: HTTPClient
     let logger = Logger(label: "DefaultSwiftReleasesService")
-    let decoder = JSONDecoder()
+    let decoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
+        return decoder
+    }()
 
     func listReleases() async throws -> [SwiftOrgRelease] {
         let url = "https://www.swift.org/api/v1/install/releases.json"

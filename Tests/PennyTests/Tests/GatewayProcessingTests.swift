@@ -525,7 +525,9 @@ extension SerializationNamespace.GatewayProcessingTests {
         let _message = await responseStorage.awaitResponse(at: endpoint).value
         let message = try #require(_message as? Payloads.CreateMessage, "\(_message)")
 
-        #expect(message.embeds?.first?.title == "Swift 6.0.1 Release")
+        let embed = try #require(message.embeds?.first)
+        #expect(embed.title == "Swift 6.0.1 Release")
+        #expect(embed.description == "Doesn't come with a dedicated Xcode release")
 
         /// No more messages should be sent
         let _newMessage = await responseStorage.awaitResponse(

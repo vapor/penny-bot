@@ -17,6 +17,27 @@ struct CachesStorage: Sendable, Codable {
     var swiftReleasesData: SwiftReleasesChecker.Storage?
     var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
+    init(from decoder: any Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        self.reactionCacheData = container.decodeIfPresentWithLogging(
+            ReactionCache.Storage.self,
+            forKey: .reactionCacheData
+        )
+        self.evolutionCheckerData = container.decodeIfPresentWithLogging(
+            EvolutionChecker.Storage.self,
+            forKey: .evolutionCheckerData
+        )
+        self.soCheckerData = container.decodeIfPresentWithLogging(SOChecker.Storage.self, forKey: .soCheckerData)
+        self.swiftReleasesData = container.decodeIfPresentWithLogging(
+            SwiftReleasesChecker.Storage.self,
+            forKey: .swiftReleasesData
+        )
+        self.autoFaqsResponseRateLimiter = container.decodeIfPresentWithLogging(
+            DefaultAutoFaqsService.ResponseRateLimiter.self,
+            forKey: .autoFaqsResponseRateLimiter
+        )
+    }
+
     init() {}
 
     static func makeFromCachedData(context: Context) async -> CachesStorage {
@@ -73,5 +94,27 @@ struct CachesStorage: Sendable, Codable {
                 "autoFaqsLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
             ]
         )
+    }
+}
+
+extension KeyedDecodingContainer {
+    fileprivate func decodeIfPresentWithLogging<T>(
+        _ type: T.Type,
+        forKey key: KeyedDecodingContainer<K>.Key
+    ) -> T? where T: Decodable {
+        do {
+            let value = try self.decodeIfPresent(type, forKey: key)
+            return value
+        } catch {
+            Logger(label: "CachesStorage").warning(
+                "Failed to decode a cached value",
+                metadata: [
+                    "error": .string(String(reflecting: error)),
+                    "key": .string(String(describing: key)),
+                    "type": .string(Swift._typeName(type)),
+                ]
+            )
+            return nil
+        }
     }
 }

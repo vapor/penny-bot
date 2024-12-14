@@ -13,8 +13,6 @@ import Foundation
 
 enum TestData {
 
-    private static let decoder = JSONDecoder()
-
     private static func resource(named name: String) -> Data {
         let fileManager = FileManager.default
         let currentDirectory = fileManager.currentDirectoryPath
@@ -27,9 +25,15 @@ enum TestData {
         return data
     }
 
-    private static func resource<D: Decodable>(named name: String, as: D.Type = D.self) -> D {
+    private static func resource<D: Decodable>(
+        named name: String,
+        keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
+        as: D.Type = D.self
+    ) -> D {
         let data = resource(named: name)
-        return try! JSONDecoder().decode(D.self, from: data)
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = keyDecodingStrategy
+        return try! decoder.decode(D.self, from: data)
     }
 
     static let vaporGuild = resource(
@@ -54,6 +58,7 @@ enum TestData {
     ).items
     static let swiftReleases = TestData.resource(
         named: "swiftReleases.json",
+        keyDecodingStrategy: .convertFromSnakeCase,
         as: [SwiftOrgRelease].self
     )
     static let swiftReleasesUpdated = TestData.resource(
@@ -76,7 +81,7 @@ enum TestData {
 
     static func decodedFor(gatewayEventKey key: String) -> Gateway.Event {
         let data = gatewayEvents[key]!
-        let decoded = try! decoder.decode(Gateway.Event.self, from: data)
+        let decoded = try! JSONDecoder().decode(Gateway.Event.self, from: data)
         return decoded
     }
 
