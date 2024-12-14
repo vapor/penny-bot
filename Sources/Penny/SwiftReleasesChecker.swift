@@ -58,7 +58,7 @@ actor SwiftReleasesChecker: Service {
                     .init(
                         title: "Swift \(release.stableName) Release".unicodesPrefix(256),
                         description: """
-                            \(release.xcodeRelease ? "Available on \(release.xcode)" : "No dedicated Xcode releases")
+                            \(release.xcodeRelease ? "Available on \(release.xcode)" : "No dedicated Xcode releases for Swift \(release.stableName)")
                             """,
                         url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
                         color: .cyan,
