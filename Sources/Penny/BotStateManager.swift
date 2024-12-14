@@ -1,11 +1,12 @@
 import DiscordBM
+import Logging
+import ServiceLifecycle
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Logging
-import ServiceLifecycle
 
 /**
  When we update Penny, AWS waits a few minutes before taking down the old Penny instance to
@@ -81,7 +82,7 @@ actor BotStateManager: Service {
 
     private func cancelIfCachePopulationTakesTooLong() async {
         guard (try? await Task.sleep(for: .seconds(120))) != nil else {
-            return /// Somewhere else cancelled the Task
+            return/// Somewhere else cancelled the Task
         }
         if !canRespond {
             await startAllowingResponses()
@@ -97,14 +98,14 @@ actor BotStateManager: Service {
         }
         return canRespond
     }
-    
+
     private func checkIfItsASignal(event: Gateway.Event) async {
         guard case let .messageCreate(message) = event.data,
-              message.channel_id == Constants.Channels.botLogs.id,
-              let author = message.author,
-              author.id == Constants.botId,
-              let otherId = message.content.split(whereSeparator: \.isWhitespace).last,
-              otherId != "\(self.id)"
+            message.channel_id == Constants.Channels.botLogs.id,
+            let author = message.author,
+            author.id == Constants.botId,
+            let otherId = message.content.split(whereSeparator: \.isWhitespace).last,
+            otherId != "\(self.id)"
         else { return }
 
         if StateManagerSignal.shutdown.isInMessage(message.content) {
@@ -126,7 +127,7 @@ actor BotStateManager: Service {
         self.canRespond = false
 
         guard (try? await Task.sleep(for: disableDuration)) != nil else {
-            return /// Somewhere else cancelled the Task
+            return/// Somewhere else cancelled the Task
         }
 
         await startAllowingResponses()

@@ -1,10 +1,11 @@
+import DiscordBM
+import Logging
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import DiscordBM
-import Logging
 
 enum Constants {
 
@@ -21,14 +22,17 @@ enum Constants {
             case "prod": self = .prod
             default:
                 Logger(label: "Environment.init").critical(
-                    "Invalid deployment environment env var provided", metadata: [
+                    "Invalid deployment environment env var provided",
+                    metadata: [
                         "value": .string(value ?? "<null>")
                     ]
                 )
-                fatalError("""
-                Invalid deployment environment env var provided: '\(value ?? "<null>")'.
-                Set 'DEPLOYMENT_ENVIRONMENT' to 'local' for local developments.
-                """)
+                fatalError(
+                    """
+                    Invalid deployment environment env var provided: '\(value ?? "<null>")'.
+                    Set 'DEPLOYMENT_ENVIRONMENT' to 'local' for local developments.
+                    """
+                )
             }
         }
     }
@@ -36,11 +40,13 @@ enum Constants {
         if let value = ProcessInfo.processInfo.environment[key] {
             return value
         } else {
-            fatalError("""
-            Set an environment value for key '\(key)'.
-            In tests you usually can set dummy values.
-            For a local run, 'BOT_TOKEN' is required.
-            """)
+            fatalError(
+                """
+                Set an environment value for key '\(key)'.
+                In tests you usually can set dummy values.
+                For a local run, 'BOT_TOKEN' is required.
+                """
+            )
         }
     }
     static let vaporGuildId: GuildSnowflake = "431917998102675485"
@@ -116,24 +122,28 @@ enum Constants {
 
         /// Must not send thanks-responses to these channels.
         /// Instead send to the #thanks channel.
-        static let thanksResponseDenyList: Set<ChannelSnowflake> = Set([
-            Channels.welcome,
-            Channels.news,
-            Channels.publications,
-            Channels.release,
-            Channels.jobs,
-            Channels.status,
-        ].map(\.id))
+        static let thanksResponseDenyList: Set<ChannelSnowflake> = Set(
+            [
+                Channels.welcome,
+                Channels.news,
+                Channels.publications,
+                Channels.release,
+                Channels.jobs,
+                Channels.status,
+            ].map(\.id)
+        )
 
-        static let announcementChannels: Set<ChannelSnowflake> = Set([
-            Channels.news,
-            Channels.publications,
-            Channels.release,
-            Channels.jobs,
-            Channels.stackOverflow,
-            Channels.issuesAndPRs,
-            Channels.evolution,
-        ].map(\.id))
+        static let announcementChannels: Set<ChannelSnowflake> = Set(
+            [
+                Channels.news,
+                Channels.publications,
+                Channels.release,
+                Channels.jobs,
+                Channels.stackOverflow,
+                Channels.issuesAndPRs,
+                Channels.evolution,
+            ].map(\.id)
+        )
     }
 
     enum Roles: RoleSnowflake {
@@ -145,7 +155,7 @@ enum Constants {
         case automationDev = "1031520606434381824"
         case moderator = "431920836631592980"
         case core = "431919254372089857"
-        
+
         static let elevatedPublicCommandsAccess: [Roles] = [
             .nitroBooster,
             .backer,
@@ -165,18 +175,22 @@ enum Constants {
             .core,
         ]
 
-        static let elevatedRestrictedCommandsAccessSet: Set<RoleSnowflake> = Set([
-            Roles.contributor,
-            Roles.maintainer,
-            Roles.moderator,
-            Roles.automationDev,
-            Roles.core,
-        ].map(\.rawValue))
+        static let elevatedRestrictedCommandsAccessSet: Set<RoleSnowflake> = Set(
+            [
+                Roles.contributor,
+                Roles.maintainer,
+                Roles.moderator,
+                Roles.automationDev,
+                Roles.core,
+            ].map(\.rawValue)
+        )
 
-        static let moderators: Set<RoleSnowflake> = Set([
-            Roles.automationDev,
-            Roles.moderator,
-            Roles.core
-        ].map(\.rawValue))
+        static let moderators: Set<RoleSnowflake> = Set(
+            [
+                Roles.automationDev,
+                Roles.moderator,
+                Roles.core,
+            ].map(\.rawValue)
+        )
     }
 }

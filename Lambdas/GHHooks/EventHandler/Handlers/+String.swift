@@ -11,12 +11,12 @@ extension String? {
     }
 }
 
-extension StringProtocol where Self: Sendable, SubSequence == Substring  {
+extension StringProtocol where Self: Sendable, SubSequence == Substring {
     func isPrimaryOrReleaseBranch(repo: Repository) -> Bool {
-        let result = repo.primaryBranch == self ||
-        self.isSuffixedWithStableOrPartialStableSemVer
+        let result = repo.primaryBranch == self || self.isSuffixedWithStableOrPartialStableSemVer
         Logger(label: "StringProtocol.isPrimaryOrReleaseBranch").debug(
-            "Checking branch status for 'isPrimaryOrReleaseBranch'", metadata: [
+            "Checking branch status for 'isPrimaryOrReleaseBranch'",
+            metadata: [
                 "branch": .stringConvertible(self),
                 "isPrimaryOrReleaseBranch": .stringConvertible(result),
             ]

@@ -2,9 +2,7 @@ import DiscordBM
 
 extension Guild.Member {
     package var uiName: String? {
-        self.nick ??
-        self.user?.global_name ??
-        self.user?.username
+        self.nick ?? self.user?.global_name ?? self.user?.username
     }
 
     package var uiAvatarURL: String? {
@@ -30,9 +28,7 @@ extension Guild.Member {
 
 extension Guild.PartialMember {
     package var uiName: String? {
-        self.nick ??
-        self.user?.global_name ??
-        self.user?.username
+        self.nick ?? self.user?.global_name ?? self.user?.username
     }
 
     package var uiAvatarURL: String? {
@@ -58,8 +54,7 @@ extension Guild.PartialMember {
 
 extension DiscordUser {
     package var uiName: String {
-        self.global_name ??
-        self.username
+        self.global_name ?? self.username
     }
 
     package var uiAvatarURL: String? {

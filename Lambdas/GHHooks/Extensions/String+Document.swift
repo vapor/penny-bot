@@ -4,7 +4,7 @@ extension String {
     /// Formats markdown in a way that looks decent on both Discord and GitHub at the same time.
     ///
     /// If you want to know why something is being done, comment out those lines and run the tests.
-    /// 
+    ///
     /// Or, better yet, nag the code author to add more comments to things that are complicated and confusing.
     func formatMarkdown(
         maxVisualLength: Int,
@@ -13,13 +13,17 @@ extension String {
     ) -> String {
         assert(maxVisualLength > 0, "Maximum visual length must be greater than zero (got \(maxVisualLength)).")
         assert(hardLimit > 0, "Hard length limit must be greater than zero (got \(hardLimit)).")
-        assert(hardLimit >= maxVisualLength, "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'.")
+        assert(
+            hardLimit >= maxVisualLength,
+            "maxVisualLength '\(maxVisualLength)' can't be more than hardLimit '\(hardLimit)'."
+        )
 
         /// Interpret urls like GitHub does.
         /// For example GitHub changes `https://github.com/vapor/penny-bot/issues/99` to
         /// `[vapor/penny-bot#99](https://github.com/vapor/penny-bot/issues/99)` which
         /// ends up looking like a blue `vapor/penny-bot#99` text linked to the url.
-        let regex = #/
+        let regex =
+            #/
             https://(?:www\.)?github\.com
             /(?<org>[A-Za-z0-9](?:[A-Za-z0-9\-]*[A-Za-z0-9])?)
             /(?<repo>[A-Za-z0-9.\-_]+)
@@ -31,16 +35,16 @@ extension String {
             /// `match.output` is a `Range<Index>` which means it's `..<`.
             /// So the character at `index == upperBound` is not part of the match.
             if match.range.upperBound < self.endIndex,
-               /// `offsetBy: 2` is guaranteed to exist because the string must contain
-               /// `github` based on the regex above, so it has more length than 3.
-               match.range.lowerBound > self.index(self.startIndex, offsetBy: 2) {
+                /// `offsetBy: 2` is guaranteed to exist because the string must contain
+                /// `github` based on the regex above, so it has more length than 3.
+                match.range.lowerBound > self.index(self.startIndex, offsetBy: 2)
+            {
                 /// All 3 indexes below are guaranteed to exist based on the range check above.
                 let before = self.index(before: match.range.lowerBound)
                 let beforeBefore = self.index(before: before)
                 /// Is surrounded like `STR` in `](STR)` or not.
-                let isSurroundedInSomePuncs = self[beforeBefore] == "]" &&
-                self[before] == "(" &&
-                self[match.range.upperBound] == ")"
+                let isSurroundedInSomePuncs =
+                    self[beforeBefore] == "]" && self[before] == "(" && self[match.range.upperBound] == ")"
                 /// If it's surrounded in the punctuations above, it
                 /// might already be a link, so don't manipulate it.
                 if isSurroundedInSomePuncs { return current }
@@ -57,7 +61,8 @@ extension String {
         guard var markup2 = emptyLinksRemover.visit(markup1) else { return "" }
 
         var didRemoveMarkdownElement = false
-        var (remaining, prefixed) = markup2
+        var (remaining, prefixed) =
+            markup2
             .format(options: .default)
             .trimmingForMarkdown()
             .markdownUnicodesPrefix(maxVisualLength)
@@ -79,7 +84,8 @@ extension String {
                     didRemoveMarkdownElement = didRemoveMarkdownElement || paragraphRemover.didModify
                     markup2 = markup
                     /// Update `prefixed`
-                    prefixed = markup2
+                    prefixed =
+                        markup2
                         .format(options: .default)
                         .trimmingForMarkdown()
                         .markdownUnicodesPrefix(maxVisualLength)
@@ -90,10 +96,12 @@ extension String {
         /// If the final block element is a heading, remove it (cosmetics again)
         var document3 = Document(parsing: prefixed)
         if let last = document3.blockChildren.suffix(1).first,
-           last is Heading {
+            last is Heading
+        {
             didRemoveMarkdownElement = true
             document3 = Document(document3.blockChildren.dropLast())
-            prefixed = document3
+            prefixed =
+                document3
                 .format(options: .default)
                 .trimmingForMarkdown()
                 .markdownUnicodesPrefix(maxVisualLength)
@@ -155,18 +163,18 @@ extension String {
     }
 }
 
-private extension MarkupFormatter.Options {
+extension MarkupFormatter.Options {
     /// It's safe but apparently the underlying type doesn't declare a proper conditional Sendable conformance.
-    static nonisolated(unsafe) let `default` = Self()
+    fileprivate static nonisolated(unsafe) let `default` = Self()
 }
 
 private struct HTMLAndImageRemover: MarkupRewriter {
     func visitHTMLBlock(_ html: HTMLBlock) -> (any Markup)? {
-        return nil
+        nil
     }
 
     func visitImage(_ image: Image) -> (any Markup)? {
-        return nil
+        nil
     }
 }
 
@@ -299,9 +307,9 @@ private struct TextElementUnicodePrefixRewriter: MarkupRewriter {
     }
 }
 
-private extension StringProtocol {
+extension StringProtocol {
     /// The line is worthless and can be trimmed.
-    var isWorthlessLineForTrim: Bool {
+    fileprivate var isWorthlessLineForTrim: Bool {
         self.allSatisfy({ $0.isWhitespace || $0.isPunctuation })
     }
 }
@@ -331,8 +339,9 @@ private struct HeadingFinder: MarkupWalker {
         } else {
             if let heading = markup as? Heading {
                 if let firstChild = heading.children.first(where: { _ in true }),
-                   let text = firstChild as? Text,
-                   Self.fold(text.string) == name {
+                    let text = firstChild as? Text,
+                    Self.fold(text.string) == name
+                {
                     self.started = true
                 }
             }

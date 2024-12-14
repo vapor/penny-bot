@@ -1,4 +1,3 @@
-
 package struct CoinResponse: Sendable, Codable {
     package let sender: UserSnowflake
     package let receiver: UserSnowflake

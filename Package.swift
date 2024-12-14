@@ -221,11 +221,11 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     [
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
         /// Require `any` for existential types.
-            .enableUpcomingFeature("ExistentialAny"),
+        .enableUpcomingFeature("ExistentialAny"),
 
         /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
         /// Enable the full potential of typed throws.
-            .enableUpcomingFeature("FullTypedThrows"),
+        .enableUpcomingFeature("FullTypedThrows"),
     ]
 }
 
@@ -235,7 +235,7 @@ var targetsSwiftSettings: [SwiftSetting] {
         .unsafeFlags(
             ["-Xllvm", "-vectorize-slp=false"],
             .when(platforms: [.linux], configuration: .release)
-        ),
+        )
     ]
 }
 

@@ -1,6 +1,7 @@
 import DiscordBM
 import Logging
 import Models
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -10,18 +11,19 @@ import Foundation
 struct ReactionHandler {
 
     enum Configuration {
-        static let coinSignEmojis: Set<String> = [
-            Constants.ServerEmojis.love.name,
-            Constants.ServerEmojis.vapor.name,
-            Constants.ServerEmojis.coin.name,
-            Constants.ServerEmojis.doge.name,
-            "🪙", "🚀",
-            "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
-            "🩷", "🩶", "🩵", "💗", "💕", "😍", "😻", "🎉", "💯",
-        ]
-        + Constants.emojiSkins.map { "🙌\($0)" }
-        + Constants.emojiSkins.map { "🙏\($0)" }
-        + Constants.emojiSkins.flatMap { s in Constants.emojiGenders.map { g in "🙇\(s)\(g)" } }
+        static let coinSignEmojis: Set<String> =
+            [
+                Constants.ServerEmojis.love.name,
+                Constants.ServerEmojis.vapor.name,
+                Constants.ServerEmojis.coin.name,
+                Constants.ServerEmojis.doge.name,
+                "🪙", "🚀",
+                "❤️", "💙", "💜", "🤍", "🤎", "🖤", "💛", "💚", "🧡",
+                "🩷", "🩶", "🩵", "💗", "💕", "😍", "😻", "🎉", "💯",
+            ]
+            + Constants.emojiSkins.map { "🙌\($0)" }
+            + Constants.emojiSkins.map { "🙏\($0)" }
+            + Constants.emojiSkins.flatMap { s in Constants.emojiGenders.map { g in "🙇\(s)\(g)" } }
     }
 
     let event: Gateway.MessageReactionAdd
@@ -36,21 +38,21 @@ struct ReactionHandler {
         self.context = context
         self.logger[metadataKey: "event"] = "\(event)"
     }
-    
+
     func handle() async {
         guard let member = event.member,
-              let user = member.user,
-              user.bot != true,
-              let emojiName = event.emoji.name,
-              Configuration.coinSignEmojis.contains(emojiName),
-              await cache.canGiveCoin(
+            let user = member.user,
+            user.bot != true,
+            let emojiName = event.emoji.name,
+            Configuration.coinSignEmojis.contains(emojiName),
+            await cache.canGiveCoin(
                 fromSender: user.id,
                 toAuthorOfMessage: event.message_id,
                 emoji: event.emoji,
                 reactionKind: event.type
-              ),
-              let receiverId = event.message_author_id,
-              user.id != receiverId
+            ),
+            let receiverId = event.message_author_id,
+            user.id != receiverId
         else { return }
 
         /// Super reactions give more coins, otherwise only 1 coin
@@ -63,7 +65,7 @@ struct ReactionHandler {
             source: .discord,
             reason: .userProvided
         )
-        
+
         var response: CoinResponse?
         do {
             response = try await context.usersService.postCoin(with: coinRequest)
@@ -71,13 +73,15 @@ struct ReactionHandler {
             logger.report("Error when posting coins", error: error)
             response = nil
         }
-        
-        guard await cache.messageCanBeRespondedTo(
-            channelId: event.channel_id,
-            messageId: event.message_id,
-            context: context
-        ) else { return }
-        
+
+        guard
+            await cache.messageCanBeRespondedTo(
+                channelId: event.channel_id,
+                messageId: event.message_id,
+                context: context
+            )
+        else { return }
+
         guard let response = response else {
             await respond(
                 with: "Oops. Something went wrong! Please try again later",
@@ -87,7 +91,7 @@ struct ReactionHandler {
             )
             return
         }
-        
+
         let senderName = member.nick ?? user.global_name ?? user.username
         if let toEdit = await cache.messageToEditIfAvailable(
             in: event.channel_id,
@@ -101,7 +105,8 @@ struct ReactionHandler {
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
-                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!",
+                    with:
+                        "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!",
                     forcedInThanksChannel: false,
                     amount: amount,
                     senderName: senderName
@@ -110,29 +115,32 @@ struct ReactionHandler {
                 var newNames = info.senderUsers
                 newNames.append(senderName)
                 let names = newNames.joined(separator: ", ", lastSeparator: " & ")
-                let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(info.originalChannelId.rawValue)/\(event.message_id.rawValue)"
+                let link =
+                    "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(info.originalChannelId.rawValue)/\(event.message_id.rawValue)"
                 let count = info.totalCoinCount + amount
                 await editResponse(
                     messageId: info.pennyResponseMessageId,
-                    with: "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)! (\(link))",
+                    with:
+                        "\(names) gave \(count) \(Constants.ServerEmojis.coin.emoji) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)! (\(link))",
                     forcedInThanksChannel: true,
                     amount: amount,
                     senderName: senderName
                 )
             }
         } else {
-            let coinCountDescription = amount == 1 ?
-            "a \(Constants.ServerEmojis.coin.emoji)" :
-            "\(amount) \(Constants.ServerEmojis.coin.emoji)"
+            let coinCountDescription =
+                amount == 1
+                ? "a \(Constants.ServerEmojis.coin.emoji)" : "\(amount) \(Constants.ServerEmojis.coin.emoji)"
             await respond(
-                with: "\(senderName) gave \(coinCountDescription) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!",
+                with:
+                    "\(senderName) gave \(coinCountDescription) to \(DiscordUtils.mention(id: response.receiver)), who now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!",
                 amount: amount,
                 senderName: senderName,
                 isFailureMessage: false
             )
         }
     }
-    
+
     /// `senderName` only should be included if its not a error-response.
     private func respond(
         with response: String,
@@ -148,11 +156,12 @@ struct ReactionHandler {
         )
         do {
             if let senderName,
-               let decoded = try apiResponse?.decode() {
+                let decoded = try apiResponse?.decode()
+            {
                 /// If it's a thanks message that was sent to `#thanks` instead of the original
                 /// channel, then we need to inform the cache.
-                let sentToThanksChannelInstead = decoded.channel_id == Constants.Channels.thanks.id &&
-                decoded.channel_id != event.channel_id
+                let sentToThanksChannelInstead =
+                    decoded.channel_id == Constants.Channels.thanks.id && decoded.channel_id != event.channel_id
                 await cache.didRespond(
                     originalChannelId: event.channel_id,
                     to: event.message_id,
@@ -170,7 +179,7 @@ struct ReactionHandler {
             )
         }
     }
-    
+
     /// `senderName` only should be included if its not a error-response.
     private func editResponse(
         messageId: MessageSnowflake,
@@ -183,15 +192,18 @@ struct ReactionHandler {
             messageId: messageId,
             channelId: forcedInThanksChannel ? Constants.Channels.thanks.id : event.channel_id,
             payload: .init(
-                embeds: [.init(
-                    description: response,
-                    color: .purple
-                )]
+                embeds: [
+                    .init(
+                        description: response,
+                        color: .purple
+                    )
+                ]
             )
         )
         do {
             if let senderName,
-               let decoded = try apiResponse?.decode() {
+                let decoded = try apiResponse?.decode()
+            {
                 await cache.didRespond(
                     originalChannelId: event.channel_id,
                     to: event.message_id,

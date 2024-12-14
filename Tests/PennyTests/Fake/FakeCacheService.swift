@@ -19,5 +19,5 @@ struct FakeCachesService: CachesService {
         await storage.populateServicesAndReport(context: context)
     }
 
-    func gatherCachedInfoAndSaveToRepository() async { }
+    func gatherCachedInfoAndSaveToRepository() async {}
 }

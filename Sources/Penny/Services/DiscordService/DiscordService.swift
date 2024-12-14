@@ -8,7 +8,7 @@ actor DiscordService {
         case cantGetGuild
         case cantFindChannel
     }
-    
+
     private let discordClient: any DiscordClient
     private let cache: DiscordCache
     private let backgroundProcessor: BackgroundProcessor
@@ -23,19 +23,22 @@ actor DiscordService {
                 logger.error("Cannot get cached vapor guild", metadata: ["guilds": "\(guilds)"])
                 throw Error.cantGetGuild
             }
-            
+
             /// This could cause problems so we need to somehow keep an eye on it.
             /// `Array.count` is O(1) so this is fine.
             if guild.members.count < 1_000 {
-                logger.critical("Vapor guild only has \(guild.members.count) members?!", metadata: [
-                    "guild": "\(guild)"
-                ])
+                logger.critical(
+                    "Vapor guild only has \(guild.members.count) members?!",
+                    metadata: [
+                        "guild": "\(guild)"
+                    ]
+                )
             }
-            
+
             return guild
         }
     }
-    
+
     init(
         discordClient: any DiscordClient,
         cache: DiscordCache,
@@ -45,29 +48,32 @@ actor DiscordService {
         self.cache = cache
         self.backgroundProcessor = backgroundProcessor
     }
-    
+
     func sendDM(userId: UserSnowflake, payload: Payloads.CreateMessage) async {
         guard let dmChannelId = await getDMChannelId(userId: userId) else { return }
-        
+
         do {
             let response = try await discordClient.createMessage(
                 channelId: dmChannelId,
                 payload: payload
             )
-            
+
             switch response.asError() {
             case let .jsonError(jsonError)
-                where jsonError.code == .cannotSendMessagesToThisUser:
+            where jsonError.code == .cannotSendMessagesToThisUser:
                 /// Try to let them know Penny can't DM them.
                 if usersAlreadyWarnedAboutClosedDMS.insert(userId).inserted {
-                    
-                    logger.warning("Could not send DM, will try to let them know", metadata: [
-                        "userId": .stringConvertible(userId),
-                        "dmChannelId": .stringConvertible(dmChannelId),
-                        "payload": "\(payload)",
-                        "jsonError": "\(jsonError)"
-                    ])
-                    
+
+                    logger.warning(
+                        "Could not send DM, will try to let them know",
+                        metadata: [
+                            "userId": .stringConvertible(userId),
+                            "dmChannelId": .stringConvertible(dmChannelId),
+                            "payload": "\(payload)",
+                            "jsonError": "\(jsonError)",
+                        ]
+                    )
+
                     self.backgroundProcessor.process {
                         let userMention = DiscordUtils.mention(id: userId)
                         /// Make it wait 1 to 10 minutes so it's not too
@@ -77,37 +83,47 @@ actor DiscordService {
                             channelId: Constants.Channels.thanks.id,
                             payload: .init(
                                 content: userMention,
-                                embeds: [.init(
-                                    description: """
-                                    I tried to DM you but couldn't. Please open your DMs to me.
+                                embeds: [
+                                    .init(
+                                        description: """
+                                            I tried to DM you but couldn't. Please open your DMs to me.
 
-                                    You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`.
+                                            You can allow Vapor server members to DM you by going into your `Server Settings` (tap Vapor server name), then choosing `Allow Direct Messages`.
 
-                                    On Desktop, this option is under the `Privacy Settings` menu.
-                                    """,
-                                    color: .purple
-                                )]
+                                            On Desktop, this option is under the `Privacy Settings` menu.
+                                            """,
+                                        color: .purple
+                                    )
+                                ]
                             )
                         )
                     }
                 }
             case .jsonError, .badStatusCode:
-                logger.report("Couldn't send DM", response: response, metadata: [
-                    "userId": .stringConvertible(userId),
-                    "dmChannelId": .stringConvertible(dmChannelId),
-                    "payload": "\(payload)"
-                ])
+                logger.report(
+                    "Couldn't send DM",
+                    response: response,
+                    metadata: [
+                        "userId": .stringConvertible(userId),
+                        "dmChannelId": .stringConvertible(dmChannelId),
+                        "payload": "\(payload)",
+                    ]
+                )
             case .none: break
             }
         } catch {
-            logger.report("Couldn't send DM", error: error, metadata: [
-                "userId": .stringConvertible(userId),
-                "dmChannelId": .stringConvertible(dmChannelId),
-                "payload": "\(payload)"
-            ])
+            logger.report(
+                "Couldn't send DM",
+                error: error,
+                metadata: [
+                    "userId": .stringConvertible(userId),
+                    "dmChannelId": .stringConvertible(dmChannelId),
+                    "payload": "\(payload)",
+                ]
+            )
         }
     }
-    
+
     private func getDMChannelId(userId: UserSnowflake) async -> ChannelSnowflake? {
         if let existing = dmChannels[userId] {
             return existing
@@ -124,7 +140,7 @@ actor DiscordService {
             }
         }
     }
-    
+
     @discardableResult
     func sendMessage(
         channelId: ChannelSnowflake,
@@ -138,14 +154,18 @@ actor DiscordService {
             try response.guardSuccess()
             return response
         } catch {
-            logger.report("Couldn't send a message", error: error, metadata: [
-                "channelId": "\(channelId)",
-                "payload": "\(payload)"
-            ])
+            logger.report(
+                "Couldn't send a message",
+                error: error,
+                metadata: [
+                    "channelId": "\(channelId)",
+                    "payload": "\(payload)",
+                ]
+            )
             return nil
         }
     }
-    
+
     /// Sends thanks response to the specified channel if Penny has the required permissions,
     /// otherwise sends to the `#thanks` channel.
     /// - Parameters:
@@ -183,10 +203,12 @@ actor DiscordService {
                 channelId: channelId,
                 payload: .init(
                     content: content,
-                    embeds: [.init(
-                        description: response,
-                        color: .purple
-                    )],
+                    embeds: [
+                        .init(
+                            description: response,
+                            color: .purple
+                        )
+                    ],
                     message_reference: .init(
                         message_id: messageId,
                         channel_id: channelId,
@@ -201,20 +223,23 @@ actor DiscordService {
                 logger.debug("Won't report a failure to users")
                 return nil
             }
-            let link = "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(channelId.rawValue)/\(messageId.rawValue)"
+            let link =
+                "https://discord.com/channels/\(Constants.vaporGuildId.rawValue)/\(channelId.rawValue)/\(messageId.rawValue)"
             return await self.sendMessage(
                 channelId: Constants.Channels.thanks.id,
                 payload: .init(
                     content: content,
-                    embeds: [.init(
-                        description: "\(response) (\(link))",
-                        color: .purple
-                    )]
+                    embeds: [
+                        .init(
+                            description: "\(response) (\(link))",
+                            color: .purple
+                        )
+                    ]
                 )
             )
         }
     }
-    
+
     @discardableResult
     func editMessage(
         messageId: MessageSnowflake,
@@ -230,15 +255,19 @@ actor DiscordService {
             try response.guardSuccess()
             return response
         } catch {
-            logger.report("Couldn't edit a message", error: error, metadata: [
-                "messageId": .stringConvertible(messageId),
-                "channelId": .stringConvertible(channelId),
-                "payload": "\(payload)"
-            ])
+            logger.report(
+                "Couldn't edit a message",
+                error: error,
+                metadata: [
+                    "messageId": .stringConvertible(messageId),
+                    "channelId": .stringConvertible(channelId),
+                    "payload": "\(payload)",
+                ]
+            )
             return nil
         }
     }
-    
+
     /// Returns whether or not the response has been successfully sent.
     @discardableResult
     func respondToInteraction(
@@ -254,15 +283,19 @@ actor DiscordService {
             ).guardSuccess()
             return true
         } catch {
-            logger.report("Couldn't send interaction response", error: error, metadata: [
-                "id": .stringConvertible(id),
-                "token": .string(token),
-                "payload": "\(payload)"
-            ])
+            logger.report(
+                "Couldn't send interaction response",
+                error: error,
+                metadata: [
+                    "id": .stringConvertible(id),
+                    "token": .string(token),
+                    "payload": "\(payload)",
+                ]
+            )
             return false
         }
     }
-    
+
     func editInteraction(
         token: String,
         payload: Payloads.EditWebhookMessage
@@ -273,25 +306,33 @@ actor DiscordService {
                 payload: payload
             ).guardSuccess()
         } catch {
-            logger.report("Couldn't send interaction edit", error: error, metadata: [
-                "token": .string(token),
-                "payload": "\(payload)"
-            ])
+            logger.report(
+                "Couldn't send interaction edit",
+                error: error,
+                metadata: [
+                    "token": .string(token),
+                    "payload": "\(payload)",
+                ]
+            )
         }
     }
-    
+
     func overwriteCommands(_ commands: [Payloads.ApplicationCommandCreate]) async {
         do {
             try await discordClient
                 .bulkSetApplicationCommands(payload: commands)
                 .guardSuccess()
         } catch {
-            logger.report("Couldn't overwrite application commands", error: error, metadata: [
-                "commands": "\(commands)"
-            ])
+            logger.report(
+                "Couldn't overwrite application commands",
+                error: error,
+                metadata: [
+                    "commands": "\(commands)"
+                ]
+            )
         }
     }
-    
+
     func getCommands() async -> [ApplicationCommand] {
         do {
             return try await discordClient.listApplicationCommands().decode()
@@ -307,7 +348,8 @@ actor DiscordService {
         channelId: ChannelSnowflake
     ) async -> [Gateway.MessageCreate]? {
         guard let messages = await cache.deletedMessages[channelId]?[id],
-              !messages.isEmpty else {
+            !messages.isEmpty
+        else {
             return nil
         }
         return messages
@@ -318,7 +360,8 @@ actor DiscordService {
         messageId: MessageSnowflake
     ) async -> AnyMessage? {
         if let fromCache = await cache.messages[channelId]?
-            .first(where: { $0.id == messageId }) {
+            .first(where: { $0.id == messageId })
+        {
             return .init(fromCache)
         }
         do {
@@ -328,10 +371,14 @@ actor DiscordService {
             ).decode()
             return .init(message)
         } catch {
-            logger.report("Couldn't get channel message", error: error, metadata: [
-                "channelId": .string(channelId.rawValue),
-                "messageId": .string(messageId.rawValue)
-            ])
+            logger.report(
+                "Couldn't get channel message",
+                error: error,
+                metadata: [
+                    "channelId": .string(channelId.rawValue),
+                    "messageId": .string(messageId.rawValue),
+                ]
+            )
             return nil
         }
     }
@@ -348,11 +395,15 @@ actor DiscordService {
                 payload: payload
             ).guardSuccess()
         } catch {
-            logger.report("Couldn't create thread from message", error: error, metadata: [
-                "channelId": .stringConvertible(channelId),
-                "messageId": .stringConvertible(messageId),
-                "payload": .string("\(payload)")
-            ])
+            logger.report(
+                "Couldn't create thread from message",
+                error: error,
+                metadata: [
+                    "channelId": .stringConvertible(channelId),
+                    "messageId": .stringConvertible(messageId),
+                    "payload": .string("\(payload)"),
+                ]
+            )
         }
     }
 
@@ -366,13 +417,17 @@ actor DiscordService {
                 messageId: messageId
             ).guardSuccess()
         } catch {
-            logger.report("Couldn't crosspost message", error: error, metadata: [
-                "channelId": .stringConvertible(channelId),
-                "messageId": .stringConvertible(messageId),
-            ])
+            logger.report(
+                "Couldn't crosspost message",
+                error: error,
+                metadata: [
+                    "channelId": .stringConvertible(channelId),
+                    "messageId": .stringConvertible(messageId),
+                ]
+            )
         }
     }
-    
+
     func userHasReadAccess(
         userId: UserSnowflake,
         channelId: ChannelSnowflake

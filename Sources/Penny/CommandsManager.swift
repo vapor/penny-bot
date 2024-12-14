@@ -1,6 +1,6 @@
 import DiscordBM
-import Models
 import Logging
+import Models
 
 struct CommandsManager {
     let context: HandlerContext
@@ -50,7 +50,7 @@ enum SlashCommand: String, CaseIterable {
 
     var options: [ApplicationCommand.Option]? {
         switch self {
-        case .github: 
+        case .github:
             return GitHubSubCommand.allCases.map { subCommand in
                 ApplicationCommand.Option(
                     type: .subCommand,
@@ -87,18 +87,20 @@ enum SlashCommand: String, CaseIterable {
                 )
             }
         case .howManyCoins:
-            return [.init(
-                type: .user,
-                name: "member",
-                description: "The member to check their coin count"
-            )]
+            return [
+                .init(
+                    type: .user,
+                    name: "member",
+                    description: "The member to check their coin count"
+                )
+            ]
         case .howManyCoinsApp:
             return nil
         }
     }
 
     var dmPermission: Bool {
-        return false
+        false
     }
 
     var type: ApplicationCommand.Kind? {
@@ -165,13 +167,15 @@ enum AutoPingsSubCommand: String, CaseIterable {
         case .add, .bulkRemove, .test:
             return [Self.expressionModeOption]
         case .remove:
-            return [.init(
-                type: .string,
-                name: "expression",
-                description: "What expression to remove",
-                required: true,
-                autocomplete: true
-            )]
+            return [
+                .init(
+                    type: .string,
+                    name: "expression",
+                    description: "What expression to remove",
+                    required: true,
+                    autocomplete: true
+                )
+            ]
         case .help, .list:
             return []
         }
@@ -222,16 +226,18 @@ enum FaqsSubCommand: String, CaseIterable {
                     name: "ephemeral",
                     description: "If True, the response will only be visible to you",
                     required: false
-                )
+                ),
             ]
         case .remove, .edit, .rename:
-            return [.init(
-                type: .string,
-                name: "name",
-                description: "The name of the command",
-                required: true,
-                autocomplete: true
-            )]
+            return [
+                .init(
+                    type: .string,
+                    name: "name",
+                    description: "The name of the command",
+                    required: true,
+                    autocomplete: true
+                )
+            ]
         case .add:
             return []
         }
@@ -272,16 +278,18 @@ enum AutoFaqsSubCommand: String, CaseIterable {
                     name: "ephemeral",
                     description: "If True, the response will only be visible to you",
                     required: false
-                )
+                ),
             ]
         case .remove, .edit, .rename:
-            return [.init(
-                type: .string,
-                name: "expression",
-                description: "The matching expression of the answer",
-                required: true,
-                autocomplete: true
-            )]
+            return [
+                .init(
+                    type: .string,
+                    name: "expression",
+                    description: "The matching expression of the answer",
+                    required: true,
+                    autocomplete: true
+                )
+            ]
         case .add:
             return []
         }

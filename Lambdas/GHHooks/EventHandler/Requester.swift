@@ -1,8 +1,8 @@
+import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
-import AsyncHTTPClient
-import Shared
 import Logging
+import Shared
 
 /// A shared place for requests that more than 1 place uses.
 struct Requester: Sendable {
@@ -43,31 +43,38 @@ extension Requester {
         let response = try await self.httpClient.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1 << 16)
         guard response.status == .ok else {
-            logger.warning("Can't find code owners of repo", metadata: [
-                "responseBody": "\(body)",
-                "response": "\(response)"
-            ])
+            logger.warning(
+                "Can't find code owners of repo",
+                metadata: [
+                    "responseBody": "\(body)",
+                    "response": "\(response)",
+                ]
+            )
             return CodeOwners(value: [])
         }
         let text = String(buffer: body)
         let parsed = parseCodeOwners(text: text)
-        logger.debug("Parsed code owners", metadata: [
-            "text": .string(text),
-            "parsed": .stringConvertible(parsed)
-        ])
+        logger.debug(
+            "Parsed code owners",
+            metadata: [
+                "text": .string(text),
+                "parsed": .stringConvertible(parsed),
+            ]
+        )
         return parsed
     }
 
     /// Returns code owner names all lowercased.
     func parseCodeOwners(text: String) -> CodeOwners {
-        let codeOwners: [String] = text
-        /// split into lines
+        let codeOwners: [String] =
+            text
+            /// split into lines
             .split(omittingEmptySubsequences: true, whereSeparator: \.isNewline)
-        /// trim leading whitespace per line
+            /// trim leading whitespace per line
             .map { $0.trimmingPrefix(while: \.isWhitespace) }
-        /// remove whole-line comments
+            /// remove whole-line comments
             .filter { !$0.starts(with: "#") }
-        /// remove partial-line comments
+            /// remove partial-line comments
             .compactMap {
                 $0.split(
                     separator: "#",
@@ -75,7 +82,7 @@ extension Requester {
                     omittingEmptySubsequences: true
                 ).first
             }
-        /// split lines on whitespace, dropping first character, and combine to single list
+            /// split lines on whitespace, dropping first character, and combine to single list
             .flatMap { line -> [Substring] in
                 line.split(
                     omittingEmptySubsequences: true,
@@ -130,7 +137,7 @@ struct CodeOwners: CustomStringConvertible {
     }
 
     func union(_ other: Set<String>) -> CodeOwners {
-        return CodeOwners(
+        CodeOwners(
             lowercasedValue: self.value.union(
                 other.map({ $0.lowercased() })
             )

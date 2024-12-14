@@ -1,5 +1,5 @@
-import SotoDynamoDB
 import Atomics
+import SotoDynamoDB
 
 struct DynamoMessageRepo: MessageLookupRepo {
 
@@ -83,10 +83,13 @@ struct DynamoMessageRepo: MessageLookupRepo {
 
     private func get(id: String) async throws -> Item {
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
-        logger.trace("Will get an item", metadata: [
-            "id": .string(id),
-            "repo-request-id": .stringConvertible(requestID),
-        ])
+        logger.trace(
+            "Will get an item",
+            metadata: [
+                "id": .string(id),
+                "repo-request-id": .stringConvertible(requestID),
+            ]
+        )
         let query = DynamoDB.QueryInput(
             expressionAttributeValues: [":v1": .s(id)],
             keyConditionExpression: "id = :v1",
@@ -98,10 +101,13 @@ struct DynamoMessageRepo: MessageLookupRepo {
             type: Item.self,
             logger: self.logger
         )
-        logger.debug("Got some items", metadata: [
-            "items": "\(result.items ?? [])",
-            "repo-request-id": .stringConvertible(requestID),
-        ])
+        logger.debug(
+            "Got some items",
+            metadata: [
+                "items": "\(result.items ?? [])",
+                "repo-request-id": .stringConvertible(requestID),
+            ]
+        )
         guard let item = result.items?.first else {
             throw Errors.notFound
         }
@@ -110,10 +116,13 @@ struct DynamoMessageRepo: MessageLookupRepo {
 
     private func save(item: Item) async throws {
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
-        logger.debug("Will save an item", metadata: [
-            "item": "\(item)",
-            "repo-request-id": .stringConvertible(requestID),
-        ])
+        logger.debug(
+            "Will save an item",
+            metadata: [
+                "item": "\(item)",
+                "repo-request-id": .stringConvertible(requestID),
+            ]
+        )
         let input = DynamoDB.UpdateItemCodableInput(
             key: ["id"],
             tableName: self.tableName,
@@ -125,8 +134,11 @@ struct DynamoMessageRepo: MessageLookupRepo {
             logger: self.logger
         )
 
-        logger.trace("Item did save", metadata: [
-            "repo-request-id": .stringConvertible(requestID)
-        ])
+        logger.trace(
+            "Item did save",
+            metadata: [
+                "repo-request-id": .stringConvertible(requestID)
+            ]
+        )
     }
 }

@@ -1,7 +1,7 @@
-import DiscordBM
-import SotoCore
 import AsyncHTTPClient
+import DiscordBM
 import NIOCore
+import SotoCore
 
 protocol MainService: Sendable {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws

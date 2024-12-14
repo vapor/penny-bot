@@ -1,6 +1,6 @@
-import SotoDynamoDB
 import Logging
 import Models
+import SotoDynamoDB
 
 struct DynamoCoinEntryRepository {
     let db: DynamoDB

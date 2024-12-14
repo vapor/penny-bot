@@ -1,8 +1,8 @@
 import AsyncHTTPClient
-import NIO
-import Logging
-import Shared
 import LeafKit
+import Logging
+import NIO
+import Shared
 
 struct GHLeafSource: LeafSource {
 
@@ -50,7 +50,8 @@ struct GHLeafSource: LeafSource {
             let url = "https://raw.githubusercontent.com/vapor/penny-bot/main/\(path)/\(template)"
             let request = HTTPClientRequest(url: url)
             let response = try await httpClient.execute(request, timeout: .seconds(5))
-            let body = try await response.body.collect(upTo: 1 << 22) /// 4 MiB
+            let body = try await response.body.collect(upTo: 1 << 22)
+            /// 4 MiB
             guard 200..<300 ~= response.status.code else {
                 throw Errors.httpRequestFailed(response, body: String(buffer: body))
             }

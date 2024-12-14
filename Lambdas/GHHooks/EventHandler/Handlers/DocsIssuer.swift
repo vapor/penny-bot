@@ -30,7 +30,7 @@ struct DocsIssuer {
             return
         }
         guard let branch = self.event.ref.extractHeadBranchFromRef(),
-              branch.isPrimaryOrReleaseBranch(repo: repo)
+            branch.isPrimaryOrReleaseBranch(repo: repo)
         else { return }
 
         for pr in try await self.getPRsRelatedToCommit() {
@@ -44,10 +44,11 @@ struct DocsIssuer {
             let files = try await getPRFiles(number: pr.number)
             /// PR must contain file changes for files that are in the `docs` directory.
             /// Otherwise there is nothing to be translated and there is no need for a new issue.
-            guard files.contains(where: { file in
-                file.filename.hasPrefix("docs/") &&
-                    [.added, .modified].contains(file.status)
-            }) else {
+            guard
+                files.contains(where: { file in
+                    file.filename.hasPrefix("docs/") && [.added, .modified].contains(file.status)
+                })
+            else {
                 self.logger.debug(
                     "Will not file issue for docs push PR because no docs files are added or modified",
                     metadata: ["number": .stringConvertible(pr.number)]
@@ -90,10 +91,12 @@ struct DocsIssuer {
                 owner: self.repo.owner.login,
                 repo: self.repo.name
             ),
-            body: .json(.init(
-                title: .case1("Translation needed for #\(number)"),
-                body: description
-            ))
+            body: .json(
+                .init(
+                    title: .case1("Translation needed for #\(number)"),
+                    body: description
+                )
+            )
         ).created
     }
 }

@@ -1,9 +1,10 @@
-import Logging
-import ServiceLifecycle
-import Markdown
 import DiscordModels
-import Models
 import EvolutionMetadataModel
+import Logging
+import Markdown
+import Models
+import ServiceLifecycle
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -42,7 +43,7 @@ actor EvolutionChecker: Service {
         if Task.isCancelled { return }
         do {
             try await self.check()
-            try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
+            try await Task.sleep(for: .seconds(60 * 15))/// 15 mins
         } catch {
             logger.report("Couldn't check proposals", error: error)
             try await Task.sleep(for: .seconds(60 * 5))
@@ -92,11 +93,13 @@ actor EvolutionChecker: Service {
                 self.storage.queuedProposals[existingIdx].proposal = new
                 logger.debug("A new proposal will be delayed", metadata: ["id": .string(new.id)])
             } else {
-                self.storage.queuedProposals.append(.init(
-                    firstKnownStateBeforeQueue: nil,
-                    updatedAt: Date(),
-                    proposal: new
-                ))
+                self.storage.queuedProposals.append(
+                    .init(
+                        firstKnownStateBeforeQueue: nil,
+                        updatedAt: Date(),
+                        proposal: new
+                    )
+                )
                 logger.debug("A new proposal was queued", metadata: ["id": .string(new.id)])
             }
         }
@@ -118,18 +121,26 @@ actor EvolutionChecker: Service {
             ) {
                 self.storage.queuedProposals[existingIdx].updatedAt = Date()
                 self.storage.queuedProposals[existingIdx].proposal = updated
-                logger.debug("An updated proposal will be delayed", metadata: [
-                    "id": .string(updated.id)
-                ])
+                logger.debug(
+                    "An updated proposal will be delayed",
+                    metadata: [
+                        "id": .string(updated.id)
+                    ]
+                )
             } else {
-                self.storage.queuedProposals.append(.init(
-                    firstKnownStateBeforeQueue: previousState,
-                    updatedAt: Date(),
-                    proposal: updated
-                ))
-                logger.debug("An updated proposal was queued", metadata: [
-                    "id": .string(updated.id)
-                ])
+                self.storage.queuedProposals.append(
+                    .init(
+                        firstKnownStateBeforeQueue: previousState,
+                        updatedAt: Date(),
+                        proposal: updated
+                    )
+                )
+                logger.debug(
+                    "An updated proposal was queued",
+                    metadata: [
+                        "id": .string(updated.id)
+                    ]
+                )
             }
         }
 
@@ -190,9 +201,10 @@ actor EvolutionChecker: Service {
 
         let summary = makeSummary(proposal: proposal)
 
-        let upcomingFeatureFlag = proposal.upcomingFeatureFlag.map {
-            "\n**Upcoming Feature Flag:** \($0.flag)"
-        } ?? ""
+        let upcomingFeatureFlag =
+            proposal.upcomingFeatureFlag.map {
+                "\n**Upcoming Feature Flag:** \($0.flag)"
+            } ?? ""
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -218,23 +230,25 @@ actor EvolutionChecker: Service {
         if let current = stateDescription {
             status = """
 
-            **Status: \(current)**
-            """
+                **Status: \(current)**
+                """
         }
 
         return .init(
-            embeds: [.init(
-                title: title.unicodesPrefix(256),
-                description: """
-                > \(summary)
-                \(status)
-                \(upcomingFeatureFlag)
-                \(authorsString)
-                \(reviewManagersString)
-                """.replaceTripleNewlinesWithDoubleNewlines(),
-                url: proposalLink,
-                color: proposal.status.color
-            )],
+            embeds: [
+                .init(
+                    title: title.unicodesPrefix(256),
+                    description: """
+                        > \(summary)
+                        \(status)
+                        \(upcomingFeatureFlag)
+                        \(authorsString)
+                        \(reviewManagersString)
+                        """.replaceTripleNewlinesWithDoubleNewlines(),
+                    url: proposalLink,
+                    color: proposal.status.color
+                )
+            ],
             components: await makeComponents(proposal: proposal)
         )
     }
@@ -250,9 +264,10 @@ actor EvolutionChecker: Service {
 
         let summary = makeSummary(proposal: proposal)
 
-        let upcomingFeatureFlag = proposal.upcomingFeatureFlag.map {
-            "\n**Upcoming Feature Flag:** \($0.flag)"
-        } ?? ""
+        let upcomingFeatureFlag =
+            proposal.upcomingFeatureFlag.map {
+                "\n**Upcoming Feature Flag:** \($0.flag)"
+            } ?? ""
 
         let authors = proposal.authors
             .filter(\.isRealPerson)
@@ -276,26 +291,29 @@ actor EvolutionChecker: Service {
 
         var status = ""
         if let previous = previousState.UIDescription,
-           let new = stateDescription {
+            let new = stateDescription
+        {
             status = """
 
-            **Status:** \(previous) -> **\(new)**
-            """
+                **Status:** \(previous) -> **\(new)**
+                """
         }
 
         return .init(
-            embeds: [.init(
-                title: title.unicodesPrefix(256),
-                description: """
-                > \(summary)
-                \(status)
-                \(upcomingFeatureFlag)
-                \(authorsString)
-                \(reviewManagersString)
-                """.replaceTripleNewlinesWithDoubleNewlines(),
-                url: proposalLink,
-                color: proposal.status.color
-            )],
+            embeds: [
+                .init(
+                    title: title.unicodesPrefix(256),
+                    description: """
+                        > \(summary)
+                        \(status)
+                        \(upcomingFeatureFlag)
+                        \(authorsString)
+                        \(reviewManagersString)
+                        """.replaceTripleNewlinesWithDoubleNewlines(),
+                    url: proposalLink,
+                    color: proposal.status.color
+                )
+            ],
             components: await makeComponents(proposal: proposal)
         )
     }
@@ -305,10 +323,12 @@ actor EvolutionChecker: Service {
 
         if let discussion = proposal.discussions.last {
             buttons[0].components.append(
-                .button(.init(
-                    label: "\(discussion.name.capitalized) Post",
-                    url: discussion.link
-                ))
+                .button(
+                    .init(
+                        label: "\(discussion.name.capitalized) Post",
+                        url: discussion.link
+                    )
+                )
             )
         }
 
@@ -341,7 +361,8 @@ actor EvolutionChecker: Service {
             logger.warning("Edited Markup was nil", metadata: ["proposal": "\(proposal)"])
         }
         let newSummary = newMarkup?.format() ?? proposal.summary
-        return newSummary
+        return
+            newSummary
             .replacing("\n", with: " ")
             .sanitized()
             .unicodesPrefix(2_048)
@@ -352,23 +373,24 @@ actor EvolutionChecker: Service {
     }
 
     func getCachedDataForCachesStorage() -> Storage {
-        return self.storage
+        self.storage
     }
 }
 
-private extension String {
-    func sanitized() -> String {
+extension String {
+    fileprivate func sanitized() -> String {
         self.trimmingCharacters(in: .whitespacesAndNewlines)
-            .replacing(#"\/"#, with: "/") /// Un-escape
+            .replacing(#"\/"#, with: "/")
+        /// Un-escape
     }
 }
 
-private extension Proposal.Person {
-    var isRealPerson: Bool {
+extension Proposal.Person {
+    fileprivate var isRealPerson: Bool {
         !["", "TBD", "N/A"].contains(self.name.sanitized())
     }
 
-    func makeStringForDiscord() -> String {
+    fileprivate func makeStringForDiscord() -> String {
         let link = link.sanitized()
         let name = name.sanitized()
         if link.isEmpty {
@@ -387,8 +409,9 @@ struct LinkRepairer: MarkupRewriter {
 
     func visitLink(_ link: Link) -> (any Markup)? {
         if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
-           !dest.hasPrefix("https://"),
-           dest.hasSuffix(".md") {
+            !dest.hasPrefix("https://"),
+            dest.hasSuffix(".md")
+        {
             /// It's a relative .md link like "0400-init-accessors.md".
             /// We make it absolute.
             var link = link
@@ -420,8 +443,8 @@ struct QueuedProposal: Sendable, Codable {
 }
 
 // MARK: - +Proposal
-private extension Proposal.Status {
-    var color: DiscordColor {
+extension Proposal.Status {
+    fileprivate var color: DiscordColor {
         switch self {
         case .accepted: return .green
         case .acceptedWithRevisions: return .green(scheme: .dark)
@@ -437,7 +460,7 @@ private extension Proposal.Status {
         }
     }
 
-    var UIDescription: String? {
+    fileprivate var UIDescription: String? {
         switch self {
         case .accepted: return "Accepted"
         case .acceptedWithRevisions: return "Accepted With Revisions"
@@ -453,7 +476,7 @@ private extension Proposal.Status {
         }
     }
 
-    var titleDescription: String? {
+    fileprivate var titleDescription: String? {
         switch self {
         case .activeReview: return "In Active Review"
         default: return self.UIDescription
@@ -461,14 +484,14 @@ private extension Proposal.Status {
     }
 }
 
-private extension Collection {
-    var nilIfEmpty: Self? {
+extension Collection {
+    fileprivate var nilIfEmpty: Self? {
         self.isEmpty ? nil : self
     }
 }
 
-private extension String {
-    func replaceTripleNewlinesWithDoubleNewlines() -> String {
+extension String {
+    fileprivate func replaceTripleNewlinesWithDoubleNewlines() -> String {
         self.replacingOccurrences(of: "\n\n\n", with: "\n\n")
     }
 }

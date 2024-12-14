@@ -18,8 +18,8 @@ extension Issue {
     }
 }
 
-private extension Issue.labelsPayloadPayload {
-    var name: String? {
+extension Issue.labelsPayloadPayload {
+    fileprivate var name: String? {
         switch self {
         case let .case1(string):
             return string

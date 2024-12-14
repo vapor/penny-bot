@@ -1,12 +1,13 @@
-@testable import Penny
-@testable import Models
 import DiscordModels
 import Shared
 
+@testable import Models
+@testable import Penny
+
 struct FakeUsersService: UsersService {
-    
-    init() { }
-    
+
+    init() {}
+
     func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse {
         CoinResponse(
             sender: coinRequest.fromDiscordID,
@@ -14,14 +15,14 @@ struct FakeUsersService: UsersService {
             newCoinCount: coinRequest.amount + .random(in: 0..<10_000)
         )
     }
-    
+
     func getCoinCount(of discordID: UserSnowflake) async throws -> Int {
         2591
     }
 
-    func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws { }
+    func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws {}
 
-    func unlinkGitHubID(discordID: UserSnowflake) async throws { }
+    func unlinkGitHubID(discordID: UserSnowflake) async throws {}
 
     func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {
         .userName("fake-username")

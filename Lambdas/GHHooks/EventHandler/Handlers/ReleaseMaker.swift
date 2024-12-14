@@ -1,11 +1,12 @@
-import DiscordBM
 import AsyncHTTPClient
+import DiscordBM
+import GitHubAPI
+import Logging
+import Markdown
 import NIOCore
 import NIOFoundationCompat
-import GitHubAPI
 import SwiftSemver
-import Markdown
-import Logging
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -15,10 +16,12 @@ import Foundation
 struct ReleaseMaker {
 
     enum Configuration {
-        static let repositoryIDDenyList: Set<Int> = [/*postgres-nio:*/ 150622661]
+        /// The postgres-nio repository ID.
+        static let repositoryIDDenyList: Set<Int> = [150_622_661]
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
-        static let organizationIDAllowList: Set<Int> = [/*vapor:*/ 17364220]
+        /// The Vapor organization ID.
+        static let organizationIDAllowList: Set<Int> = [17_364_220]
         static let releaseNoticePrefix = "**These changes are now available in"
     }
 
@@ -59,10 +62,10 @@ struct ReleaseMaker {
 
     func handle() async throws {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
-              Configuration.organizationIDAllowList.contains(repo.owner.id),
-              let mergedBy = pr.merged_by,
-              pr.base.ref.isPrimaryOrReleaseBranch(repo: repo),
-              let bump = pr.knownLabels.first?.toBump()
+            Configuration.organizationIDAllowList.contains(repo.owner.id),
+            let mergedBy = pr.merged_by,
+            pr.base.ref.isPrimaryOrReleaseBranch(repo: repo),
+            let bump = pr.knownLabels.first?.toBump()
         else { return }
 
         let previousRelease = try await getLastRelease()
@@ -135,15 +138,19 @@ struct ReleaseMaker {
         )
 
         if case let .ok(ok) = response,
-           case let .json(json) = ok.body {
+            case let .json(json) = ok.body
+        {
             return json
         }
 
-        logger.warning("Could not find a 'latest' release", metadata: [
-            "owner": .string(repo.owner.login),
-            "name": .string(repo.name),
-            "response": "\(response)",
-        ])
+        logger.warning(
+            "Could not find a 'latest' release",
+            metadata: [
+                "owner": .string(repo.owner.login),
+                "name": .string(repo.name),
+                "response": "\(response)",
+            ]
+        )
 
         return nil
     }
@@ -164,15 +171,17 @@ struct ReleaseMaker {
                 owner: repo.owner.login,
                 repo: repo.name
             ),
-            body: .json(.init(
-                tag_name: newVersion,
-                target_commitish: pr.base.ref,
-                name: "\(newVersion) - \(pr.title)",
-                body: body,
-                draft: false,
-                prerelease: isPrerelease,
-                make_latest: isPrerelease ? ._false : ._true
-            ))
+            body: .json(
+                .init(
+                    tag_name: newVersion,
+                    target_commitish: pr.base.ref,
+                    name: "\(newVersion) - \(pr.title)",
+                    body: body,
+                    draft: false,
+                    prerelease: isPrerelease,
+                    make_latest: isPrerelease ? ._false : ._true
+                )
+            )
         ).created.body.json
     }
 
@@ -186,10 +195,14 @@ struct ReleaseMaker {
         ).ok.body.json
         if (current.body ?? "")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-            .hasPrefix(Configuration.releaseNoticePrefix) {
-            logger.debug("Pull request doesn't need to be updated with release notice", metadata: [
-                "current": "\(current)"
-            ])
+            .hasPrefix(Configuration.releaseNoticePrefix)
+        {
+            logger.debug(
+                "Pull request doesn't need to be updated with release notice",
+                metadata: [
+                    "current": "\(current)"
+                ]
+            )
             return
         }
         let updated = try await context.githubClient.pulls_update(
@@ -198,27 +211,30 @@ struct ReleaseMaker {
                 repo: repo.name,
                 pull_number: number
             ),
-            body: .json(.init(
-                body: """
-                \(Configuration.releaseNoticePrefix) [\(release.tag_name)](\(release.html_url))**
+            body: .json(
+                .init(
+                    body: """
+                        \(Configuration.releaseNoticePrefix) [\(release.tag_name)](\(release.html_url))**
 
 
-                \(current.body ?? "")
-                """
-            ))
+                        \(current.body ?? "")
+                        """
+                )
+            )
         ).ok.body.json
-        logger.debug("Updated a pull request with a release notice", metadata: [
-            "before": "\(current)",
-            "after": "\(updated)"
-        ])
+        logger.debug(
+            "Updated a pull request with a release notice",
+            metadata: [
+                "before": "\(current)",
+                "after": "\(updated)",
+            ]
+        )
     }
 
-    /**
-     - A user who appears in a given repo's code owners file should NOT be credited as either an author or reviewer for a release in that repo (but can still be credited for releasing it).
-     - The user who authored the PR should be credited unless they are a code owner. Such a credit should be prominent and - as the GitHub changelog generator does - include a notation if it's that user's first merged PR.
-     - Any users who reviewed the PR (even if they requested changes or did a comments-only review without approving) should also be credited unless they are code owners. Such a credit should be less prominent than the author credit, something like a "thanks to ... for helping to review this release"
-     - The release author (user who merged the PR) should always be credited in a release, even if they're a code owner. This credit should be the least prominent, maybe even just a footnote (since it will pretty much always be a owner/maintainer).
-     */
+    /// - A user who appears in a given repo's code owners file should NOT be credited as either an author or reviewer for a release in that repo (but can still be credited for releasing it).
+    /// - The user who authored the PR should be credited unless they are a code owner. Such a credit should be prominent and - as the GitHub changelog generator does - include a notation if it's that user's first merged PR.
+    /// - Any users who reviewed the PR (even if they requested changes or did a comments-only review without approving) should also be credited unless they are code owners. Such a credit should be less prominent than the author credit, something like a "thanks to ... for helping to review this release"
+    /// - The release author (user who merged the PR) should always be credited in a release, even if they're a code owner. This credit should be the least prominent, maybe even just a footnote (since it will pretty much always be a owner/maintainer).
     func makeReleaseBody(
         mergedBy: NullableUser,
         previousVersion: String,
@@ -274,27 +290,30 @@ struct ReleaseMaker {
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
-        pr.author_association != .OWNER &&
-        !pr.user.isBot &&
-        !codeOwners.contains(user: pr.user) &&
-        !existingContributors.contains(pr.user.id)
+        pr.author_association != .OWNER && !pr.user.isBot && !codeOwners.contains(user: pr.user)
+            && !existingContributors.contains(pr.user.id)
     }
 
     func getReviews() async throws -> [PullRequestReview] {
         let response = try await context.githubClient.pulls_list_reviews(
-            .init(path: .init(
-                owner: repo.owner.login,
-                repo: repo.name,
-                pull_number: number
-            ))
+            .init(
+                path: .init(
+                    owner: repo.owner.login,
+                    repo: repo.name,
+                    pull_number: number
+                )
+            )
         )
 
         guard case let .ok(ok) = response,
-              case let .json(json) = ok.body
+            case let .json(json) = ok.body
         else {
-            logger.warning("Could not find reviews", metadata: [
-                "response": "\(response)"
-            ])
+            logger.warning(
+                "Could not find reviews",
+                metadata: [
+                    "response": "\(response)"
+                ]
+            )
             return []
         }
 
@@ -320,9 +339,12 @@ struct ReleaseMaker {
     }
 
     func getExistingContributorIDs(page: Int) async throws -> (ids: [Int], hasNext: Bool) {
-        logger.debug("Will fetch current contributors", metadata: [
-            "page": .stringConvertible(page)
-        ])
+        logger.debug(
+            "Will fetch current contributors",
+            metadata: [
+                "page": .stringConvertible(page)
+            ]
+        )
 
         let response = try await context.githubClient.repos_list_contributors(
             path: .init(
@@ -336,28 +358,36 @@ struct ReleaseMaker {
         )
 
         if case let .ok(ok) = response,
-           case let .json(json) = ok.body {
+            case let .json(json) = ok.body
+        {
             /// Example of a `link` header: `<https://api.github.com/repositories/49910095/contributors?page=6>; rel="prev", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="next", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="last", <https://api.github.com/repositories/49910095/contributors?page=1>; rel="first"`
             /// If the header contains `rel="next"` then we'll have a next page to fetch.
-            let hasNext = switch ok.headers.Link {
-            case let .case1(string):
-                string.contains(#"rel="next""#)
-            case let .case2(strings):
-                strings.contains { $0.contains(#"rel="next""#) }
-            case .none:
-                false
-            }
+            let hasNext =
+                switch ok.headers.Link {
+                case let .case1(string):
+                    string.contains(#"rel="next""#)
+                case let .case2(strings):
+                    strings.contains { $0.contains(#"rel="next""#) }
+                case .none:
+                    false
+                }
             let ids = json.compactMap(\.id)
-            logger.debug("Fetched some contributors", metadata: [
-                "page": .stringConvertible(page),
-                "count": .stringConvertible(ids.count)
-            ])
+            logger.debug(
+                "Fetched some contributors",
+                metadata: [
+                    "page": .stringConvertible(page),
+                    "count": .stringConvertible(ids.count),
+                ]
+            )
             return (ids, hasNext)
         } else {
-            logger.error("Error when fetching contributors but will continue", metadata: [
-                "page": .stringConvertible(page),
-                "response": "\(response)"
-            ])
+            logger.error(
+                "Error when fetching contributors but will continue",
+                metadata: [
+                    "page": .stringConvertible(page),
+                    "response": "\(response)",
+                ]
+            )
             return ([], false)
         }
     }

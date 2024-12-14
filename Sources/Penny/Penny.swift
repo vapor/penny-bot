@@ -1,13 +1,14 @@
-import NIOPosix
-import NIOCore
 import AsyncHTTPClient
+import NIOCore
+import NIOPosix
 import Shared
 import SotoS3
 
 @main
 struct Penny {
     static func main() async throws {
-        let success = NIOSingletons
+        let success =
+            NIOSingletons
             .unsafeTryInstallSingletonPosixEventLoopGroupAsConcurrencyGlobalExecutor()
         print("*** Tried to install singleton Posix ELG as Concurrency global executor. Success: \(success)***")
 

@@ -1,13 +1,15 @@
+import DiscordModels
+import EvolutionMetadataModel
+import GitHubAPI
+
+@testable import Penny
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 import class Foundation.JSONSerialization
 #else
 import Foundation
 #endif
-import DiscordModels
-import EvolutionMetadataModel
-import GitHubAPI
-@testable import Penny
 
 enum TestData {
 
@@ -18,7 +20,9 @@ enum TestData {
         let currentDirectory = fileManager.currentDirectoryPath
         let path = currentDirectory + "/Tests/Resources/" + name
         guard let data = fileManager.contents(atPath: path) else {
-            fatalError("Make sure you've set the custom working directory for the current scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory. Current working directory: \(currentDirectory)")
+            fatalError(
+                "Make sure you've set the custom working directory for the current scheme: https://docs.vapor.codes/getting-started/xcode/#custom-working-directory. Current working directory: \(currentDirectory)"
+            )
         }
         return data
     }
@@ -67,7 +71,7 @@ enum TestData {
     }()
 
     static func `for`(gatewayEventKey key: String) -> Data? {
-        return gatewayEvents[key]
+        gatewayEvents[key]
     }
 
     static func decodedFor(gatewayEventKey key: String) -> Gateway.Event {
@@ -85,7 +89,7 @@ enum TestData {
     }()
 
     static func `for`(ghEventKey key: String) -> Data? {
-        return ghHooksEvents[key]
+        ghHooksEvents[key]
     }
 
     private static let ghRestOperations: [String: Data] = {
@@ -97,6 +101,6 @@ enum TestData {
     }()
 
     static func `for`(ghRequestID key: String) -> Data? {
-        return ghRestOperations[key]
+        ghRestOperations[key]
     }
 }

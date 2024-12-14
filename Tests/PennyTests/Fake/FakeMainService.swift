@@ -1,14 +1,15 @@
+import AsyncHTTPClient
+import DiscordLogger
+import NIO
+import ServiceLifecycle
+import Shared
+import SotoCore
+import Testing
+
 @testable import DiscordBM
 @testable import DiscordModels
 @testable import Logging
 @testable import Penny
-import NIO
-import DiscordLogger
-import SotoCore
-import AsyncHTTPClient
-import ServiceLifecycle
-import Shared
-import Testing
 
 actor FakeMainService: MainService {
     let manager: FakeManager
@@ -40,14 +41,14 @@ actor FakeMainService: MainService {
         )
     }
 
-    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws { }
+    func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {}
 
     func makeBot(httpClient: HTTPClient) async throws -> any GatewayManager {
-        return manager
+        manager
     }
 
     func makeCache(bot: any GatewayManager) async throws -> DiscordCache {
-        return cache
+        cache
     }
 
     func beforeConnectCall(
@@ -56,7 +57,7 @@ actor FakeMainService: MainService {
         httpClient: HTTPClient,
         awsClient: AWSClient
     ) async throws -> HandlerContext {
-        return context
+        context
     }
 
     func runServices(context: HandlerContext) async throws {
@@ -73,7 +74,7 @@ actor FakeMainService: MainService {
             services: [
                 context.backgroundProcessor,
                 context.discordEventListener,
-                botStateManagerWrappedService
+                botStateManagerWrappedService,
             ],
             logger: Logger(label: "TestServiceGroup")
         )
@@ -114,13 +115,15 @@ actor FakeMainService: MainService {
             pingsService: FakePingsService(),
             faqsService: FakeFaqsService(),
             autoFaqsService: autoFaqsService,
-            cachesService: FakeCachesService(context: .init(
-                autoFaqsService: autoFaqsService,
-                evolutionChecker: evolutionChecker,
-                soChecker: soChecker,
-                swiftReleasesChecker: swiftReleasesChecker,
-                reactionCache: reactionCache
-            )),
+            cachesService: FakeCachesService(
+                context: .init(
+                    autoFaqsService: autoFaqsService,
+                    evolutionChecker: evolutionChecker,
+                    soChecker: soChecker,
+                    swiftReleasesChecker: swiftReleasesChecker,
+                    reactionCache: reactionCache
+                )
+            ),
             discordService: discordService,
             renderClient: .init(
                 renderer: try .forPenny(
@@ -150,30 +153,35 @@ actor FakeMainService: MainService {
             at: .createMessage(channelId: Constants.Channels.botLogs.id)
         ).value as? Payloads.CreateMessage {
             if let signal = possibleSignal.content,
-               StateManagerSignal.shutdown.isInMessage(signal) {
+                StateManagerSignal.shutdown.isInMessage(signal)
+            {
                 let content = await botStateManager._tests_didShutdownSignalEventContent()
-                await manager.send(event: .init(
-                    opcode: .dispatch,
-                    data: .messageCreate(.init(
-                        id: try! .makeFake(),
-                        channel_id: Constants.Channels.botLogs.id,
-                        author: DiscordUser(
-                            id: Snowflake(Constants.botId),
-                            username: "Penny",
-                            discriminator: "#0"
-                        ),
-                        content: content,
-                        timestamp: .fake,
-                        tts: false,
-                        mention_everyone: false,
-                        mention_roles: [],
-                        mentions: [],
-                        attachments: [],
-                        embeds: [],
-                        pinned: false,
-                        type: .default
-                    ))
-                ))
+                await manager.send(
+                    event: .init(
+                        opcode: .dispatch,
+                        data: .messageCreate(
+                            .init(
+                                id: try! .makeFake(),
+                                channel_id: Constants.Channels.botLogs.id,
+                                author: DiscordUser(
+                                    id: Snowflake(Constants.botId),
+                                    username: "Penny",
+                                    discriminator: "#0"
+                                ),
+                                content: content,
+                                timestamp: .fake,
+                                tts: false,
+                                mention_everyone: false,
+                                mention_roles: [],
+                                mentions: [],
+                                attachments: [],
+                                embeds: [],
+                                pinned: false,
+                                type: .default
+                            )
+                        )
+                    )
+                )
                 break
             }
         }
@@ -187,7 +195,7 @@ actor FakeMainService: MainService {
     }
 }
 
-private extension DiscordTimestamp {
-    static let fake = DiscordTimestamp(date: .distantPast)
-    static let inFutureFake = DiscordTimestamp(date: .distantFuture)
+extension DiscordTimestamp {
+    fileprivate static let fake = DiscordTimestamp(date: .distantPast)
+    fileprivate static let inFutureFake = DiscordTimestamp(date: .distantFuture)
 }

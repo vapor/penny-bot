@@ -1,15 +1,16 @@
 import AsyncHTTPClient
 import DiscordBM
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 import GitHubAPI
 import Markdown
 import NIOCore
 import NIOFoundationCompat
 import SwiftSemver
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 struct PRHandler {
     let context: HandlerContext
@@ -41,7 +42,8 @@ struct PRHandler {
             try await self.onClosed()
         case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
             try await self.onEdited()
-        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned, .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .submitted:
+        case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned,
+            .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .submitted:
             break
         }
     }
@@ -89,13 +91,14 @@ struct PRHandler {
     func createReportEmbed() async throws -> Embed {
         let prLink = self.pr.html_url
 
-        let body = self.pr.body.map { body -> String in
-            body.formatMarkdown(
-                maxVisualLength: 256,
-                hardLimit: 2_048,
-                trailingTextMinLength: 96
-            )
-        } ?? ""
+        let body =
+            self.pr.body.map { body -> String in
+                body.formatMarkdown(
+                    maxVisualLength: 256,
+                    hardLimit: 2_048,
+                    trailingTextMinLength: 96
+                )
+            } ?? ""
 
         let description = try await context.renderClient.ticketReport(title: self.pr.title, body: body)
 

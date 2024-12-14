@@ -1,10 +1,11 @@
-@testable import Penny
-import Models
 import EvolutionMetadataModel
+import Models
+
+@testable import Penny
 
 struct FakeEvolutionService: EvolutionService {
 
-    init() { }
+    init() {}
 
     func list() async throws -> [Proposal] {
         TestData.proposalsUpdated

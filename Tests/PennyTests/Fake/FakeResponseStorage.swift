@@ -1,8 +1,9 @@
+import Atomics
+import Shared
+import Testing
+
 @testable import DiscordBM
 @testable import Penny
-import Atomics
-import Testing
-import Shared
 
 actor FakeResponseStorage {
 
@@ -28,7 +29,7 @@ actor FakeResponseStorage {
             )
         }
     }
-    
+
     func awaitResponse(
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
@@ -43,7 +44,7 @@ actor FakeResponseStorage {
             )
         }
     }
-    
+
     nonisolated func expect(
         at endpoint: AnyEndpoint,
         expectFailure: Bool = false,
@@ -59,7 +60,7 @@ actor FakeResponseStorage {
             )
         }
     }
-    
+
     private func _expect(
         at endpoint: any Endpoint,
         expectFailure: Bool = false,
@@ -127,23 +128,21 @@ private struct Continuations: CustomStringConvertible {
     }
 
     typealias Cont = CheckedContinuation<AnyBox, Never>
-    
+
     private var storage: [(endpoint: any Endpoint, id: UInt, continuation: Cont)] = []
     /// History for debugging purposes
     private var history: [(endpoint: any Endpoint, id: UInt, action: Action)] = []
 
     var description: String {
-        "Continuations(" +
-        "storage: \(storage.map({ (endpoint: $0.endpoint, id: $0.id) })), " +
-        "history: \(history)" +
-        ")"
+        "Continuations(" + "storage: \(storage.map({ (endpoint: $0.endpoint, id: $0.id) })), " + "history: \(history)"
+            + ")"
     }
-    
+
     mutating func append(endpoint: any Endpoint, id: UInt, continuation: Cont) {
         storage.append((endpoint, id, continuation))
         history.append((endpoint, id, .add))
     }
-    
+
     mutating func retrieve(endpoint: any Endpoint) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             let removed = storage.remove(at: idx)
@@ -153,7 +152,7 @@ private struct Continuations: CustomStringConvertible {
             return nil
         }
     }
-    
+
     mutating func retrieve(id: UInt) -> Cont? {
         if let idx = storage.firstIndex(where: { $0.id == id }) {
             let removed = storage.remove(at: idx)
@@ -167,15 +166,15 @@ private struct Continuations: CustomStringConvertible {
 
 private struct UnhandledResponses: CustomStringConvertible {
     private var storage: [(endpoint: any Endpoint, payload: AnyBox)] = []
-    
+
     var description: String {
         "\(storage.map({ (endpoint: $0, payloadType: type(of: $1.value)) }))"
     }
-    
+
     mutating func append(endpoint: any Endpoint, payload: AnyBox) {
         storage.append((endpoint, payload))
     }
-    
+
     mutating func retrieve(endpoint: any Endpoint) -> AnyBox? {
         if let idx = storage.firstIndex(where: { $0.endpoint.testingKey == endpoint.testingKey }) {
             return storage.remove(at: idx).payload

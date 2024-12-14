@@ -94,7 +94,7 @@ struct IssueHandler: Sendable {
         embedIssue: Issue? = nil,
         embedRepo: Repository? = nil
     ) async throws -> TicketReporter {
-        return try TicketReporter(
+        try TicketReporter(
             context: self.context,
             embed: await self.createReportEmbed(
                 issue: embedIssue,
@@ -102,7 +102,7 @@ struct IssueHandler: Sendable {
             ),
             createdAt: self.issue.created_at,
             repoID: self.repo.id,
-            number: self.issue.number, 
+            number: self.issue.number,
             authorID: self.issue.user.requireValue().id
         )
     }
@@ -118,13 +118,14 @@ struct IssueHandler: Sendable {
 
         let issueLink = issue.html_url
 
-        let body = issue.body.map { body -> String in
-            body.formatMarkdown(
-                maxVisualLength: 256,
-                hardLimit: 2_048,
-                trailingTextMinLength: 96
-            )
-        } ?? ""
+        let body =
+            issue.body.map { body -> String in
+                body.formatMarkdown(
+                    maxVisualLength: 256,
+                    hardLimit: 2_048,
+                    trailingTextMinLength: 96
+                )
+            } ?? ""
 
         let description = try await context.renderClient
             .ticketReport(title: issue.title, body: body)
@@ -140,8 +141,9 @@ struct IssueHandler: Sendable {
 
         var iconURL = member?.uiAvatarURL ?? user.avatar_url
         var footer = "By \(authorName)"
-        if  let verb = status.closedByVerb,
-            let closedBy = try await self.maybeGetClosedByUser() {
+        if let verb = status.closedByVerb,
+            let closedBy = try await self.maybeGetClosedByUser()
+        {
             if closedBy.id == issue.user?.id {
                 /// The same person opened and closed the issue.
                 footer = "Filed & \(verb) by \(authorName)"

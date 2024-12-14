@@ -1,14 +1,15 @@
-import AWSLambdaRuntime
 import AWSLambdaEvents
+import AWSLambdaRuntime
 import AsyncHTTPClient
-import SotoCore
 import DiscordHTTP
-import GitHubAPI
-import Rendering
 import DiscordUtilities
-import Logging
+import GitHubAPI
 import LambdasShared
+import Logging
+import Rendering
 import Shared
+import SotoCore
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -86,22 +87,29 @@ struct GHHooksHandler: LambdaHandler {
                     channelId: Constants.Channels.botLogs.id,
                     payload: .init(
                         content: DiscordUtils.mention(id: Constants.botDevUserID),
-                        embeds: [.init(
-                            title: "GHHooks lambda top-level error",
-                            description: "\(error)".unicodesPrefix(2_048),
-                            color: .red
-                        )],
-                        files: [.init(
-                            data: ByteBuffer(string: "\(error)"),
-                            filename: "error"
-                        )],
+                        embeds: [
+                            .init(
+                                title: "GHHooks lambda top-level error",
+                                description: "\(error)".unicodesPrefix(2_048),
+                                color: .red
+                            )
+                        ],
+                        files: [
+                            .init(
+                                data: ByteBuffer(string: "\(error)"),
+                                filename: "error"
+                            )
+                        ],
                         attachments: [.init(index: 0, filename: "error")]
                     )
                 ).guardSuccess()
             } catch {
-                logger.error("DiscordClient logging error", metadata: [
-                    "error": "\(error)"
-                ])
+                logger.error(
+                    "DiscordClient logging error",
+                    metadata: [
+                        "error": "\(error)"
+                    ]
+                )
             }
             throw error
         }
@@ -111,14 +119,18 @@ struct GHHooksHandler: LambdaHandler {
         _ request: APIGatewayV2Request,
         context: LambdaContext
     ) async throws -> APIGatewayV2Response {
-        logger.debug("Got request", metadata: [
-            "request": "\(request)"
-        ])
+        logger.debug(
+            "Got request",
+            metadata: [
+                "request": "\(request)"
+            ]
+        )
 
         try await verifyWebhookSignature(request: request)
 
         guard let _eventName = request.headers.first(name: "x-github-event"),
-              let eventName = GHEvent.Kind(rawValue: _eventName) else {
+            let eventName = GHEvent.Kind(rawValue: _eventName)
+        else {
             throw Errors.headerNotFound(name: "x-gitHub-event", headers: request.headers)
         }
 
@@ -133,9 +145,12 @@ struct GHHooksHandler: LambdaHandler {
         let event = try request.decodeWithISO8601(as: GHEvent.self)
 
         logger.debug("Event id: '\(eventName).\(event.action ?? "<null>")'")
-        logger.trace("Decoded event", metadata: [
-            "event": "\(event)"
-        ])
+        logger.trace(
+            "Decoded event",
+            metadata: [
+                "event": "\(event)"
+            ]
+        )
 
         let apiBaseURL = try requireEnvVar("API_BASE_URL")
         try await EventHandler(

@@ -22,7 +22,7 @@ struct PRCoinGiver {
 
     func handle() async throws {
         guard let branch = self.event.ref.extractHeadBranchFromRef(),
-              branch.isPrimaryOrReleaseBranch(repo: repo)
+            branch.isPrimaryOrReleaseBranch(repo: repo)
         else { return }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
@@ -32,16 +32,20 @@ struct PRCoinGiver {
         )
         for pr in try await getPRsRelatedToCommit() {
             let user = try pr.user.requireValue()
-            if pr.merged_at == nil ||
-                codeOwners.contains(user: user) {
+            if pr.merged_at == nil || codeOwners.contains(user: user) {
                 continue
             }
-            guard let member = try await context.requester.getDiscordMember(
-                githubID: "\(user.id)"
-            ), let discordID = member.user?.id else {
-                logger.debug("Found no Discord member for the GitHub user", metadata: [
-                    "pr": "\(pr)",
-                ])
+            guard
+                let member = try await context.requester.getDiscordMember(
+                    githubID: "\(user.id)"
+                ), let discordID = member.user?.id
+            else {
+                logger.debug(
+                    "Found no Discord member for the GitHub user",
+                    metadata: [
+                        "pr": "\(pr)"
+                    ]
+                )
                 continue
             }
 
@@ -49,14 +53,16 @@ struct PRCoinGiver {
             if member.roles.contains(Constants.Roles.core.id) { continue }
 
             let amount = 5
-            let coinResponse = try await context.usersService.postCoin(with: .init(
-                amount: amount,
-                /// GuildID because this is automated.
-                fromDiscordID: Snowflake(Constants.guildID),
-                toDiscordID: discordID,
-                source: .github,
-                reason: .prMerge
-            ))
+            let coinResponse = try await context.usersService.postCoin(
+                with: .init(
+                    amount: amount,
+                    /// GuildID because this is automated.
+                    fromDiscordID: Snowflake(Constants.guildID),
+                    toDiscordID: discordID,
+                    source: .github,
+                    reason: .prMerge
+                )
+            )
 
             try await context.discordClient.createMessage(
                 channelId: Constants.Channels.thanks.id,
@@ -65,16 +71,16 @@ struct PRCoinGiver {
                     embeds: [
                         .init(
                             description: """
-                            Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
-                            You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
-                            """,
+                                Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
+                                You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
+                                """,
                             color: .blue
                         ),
                         .init(
                             description: """
-                            Want coins too? Link your GitHub account to take credit for your contributions.
-                            Try `/github link` for more info, it's private.
-                            """,
+                                Want coins too? Link your GitHub account to take credit for your contributions.
+                                Try `/github link` for more info, it's private.
+                                """,
                             color: .green
                         ),
                     ]

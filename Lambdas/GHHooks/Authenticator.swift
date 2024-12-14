@@ -1,9 +1,4 @@
 import AsyncHTTPClient
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 import GitHubAPI
 import JWTKit
 import LambdasShared
@@ -11,6 +6,12 @@ import Logging
 import OpenAPIAsyncHTTPClient
 import OpenAPIRuntime
 import Shared
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 actor Authenticator {
     private let secretsRetriever: SecretsRetriever
@@ -36,7 +37,7 @@ actor Authenticator {
     func generateAccessToken(forceRefreshToken: Bool = false) async throws -> String {
         try await self.queue.process(queueKey: "default") {
             if !forceRefreshToken,
-               let cachedAccessToken = await self.cachedAccessToken
+                let cachedAccessToken = await self.cachedAccessToken
             {
                 return cachedAccessToken.token
             } else {
@@ -50,12 +51,14 @@ actor Authenticator {
     }
 
     private func createAccessToken(client: Client) async throws -> InstallationToken {
-        let response = try await client.apps_create_installation_access_token(.init(
-            path: .init(installation_id: Constants.GitHub.installationID)
-        ))
+        let response = try await client.apps_create_installation_access_token(
+            .init(
+                path: .init(installation_id: Constants.GitHub.installationID)
+            )
+        )
 
         if case let .created(created) = response,
-           case let .json(json) = created.body
+            case let .json(json) = created.body
         {
             return json
         } else {

@@ -30,7 +30,7 @@ package struct CoinEntry: Sendable, Codable {
     package let amount: Int
     package let source: Source
     package let reason: Reason
-    
+
     package init(
         id: UUID = UUID(),
         fromUserID: UUID,

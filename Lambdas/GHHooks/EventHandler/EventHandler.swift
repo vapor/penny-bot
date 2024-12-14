@@ -15,7 +15,7 @@ struct EventHandler: Sendable {
         case .push:
             try await withThrowingAccumulatingVoidTaskGroup(tasks: [
                 { try await DocsIssuer(context: context).handle() },
-                { try await PRCoinGiver(context: context).handle() }
+                { try await PRCoinGiver(context: context).handle() },
             ])
         case .ping:
             try await onPing()
@@ -31,43 +31,49 @@ struct EventHandler: Sendable {
     func onPing() async throws {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.botLogs.id,
-            payload: .init(embeds: [.init(
-                title: "Ping events should not reach here",
-                description: """
-                Ping events must be handled immediately, even before any body-decoding happens.
-                Action: \(context.event.action ?? "<null>")
-                Repo: \(context.event.repository?.name ?? "<null>")
-                """,
-                color: .red
-            )])
+            payload: .init(embeds: [
+                .init(
+                    title: "Ping events should not reach here",
+                    description: """
+                        Ping events must be handled immediately, even before any body-decoding happens.
+                        Action: \(context.event.action ?? "<null>")
+                        Repo: \(context.event.repository?.name ?? "<null>")
+                        """,
+                    color: .red
+                )
+            ])
         ).guardSuccess()
     }
 
     func onSponsorship() async throws {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.botLogs.id,
-            payload: .init(embeds: [.init(
-                title: "Got Sponsorship payload. Check the logs!",
-                description: """
-                Action: \(context.event.action ?? "<null>")
-                Repo: \(context.event.repository?.name ?? "<null>")
-                """,
-                color: .yellow
-            )])
+            payload: .init(embeds: [
+                .init(
+                    title: "Got Sponsorship payload. Check the logs!",
+                    description: """
+                        Action: \(context.event.action ?? "<null>")
+                        Repo: \(context.event.repository?.name ?? "<null>")
+                        """,
+                    color: .yellow
+                )
+            ])
         ).guardSuccess()
     }
 
     func onDefault() async throws {
         try await context.discordClient.createMessage(
             channelId: Constants.Channels.botLogs.id,
-            payload: .init(embeds: [.init(
-                title: "Received UNHANDLED event \(context.eventName)",
-                description: """
-                Action: \(context.event.action ?? "<null>")
-                Repo: \(context.event.repository?.name ?? "<null>")
-                """,
-                color: .red
-            )])
+            payload: .init(embeds: [
+                .init(
+                    title: "Received UNHANDLED event \(context.eventName)",
+                    description: """
+                        Action: \(context.event.action ?? "<null>")
+                        Repo: \(context.event.repository?.name ?? "<null>")
+                        """,
+                    color: .red
+                )
+            ])
         ).guardSuccess()
     }
 }

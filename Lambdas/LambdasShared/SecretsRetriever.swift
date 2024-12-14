@@ -1,7 +1,8 @@
-import SotoCore
-import SotoSecretsManager
 import Logging
 import Shared
+import SotoCore
+import SotoSecretsManager
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -34,14 +35,20 @@ package actor SecretsRetriever {
     }
 
     package func getSecret(arnEnvVarKey: String) async throws -> String {
-        logger.trace("Get secret start", metadata: [
-            "arnEnvVarKey": .string(arnEnvVarKey)
-        ])
+        logger.trace(
+            "Get secret start",
+            metadata: [
+                "arnEnvVarKey": .string(arnEnvVarKey)
+            ]
+        )
         let secret = try await queue.process(queueKey: arnEnvVarKey) {
             if let cached = await getCache(key: arnEnvVarKey) {
-                logger.debug("Will return cached secret", metadata: [
-                    "arnEnvVarKey": .string(arnEnvVarKey)
-                ])
+                logger.debug(
+                    "Will return cached secret",
+                    metadata: [
+                        "arnEnvVarKey": .string(arnEnvVarKey)
+                    ]
+                )
                 return cached
             } else {
                 let value = try await self.getSecretFromAWS(arnEnvVarKey: arnEnvVarKey)
@@ -49,17 +56,23 @@ package actor SecretsRetriever {
                 return value
             }
         }
-        logger.trace("Get secret done", metadata: [
-            "arnEnvVarKey": .string(arnEnvVarKey)
-        ])
+        logger.trace(
+            "Get secret done",
+            metadata: [
+                "arnEnvVarKey": .string(arnEnvVarKey)
+            ]
+        )
         return secret
     }
 
     /// Gets a secret directly from AWS.
     private func getSecretFromAWS(arnEnvVarKey: String) async throws -> String {
-        logger.trace("Retrieving secret from AWS", metadata: [
-            "arnEnvVarKey": .string(arnEnvVarKey)
-        ])
+        logger.trace(
+            "Retrieving secret from AWS",
+            metadata: [
+                "arnEnvVarKey": .string(arnEnvVarKey)
+            ]
+        )
         let arn = try requireEnvVar(arnEnvVarKey)
         let secret = try await secretsManager.getSecretValue(
             .init(secretId: arn),
@@ -68,9 +81,12 @@ package actor SecretsRetriever {
         guard let secret = secret.secretString else {
             throw Errors.secretNotFound(arn: arn)
         }
-        logger.trace("Got secret from AWS", metadata: [
-            "arnEnvVarKey": .string(arnEnvVarKey)
-        ])
+        logger.trace(
+            "Got secret from AWS",
+            metadata: [
+                "arnEnvVarKey": .string(arnEnvVarKey)
+            ]
+        )
         return secret
     }
 

@@ -1,7 +1,8 @@
-import Logging
-import ServiceLifecycle
 import DiscordBM
+import Logging
 import Markdown
+import ServiceLifecycle
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -9,7 +10,7 @@ import Foundation
 #endif
 
 actor SOChecker: Service {
-    
+
     struct Storage: Sendable, Codable {
         var lastCheckDate: Date?
     }
@@ -33,7 +34,8 @@ actor SOChecker: Service {
             /// Waits forever:
             let (stream, _) = AsyncStream.makeStream(of: Void.self)
             await stream.first { _ in true }
-            return /// Just in case
+            return
+        /// Just in case
         }
         if Task.isCancelled { return }
         do {
@@ -41,7 +43,8 @@ actor SOChecker: Service {
         } catch {
             logger.report("Couldn't check SO questions", error: error)
         }
-        try await Task.sleep(for: .seconds(60 * 5)) /// 5 mins
+        try await Task.sleep(for: .seconds(60 * 5))
+        /// 5 mins
         try await self.run()
     }
 
@@ -53,16 +56,18 @@ actor SOChecker: Service {
         for question in questions {
             await discordService.sendMessage(
                 channelId: Constants.Channels.stackOverflow.id,
-                payload: .init(embeds: [.init(
-                    title: question.title.htmlDecoded().unicodesPrefix(256),
-                    url: question.link,
-                    timestamp: Date(timeIntervalSince1970: Double(question.creationDate)),
-                    color: .mint,
-                    footer: .init(
-                        text: "By \(question.owner.displayName)",
-                        icon_url: question.owner.profileImage.map { .exact($0) }
+                payload: .init(embeds: [
+                    .init(
+                        title: question.title.htmlDecoded().unicodesPrefix(256),
+                        url: question.link,
+                        timestamp: Date(timeIntervalSince1970: Double(question.creationDate)),
+                        color: .mint,
+                        footer: .init(
+                            text: "By \(question.owner.displayName)",
+                            icon_url: question.owner.profileImage.map { .exact($0) }
+                        )
                     )
-                )])
+                ])
             )
         }
     }
@@ -72,13 +77,13 @@ actor SOChecker: Service {
     }
 
     func getCachedDataForCachesStorage() -> Storage {
-        return self.storage
+        self.storage
     }
 }
 
 // MARK: +String
-private extension String {
-    func htmlDecoded() -> String {
+extension String {
+    fileprivate func htmlDecoded() -> String {
         Document(parsing: self).format()
     }
 }

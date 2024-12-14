@@ -1,4 +1,3 @@
-
 package enum UserRequest: Sendable, Codable {
     case addCoin(CoinEntryRequest)
     case getOrCreateUser(discordID: UserSnowflake)

@@ -1,10 +1,11 @@
+import Models
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 import struct Foundation.CharacterSet
 #else
 import Foundation
 #endif
-import Models
 
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
@@ -77,8 +78,8 @@ extension Array where Element: StringProtocol {
     }
 }
 
-private extension Character {
-    var isWhitespaceOrNewline: Bool {
+extension Character {
+    fileprivate var isWhitespaceOrNewline: Bool {
         self.isWhitespace || self.isNewline
     }
 }

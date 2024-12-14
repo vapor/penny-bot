@@ -12,7 +12,7 @@ struct MessageHandler {
         self.context = context
         self.logger[metadataKey: "event"] = "\(event)"
     }
-    
+
     func handle() async {
         let isBot = event.author?.bot == true
 
@@ -26,7 +26,7 @@ struct MessageHandler {
         /// Check for bot messages like Penny's own messages too
         await publishAnnouncementMessages()
     }
-    
+
     func checkForNewCoins() async {
         guard let author = event.author else {
             logger.error("Cannot find author of the message")
@@ -37,7 +37,7 @@ struct MessageHandler {
             text: event.content,
             repliedUser: event.referenced_message?.value.author?.id,
             mentionedUsers: event.mentions.map(\.id),
-            excludedUsers: [author.id] // Can't give yourself a coin
+            excludedUsers: [author.id]  // Can't give yourself a coin
         )
         let usersWithNewCoins = coinHandler.findUsers()
 
@@ -45,7 +45,7 @@ struct MessageHandler {
 
         var successfulResponses = [String]()
         successfulResponses.reserveCapacity(usersWithNewCoins.count)
-        
+
         for receiver in usersWithNewCoins {
             let coinRequest = UserRequest.CoinEntryRequest(
                 amount: 1,
@@ -56,15 +56,20 @@ struct MessageHandler {
             )
             do {
                 let response = try await context.usersService.postCoin(with: coinRequest)
-                let responseString = "\(DiscordUtils.mention(id: response.receiver)) now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!"
+                let responseString =
+                    "\(DiscordUtils.mention(id: response.receiver)) now has \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!"
                 successfulResponses.append(responseString)
             } catch {
-                logger.report("UsersService failed", error: error, metadata: [
-                    "request": "\(coinRequest)"
-                ])
+                logger.report(
+                    "UsersService failed",
+                    error: error,
+                    metadata: [
+                        "request": "\(coinRequest)"
+                    ]
+                )
             }
         }
-        
+
         if successfulResponses.isEmpty {
             // Definitely there were some coin requests that failed.
             await self.respondToThanks(
@@ -77,9 +82,12 @@ struct MessageHandler {
             let finalResponse = successfulResponses.joined(separator: "\n")
             // Discord doesn't like embed-descriptions with more than 4_000 content length.
             if finalResponse.unicodeScalars.count > 4_000 {
-                logger.warning("Can't send the full thanks-response", metadata: [
-                    "full": .string(finalResponse)
-                ])
+                logger.warning(
+                    "Can't send the full thanks-response",
+                    metadata: [
+                        "full": .string(finalResponse)
+                    ]
+                )
                 await self.respondToThanks(
                     with: "Coins were granted to a lot of members!",
                     isFailureMessage: false
@@ -100,7 +108,7 @@ struct MessageHandler {
     /// Like server boosts.
     func checkForGuildSubscriptionCoins() async {
         guard Self.messageGuildSubscriptionTypes.contains(event.type) else { return }
-        
+
         guard let author = event.author else {
             logger.error("Cannot find author of the message")
             return
@@ -119,17 +127,21 @@ struct MessageHandler {
             let response = try await context.usersService.postCoin(with: coinRequest)
             await self.respondToThanks(
                 with: """
-                Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
-                You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
-                """,
+                    Thanks for the Server Boost \(Constants.ServerEmojis.love.emoji)!
+                    You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(response.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
+                    """,
                 overrideChannelId: Constants.Channels.thanks.id,
                 isFailureMessage: false,
                 userToExplicitlyMention: author.id
             )
         } catch {
-            logger.report("UsersService failed for server boost thanks", error: error, metadata: [
-                "request": "\(coinRequest)"
-            ])
+            logger.report(
+                "UsersService failed for server boost thanks",
+                error: error,
+                metadata: [
+                    "request": "\(coinRequest)"
+                ]
+            )
             /// Don't send a message at all in case of failure
         }
     }
@@ -155,18 +167,22 @@ struct MessageHandler {
         }).map(\.value)
 
         for value in matches {
-            guard await context.autoFaqsService.canRespond(
-                receiverID: author.id,
-                faqHash: value.hash
-            ) else { continue }
+            guard
+                await context.autoFaqsService.canRespond(
+                    receiverID: author.id,
+                    faqHash: value.hash
+                )
+            else { continue }
             await context.discordService.sendMessage(
                 channelId: event.channel_id,
                 payload: .init(
-                    embeds: [.init(
-                        title: "🤖 Automated Answer",
-                        description: value,
-                        color: .blue
-                    )],
+                    embeds: [
+                        .init(
+                            title: "🤖 Automated Answer",
+                            description: value,
+                            color: .blue
+                        )
+                    ],
                     message_reference: .init(
                         message_id: event.id,
                         channel_id: event.channel_id,
@@ -182,8 +198,8 @@ struct MessageHandler {
         let content = event.content
         if content.isEmpty { return }
         guard let guildId = event.guild_id,
-              let author = event.author,
-              let member = event.member
+            let author = event.author,
+            let member = event.member
         else { return }
 
         let expUsersDict: [S3AutoPingItems.Expression: Set<UserSnowflake>]
@@ -231,44 +247,49 @@ struct MessageHandler {
             }
 
             /// Identify if this could be a test message by the bot-dev.
-            let mightBeATestMessage = userId == Constants.botDevUserId
-            && event.channel_id == Constants.Channels.botLogs.id
-            
+            let mightBeATestMessage =
+                userId == Constants.botDevUserId
+                && event.channel_id == Constants.Channels.botLogs.id
+
             if !mightBeATestMessage {
                 /// Don't `@` someone for their own message.
                 if userId == author.id { continue }
             }
             let authorName = makeAuthorName(nick: member.nick, user: author)
-            let iconURLEndpoint = member.avatar.map { avatar in
-                CDNEndpoint.guildMemberAvatar(
-                    guildId: guildId,
-                    userId: author.id,
-                    avatar: avatar
-                )
-            } ?? author.avatar.map { avatar in
-                CDNEndpoint.userAvatar(
-                    userId: author.id,
-                    avatar: avatar
-                )
-            }
+            let iconURLEndpoint =
+                member.avatar.map { avatar in
+                    CDNEndpoint.guildMemberAvatar(
+                        guildId: guildId,
+                        userId: author.id,
+                        avatar: avatar
+                    )
+                }
+                ?? author.avatar.map { avatar in
+                    CDNEndpoint.userAvatar(
+                        userId: author.id,
+                        avatar: avatar
+                    )
+                }
             await context.discordService.sendDM(
                 userId: Snowflake(userId),
                 payload: .init(
-                    embeds: [.init(
-                        description: """
-                        There is a new message in \(channelLink) that might be of interest to you.
+                    embeds: [
+                        .init(
+                            description: """
+                                There is a new message in \(channelLink) that might be of interest to you.
 
-                        Triggered by:
-                        \(words.makeExpressionListForDiscord())
+                                Triggered by:
+                                \(words.makeExpressionListForDiscord())
 
-                        >>> \(content.unicodesPrefix(256))
-                        """,
-                        color: .blue,
-                        footer: .init(
-                            text: "By \(authorName)",
-                            icon_url: (iconURLEndpoint?.url).map { .exact($0) }
+                                >>> \(content.unicodesPrefix(256))
+                                """,
+                            color: .blue,
+                            footer: .init(
+                                text: "By \(authorName)",
+                                icon_url: (iconURLEndpoint?.url).map { .exact($0) }
+                            )
                         )
-                    )],
+                    ],
                     components: [[.button(.init(label: "Open Message", url: messageLink))]]
                 )
             )
@@ -296,7 +317,7 @@ struct MessageHandler {
             return username
         }
     }
-    
+
     static func triggersPing(
         dividedForExactMatchChecking: [[Substring]],
         foldedForContainmentChecking: String,
@@ -310,7 +331,7 @@ struct MessageHandler {
             return foldedForContainmentChecking.contains(contain)
         }
     }
-    
+
     private func respondToThanks(
         with response: String,
         overrideChannelId channelId: ChannelSnowflake? = nil,

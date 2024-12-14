@@ -237,12 +237,12 @@ extension [ProjectCard] {
     }
 }
 
-private extension Issue {
-    var isClosed: Bool {
+extension Issue {
+    fileprivate var isClosed: Bool {
         self.state == "closed"
     }
 
-    var hasAssignees: Bool {
+    fileprivate var hasAssignees: Bool {
         !(self.assignees ?? []).isEmpty
     }
 }

@@ -1,22 +1,25 @@
-@testable import Penny
-import struct NIOCore.ByteBuffer
-import DiscordBM
 import Atomics
+import DiscordBM
+import Testing
+
+import struct NIOCore.ByteBuffer
+
+@testable import Penny
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Testing
 
 actor FakeManager: GatewayManager {
     nonisolated let client: any DiscordClient = FakeDiscordClient()
     nonisolated let id: UInt = 0
     nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
     var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
-    
-    init() { }
-    
+
+    init() {}
+
     func connect() async {
         for continuation in eventContinuations {
             continuation.yield(
@@ -25,9 +28,9 @@ actor FakeManager: GatewayManager {
         }
     }
 
-    func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async { }
-    func updatePresence(payload: Gateway.Identify.Presence) async { }
-    func updateVoiceState(payload: VoiceStateUpdate) async { }
+    func requestGuildMembersChunk(payload: Gateway.RequestGuildMembers) async {}
+    func updatePresence(payload: Gateway.Identify.Presence) async {}
+    func updateVoiceState(payload: VoiceStateUpdate) async {}
     func makeEventsStream() async -> AsyncStream<Gateway.Event> {
         AsyncStream { continuation in
             eventContinuations.append(continuation)
@@ -36,7 +39,7 @@ actor FakeManager: GatewayManager {
     func makeEventsParseFailureStream() async -> AsyncStream<(any Error, ByteBuffer)> {
         AsyncStream { _ in }
     }
-    func disconnect() { }
+    func disconnect() {}
 
     func send(event: Gateway.Event) {
         for continuation in eventContinuations {
@@ -57,7 +60,7 @@ actor FakeManager: GatewayManager {
             continuation.yield(event)
         }
     }
-    
+
     @_disfavoredOverload
     func sendAndAwaitResponse<T>(
         key: EventKey,
@@ -72,7 +75,7 @@ actor FakeManager: GatewayManager {
             sourceLocation: sourceLocation
         )
     }
-    
+
     func sendAndAwaitResponse<T>(
         key: EventKey,
         endpoint: AnyEndpoint? = nil,
