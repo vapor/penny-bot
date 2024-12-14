@@ -1,4 +1,5 @@
 import SotoS3
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -24,7 +25,8 @@ struct S3CachesRepository {
         let request = S3.GetObjectRequest(bucket: bucket, key: key)
         let response = try await s3.getObject(request, logger: logger)
 
-        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
+        let body = try await response.body.collect(upTo: 1 << 24)
+        /// 16 MiB
         if body.readableBytes == 0 {
             logger.error("Cannot find any data in the bucket")
             return CachesStorage()
@@ -33,10 +35,13 @@ struct S3CachesRepository {
         do {
             return try decoder.decode(CachesStorage.self, from: body)
         } catch {
-            logger.error("Cannot find any data in the bucket", metadata: [
-                "response-body": .string(String(buffer: body)),
-                "error": "\(error)"
-            ])
+            logger.error(
+                "Cannot find any data in the bucket",
+                metadata: [
+                    "response-body": .string(String(buffer: body)),
+                    "error": "\(error)",
+                ]
+            )
             return CachesStorage()
         }
     }

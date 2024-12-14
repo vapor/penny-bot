@@ -1,14 +1,16 @@
-@testable import Penny
+import EvolutionMetadataModel
+import Markdown
+import Testing
+
 @testable import Models
+@testable import Penny
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 import struct Foundation.CharacterSet
 #else
 import Foundation
 #endif
-import EvolutionMetadataModel
-import Markdown
-import Testing
 
 @Suite
 struct OtherTests {
@@ -52,7 +54,8 @@ struct OtherTests {
     func autoPingItemExpressionCodable() throws {
         typealias Expression = S3AutoPingItems.Expression
 
-        do { /// Expression.matches
+        do {
+            /// Expression.matches
             let exp = Expression.matches("Hello-world")
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(exp)
@@ -70,7 +73,8 @@ struct OtherTests {
             }
         }
 
-        do { /// Expression.contains
+        do {
+            /// Expression.contains
             let exp = Expression.contains("Hello-world")
             let encoder = JSONEncoder()
             let encoded = try encoder.encode(exp)
@@ -103,7 +107,10 @@ struct OtherTests {
         let newMarkup = repairer.visit(document)
 
         let editedLink = try #require(newMarkup?.child(through: 1, 0, 0, 1) as? Link)
-        #expect(editedLink.destination == "https://github.com/apple/swift-evolution/blob/main/proposals/0400-init-accessors.md")
+        #expect(
+            editedLink.destination
+                == "https://github.com/apple/swift-evolution/blob/main/proposals/0400-init-accessors.md"
+        )
     }
 
     @Test

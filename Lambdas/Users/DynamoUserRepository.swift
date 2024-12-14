@@ -1,10 +1,11 @@
+import Models
 import SotoDynamoDB
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Models
 
 struct DynamoUserRepository {
 
@@ -30,7 +31,7 @@ struct DynamoUserRepository {
         _ = try await db.putItem(input, logger: self.logger)
     }
 
-    func updateUser(_ user: DynamoDBUser) async throws -> Void {
+    func updateUser(_ user: DynamoDBUser) async throws {
         var user = user
 
         if (user.githubID ?? "").isEmpty {
@@ -55,7 +56,7 @@ struct DynamoUserRepository {
             limit: 1,
             tableName: self.tableName
         )
-        
+
         return try await queryUser(with: query)
     }
 
@@ -67,7 +68,7 @@ struct DynamoUserRepository {
             limit: 1,
             tableName: self.tableName
         )
-        
+
         return try await queryUser(with: query)
     }
 

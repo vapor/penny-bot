@@ -1,14 +1,15 @@
+import AsyncHTTPClient
+import DiscordBM
+import Logging
+import Models
+import NIOHTTP1
+import Shared
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Models
-import AsyncHTTPClient
-import Logging
-import DiscordBM
-import NIOHTTP1
-import Shared
 
 actor DefaultPingsService: AutoPingsService {
 
@@ -16,7 +17,7 @@ actor DefaultPingsService: AutoPingsService {
 
     let httpClient: HTTPClient
     var logger = Logger(label: "DefaultPingsService")
-    
+
     /// Use `getAll()` to retrieve.
     var _cachedItems: S3AutoPingItems?
     /// `[ExpressionHash: Expression]`
@@ -42,7 +43,7 @@ actor DefaultPingsService: AutoPingsService {
     ) async throws -> Bool {
         try await self.getAll().items[expression]?.contains(id) ?? false
     }
-    
+
     func insert(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
@@ -53,7 +54,7 @@ actor DefaultPingsService: AutoPingsService {
             pingRequest: .init(discordID: id, expressions: expressions)
         )
     }
-    
+
     func remove(
         _ expressions: [Expression],
         forDiscordID id: UserSnowflake
@@ -64,7 +65,7 @@ actor DefaultPingsService: AutoPingsService {
             pingRequest: .init(discordID: id, expressions: expressions)
         )
     }
-    
+
     func get(discordID id: UserSnowflake) async throws -> [Expression] {
         try await self.getAll()
             .items
@@ -121,29 +122,37 @@ actor DefaultPingsService: AutoPingsService {
             logger: self.logger
         )
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
-        
+
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16) /// 64 KiB
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            /// 64 KiB
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error( "Pings-service failed", metadata: [
-                "status": "\(response.status)",
-                "headers": "\(response.headers)",
-                "body": "\(body)",
-            ])
+            logger.error(
+                "Pings-service failed",
+                metadata: [
+                    "status": "\(response.status)",
+                    "headers": "\(response.headers)",
+                    "body": "\(body)",
+                ]
+            )
             throw ServiceError.badStatus(response.status)
         }
-        
-        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
+
+        let body = try await response.body.collect(upTo: 1 << 24)
+        /// 16 MiB
         let items = try decoder.decode(S3AutoPingItems.self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
         return items
     }
-    
+
     private func freshenCache(_ new: S3AutoPingItems) {
-        logger.trace("Will refresh auto-pings cache", metadata: [
-            "new": .stringConvertible(new.items)
-        ])
+        logger.trace(
+            "Will refresh auto-pings cache",
+            metadata: [
+                "new": .stringConvertible(new.items)
+            ]
+        )
         self._cachedItems = new
         self._cachedExpressionsHashTable = Dictionary(
             uniqueKeysWithValues: new.items.map({ ($0.key.hashValue, $0.key) })

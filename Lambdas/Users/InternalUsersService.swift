@@ -1,10 +1,11 @@
+import Models
 import SotoDynamoDB
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Models
 
 package struct InternalUsersService {
     private let userRepo: DynamoUserRepository
@@ -31,7 +32,7 @@ package struct InternalUsersService {
         freshUser user: DynamoDBUser
     ) async throws -> DynamoDBUser {
         try await coinEntryRepo.createCoinEntry(coinEntry)
-        
+
         var user = user
         user.coinCount += coinEntry.amount
         try await userRepo.updateUser(user)
@@ -53,7 +54,7 @@ package struct InternalUsersService {
             return newUser
         }
     }
-    
+
     /// Returns nil if user does not exist.
     package func getUser(githubID: String) async throws -> DynamoDBUser? {
         try await userRepo.getUser(githubID: githubID)

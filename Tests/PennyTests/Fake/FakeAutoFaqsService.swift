@@ -1,20 +1,21 @@
-@testable import Penny
-import Models
 import AsyncHTTPClient
+import Models
+
+@testable import Penny
 
 actor FakeAutoFaqsService: AutoFaqsService {
 
     typealias ResponseRateLimiter = DefaultAutoFaqsService.ResponseRateLimiter
 
-    init() { }
+    init() {}
 
     private let all = ["PostgresNIO.PSQLError": "Update your PostgresNIO!"]
 
     var responseRateLimiter = ResponseRateLimiter()
 
-    func insert(expression: String, value: String) async throws { }
+    func insert(expression: String, value: String) async throws {}
 
-    func remove(expression: String) async throws { }
+    func remove(expression: String) async throws {}
 
     func get(expression: String) async throws -> String? {
         self.all[expression]
@@ -33,10 +34,12 @@ actor FakeAutoFaqsService: AutoFaqsService {
     }
 
     func canRespond(receiverID: UserSnowflake, faqHash: Int) async -> Bool {
-        responseRateLimiter.canRespond(to: .init(
-            receiverID: receiverID,
-            faqHash: faqHash
-        ))
+        responseRateLimiter.canRespond(
+            to: .init(
+                receiverID: receiverID,
+                faqHash: faqHash
+            )
+        )
     }
 
     func consumeCachesStorageData(_ storage: ResponseRateLimiter) async {
@@ -44,6 +47,6 @@ actor FakeAutoFaqsService: AutoFaqsService {
     }
 
     func getCachedDataForCachesStorage() async -> ResponseRateLimiter {
-        return self.responseRateLimiter
+        self.responseRateLimiter
     }
 }

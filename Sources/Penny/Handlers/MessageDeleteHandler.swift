@@ -1,13 +1,14 @@
 import DiscordBM
+import Logging
+import Models
+import NIOCore
+import NIOFoundationCompat
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Logging
-import NIOCore
-import NIOFoundationCompat
-import Models
 
 struct MessageDeleteHandler {
     let context: HandlerContext
@@ -24,30 +25,41 @@ struct MessageDeleteHandler {
         messageId: MessageSnowflake,
         in channelId: ChannelSnowflake
     ) async throws {
-        guard let messages = await discordService.getDeletedMessageWithEditions(
-            id: messageId,
-            channelId: channelId
-        ) else {
-            logger.warning("Could not find any saved messages for a deleted message", metadata: [
-                "messageId": .string(messageId.rawValue),
-                "channelId": .string(channelId.rawValue)
-            ])
+        guard
+            let messages = await discordService.getDeletedMessageWithEditions(
+                id: messageId,
+                channelId: channelId
+            )
+        else {
+            logger.warning(
+                "Could not find any saved messages for a deleted message",
+                metadata: [
+                    "messageId": .string(messageId.rawValue),
+                    "channelId": .string(channelId.rawValue),
+                ]
+            )
             return
         }
         guard let author = messages.last?.author else {
-            logger.error("Cannot find author of a deleted message", metadata: [
-                "messageId": .string(messageId.rawValue),
-                "channelId": .string(channelId.rawValue),
-                "messages": .string("\(messages)")
-            ])
+            logger.error(
+                "Cannot find author of a deleted message",
+                metadata: [
+                    "messageId": .string(messageId.rawValue),
+                    "channelId": .string(channelId.rawValue),
+                    "messages": .string("\(messages)"),
+                ]
+            )
             return
         }
         if try await discordService.userIsModerator(userId: author.id) {
-            logger.debug("User is a moderator so won't report message deletion", metadata: [
-                "messageId": .string(messageId.rawValue),
-                "channelId": .string(channelId.rawValue),
-                "messages": .string("\(messages)")
-            ])
+            logger.debug(
+                "User is a moderator so won't report message deletion",
+                metadata: [
+                    "messageId": .string(messageId.rawValue),
+                    "channelId": .string(channelId.rawValue),
+                    "messages": .string("\(messages)"),
+                ]
+            )
             return
         }
         await discordService.sendMessage(
@@ -60,8 +72,8 @@ struct MessageDeleteHandler {
     }
 }
 
-private extension Payloads.CreateMessage {
-    init(
+extension Payloads.CreateMessage {
+    fileprivate init(
         messages: [Gateway.MessageCreate],
         author: DiscordUser
     ) {
@@ -94,37 +106,44 @@ private extension Payloads.CreateMessage {
         let jsonData = (try? JSONEncoder().encode(messages)) ?? Data()
 
         self.init(
-            embeds: [.init(
-                title: "Deleted Message in \(DiscordUtils.mention(id: lastMessage.channel_id))",
-                description: DiscordUtils
-                    .escapingSpecialCharacters(lastMessage.content)
-                    .quotedMarkdown(),
-                timestamp: lastMessage.timestamp.date,
-                color: .red,
-                footer: .init(
-                    text: "From \(member?.uiName ?? author.uiName)",
-                    icon_url: avatarURL.map { .exact($0) }
-                ),
-                fields: fields
-            )],
-            files: [.init(
-                data: ByteBuffer(data: jsonData),
-                filename: attachmentName
-            )],
-            attachments: [.init(
-                index: 0,
-                filename: attachmentName
-            )]
+            embeds: [
+                .init(
+                    title: "Deleted Message in \(DiscordUtils.mention(id: lastMessage.channel_id))",
+                    description:
+                        DiscordUtils
+                        .escapingSpecialCharacters(lastMessage.content)
+                        .quotedMarkdown(),
+                    timestamp: lastMessage.timestamp.date,
+                    color: .red,
+                    footer: .init(
+                        text: "From \(member?.uiName ?? author.uiName)",
+                        icon_url: avatarURL.map { .exact($0) }
+                    ),
+                    fields: fields
+                )
+            ],
+            files: [
+                .init(
+                    data: ByteBuffer(data: jsonData),
+                    filename: attachmentName
+                )
+            ],
+            attachments: [
+                .init(
+                    index: 0,
+                    filename: attachmentName
+                )
+            ]
         )
     }
 }
 
 /// Unused for now:
 
-private extension Gateway.MessageCreate {
+extension Gateway.MessageCreate {
     /// Hash of the deterministic content of the message.
     /// For example doesn't include IDs which will change even if messages are the same.
-    var partialHash: Int {
+    fileprivate var partialHash: Int {
         let author = self.author?.id.rawValue.hashValue ?? 0
         let content = self.content.hashValue
         let attachments = self.attachments.map(\.filename.hashValue).reduce(into: 0, ^=)
@@ -132,25 +151,20 @@ private extension Gateway.MessageCreate {
         let type = self.type.rawValue.hashValue
         let member = self.member?.user?.id.rawValue.hashValue ?? 0
 
-        return author ^
-        content ^
-        attachments ^
-        embeds ^
-        type ^
-        member
+        return author ^ content ^ attachments ^ embeds ^ type ^ member
     }
 }
 
-private extension [Gateway.MessageCreate] {
+extension [Gateway.MessageCreate] {
     /// Hash of the deterministic content of the messages.
     /// For example doesn't include IDs which will change even if messages are the same.
-    var partialHash: Int {
+    fileprivate var partialHash: Int {
         self.map(\.partialHash).reduce(into: 0, ^=)
     }
 }
 
-private extension Embed {
-    var partialHash: Int {
+extension Embed {
+    fileprivate var partialHash: Int {
         let title = self.title?.hashValue ?? 0
         let type = self.type?.rawValue.hashValue ?? 0
         let description = self.description?.hashValue ?? 0
@@ -161,20 +175,11 @@ private extension Embed {
         let video = self.video?.height.hashValue ?? 0
         let provider = self.provider?.name.hashValue ?? 0
         let author = self.author?.name.hashValue ?? 0
-        let fields = self.fields?.map {
-            $0.name.hashValue ^ $0.value.hashValue
-        }.reduce(into: 0, ^=) ?? 0
+        let fields =
+            self.fields?.map {
+                $0.name.hashValue ^ $0.value.hashValue
+            }.reduce(into: 0, ^=) ?? 0
 
-        return title ^
-        type ^
-        description ^
-        url ^
-        footer ^
-        image ^
-        thumbnail ^
-        video ^
-        provider ^
-        author ^
-        fields
+        return title ^ type ^ description ^ url ^ footer ^ image ^ thumbnail ^ video ^ provider ^ author ^ fields
     }
 }

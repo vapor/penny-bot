@@ -1,5 +1,5 @@
-import Models
 import Logging
+import Models
 
 struct CachesStorage: Sendable, Codable {
 
@@ -17,7 +17,7 @@ struct CachesStorage: Sendable, Codable {
     var swiftReleasesData: SwiftReleasesChecker.Storage?
     var autoFaqsResponseRateLimiter: DefaultAutoFaqsService.ResponseRateLimiter?
 
-    init() { }
+    init() {}
 
     static func makeFromCachedData(context: Context) async -> CachesStorage {
         var storage = CachesStorage()
@@ -46,23 +46,32 @@ struct CachesStorage: Sendable, Codable {
             await context.autoFaqsService.consumeCachesStorageData(autoFaqsResponseRateLimiter)
         }
 
-        let reactionCacheDataCounts = reactionCacheData.map { data in
-            [data.givenCoins.count,
-             data.normalThanksMessages.count,
-             data.forcedInThanksChannelMessages.count]
-        } ?? []
-        let evolutionCheckerDataCounts = evolutionCheckerData.map { data in
-            [data.previousProposals.count,
-             data.queuedProposals.count]
-        } ?? []
+        let reactionCacheDataCounts =
+            reactionCacheData.map { data in
+                [
+                    data.givenCoins.count,
+                    data.normalThanksMessages.count,
+                    data.forcedInThanksChannelMessages.count,
+                ]
+            } ?? []
+        let evolutionCheckerDataCounts =
+            evolutionCheckerData.map { data in
+                [
+                    data.previousProposals.count,
+                    data.queuedProposals.count,
+                ]
+            } ?? []
         let autoFaqsResponseRateLimiterCounts = [autoFaqsResponseRateLimiter?.count ?? 0]
 
-        Logger(label: "CachesStorage").notice("Recovered the cached stuff", metadata: [
-            "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
-            "evolutionChecker_counts": .stringConvertible(evolutionCheckerDataCounts),
-            "soChecker_isNotNil": .stringConvertible(soCheckerData != nil),
-            "releasesChecker_isNotEmpty": .stringConvertible(swiftReleasesData?.currentReleases.isEmpty == false),
-            "autoFaqsLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
-        ])
+        Logger(label: "CachesStorage").notice(
+            "Recovered the cached stuff",
+            metadata: [
+                "reactionCache_counts": .stringConvertible(reactionCacheDataCounts),
+                "evolutionChecker_counts": .stringConvertible(evolutionCheckerDataCounts),
+                "soChecker_isNotNil": .stringConvertible(soCheckerData != nil),
+                "releasesChecker_isNotEmpty": .stringConvertible(swiftReleasesData?.currentReleases.isEmpty == false),
+                "autoFaqsLimiter_counts": .stringConvertible(autoFaqsResponseRateLimiterCounts),
+            ]
+        )
     }
 }

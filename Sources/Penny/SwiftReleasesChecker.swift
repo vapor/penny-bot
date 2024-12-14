@@ -1,7 +1,8 @@
+import Collections
+import DiscordBM
 import Logging
 import ServiceLifecycle
-import DiscordBM
-import Collections
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -9,7 +10,7 @@ import Foundation
 #endif
 
 actor SwiftReleasesChecker: Service {
-    
+
     struct Storage: Sendable, Codable {
         var currentReleases: [SwiftOrgRelease] = []
     }
@@ -32,7 +33,8 @@ actor SwiftReleasesChecker: Service {
         } catch {
             logger.report("Couldn't check Swift releases", error: error)
         }
-        try await Task.sleep(for: .seconds(60 * 15)) /// 15 mins
+        try await Task.sleep(for: .seconds(60 * 15))
+        /// 15 mins
         try await self.run()
     }
 
@@ -48,15 +50,18 @@ actor SwiftReleasesChecker: Service {
         self.storage.currentReleases = releases
 
         for release in newReleases {
-            let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/swiftlang/swift/releases/tag/\(release.tag)"
+            let image =
+                "https://opengraph.githubassets.com/\(UUID().uuidString)/swiftlang/swift/releases/tag/\(release.tag)"
             await discordService.sendMessage(
                 channelId: Constants.Channels.news.id,
-                payload: .init(embeds: [.init(
-                    title: "Swift \(release.stableName) Release".unicodesPrefix(256),
-                    url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
-                    color: .cyan,
-                    image: .init(url: .exact(image))
-                )])
+                payload: .init(embeds: [
+                    .init(
+                        title: "Swift \(release.stableName) Release".unicodesPrefix(256),
+                        url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
+                        color: .cyan,
+                        image: .init(url: .exact(image))
+                    )
+                ])
             )
         }
     }
@@ -66,7 +71,7 @@ actor SwiftReleasesChecker: Service {
     }
 
     func getCachedDataForCachesStorage() -> Storage {
-        return self.storage
+        self.storage
     }
 }
 

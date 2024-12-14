@@ -1,6 +1,6 @@
 import Rendering
-import Shared
 import ServiceLifecycle
+import Shared
 
 final class HandlerContext: Sendable {
     /// Contain references to this class so need to be initialized separately

@@ -1,5 +1,6 @@
-import OpenAPIRuntime
 import HTTPTypes
+import OpenAPIRuntime
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -8,7 +9,7 @@ import Foundation
 
 struct FakeClientTransport: ClientTransport {
 
-    init() { }
+    init() {}
 
     func send(
         _ request: HTTPRequest,
@@ -17,8 +18,7 @@ struct FakeClientTransport: ClientTransport {
         operationID: String
     ) async throws -> (HTTPResponse, HTTPBody?) {
         let primaryID = "\(request.method.rawValue)-\(baseURL.absoluteString)\(request.path ?? "")"
-        guard let data =  TestData.for(ghRequestID: primaryID) ??
-                TestData.for(ghRequestID: operationID) else {
+        guard let data = TestData.for(ghRequestID: primaryID) ?? TestData.for(ghRequestID: operationID) else {
             fatalError("No test GitHub data for primary id: \(primaryID), operation id: \(operationID).")
         }
         let body = HTTPBody(data)

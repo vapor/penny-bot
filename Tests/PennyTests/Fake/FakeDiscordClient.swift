@@ -1,11 +1,12 @@
-@testable import DiscordBM
 import NIOHTTP1
 import Testing
+
+@testable import DiscordBM
 
 struct FakeDiscordClient: DiscordClient {
     var appId: ApplicationSnowflake? = "11111111"
 
-    init() { }
+    init() {}
 
     func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
         await FakeResponseStorage.shared.respond(
@@ -23,7 +24,7 @@ struct FakeDiscordClient: DiscordClient {
             ).map { .init(data: $0) }
         )
     }
-    
+
     func send<E: Encodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
@@ -35,18 +36,19 @@ struct FakeDiscordClient: DiscordClient {
         }
 
         await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
-        
+
         return DiscordHTTPResponse(
             host: "discord.com",
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData
+            body:
+                TestData
                 .for(gatewayEventKey: request.endpoint.testingKey)
                 .map { .init(data: $0) }
         )
     }
-    
+
     func sendMultipart<E: MultipartEncodable & ValidatablePayload>(
         request: DiscordHTTPRequest,
         payload: E
@@ -64,7 +66,8 @@ struct FakeDiscordClient: DiscordClient {
             status: .ok,
             version: .http2,
             headers: [:],
-            body: TestData
+            body:
+                TestData
                 .for(gatewayEventKey: request.endpoint.testingKey)
                 .map { .init(data: $0) }
         )

@@ -1,11 +1,13 @@
-@testable import Penny
 import DiscordBM
+import Testing
+
+@testable import Penny
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Testing
 
 @Suite
 struct CoinHandlerTests {
@@ -21,8 +23,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) thanks!
-                """,
+                    \(user1) thanks!
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -32,8 +34,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) thank you!
-                """,
+                    \(user1) thank you!
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -46,8 +48,8 @@ struct CoinHandlerTests {
     func userAtTheBeginningAndCoinSignAtTheEnd() throws {
         let coinHandler = CoinFinder(
             text: """
-            \(user1) xxxx xxxx \(user2) xxxx thank you so MUCH!
-            """,
+                \(user1) xxxx xxxx \(user2) xxxx thank you so MUCH!
+                """,
             mentionedUsers: [user1Snowflake, user2Snowflake]
         )
         let users = coinHandler.findUsers()
@@ -59,8 +61,8 @@ struct CoinHandlerTests {
     func userAtTheEndAndCoinSignAtTheBeginning() throws {
         let coinHandler = CoinFinder(
             text: """
-            thaNk you xxxx xxxx \(user2) xxxx xxxx \(user1)!
-            """,
+                thaNk you xxxx xxxx \(user2) xxxx xxxx \(user1)!
+                """,
             mentionedUsers: [user2Snowflake, user1Snowflake]
         )
         let users = coinHandler.findUsers()
@@ -74,8 +76,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1) 🪙
-                """,
+                    xxxx \(user1) 🪙
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -85,8 +87,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1) \(user2) 🚀
-                """,
+                    xxxx \(user1) \(user2) 🚀
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -96,8 +98,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx ++++++++++++++++++++++++++++++ \(user1)
-                """,
+                    xxxx ++++++++++++++++++++++++++++++ \(user1)
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -107,8 +109,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx Thanks for your help \(user1) \(user2)
-                """,
+                    xxxx Thanks for your help \(user1) \(user2)
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -123,8 +125,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1) thanks a bunch! xxx
-                """,
+                    xxxx \(user1) thanks a bunch! xxx
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -134,8 +136,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1) \(user2) thank you A bunch! xxx
-                """,
+                    xxxx \(user1) \(user2) thank you A bunch! xxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -145,8 +147,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx thank you. \(user1) xxx
-                """,
+                    xxxx thank you. \(user1) xxx
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -156,8 +158,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx thank you!\(user1)  \(user2)   xxx
-                """,
+                    xxxx thank you!\(user1)  \(user2)   xxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -167,8 +169,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx thanks for the help\(user1)  \(user2) xxx
-                """,
+                    xxxx thanks for the help\(user1)  \(user2) xxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -182,8 +184,8 @@ struct CoinHandlerTests {
             /// `+` is not a coin sign, unlike `++`/`+++`/`++++`... .
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) +
-                """,
+                    \(user1) +
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -194,8 +196,8 @@ struct CoinHandlerTests {
             /// `++` is too far.
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) xxxx ++ xxxx
-                """,
+                    \(user1) xxxx ++ xxxx
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -216,8 +218,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.ServerEmojis.coin.emoji) xxxx
-                """,
+                    xxxx \(user1)  thanks for the xxxx xxxx xxxx, xxxx xxxx \(user2) \(Constants.ServerEmojis.coin.emoji) xxxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -228,8 +230,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) thanks xxxx \(user2) & 🙌🏽 xxxx xxxx
-                """,
+                    \(user1) thanks xxxx \(user2) & 🙌🏽 xxxx xxxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -240,8 +242,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                thanks a bunch!  \(user1) xxxx thanks a LOT  \(user2)   xxxx xxxx
-                """,
+                    thanks a bunch!  \(user1) xxxx thanks a LOT  \(user2)   xxxx xxxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -252,8 +254,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx xxxx \(user1) thanks xxxx xxxx \(user2)  thanks for the help!
-                """,
+                    xxxx xxxx \(user1) thanks xxxx xxxx \(user2)  thanks for the help!
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -264,8 +266,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx \(user1)thanks xxxx \(user2) += 1 xxxx
-                """,
+                    xxxx \(user1)thanks xxxx \(user2) += 1 xxxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -276,8 +278,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1)THANK YOU!  \(user2) and 👍🏼
-                """,
+                    \(user1)THANK YOU!  \(user2) and 👍🏼
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -288,8 +290,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                thanks!  \(user1) ++ , \(user2)
-                """,
+                    thanks!  \(user1) ++ , \(user2)
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -303,8 +305,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                thanks!
-                """,
+                    thanks!
+                    """,
                 replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
@@ -315,8 +317,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                Thanks \(user1) xxxx xxxx
-                """,
+                    Thanks \(user1) xxxx xxxx
+                    """,
                 replied: user1Snowflake,
                 mentionedUsers: [user1Snowflake]
             )
@@ -328,8 +330,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx xxxx ++
-                """,
+                    xxxx xxxx ++
+                    """,
                 replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
@@ -340,9 +342,9 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx xxxx
-                xxxx xxxx 🪙
-                """,
+                    xxxx xxxx
+                    xxxx xxxx 🪙
+                    """,
                 replied: user1Snowflake
             )
             let users = coinHandler.findUsers()
@@ -354,8 +356,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                thanks!
-                """,
+                    thanks!
+                    """,
                 replied: user1Snowflake,
                 excludedUsers: [user1Snowflake]
             )
@@ -371,8 +373,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) thanks!
-                """,
+                    \(user1) thanks!
+                    """,
                 mentionedUsers: []
             )
             let users = coinHandler.findUsers()
@@ -382,8 +384,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 🙌🏼
-                """,
+                    xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 🙌🏼
+                    """,
                 mentionedUsers: []
             )
             let users = coinHandler.findUsers()
@@ -396,8 +398,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) thANKs!
-                """,
+                    \(user1) thANKs!
+                    """,
                 excludedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -407,8 +409,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 👍🏼
-                """,
+                    xxxx xxxx \(user1)  thanks xxxx xxxx \(user2) 👍🏼
+                    """,
                 excludedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -421,8 +423,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) thank you! \(user1) +++
-                """,
+                    \(user1) thank you! \(user1) +++
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -432,8 +434,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) \(user1) xxxx +++++
-                """,
+                    \(user1) \(user1) xxxx +++++
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -443,8 +445,8 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                xxxx xxxx \(user1) thanks xxxx \(user1) 👌🏻 xxxx
-                """,
+                    xxxx xxxx \(user1) thanks xxxx \(user1) 👌🏻 xxxx
+                    """,
                 mentionedUsers: [user1Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -457,9 +459,9 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) ThAnK yOu!
-                \(user2) ++
-                """,
+                    \(user1) ThAnK yOu!
+                    \(user2) ++
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -469,9 +471,9 @@ struct CoinHandlerTests {
         do {
             let coinHandler = CoinFinder(
                 text: """
-                \(user1) xxxx xxxx thanks!
-                xxxx \(user2) thanks xxxx
-                """,
+                    \(user1) xxxx xxxx thanks!
+                    xxxx \(user2) thanks xxxx
+                    """,
                 mentionedUsers: [user1Snowflake, user2Snowflake]
             )
             let users = coinHandler.findUsers()
@@ -530,8 +532,8 @@ struct CoinHandlerTests {
     }
 }
 
-private extension CoinFinder {
-    init(
+extension CoinFinder {
+    fileprivate init(
         text: String,
         replied repliedUser: UserSnowflake? = nil,
         mentionedUsers: [UserSnowflake] = [],

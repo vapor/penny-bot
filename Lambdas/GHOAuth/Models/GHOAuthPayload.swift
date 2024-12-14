@@ -1,5 +1,6 @@
 import DiscordBM
 import JWTKit
+
 #if canImport(FoundationEssentials)
 import struct FoundationEssentials.Date
 #else
@@ -19,7 +20,7 @@ package struct GHOAuthPayload: JWTPayload {
     package init(discordID: UserSnowflake, interactionToken: String) {
         self.discordID = discordID
         self.interactionToken = interactionToken
-        self.expiration = .init(value: Date().addingTimeInterval(10 * 60)) // 10 minutes
+        self.expiration = .init(value: Date().addingTimeInterval(10 * 60))  // 10 minutes
     }
 
     package func verify(using algorithm: some JWTAlgorithm) async throws {

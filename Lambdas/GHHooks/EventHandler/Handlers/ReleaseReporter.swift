@@ -1,7 +1,8 @@
-import GitHubAPI
-import DiscordBM
-import Logging
 import Algorithms
+import DiscordBM
+import GitHubAPI
+import Logging
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -55,13 +56,17 @@ struct ReleaseReporter {
         ).ok.body.json
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
-           json.count > releaseIdx {
+            json.count > releaseIdx
+        {
             return json[releaseIdx + 1].name
         } else {
-            logger.warning("No previous tag found. Will just return the first tag", metadata: [
-                "tags": "\(json)",
-                "release": "\(release)"
-            ])
+            logger.warning(
+                "No previous tag found. Will just return the first tag",
+                metadata: [
+                    "tags": "\(json)",
+                    "release": "\(release)",
+                ]
+            )
             return json.first?.name
         }
     }
@@ -118,13 +123,14 @@ struct ReleaseReporter {
     }
 
     func sendToDiscord(pr: SimplePullRequest) async throws {
-        let body = pr.body.map { body -> String in
-            body.trimmingReleaseNoticeFromBody().formatMarkdown(
-                maxVisualLength: 256,
-                hardLimit: 2_048,
-                trailingTextMinLength: 96
-            )
-        } ?? ""
+        let body =
+            pr.body.map { body -> String in
+                body.trimmingReleaseNoticeFromBody().formatMarkdown(
+                    maxVisualLength: 256,
+                    hardLimit: 2_048,
+                    trailingTextMinLength: 96
+                )
+            } ?? ""
 
         let description = try await context.renderClient.ticketReport(title: pr.title, body: body)
 
@@ -146,44 +152,49 @@ struct ReleaseReporter {
         let commitCount = commitCount > 10 ? "More Than 10" : "\(commitCount)"
 
         let description = """
-        ### \(commitCount) Changes, Including:
+            ### \(commitCount) Changes, Including:
 
-        \(prDescriptions)
-        """.formatMarkdown(
-            maxVisualLength: 256,
-            hardLimit: 2_048,
-            trailingTextMinLength: 96
-        )
-        try await sendToDiscord(description: description)
-    }
-
-    func sendToDiscordWithRelease() async throws {
-        let description = release.body.map { body -> String in
-            let preferredContent = body.contentsOfHeading(
-                named: "What's Changed"
-            ) ?? body
-            let formatted = preferredContent.formatMarkdown(
+            \(prDescriptions)
+            """.formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
                 trailingTextMinLength: 96
             )
-            return formatted.isEmpty ? "" : ">>> \(formatted)"
-        } ?? ""
+        try await sendToDiscord(description: description)
+    }
+
+    func sendToDiscordWithRelease() async throws {
+        let description =
+            release.body.map { body -> String in
+                let preferredContent =
+                    body.contentsOfHeading(
+                        named: "What's Changed"
+                    ) ?? body
+                let formatted = preferredContent.formatMarkdown(
+                    maxVisualLength: 256,
+                    hardLimit: 2_048,
+                    trailingTextMinLength: 96
+                )
+                return formatted.isEmpty ? "" : ">>> \(formatted)"
+            } ?? ""
 
         try await sendToDiscord(description: description)
     }
 
     func sendToDiscord(description: String) async throws {
         let fullName = repo.full_name.urlPathEncoded()
-        let image = "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+        let image =
+            "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
 
-        try await self.sendToDiscord(embed: .init(
-            title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
-            description: description,
-            url: release.html_url,
-            color: .cyan,
-            image: .init(url: .exact(image))
-        ))
+        try await self.sendToDiscord(
+            embed: .init(
+                title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
+                description: description,
+                url: release.html_url,
+                color: .cyan,
+                image: .init(url: .exact(image))
+            )
+        )
     }
 
     func sendToDiscord(embed: Embed) async throws {

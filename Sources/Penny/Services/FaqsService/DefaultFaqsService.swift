@@ -1,13 +1,14 @@
+import AsyncHTTPClient
+import Logging
+import Models
+import NIOHTTP1
+import Shared
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import Models
-import AsyncHTTPClient
-import Logging
-import NIOHTTP1
-import Shared
 
 actor DefaultFaqsService: FaqsService {
 
@@ -84,26 +85,34 @@ actor DefaultFaqsService: FaqsService {
         logger.trace("HTTP head", metadata: ["response": "\(response)"])
 
         guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16) /// 64 KiB
+            let collected = try? await response.body.collect(upTo: 1 << 16)
+            /// 64 KiB
             let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error("Faqs-service failed", metadata: [
-                "status": "\(response.status)",
-                "headers": "\(response.headers)",
-                "body": "\(body)",
-            ])
+            logger.error(
+                "Faqs-service failed",
+                metadata: [
+                    "status": "\(response.status)",
+                    "headers": "\(response.headers)",
+                    "body": "\(body)",
+                ]
+            )
             throw ServiceError.badStatus(response.status)
         }
 
-        let body = try await response.body.collect(upTo: 1 << 24) /// 16 MiB
+        let body = try await response.body.collect(upTo: 1 << 24)
+        /// 16 MiB
         let items = try decoder.decode([String: String].self, from: body)
         freshenCache(items)
         resetItemsTask?.cancel()
     }
 
     private func freshenCache(_ new: [String: String]) {
-        logger.trace("Will refresh faqs cache", metadata: [
-            "new": .stringConvertible(new)
-        ])
+        logger.trace(
+            "Will refresh faqs cache",
+            metadata: [
+                "new": .stringConvertible(new)
+            ]
+        )
         self._cachedItems = new
         self._cachedNamesHashTable = Dictionary(
             uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })

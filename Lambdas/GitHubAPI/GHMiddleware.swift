@@ -1,14 +1,15 @@
+import Atomics
+import HTTPTypes
+import Logging
+import NIOCore
+import OpenAPIAsyncHTTPClient
+import OpenAPIRuntime
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import OpenAPIRuntime
-import Atomics
-import Logging
-import HTTPTypes
-import NIOCore
-import OpenAPIAsyncHTTPClient
 
 /// Adds some headers to all requests.
 struct GHMiddleware: ClientMiddleware {
@@ -71,29 +72,36 @@ struct GHMiddleware: ClientMiddleware {
 
         let requestID = Self.idGenerator.loadThenWrappingIncrement(ordering: .relaxed)
 
-        logger.debug("Will send request to GitHub", metadata: [
-            "request": "\(request)",
-            "baseURL": .stringConvertible(baseURL),
-            "operationID": .string(operationID),
-            "requestID": .stringConvertible(requestID),
-        ])
+        logger.debug(
+            "Will send request to GitHub",
+            metadata: [
+                "request": "\(request)",
+                "baseURL": .stringConvertible(baseURL),
+                "operationID": .string(operationID),
+                "requestID": .stringConvertible(requestID),
+            ]
+        )
 
         do {
             let (response, body) = try await next(request, body, baseURL)
             let collectedBody = try await body?.collect(upTo: 1 << 28, using: Self.allocator)
 
-            logger.debug("Got response from GitHub", metadata: [
-                "response": .string(response.debugDescription),
-                "requestID": .stringConvertible(requestID),
-            ])
+            logger.debug(
+                "Got response from GitHub",
+                metadata: [
+                    "response": .string(response.debugDescription),
+                    "requestID": .stringConvertible(requestID),
+                ]
+            )
 
             /// If this is not _the_ retry,
             /// and if the authorization is retriable,
             /// and if the response status is `401 Unauthorized`,
             /// then retry the request with a force-refreshed token.
             if !isRetry,
-               authorization.isRetriable,
-               response.status == .unauthorized {
+                authorization.isRetriable,
+                response.status == .unauthorized
+            {
                 logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
                 return try await intercept(
                     &request,
@@ -107,18 +115,21 @@ struct GHMiddleware: ClientMiddleware {
                 return (response, collectedBody.map { HTTPBody($0.readableBytesView) })
             }
         } catch {
-            logger.error("Got error from GitHub", metadata: [
-                "error": "\(error)",
-                "requestID": .stringConvertible(requestID),
-            ])
+            logger.error(
+                "Got error from GitHub",
+                metadata: [
+                    "error": "\(error)",
+                    "requestID": .stringConvertible(requestID),
+                ]
+            )
 
             throw error
         }
     }
 }
 
-private extension HTTPFields {
-    mutating func addOrReplace(name: HTTPField.Name, value: String) {
+extension HTTPFields {
+    fileprivate mutating func addOrReplace(name: HTTPField.Name, value: String) {
         let header = HTTPField(name: name, value: value)
         if let existingIdx = self.firstIndex(
             where: { $0.name == name }
@@ -130,6 +141,6 @@ private extension HTTPFields {
     }
 }
 
-private extension HTTPField.Name {
-    static let xGitHubAPIVersion = Self("X-GitHub-Api-Version")!
+extension HTTPField.Name {
+    fileprivate static let xGitHubAPIVersion = Self("X-GitHub-Api-Version")!
 }

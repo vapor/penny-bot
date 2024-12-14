@@ -1,4 +1,5 @@
 import Crypto
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -37,7 +38,6 @@ package enum Verifier {
 extension Sequence where Element == UInt8 {
     /// Returns a hex-encoded `String` buffer from an array of bytes.
     func toHexDigest() -> String {
-        return self.map { String(format: "%02x", $0) }.joined(separator: "")
+        self.map { String(format: "%02x", $0) }.joined(separator: "")
     }
 }
-

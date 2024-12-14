@@ -1,18 +1,19 @@
-@testable import GHHooksLambda
-@testable import Logging
 import AsyncHTTPClient
-import GitHubAPI
-import SotoCore
-import DiscordModels
 import DiscordHTTP
-import OpenAPIRuntime
-import Rendering
-import SwiftSemver
-import Shared
+import DiscordModels
 import Foundation
+import GitHubAPI
 import Markdown
 import NIOPosix
+import OpenAPIRuntime
+import Rendering
+import Shared
+import SotoCore
+import SwiftSemver
 import Testing
+
+@testable import GHHooksLambda
+@testable import Logging
 
 extension SerializationNamespace {
     @Suite
@@ -230,7 +231,8 @@ extension SerializationNamespace.GHHooksTests {
     @Test
     func markdownFormatting() async throws {
         do {
-            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let scalars_206 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let formatted = scalars_206.formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
@@ -240,7 +242,8 @@ extension SerializationNamespace.GHHooksTests {
         }
 
         do {
-            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let scalars_206 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let formatted = scalars_206.formatMarkdown(
                 maxVisualLength: 200,
                 hardLimit: 2_048,
@@ -250,51 +253,59 @@ extension SerializationNamespace.GHHooksTests {
         }
 
         do {
-            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let scalars_206 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let formatted = scalars_206.formatMarkdown(
                 maxVisualLength: 200,
                 hardLimit: 203,
                 trailingTextMinLength: 64
             )
-            expectMultilineStringsEqual(formatted, """
-            Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not inclu\(dots)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not inclu\(dots)
+                """
+            )
         }
 
         do {
             let text = """
-            ```
-            Hello, how are you?
-            ```
-            """
+                ```
+                Hello, how are you?
+                ```
+                """
             let formatted = text.formatMarkdown(
                 maxVisualLength: 10,
                 hardLimit: 200,
                 trailingTextMinLength: 64
             )
-            expectMultilineStringsEqual(formatted, """
-            ```
-            Hello, ho\(dots)
-            ```
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                ```
+                Hello, ho\(dots)
+                ```
+                """
+            )
         }
 
         /// Remove html and images + length limits.
         do {
-            let scalars_206 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
+            let scalars_206 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not included)"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
-            
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-            
-            <!-- Describe your changes clearly and use examples if possible -->
-            
-            \(scalars_206)
-            
-            <img width="1273" alt="Vapor_docs_dark" src="https://gthub.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-            
-            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                <!-- 🚀 Thank you for contributing! -->
+
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+
+                <!-- Describe your changes clearly and use examples if possible -->
+
+                \(scalars_206)
+
+                <img width="1273" alt="Vapor_docs_dark" src="https://gthub.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+                Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
@@ -306,20 +317,21 @@ extension SerializationNamespace.GHHooksTests {
 
         /// Remove html and images + length limits.
         do {
-            let scalars_200 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not int"
+            let scalars_200 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders is not int"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
-            
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-            
-            <!-- Describe your changes clearly and use examples if possible -->
-            
-            \(scalars_200)
-            
-            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-            
-            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                <!-- 🚀 Thank you for contributing! -->
+
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+
+                <!-- Describe your changes clearly and use examples if possible -->
+
+                \(scalars_200)
+
+                <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+                Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
@@ -327,29 +339,33 @@ extension SerializationNamespace.GHHooksTests {
                 trailingTextMinLength: 64
             )
             let scalars_66 = "Custom coders specified for a single `JWTSigner` affect token par…"
-            expectMultilineStringsEqual(formatted, scalars_200 + """
-            
-            
-            \(scalars_66)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                scalars_200 + """
+
+
+                    \(scalars_66)
+                    """
+            )
         }
 
         /// Remove html and images + length limits.
         do {
-            let scalars_190 = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
+            let scalars_190 =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders)"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
-            
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-            
-            <!-- Describe your changes clearly and use examples if possible -->
-            
-            \(scalars_190)
-            
-            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-            
-            Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                <!-- 🚀 Thank you for contributing! -->
+
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+
+                <!-- Describe your changes clearly and use examples if possible -->
+
+                \(scalars_190)
+
+                <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+                Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
@@ -357,85 +373,95 @@ extension SerializationNamespace.GHHooksTests {
                 trailingTextMinLength: 64
             )
             let scalars_76 = "Custom coders specified for a single `JWTSigner` affect token parsing and s…"
-            expectMultilineStringsEqual(formatted, scalars_190 + """
-            
-            
-            \(scalars_76)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                scalars_190 + """
+
+
+                    \(scalars_76)
+                    """
+            )
         }
 
         /// Remove html and images + length limits.
         do {
-            let scalars_aLot = "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
+            let scalars_aLot =
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and signing performed only by that signer. Custom coders specified"
             let text = """
-            <!-- 🚀 Thank you for contributing! -->
-            
-            ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
-            
-            <!-- Describe your changes clearly and use examples if possible -->
-            
-            \(scalars_aLot)
-            
-            <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
-            
-            on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
-            """
+                <!-- 🚀 Thank you for contributing! -->
+
+                ![test image](https://github.com/vapor/something/9j13e91j3e9j03jr0j230dm02)
+
+                <!-- Describe your changes clearly and use examples if possible -->
+
+                \(scalars_aLot)
+
+                <img width="1273" alt="Vapor_docs_dark" src="https://github.com/vapor/docs/assets/54376466/109dbef2-a090-49ef-9db7-9952dd848e13">
+
+                on a `JWTSigners` object will become the default coders for all signers added to that object, unless a given signer already specifies its own custom coders.
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
                 trailingTextMinLength: 64
             )
-            expectMultilineStringsEqual(formatted, "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and …")
+            expectMultilineStringsEqual(
+                formatted,
+                "Add new, fully source-compatible APIs to `JWTSigners` and `JWTSigner` which allow specifying custom `JSONEncoder` and `JSONDecoder` instances. (The ability to use non-Foundation JSON coders) Custom coders specified for a single `JWTSigner` affect token parsing and …"
+            )
         }
 
         /// Remove empty links
         do {
             let text = """
-            Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
-            
-            [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=sass&package-manager=npm_and_yarn&previous-version=1.63.6&new-version=1.64.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
-            
-            Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
-            
-            [//]: # (dependabot-automerge-start)
-            [//]: # (dependabot-automerge-end)
-            
-            ---
-            
-            <details>
-            <summary>Dependabot commands and options</summary>
-            <br />
-            
-            You can trigger Dependabot actions by commenting on this PR:
-            """
+                Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
+
+                [![Dependabot compatibility score](https://dependabot-badges.githubapp.com/badges/compatibility_score?dependency-name=sass&package-manager=npm_and_yarn&previous-version=1.63.6&new-version=1.64.0)](https://docs.github.com/en/github/managing-security-vulnerabilities/about-dependabot-security-updates#about-compatibility-scores)
+
+                Dependabot will resolve any conflicts with this PR as long as you don't alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+
+                [//]: # (dependabot-automerge-start)
+                [//]: # (dependabot-automerge-end)
+
+                ---
+
+                <details>
+                <summary>Dependabot commands and options</summary>
+                <br />
+
+                You can trigger Dependabot actions by commenting on this PR:
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
                 hardLimit: 2_048,
                 trailingTextMinLength: 96
             )
-            expectMultilineStringsEqual(formatted, """
-            Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
-            
-            Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
-            \(dots)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                Bumps [sass](https://github.com/sass/dart-sass) from 1.63.6 to 1.64.0.
+
+                Dependabot will resolve any conflicts with this PR as long as you don’t alter it yourself. You can also trigger a rebase manually by commenting `@dependabot rebase`.
+                \(dots)
+                """
+            )
         }
 
         do {
             let text = """
-            ### Describe the bug
-            
-            I've got a custom `Codable` type that throws an error when decoding... because it's being asked to decode an empty string, rather than being skipped because I've got `T?` rather than `T` as the type in my `Content`.
-            
-            ### To Reproduce
-            
-            1. Declare some custom `Codable` type that throws an error if told to decode from an empty string.
-            2. Declare some custom `Content` struct that has an `Optional` of your custom type as a parameter.
-            3. Have a browser submit a request that includes `yourThing: ` in the body. (Doable in Safari by creating an HTML form, giving it a date input with the right `name`, and then... not selecting a date before hitting submit)
-            4. Observe thrown error.
-            """
+                ### Describe the bug
+
+                I've got a custom `Codable` type that throws an error when decoding... because it's being asked to decode an empty string, rather than being skipped because I've got `T?` rather than `T` as the type in my `Content`.
+
+                ### To Reproduce
+
+                1. Declare some custom `Codable` type that throws an error if told to decode from an empty string.
+                2. Declare some custom `Content` struct that has an `Optional` of your custom type as a parameter.
+                3. Have a browser submit a request that includes `yourThing: ` in the body. (Doable in Safari by creating an HTML form, giving it a date input with the right `name`, and then... not selecting a date before hitting submit)
+                4. Observe thrown error.
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
@@ -443,38 +469,41 @@ extension SerializationNamespace.GHHooksTests {
                 trailingTextMinLength: 96
             )
             // TODO: Handle this situation better os we don't end up with an empty list item.
-            expectMultilineStringsEqual(formatted, """
-            ### Describe the bug
-            
-            I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
-            
-            ### To Reproduce
-            
-            1.
-            \(dots)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                ### Describe the bug
+
+                I’ve got a custom `Codable` type that throws an error when decoding… because it’s being asked to decode an empty string, rather than being skipped because I’ve got `T?` rather than `T` as the type in my `Content`.
+
+                ### To Reproduce
+
+                1.
+                \(dots)
+                """
+            )
         }
 
         do {
             let text = """
-            ### Describe the bug
-            
-            White text on white background is not readable.
-            
-            ### To Reproduce
-            
-            Go to [https://api.vapor.codes/fluent/documentation/fluent/](https://api.vapor.codes/fluent/documentation/fluent/)
-            
-            ### Expected behavior
-            
-            Expect some contrast between the text and the background.
-            
-            ### Environment
-            
-            * Vapor Framework version: current [https://api.vapor.codes/](https://api.vapor.codes/) website
-            * Vapor Toolbox version: N/A
-            * OS version: N/A
-            """
+                ### Describe the bug
+
+                White text on white background is not readable.
+
+                ### To Reproduce
+
+                Go to [https://api.vapor.codes/fluent/documentation/fluent/](https://api.vapor.codes/fluent/documentation/fluent/)
+
+                ### Expected behavior
+
+                Expect some contrast between the text and the background.
+
+                ### Environment
+
+                * Vapor Framework version: current [https://api.vapor.codes/](https://api.vapor.codes/) website
+                * Vapor Toolbox version: N/A
+                * OS version: N/A
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
@@ -482,28 +511,31 @@ extension SerializationNamespace.GHHooksTests {
                 trailingTextMinLength: 96
             )
 
-            expectMultilineStringsEqual(formatted, """
-            ### Describe the bug
-            
-            White text on white background is not readable.
-            
-            ### To Reproduce
-            
-            Go to <https://api.vapor.codes/fluent/documentation/fluent/>
-            
-            ### Expected behavior
-            
-            Expect some contrast between the text and the background.
-            \(dots)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                ### Describe the bug
+
+                White text on white background is not readable.
+
+                ### To Reproduce
+
+                Go to <https://api.vapor.codes/fluent/documentation/fluent/>
+
+                ### Expected behavior
+
+                Expect some contrast between the text and the background.
+                \(dots)
+                """
+            )
         }
 
         do {
             let text = """
-            Final stage of Vapor's `Sendable` journey as `Request` is now `Sendable`.
-            
-            There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
-            """
+                Final stage of Vapor's `Sendable` journey as `Request` is now `Sendable`.
+
+                There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 256,
@@ -511,20 +543,23 @@ extension SerializationNamespace.GHHooksTests {
                 trailingTextMinLength: 128
             )
 
-            expectMultilineStringsEqual(formatted, """
-            Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable`.
-            
-            There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                Final stage of Vapor’s `Sendable` journey as `Request` is now `Sendable`.
+
+                There should be no more `Sendable` warnings in Vapor, even with complete concurrency checking turned on.
+                """
+            )
         }
 
         /// Test modifying GitHub links
         do {
             let text = """
-            https://github.com/swift-server/swiftly/pull/9Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at https://github.com/swift-server/swiftly/pull/9.
-            
-            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.](https://github.com/vapor/penny-bot/issues/98
-            """
+                https://github.com/swift-server/swiftly/pull/9Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at https://github.com/swift-server/swiftly/pull/9.
+
+                There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor https://github.com/vapor/penny-bot/issues/98, even with complete concurrency checking turned on.](https://github.com/vapor/penny-bot/issues/98
+                """
 
             let formatted = text.formatMarkdown(
                 maxVisualLength: 512,
@@ -532,11 +567,14 @@ extension SerializationNamespace.GHHooksTests {
                 trailingTextMinLength: 128
             )
 
-            expectMultilineStringsEqual(formatted, """
-            [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9)Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
-            
-            There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.]([vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
-            """)
+            expectMultilineStringsEqual(
+                formatted,
+                """
+                [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9)Final stage of Vapor’s `Sendable` journey as `Request` is now [#40](https://github.com/swift-server/swiftly/pull/9) `Sendable` at [swift-server/swiftly#9](https://github.com/swift-server/swiftly/pull/9).
+
+                There should https://github.com/vapor-bad-link/issues/44 be no more `Sendable` warnings in Vapor [vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98), even with complete concurrency checking turned on.]([vapor/penny-bot#98](https://github.com/vapor/penny-bot/issues/98)
+                """
+            )
         }
     }
 
@@ -544,56 +582,59 @@ extension SerializationNamespace.GHHooksTests {
     func headingFinder() async throws {
         /// Goes into the `What's Changed` heading.
         let text = """
-        ## What's Changed
-        * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
-        * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
-        * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
-        * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
-        
-        ## New Contributors
-        * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
-        
-        **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
-        """
+            ## What's Changed
+            * Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+            * Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+            * Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+            * Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+
+            ## New Contributors
+            * @Gerzer made their first contribution in https://github.com/vapor/apns/pull/51
+
+            **Full Changelog**: https://github.com/vapor/apns/compare/3.0.0...4.0.0
+            """
 
         let contentsOfHeading = try #require(text.contentsOfHeading(named: "What's Changed"))
-        expectMultilineStringsEqual(contentsOfHeading, """
-        - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
-        - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
-        - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
-        - Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
-        """)
+        expectMultilineStringsEqual(
+            contentsOfHeading,
+            """
+            - Use HTTP Client from vapor and update APNS library, add multiple configs by @kylebrowning in https://github.com/vapor/apns/pull/46
+            - Update package to use Alpha 5 by @kylebrowning in https://github.com/vapor/apns/pull/48
+            - Add support for new version of APNSwift by @Gerzer in https://github.com/vapor/apns/pull/51
+            - Update to latest APNS by @kylebrowning in https://github.com/vapor/apns/pull/52
+            """
+        )
     }
 
     @Test
     func parseCodeOwners() async throws {
         let text = """
-        # This is a comment.
-        # Each line is a file pattern followed by one or more owners.
-        
-        # These owners will be the default owners for everything in
-        *       @global-owner1 @global-owner2
-        
-        *.js    @js-owner #This is an inline comment.
-        
-        *.go docs@example.com
-        
-        *.txt @octo-org/octocats
-        /build/logs/ @doctocat
-        
-        # The `docs/*` pattern will match files like
-        # `docs/getting-started.md` but not further nested files like
-        # `docs/build-app/troubleshooting.md`.
-        docs/*  docs@example.com
-        
-        apps/ @octocat
-        /docs/ @doctocat
-        /scripts/ @doctocat @octocat
-        **/logs @octocat
-        
-        /apps/ @octocat
-        /apps/github
-        """
+            # This is a comment.
+            # Each line is a file pattern followed by one or more owners.
+
+            # These owners will be the default owners for everything in
+            *       @global-owner1 @global-owner2
+
+            *.js    @js-owner #This is an inline comment.
+
+            *.go docs@example.com
+
+            *.txt @octo-org/octocats
+            /build/logs/ @doctocat
+
+            # The `docs/*` pattern will match files like
+            # `docs/getting-started.md` but not further nested files like
+            # `docs/build-app/troubleshooting.md`.
+            docs/*  docs@example.com
+
+            apps/ @octocat
+            /docs/ @doctocat
+            /scripts/ @doctocat @octocat
+            **/logs @octocat
+
+            /apps/ @octocat
+            /apps/github
+            """
         let context = try makeContext(
             eventName: .pull_request,
             eventKey: "pr1"
@@ -603,7 +644,10 @@ extension SerializationNamespace.GHHooksTests {
             pr: context.event.pull_request!,
             number: context.event.number!
         )
-        let expected = ["docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner", "octo-org/octocats", "octocat"]
+        let expected = [
+            "docs@example.com", "doctocat", "global-owner1", "global-owner2", "js-owner", "octo-org/octocats",
+            "octocat",
+        ]
         #expect(handler.context.requester.parseCodeOwners(text: text).value.sorted() == expected)
     }
 
@@ -714,7 +758,10 @@ extension SerializationNamespace.GHHooksTests {
         try await handleEvent(
             key: "pr7",
             eventName: .pull_request,
-            expect: .error(description: "DiscordHTTPError.emptyBody(DiscordHTTPResponse(host: discord.com, status: 200 OK, version: HTTP/2.0, headers: [], body: nil))")
+            expect: .error(
+                description:
+                    "DiscordHTTPError.emptyBody(DiscordHTTPResponse(host: discord.com, status: 200 OK, version: HTTP/2.0, headers: [], body: nil))"
+            )
         )
 
         try await handleEvent(
@@ -892,7 +939,8 @@ extension SerializationNamespace.GHHooksTests {
             }
         } catch {
             if case let .error(description) = expect,
-               description == "\(error)" {
+                description == "\(error)"
+            {
                 /// Expected error
                 return
             }

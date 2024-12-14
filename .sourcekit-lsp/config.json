@@ -1,0 +1,6 @@
+{
+  "backgroundIndexing": true,
+  "backgroundPreparationMode": "build",
+  "maxCoresPercentageToUseForBackgroundIndexing": 0.7,
+  "experimentalFeatures": ["on-type-formatting"]
+}

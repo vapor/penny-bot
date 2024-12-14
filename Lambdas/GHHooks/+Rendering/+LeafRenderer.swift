@@ -1,7 +1,8 @@
+import AsyncHTTPClient
+import Logging
 import NIOCore
 import Rendering
-import Logging
-import AsyncHTTPClient
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -13,10 +14,12 @@ extension LeafRenderer {
         try LeafRenderer(
             subDirectory: "GHHooksLambda",
             httpClient: httpClient,
-            extraSources: [DocsLeafSource(
-                httpClient: httpClient,
-                logger: logger
-            )],
+            extraSources: [
+                DocsLeafSource(
+                    httpClient: httpClient,
+                    logger: logger
+                )
+            ],
             logger: logger,
             on: httpClient.eventLoopGroup.next()
         )

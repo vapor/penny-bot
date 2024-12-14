@@ -1,14 +1,15 @@
-import AWSLambdaRuntime
 import AWSLambdaEvents
+import AWSLambdaRuntime
 import AsyncHTTPClient
+import LambdasShared
+import Models
+import SotoCore
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
 import Foundation
 #endif
-import SotoCore
-import Models
-import LambdasShared
 
 @main
 struct FaqsHandler: LambdaHandler {

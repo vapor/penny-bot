@@ -1,20 +1,20 @@
+import AsyncHTTPClient
 import DiscordBM
 import DiscordLogger
-import AsyncHTTPClient
-import NIOCore
-import SotoCore
-import Shared
 import Logging
-import ServiceLifecycle
+import NIOCore
 import NIOPosix
+import ServiceLifecycle
+import Shared
+import SotoCore
 
 struct PennyService: MainService {
     func bootstrapLoggingSystem(httpClient: HTTPClient) async throws {
         // Discord-logging is disabled in debug based on the logger configuration,
         // so we can just use an invalid url
-        let webhookURL = Constants.deploymentEnvironment == .prod ?
-        Constants.loggingWebhookURL :
-        "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
+        let webhookURL =
+            Constants.deploymentEnvironment == .prod
+            ? Constants.loggingWebhookURL : "https://discord.com/api/webhooks/1066284436045439037/dSs4nFhjpxcOh6HWD_"
 
         DiscordGlobalConfiguration.logManager = await DiscordLogManager(
             httpClient: httpClient,
@@ -29,7 +29,7 @@ struct PennyService: MainService {
                 mentions: [
                     .warning: .user(Constants.botDevUserId),
                     .error: .user(Constants.botDevUserId),
-                    .critical: .user(Constants.botDevUserId)
+                    .critical: .user(Constants.botDevUserId),
                 ],
                 extraMetadata: [.warning, .error, .critical],
                 disabledLogLevels: [.debug, .trace],
@@ -53,7 +53,7 @@ struct PennyService: MainService {
         let clientConfiguration = ClientConfiguration(
             cachingBehavior: .custom(
                 apiEndpoints: [
-                    .listApplicationCommands: .seconds(60 * 60) /// 1 hour
+                    .listApplicationCommands: .seconds(60 * 60)/// 1 hour
                 ],
                 apiEndpointsDefaultTTL: .seconds(5)
             )
@@ -74,7 +74,7 @@ struct PennyService: MainService {
                 .guildMessages,
                 .messageContent,
                 .guildMessageReactions,
-                .guildModeration
+                .guildModeration,
             ]
         )
     }
@@ -142,7 +142,7 @@ struct PennyService: MainService {
                 reactionCache: reactionCache
             )
         )
-        
+
         let context = HandlerContext(
             backgroundProcessor: backgroundProcessor,
             usersService: usersService,
@@ -211,7 +211,7 @@ struct PennyService: MainService {
                 botStateManagerWrappedService,
                 evolutionCheckerWrappedService,
                 soCheckerWrappedService,
-                swiftReleasesCheckerWrappedService
+                swiftReleasesCheckerWrappedService,
             ],
             logger: Logger(label: "ServiceGroup")
         )

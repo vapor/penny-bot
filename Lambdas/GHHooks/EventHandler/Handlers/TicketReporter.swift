@@ -1,5 +1,6 @@
 import DiscordBM
 import Shared
+
 #if canImport(FoundationEssentials)
 import struct FoundationEssentials.Date
 #else
@@ -10,7 +11,8 @@ import struct Foundation.Date
 struct TicketReporter {
 
     enum Configuration {
-        static let userIDDenyList: Set<Int> = [ /* dependabot[bot]: */ 49_699_333]
+        /// The dependabot[bot] user ID.
+        static let userIDDenyList: Set<Int> = [49_699_333]
     }
 
     private static let ticketQueue = SerialProcessor()
@@ -75,9 +77,12 @@ struct TicketReporter {
                 number: number
             )
             messageID = MessageSnowflake(repoMessageID)
-            context.logger.debug("Got message ID from Repo", metadata: [
-                "messageID": "\(messageID)"
-            ])
+            context.logger.debug(
+                "Got message ID from Repo",
+                metadata: [
+                    "messageID": "\(messageID)"
+                ]
+            )
         } catch let error as DynamoMessageRepo.Errors where error == .unavailable {
             context.logger.debug("Message is unavailable to edit")
             return
@@ -128,14 +133,14 @@ struct TicketReporter {
     }
 }
 
-private extension Constants.Channels {
-    static func reportingChannel(repoID: Int, createdAt: Date) -> Self {
+extension Constants.Channels {
+    fileprivate static func reportingChannel(repoID: Int, createdAt: Date) -> Self {
         /// The change to use `.documentation` was made only after this timestamp.
         if createdAt.timeIntervalSince1970 < 1_696_067_000 {
             return .issuesAndPRs
         } else {
             switch repoID {
-            case 64560805:
+            case 64_560_805:
                 return .documentation
             default:
                 return .issuesAndPRs

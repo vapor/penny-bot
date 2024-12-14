@@ -1,6 +1,7 @@
 import AsyncHTTPClient
-import NIOCore
 import Logging
+import NIOCore
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -18,7 +19,8 @@ struct DefaultSOService: SOService {
         let queries: KeyValuePairs = [
             "site": "stackoverflow",
             "tagged": "vapor",
-            "nottagged": "laravel", /// Don't be a "laravel" question
+            "nottagged": "laravel",
+            /// Don't be a "laravel" question
             "page": "1",
             "sort": "creation",
             "order": "desc",
@@ -29,15 +31,19 @@ struct DefaultSOService: SOService {
         let url = "https://api.stackexchange.com/2.3/search/advanced" + queries.makeForURLQueryUnchecked()
         let request = HTTPClientRequest(url: url)
         let response = try await httpClient.execute(request, deadline: .now() + .seconds(15))
-        let buffer = try await response.body.collect(upTo: 1 << 25) /// 32 MiB
+        let buffer = try await response.body.collect(upTo: 1 << 25)
+        /// 32 MiB
 
         guard 200..<300 ~= response.status.code else {
             let body = String(buffer: buffer)
-            logger.error("SO-service failed", metadata: [
-                "status": "\(response.status)",
-                "headers": "\(response.headers)",
-                "body": "\(body)",
-            ])
+            logger.error(
+                "SO-service failed",
+                metadata: [
+                    "status": "\(response.status)",
+                    "headers": "\(response.headers)",
+                    "body": "\(body)",
+                ]
+            )
             throw ServiceError.badStatus(response.status)
         }
 
@@ -49,10 +55,10 @@ struct DefaultSOService: SOService {
     }
 }
 
-private extension KeyValuePairs<String, String> {
+extension KeyValuePairs<String, String> {
     /// Doesn't do url-query encoding.
     /// Assumes the values are already safe.
-    func makeForURLQueryUnchecked() -> String {
+    fileprivate func makeForURLQueryUnchecked() -> String {
         "?" + self.map { "\($0)=\($1)" }.joined(separator: "&")
     }
 }

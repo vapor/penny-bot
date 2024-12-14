@@ -1,28 +1,30 @@
+import DiscordBM
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 import struct Foundation.CharacterSet
 #else
 import Foundation
 #endif
-import DiscordBM
 
 struct CoinFinder {
 
     enum Configuration {
         /// All coin signs must be lowercased.
         /// Add a test when you add a coin sign.
-        static let coinSigns = [
-            Constants.ServerEmojis.coin.emoji,
-            Constants.ServerEmojis.love.emoji,
-            "🚀", "🎉", "💯", "🪙",
-            "thx", "thanks", "thank you",
-            "thanks a lot", "thanks a bunch", "thanks so much",
-            "thank you a lot", "thank you a bunch", "thank you so much",
-            "thanks for the help", "thanks for your help",
-            "+= 1", "+ 1"
-        ]
-        + Constants.emojiSkins.map { "🙌\($0)" }
-        + Constants.emojiSkins.map { "🙏\($0)" }
+        static let coinSigns =
+            [
+                Constants.ServerEmojis.coin.emoji,
+                Constants.ServerEmojis.love.emoji,
+                "🚀", "🎉", "💯", "🪙",
+                "thx", "thanks", "thank you",
+                "thanks a lot", "thanks a bunch", "thanks so much",
+                "thank you a lot", "thank you a bunch", "thank you so much",
+                "thanks for the help", "thanks for your help",
+                "+= 1", "+ 1",
+            ]
+            + Constants.emojiSkins.map { "🙌\($0)" }
+            + Constants.emojiSkins.map { "🙏\($0)" }
 
         /// Two or more of these characters, like `++` or `++++++++++++`.
         static let twoOrMore_coinSigns: [Character] = ["+"]
@@ -50,10 +52,11 @@ struct CoinFinder {
         }
 
         // Lowercased for case-insensitive coin-sign checking.
-        var text = text
+        var text =
+            text
             .lowercased()
-        /// Punctuations can be problematic if someone sticks it to the end of a coin sign, like
-        /// "@Penny thanks, ..." or  "@Penny thanks!"
+            /// Punctuations can be problematic if someone sticks it to the end of a coin sign, like
+            /// "@Penny thanks, ..." or  "@Penny thanks!"
             .removingOccurrences(of: undesiredCharacterSet)
 
         for mentionedUser in mentionedUsers {
@@ -74,7 +77,8 @@ struct CoinFinder {
         for line in lines {
             if finalUsers.count == Configuration.maxUsers { break }
 
-            let components = line
+            let components =
+                line
                 .split(whereSeparator: \.isWhitespace)
                 .filter({ !$0.isIgnorable })
             let enumeratedComponents = components.enumerated()
@@ -86,8 +90,9 @@ struct CoinFinder {
                 /// Turns `<@ID>`s to `ID`.
                 let user = user.dropFirst(2).dropLast()
                 if !usersWithNewCoins.contains(where: { $0.rawValue.elementsEqual(user) }),
-                   !excludedUsers.contains(where: { $0.rawValue.elementsEqual(user) }),
-                   !finalUsers.contains(where: { $0.rawValue.elementsEqual(user) }) {
+                    !excludedUsers.contains(where: { $0.rawValue.elementsEqual(user) }),
+                    !finalUsers.contains(where: { $0.rawValue.elementsEqual(user) })
+                {
                     usersWithNewCoins.append(UserSnowflake(String(user)))
                 }
             }
@@ -114,7 +119,8 @@ struct CoinFinder {
             // If there were no users found so far, we try to check if
             // the message starts with @s and ends in a coin sign.
             if usersWithNewCoins.isEmpty,
-               components.isSuffixedWithCoinSign {
+                components.isSuffixedWithCoinSign
+            {
                 for component in components {
                     if isUserMention(component) {
                         append(user: component)
@@ -127,7 +133,8 @@ struct CoinFinder {
             // If there were no users found so far, we try to check if
             // the message starts with a coin sign and ends in @s.
             if usersWithNewCoins.isEmpty,
-               components.isPrefixedWithCoinSign {
+                components.isPrefixedWithCoinSign
+            {
                 for component in components.reversed() {
                     if isUserMention(component) {
                         append(user: component)
@@ -147,12 +154,14 @@ struct CoinFinder {
         // a coin sign in a proper place.
         // It would mean that someone has replied to another one and thanked them.
         if let repliedUser = repliedUser,
-           !excludedUsers.contains(repliedUser),
-           !finalUsers.contains(repliedUser) {
+            !excludedUsers.contains(repliedUser),
+            !finalUsers.contains(repliedUser)
+        {
 
             // At the beginning of the first line.
             if let firstLine = lines.first {
-                let components = firstLine
+                let components =
+                    firstLine
                     .split(whereSeparator: \.isWhitespace)
                     .filter({ !$0.isEmpty })
                 if components.isPrefixedWithCoinSign {
@@ -162,7 +171,8 @@ struct CoinFinder {
 
             // At the end of the last line, only if there are no other users that get any coins.
             if finalUsers.isEmpty, let lastLine = lines.last {
-                let components = lastLine
+                let components =
+                    lastLine
                     .split(whereSeparator: \.isWhitespace)
                     .filter({ !$0.isEmpty })
                 if components.isSuffixedWithCoinSign {
@@ -178,9 +188,8 @@ struct CoinFinder {
         let stringNoSurroundings = string.dropFirst(2).dropLast()
         /// `.hasPrefix()` is for a better performance.
         /// Should remove a lot of no-match strings, much faster than the containment check.
-        return string.hasPrefix("<@") &&
-        string.hasSuffix(">") &&
-        mentionedUsers.contains(where: { $0.rawValue.elementsEqual(stringNoSurroundings) })
+        return string.hasPrefix("<@") && string.hasSuffix(">")
+            && mentionedUsers.contains(where: { $0.rawValue.elementsEqual(stringNoSurroundings) })
     }
 }
 
@@ -192,14 +201,14 @@ private let splitSigns = CoinFinder.Configuration.coinSigns.map {
 /// It's safe but apparently the underlying type doesn't declare a proper conditional Sendable conformance.
 private let reversedSplitSigns = splitSigns.map { $0.reversed() }
 
-private extension Sequence<Substring> {
-    var isPrefixedWithCoinSign: Bool {
-        return splitSigns.contains {
+extension Sequence<Substring> {
+    fileprivate var isPrefixedWithCoinSign: Bool {
+        splitSigns.contains {
             self.starts(with: $0)
         } || self.isPrefixedWithOtherCoinSigns
     }
 
-    var isSuffixedWithCoinSign: Bool {
+    fileprivate var isSuffixedWithCoinSign: Bool {
         let reversedElements = self.reversed()
         return reversedSplitSigns.contains {
             reversedElements.starts(with: $0)
@@ -210,14 +219,13 @@ private extension Sequence<Substring> {
     private var isPrefixedWithOtherCoinSigns: Bool {
         self.first(where: { _ in true }).map { element in
             CoinFinder.Configuration.twoOrMore_coinSigns.contains { sign in
-                element.underestimatedCount > 1 &&
-                element.allSatisfy({ sign == $0 })
+                element.underestimatedCount > 1 && element.allSatisfy({ sign == $0 })
             }
         } == true
     }
 }
 
-private extension Substring {
+extension Substring {
     private static let ignorable = Set(["", "and", "&"])
 
     /// These strings are considered neutral, and in the logic above we can ignore them.
@@ -225,7 +233,7 @@ private extension Substring {
     /// NOTE: The logic in `CoinHandler`, intentionally adds spaces after and before each
     /// user-mention. That means we _need_ to remove empty strings to neutralize those
     /// intentional spaces.
-    var isIgnorable: Bool {
+    fileprivate var isIgnorable: Bool {
         Self.ignorable.contains(self.lowercased())
     }
 }

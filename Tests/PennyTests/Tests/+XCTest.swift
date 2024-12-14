@@ -13,10 +13,12 @@ func expectMultilineStringsEqual(
     let expression2 = expression2.trimmingSuffix(while: \.isNewline)
     if expression1 != expression2 {
         /// Not using `whereSeparator: \.isNewline` so it doesn't match non `\n` characters.
-        let lines1 = expression1
+        let lines1 =
+            expression1
             .split(separator: "\n", omittingEmptySubsequences: false)
             .map { $0.trimmingSuffix(while: \.isWhitespace) }
-        let lines2 = expression2
+        let lines2 =
+            expression2
             .split(separator: "\n", omittingEmptySubsequences: false)
             .map { $0.trimmingSuffix(while: \.isWhitespace) }
 
