@@ -50,7 +50,7 @@ actor SwiftReleasesChecker: Service {
         self.storage.currentReleases = releases
 
         for release in newReleases {
-            /// Swift logo
+            /// swiftlang's GitHub logo aka the Swift logo
             let image = "https://avatars.githubusercontent.com/u/42816656"
             await discordService.sendMessage(
                 channelId: Constants.Channels.news.id,
