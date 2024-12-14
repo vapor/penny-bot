@@ -58,10 +58,10 @@ actor SwiftReleasesChecker: Service {
                     .init(
                         title: "Swift \(release.stableName) Release".unicodesPrefix(256),
                         description: """
-                            \(release.xcodeRelease ? "Available on \(release.xcode)" : "No dedicated Xcode releases for Swift \(release.stableName)")
+                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)" : "Doesn't come with a dedicated Xcode release")
                             """,
                         url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
-                        color: .cyan,
+                        color: .orange,
                         image: .init(url: .exact(image))
                     )
                 ])
@@ -78,11 +78,11 @@ actor SwiftReleasesChecker: Service {
     }
 }
 
-struct SwiftOrgRelease: Codable, Hashable {
+struct SwiftOrgRelease: Codable {
     let name: String
     let tag: String
     let xcode: String
-    let xcodeRelease: Bool
+    let xcodeRelease: Bool?
 
     var stableName: String {
         let components = self.name.split(
@@ -94,5 +94,15 @@ struct SwiftOrgRelease: Codable, Hashable {
         } else {
             return self.name
         }
+    }
+}
+
+extension SwiftOrgRelease: Hashable {
+    static func == (lhs: SwiftOrgRelease, rhs: SwiftOrgRelease) -> Bool {
+        return lhs.tag == rhs.tag
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(self.tag)
     }
 }
