@@ -50,13 +50,16 @@ actor SwiftReleasesChecker: Service {
         self.storage.currentReleases = releases
 
         for release in newReleases {
-            let image =
-                "https://opengraph.githubassets.com/\(UUID().uuidString)/swiftlang/swift/releases/tag/\(release.tag)"
+            /// Swift logo
+            let image = "https://avatars.githubusercontent.com/u/42816656"
             await discordService.sendMessage(
                 channelId: Constants.Channels.news.id,
                 payload: .init(embeds: [
                     .init(
                         title: "Swift \(release.stableName) Release".unicodesPrefix(256),
+                        description: """
+                            \(release.xcodeRelease ? "Available on \(release.xcode)" : "No dedicated Xcode releases")
+                            """,
                         url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
                         color: .cyan,
                         image: .init(url: .exact(image))
@@ -78,6 +81,8 @@ actor SwiftReleasesChecker: Service {
 struct SwiftOrgRelease: Codable, Hashable {
     let name: String
     let tag: String
+    let xcode: String
+    let xcodeRelease: Bool
 
     var stableName: String {
         let components = self.name.split(
