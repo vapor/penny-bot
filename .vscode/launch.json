@@ -1,0 +1,170 @@
+{
+  "configurations": [
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug Penny",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/Penny",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug Penny",
+      "env": {
+        "DEPLOYMENT_ENVIRONMENT": "local"
+      }
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release Penny",
+      "program": "${workspaceFolder:penny-bot}/.build/release/Penny",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release Penny",
+      "env": {
+        "DEPLOYMENT_ENVIRONMENT": "local"
+      }
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug UsersLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/UsersLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug UsersLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release UsersLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/UsersLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release UsersLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug SponsorsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/SponsorsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug SponsorsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release SponsorsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/SponsorsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release SponsorsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug GHOAuthLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/GHOAuthLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug GHOAuthLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release GHOAuthLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/GHOAuthLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release GHOAuthLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug GHHooksLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/GHHooksLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug GHHooksLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release GHHooksLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/GHHooksLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release GHHooksLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug FaqsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/FaqsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug FaqsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release FaqsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/FaqsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release FaqsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug AutoPingsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/AutoPingsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug AutoPingsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release AutoPingsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/AutoPingsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release AutoPingsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Debug AutoFaqsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/debug/AutoFaqsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Debug AutoFaqsLambda"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "sourceLanguages": ["swift"],
+      "name": "Release AutoFaqsLambda",
+      "program": "${workspaceFolder:penny-bot}/.build/release/AutoFaqsLambda",
+      "args": [],
+      "cwd": "${workspaceFolder:penny-bot}",
+      "preLaunchTask": "swift: Build Release AutoFaqsLambda"
+    }
+  ]
+}
