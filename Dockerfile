@@ -21,7 +21,7 @@ COPY .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
 RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
 
 # Copy resources bundled by SPM to staging area
-RUN find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
+RUN find -L "$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
 # ================================
 # Run image
