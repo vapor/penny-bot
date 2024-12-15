@@ -14,14 +14,20 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 
 WORKDIR /staging
 
-# Copy main executable to staging area
-COPY .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
+# Copy .build to staging area
+COPY .build ./.build
+
+# Move executable to the root of the staging area
+RUN mv .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
 
 # Copy static swift backtracer binary to staging area
 RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
 
 # Copy resources bundled by SPM to staging area
-RUN find -L "$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
+RUN find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
+
+# Remove .build directory
+RUN rm -dr .build
 
 # ================================
 # Run image
