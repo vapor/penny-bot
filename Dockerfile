@@ -3,39 +3,19 @@
 # ================================
 FROM swift:6.0-jammy as build
 
+ARG SWIFT_CONFIGURATION
+ARG EXEC_NAME
+
 # Install OS updates
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
     && apt-get -q update \
     && apt-get -q dist-upgrade -y \
     && apt-get install -y libjemalloc-dev
 
-# Set up a build area
-WORKDIR /build
-
-# First just resolve dependencies.
-# This creates a cached layer that can be reused
-# as long as your Package.swift/Package.resolved
-# files do not change.
-COPY ./Package.* ./
-RUN swift package resolve --skip-update \
-        $([ -f ./Package.resolved ] && echo "--force-resolved-versions" || true)
-
-# Copy entire repo into container
-COPY . .
-
-# Build everything, with optimizations, with static linking, and using jemalloc
-# N.B.: The static version of jemalloc is incompatible with the static Swift runtime.
-RUN swift build \
-        -c release \
-        --product Penny \
-        --static-swift-stdlib \
-        -Xlinker -ljemalloc
-
-# Switch to the staging area
 WORKDIR /staging
 
 # Copy main executable to staging area
-RUN cp "$(swift build --package-path /build -c release --show-bin-path)/Penny" ./
+COPY .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
 
 # Copy static swift backtracer binary to staging area
 RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./

@@ -15,6 +15,33 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Restore .build
+        if: ${{ !(github.run_attempt > 1) }} # Because maybe the cache is causing issues
+        id: "restore-cache"
+        uses: actions/cache/restore@v4
+        with:
+          path: .build
+          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
+          restore-keys: "penny-release-static-build-${{ runner.os }}-"
+
+      - name: Build Penny
+        run: |
+          apt-get update -y
+          apt-get install -y libjemalloc-dev
+          swift build \
+            --product Penny \
+            -c release \
+            --force-resolved-versions \
+            --static-swift-stdlib \
+            -Xlinker -ljemalloc
+
+      - name: Cache .build
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .build
+          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -36,7 +63,9 @@ jobs:
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
+            --build-arg SWIFT_CONFIGURATION=release \
+            --build-arg EXEC_NAME=Penny
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 

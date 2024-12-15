@@ -8,9 +8,10 @@ on:
 
 jobs:
   unit-tests:
-    uses: vapor/ci/.github/workflows/run-unit-tests.yml@main
+    uses: mahdibm/ci/.github/workflows/run-unit-tests.yml@mmbm-caching
     with:
       with_release_mode_testing: true
+      with_experimental_caching: true
       with_coverage: false
       with_tsan: false
       with_api_check: false

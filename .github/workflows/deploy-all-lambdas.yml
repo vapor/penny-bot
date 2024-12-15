@@ -32,6 +32,14 @@ jobs:
           cd ${{ github.event.repository.name }}
           git checkout ${{ github.sha }}
 
+      - name: Restore .build
+        id: "restore-cache"
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ github.event.repository.name }}/.build
+          key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
+          restore-keys: "lambdas-build-${{ runner.os }}-"
+
       - name: Find package names
         working-directory: ${{ github.event.repository.name }}
         id: find_package_names
@@ -61,6 +69,12 @@ jobs:
               --key "${name}.zip" \
               --body ./zips/${name}/${name}.zip
           done
+
+      - name: Cache .build
+        uses: actions/cache/save@v4
+        with:
+          path: ${{ github.event.repository.name }}/.build
+          key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
 
       - name: Deploy
         working-directory: ${{ github.event.repository.name }}
