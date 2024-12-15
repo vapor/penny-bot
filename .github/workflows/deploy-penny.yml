@@ -11,6 +11,8 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    container: swift:6.0-jammy
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,6 +43,14 @@ jobs:
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
+
+      - name: Install Docker
+        run: |
+          # Make scripts executable
+          chmod +x ./.github/scripts/*
+
+          # Install Docker
+          ./.github/scripts/install-docker.bash
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
