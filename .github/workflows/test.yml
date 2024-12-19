@@ -7,7 +7,7 @@ on:
   push: { branches: [main] }
 
 jobs:
-  unit-tests:
+  unit- tests:
     uses: mahdibm/ci/.github/workflows/run-unit-tests.yml@mmbm-caching
     with:
       with_release_mode_testing: true
