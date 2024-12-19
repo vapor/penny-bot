@@ -25,22 +25,13 @@ let package = Package(
         .package(url: "https://github.com/swift-server/swift-service-lifecycle.git", from: "2.0.0"),
         .package(url: "https://github.com/DiscordBM/DiscordBM.git", branch: "main"),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.2"),
-        .package(
-            url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git",
-            from: "0.1.0"
-        ),
+        .package(url: "https://github.com/soto-project/soto.git", from: "7.3.0"),
+        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.3.0"),
         /// Not-released area:
-        .package(url: "https://github.com/soto-project/soto.git", from: "7.0.0-alpha.1"),
-        .package(url: "https://github.com/soto-project/soto-core.git", from: "7.0.0-alpha.3"),
-        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.3.0"),
-        .package(
-            url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
-            from: "1.0.0-alpha.2"
-        ),
-        .package(
-            url: "https://github.com/swift-server/swift-aws-lambda-events.git",
-            from: "0.2.0"
-        ),
+        .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "0.1.0"),
+        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.5.0"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.3"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "0.5.0"),
     ],
     targets: [
         .executableTarget(
@@ -54,10 +45,7 @@ let package = Package(
                 .product(name: "SotoS3", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "JWTKit", package: "jwt-kit"),
-                .product(
-                    name: "EvolutionMetadataModel",
-                    package: "swift-evolution-metadata-extractor"
-                ),
+                .product(name: "EvolutionMetadataModel", package: "swift-evolution-metadata-extractor"),
                 .target(name: "Rendering"),
                 .target(name: "Shared"),
                 .target(name: "Models"),
