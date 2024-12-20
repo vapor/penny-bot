@@ -81,7 +81,7 @@ struct PRHandler {
         try TicketReporter(
             context: self.context,
             embed: await self.createReportEmbed(),
-            createdAt: self.pr.created_at,
+            createdAt: self.pr.createdAt,
             repoID: self.repo.id,
             number: self.event.number.requireValue(),
             authorID: self.pr.user.id
@@ -89,7 +89,7 @@ struct PRHandler {
     }
 
     func createReportEmbed() async throws -> Embed {
-        let prLink = self.pr.html_url
+        let prLink = self.pr.htmlUrl
 
         let body =
             self.pr.body.map { body -> String in
@@ -109,13 +109,13 @@ struct PRHandler {
 
         let member = try await context.requester.getDiscordMember(githubID: "\(self.pr.user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? self.pr.user.uiName
-        let iconURL = member?.uiAvatarURL ?? self.pr.user.avatar_url
+        let iconURL = member?.uiAvatarURL ?? self.pr.user.avatarUrl
 
         let embed = Embed(
             title: title,
             description: description,
             url: prLink,
-            timestamp: pr.created_at,
+            timestamp: pr.createdAt,
             color: status.color,
             footer: .init(
                 text: "By \(authorName)",
@@ -156,9 +156,9 @@ private enum Status: String {
     }
 
     init(pr: PullRequest) {
-        if pr.merged_by != nil {
+        if pr.mergedBy != nil {
             self = .merged
-        } else if pr.closed_at != nil {
+        } else if pr.closedAt != nil {
             self = .closed
         } else if pr.draft == true {
             self = .draft

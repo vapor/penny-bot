@@ -65,28 +65,28 @@ struct DocsIssuer {
     }
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
-        try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+        try await context.githubClient.reposListPullRequestsAssociatedWithCommit(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name,
-                commit_sha: self.commitSHA
+                commitSha: self.commitSHA
             )
         ).ok.body.json
     }
 
     func getPRFiles(number: Int) async throws -> [DiffEntry] {
-        try await context.githubClient.pulls_list_files(
+        try await context.githubClient.pullsListFiles(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name,
-                pull_number: number
+                pullNumber: number
             )
         ).ok.body.json
     }
 
     func fileIssue(number: Int) async throws {
         let description = try await context.renderClient.translationNeededDescription(number: number)
-        _ = try await context.githubClient.issues_create(
+        _ = try await context.githubClient.issuesCreate(
             path: .init(
                 owner: self.repo.owner.login,
                 repo: self.repo.name

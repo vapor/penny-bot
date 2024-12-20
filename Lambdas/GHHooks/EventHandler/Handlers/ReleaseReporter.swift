@@ -48,14 +48,14 @@ struct ReleaseReporter {
     }
 
     func getTagBefore() async throws -> String? {
-        let json = try await context.githubClient.repos_list_tags(
+        let json = try await context.githubClient.reposListTags(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             )
         ).ok.body.json
 
-        if let releaseIdx = json.firstIndex(where: { $0.name == release.tag_name }),
+        if let releaseIdx = json.firstIndex(where: { $0.name == release.tagName }),
             json.count > releaseIdx
         {
             return json[releaseIdx + 1].name
@@ -88,23 +88,23 @@ struct ReleaseReporter {
             let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
             prs.append(contentsOf: newPRs)
         }
-        prs = prs.uniqued(on: \.html_url)
+        prs = prs.uniqued(on: \.htmlUrl)
 
         return (commits.count, prs)
     }
 
     func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
-        try await context.githubClient.repos_compare_commits(
+        try await context.githubClient.reposCompareCommits(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                basehead: "\(tagBefore)...\(release.tag_name)"
+                basehead: "\(tagBefore)...\(release.tagName)"
             )
         ).ok.body.json.commits.reversed()
     }
 
     func getAllCommits() async throws -> [Commit] {
-        try await context.githubClient.repos_list_commits(
+        try await context.githubClient.reposListCommits(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
@@ -113,11 +113,11 @@ struct ReleaseReporter {
     }
 
     func getPRsRelatedToCommit(sha: String) async throws -> [SimplePullRequest] {
-        try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+        try await context.githubClient.reposListPullRequestsAssociatedWithCommit(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                commit_sha: sha
+                commitSha: sha
             )
         ).ok.body.json
     }
@@ -142,7 +142,7 @@ struct ReleaseReporter {
 
         let prDescriptions = try prs.map {
             let user = try $0.user.requireValue()
-            return "\($0.title) by [@\(user.uiName)](\(user.html_url)) in [#\($0.number)](\($0.html_url))"
+            return "\($0.title) by [@\(user.uiName)](\(user.htmlUrl)) in [#\($0.number)](\($0.htmlUrl))"
         }.map {
             "- \($0)"
         }.joined(
@@ -182,15 +182,15 @@ struct ReleaseReporter {
     }
 
     func sendToDiscord(description: String) async throws {
-        let fullName = repo.full_name.urlPathEncoded()
+        let fullName = repo.fullName.urlPathEncoded()
         let image =
-            "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tag_name)"
+            "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tagName)"
 
         try await self.sendToDiscord(
             embed: .init(
-                title: "[\(repo.uiName)] Release \(release.tag_name)".unicodesPrefix(256),
+                title: "[\(repo.uiName)] Release \(release.tagName)".unicodesPrefix(256),
                 description: description,
-                url: release.html_url,
+                url: release.htmlUrl,
                 color: .cyan,
                 image: .init(url: .exact(image))
             )

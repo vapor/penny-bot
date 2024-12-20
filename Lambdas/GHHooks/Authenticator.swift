@@ -51,9 +51,9 @@ actor Authenticator {
     }
 
     private func createAccessToken(client: Client) async throws -> InstallationToken {
-        let response = try await client.apps_create_installation_access_token(
+        let response = try await client.appsCreateInstallationAccessToken(
             .init(
-                path: .init(installation_id: Constants.GitHub.installationID)
+                path: .init(installationId: Constants.GitHub.installationID)
             )
         )
 

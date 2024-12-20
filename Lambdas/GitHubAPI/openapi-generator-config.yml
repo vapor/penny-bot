@@ -2,3 +2,4 @@ generate:
   - types
   - client
 accessModifier: package
+namingStrategy: idiomatic

@@ -663,7 +663,7 @@ extension SerializationNamespace.GHHooksTests {
             number: context.event.number!
         )
         let body = try await handler.makeReleaseBody(
-            mergedBy: context.event.pull_request!.merged_by!,
+            mergedBy: context.event.pull_request!.mergedBy!,
             previousVersion: "v2.3.1",
             newVersion: "v2.4.5"
         )
@@ -979,7 +979,7 @@ extension SerializationNamespace.GHHooksTests {
             httpClient: .shared,
             discordClient: FakeDiscordClient(),
             githubClient: Client(
-                serverURL: try Servers.server1(),
+                serverURL: try Servers.Server1.url(),
                 transport: FakeClientTransport()
             ),
             renderClient: RenderClient(
