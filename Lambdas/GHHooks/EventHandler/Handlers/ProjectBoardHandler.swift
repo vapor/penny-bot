@@ -13,7 +13,7 @@ struct ProjectBoardHandler {
     /// Yes, send the raw url as the "note" of the card. GitHub will take care of properly showing it.
     /// If you send customized text instead, the card won't be recognized as an issue-card.
     var note: String {
-        self.issue.html_url
+        self.issue.htmlUrl
     }
 
     init(context: HandlerContext, action: Issue.Action, issue: Issue) throws {
@@ -76,7 +76,7 @@ struct ProjectBoardHandler {
 
     func onClosed() async throws {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        if self.issue.state_reason == .not_planned {
+        if self.issue.stateReason == .notPlanned {
             for project in Set(relatedProjects) {
                 try await self.deleteCard(in: project)
             }
@@ -100,28 +100,28 @@ struct ProjectBoardHandler {
     }
 
     func createCard(columnID: Int) async throws {
-        _ = try await self.context.githubClient.projects_create_card(
-            path: .init(column_id: columnID),
+        _ = try await self.context.githubClient.projectsCreateCard(
+            path: .init(columnId: columnID),
             body: .json(.case1(.init(note: self.note)))
         ).created
     }
 
     func move(toColumnID columnID: Int, cardID: Int) async throws {
-        _ = try await self.context.githubClient.projects_move_card(
-            path: .init(card_id: cardID),
-            body: .json(.init(position: "top", column_id: columnID))
+        _ = try await self.context.githubClient.projectsMoveCard(
+            path: .init(cardId: cardID),
+            body: .json(.init(position: "top", columnId: columnID))
         ).created
     }
 
     func delete(cardID: Int) async throws {
-        _ = try await self.context.githubClient.projects_delete_card(
-            path: .init(card_id: cardID)
+        _ = try await self.context.githubClient.projectsDeleteCard(
+            path: .init(cardId: cardID)
         ).noContent
     }
 
     func getCards(in columnID: Int) async throws -> [ProjectCard] {
-        try await self.context.githubClient.projects_list_cards(
-            path: .init(column_id: columnID)
+        try await self.context.githubClient.projectsListCards(
+            path: .init(columnId: columnID)
         ).ok.body.json
     }
 
@@ -225,7 +225,7 @@ private enum Project: String, CaseIterable {
 
 extension [ProjectCard] {
     private func areNotesEqual(_ element: Self.Element, _ note: String) -> Bool {
-        element.content_url == note || element.note == note
+        element.contentUrl == note || element.note == note
     }
 
     fileprivate func containsCard(note: String) -> Bool {

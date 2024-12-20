@@ -100,7 +100,7 @@ struct IssueHandler: Sendable {
                 issue: embedIssue,
                 repo: embedRepo
             ),
-            createdAt: self.issue.created_at,
+            createdAt: self.issue.createdAt,
             repoID: self.repo.id,
             number: self.issue.number,
             authorID: self.issue.user.requireValue().id
@@ -116,7 +116,7 @@ struct IssueHandler: Sendable {
 
         let number = issue.number
 
-        let issueLink = issue.html_url
+        let issueLink = issue.htmlUrl
 
         let body =
             issue.body.map { body -> String in
@@ -139,7 +139,7 @@ struct IssueHandler: Sendable {
         let member = try await context.requester.getDiscordMember(githubID: "\(user.id)")
         let authorName = (member?.uiName).map { "@\($0)" } ?? user.uiName
 
-        var iconURL = member?.uiAvatarURL ?? user.avatar_url
+        var iconURL = member?.uiAvatarURL ?? user.avatarUrl
         var footer = "By \(authorName)"
         if let verb = status.closedByVerb,
             let closedBy = try await self.maybeGetClosedByUser()
@@ -150,7 +150,7 @@ struct IssueHandler: Sendable {
             } else {
                 let resolverMember = try await self.context.requester
                     .getDiscordMember(githubID: "\(closedBy.id)")
-                if let url = resolverMember?.uiAvatarURL ?? issue.closed_by?.avatar_url {
+                if let url = resolverMember?.uiAvatarURL ?? issue.closedBy?.avatarUrl {
                     iconURL = url
                 }
                 let uiName = (resolverMember?.uiName).map { "@\($0)" } ?? closedBy.uiName
@@ -162,7 +162,7 @@ struct IssueHandler: Sendable {
             title: title,
             description: description,
             url: issueLink,
-            timestamp: issue.created_at,
+            timestamp: issue.createdAt,
             color: status.color,
             footer: .init(
                 text: footer.unicodesPrefix(100),
@@ -175,19 +175,19 @@ struct IssueHandler: Sendable {
 
     /// Returns the `closed-by` user if the issue is closed at all.
     func maybeGetClosedByUser() async throws -> (id: Int, uiName: String)? {
-        if issue.closed_at == nil {
+        if issue.closedAt == nil {
             return nil
         }
         if action == .closed {
             return (event.sender.id, event.sender.uiName)
         } else {
-            return try await context.githubClient.issues_get(
+            return try await context.githubClient.issuesGet(
                 path: .init(
                     owner: repo.owner.login,
                     repo: repo.name,
-                    issue_number: issue.number
+                    issueNumber: issue.number
                 )
-            ).ok.body.json.closed_by.map {
+            ).ok.body.json.closedBy.map {
                 ($0.id, $0.uiName)
             }
         }
@@ -236,9 +236,9 @@ private enum Status: String {
     init(issue: Issue) {
         if issue.knownLabels.contains(.duplicate) {
             self = .duplicate
-        } else if issue.state_reason == .not_planned {
+        } else if issue.stateReason == .notPlanned {
             self = .notPlanned
-        } else if issue.closed_at != nil {
+        } else if issue.closedAt != nil {
             self = .done
         } else {
             self = .open

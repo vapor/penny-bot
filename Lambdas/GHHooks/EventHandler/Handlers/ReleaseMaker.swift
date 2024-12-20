@@ -63,14 +63,14 @@ struct ReleaseMaker {
     func handle() async throws {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
             Configuration.organizationIDAllowList.contains(repo.owner.id),
-            let mergedBy = pr.merged_by,
+            let mergedBy = pr.mergedBy,
             pr.base.ref.isPrimaryOrReleaseBranch(repo: repo),
             let bump = pr.knownLabels.first?.toBump()
         else { return }
 
         let previousRelease = try await getLastRelease()
 
-        let previousTag = previousRelease.tag_name
+        let previousTag = previousRelease.tagName
         guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(previousTag) else {
             throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: previousTag)
         }
@@ -93,7 +93,7 @@ struct ReleaseMaker {
     func getLastRelease() async throws -> Release {
         let latest = try await self.getLatestRelease()
 
-        let releases = try await context.githubClient.repos_list_releases(
+        let releases = try await context.githubClient.reposListReleases(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
@@ -102,7 +102,7 @@ struct ReleaseMaker {
 
         let filteredReleases: [Release] = releases.compactMap {
             release -> (Release, SemanticVersion)? in
-            if let (_, version) = SemanticVersion.fromGitHubTag(release.tag_name) {
+            if let (_, version) = SemanticVersion.fromGitHubTag(release.tagName) {
                 return (release, version)
             }
             return nil
@@ -130,7 +130,7 @@ struct ReleaseMaker {
     }
 
     private func getLatestRelease() async throws -> Release? {
-        let response = try await context.githubClient.repos_get_latest_release(
+        let response = try await context.githubClient.reposGetLatestRelease(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
@@ -166,31 +166,31 @@ struct ReleaseMaker {
             previousVersion: previousVersion,
             newVersion: newVersion
         )
-        return try await context.githubClient.repos_create_release(
+        return try await context.githubClient.reposCreateRelease(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             ),
             body: .json(
                 .init(
-                    tag_name: newVersion,
-                    target_commitish: pr.base.ref,
+                    tagName: newVersion,
+                    targetCommitish: pr.base.ref,
                     name: "\(newVersion) - \(pr.title)",
                     body: body,
                     draft: false,
                     prerelease: isPrerelease,
-                    make_latest: isPrerelease ? ._false : ._true
+                    makeLatest: isPrerelease ? ._false : ._true
                 )
             )
         ).created.body.json
     }
 
     func updatePRBodyWithReleaseNotice(release: Release) async throws {
-        let current = try await context.githubClient.pulls_get(
+        let current = try await context.githubClient.pullsGet(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                pull_number: number
+                pullNumber: number
             )
         ).ok.body.json
         if (current.body ?? "")
@@ -205,16 +205,16 @@ struct ReleaseMaker {
             )
             return
         }
-        let updated = try await context.githubClient.pulls_update(
+        let updated = try await context.githubClient.pullsUpdate(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                pull_number: number
+                pullNumber: number
             ),
             body: .json(
                 .init(
                     body: """
-                        \(Configuration.releaseNoticePrefix) [\(release.tag_name)](\(release.html_url))**
+                        \(Configuration.releaseNoticePrefix) [\(release.tagName)](\(release.htmlUrl))**
 
 
                         \(current.body ?? "")
@@ -241,7 +241,7 @@ struct ReleaseMaker {
         newVersion: String
     ) async throws -> String {
         let codeOwners = try await context.requester.getCodeOwners(
-            repoFullName: repo.full_name,
+            repoFullName: repo.fullName,
             branch: pr.base.ref
         )
         let contributors = try await getExistingContributorIDs()
@@ -269,7 +269,7 @@ struct ReleaseMaker {
                 isNewContributor: isNewContributor,
                 reviewers: reviewers,
                 merged_by: mergedBy.uiName,
-                repo: .init(fullName: repo.full_name),
+                repo: .init(fullName: repo.fullName),
                 release: .init(
                     oldTag: previousVersion,
                     newTag: newVersion
@@ -290,17 +290,17 @@ struct ReleaseMaker {
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
-        pr.author_association != .OWNER && !pr.user.isBot && !codeOwners.contains(user: pr.user)
+        pr.authorAssociation != .owner && !pr.user.isBot && !codeOwners.contains(user: pr.user)
             && !existingContributors.contains(pr.user.id)
     }
 
     func getReviews() async throws -> [PullRequestReview] {
-        let response = try await context.githubClient.pulls_list_reviews(
+        let response = try await context.githubClient.pullsListReviews(
             .init(
                 path: .init(
                     owner: repo.owner.login,
                     repo: repo.name,
-                    pull_number: number
+                    pullNumber: number
                 )
             )
         )
@@ -346,13 +346,13 @@ struct ReleaseMaker {
             ]
         )
 
-        let response = try await context.githubClient.repos_list_contributors(
+        let response = try await context.githubClient.reposListContributors(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
             ),
             query: .init(
-                per_page: 100,
+                perPage: 100,
                 page: page
             )
         )
@@ -363,7 +363,7 @@ struct ReleaseMaker {
             /// Example of a `link` header: `<https://api.github.com/repositories/49910095/contributors?page=6>; rel="prev", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="next", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="last", <https://api.github.com/repositories/49910095/contributors?page=1>; rel="first"`
             /// If the header contains `rel="next"` then we'll have a next page to fetch.
             let hasNext =
-                switch ok.headers.Link {
+                switch ok.headers.link {
                 case let .case1(string):
                     string.contains(#"rel="next""#)
                 case let .case2(strings):

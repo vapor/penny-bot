@@ -27,12 +27,12 @@ struct PRCoinGiver {
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
         let codeOwners = try await context.requester.getCodeOwners(
-            repoFullName: repo.full_name,
+            repoFullName: repo.fullName,
             branch: branch
         )
         for pr in try await getPRsRelatedToCommit() {
             let user = try pr.user.requireValue()
-            if pr.merged_at == nil || codeOwners.contains(user: user) {
+            if pr.mergedAt == nil || codeOwners.contains(user: user) {
                 continue
             }
             guard
@@ -71,7 +71,7 @@ struct PRCoinGiver {
                     embeds: [
                         .init(
                             description: """
-                                Thanks for your contribution in [**\(pr.title)**](\(pr.html_url)).
+                                Thanks for your contribution in [**\(pr.title)**](\(pr.htmlUrl)).
                                 You now have \(amount) more \(Constants.ServerEmojis.coin.emoji) for a total of \(coinResponse.newCoinCount) \(Constants.ServerEmojis.coin.emoji)!
                                 """,
                             color: .blue
@@ -95,11 +95,11 @@ struct PRCoinGiver {
     }
 
     func getPRsRelatedToCommit() async throws -> [SimplePullRequest] {
-        try await context.githubClient.repos_list_pull_requests_associated_with_commit(
+        try await context.githubClient.reposListPullRequestsAssociatedWithCommit(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                commit_sha: commitSHA
+                commitSha: commitSHA
             )
         ).ok.body.json
     }

@@ -8,7 +8,7 @@ extension Repository {
         case "vapor-community":
             return "community/\(self.name)"
         default:
-            return self.full_name
+            return self.fullName
         }
     }
 }
