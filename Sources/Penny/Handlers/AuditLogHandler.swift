@@ -29,6 +29,29 @@ struct AuditLogHandler {
 
     func handle() async throws {
         switch event.action {
+        case .memberKick:
+            guard let userId = event.user_id.map({ UserSnowflake($0) }),
+                let targetId = event.target_id.map({ UserSnowflake($0) })
+            else {
+                logger.error("User id or target id unavailable in memberKick")
+                return
+            }
+            await discordService.sendMessage(
+                channelId: Constants.Channels.modLogs.id,
+                payload: .init(
+                    embeds: [
+                        .init(
+                            title: "A user was kicked",
+                            description: """
+                                By: \(DiscordUtils.mention(id: userId))
+                                Kicked User: \(DiscordUtils.mention(id: targetId))
+                                Reason: \(event.reason ?? "<not-provided>")
+                                """,
+                            color: .yellow(scheme: .dark)
+                        )
+                    ]
+                )
+            )
         case .memberBanAdd:
             guard let userId = event.user_id.map({ UserSnowflake($0) }),
                 let targetId = event.target_id.map({ UserSnowflake($0) })
