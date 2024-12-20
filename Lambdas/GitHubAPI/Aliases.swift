@@ -14,7 +14,7 @@ package typealias FoundationDate = Foundation.Date
 package typealias FoundationURL = Foundation.URL
 #endif
 
-package typealias Repository = Components.Schemas.FullRepository
+package typealias Repository = Components.Schemas.Repository
 package typealias User = Components.Schemas.SimpleUser
 package typealias Organization = Components.Schemas.OrganizationSimple
 package typealias PullRequest = Components.Schemas.PullRequest
@@ -30,9 +30,9 @@ package typealias PullRequestReview = Components.Schemas.PullRequestReview
 package typealias DiffEntry = Components.Schemas.DiffEntry
 package typealias Commit = Components.Schemas.Commit
 package typealias SimpleCommit = Components.Schemas.SimpleCommit
-package typealias Committer = Components.Schemas.Commit.CommitPayload
+package typealias Committer = Components.Schemas.SimpleCommit.CommitterPayload
 package typealias Enterprise = Components.Schemas.Enterprise
-package typealias Installation = Components.Schemas.Installation
+package typealias Installation = Components.Schemas.SimpleInstallation
 package typealias Tag = Components.Schemas.Tag
 package typealias ProjectCard = Components.Schemas.ProjectCard
 package typealias TimelineIssueEvents = Components.Schemas.TimelineIssueEvents
