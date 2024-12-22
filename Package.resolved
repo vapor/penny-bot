@@ -1,5 +1,5 @@
 {
-  "originHash" : "11c3a3ace534ab38de5eb0336ccf5d52696d880d3e8488216d0bcf3a771a9534",
+  "originHash" : "c0966acfb6d5b9f51054a7571557f2103df5a66c20ae3b81d22abf41ddcc9b01",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -25,7 +25,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "ba570e61c670ca9b7effb99282fa61f94cf4ed9d"
+        "revision" : "5f55826022950ba80e145307d51b44ace66eb426"
       }
     },
     {
