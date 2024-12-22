@@ -1,14 +1,14 @@
 import Collections
 
+/// Provides an _async_ locking mechanism for each key.
 package actor SerialProcessor {
-
     enum Errors: Error, CustomStringConvertible {
         case overloaded(limit: Int)
 
         var description: String {
             switch self {
-            case .overloaded(let limit):
-                return "overloaded(limit: \(limit))"
+            case let .overloaded(limit):
+                "overloaded(limit: \(limit))"
             }
         }
     }
@@ -23,27 +23,33 @@ package actor SerialProcessor {
         self.limit = queueLimit
     }
 
+    /// Process the `block` in the `key` serial-queue.
     package func process<T: Sendable>(
         queueKey: String,
         block: @Sendable () async throws -> T
     ) async throws -> T {
-        guard queue[queueKey].map({ $0.count <= limit }) ?? true else {
-            throw Errors.overloaded(limit: limit)
+        guard self.queue[queueKey].map({ $0.count <= self.limit }) ?? true else {
+            throw Errors.overloaded(limit: self.limit)
         }
 
-        if isRunning[queueKey, default: false] {
+        switch self.isRunning[queueKey, default: false] {
+        case false:
+            precondition(!self.isRunning[queueKey, default: false])
+            self.isRunning[queueKey] = true
+        case true:
             await withCheckedContinuation { continuation in
-                queue[queueKey, default: []].append(continuation)
+                self.queue[queueKey, default: []].append(continuation)
             }
         }
 
-        precondition(!isRunning[queueKey, default: false])
-        isRunning[queueKey] = true
-        defer {
-            isRunning[queueKey] = false
-            queue[queueKey]?.popFirst()?.resume()
+        let result = try await block()
+
+        if let first = self.queue[queueKey]?.popFirst() {
+            first.resume()
+        } else {
+            self.isRunning[queueKey] = false
         }
 
-        return try await block()
+        return result
     }
 }
