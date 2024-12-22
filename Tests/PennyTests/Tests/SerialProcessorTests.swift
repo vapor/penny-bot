@@ -1,11 +1,13 @@
 import Shared
+import Testing
 
-@Suite(.serialized)
+/// Intentionally `nonisolated(unsafe)` to test concurrent access.
+nonisolated(unsafe) private var dict = [String: [Int]]()
+
 struct SerialProcessorTests {
     @Test
     func concurrentProcessing() async throws {
         let processor = SerialProcessor(queueLimit: .max)
-        nonisolated(unsafe) var dict = [String: [Int]]()
 
         try await withThrowingDiscardingTaskGroup { taskGroup in
             for idx in 0 ..< 1000 {
