@@ -1,7 +1,7 @@
 {
   "configurations": [
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug Penny",
@@ -14,7 +14,7 @@
       }
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release Penny",
@@ -27,7 +27,7 @@
       }
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug UsersLambda",
@@ -37,7 +37,7 @@
       "preLaunchTask": "swift: Build Debug UsersLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release UsersLambda",
@@ -47,7 +47,7 @@
       "preLaunchTask": "swift: Build Release UsersLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug SponsorsLambda",
@@ -57,7 +57,7 @@
       "preLaunchTask": "swift: Build Debug SponsorsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release SponsorsLambda",
@@ -67,7 +67,7 @@
       "preLaunchTask": "swift: Build Release SponsorsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug GHOAuthLambda",
@@ -77,7 +77,7 @@
       "preLaunchTask": "swift: Build Debug GHOAuthLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release GHOAuthLambda",
@@ -87,7 +87,7 @@
       "preLaunchTask": "swift: Build Release GHOAuthLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug GHHooksLambda",
@@ -97,7 +97,7 @@
       "preLaunchTask": "swift: Build Debug GHHooksLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release GHHooksLambda",
@@ -107,7 +107,7 @@
       "preLaunchTask": "swift: Build Release GHHooksLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug FaqsLambda",
@@ -117,7 +117,7 @@
       "preLaunchTask": "swift: Build Debug FaqsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release FaqsLambda",
@@ -127,7 +127,7 @@
       "preLaunchTask": "swift: Build Release FaqsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug AutoPingsLambda",
@@ -137,7 +137,7 @@
       "preLaunchTask": "swift: Build Debug AutoPingsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release AutoPingsLambda",
@@ -147,7 +147,7 @@
       "preLaunchTask": "swift: Build Release AutoPingsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Debug AutoFaqsLambda",
@@ -157,7 +157,7 @@
       "preLaunchTask": "swift: Build Debug AutoFaqsLambda"
     },
     {
-      "type": "lldb",
+      "type": "swift-lldb",
       "request": "launch",
       "sourceLanguages": ["swift"],
       "name": "Release AutoFaqsLambda",

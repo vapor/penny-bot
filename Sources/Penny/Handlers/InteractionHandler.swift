@@ -1126,22 +1126,21 @@ extension InteractionHandler {
         let foldedName = name.heavyFolded()
         let userId = try (event.member?.user?.id).requireValue()
         let all = try await context.pingsService.get(discordID: userId)
-        let queried: ArraySlice<S3AutoPingItems.Expression>
-        if foldedName.isEmpty {
-            queried = ArraySlice(
+        let queried =
+            if foldedName.isEmpty {
+                ArraySlice(
+                    all
+                        .sorted { $0.innerValue > $1.innerValue }
+                        .sorted { $0.kind.priority > $1.kind.priority }
+                        .prefix(25)
+                )
+            } else {
                 all
+                    .filter { $0.innerValue.heavyFolded().contains(foldedName) }
                     .sorted { $0.innerValue > $1.innerValue }
                     .sorted { $0.kind.priority > $1.kind.priority }
                     .prefix(25)
-            )
-        } else {
-            queried =
-                all
-                .filter { $0.innerValue.heavyFolded().contains(foldedName) }
-                .sorted { $0.innerValue > $1.innerValue }
-                .sorted { $0.kind.priority > $1.kind.priority }
-                .prefix(25)
-        }
+            }
 
         return .init(
             choices: queried.map { expression in
