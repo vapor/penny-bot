@@ -39,6 +39,11 @@ jobs:
             --static-swift-stdlib \
             -Xlinker -ljemalloc
 
+      - name: Install pigz
+        run: |
+          apt-get update -y
+          apt-get install -y pigz
+
       - name: Cache .build
         # if: steps.restore-cache.outputs.cache-hit != 'true'
         uses: mahdibm/cache/save@mmbm-pigz
