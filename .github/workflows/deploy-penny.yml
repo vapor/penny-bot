@@ -40,7 +40,7 @@ jobs:
             -Xlinker -ljemalloc
 
       - name: Cache .build
-        if: steps.restore-cache.outputs.cache-hit != 'true'
+        # if: steps.restore-cache.outputs.cache-hit != 'true'
         uses: mahdibm/cache/save@mmbm-pigz
         with:
           path: .build
