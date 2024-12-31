@@ -21,7 +21,6 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Restore .build
-        if: ${{ !(github.run_attempt > 1) }} # Because maybe the cache is causing issues
         id: "restore-cache"
         uses: mahdibm/cache/restore@mmbm-pigz
         with:
