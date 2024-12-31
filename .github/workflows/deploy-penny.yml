@@ -3,7 +3,10 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 on:
-  push: { branches: [main] }
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
 
 jobs:
   deploy:
@@ -20,7 +23,7 @@ jobs:
       - name: Restore .build
         if: ${{ !(github.run_attempt > 1) }} # Because maybe the cache is causing issues
         id: "restore-cache"
-        uses: actions/cache/restore@v4
+        uses: mahdibm/cache/restore@mmbm-pigz
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
@@ -39,66 +42,66 @@ jobs:
 
       - name: Cache .build
         if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+        uses: mahdibm/cache/save@mmbm-pigz
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
 
-      - name: Install Docker
-        run: |
-          # Make scripts executable
-          chmod +x ./.github/scripts/*
+      # - name: Install Docker
+      #   run: |
+      #     # Make scripts executable
+      #     chmod +x ./.github/scripts/*
 
-          # Install Docker
-          ./.github/scripts/install-docker.bash
+      #     # Install Docker
+      #     ./.github/scripts/install-docker.bash
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
-          aws-region: "eu-west-1"
+      # - name: Configure AWS credentials
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-access-key-id: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
+      #     aws-region: "eu-west-1"
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: penny-bot-discord-image
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
-            --build-arg SWIFT_CONFIGURATION=release \
-            --build-arg EXEC_NAME=Penny
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      # - name: Build, tag, and push image to Amazon ECR
+      #   id: build-image
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: penny-bot-discord-image
+      #     IMAGE_TAG: ${{ github.sha }}
+      #   run: |
+      #     # Build a docker container and
+      #     # push it to ECR so that it can
+      #     # be deployed to ECS.
+      #     docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
+      #       --build-arg SWIFT_CONFIGURATION=release \
+      #       --build-arg EXEC_NAME=Penny
+      #     docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+      #     echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ./deploy/penny-discord-bot-task.json
-          container-name: penny-bot
-          image: ${{ steps.build-image.outputs.image }}
+      # - name: Fill in the new image ID in the Amazon ECS task definition
+      #   id: task-def
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ./deploy/penny-discord-bot-task.json
+      #     container-name: penny-bot
+      #     image: ${{ steps.build-image.outputs.image }}
 
-      - name: Deploy to Amazon ECS Service
-        id: task-dep
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          wait-for-service-stability: true
+      # - name: Deploy to Amazon ECS Service
+      #   id: task-dep
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     wait-for-service-stability: true
 
-      - name: Deploy to AWS cloudformation
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: penny-discord-bot-stack
-          template: ./deploy/penny-discord-bot-stack.yml
-          no-fail-on-empty-changeset: "1"
-          parameter-overrides: >-
-            TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
+      # - name: Deploy to AWS cloudformation
+      #   uses: aws-actions/aws-cloudformation-github-deploy@v1
+      #   with:
+      #     name: penny-discord-bot-stack
+      #     template: ./deploy/penny-discord-bot-stack.yml
+      #     no-fail-on-empty-changeset: "1"
+      #     parameter-overrides: >-
+      #       TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
