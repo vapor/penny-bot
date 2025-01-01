@@ -27,7 +27,7 @@ jobs:
 
       - name: Restore .build
         id: "restore-cache"
-        uses: runs-on/cache/save@v4
+        uses: runs-on/cache/restore@v4
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
