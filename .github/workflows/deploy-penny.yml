@@ -22,7 +22,7 @@ jobs:
 
       - name: Restore .build
         id: "restore-cache"
-        uses: mahdibm/cache/restore@mmbm-pigz
+        uses: mahdibm/cache/restore@support-pigz
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
@@ -46,7 +46,7 @@ jobs:
 
       - name: Cache .build
         # if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: mahdibm/cache/save@mmbm-pigz
+        uses: mahdibm/cache/save@support-pigz
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
