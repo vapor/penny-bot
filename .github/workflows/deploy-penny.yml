@@ -17,6 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # actions/cache will detect zstd and will become much faster.
+      - name: Install zstd
+        run: |
+          apt-get update -y
+          apt-get install -y zstd
+
       - name: Restore .build
         if: ${{ !(github.run_attempt > 1) }} # Because maybe the cache is causing issues
         id: "restore-cache"
