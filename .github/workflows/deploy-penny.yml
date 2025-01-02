@@ -17,39 +17,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # actions/cache will detect zstd and will become much faster.
-      - name: Install zstd
-        run: |
-          apt-get update -y
-          apt-get install -y zstd
-
-      - name: Restore .build
-        if: ${{ !(github.run_attempt > 1) }} # Because maybe the cache is causing issues
-        id: "restore-cache"
-        uses: actions/cache/restore@v4
-        with:
-          path: .build
-          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
-          restore-keys: "penny-release-static-build-${{ runner.os }}-"
-
-      - name: Build Penny
-        run: |
-          apt-get update -y
-          apt-get install -y libjemalloc-dev
-          swift build \
-            --product Penny \
-            -c release \
-            --force-resolved-versions \
-            --static-swift-stdlib \
-            -Xlinker -ljemalloc
-
-      - name: Cache .build
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: .build
-          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
-
       - name: Install Docker
         run: |
           # Make scripts executable
@@ -69,21 +36,44 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      # actions/cache will detect zstd and will become much faster.
+      - name: Install zstd
+        run: |
+          apt-get update -y
+          apt-get install -y zstd
+
+      - name: Restore .build
+        if: ${{ !(github.run_attempt > 1) }} # Because maybe the cache is causing issues
+        id: "restore-cache"
+        uses: actions/cache/restore@v4
+        with:
+          path: .build
+          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
+          restore-keys: "penny-release-static-build-${{ runner.os }}-"
+
       - name: Build, tag, and push image to Amazon ECR
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: penny-bot-discord-image
           IMAGE_TAG: ${{ github.sha }}
+          DOCKER_BUILDKIT: 1
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
+          # Build a docker container and push it to ECR so that it can be deployed to ECS.
+          docker build \
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
+            --mount=type=bind,source=$(pwd),target=/build \
             --build-arg SWIFT_CONFIGURATION=release \
             --build-arg EXEC_NAME=Penny
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Cache .build
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .build
+          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
