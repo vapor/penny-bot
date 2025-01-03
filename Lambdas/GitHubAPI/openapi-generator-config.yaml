@@ -5,10 +5,11 @@ accessModifier: package
 namingStrategy: idiomatic
 filter:
   tags:
-    - orgs
-    - users
     - repos
     - issues
     - pulls
-    - apps
     - projects
+  schemas:
+  - simple-commit
+  - simple-installation
+  - installation-token

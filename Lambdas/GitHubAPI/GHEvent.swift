@@ -9,7 +9,6 @@ package struct GHEvent: Sendable, Codable {
     package let action: String?
     package let sender: User
     package let repository: Repository?
-    package let organization: Organization?
 
     package let issue: Issue?
     package let label: Label?
@@ -29,7 +28,6 @@ package struct GHEvent: Sendable, Codable {
     package let installation: Installation?
     package let pusher: Committer?
     package let ref: String?
-    package let enterprise: Enterprise?
 }
 
 extension GHEvent {
