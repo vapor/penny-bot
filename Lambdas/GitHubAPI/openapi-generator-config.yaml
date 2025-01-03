@@ -1,0 +1,14 @@
+generate:
+  - types
+  - client
+accessModifier: package
+namingStrategy: idiomatic
+filter:
+  tags:
+    - orgs
+    - users
+    - repos
+    - issues
+    - pulls
+    - apps
+    - projects

@@ -17,11 +17,11 @@ struct ReleaseMaker {
 
     enum Configuration {
         /// The postgres-nio repository ID.
-        static let repositoryIDDenyList: Set<Int> = [150_622_661]
+        static let repositoryIDDenyList: Set<Int64> = [150_622_661]
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
         /// The Vapor organization ID.
-        static let organizationIDAllowList: Set<Int> = [17_364_220]
+        static let organizationIDAllowList: Set<Int64> = [17_364_220]
         static let releaseNoticePrefix = "**These changes are now available in"
     }
 
@@ -289,7 +289,7 @@ struct ReleaseMaker {
         return sorted
     }
 
-    func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int>) -> Bool {
+    func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int64>) -> Bool {
         pr.authorAssociation != .owner && !pr.user.isBot && !codeOwners.contains(user: pr.user)
             && !existingContributors.contains(pr.user.id)
     }
@@ -320,9 +320,9 @@ struct ReleaseMaker {
         return json
     }
 
-    func getExistingContributorIDs() async throws -> Set<Int> {
+    func getExistingContributorIDs() async throws -> Set<Int64> {
         var page = 1
-        var contributorIds: [Int] = []
+        var contributorIds: [Int64] = []
         /// Hack: Vapor has around this amount of contributors and we know it, so better
         /// to reserve enough capacity for it up-front.
         contributorIds.reserveCapacity(250)
@@ -338,7 +338,7 @@ struct ReleaseMaker {
         return Set(contributorIds)
     }
 
-    func getExistingContributorIDs(page: Int) async throws -> (ids: [Int], hasNext: Bool) {
+    func getExistingContributorIDs(page: Int) async throws -> (ids: [Int64], hasNext: Bool) {
         logger.debug(
             "Will fetch current contributors",
             metadata: [

@@ -47,11 +47,11 @@ struct DynamoMessageRepo: MessageLookupRepo {
         self.logger = logger
     }
 
-    private func makeTicketID(repoID: Int, number: Int) -> String {
+    private func makeTicketID(repoID: Int64, number: Int) -> String {
         "\(repoID)_\(number)"
     }
 
-    func getMessageID(repoID: Int, number: Int) async throws -> String {
+    func getMessageID(repoID: Int64, number: Int) async throws -> String {
         let item = try await self.getItem(repoID: repoID, number: number)
         if item.isUnavailable {
             throw Errors.unavailable
@@ -59,7 +59,7 @@ struct DynamoMessageRepo: MessageLookupRepo {
         return item.messageID
     }
 
-    private func getItem(repoID: Int, number: Int) async throws -> Item {
+    private func getItem(repoID: Int64, number: Int) async throws -> Item {
         let id = makeTicketID(repoID: repoID, number: number)
         let item = try await self.get(id: id)
         return item
@@ -69,13 +69,13 @@ struct DynamoMessageRepo: MessageLookupRepo {
     /// for a ticket to Discord, but a moderator deletes that messages, then there is an update
     /// to the ticket, but the previous message is unavailable to edit anymore, so Penny should
     /// just ignore updates to messages of that ticket.
-    func markAsUnavailable(repoID: Int, number: Int) async throws {
+    func markAsUnavailable(repoID: Int64, number: Int) async throws {
         var item = try await self.getItem(repoID: repoID, number: number)
         item._isUnavailable = true
         try await save(item: item)
     }
 
-    func saveMessageID(messageID: String, repoID: Int, number: Int) async throws {
+    func saveMessageID(messageID: String, repoID: Int64, number: Int) async throws {
         let id = makeTicketID(repoID: repoID, number: number)
         let item = Item(id: id, messageID: messageID)
         try await save(item: item)

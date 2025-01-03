@@ -138,7 +138,7 @@ let package = Package(
             ],
             path: "./Lambdas/GitHubAPI",
             resources: [
-                .copy("openapi-generator-config.yml"),
+                .copy("openapi-generator-config.yaml"),
                 .copy("openapi.yaml"),
             ],
             swiftSettings: targetsSwiftSettings
