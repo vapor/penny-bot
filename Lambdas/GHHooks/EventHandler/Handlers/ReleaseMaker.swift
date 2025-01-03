@@ -364,14 +364,12 @@ struct ReleaseMaker {
             /// If the header contains `rel="next"` then we'll have a next page to fetch.
             let hasNext =
                 switch ok.headers.link {
-                case let .case1(string):
+                case let .some(string):
                     string.contains(#"rel="next""#)
-                case let .case2(strings):
-                    strings.contains { $0.contains(#"rel="next""#) }
                 case .none:
                     false
                 }
-            let ids = json.compactMap(\.id)
+            let ids = json.compactMap(\.id).map(Int64.init)
             logger.debug(
                 "Fetched some contributors",
                 metadata: [
