@@ -4947,7 +4947,7 @@ package enum Components {
             /// Title for the merge commit message.
             ///
             /// - Remark: Generated from `#/components/schemas/auto-merge/commit_title`.
-            package var commitTitle: Swift.String
+            package var commitTitle: Swift.String?
             /// Commit message for the merge commit.
             ///
             /// - Remark: Generated from `#/components/schemas/auto-merge/commit_message`.
@@ -4962,7 +4962,7 @@ package enum Components {
             package init(
                 enabledBy: Components.Schemas.SimpleUser,
                 mergeMethod: Components.Schemas.AutoMerge.MergeMethodPayload,
-                commitTitle: Swift.String,
+                commitTitle: Swift.String? = nil,
                 commitMessage: Swift.String
             ) {
                 self.enabledBy = enabledBy
@@ -6002,7 +6002,7 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/draft`.
             package var draft: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged`.
-            package var merged: Swift.Bool
+            package var merged: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/mergeable`.
             package var mergeable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/rebaseable`.
@@ -6115,7 +6115,7 @@ package enum Components {
                 authorAssociation: Components.Schemas.AuthorAssociation,
                 autoMerge: Components.Schemas.AutoMerge? = nil,
                 draft: Swift.Bool? = nil,
-                merged: Swift.Bool,
+                merged: Swift.Bool? = nil,
                 mergeable: Swift.Bool? = nil,
                 rebaseable: Swift.Bool? = nil,
                 mergeableState: Swift.String,

@@ -12,6 +12,8 @@ filter:
     - projects/delete-card
     - projects/list-cards
     - projects/move-card
+    # Need to manually mark auto_merge.commit_title as nullable.
+    # Also pull_request.merged.
     - pulls/get
     - pulls/list-files
     - pulls/list-reviews
