@@ -91,10 +91,10 @@ struct GHHooksHandler: LambdaHandler {
                             .init(
                                 title: "GHHooks lambda top-level error",
                                 description: "\(error)".unicodesPrefix(2_048),
+                                color: .red,
                                 fields: [
                                     .init(name: "X-Github-Delivery", value: request.headers.first(name: "x-github-delivery") ?? "<null>"),
-                                ],
-                                color: .red
+                                ]
                             )
                         ],
                         files: [
