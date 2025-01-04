@@ -91,6 +91,9 @@ struct GHHooksHandler: LambdaHandler {
                             .init(
                                 title: "GHHooks lambda top-level error",
                                 description: "\(error)".unicodesPrefix(2_048),
+                                fields: [
+                                    .init(name: "X-Github-Delivery", value: request.headers.first(name: "x-github-delivery") ?? "<null>"),
+                                ],
                                 color: .red
                             )
                         ],
@@ -98,9 +101,16 @@ struct GHHooksHandler: LambdaHandler {
                             .init(
                                 data: ByteBuffer(string: "\(error)"),
                                 filename: "error"
+                            ),
+                            .init(
+                                data: request.body.map(ByteBuffer.init(string:)) ?? ByteBuffer(),
+                                filename: "body"
                             )
                         ],
-                        attachments: [.init(index: 0, filename: "error")]
+                        attachments: [
+                            .init(index: 0, filename: "error"),
+                            .init(index: 1, filename: "body")
+                        ]
                     )
                 ).guardSuccess()
             } catch {
