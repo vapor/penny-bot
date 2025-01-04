@@ -4951,7 +4951,7 @@ package enum Components {
             /// Commit message for the merge commit.
             ///
             /// - Remark: Generated from `#/components/schemas/auto-merge/commit_message`.
-            package var commitMessage: Swift.String
+            package var commitMessage: Swift.String?
             /// Creates a new `AutoMerge`.
             ///
             /// - Parameters:
@@ -4963,7 +4963,7 @@ package enum Components {
                 enabledBy: Components.Schemas.SimpleUser,
                 mergeMethod: Components.Schemas.AutoMerge.MergeMethodPayload,
                 commitTitle: Swift.String? = nil,
-                commitMessage: Swift.String
+                commitMessage: Swift.String? = nil
             ) {
                 self.enabledBy = enabledBy
                 self.mergeMethod = mergeMethod
@@ -6008,25 +6008,25 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/rebaseable`.
             package var rebaseable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/mergeable_state`.
-            package var mergeableState: Swift.String
+            package var mergeableState: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged_by`.
             package var mergedBy: Components.Schemas.NullableSimpleUser?
             /// - Remark: Generated from `#/components/schemas/pull-request/comments`.
-            package var comments: Swift.Int
+            package var comments: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/review_comments`.
-            package var reviewComments: Swift.Int
+            package var reviewComments: Swift.Int?
             /// Indicates whether maintainers can modify the pull request.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request/maintainer_can_modify`.
-            package var maintainerCanModify: Swift.Bool
+            package var maintainerCanModify: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/pull-request/commits`.
-            package var commits: Swift.Int
+            package var commits: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/additions`.
-            package var additions: Swift.Int
+            package var additions: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/deletions`.
-            package var deletions: Swift.Int
+            package var deletions: Swift.Int?
             /// - Remark: Generated from `#/components/schemas/pull-request/changed_files`.
-            package var changedFiles: Swift.Int
+            package var changedFiles: Swift.Int?
             /// Creates a new `PullRequest`.
             ///
             /// - Parameters:
@@ -6118,15 +6118,15 @@ package enum Components {
                 merged: Swift.Bool? = nil,
                 mergeable: Swift.Bool? = nil,
                 rebaseable: Swift.Bool? = nil,
-                mergeableState: Swift.String,
+                mergeableState: Swift.String? = nil,
                 mergedBy: Components.Schemas.NullableSimpleUser? = nil,
-                comments: Swift.Int,
-                reviewComments: Swift.Int,
-                maintainerCanModify: Swift.Bool,
-                commits: Swift.Int,
-                additions: Swift.Int,
-                deletions: Swift.Int,
-                changedFiles: Swift.Int
+                comments: Swift.Int? = nil,
+                reviewComments: Swift.Int? = nil,
+                maintainerCanModify: Swift.Bool? = nil,
+                commits: Swift.Int? = nil,
+                additions: Swift.Int? = nil,
+                deletions: Swift.Int? = nil,
+                changedFiles: Swift.Int? = nil
             ) {
                 self.url = url
                 self.id = id

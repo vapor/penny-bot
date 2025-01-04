@@ -12,8 +12,9 @@ filter:
     - projects/delete-card
     - projects/list-cards
     - projects/move-card
-    # Need to manually mark auto_merge.commit_title as nullable.
-    # Also pull_request.merged.
+    # Need to manually mark auto_merge.commit_title and .commit_message as nullable.
+    # Also pull_request.assignee, .body, .closed_at, .merge_commit_sha, .merged_at, .milestone, .additions, .changed_files, .comments, .commits, .deletions, .mergeable, .mergeable_state, .merged, .maintainer_can_modify, .merged_by, .review_comments.
+    - pulls/get
     - pulls/get
     - pulls/list-files
     - pulls/list-reviews
