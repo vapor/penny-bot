@@ -156,7 +156,7 @@ private enum Status: String {
     }
 
     init(pr: PullRequest) {
-        if pr.mergedBy != nil {
+        if pr.mergedAt != nil {
             self = .merged
         } else if pr.closedAt != nil {
             self = .closed

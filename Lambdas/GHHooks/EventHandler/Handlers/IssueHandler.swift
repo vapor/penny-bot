@@ -174,7 +174,7 @@ struct IssueHandler: Sendable {
     }
 
     /// Returns the `closed-by` user if the issue is closed at all.
-    func maybeGetClosedByUser() async throws -> (id: Int, uiName: String)? {
+    func maybeGetClosedByUser() async throws -> (id: Int64, uiName: String)? {
         if issue.closedAt == nil {
             return nil
         }

@@ -8,11 +8,11 @@ struct FakeMessageLookupRepo: MessageLookupRepo {
 
     init() {}
 
-    func getMessageID(repoID: Int, number: Int) async throws -> String {
+    func getMessageID(repoID: Int64, number: Int) async throws -> String {
         Self.randomMessageID.rawValue
     }
 
-    func markAsUnavailable(repoID: Int, number: Int) async throws {}
+    func markAsUnavailable(repoID: Int64, number: Int) async throws {}
 
-    func saveMessageID(messageID: String, repoID: Int, number: Int) async throws {}
+    func saveMessageID(messageID: String, repoID: Int64, number: Int) async throws {}
 }

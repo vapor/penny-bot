@@ -12,7 +12,7 @@ struct TicketReporter {
 
     enum Configuration {
         /// The dependabot[bot] user ID.
-        static let userIDDenyList: Set<Int> = [49_699_333]
+        static let userIDDenyList: Set<Int64> = [49_699_333]
     }
 
     private static let ticketQueue = SerialProcessor()
@@ -20,9 +20,9 @@ struct TicketReporter {
     var context: HandlerContext
     let embed: Embed
     let createdAt: Date
-    let repoID: Int
+    let repoID: Int64
     let number: Int
-    let authorID: Int
+    let authorID: Int64
     var ticketKey: String {
         "\(repoID)_\(number)"
     }
@@ -34,9 +34,9 @@ struct TicketReporter {
         context: HandlerContext,
         embed: Embed,
         createdAt: Date,
-        repoID: Int,
+        repoID: Int64,
         number: Int,
-        authorID: Int
+        authorID: Int64
     ) {
         self.context = context
         self.embed = embed
@@ -134,7 +134,7 @@ struct TicketReporter {
 }
 
 extension Constants.Channels {
-    fileprivate static func reportingChannel(repoID: Int, createdAt: Date) -> Self {
+    fileprivate static func reportingChannel(repoID: Int64, createdAt: Date) -> Self {
         /// The change to use `.documentation` was made only after this timestamp.
         if createdAt.timeIntervalSince1970 < 1_696_067_000 {
             return .issuesAndPRs
