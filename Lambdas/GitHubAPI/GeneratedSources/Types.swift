@@ -2355,11 +2355,116 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/repository/visibility`.
             package var visibility: Swift.String?
             /// - Remark: Generated from `#/components/schemas/repository/pushed_at`.
-            package var pushedAt: Foundation.Date?
+            @frozen package enum PushedAtPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/repository/pushed_at/case1`.
+                case case1(Swift.Int)
+                /// - Remark: Generated from `#/components/schemas/repository/pushed_at/case2`.
+                case case2(Foundation.Date)
+                package init(from decoder: any Decoder) throws {
+                    var errors: [any Error] = []
+                    do {
+                        self = .case1(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        self = .case2(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
+                }
+                package func encode(to encoder: any Encoder) throws {
+                    switch self {
+                    case let .case1(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    case let .case2(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    }
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/repository/pushed_at`.
+            package var pushedAt: Components.Schemas.Repository.PushedAtPayload?
             /// - Remark: Generated from `#/components/schemas/repository/created_at`.
-            package var createdAt: Foundation.Date?
+            @frozen package enum CreatedAtPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/repository/created_at/case1`.
+                case case1(Swift.Int)
+                /// - Remark: Generated from `#/components/schemas/repository/created_at/case2`.
+                case case2(Foundation.Date)
+                package init(from decoder: any Decoder) throws {
+                    var errors: [any Error] = []
+                    do {
+                        self = .case1(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        self = .case2(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
+                }
+                package func encode(to encoder: any Encoder) throws {
+                    switch self {
+                    case let .case1(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    case let .case2(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    }
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/repository/created_at`.
+            package var createdAt: Components.Schemas.Repository.CreatedAtPayload?
             /// - Remark: Generated from `#/components/schemas/repository/updated_at`.
-            package var updatedAt: Foundation.Date?
+            @frozen package enum UpdatedAtPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/repository/updated_at/case1`.
+                case case1(Swift.Int)
+                /// - Remark: Generated from `#/components/schemas/repository/updated_at/case2`.
+                case case2(Foundation.Date)
+                package init(from decoder: any Decoder) throws {
+                    var errors: [any Error] = []
+                    do {
+                        self = .case1(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    do {
+                        self = .case2(try decoder.decodeFromSingleValueContainer())
+                        return
+                    } catch {
+                        errors.append(error)
+                    }
+                    throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                        type: Self.self,
+                        codingPath: decoder.codingPath,
+                        errors: errors
+                    )
+                }
+                package func encode(to encoder: any Encoder) throws {
+                    switch self {
+                    case let .case1(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    case let .case2(value):
+                        try encoder.encodeToSingleValueContainer(value)
+                    }
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/repository/updated_at`.
+            package var updatedAt: Components.Schemas.Repository.UpdatedAtPayload?
             /// Whether to allow rebase merges for pull requests.
             ///
             /// - Remark: Generated from `#/components/schemas/repository/allow_rebase_merge`.
@@ -2657,9 +2762,9 @@ package enum Components {
                 archived: Swift.Bool,
                 disabled: Swift.Bool,
                 visibility: Swift.String? = nil,
-                pushedAt: Foundation.Date? = nil,
-                createdAt: Foundation.Date? = nil,
-                updatedAt: Foundation.Date? = nil,
+                pushedAt: Components.Schemas.Repository.PushedAtPayload? = nil,
+                createdAt: Components.Schemas.Repository.CreatedAtPayload? = nil,
+                updatedAt: Components.Schemas.Repository.UpdatedAtPayload? = nil,
                 allowRebaseMerge: Swift.Bool? = nil,
                 tempCloneToken: Swift.String? = nil,
                 allowSquashMerge: Swift.Bool? = nil,
@@ -6615,7 +6720,7 @@ package enum Components {
             /// The global node ID of the installation.
             ///
             /// - Remark: Generated from `#/components/schemas/simple-installation/node_id`.
-            package var nodeId: Swift.String
+            package var nodeId: Swift.String?
             /// Creates a new `SimpleInstallation`.
             ///
             /// - Parameters:
@@ -6623,7 +6728,7 @@ package enum Components {
             ///   - nodeId: The global node ID of the installation.
             package init(
                 id: Swift.Int,
-                nodeId: Swift.String
+                nodeId: Swift.String? = nil
             ) {
                 self.id = id
                 self.nodeId = nodeId

@@ -16,6 +16,9 @@ filter:
     - pulls/list-files
     - pulls/list-reviews
     - pulls/update
+    # Need to manually mark all schemas.repository date fields as accepting both string and number.
+    # For example "pushed_at", "created_at", "updated_at".
+    # Look at other "pushed_at" fields in other schemas.
     - repos/compare-commits
     - repos/create-release
     - repos/get-latest-release
@@ -28,4 +31,5 @@ filter:
     - installation-token
     - label
     - simple-commit
+    # Need to manually mark simple-installation.node_id as nullable
     - simple-installation
