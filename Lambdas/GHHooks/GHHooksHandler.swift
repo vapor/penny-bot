@@ -93,7 +93,10 @@ struct GHHooksHandler: LambdaHandler {
                                 description: "\(error)".unicodesPrefix(2_048),
                                 color: .red,
                                 fields: [
-                                    .init(name: "X-Github-Delivery", value: request.headers.first(name: "x-github-delivery") ?? "<null>"),
+                                    .init(
+                                        name: "X-Github-Delivery",
+                                        value: request.headers.first(name: "x-github-delivery") ?? "<null>"
+                                    )
                                 ]
                             )
                         ],
@@ -105,11 +108,11 @@ struct GHHooksHandler: LambdaHandler {
                             .init(
                                 data: request.body.map(ByteBuffer.init(string:)) ?? ByteBuffer(),
                                 filename: "body"
-                            )
+                            ),
                         ],
                         attachments: [
                             .init(index: 0, filename: "error"),
-                            .init(index: 1, filename: "body")
+                            .init(index: 1, filename: "body"),
                         ]
                     )
                 ).guardSuccess()
