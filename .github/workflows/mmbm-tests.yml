@@ -1,0 +1,16 @@
+name: mmbm-tests
+on:
+  pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
+  push: { branches: [main] }
+
+jobs:
+  unit-tests:
+    runs-on: swift:6.0-noble
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Run unit tests
+        run: swift test --enable-code-coverage
+
+      # Process the code coverage report, etc...
