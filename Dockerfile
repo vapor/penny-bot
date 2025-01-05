@@ -1,16 +1,10 @@
 # ================================
 # Build image
 # ================================
-FROM swift:6.0-jammy as build
+FROM ubuntu:jammy as build
 
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
-
-# Install OS updates
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-    && apt-get -q update \
-    && apt-get -q dist-upgrade -y \
-    && apt-get install -y libjemalloc-dev
 
 WORKDIR /staging
 
@@ -21,7 +15,7 @@ COPY .build ./.build
 RUN mv .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
 
 # Copy static swift backtracer binary to staging area
-RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
+COPY "/usr/libexec/swift/linux/swift-backtrace-static" ./
 
 # Copy resources bundled by SPM to staging area
 RUN find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
