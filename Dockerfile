@@ -6,12 +6,6 @@ FROM swift:6.0-jammy as build
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
 
-# Install OS updates
-RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
-    && apt-get -q update \
-    && apt-get -q dist-upgrade -y \
-    && apt-get install -y libjemalloc-dev
-
 WORKDIR /staging
 
 # Copy .build to staging area
