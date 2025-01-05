@@ -11,6 +11,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v4
 
+      - name: Install zstd
+        run: |
+          apt-get update -y
+          apt-get install -y zstd
+
       - name: Restore .build
         id: "restore-build"
         uses: actions/cache/restore@v4
