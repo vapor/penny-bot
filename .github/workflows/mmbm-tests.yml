@@ -6,7 +6,7 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
-    container: swift:6.0-noble
+    container: swift:6.0-jammy
     steps:
       - name: Check out code
         uses: actions/checkout@v4
