@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM ubuntu:jammy as build
+FROM swift:6.0-jammy as build
 
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
@@ -15,7 +15,7 @@ COPY .build ./.build
 RUN mv .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
 
 # Copy static swift backtracer binary to staging area
-COPY "/usr/libexec/swift/linux/swift-backtrace-static" ./
+RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
 
 # Copy resources bundled by SPM to staging area
 RUN find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
