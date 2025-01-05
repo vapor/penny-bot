@@ -24,8 +24,8 @@ jobs:
           key: "swiftpm-build-${{ runner.os }}-${{ github.event.pull_request.base.sha || github.event.after }}"
           restore-keys: "swiftpm-build-${{ runner.os }}-"
 
-      - name: Run unit tests
-        run: swift test --enable-code-coverage
+      - name: Build package
+        run: swift build
 
       - name: Cache .build
         # if: steps.restore-build.outputs.cache-hit != 'true'
@@ -33,5 +33,8 @@ jobs:
         with:
           path: .build
           key: "swiftpm-build-${{ runner.os }}-${{ github.event.pull_request.base.sha || github.event.after }}"
+
+      - name: Run unit tests
+        run: swift test --enable-code-coverage
 
       # Process the code coverage report, etc...
