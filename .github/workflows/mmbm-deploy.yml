@@ -29,6 +29,7 @@ jobs:
           apt-get update -y
           apt-get install -y libjemalloc-dev
           swift build \
+            --product Penny \
             -c release \
             --static-swift-stdlib \
             -Xlinker -ljemalloc \
