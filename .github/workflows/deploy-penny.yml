@@ -76,6 +76,8 @@ jobs:
           ECR_REPOSITORY: penny-bot-discord-image
           IMAGE_TAG: ${{ github.sha }}
         run: |
+          # Copy swift-backtrace-static to the build directory so it can be used by the Dockerfile
+          cp /usr/libexec/swift/linux/swift-backtrace-static .build/
           # Build a docker container and
           # push it to ECR so that it can
           # be deployed to ECS.
