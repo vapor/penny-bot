@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:6.0-jammy as build
+FROM swift:6.0-noble as build
 
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
@@ -26,7 +26,7 @@ RUN rm -dr .build
 # ================================
 # Run image
 # ================================
-FROM ubuntu:jammy
+FROM ubuntu:noble
 
 # Make sure all system packages are up to date, and install only essential packages.
 RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
