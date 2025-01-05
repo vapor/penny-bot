@@ -5,7 +5,7 @@ on:
 
 jobs:
   unit-tests:
-    runs-on: swift:6.0-noble
+    runs-on: swift:6.0-jammy
     steps:
       - name: Check out code
         uses: actions/checkout@v4
