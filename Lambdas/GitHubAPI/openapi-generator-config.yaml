@@ -33,6 +33,8 @@ filter:
     - installation-token
     # Need to manually mark label.description as nullable
     - label
+    # Need to manually mark simple-commit.committer.email as nullable
     - simple-commit
     # Need to manually mark simple-installation.node_id as nullable
     - simple-installation
+

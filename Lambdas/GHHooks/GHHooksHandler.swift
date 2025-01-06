@@ -103,16 +103,16 @@ struct GHHooksHandler: LambdaHandler {
                         files: [
                             .init(
                                 data: ByteBuffer(string: "\(error)"),
-                                filename: "error"
+                                filename: "error.txt"
                             ),
                             .init(
                                 data: request.body.map(ByteBuffer.init(string:)) ?? ByteBuffer(),
-                                filename: "body"
+                                filename: "body.json"
                             ),
                         ],
                         attachments: [
-                            .init(index: 0, filename: "error"),
-                            .init(index: 1, filename: "body"),
+                            .init(index: 0, filename: "error.txt"),
+                            .init(index: 1, filename: "body.json"),
                         ]
                     )
                 ).guardSuccess()
