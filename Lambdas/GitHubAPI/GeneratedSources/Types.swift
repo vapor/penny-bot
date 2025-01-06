@@ -4854,7 +4854,7 @@ package enum Components {
                 /// Git email address of the commit's committer
                 ///
                 /// - Remark: Generated from `#/components/schemas/simple-commit/committer/email`.
-                package var email: Swift.String
+                package var email: Swift.String?
                 /// Creates a new `CommitterPayload`.
                 ///
                 /// - Parameters:
@@ -4862,7 +4862,7 @@ package enum Components {
                 ///   - email: Git email address of the commit's committer
                 package init(
                     name: Swift.String,
-                    email: Swift.String
+                    email: Swift.String? = nil
                 ) {
                     self.name = name
                     self.email = email
