@@ -757,7 +757,7 @@ actor GHHooksTests {
     func handlePREvent1() async throws {
         try await handleEvent(key: "pr1", eventName: .pull_request, expect: .noResponse)
     }
-    
+
     @Test
     func handlePREvent2() async throws {
         try await handleEvent(key: "pr2", eventName: .pull_request, expect: .noResponse)
