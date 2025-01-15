@@ -694,16 +694,31 @@ actor GHHooksTests {
     }
 
     @Test
-    func handleIssueEvents() async throws {
+    func handleIssueEvent1() async throws {
         try await handleEvent(key: "issue1", eventName: .issues, expect: .noResponse)
+    }
+
+    @Test
+    func handleIssueEvent2() async throws {
         try await handleEvent(
             key: "issue2",
             eventName: .issues,
             expect: .response(at: .issuesAndPRs)
         )
+    }
+
+    @Test
+    func handleIssueEvent3() async throws {
         try await handleEvent(key: "issue3", eventName: .issues, expect: .noResponse)
+    }
+
+    @Test
+    func handleIssueEvent4() async throws {
         try await handleEvent(key: "issue4", eventName: .issues, expect: .noResponse)
-        /// Transferred issue.
+    }
+
+    @Test
+    func handleIssueEvent5() async throws {
         try await handleEvent(
             key: "issue5",
             eventName: .issues,
@@ -712,14 +727,24 @@ actor GHHooksTests {
                 type: .edit(messageId: FakeMessageLookupRepo.randomMessageID)
             )
         )
+    }
 
-        // TODO: Add real response-JSONs for project board stuff to `ghRestOperations.json`.
+    // TODO: Add real response-JSONs for project board stuff to `ghRestOperations.json`.
 
+    @Test
+    func handleIssueEvent6() async throws {
         /// Labeled with "help wanted"
         try await handleEvent(key: "issue6", eventName: .issues, expect: .noResponse)
+    }
+
+    @Test
+    func handleIssueEvent7() async throws {
         /// Unlabeled with "help wanted"
         try await handleEvent(key: "issue7", eventName: .issues, expect: .noResponse)
+    }
 
+    @Test
+    func handleIssueEvent8() async throws {
         /// Issue-closed that has "timeline" info too, in case sometime in the future
         /// we want to be more accurate about reporting who closed the issue.
         /// See https://discord.com/channels/431917998102675485/441327731486097429/1155443078778323036.
@@ -729,26 +754,48 @@ actor GHHooksTests {
     }
 
     @Test
-    func handlePREvents() async throws {
+    func handlePREvent1() async throws {
         try await handleEvent(key: "pr1", eventName: .pull_request, expect: .noResponse)
+    }
+    @Test
+    func handlePREvent2() async throws {
         try await handleEvent(key: "pr2", eventName: .pull_request, expect: .noResponse)
+    }
+
+    @Test
+    func handlePREvent3() async throws {
         try await handleEvent(key: "pr3", eventName: .pull_request, expect: .noResponse)
+    }
+
+    @Test
+    func handlePREvent4() async throws {
         try await handleEvent(
             key: "pr4",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent5() async throws {
         try await handleEvent(
             key: "pr5",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent6() async throws {
         try await handleEvent(
             key: "pr6",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
 
+    @Test
+    func handlePREvent7() async throws {
         /// For now expect an error since there are no test values for
         /// the discord list-messages endpoint.
         try await handleEvent(
@@ -759,33 +806,56 @@ actor GHHooksTests {
                     "DiscordHTTPError.emptyBody(DiscordHTTPResponse(host: discord.com, status: 200 OK, version: HTTP/2.0, headers: [], body: nil))"
             )
         )
+    }
 
+    @Test
+    func handlePREvent8() async throws {
         try await handleEvent(
             key: "pr8",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent9() async throws {
         try await handleEvent(
             key: "pr9",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent10() async throws {
         try await handleEvent(
             key: "pr10",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent11() async throws {
         try await handleEvent(
             key: "pr11",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent12() async throws {
         /// From `dependabot[bot]` so should be ignored
         try await handleEvent(
             key: "pr12",
             eventName: .pull_request,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePREvent13() async throws {
         try await handleEvent(
             key: "pr13",
             eventName: .pull_request,
@@ -794,28 +864,44 @@ actor GHHooksTests {
     }
 
     @Test
-    func handlePushEvents() async throws {
+    func handlePushEvent1() async throws {
         try await handleEvent(
             key: "push1",
             eventName: .push,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePushEvent2() async throws {
         // TODO: Should assert that `create_issue` endpoint is called after this.
         try await handleEvent(
             key: "push2",
             eventName: .push,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePushEvent3() async throws {
         try await handleEvent(
             key: "push3",
             eventName: .push,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePushEvent4() async throws {
         try await handleEvent(
             key: "push4",
             eventName: .push,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handlePushEvent5() async throws {
         try await handleEvent(
             key: "push5",
             eventName: .push,
@@ -824,32 +910,52 @@ actor GHHooksTests {
     }
 
     @Test
-    func handleReleaseEvents() async throws {
+    func handleReleaseEvent1() async throws {
         try await handleEvent(
             key: "release1",
             eventName: .release,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handleReleaseEvent2() async throws {
         try await handleEvent(
             key: "release2",
             eventName: .release,
             expect: .response(at: .release, type: .create)
         )
+    }
+
+    @Test
+    func handleReleaseEvent3() async throws {
         try await handleEvent(
             key: "release3",
             eventName: .release,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handleReleaseEvent4() async throws {
         try await handleEvent(
             key: "release4",
             eventName: .release,
             expect: .noResponse
         )
+    }
+
+    @Test
+    func handleReleaseEvent5() async throws {
         try await handleEvent(
             key: "release5",
             eventName: .release,
             expect: .response(at: .release, type: .create)
         )
+    }
+
+    @Test
+    func handleReleaseEvent6() async throws {
         try await handleEvent(
             key: "release6",
             eventName: .release,
@@ -858,13 +964,16 @@ actor GHHooksTests {
     }
 
     @Test
-    func handleOtherEvents() async throws {
+    func handleOtherEvent1() async throws {
         try await handleEvent(
             key: "projects_v2_item1",
             eventName: .projects_v2_item,
             expect: .noResponse
         )
+    }
 
+    @Test
+    func handleOtherEvent2() async throws {
         try await handleEvent(
             key: "installation_repos1",
             eventName: .installation_repositories,
