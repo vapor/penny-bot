@@ -15,41 +15,37 @@ import Testing
 @testable import GHHooksLambda
 @testable import Logging
 
-extension SerializationNamespace {
-    @Suite
-    actor GHHooksTests {
-        let decoder: JSONDecoder = {
-            var decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            return decoder
-        }()
+@Suite
+actor GHHooksTests {
+    let decoder: JSONDecoder = {
+        var decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return decoder
+    }()
 
-        /// The `…` (U+2026 Horizontal Ellipsis) character.
-        let dots = "\u{2026}"
+    /// The `…` (U+2026 Horizontal Ellipsis) character.
+    let dots = "\u{2026}"
 
-        let responseStorage: FakeResponseStorage
-        let backgroundProcessorTask: Task<Void, Never>
+    let responseStorage: FakeResponseStorage
+    let backgroundProcessorTask: Task<Void, Never>
 
-        init() {
-            setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
-            /// Disable logging
-            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-            /// First reset the background runner
-            let backgroundProcessor = BackgroundProcessor()
-            /// Then reset the storage
-            self.responseStorage = FakeResponseStorage(backgroundProcessor: backgroundProcessor)
-            backgroundProcessorTask = Task<Void, Never> {
-                await backgroundProcessor.run()
-            }
-        }
-
-        deinit {
-            backgroundProcessorTask.cancel()
+    init() {
+        setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
+        /// Disable logging
+        LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+        /// First reset the background runner
+        let backgroundProcessor = BackgroundProcessor()
+        /// Then reset the storage
+        self.responseStorage = FakeResponseStorage(backgroundProcessor: backgroundProcessor)
+        backgroundProcessorTask = Task<Void, Never> {
+            await backgroundProcessor.run()
         }
     }
-}
 
-extension SerializationNamespace.GHHooksTests {
+    deinit {
+        backgroundProcessorTask.cancel()
+    }
+
     @Test
     func unicodesPrefix() throws {
         do {

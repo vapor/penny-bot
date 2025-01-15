@@ -1,3 +1,0 @@
-import Testing
-
-enum SerializationNamespace {}
