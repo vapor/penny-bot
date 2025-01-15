@@ -7,13 +7,15 @@ import Testing
 
 actor FakeResponseStorage {
 
-    private let backgroundProcessor: BackgroundProcessor = .sharedForTests
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
+    private let backgroundProcessor: BackgroundProcessor
 
     private static let idGenerator = ManagedAtomic(UInt(0))
 
-    init() {}
+    init(backgroundProcessor: BackgroundProcessor) {
+        self.backgroundProcessor = backgroundProcessor
+    }
 
     func awaitResponse(
         at endpoint: APIEndpoint,

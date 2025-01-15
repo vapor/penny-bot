@@ -14,6 +14,7 @@ import Testing
 actor FakeMainService: MainService {
     let manager: FakeManager
     let responseStorage: FakeResponseStorage
+    let backgroundProcessor: BackgroundProcessor
     let cache: DiscordCache
     let httpClient: HTTPClient
     let context: HandlerContext
@@ -21,9 +22,10 @@ actor FakeMainService: MainService {
         context.botStateManager
     }
 
-    init(manager: FakeManager) async throws {
+    init(manager: FakeManager, backgroundProcessor: BackgroundProcessor) async throws {
         self.manager = manager
         self.responseStorage = manager.responseStorage
+        self.backgroundProcessor = backgroundProcessor
         var cacheStorage = DiscordCache.Storage()
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
         self.cache = await DiscordCache(
@@ -38,6 +40,7 @@ actor FakeMainService: MainService {
         )
         self.context = try Self.makeContext(
             manager: manager,
+            backgroundProcessor: backgroundProcessor,
             cache: cache,
             httpClient: httpClient
         )
@@ -86,10 +89,10 @@ actor FakeMainService: MainService {
 
     static func makeContext(
         manager: any GatewayManager,
+        backgroundProcessor: BackgroundProcessor,
         cache: DiscordCache,
         httpClient: HTTPClient
     ) throws -> HandlerContext {
-        let backgroundProcessor = BackgroundProcessor.sharedForTests
         let discordService = DiscordService(
             discordClient: manager.client,
             cache: cache,

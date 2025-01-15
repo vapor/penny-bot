@@ -35,11 +35,11 @@ extension SerializationNamespace {
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
             /// First reset the background runner
-            BackgroundProcessor.sharedForTests = BackgroundProcessor()
+            let backgroundProcessor = BackgroundProcessor()
             /// Then reset the storage
-            self.responseStorage = FakeResponseStorage()
+            self.responseStorage = FakeResponseStorage(backgroundProcessor: backgroundProcessor)
             backgroundProcessorTask = Task<Void, Never> {
-                await BackgroundProcessor.sharedForTests.run()
+                await backgroundProcessor.run()
             }
         }
 
