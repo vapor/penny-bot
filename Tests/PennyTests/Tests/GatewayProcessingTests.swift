@@ -28,7 +28,10 @@ final class GatewayProcessingTests: Sendable {
         /// Then reset the storage
         self.responseStorage = FakeResponseStorage(backgroundProcessor: backgroundProcessor)
         self.manager = FakeManager(responseStorage: self.responseStorage)
-        let fakeMainService = try await FakeMainService(manager: self.manager, backgroundProcessor: backgroundProcessor)
+        let fakeMainService = try await FakeMainService(
+            manager: self.manager,
+            backgroundProcessor: backgroundProcessor
+        )
         self.fakeMainService = fakeMainService
         self.context = fakeMainService.context
         mainServiceTask = Task<Void, any Error> {
