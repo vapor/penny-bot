@@ -121,6 +121,18 @@ struct GuildMember {
     var uiAvatarURL: String?
     var userId: UserSnowflake?
     var roles: [RoleSnowflake]
+
+    init(
+        uiName: String? = nil,
+        uiAvatarURL: String? = nil,
+        userId: UserSnowflake? = nil,
+        roles: [RoleSnowflake] = []
+    ) {
+        self.uiName = uiName
+        self.uiAvatarURL = uiAvatarURL
+        self.userId = userId
+        self.roles = roles
+    }
 }
 
 struct CodeOwners: CustomStringConvertible {
