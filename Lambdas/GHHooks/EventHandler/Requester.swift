@@ -5,8 +5,6 @@ import Logging
 import Shared
 
 protocol GenericRequester: Sendable {
-    var httpClient: HTTPClient { get }
-    var logger: Logger { get }
     func getDiscordMember(githubID: String) async throws -> GuildMember?
     func getCodeOwners(repoFullName: String, branch: some StringProtocol) async throws -> CodeOwners
 }
@@ -45,9 +43,7 @@ extension Requester: GenericRequester {
             roles: member.roles
         )
     }
-}
 
-extension GenericRequester {
     /// Returns code owners if the repo contains the file or returns `nil`.
     /// All lowercased.
     /// In form of `["gwynne", "0xtim"]`.
@@ -78,7 +74,9 @@ extension GenericRequester {
         )
         return parsed
     }
+}
 
+extension GenericRequester {
     /// Returns code owner names all lowercased.
     func parseCodeOwners(text: String) -> CodeOwners {
         let codeOwners: [String] =
@@ -142,7 +140,7 @@ struct CodeOwners: CustomStringConvertible {
         "CodeOwners(value: \(value))"
     }
 
-    fileprivate init(value: [String]) {
+    init(value: [String]) {
         self.value = Set(value.map({ $0.lowercased() }))
     }
 

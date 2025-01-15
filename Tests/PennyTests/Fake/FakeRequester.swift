@@ -4,9 +4,6 @@ import Logging
 @testable import GHHooksLambda
 
 struct FakeRequester: GenericRequester {
-    var httpClient: HTTPClient = .shared
-    var logger: Logger = .init(label: "FakeRequester")
-
     func getDiscordMember(githubID: String) async throws -> GuildMember? {
         switch githubID {
         case "54685446":
@@ -34,6 +31,17 @@ struct FakeRequester: GenericRequester {
             return nil
         default:
             fatalError("Unhandled githubID: \(githubID)")
+        }
+    }
+
+    func getCodeOwners(repoFullName: String, branch: some StringProtocol) async throws -> CodeOwners {
+        switch repoFullName {
+        case "vapor/penny-bot":
+            return .init(value: ["mahdibm", "gwynne", "0xtim"])
+        case let name where name.hasPrefix("vapor/"):
+            return .init(value: ["gwynne", "0xtim"])
+        default:
+            fatalError("Unhandled repo: \(repoFullName)")
         }
     }
 }
