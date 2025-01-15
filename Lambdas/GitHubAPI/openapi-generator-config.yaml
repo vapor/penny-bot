@@ -29,6 +29,7 @@ filter:
     - repos/list-pull-requests-associated-with-commit
     - repos/list-releases
     - repos/list-tags
+    - users/get-by-username
   schemas:
     - installation-token
     # Need to manually mark label.description as nullable
@@ -37,4 +38,3 @@ filter:
     - simple-commit
     # Need to manually mark simple-installation.node_id as nullable
     - simple-installation
-

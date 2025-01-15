@@ -311,6 +311,17 @@ package protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/tags`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/tags/get(repos/list-tags)`.
     func reposListTags(_ input: Operations.ReposListTags.Input) async throws -> Operations.ReposListTags.Output
+    /// Get a user
+    ///
+    /// Provides publicly available information about someone with a GitHub account.
+    ///
+    /// The `email` key in the following response is the publicly visible email address from your GitHub [profile page](https://github.com/settings/profile). When setting up your profile, you can select a primary email address to be “public” which provides an email entry for this endpoint. If you do not set a public email address for `email`, then it will have a value of `null`. You only see publicly visible email addresses when authenticated with GitHub. For more information, see [Authentication](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#authentication).
+    ///
+    /// The Emails API enables you to list all of your email addresses, and toggle a primary email to be visible publicly. For more information, see "[Emails API](https://docs.github.com/rest/users/emails)".
+    ///
+    /// - Remark: HTTP `GET /users/{username}`.
+    /// - Remark: Generated from `#/paths//users/{username}/get(users/get-by-username)`.
+    func usersGetByUsername(_ input: Operations.UsersGetByUsername.Input) async throws -> Operations.UsersGetByUsername.Output
 }
 
 /// Convenience overloads for operation inputs.
@@ -794,6 +805,25 @@ extension APIProtocol {
         try await reposListTags(Operations.ReposListTags.Input(
             path: path,
             query: query,
+            headers: headers
+        ))
+    }
+    /// Get a user
+    ///
+    /// Provides publicly available information about someone with a GitHub account.
+    ///
+    /// The `email` key in the following response is the publicly visible email address from your GitHub [profile page](https://github.com/settings/profile). When setting up your profile, you can select a primary email address to be “public” which provides an email entry for this endpoint. If you do not set a public email address for `email`, then it will have a value of `null`. You only see publicly visible email addresses when authenticated with GitHub. For more information, see [Authentication](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#authentication).
+    ///
+    /// The Emails API enables you to list all of your email addresses, and toggle a primary email to be visible publicly. For more information, see "[Emails API](https://docs.github.com/rest/users/emails)".
+    ///
+    /// - Remark: HTTP `GET /users/{username}`.
+    /// - Remark: Generated from `#/paths//users/{username}/get(users/get-by-username)`.
+    package func usersGetByUsername(
+        path: Operations.UsersGetByUsername.Input.Path,
+        headers: Operations.UsersGetByUsername.Input.Headers = .init()
+    ) async throws -> Operations.UsersGetByUsername.Output {
+        try await usersGetByUsername(Operations.UsersGetByUsername.Input(
+            path: path,
             headers: headers
         ))
     }
@@ -3887,6 +3917,499 @@ package enum Components {
                 case subIssuesSummary = "sub_issues_summary"
             }
         }
+        /// Public User
+        ///
+        /// - Remark: Generated from `#/components/schemas/public-user`.
+        package struct PublicUser: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/public-user/login`.
+            package var login: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/id`.
+            package var id: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/public-user/user_view_type`.
+            package var userViewType: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/node_id`.
+            package var nodeId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/avatar_url`.
+            package var avatarUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/gravatar_id`.
+            package var gravatarId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/url`.
+            package var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/html_url`.
+            package var htmlUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/followers_url`.
+            package var followersUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/following_url`.
+            package var followingUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/gists_url`.
+            package var gistsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/starred_url`.
+            package var starredUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/subscriptions_url`.
+            package var subscriptionsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/organizations_url`.
+            package var organizationsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/repos_url`.
+            package var reposUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/events_url`.
+            package var eventsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/received_events_url`.
+            package var receivedEventsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/type`.
+            package var _type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/public-user/site_admin`.
+            package var siteAdmin: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/public-user/name`.
+            package var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/company`.
+            package var company: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/blog`.
+            package var blog: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/location`.
+            package var location: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/email`.
+            package var email: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/notification_email`.
+            package var notificationEmail: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/hireable`.
+            package var hireable: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/public-user/bio`.
+            package var bio: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/twitter_username`.
+            package var twitterUsername: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/public-user/public_repos`.
+            package var publicRepos: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/public-user/public_gists`.
+            package var publicGists: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/public-user/followers`.
+            package var followers: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/public-user/following`.
+            package var following: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/public-user/created_at`.
+            package var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/public-user/updated_at`.
+            package var updatedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/public-user/plan`.
+            package struct PlanPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/public-user/plan/collaborators`.
+                package var collaborators: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/public-user/plan/name`.
+                package var name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/public-user/plan/space`.
+                package var space: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/public-user/plan/private_repos`.
+                package var privateRepos: Swift.Int
+                /// Creates a new `PlanPayload`.
+                ///
+                /// - Parameters:
+                ///   - collaborators:
+                ///   - name:
+                ///   - space:
+                ///   - privateRepos:
+                package init(
+                    collaborators: Swift.Int,
+                    name: Swift.String,
+                    space: Swift.Int,
+                    privateRepos: Swift.Int
+                ) {
+                    self.collaborators = collaborators
+                    self.name = name
+                    self.space = space
+                    self.privateRepos = privateRepos
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case collaborators
+                    case name
+                    case space
+                    case privateRepos = "private_repos"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/public-user/plan`.
+            package var plan: Components.Schemas.PublicUser.PlanPayload?
+            /// - Remark: Generated from `#/components/schemas/public-user/private_gists`.
+            package var privateGists: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/public-user/total_private_repos`.
+            package var totalPrivateRepos: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/public-user/owned_private_repos`.
+            package var ownedPrivateRepos: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/public-user/disk_usage`.
+            package var diskUsage: Swift.Int?
+            /// - Remark: Generated from `#/components/schemas/public-user/collaborators`.
+            package var collaborators: Swift.Int?
+            /// Creates a new `PublicUser`.
+            ///
+            /// - Parameters:
+            ///   - login:
+            ///   - id:
+            ///   - userViewType:
+            ///   - nodeId:
+            ///   - avatarUrl:
+            ///   - gravatarId:
+            ///   - url:
+            ///   - htmlUrl:
+            ///   - followersUrl:
+            ///   - followingUrl:
+            ///   - gistsUrl:
+            ///   - starredUrl:
+            ///   - subscriptionsUrl:
+            ///   - organizationsUrl:
+            ///   - reposUrl:
+            ///   - eventsUrl:
+            ///   - receivedEventsUrl:
+            ///   - _type:
+            ///   - siteAdmin:
+            ///   - name:
+            ///   - company:
+            ///   - blog:
+            ///   - location:
+            ///   - email:
+            ///   - notificationEmail:
+            ///   - hireable:
+            ///   - bio:
+            ///   - twitterUsername:
+            ///   - publicRepos:
+            ///   - publicGists:
+            ///   - followers:
+            ///   - following:
+            ///   - createdAt:
+            ///   - updatedAt:
+            ///   - plan:
+            ///   - privateGists:
+            ///   - totalPrivateRepos:
+            ///   - ownedPrivateRepos:
+            ///   - diskUsage:
+            ///   - collaborators:
+            package init(
+                login: Swift.String,
+                id: Swift.Int64,
+                userViewType: Swift.String? = nil,
+                nodeId: Swift.String,
+                avatarUrl: Swift.String,
+                gravatarId: Swift.String? = nil,
+                url: Swift.String,
+                htmlUrl: Swift.String,
+                followersUrl: Swift.String,
+                followingUrl: Swift.String,
+                gistsUrl: Swift.String,
+                starredUrl: Swift.String,
+                subscriptionsUrl: Swift.String,
+                organizationsUrl: Swift.String,
+                reposUrl: Swift.String,
+                eventsUrl: Swift.String,
+                receivedEventsUrl: Swift.String,
+                _type: Swift.String,
+                siteAdmin: Swift.Bool,
+                name: Swift.String? = nil,
+                company: Swift.String? = nil,
+                blog: Swift.String? = nil,
+                location: Swift.String? = nil,
+                email: Swift.String? = nil,
+                notificationEmail: Swift.String? = nil,
+                hireable: Swift.Bool? = nil,
+                bio: Swift.String? = nil,
+                twitterUsername: Swift.String? = nil,
+                publicRepos: Swift.Int,
+                publicGists: Swift.Int,
+                followers: Swift.Int,
+                following: Swift.Int,
+                createdAt: Foundation.Date,
+                updatedAt: Foundation.Date,
+                plan: Components.Schemas.PublicUser.PlanPayload? = nil,
+                privateGists: Swift.Int? = nil,
+                totalPrivateRepos: Swift.Int? = nil,
+                ownedPrivateRepos: Swift.Int? = nil,
+                diskUsage: Swift.Int? = nil,
+                collaborators: Swift.Int? = nil
+            ) {
+                self.login = login
+                self.id = id
+                self.userViewType = userViewType
+                self.nodeId = nodeId
+                self.avatarUrl = avatarUrl
+                self.gravatarId = gravatarId
+                self.url = url
+                self.htmlUrl = htmlUrl
+                self.followersUrl = followersUrl
+                self.followingUrl = followingUrl
+                self.gistsUrl = gistsUrl
+                self.starredUrl = starredUrl
+                self.subscriptionsUrl = subscriptionsUrl
+                self.organizationsUrl = organizationsUrl
+                self.reposUrl = reposUrl
+                self.eventsUrl = eventsUrl
+                self.receivedEventsUrl = receivedEventsUrl
+                self._type = _type
+                self.siteAdmin = siteAdmin
+                self.name = name
+                self.company = company
+                self.blog = blog
+                self.location = location
+                self.email = email
+                self.notificationEmail = notificationEmail
+                self.hireable = hireable
+                self.bio = bio
+                self.twitterUsername = twitterUsername
+                self.publicRepos = publicRepos
+                self.publicGists = publicGists
+                self.followers = followers
+                self.following = following
+                self.createdAt = createdAt
+                self.updatedAt = updatedAt
+                self.plan = plan
+                self.privateGists = privateGists
+                self.totalPrivateRepos = totalPrivateRepos
+                self.ownedPrivateRepos = ownedPrivateRepos
+                self.diskUsage = diskUsage
+                self.collaborators = collaborators
+            }
+            package enum CodingKeys: String, CodingKey {
+                case login
+                case id
+                case userViewType = "user_view_type"
+                case nodeId = "node_id"
+                case avatarUrl = "avatar_url"
+                case gravatarId = "gravatar_id"
+                case url
+                case htmlUrl = "html_url"
+                case followersUrl = "followers_url"
+                case followingUrl = "following_url"
+                case gistsUrl = "gists_url"
+                case starredUrl = "starred_url"
+                case subscriptionsUrl = "subscriptions_url"
+                case organizationsUrl = "organizations_url"
+                case reposUrl = "repos_url"
+                case eventsUrl = "events_url"
+                case receivedEventsUrl = "received_events_url"
+                case _type = "type"
+                case siteAdmin = "site_admin"
+                case name
+                case company
+                case blog
+                case location
+                case email
+                case notificationEmail = "notification_email"
+                case hireable
+                case bio
+                case twitterUsername = "twitter_username"
+                case publicRepos = "public_repos"
+                case publicGists = "public_gists"
+                case followers
+                case following
+                case createdAt = "created_at"
+                case updatedAt = "updated_at"
+                case plan
+                case privateGists = "private_gists"
+                case totalPrivateRepos = "total_private_repos"
+                case ownedPrivateRepos = "owned_private_repos"
+                case diskUsage = "disk_usage"
+                case collaborators
+            }
+            package init(from decoder: any Decoder) throws {
+                let container = try decoder.container(keyedBy: CodingKeys.self)
+                self.login = try container.decode(
+                    Swift.String.self,
+                    forKey: .login
+                )
+                self.id = try container.decode(
+                    Swift.Int64.self,
+                    forKey: .id
+                )
+                self.userViewType = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .userViewType
+                )
+                self.nodeId = try container.decode(
+                    Swift.String.self,
+                    forKey: .nodeId
+                )
+                self.avatarUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .avatarUrl
+                )
+                self.gravatarId = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .gravatarId
+                )
+                self.url = try container.decode(
+                    Swift.String.self,
+                    forKey: .url
+                )
+                self.htmlUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .htmlUrl
+                )
+                self.followersUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .followersUrl
+                )
+                self.followingUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .followingUrl
+                )
+                self.gistsUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .gistsUrl
+                )
+                self.starredUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .starredUrl
+                )
+                self.subscriptionsUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .subscriptionsUrl
+                )
+                self.organizationsUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .organizationsUrl
+                )
+                self.reposUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .reposUrl
+                )
+                self.eventsUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .eventsUrl
+                )
+                self.receivedEventsUrl = try container.decode(
+                    Swift.String.self,
+                    forKey: .receivedEventsUrl
+                )
+                self._type = try container.decode(
+                    Swift.String.self,
+                    forKey: ._type
+                )
+                self.siteAdmin = try container.decode(
+                    Swift.Bool.self,
+                    forKey: .siteAdmin
+                )
+                self.name = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .name
+                )
+                self.company = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .company
+                )
+                self.blog = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .blog
+                )
+                self.location = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .location
+                )
+                self.email = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .email
+                )
+                self.notificationEmail = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .notificationEmail
+                )
+                self.hireable = try container.decodeIfPresent(
+                    Swift.Bool.self,
+                    forKey: .hireable
+                )
+                self.bio = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .bio
+                )
+                self.twitterUsername = try container.decodeIfPresent(
+                    Swift.String.self,
+                    forKey: .twitterUsername
+                )
+                self.publicRepos = try container.decode(
+                    Swift.Int.self,
+                    forKey: .publicRepos
+                )
+                self.publicGists = try container.decode(
+                    Swift.Int.self,
+                    forKey: .publicGists
+                )
+                self.followers = try container.decode(
+                    Swift.Int.self,
+                    forKey: .followers
+                )
+                self.following = try container.decode(
+                    Swift.Int.self,
+                    forKey: .following
+                )
+                self.createdAt = try container.decode(
+                    Foundation.Date.self,
+                    forKey: .createdAt
+                )
+                self.updatedAt = try container.decode(
+                    Foundation.Date.self,
+                    forKey: .updatedAt
+                )
+                self.plan = try container.decodeIfPresent(
+                    Components.Schemas.PublicUser.PlanPayload.self,
+                    forKey: .plan
+                )
+                self.privateGists = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .privateGists
+                )
+                self.totalPrivateRepos = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .totalPrivateRepos
+                )
+                self.ownedPrivateRepos = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .ownedPrivateRepos
+                )
+                self.diskUsage = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .diskUsage
+                )
+                self.collaborators = try container.decodeIfPresent(
+                    Swift.Int.self,
+                    forKey: .collaborators
+                )
+                try decoder.ensureNoAdditionalProperties(knownKeys: [
+                    "login",
+                    "id",
+                    "user_view_type",
+                    "node_id",
+                    "avatar_url",
+                    "gravatar_id",
+                    "url",
+                    "html_url",
+                    "followers_url",
+                    "following_url",
+                    "gists_url",
+                    "starred_url",
+                    "subscriptions_url",
+                    "organizations_url",
+                    "repos_url",
+                    "events_url",
+                    "received_events_url",
+                    "type",
+                    "site_admin",
+                    "name",
+                    "company",
+                    "blog",
+                    "location",
+                    "email",
+                    "notification_email",
+                    "hireable",
+                    "bio",
+                    "twitter_username",
+                    "public_repos",
+                    "public_gists",
+                    "followers",
+                    "following",
+                    "created_at",
+                    "updated_at",
+                    "plan",
+                    "private_gists",
+                    "total_private_repos",
+                    "owned_private_repos",
+                    "disk_usage",
+                    "collaborators"
+                ])
+            }
+        }
         /// An object without any properties.
         ///
         /// - Remark: Generated from `#/components/schemas/empty-object`.
@@ -6707,6 +7230,312 @@ package enum Components {
                 case nodeId = "node_id"
             }
         }
+        /// Private User
+        ///
+        /// - Remark: Generated from `#/components/schemas/private-user`.
+        package struct PrivateUser: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/private-user/login`.
+            package var login: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/id`.
+            package var id: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/private-user/user_view_type`.
+            package var userViewType: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/node_id`.
+            package var nodeId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/avatar_url`.
+            package var avatarUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/gravatar_id`.
+            package var gravatarId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/url`.
+            package var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/html_url`.
+            package var htmlUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/followers_url`.
+            package var followersUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/following_url`.
+            package var followingUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/gists_url`.
+            package var gistsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/starred_url`.
+            package var starredUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/subscriptions_url`.
+            package var subscriptionsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/organizations_url`.
+            package var organizationsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/repos_url`.
+            package var reposUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/events_url`.
+            package var eventsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/received_events_url`.
+            package var receivedEventsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/type`.
+            package var _type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/private-user/site_admin`.
+            package var siteAdmin: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/private-user/name`.
+            package var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/company`.
+            package var company: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/blog`.
+            package var blog: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/location`.
+            package var location: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/email`.
+            package var email: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/notification_email`.
+            package var notificationEmail: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/hireable`.
+            package var hireable: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/private-user/bio`.
+            package var bio: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/twitter_username`.
+            package var twitterUsername: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/private-user/public_repos`.
+            package var publicRepos: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/public_gists`.
+            package var publicGists: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/followers`.
+            package var followers: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/following`.
+            package var following: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/created_at`.
+            package var createdAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/private-user/updated_at`.
+            package var updatedAt: Foundation.Date
+            /// - Remark: Generated from `#/components/schemas/private-user/private_gists`.
+            package var privateGists: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/total_private_repos`.
+            package var totalPrivateRepos: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/owned_private_repos`.
+            package var ownedPrivateRepos: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/disk_usage`.
+            package var diskUsage: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/collaborators`.
+            package var collaborators: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/private-user/two_factor_authentication`.
+            package var twoFactorAuthentication: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/private-user/plan`.
+            package struct PlanPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/private-user/plan/collaborators`.
+                package var collaborators: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/private-user/plan/name`.
+                package var name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/private-user/plan/space`.
+                package var space: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/private-user/plan/private_repos`.
+                package var privateRepos: Swift.Int
+                /// Creates a new `PlanPayload`.
+                ///
+                /// - Parameters:
+                ///   - collaborators:
+                ///   - name:
+                ///   - space:
+                ///   - privateRepos:
+                package init(
+                    collaborators: Swift.Int,
+                    name: Swift.String,
+                    space: Swift.Int,
+                    privateRepos: Swift.Int
+                ) {
+                    self.collaborators = collaborators
+                    self.name = name
+                    self.space = space
+                    self.privateRepos = privateRepos
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case collaborators
+                    case name
+                    case space
+                    case privateRepos = "private_repos"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/private-user/plan`.
+            package var plan: Components.Schemas.PrivateUser.PlanPayload?
+            /// - Remark: Generated from `#/components/schemas/private-user/business_plus`.
+            package var businessPlus: Swift.Bool?
+            /// - Remark: Generated from `#/components/schemas/private-user/ldap_dn`.
+            package var ldapDn: Swift.String?
+            /// Creates a new `PrivateUser`.
+            ///
+            /// - Parameters:
+            ///   - login:
+            ///   - id:
+            ///   - userViewType:
+            ///   - nodeId:
+            ///   - avatarUrl:
+            ///   - gravatarId:
+            ///   - url:
+            ///   - htmlUrl:
+            ///   - followersUrl:
+            ///   - followingUrl:
+            ///   - gistsUrl:
+            ///   - starredUrl:
+            ///   - subscriptionsUrl:
+            ///   - organizationsUrl:
+            ///   - reposUrl:
+            ///   - eventsUrl:
+            ///   - receivedEventsUrl:
+            ///   - _type:
+            ///   - siteAdmin:
+            ///   - name:
+            ///   - company:
+            ///   - blog:
+            ///   - location:
+            ///   - email:
+            ///   - notificationEmail:
+            ///   - hireable:
+            ///   - bio:
+            ///   - twitterUsername:
+            ///   - publicRepos:
+            ///   - publicGists:
+            ///   - followers:
+            ///   - following:
+            ///   - createdAt:
+            ///   - updatedAt:
+            ///   - privateGists:
+            ///   - totalPrivateRepos:
+            ///   - ownedPrivateRepos:
+            ///   - diskUsage:
+            ///   - collaborators:
+            ///   - twoFactorAuthentication:
+            ///   - plan:
+            ///   - businessPlus:
+            ///   - ldapDn:
+            package init(
+                login: Swift.String,
+                id: Swift.Int64,
+                userViewType: Swift.String? = nil,
+                nodeId: Swift.String,
+                avatarUrl: Swift.String,
+                gravatarId: Swift.String? = nil,
+                url: Swift.String,
+                htmlUrl: Swift.String,
+                followersUrl: Swift.String,
+                followingUrl: Swift.String,
+                gistsUrl: Swift.String,
+                starredUrl: Swift.String,
+                subscriptionsUrl: Swift.String,
+                organizationsUrl: Swift.String,
+                reposUrl: Swift.String,
+                eventsUrl: Swift.String,
+                receivedEventsUrl: Swift.String,
+                _type: Swift.String,
+                siteAdmin: Swift.Bool,
+                name: Swift.String? = nil,
+                company: Swift.String? = nil,
+                blog: Swift.String? = nil,
+                location: Swift.String? = nil,
+                email: Swift.String? = nil,
+                notificationEmail: Swift.String? = nil,
+                hireable: Swift.Bool? = nil,
+                bio: Swift.String? = nil,
+                twitterUsername: Swift.String? = nil,
+                publicRepos: Swift.Int,
+                publicGists: Swift.Int,
+                followers: Swift.Int,
+                following: Swift.Int,
+                createdAt: Foundation.Date,
+                updatedAt: Foundation.Date,
+                privateGists: Swift.Int,
+                totalPrivateRepos: Swift.Int,
+                ownedPrivateRepos: Swift.Int,
+                diskUsage: Swift.Int,
+                collaborators: Swift.Int,
+                twoFactorAuthentication: Swift.Bool,
+                plan: Components.Schemas.PrivateUser.PlanPayload? = nil,
+                businessPlus: Swift.Bool? = nil,
+                ldapDn: Swift.String? = nil
+            ) {
+                self.login = login
+                self.id = id
+                self.userViewType = userViewType
+                self.nodeId = nodeId
+                self.avatarUrl = avatarUrl
+                self.gravatarId = gravatarId
+                self.url = url
+                self.htmlUrl = htmlUrl
+                self.followersUrl = followersUrl
+                self.followingUrl = followingUrl
+                self.gistsUrl = gistsUrl
+                self.starredUrl = starredUrl
+                self.subscriptionsUrl = subscriptionsUrl
+                self.organizationsUrl = organizationsUrl
+                self.reposUrl = reposUrl
+                self.eventsUrl = eventsUrl
+                self.receivedEventsUrl = receivedEventsUrl
+                self._type = _type
+                self.siteAdmin = siteAdmin
+                self.name = name
+                self.company = company
+                self.blog = blog
+                self.location = location
+                self.email = email
+                self.notificationEmail = notificationEmail
+                self.hireable = hireable
+                self.bio = bio
+                self.twitterUsername = twitterUsername
+                self.publicRepos = publicRepos
+                self.publicGists = publicGists
+                self.followers = followers
+                self.following = following
+                self.createdAt = createdAt
+                self.updatedAt = updatedAt
+                self.privateGists = privateGists
+                self.totalPrivateRepos = totalPrivateRepos
+                self.ownedPrivateRepos = ownedPrivateRepos
+                self.diskUsage = diskUsage
+                self.collaborators = collaborators
+                self.twoFactorAuthentication = twoFactorAuthentication
+                self.plan = plan
+                self.businessPlus = businessPlus
+                self.ldapDn = ldapDn
+            }
+            package enum CodingKeys: String, CodingKey {
+                case login
+                case id
+                case userViewType = "user_view_type"
+                case nodeId = "node_id"
+                case avatarUrl = "avatar_url"
+                case gravatarId = "gravatar_id"
+                case url
+                case htmlUrl = "html_url"
+                case followersUrl = "followers_url"
+                case followingUrl = "following_url"
+                case gistsUrl = "gists_url"
+                case starredUrl = "starred_url"
+                case subscriptionsUrl = "subscriptions_url"
+                case organizationsUrl = "organizations_url"
+                case reposUrl = "repos_url"
+                case eventsUrl = "events_url"
+                case receivedEventsUrl = "received_events_url"
+                case _type = "type"
+                case siteAdmin = "site_admin"
+                case name
+                case company
+                case blog
+                case location
+                case email
+                case notificationEmail = "notification_email"
+                case hireable
+                case bio
+                case twitterUsername = "twitter_username"
+                case publicRepos = "public_repos"
+                case publicGists = "public_gists"
+                case followers
+                case following
+                case createdAt = "created_at"
+                case updatedAt = "updated_at"
+                case privateGists = "private_gists"
+                case totalPrivateRepos = "total_private_repos"
+                case ownedPrivateRepos = "owned_private_repos"
+                case diskUsage = "disk_usage"
+                case collaborators
+                case twoFactorAuthentication = "two_factor_authentication"
+                case plan
+                case businessPlus = "business_plus"
+                case ldapDn = "ldap_dn"
+            }
+        }
         /// The GitHub App installation. Webhook payloads contain the `installation` property when the event is configured
         /// for and sent to a GitHub App. For more information,
         /// see "[Using webhooks with GitHub Apps](https://docs.github.com/apps/creating-github-apps/registering-a-github-app/using-webhooks-with-github-apps)."
@@ -6761,6 +7590,10 @@ package enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/repo`.
         package typealias Repo = Swift.String
+        /// The handle for the GitHub user account.
+        ///
+        /// - Remark: Generated from `#/components/parameters/username`.
+        package typealias Username = Swift.String
         /// The unique identifier of the card.
         ///
         /// - Remark: Generated from `#/components/parameters/card-id`.
@@ -12764,6 +13597,202 @@ package enum Operations {
                     default:
                         try throwUnexpectedResponseStatus(
                             expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
+    /// Get a user
+    ///
+    /// Provides publicly available information about someone with a GitHub account.
+    ///
+    /// The `email` key in the following response is the publicly visible email address from your GitHub [profile page](https://github.com/settings/profile). When setting up your profile, you can select a primary email address to be “public” which provides an email entry for this endpoint. If you do not set a public email address for `email`, then it will have a value of `null`. You only see publicly visible email addresses when authenticated with GitHub. For more information, see [Authentication](https://docs.github.com/rest/guides/getting-started-with-the-rest-api#authentication).
+    ///
+    /// The Emails API enables you to list all of your email addresses, and toggle a primary email to be visible publicly. For more information, see "[Emails API](https://docs.github.com/rest/users/emails)".
+    ///
+    /// - Remark: HTTP `GET /users/{username}`.
+    /// - Remark: Generated from `#/paths//users/{username}/get(users/get-by-username)`.
+    package enum UsersGetByUsername {
+        package static let id: Swift.String = "users/get-by-username"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/users/{username}/GET/path`.
+            package struct Path: Sendable, Hashable {
+                /// The handle for the GitHub user account.
+                ///
+                /// - Remark: Generated from `#/paths/users/{username}/GET/path/username`.
+                package var username: Components.Parameters.Username
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - username: The handle for the GitHub user account.
+                package init(username: Components.Parameters.Username) {
+                    self.username = username
+                }
+            }
+            package var path: Operations.UsersGetByUsername.Input.Path
+            /// - Remark: Generated from `#/paths/users/{username}/GET/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.UsersGetByUsername.AcceptableContentType>]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(accept: [OpenAPIRuntime.AcceptHeaderContentType<Operations.UsersGetByUsername.AcceptableContentType>] = .defaultValues()) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.UsersGetByUsername.Input.Headers
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - headers:
+            package init(
+                path: Operations.UsersGetByUsername.Input.Path,
+                headers: Operations.UsersGetByUsername.Input.Headers = .init()
+            ) {
+                self.path = path
+                self.headers = headers
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/users/{username}/GET/responses/200/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/users/{username}/GET/responses/200/content/json`.
+                    @frozen package enum JsonPayload: Codable, Hashable, Sendable {
+                        /// - Remark: Generated from `#/paths/users/{username}/GET/responses/200/content/json/PrivateUser`.
+                        case _private(Components.Schemas.PrivateUser)
+                        /// - Remark: Generated from `#/paths/users/{username}/GET/responses/200/content/json/PublicUser`.
+                        case _public(Components.Schemas.PublicUser)
+                        package enum CodingKeys: String, CodingKey {
+                            case userViewType = "user_view_type"
+                        }
+                        package init(from decoder: any Decoder) throws {
+                            let container = try decoder.container(keyedBy: CodingKeys.self)
+                            let discriminator = try container.decode(
+                                Swift.String.self,
+                                forKey: .userViewType
+                            )
+                            switch discriminator {
+                            case "private":
+                                self = ._private(try .init(from: decoder))
+                            case "public":
+                                self = ._public(try .init(from: decoder))
+                            default:
+                                throw Swift.DecodingError.unknownOneOfDiscriminator(
+                                    discriminatorKey: CodingKeys.userViewType,
+                                    discriminatorValue: discriminator,
+                                    codingPath: decoder.codingPath
+                                )
+                            }
+                        }
+                        package func encode(to encoder: any Encoder) throws {
+                            switch self {
+                            case let ._private(value):
+                                try value.encode(to: encoder)
+                            case let ._public(value):
+                                try value.encode(to: encoder)
+                            }
+                        }
+                    }
+                    /// - Remark: Generated from `#/paths/users/{username}/GET/responses/200/content/application\/json`.
+                    case json(Operations.UsersGetByUsername.Output.Ok.Body.JsonPayload)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: Operations.UsersGetByUsername.Output.Ok.Body.JsonPayload {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.UsersGetByUsername.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                package init(body: Operations.UsersGetByUsername.Output.Ok.Body) {
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//users/{username}/get(users/get-by-username)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.UsersGetByUsername.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            package var ok: Operations.UsersGetByUsername.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//users/{username}/get(users/get-by-username)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.NotFound)
+            /// The associated value of the enum case if `self` is `.notFound`.
+            ///
+            /// - Throws: An error if `self` is not `.notFound`.
+            /// - SeeAlso: `.notFound`.
+            package var notFound: Components.Responses.NotFound {
+                get throws {
+                    switch self {
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
                             response: self
                         )
                     }

@@ -30,7 +30,6 @@ extension SerializationNamespace {
         let backgroundProcessorTask: Task<Void, Never>
 
         init() {
-            /// Simulate prod
             setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
             /// Disable logging
             LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
@@ -820,6 +819,11 @@ extension SerializationNamespace.GHHooksTests {
             eventName: .push,
             expect: .noResponse
         )
+        try await handleEvent(
+            key: "push5",
+            eventName: .push,
+            expect: .response(at: .thanks, type: .create, count: 2)
+        )
     }
 
     @Test
@@ -887,26 +891,29 @@ extension SerializationNamespace.GHHooksTests {
                 )
             ).handle()
             switch expect {
-            case let .response(channel, responseType):
-                switch responseType {
-                case .create:
-                    let response = await FakeResponseStorage.shared.awaitResponse(
-                        at: .createMessage(channelId: channel.id),
-                        sourceLocation: sourceLocation
-                    ).value
-                    #expect(
-                        "\(type(of: response))" == "\(Payloads.CreateMessage.self)",
-                        sourceLocation: sourceLocation
-                    )
-                case let .edit(messageId):
-                    let response = await FakeResponseStorage.shared.awaitResponse(
-                        at: .updateMessage(channelId: channel.id, messageId: messageId),
-                        sourceLocation: sourceLocation
-                    ).value
-                    #expect(
-                        "\(type(of: response))" == "\(Payloads.EditMessage.self)",
-                        sourceLocation: sourceLocation
-                    )
+            case let .response(channel, responseType, count):
+                precondition(count > 0)
+                for _ in 0..<count {
+                    switch responseType {
+                    case .create:
+                        let response = await FakeResponseStorage.shared.awaitResponse(
+                            at: .createMessage(channelId: channel.id),
+                            sourceLocation: sourceLocation
+                        ).value
+                        #expect(
+                            "\(type(of: response))" == "\(Payloads.CreateMessage.self)",
+                            sourceLocation: sourceLocation
+                        )
+                    case let .edit(messageId):
+                        let response = await FakeResponseStorage.shared.awaitResponse(
+                            at: .updateMessage(channelId: channel.id, messageId: messageId),
+                            sourceLocation: sourceLocation
+                        ).value
+                        #expect(
+                            "\(type(of: response))" == "\(Payloads.EditMessage.self)",
+                            sourceLocation: sourceLocation
+                        )
+                    }
                 }
             case let .failure(failures):
                 await withTaskGroup(of: Void.self) { group in
@@ -990,6 +997,7 @@ extension SerializationNamespace.GHHooksTests {
             ),
             messageLookupRepo: FakeMessageLookupRepo(),
             usersService: FakeUsersService(),
+            requester: FakeRequester(),
             logger: logger
         )
     }
@@ -1006,7 +1014,7 @@ extension SerializationNamespace.GHHooksTests {
             let type: ResponseKind
         }
 
-        case response(at: GHHooksLambda.Constants.Channels, type: ResponseKind = .create)
+        case response(at: GHHooksLambda.Constants.Channels, type: ResponseKind = .create, count: Int = 1)
         case failure([Failure])
         case error(description: String)
 
