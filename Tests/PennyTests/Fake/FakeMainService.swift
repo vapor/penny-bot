@@ -13,6 +13,7 @@ import Testing
 
 actor FakeMainService: MainService {
     let manager: FakeManager
+    let responseStorage: FakeResponseStorage
     let cache: DiscordCache
     let httpClient: HTTPClient
     let context: HandlerContext
@@ -22,6 +23,7 @@ actor FakeMainService: MainService {
 
     init(manager: FakeManager) async throws {
         self.manager = manager
+        self.responseStorage = manager.responseStorage
         var cacheStorage = DiscordCache.Storage()
         cacheStorage.guilds[TestData.vaporGuild.id] = TestData.vaporGuild
         self.cache = await DiscordCache(
@@ -149,7 +151,7 @@ actor FakeMainService: MainService {
     func waitForStateManagerShutdownAndDidShutdownSignals() async {
         /// Wait for the shutdown signal, then send a `didShutdown` signal.
         /// in practice, the `didShutdown` signal is sent by another Penny that is online.
-        while let possibleSignal = await FakeResponseStorage.shared.awaitResponse(
+        while let possibleSignal = await responseStorage.awaitResponse(
             at: .createMessage(channelId: Constants.Channels.botLogs.id)
         ).value as? Payloads.CreateMessage {
             if let signal = possibleSignal.content,

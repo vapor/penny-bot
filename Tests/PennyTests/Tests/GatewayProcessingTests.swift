@@ -13,8 +13,8 @@ import Testing
 extension SerializationNamespace {
     @Suite
     final class GatewayProcessingTests: Sendable {
-        var responseStorage: FakeResponseStorage { .shared }
-        let manager = FakeManager()
+        let responseStorage: FakeResponseStorage
+        let manager: FakeManager
         let fakeMainService: FakeMainService
         let context: HandlerContext
         let mainServiceTask: Task<Void, any Error>
@@ -27,7 +27,8 @@ extension SerializationNamespace {
             /// First reset the background runner
             BackgroundProcessor.sharedForTests = BackgroundProcessor()
             /// Then reset the storage
-            FakeResponseStorage.shared = FakeResponseStorage()
+            self.responseStorage = FakeResponseStorage()
+            self.manager = FakeManager(responseStorage: self.responseStorage)
             let fakeMainService = try await FakeMainService(manager: self.manager)
             self.fakeMainService = fakeMainService
             self.context = fakeMainService.context

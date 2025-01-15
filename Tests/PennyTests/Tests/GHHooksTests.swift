@@ -17,7 +17,7 @@ import Testing
 
 extension SerializationNamespace {
     @Suite
-    final class GHHooksTests {
+    actor GHHooksTests {
         let decoder: JSONDecoder = {
             var decoder = JSONDecoder()
             decoder.dateDecodingStrategy = .iso8601
@@ -27,6 +27,7 @@ extension SerializationNamespace {
         /// The `…` (U+2026 Horizontal Ellipsis) character.
         let dots = "\u{2026}"
 
+        let responseStorage: FakeResponseStorage
         let backgroundProcessorTask: Task<Void, Never>
 
         init() {
@@ -36,7 +37,7 @@ extension SerializationNamespace {
             /// First reset the background runner
             BackgroundProcessor.sharedForTests = BackgroundProcessor()
             /// Then reset the storage
-            FakeResponseStorage.shared = FakeResponseStorage()
+            self.responseStorage = FakeResponseStorage()
             backgroundProcessorTask = Task<Void, Never> {
                 await BackgroundProcessor.sharedForTests.run()
             }
@@ -896,7 +897,7 @@ extension SerializationNamespace.GHHooksTests {
                 for _ in 0..<count {
                     switch responseType {
                     case .create:
-                        let response = await FakeResponseStorage.shared.awaitResponse(
+                        let response = await self.responseStorage.awaitResponse(
                             at: .createMessage(channelId: channel.id),
                             sourceLocation: sourceLocation
                         ).value
@@ -905,7 +906,7 @@ extension SerializationNamespace.GHHooksTests {
                             sourceLocation: sourceLocation
                         )
                     case let .edit(messageId):
-                        let response = await FakeResponseStorage.shared.awaitResponse(
+                        let response = await self.responseStorage.awaitResponse(
                             at: .updateMessage(channelId: channel.id, messageId: messageId),
                             sourceLocation: sourceLocation
                         ).value
@@ -929,7 +930,7 @@ extension SerializationNamespace.GHHooksTests {
                                     messageId: messageID
                                 )
                             }
-                            let response = await FakeResponseStorage.shared.awaitResponse(
+                            let response = await self.responseStorage.awaitResponse(
                                 at: endpoint,
                                 expectFailure: true,
                                 sourceLocation: sourceLocation
@@ -984,7 +985,7 @@ extension SerializationNamespace.GHHooksTests {
             eventName: eventName,
             event: event,
             httpClient: .shared,
-            discordClient: FakeDiscordClient(),
+            discordClient: FakeDiscordClient(responseStorage: self.responseStorage),
             githubClient: Client(
                 serverURL: try Servers.Server1.url(),
                 transport: FakeClientTransport()

@@ -13,12 +13,16 @@ import Foundation
 #endif
 
 actor FakeManager: GatewayManager {
-    nonisolated let client: any DiscordClient = FakeDiscordClient()
+    nonisolated let client: any DiscordClient
     nonisolated let id: UInt = 0
     nonisolated let identifyPayload: Gateway.Identify = .init(token: "", intents: [])
     var eventContinuations = [AsyncStream<Gateway.Event>.Continuation]()
+    let responseStorage: FakeResponseStorage
 
-    init() {}
+    init(responseStorage: FakeResponseStorage) {
+        self.client = FakeDiscordClient(responseStorage: responseStorage)
+        self.responseStorage = responseStorage
+    }
 
     func connect() async {
         for continuation in eventContinuations {
@@ -84,7 +88,7 @@ actor FakeManager: GatewayManager {
     ) async throws -> T {
         let box = await withCheckedContinuation {
             (continuation: CheckedContinuation<AnyBox, Never>) in
-            FakeResponseStorage.shared.expect(
+            responseStorage.expect(
                 at: endpoint ?? .api(key.responseEndpoints[0]),
                 continuation: continuation,
                 sourceLocation: sourceLocation

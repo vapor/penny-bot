@@ -11,9 +11,9 @@ actor FakeResponseStorage {
     private var continuations = Continuations()
     private var unhandledResponses = UnhandledResponses()
 
-    static var shared = FakeResponseStorage()
-
     private static let idGenerator = ManagedAtomic(UInt(0))
+
+    init() {}
 
     func awaitResponse(
         at endpoint: APIEndpoint,

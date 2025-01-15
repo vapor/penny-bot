@@ -5,11 +5,14 @@ import Testing
 
 struct FakeDiscordClient: DiscordClient {
     var appId: ApplicationSnowflake? = "11111111"
+    let responseStorage: FakeResponseStorage
 
-    init() {}
+    init(responseStorage: FakeResponseStorage) {
+        self.responseStorage = responseStorage
+    }
 
     func send(request: DiscordHTTPRequest) async throws -> DiscordHTTPResponse {
-        await FakeResponseStorage.shared.respond(
+        await responseStorage.respond(
             to: request.endpoint,
             with: AnyBox(Optional<Never>.none as Any)
         )
@@ -35,7 +38,7 @@ struct FakeDiscordClient: DiscordClient {
             try payload.validate().throw(model: payload)
         }
 
-        await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
+        await responseStorage.respond(to: request.endpoint, with: AnyBox(payload))
 
         return DiscordHTTPResponse(
             host: "discord.com",
@@ -59,7 +62,7 @@ struct FakeDiscordClient: DiscordClient {
             try payload.validate().throw(model: payload)
         }
 
-        await FakeResponseStorage.shared.respond(to: request.endpoint, with: AnyBox(payload))
+        await responseStorage.respond(to: request.endpoint, with: AnyBox(payload))
 
         return DiscordHTTPResponse(
             host: "discord.com",
