@@ -1,7 +1,6 @@
 import AsyncHTTPClient
 import Logging
 
-@testable import DiscordModels
 @testable import GHHooksLambda
 
 struct FakeRequester: GenericRequester {
