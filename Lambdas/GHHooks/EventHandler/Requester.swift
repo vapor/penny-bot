@@ -4,6 +4,11 @@ import GitHubAPI
 import Logging
 import Shared
 
+protocol GenericRequester: Sendable {
+    func getDiscordMember(githubID: String) async throws -> GuildMember?
+    func getCodeOwners(repoFullName: String, branch: some StringProtocol) async throws -> CodeOwners
+}
+
 /// A shared place for requests that more than 1 place uses.
 struct Requester: Sendable {
     let eventName: GHEvent.Kind
@@ -15,8 +20,8 @@ struct Requester: Sendable {
     let logger: Logger
 }
 
-extension Requester {
-    func getDiscordMember(githubID: String) async throws -> Guild.Member? {
+extension Requester: GenericRequester {
+    func getDiscordMember(githubID: String) async throws -> GuildMember? {
         guard let user = try await self.usersService.getUser(githubID: githubID) else {
             return nil
         }
@@ -30,7 +35,13 @@ extension Requester {
             return nil
         default: break
         }
-        return try response.decode()
+        let member = try response.decode()
+        return .init(
+            uiName: member.uiName,
+            uiAvatarURL: member.uiAvatarURL,
+            userId: member.user?.id,
+            roles: member.roles
+        )
     }
 
     /// Returns code owners if the repo contains the file or returns `nil`.
@@ -63,7 +74,9 @@ extension Requester {
         )
         return parsed
     }
+}
 
+extension GenericRequester {
     /// Returns code owner names all lowercased.
     func parseCodeOwners(text: String) -> CodeOwners {
         let codeOwners: [String] =
@@ -101,6 +114,25 @@ extension Requester {
     }
 }
 
+struct GuildMember {
+    var uiName: String?
+    var uiAvatarURL: String?
+    var userId: UserSnowflake?
+    var roles: [RoleSnowflake]
+
+    init(
+        uiName: String? = nil,
+        uiAvatarURL: String? = nil,
+        userId: UserSnowflake? = nil,
+        roles: [RoleSnowflake] = []
+    ) {
+        self.uiName = uiName
+        self.uiAvatarURL = uiAvatarURL
+        self.userId = userId
+        self.roles = roles
+    }
+}
+
 struct CodeOwners: CustomStringConvertible {
     var value: Set<String>
 
@@ -108,7 +140,7 @@ struct CodeOwners: CustomStringConvertible {
         "CodeOwners(value: \(value))"
     }
 
-    fileprivate init(value: [String]) {
+    init(value: [String]) {
         self.value = Set(value.map({ $0.lowercased() }))
     }
 
@@ -134,6 +166,10 @@ struct CodeOwners: CustomStringConvertible {
         } else {
             return self.value.contains(user.login.lowercased())
         }
+    }
+
+    func contains(login: String) -> Bool {
+        self.value.contains(login.lowercased())
     }
 
     func union(_ other: Set<String>) -> CodeOwners {

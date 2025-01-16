@@ -10,40 +10,40 @@ import Testing
 @testable import Logging
 @testable import Penny
 
-extension SerializationNamespace {
-    @Suite
-    final class GatewayProcessingTests: Sendable {
-        var responseStorage: FakeResponseStorage { .shared }
-        let manager = FakeManager()
-        let fakeMainService: FakeMainService
-        let context: HandlerContext
-        let mainServiceTask: Task<Void, any Error>
+@Suite
+final class GatewayProcessingTests: Sendable {
+    let responseStorage: FakeResponseStorage
+    let manager: FakeManager
+    let fakeMainService: FakeMainService
+    let context: HandlerContext
+    let mainServiceTask: Task<Void, any Error>
 
-        init() async throws {
-            /// Simulate prod
-            setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
-            /// Disable logging
-            LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
-            /// First reset the background runner
-            BackgroundProcessor.sharedForTests = BackgroundProcessor()
-            /// Then reset the storage
-            FakeResponseStorage.shared = FakeResponseStorage()
-            let fakeMainService = try await FakeMainService(manager: self.manager)
-            self.fakeMainService = fakeMainService
-            self.context = fakeMainService.context
-            mainServiceTask = Task<Void, any Error> {
-                try await Penny.start(mainService: fakeMainService)
-            }
-            await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
+    init() async throws {
+        /// Simulate prod
+        setenv("DEPLOYMENT_ENVIRONMENT", "testing", 1)
+        /// Disable logging
+        LoggingSystem.bootstrapInternal(SwiftLogNoOpLogHandler.init)
+        /// First reset the background runner
+        let backgroundProcessor = BackgroundProcessor()
+        /// Then reset the storage
+        self.responseStorage = FakeResponseStorage(backgroundProcessor: backgroundProcessor)
+        self.manager = FakeManager(responseStorage: self.responseStorage)
+        let fakeMainService = try await FakeMainService(
+            manager: self.manager,
+            backgroundProcessor: backgroundProcessor
+        )
+        self.fakeMainService = fakeMainService
+        self.context = fakeMainService.context
+        mainServiceTask = Task<Void, any Error> {
+            try await Penny.start(mainService: fakeMainService)
         }
-
-        deinit {
-            mainServiceTask.cancel()
-        }
+        await fakeMainService.waitForStateManagerShutdownAndDidShutdownSignals()
     }
-}
 
-extension SerializationNamespace.GatewayProcessingTests {
+    deinit {
+        mainServiceTask.cancel()
+    }
+
     @Test
     func waiterServiceRunsUnderlyingService() async throws {
         actor SampleService: Service {
