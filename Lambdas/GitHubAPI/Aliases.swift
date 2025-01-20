@@ -2,7 +2,6 @@ package typealias Repository = Components.Schemas.Repository
 package typealias User = Components.Schemas.SimpleUser
 package typealias PullRequest = Components.Schemas.PullRequest
 package typealias SimplePullRequest = Components.Schemas.PullRequestSimple
-package typealias AuthorAssociation = Components.Schemas.AuthorAssociation
 package typealias Issue = Components.Schemas.Issue
 package typealias Label = Components.Schemas.Label
 package typealias Release = Components.Schemas.Release

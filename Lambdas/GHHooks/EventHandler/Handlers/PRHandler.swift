@@ -49,12 +49,10 @@ struct PRHandler {
     }
 
     func onEdited() async throws {
-        if self.pr.isIgnorableDoNotMergePR { return }
         try await self.editPRReport()
     }
 
     func onOpened() async throws {
-        if self.pr.isIgnorableDoNotMergePR { return }
         try await self.makeReporter().reportCreation()
     }
 

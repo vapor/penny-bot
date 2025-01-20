@@ -290,9 +290,7 @@ struct ReleaseMaker {
     }
 
     func isNewContributor(codeOwners: CodeOwners, existingContributors: Set<Int64>) -> Bool {
-        pr.authorAssociation != .owner
-            && !pr.user.isBot
-            && !codeOwners.contains(user: pr.user)
+        pr.authorAssociation != .owner && !pr.user.isBot && !codeOwners.contains(user: pr.user)
             && !existingContributors.contains(pr.user.id)
     }
 
@@ -307,9 +305,9 @@ struct ReleaseMaker {
             )
         )
 
-        do {
-            return try response.ok.body.json
-        } catch {
+        guard case let .ok(ok) = response,
+            case let .json(json) = ok.body
+        else {
             logger.warning(
                 "Could not find reviews",
                 metadata: [
@@ -318,6 +316,8 @@ struct ReleaseMaker {
             )
             return []
         }
+
+        return json
     }
 
     func getExistingContributorIDs() async throws -> Set<Int64> {
@@ -357,9 +357,9 @@ struct ReleaseMaker {
             )
         )
 
-        do {
-            let ok = try response.ok
-            let json = try ok.body.json
+        if case let .ok(ok) = response,
+            case let .json(json) = ok.body
+        {
             /// Example of a `link` header: `<https://api.github.com/repositories/49910095/contributors?page=6>; rel="prev", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="next", <https://api.github.com/repositories/49910095/contributors?page=8>; rel="last", <https://api.github.com/repositories/49910095/contributors?page=1>; rel="first"`
             /// If the header contains `rel="next"` then we'll have a next page to fetch.
             let hasNext =
@@ -378,7 +378,7 @@ struct ReleaseMaker {
                 ]
             )
             return (ids, hasNext)
-        } catch {
+        } else {
             logger.error(
                 "Error when fetching contributors but will continue",
                 metadata: [

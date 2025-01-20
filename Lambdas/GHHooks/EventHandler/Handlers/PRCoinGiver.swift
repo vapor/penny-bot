@@ -30,11 +30,8 @@ struct PRCoinGiver {
             repoFullName: repo.fullName,
             branch: branch
         )
-        for pr in prs {
-            if pr.mergedAt == nil {
-                logger.debug("PR is not merged yet", metadata: ["pr": "\(pr)"])
-                continue
-            }
+        for pr in try await getPRsRelatedToCommit() {
+            guard pr.mergedAt != nil else { continue }
             let user = try pr.user.requireValue()
             var usersToReceiveCoins = codeOwners.contains(user: user) ? [] : [user.id]
 
@@ -91,8 +88,6 @@ struct PRCoinGiver {
     }
 
     func giveCoin(userId: Int64, pr: SimplePullRequest) async throws {
-        logger.trace("Giving a coin", metadata: ["userId": .stringConvertible(userId)])
-
         guard
             let member = try await context.requester.getDiscordMember(
                 githubID: "\(userId)"
