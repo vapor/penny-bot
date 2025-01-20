@@ -5,6 +5,13 @@ enum Constants {
     static let guildID: GuildSnowflake = "431917998102675485"
     static let botDevUserID: UserSnowflake = "290483761559240704"
 
+    static let trustedGitHubUserIds: [Int64] = [
+        69_189_821,  // Paul
+        9_938_337,  // Tim
+        1_130_717,  // Gwynne
+        54_685_446,  // Mahdi
+    ]
+
     enum GitHub {
         /// The user id of Penny.
         static let userID = 139_480_971
