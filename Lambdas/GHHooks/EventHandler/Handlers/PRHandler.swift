@@ -132,7 +132,7 @@ struct PRHandler {
         let isIgnorable = self.pr.isIgnorableDoNotMergePR
         if isIgnorable {
             logger.info(
-                "Ignoring PR",
+                "PR is ignorable",
                 metadata: [
                     "pr": "\(self.pr)"
                 ]
