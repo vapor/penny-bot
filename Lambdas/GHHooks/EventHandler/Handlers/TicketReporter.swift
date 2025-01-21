@@ -128,7 +128,8 @@ struct TicketReporter {
             )
         case let .some(error):
             throw error
-        default: break
+        case .none:
+            break
         }
     }
 }

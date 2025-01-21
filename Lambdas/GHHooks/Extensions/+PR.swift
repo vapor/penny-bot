@@ -1,5 +1,11 @@
 import GitHubAPI
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
+
 extension PullRequest {
 
     enum KnownLabel: String {
@@ -28,6 +34,14 @@ extension PullRequest {
             KnownLabel(rawValue: $0.name)
         }
     }
+
+    var isIgnorableDoNotMergePR: Bool {
+        let isTrustedUser = Constants.trustedGitHubUserIds.contains(self.user.id)
+        guard isTrustedUser || self.authorAssociation.isContributorOrHigher else {
+            return false
+        }
+        return self.title.hasDoNotMergePrefix
+    }
 }
 
 extension SimplePullRequest {
@@ -35,5 +49,24 @@ extension SimplePullRequest {
         self.labels.compactMap {
             PullRequest.KnownLabel(rawValue: $0.name)
         }
+    }
+}
+
+extension AuthorAssociation {
+    fileprivate var isContributorOrHigher: Bool {
+        switch self {
+        case .collaborator, .contributor, .owner: return true
+        case .member, .firstTimer, .firstTimeContributor, .mannequin, .none: return false
+        }
+    }
+}
+
+extension String {
+    fileprivate var hasDoNotMergePrefix: Bool {
+        let folded = self.lowercased()
+            .filter { !$0.isPunctuation }
+            .folding(options: .caseInsensitive, locale: nil)
+            .folding(options: .diacriticInsensitive, locale: nil)
+        return folded.hasPrefix("dnm") || folded.hasPrefix("do not merge")
     }
 }
