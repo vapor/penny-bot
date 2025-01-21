@@ -36,11 +36,11 @@ extension PullRequest {
     }
 
     var isIgnorableDoNotMergePR: Bool {
-        isIgnorableDoNotMergePullRequest(
-            title: self.title,
-            userId: self.user.id,
-            authorAssociation: self.authorAssociation
-        )
+        let isTrustedUser = Constants.trustedGitHubUserIds.contains(self.user.id)
+        guard isTrustedUser || self.authorAssociation.isContributorOrHigher else {
+            return false
+        }
+        return self.title.hasDoNotMergePrefix
     }
 }
 
@@ -50,26 +50,6 @@ extension SimplePullRequest {
             PullRequest.KnownLabel(rawValue: $0.name)
         }
     }
-
-    var isIgnorableDoNotMergePR: Bool {
-        isIgnorableDoNotMergePullRequest(
-            title: self.title,
-            userId: self.user?.id,
-            authorAssociation: self.authorAssociation
-        )
-    }
-}
-
-private func isIgnorableDoNotMergePullRequest(
-    title: String,
-    userId: Int64?,
-    authorAssociation: AuthorAssociation
-) -> Bool {
-    let isTrustedUser = userId.map { Constants.trustedGitHubUserIds.contains($0) } ?? false
-    guard isTrustedUser || authorAssociation.isContributorOrHigher else {
-        return false
-    }
-    return title.hasDoNotMergePrefix
 }
 
 extension AuthorAssociation {
