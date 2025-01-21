@@ -313,7 +313,8 @@ struct ReleaseMaker {
             logger.warning(
                 "Could not find reviews",
                 metadata: [
-                    "response": "\(response)"
+                    "response": "\(response)",
+                    "error": "\(String(reflecting: error))",
                 ]
             )
             return []
@@ -384,6 +385,7 @@ struct ReleaseMaker {
                 metadata: [
                     "page": .stringConvertible(page),
                     "response": "\(response)",
+                    "error": "\(String(reflecting: error))",
                 ]
             )
             return ([], false)
