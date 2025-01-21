@@ -1,11 +1,6 @@
-import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
 import Logging
-import Markdown
-import NIOCore
-import NIOFoundationCompat
-import SwiftSemver
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
