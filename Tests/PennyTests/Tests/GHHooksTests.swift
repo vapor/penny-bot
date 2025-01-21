@@ -864,6 +864,15 @@ actor GHHooksTests {
         )
     }
 
+    @Test("PR with [DNM] prefix where author_association is CONTRIBUTOR should not be posted to Discord")
+    func handlePREvent14() async throws {
+        try await handleEvent(
+            key: "pr14",
+            eventName: .pull_request,
+            expect: .noResponse
+        )
+    }
+
     @Test
     func handlePushEvent1() async throws {
         try await handleEvent(
