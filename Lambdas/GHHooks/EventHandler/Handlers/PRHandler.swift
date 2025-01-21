@@ -1,6 +1,7 @@
 import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
+import Logging
 import Markdown
 import NIOCore
 import NIOFoundationCompat
@@ -18,6 +19,9 @@ struct PRHandler {
     let pr: PullRequest
     var event: GHEvent {
         self.context.event
+    }
+    var logger: Logger {
+        context.logger
     }
 
     var repo: Repository {
@@ -49,19 +53,21 @@ struct PRHandler {
     }
 
     func onEdited() async throws {
-        if self.pr.isIgnorableDoNotMergePR { return }
-        try await self.editPRReport()
+        if self.isIgnorableDoNotMergePR() { return }
+        try await self.makeReporter().reportEdition(
+            requiresPreexistingReport: self.action == .labeled
+        )
     }
 
     func onOpened() async throws {
-        if self.pr.isIgnorableDoNotMergePR { return }
+        if self.isIgnorableDoNotMergePR() { return }
         try await self.makeReporter().reportCreation()
     }
 
     func onClosed() async throws {
         try await withThrowingAccumulatingVoidTaskGroup(tasks: [
             { try await self.makeRelease() },
-            { try await self.editPRReport() },
+            { try await self.onEdited() },
         ])
     }
 
@@ -71,12 +77,6 @@ struct PRHandler {
             pr: self.pr,
             number: self.event.number.requireValue()
         ).handle()
-    }
-
-    func editPRReport() async throws {
-        try await self.makeReporter().reportEdition(
-            requiresPreexistingReport: self.action == .labeled
-        )
     }
 
     func makeReporter() async throws -> TicketReporter {
@@ -126,6 +126,19 @@ struct PRHandler {
         )
 
         return embed
+    }
+
+    func isIgnorableDoNotMergePR() -> Bool {
+        let isIgnorable = self.pr.isIgnorableDoNotMergePR
+        if isIgnorable {
+            logger.info(
+                "Ignoring opened PR",
+                metadata: [
+                    "pr": "\(self.pr)"
+                ]
+            )
+        }
+        return isIgnorable
     }
 }
 
