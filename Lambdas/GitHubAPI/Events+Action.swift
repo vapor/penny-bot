@@ -41,6 +41,7 @@ extension Issue {
         case pinned
         case reopened
         case transferred
+        case typed  // undocumented?
         case unassigned
         case unlabeled
         case unlocked
