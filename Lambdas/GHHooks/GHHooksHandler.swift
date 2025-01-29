@@ -100,19 +100,20 @@ struct GHHooksHandler: LambdaHandler {
                                 ]
                             )
                         ],
+                        /// The `_` suffix is only to make sure Discord doesn't try to inline-render the files.
                         files: [
                             .init(
                                 data: ByteBuffer(string: "\(error)"),
-                                filename: "error.txt"
+                                filename: "error.txt_"
                             ),
                             .init(
                                 data: request.body.map(ByteBuffer.init(string:)) ?? ByteBuffer(),
-                                filename: "body.json"
+                                filename: "body.json_"
                             ),
                         ],
                         attachments: [
-                            .init(index: 0, filename: "error.txt"),
-                            .init(index: 1, filename: "body.json"),
+                            .init(index: 0, filename: "error.txt_"),
+                            .init(index: 1, filename: "body.json_"),
                         ]
                     )
                 ).guardSuccess()
