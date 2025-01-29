@@ -40,7 +40,7 @@ struct IssueHandler: Sendable {
             try await self.onEdited()
         case .transferred:
             try await self.onTransferred()
-        case .assigned, .demilestoned, .milestoned, .pinned, .unassigned, .unpinned:
+        case .typed, .assigned, .demilestoned, .milestoned, .pinned, .unassigned, .unpinned:
             break
         }
     }
