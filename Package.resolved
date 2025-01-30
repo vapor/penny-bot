@@ -1,13 +1,13 @@
 {
-  "originHash" : "14129a901467e802c44617a758ecbf6934f4611a2871992b3ba67885891c4bd8",
+  "originHash" : "e250ee7e8e5cd95163ba16e3bb446d0d72b24e9018b97a6fbf40c04e1ff7414f",
   "pins" : [
     {
       "identity" : "async-http-client",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/async-http-client.git",
       "state" : {
-        "revision" : "f38c2fea867d230941f9b45fea6eda819d78fbb4",
-        "version" : "1.24.1"
+        "revision" : "60fa3dcfc52d09ed0411e9c4bc99928bf63656bd",
+        "version" : "1.24.2"
       }
     },
     {
@@ -150,8 +150,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-events.git",
       "state" : {
-        "revision" : "cfd688e499894ed0ba527f1decf4dfc17ec06492",
-        "version" : "0.5.0"
+        "revision" : "0025b1a409aa4d3fe9900aff1339ac403343ccd5",
+        "version" : "1.0.0"
       }
     },
     {

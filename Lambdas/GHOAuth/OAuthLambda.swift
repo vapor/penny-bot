@@ -71,13 +71,13 @@ struct GHOAuthHandler: LambdaHandler {
     func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
         logger.debug("Received event: \(event)")
 
-        guard let code = event.queryStringParameters?["code"] else {
+        guard let code = event.queryStringParameters["code"] else {
             logger.error("Missing code query parameter")
             await logErrorToDiscord("Missing code query parameter")
             return .init(statusCode: .badRequest, body: "Missing code query parameter")
         }
 
-        guard let state = event.queryStringParameters?["state"] else {
+        guard let state = event.queryStringParameters["state"] else {
             logger.error("Missing state query parameter")
             await logErrorToDiscord("Missing state query parameter")
             return .init(statusCode: .badRequest, body: "Missing state query parameter")
@@ -101,7 +101,7 @@ struct GHOAuthHandler: LambdaHandler {
                 "Error during state verification",
                 metadata: [
                     "error": "\(String(reflecting: error))",
-                    "state": .string(event.queryStringParameters?["state"] ?? ""),
+                    "state": .string(event.queryStringParameters["state"] ?? ""),
                 ]
             )
             await logErrorToDiscord("Error verifying state")
