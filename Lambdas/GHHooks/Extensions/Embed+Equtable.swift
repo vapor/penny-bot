@@ -1,6 +1,6 @@
 import DiscordModels
 
-extension Embed: @retroactive Equatable {
+extension DiscordModels.Embed: Equatable {
     public static func == (lhs: Embed, rhs: Embed) -> Bool {
         lhs.title == rhs.title && lhs.type == rhs.type && lhs.description == rhs.description && lhs.url == rhs.url
             && lhs.timestamp?.date == rhs.timestamp?.date && lhs.color == rhs.color && lhs.footer == rhs.footer
@@ -9,34 +9,34 @@ extension Embed: @retroactive Equatable {
     }
 }
 
-extension Embed.Media: @retroactive Equatable {
+extension DiscordModels.Embed.Media: Equatable {
     public static func == (lhs: Embed.Media, rhs: Embed.Media) -> Bool {
         lhs.url.asString == rhs.url.asString && lhs.proxy_url ?== rhs.proxy_url && lhs.height ?== rhs.height
             && lhs.width ?== rhs.width
     }
 }
 
-extension Embed.Footer: @retroactive Equatable {
+extension DiscordModels.Embed.Footer: Equatable {
     public static func == (lhs: Embed.Footer, rhs: Embed.Footer) -> Bool {
         lhs.icon_url?.asString == rhs.icon_url?.asString && lhs.text == rhs.text && lhs.proxy_icon_url
             ?== rhs.proxy_icon_url
     }
 }
 
-extension Embed.Provider: @retroactive Equatable {
+extension DiscordModels.Embed.Provider: Equatable {
     public static func == (lhs: Embed.Provider, rhs: Embed.Provider) -> Bool {
         lhs.url == rhs.url && lhs.name == rhs.name
     }
 }
 
-extension Embed.Author: @retroactive Equatable {
+extension DiscordModels.Embed.Author: Equatable {
     public static func == (lhs: Embed.Author, rhs: Embed.Author) -> Bool {
         lhs.url == rhs.url && lhs.icon_url?.asString == rhs.icon_url?.asString && lhs.name == rhs.name
             && lhs.proxy_icon_url ?== rhs.proxy_icon_url
     }
 }
 
-extension Embed.Field: @retroactive Equatable {
+extension DiscordModels.Embed.Field: Equatable {
     public static func == (lhs: Embed.Field, rhs: Embed.Field) -> Bool {
         lhs.name == rhs.name && lhs.value == rhs.value && lhs.inline ?== rhs.inline
     }
