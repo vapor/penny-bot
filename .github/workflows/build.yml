@@ -1,0 +1,29 @@
+name: build
+
+on:
+  pull_request: { types: [opened, reopened, synchronize] }
+
+jobs:
+  build:
+    runs-on: runs-on=${{ github.run_id }}/cpu=8/ram=32/family=m7a/image=ubuntu24-full-x64/spot=false
+
+    timeout-minutes: 60
+
+    container: swift:6.0-jammy
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      SWIFT_BACKTRACE: "enable=yes,sanitize=yes,threads=all,images=all,interactive=no,symbolicate=fast,limit=none"
+
+    steps:
+      - name: Configure git
+        run: git config --global --add safe.directory '*'
+
+      - name: Check out ${{ github.event.repository.name }}
+        uses: actions/checkout@v4
+
+      - name: Build ${{ github.event.repository.name }}
+        run: swift build --force-resolved-versions -v -j 1

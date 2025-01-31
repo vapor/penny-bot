@@ -217,9 +217,9 @@ extension Calendar {
 }
 
 // MARK: +Emoji
-extension Emoji: @retroactive Equatable {}
-extension Emoji: @retroactive Hashable {
-    public static func == (lhs: Emoji, rhs: Emoji) -> Bool {
+extension DiscordModels.Emoji: Equatable {}
+extension DiscordModels.Emoji: Hashable {
+    public static func == (lhs: DiscordModels.Emoji, rhs: DiscordModels.Emoji) -> Bool {
         switch (lhs.id, rhs.id) {
         case let (.some(id1), .some(id2)):
             return id1 == id2

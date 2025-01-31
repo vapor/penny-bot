@@ -1,4 +1,4 @@
-// swift-tools-version:6.0
+// swift-tools-version:5.10
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,14 +6,14 @@ import PackageDescription
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v15)
+        .macOS(.v14)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "3.1.0"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
-        .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.1"),
+        .package(url: "https://github.com/vapor/jwt-kit.git", exact: "5.0.0-rc.1"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
@@ -115,6 +115,7 @@ let package = Package(
         .target(
             name: "LambdasShared",
             dependencies: [
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
@@ -232,7 +233,6 @@ var testsSwiftSettings: [SwiftSetting] {
 }
 
 extension PackageDescription.Target {
-    @MainActor
     static func lambdaTarget(
         name: String,
         additionalDependencies: [PackageDescription.Target.Dependency]
