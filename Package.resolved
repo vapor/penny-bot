@@ -1,5 +1,5 @@
 {
-  "originHash" : "51a49adaa755a352e09328a4a40288857c8136566718a05016538da5e0a11ae8",
+  "originHash" : "aa58f446c26b3944318894eb0ba66fa9304337b71a740343030cd669e82a8438",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "60fa3dcfc52d09ed0411e9c4bc99928bf63656bd",
         "version" : "1.24.2"
+      }
+    },
+    {
+      "identity" : "bigint",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/attaswift/BigInt.git",
+      "state" : {
+        "revision" : "114343a705df4725dfe7ab8a2a326b8883cfd79c",
+        "version" : "5.5.1"
       }
     },
     {
@@ -51,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/jwt-kit.git",
       "state" : {
-        "revision" : "03f5013f0b547ce43abe45e7e90711303a3e5495",
-        "version" : "5.1.2"
+        "revision" : "fd87490fcd22fee6eb17e6ee178b9e2be8c02b06",
+        "version" : "5.0.0-rc.1"
       }
     },
     {
@@ -112,7 +121,7 @@
     {
       "identity" : "swift-argument-parser",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-argument-parser",
+      "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
         "revision" : "41982a3656a71c768319979febd796c6fd111d5c",
         "version" : "1.5.0"
@@ -301,7 +310,7 @@
     {
       "identity" : "swift-numerics",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-numerics",
+      "location" : "https://github.com/apple/swift-numerics.git",
       "state" : {
         "revision" : "0a5bc04095a675662cf24757cc0640aa2204253b",
         "version" : "1.0.2"
@@ -310,7 +319,7 @@
     {
       "identity" : "swift-openapi-async-http-client",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
+      "location" : "https://github.com/swift-server/swift-openapi-async-http-client.git",
       "state" : {
         "revision" : "915aeff168625b0f88a5810ee7ab8e9c00af671b",
         "version" : "1.1.0"
