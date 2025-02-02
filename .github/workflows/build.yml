@@ -26,4 +26,4 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build ${{ github.event.repository.name }}
-        run: swift build --force-resolved-versions -v -j 1 -c debug
+        run: swift build --force-resolved-versions -v -j 1 -c release
