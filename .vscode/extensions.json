@@ -1,10 +1,10 @@
 {
   "recommendations": [
-    "sswg.swift-lang",
     "foxundermoon.shell-format",
     "esbenp.prettier-vscode",
     "usernamehw.errorlens",
     "redhat.vscode-yaml",
-    "francisco.html-leaf"
+    "francisco.html-leaf",
+    "swiftlang.swift-vscode"
   ]
 }

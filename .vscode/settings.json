@@ -54,6 +54,11 @@
     "editor.tabSize": 4,
     "editor.insertSpaces": true
   },
+  "swift.pluginPermissions": {
+    "swift-openapi-generator:generate-code-from-openapi": {
+      "allowWritingToPackageDirectory": true
+    }
+  },
   "terminal.integrated.scrollback": 10000,
   "swift.buildArguments": ["--force-resolved-versions"],
   "swift.additionalTestArguments": ["--disable-xctest"],
