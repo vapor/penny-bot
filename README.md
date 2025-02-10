@@ -67,6 +67,6 @@ The related labels are:
 
 Some other notes:
 * `semver-major` and `release` are of limited use for automatic releases. Penny won't do a whole major release by itself since those are rare and they can be risky to do.
-* Use `prerelease` label in combination with another semver label like `semver-patch` to make sure Penny can correctly create a prerealse, when a prerelease is needed.
+* Use `prerelease` label in combination with another semver label like `semver-patch` to make sure Penny can correctly create a prerelease, when a prerelease is needed.
   * For example when you have a `v5.0.0-alpha.1` release and want Penny to tag `v5.0.0-alpha.2` next.
 * Try to use `no-release-needed` or `semver-noop` when no release is needed.
