@@ -14,31 +14,47 @@ enum SemVerStage: String {
 }
 
 extension SemanticVersion {
-    func next(_ bump: SemVerBump) -> SemanticVersion? {
+    func next(_ bump: SemVerBump, forcePrerelease: Bool) -> SemanticVersion? {
         var version = self
 
-        if version.prereleaseIdentifiers.isEmpty {
-            switch bump {
-            case .releaseStage:
-                /// A bot shouldn't release a whole library.
-                return nil
-            case .patch:
-                version.patch += 1
-            case .minor:
-                version.patch = 0
-                version.minor += 1
-            case .major:
-                /// A bot shouldn't release a whole library.
-                return nil
-            }
-        } else {
-            guard version.prereleaseIdentifiers.count < 4 else {
-                /// Shouldn't have more than 3 identifiers, otherwise unexpected by this code.
-                return nil
-            }
-            /// At this point we are guaranteed 1/2/3 `prereleaseIdentifiers`.
+        guard version.prereleaseIdentifiers.count < 3 else {
+            /// Shouldn't have more than 2 identifiers, otherwise unexpected by this code.
+            /// So something like `alpha.1.1` is unexpected, but `alpha.1` is fine.
+            return nil
+        }
 
-            guard version.prereleaseIdentifiers[0].first?.isLetter ?? false else {
+        switch version.prereleaseIdentifiers.isEmpty {
+        case true:
+            switch forcePrerelease {
+            case true:
+                switch bump {
+                case .releaseStage, .major:
+                    /// A bot shouldn't release a whole new major version.
+                    /// Major bump is unsupported in prereleases.
+                    return nil
+                case .patch, .minor:
+                    /// Regardless, do a `alpha.1` release.
+                    version.prereleaseIdentifiers = ["alpha", "1"]
+                }
+            case false:
+                switch bump {
+                case .releaseStage:
+                    /// A bot shouldn't release a whole new major version.
+                    return nil
+                case .patch:
+                    version.patch += 1
+                case .minor:
+                    version.patch = 0
+                    version.minor += 1
+                case .major:
+                    /// A bot shouldn't release a whole new major version.
+                    return nil
+                }
+            }
+        case false:
+            /// At this point we are guaranteed 1/2 `prereleaseIdentifiers`.
+
+            guard version.prereleaseIdentifiers[0].allSatisfy(\.isLetter) else {
                 /// Identifiers should be like `["alpha", "1"]`.
                 /// First identifier should not be a number.
                 return nil
@@ -51,45 +67,22 @@ extension SemanticVersion {
             }
 
             switch bump {
-            case .releaseStage:
-                let stage = SemVerStage(rawValue: version.prereleaseIdentifiers[0])
-                switch stage {
-                case .alpha:
-                    version.prereleaseIdentifiers[0] = SemVerStage.beta.rawValue
-                case .beta:
-                    version.prereleaseIdentifiers[0] = SemVerStage.rc.rawValue
-                case .rc:
-                    /// A bot shouldn't release a whole library.
-                    return nil
-                default:
-                    /// Don't know what is the next stage.
-                    return nil
-                }
+            case .releaseStage, .major:
+                /// A bot shouldn't do a whole new major bump version.
+                /// Major bump is unsupported in prereleases.
+                return nil
             case .patch, .minor:
-                if version.prereleaseIdentifiers.count == 1 {
-                    /// Add "0" as the major identifier.
-                    version.prereleaseIdentifiers.append("0")
-                }
-                /// At this point we are guaranteed 2 or 3 identifiers.
-
-                if version.prereleaseIdentifiers.count == 2 {
-                    /// Doesn't have any minor identifiers. We add it.
+                switch version.prereleaseIdentifiers.count {
+                case 1:
+                    /// Add "1" as the major identifier (so like `alpha.1`).
                     version.prereleaseIdentifiers.append("1")
-                } else {
-                    /// Already checked not-nil, but still trying to be safe.
-                    guard let prev = Int(version.prereleaseIdentifiers.removeLast())
-                    else { return nil }
-                    version.prereleaseIdentifiers.append("\(prev + 1)")
-                }
-            case .major:
-                if version.prereleaseIdentifiers.count == 1 {
-                    /// Add "1" as the major identifier.
-                    version.prereleaseIdentifiers.append("1")
-                } else {
-                    /// Already checked not-nil, but still trying to be safe.
-                    guard let prev = Int(version.prereleaseIdentifiers[1])
-                    else { return nil }
+                case 2:
+                    guard let prev = Int(version.prereleaseIdentifiers[1]) else { return nil }
                     version.prereleaseIdentifiers[1] = "\(prev + 1)"
+                default:
+                    fatalError(
+                        "Already checked no more than 2 prerelease identifiers: \(version.prereleaseIdentifiers)"
+                    )
                 }
             }
         }

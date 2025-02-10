@@ -14,6 +14,7 @@ extension PullRequest {
         case semVerPatch = "semver-patch"
         case semVerNoOp = "semver-noop"
         case release = "release"
+        case prerelease = "prerelease"
         case noReleaseNeeded = "no-release-needed"
         case translationUpdate = "translation-update"
         case noTranslationNeeded = "no-translation-needed"
@@ -24,7 +25,7 @@ extension PullRequest {
             case .semVerMinor: return .minor
             case .semVerPatch: return .patch
             case .release: return .releaseStage
-            case .semVerNoOp, .noReleaseNeeded, .translationUpdate, .noTranslationNeeded: return nil
+            case .prerelease, .semVerNoOp, .noReleaseNeeded, .translationUpdate, .noTranslationNeeded: return nil
             }
         }
     }
@@ -41,6 +42,17 @@ extension PullRequest {
             return false
         }
         return self.title.hasDoNotMergePrefix
+    }
+}
+
+extension [PullRequest.KnownLabel] {
+    func semVerBump() -> SemVerBump? {
+        for label in self {
+            if let bump = label.toBump() {
+                return bump
+            }
+        }
+        return nil
     }
 }
 
