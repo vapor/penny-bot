@@ -174,53 +174,140 @@ actor GHHooksTests {
     }
 
     @Test
-    func semVerBump() throws {
+    func semVerBumpNoForcePrerelease() throws {
         do {
             let version = try #require(SemanticVersion(string: "11.0.0"))
             /// Does not bump major versions to avoid releasing a whole new major version.
-            #expect(version.next(.major) == nil)
+            #expect(version.next(.major, forcePrerelease: false) == nil)
         }
 
         do {
             let version = try #require(SemanticVersion(string: "2.12.0"))
-            let next = try #require(version.next(.minor))
+            let next = try #require(version.next(.minor, forcePrerelease: false))
             #expect(next.description == "2.13.0")
         }
 
         do {
             let version = try #require(SemanticVersion(string: "0.0.299"))
-            let next = try #require(version.next(.patch))
+            let next = try #require(version.next(.patch, forcePrerelease: false))
             #expect(next.description == "0.0.300")
         }
 
         do {
             let version = try #require(SemanticVersion(string: "122.9.67-alpha.1"))
-            let next = try #require(version.next(.major))
-            #expect(next.description == "122.9.67-alpha.2")
-        }
-
-        do {
-            let version = try #require(SemanticVersion(string: "122.9.67-alpha"))
-            let next = try #require(version.next(.major))
-            #expect(next.description == "122.9.67-alpha.1")
+            let next = version.next(.major, forcePrerelease: false)
+            #expect(next == nil)
         }
 
         do {
             let version = try #require(SemanticVersion(string: "122.9.67-alpha.44.55"))
-            let next = try #require(version.next(.minor))
-            #expect(next.description == "122.9.67-alpha.44.56")
+            let next = version.next(.minor, forcePrerelease: false)
+            #expect(next == nil)
         }
 
         do {
             let version = try #require(SemanticVersion(string: "122.9.67-alpha"))
-            let next = try #require(version.next(.minor))
-            #expect(next.description == "122.9.67-alpha.0.1")
+            let next = try #require(version.next(.patch, forcePrerelease: false))
+            #expect(next.description == "122.9.67-alpha.1")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha"))
+            let next = try #require(version.next(.minor, forcePrerelease: false))
+            #expect(next.description == "122.9.67-alpha.1")
         }
 
         do {
             let version = try #require(SemanticVersion(string: "122.9.67-alpha.1"))
-            let next = try #require(version.next(.minor))
-            #expect(next.description == "122.9.67-alpha.1.1")
+            let next = try #require(version.next(.patch, forcePrerelease: false))
+            #expect(next.description == "122.9.67-alpha.2")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha.1"))
+            let next = try #require(version.next(.minor, forcePrerelease: false))
+            #expect(next.description == "122.9.67-alpha.2")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-beta.1"))
+            let next = try #require(version.next(.minor, forcePrerelease: false))
+            #expect(next.description == "122.9.67-beta.2")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-hdaoidhas.1"))
+            let next = try #require(version.next(.minor, forcePrerelease: false))
+            #expect(next.description == "122.9.67-hdaoidhas.2")
+        }
+    }
+
+    @Test
+    func semVerBumpForcePrerelease() throws {
+        do {
+            let version = try #require(SemanticVersion(string: "11.0.0"))
+            /// Does not bump major versions to avoid releasing a whole new major version.
+            #expect(version.next(.major, forcePrerelease: true) == nil)
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "2.12.0"))
+            let next = try #require(version.next(.minor, forcePrerelease: true))
+            #expect(next.description == "2.12.0-alpha.1")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "0.0.299"))
+            let next = try #require(version.next(.patch, forcePrerelease: true))
+            #expect(next.description == "0.0.299-alpha.1")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha.1"))
+            let next = version.next(.major, forcePrerelease: true)
+            #expect(next == nil)
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha.44.55"))
+            let next = version.next(.minor, forcePrerelease: true)
+            #expect(next == nil)
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha"))
+            let next = try #require(version.next(.patch, forcePrerelease: true))
+            #expect(next.description == "122.9.67-alpha.1")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha"))
+            let next = try #require(version.next(.minor, forcePrerelease: true))
+            #expect(next.description == "122.9.67-alpha.1")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha.1"))
+            let next = try #require(version.next(.patch, forcePrerelease: true))
+            #expect(next.description == "122.9.67-alpha.2")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-alpha.1"))
+            let next = try #require(version.next(.minor, forcePrerelease: true))
+            #expect(next.description == "122.9.67-alpha.2")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-beta.1"))
+            let next = try #require(version.next(.minor, forcePrerelease: true))
+            #expect(next.description == "122.9.67-beta.2")
+        }
+
+        do {
+            let version = try #require(SemanticVersion(string: "122.9.67-hdaoidhas.1"))
+            let next = try #require(version.next(.minor, forcePrerelease: true))
+            #expect(next.description == "122.9.67-hdaoidhas.2")
         }
     }
 

@@ -65,17 +65,18 @@ struct ReleaseMaker {
             Configuration.organizationIDAllowList.contains(repo.owner.id),
             let mergedBy = pr.mergedBy,
             pr.base.ref.isPrimaryOrReleaseBranch(repo: repo),
-            let bump = pr.knownLabels.first?.toBump()
+            let bump = pr.knownLabels.semVerBump()
         else { return }
 
-        let previousRelease = try await getLastRelease()
+        let prereleaseRequested = pr.knownLabels.contains(.prerelease)
+        let previousRelease = try await getLastRelease(prerelease: prereleaseRequested)
 
         let previousTag = previousRelease.tagName
         guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(previousTag) else {
             throw PRErrors.tagDoesNotFollowSemVer(release: previousRelease, tag: previousTag)
         }
 
-        guard let version = previousVersion.next(bump) else {
+        guard let version = previousVersion.next(bump, forcePrerelease: prereleaseRequested) else {
             throw PRErrors.cantBumpSemVer(version: previousVersion, bump: bump)
         }
         let versionDescription = tagPrefix + version.description
@@ -90,23 +91,12 @@ struct ReleaseMaker {
         try await updatePRBodyWithReleaseNotice(release: release)
     }
 
-    func getLastRelease() async throws -> Release {
-        let latest = try await self.getLatestRelease()
+    func getLastRelease(prerelease: Bool) async throws -> Release {
+        let releases = try await self.getRelatedReleases()
 
-        let releases = try await context.githubClient.reposListReleases(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
-            )
-        ).ok.body.json
+        let latest = try await self.getLatestRelease(from: releases, prerelease: prerelease)
 
-        let filteredReleases: [Release] = releases.compactMap {
-            release -> (Release, SemanticVersion)? in
-            if let (_, version) = SemanticVersion.fromGitHubTag(release.tagName) {
-                return (release, version)
-            }
-            return nil
-        }.filter { release, version -> Bool in
+        let filteredReleases: [Release] = releases.filter { release, version -> Bool in
             if let majorVersion = Int(pr.base.ref) {
                 /// If the branch name is an integer, only include releases
                 /// for that major version.
@@ -123,13 +113,33 @@ struct ReleaseMaker {
         }.map(\.0)
 
         guard let release = filteredReleases.first else {
-            throw PRErrors.cantFindAnyRelease(latest: latest, releases: releases)
+            throw PRErrors.cantFindAnyRelease(latest: latest, releases: releases.map(\.0))
         }
 
         return release
     }
 
-    private func getLatestRelease() async throws -> Release? {
+    private func getRelatedReleases() async throws -> [(Release, SemanticVersion)] {
+        let releases = try await context.githubClient.reposListReleases(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            )
+        ).ok.body.json
+
+        /// These release are already sorted by `created_at` in descending order by GitHub.
+        return releases.filter {
+            /// Only include releases that are targeting the same branch as the PR.
+            $0.targetCommitish == pr.base.ref
+        }.compactMap { release -> (Release, SemanticVersion)? in
+            if let (_, version) = SemanticVersion.fromGitHubTag(release.tagName) {
+                return (release, version)
+            }
+            return nil
+        }
+    }
+
+    private func getTheReleaseMarkAsLatest() async throws -> Release? {
         let response = try await context.githubClient.reposGetLatestRelease(
             path: .init(
                 owner: repo.owner.login,
@@ -153,6 +163,28 @@ struct ReleaseMaker {
         )
 
         return nil
+    }
+
+    private func getLatestRelease(
+        from releases: [(Release, SemanticVersion)],
+        prerelease: Bool
+    ) async throws -> Release? {
+        if prerelease {
+            return releases.filter { _, version in
+                !version.prereleaseIdentifiers.isEmpty
+            }.sorted {
+                $0.1 > $1.1
+            }.first?.0
+        } else {
+            if let markedAsLatest = try await self.getTheReleaseMarkAsLatest(),
+                /// Only include releases that are targeting the same branch as the PR.
+                markedAsLatest.targetCommitish == pr.base.ref
+            {
+                return markedAsLatest
+            } else {
+                return releases.first(where: { !$0.0.prerelease })?.0
+            }
+        }
     }
 
     func makeNewRelease(
