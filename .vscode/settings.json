@@ -60,7 +60,6 @@
     }
   },
   "terminal.integrated.scrollback": 10000,
-  "swift.buildArguments": ["--force-resolved-versions"],
   "swift.additionalTestArguments": ["--disable-xctest"],
   "[yaml]": {
     "editor.insertSpaces": true,

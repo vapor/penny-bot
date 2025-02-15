@@ -72,12 +72,18 @@ struct ReleaseReporter {
     }
 
     func getPRsRelatedToRelease() async throws -> (Int, [SimplePullRequest]) {
-        let commits: [Commit]
-        if let tagBefore = try await self.getTagBefore() {
-            commits = try await self.getCommitsInRelease(tagBefore: tagBefore)
-        } else {
-            commits = try await self.getAllCommits()
-        }
+        let commits: [Commit] =
+            if let comparisonRange = self.findComparisonRange() {
+                try await self.getCommitsInRelease(
+                    comparisonRange: comparisonRange
+                )
+            } else if let tagBefore = try await self.getTagBefore() {
+                try await self.getCommitsInRelease(
+                    comparisonRange: "\(tagBefore)...\(release.tagName)"
+                )
+            } else {
+                try await self.getAllCommits()
+            }
 
         let maxCommits = 5
         let maxPRs = 3
@@ -93,12 +99,32 @@ struct ReleaseReporter {
         return (commits.count, prs)
     }
 
-    func getCommitsInRelease(tagBefore: String) async throws -> [Commit] {
+    func findComparisonRange() -> String? {
+        guard let body = release.body else {
+            return nil
+        }
+        let linkPrefix = "https://github.com/\(repo.fullName)/compare/"
+        let lines = body.lazy.split(separator: "\n")
+        let comparisonLine = lines.reversed().first {
+            $0.contains(linkPrefix)
+        }
+        let components = comparisonLine?.split(
+            whereSeparator: \.isWhitespace
+        )
+        let comparisonRange = components?.first {
+            $0.hasPrefix(linkPrefix)
+        }?.split(
+            separator: "/"
+        ).last
+        return comparisonRange.map(String.init)
+    }
+
+    func getCommitsInRelease(comparisonRange: String) async throws -> [Commit] {
         try await context.githubClient.reposCompareCommits(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                basehead: "\(tagBefore)...\(release.tagName)"
+                basehead: comparisonRange
             )
         ).ok.body.json.commits.reversed()
     }
