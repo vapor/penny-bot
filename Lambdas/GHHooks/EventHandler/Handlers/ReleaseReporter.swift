@@ -1,5 +1,6 @@
 import Algorithms
 import AsyncHTTPClient
+import Collections
 import DiscordBM
 import GitHubAPI
 import Logging
@@ -64,16 +65,18 @@ struct ReleaseReporter {
 
         let maxCommits = 5
         let maxPRs = 3
-        var prs = [SimplePullRequest]()
+        var prs: OrderedDictionary<String, SimplePullRequest> = [:]
         prs.reserveCapacity(min(commits.count, maxPRs))
 
-        for commit in commits.prefix(maxCommits) where prs.count < 3 {
+        for commit in commits.prefix(maxCommits) {
             let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
-            prs.append(contentsOf: newPRs)
+            for pr in newPRs {
+                prs[pr.htmlUrl] = pr
+                if prs.count >= maxPRs { break }
+            }
         }
-        prs = prs.uniqued(on: \.htmlUrl)
 
-        return (commits.count, prs)
+        return (commits.count, Array(prs.values))
     }
 
     func findComparisonRange() -> String? {
@@ -239,7 +242,9 @@ struct ReleaseReporter {
                     timeout: .seconds(1),
                     logger: logger
                 )
-                guard response.status == .ok else {
+                guard let contentLength = response.headers.first(name: "content-length").flatMap(Int.init),
+                    contentLength > 10
+                else {
                     continue
                 }
                 return imageLink
