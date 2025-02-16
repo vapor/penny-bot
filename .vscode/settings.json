@@ -33,7 +33,6 @@
   "errorLens.statusBarIconsEnabled": true,
   "errorLens.scrollbarHackEnabled": true,
   "errorLens.delayMode": "debounce",
-  "errorLens.delay": 500,
   "errorLens.editorHoverPartsEnabled": {
     "messageEnabled": true,
     "sourceCodeEnabled": true,

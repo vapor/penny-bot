@@ -1,4 +1,5 @@
 import Algorithms
+import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
 import Logging
@@ -208,9 +209,7 @@ struct ReleaseReporter {
     }
 
     func sendToDiscord(description: String) async throws {
-        let fullName = repo.fullName.urlPathEncoded()
-        let image =
-            "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tagName)"
+        let image = await findUseableImageLink()
 
         try await self.sendToDiscord(
             embed: .init(
@@ -218,9 +217,44 @@ struct ReleaseReporter {
                 description: description,
                 url: release.htmlUrl,
                 color: .cyan,
-                image: .init(url: .exact(image))
+                image: image.map { .init(url: .exact($0)) }
             )
         )
+    }
+
+    func findUseableImageLink() async -> String? {
+        let fullName = repo.fullName.urlPathEncoded()
+        func makeImageLink() -> String {
+            "https://opengraph.githubassets.com/\(UUID().uuidString)/\(fullName)/releases/tag/\(release.tagName)"
+        }
+
+        /// Try a maximum of 3 times
+        for _ in 0..<3 {
+            let imageLink = makeImageLink()
+            var request = HTTPClientRequest(url: imageLink)
+            request.method = .HEAD
+            do {
+                let response = try await context.httpClient.execute(
+                    request,
+                    timeout: .seconds(1),
+                    logger: logger
+                )
+                guard response.status == .ok else {
+                    continue
+                }
+                return imageLink
+            } catch {
+                logger.warning(
+                    "GitHub release image did not exist",
+                    metadata: [
+                        "imageLink": "\(imageLink)",
+                        "error": "\(String(reflecting: error))",
+                    ]
+                )
+            }
+        }
+
+        return nil
     }
 
     func sendToDiscord(embed: Embed) async throws {
