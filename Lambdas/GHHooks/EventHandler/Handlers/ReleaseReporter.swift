@@ -47,30 +47,6 @@ struct ReleaseReporter {
         }
     }
 
-    func getTagBefore() async throws -> String? {
-        let json = try await context.githubClient.reposListTags(
-            path: .init(
-                owner: repo.owner.login,
-                repo: repo.name
-            )
-        ).ok.body.json
-
-        if let releaseIdx = json.firstIndex(where: { $0.name == release.tagName }),
-            json.count > releaseIdx
-        {
-            return json[releaseIdx + 1].name
-        } else {
-            logger.warning(
-                "No previous tag found. Will just return the first tag",
-                metadata: [
-                    "tags": "\(json)",
-                    "release": "\(release)",
-                ]
-            )
-            return json.first?.name
-        }
-    }
-
     func getPRsRelatedToRelease() async throws -> (Int, [SimplePullRequest]) {
         let commits: [Commit] =
             if let comparisonRange = self.findComparisonRange() {
@@ -117,6 +93,30 @@ struct ReleaseReporter {
             separator: "/"
         ).last
         return comparisonRange.map(String.init)
+    }
+
+    func getTagBefore() async throws -> String? {
+        let json = try await context.githubClient.reposListTags(
+            path: .init(
+                owner: repo.owner.login,
+                repo: repo.name
+            )
+        ).ok.body.json
+
+        if let releaseIdx = json.firstIndex(where: { $0.name == release.tagName }),
+            json.count > releaseIdx
+        {
+            return json[releaseIdx + 1].name
+        } else {
+            logger.warning(
+                "No previous tag found. Will just return the first tag",
+                metadata: [
+                    "tags": "\(json)",
+                    "release": "\(release)",
+                ]
+            )
+            return json.first?.name
+        }
     }
 
     func getCommitsInRelease(comparisonRange: String) async throws -> [Commit] {
