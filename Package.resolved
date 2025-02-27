@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/adam-fowler/compress-nio.git",
       "state" : {
-        "revision" : "459a803a4e38718d94d64f2b31e83f01d934f324",
-        "version" : "1.4.0"
+        "revision" : "f80145433166666a465aee5dde479da9164a896c",
+        "version" : "1.4.1"
       }
     },
     {
