@@ -52,7 +52,7 @@ Resources:
   AppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupDescription: !Join ['-', [!Ref apiGatewayName, SecurityGroup]]
+      GroupDescription: !Join ["-", [!Ref apiGatewayName, SecurityGroup]]
       VpcId: !Ref VPC
       SecurityGroupEgress:
         - IpProtocol: tcp
@@ -62,7 +62,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Join ['/', [/ecs, !Ref apiGatewayName]]
+      LogGroupName: !Join ["/", [/ecs, !Ref apiGatewayName]]
       RetentionInDays: 3
   Service:
     Type: AWS::ECS::Service
@@ -116,13 +116,13 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt usersFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   usersRoute:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'POST /users'
+      RouteKey: "POST /users"
       Target: !Sub "integrations/${usersIntegration}"
 
   usersFunction:
@@ -168,7 +168,7 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt sponsorsFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   sponsorsRoute:
     Type: AWS::ApiGatewayV2::Route
@@ -236,8 +236,6 @@ Resources:
                   - dynamodb:BatchGetItem
                   - dynamodb:BatchWriteItem
                   - dynamodb:DeleteItem
-                  - dynamodb:Attributes
-                  - dynamodb:LeadingKeys
                   - dynamodb:ConditionCheckItem
                   - dynamodb:Scan
                   - lambda:UpdateFunctionCode
@@ -308,27 +306,27 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt autoPingsFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   autoPingsRouteGetAll:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'GET /auto-pings/all'
+      RouteKey: "GET /auto-pings/all"
       Target: !Sub "integrations/${autoPingsIntegration}"
 
   autoPingsRouteAddForUser:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'PUT /auto-pings/users'
+      RouteKey: "PUT /auto-pings/users"
       Target: !Sub "integrations/${autoPingsIntegration}"
 
   autoPingsRouteDeleteForUser:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'DELETE /auto-pings/users'
+      RouteKey: "DELETE /auto-pings/users"
       Target: !Sub "integrations/${autoPingsIntegration}"
 
   autoPingsFunction:
@@ -377,13 +375,13 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt faqsFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   faqsRoutePost:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'POST /faqs'
+      RouteKey: "POST /faqs"
       Target: !Sub "integrations/${faqsIntegration}"
 
   faqsFunction:
@@ -432,13 +430,13 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt autoFaqsFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   autoFaqsRoutePost:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'POST /auto-faqs'
+      RouteKey: "POST /auto-faqs"
       Target: !Sub "integrations/${autoFaqsIntegration}"
 
   autoFaqsFunction:
@@ -487,13 +485,13 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt ghHooksFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   ghHooksRoutePost:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'POST /gh-hooks'
+      RouteKey: "POST /gh-hooks"
       Target: !Sub "integrations/${ghHooksIntegration}"
 
   ghHooksFunction:
@@ -542,13 +540,13 @@ Resources:
       IntegrationMethod: POST
       IntegrationType: AWS_PROXY
       IntegrationUri: !GetAtt ghOAuthFunction.Arn
-      PayloadFormatVersion: '2.0'
+      PayloadFormatVersion: "2.0"
 
   ghOAuthRoutePost:
     Type: AWS::ApiGatewayV2::Route
     Properties:
       ApiId: !Ref apiGateway
-      RouteKey: 'GET /gh-oauth'
+      RouteKey: "GET /gh-oauth"
       Target: !Sub "integrations/${ghOAuthIntegration}"
 
   ghOAuthFunction:
@@ -603,33 +601,25 @@ Resources:
     Properties:
       TableName: "penny-user-table"
       AttributeDefinitions:
-        -
-          AttributeName: "id"
+        - AttributeName: "id"
           AttributeType: "S"
-        -
-          AttributeName: "discordID"
+        - AttributeName: "discordID"
           AttributeType: "S"
-        -
-          AttributeName: "githubID"
+        - AttributeName: "githubID"
           AttributeType: "S"
       KeySchema:
-        -
-          AttributeName: "id"
+        - AttributeName: "id"
           KeyType: "HASH"
       GlobalSecondaryIndexes:
-        -
-          IndexName: "D-ID-GSI"
+        - IndexName: "D-ID-GSI"
           KeySchema:
-            -
-              AttributeName: "discordID"
+            - AttributeName: "discordID"
               KeyType: "HASH"
           Projection:
             ProjectionType: ALL
-        -
-          IndexName: "GH-ID-GSI"
+        - IndexName: "GH-ID-GSI"
           KeySchema:
-            -
-              AttributeName: "githubID"
+            - AttributeName: "githubID"
               KeyType: "HASH"
           Projection:
             ProjectionType: ALL
@@ -644,39 +634,29 @@ Resources:
     Properties:
       TableName: "penny-coin-table"
       AttributeDefinitions:
-        -
-          AttributeName: "id"
+        - AttributeName: "id"
           AttributeType: "S"
-        -
-          AttributeName: "createdAt"
+        - AttributeName: "createdAt"
           AttributeType: "N"
-        -
-          AttributeName: "fromUserID"
+        - AttributeName: "fromUserID"
           AttributeType: "S"
-        -
-          AttributeName: "toUserID"
+        - AttributeName: "toUserID"
           AttributeType: "S"
       KeySchema:
-        -
-          AttributeName: "id"
+        - AttributeName: "id"
           KeyType: "HASH"
-        -
-          AttributeName: "createdAt"
+        - AttributeName: "createdAt"
           KeyType: "RANGE"
       GlobalSecondaryIndexes:
-        -
-          IndexName: "FU-ID-GSI"
+        - IndexName: "FU-ID-GSI"
           KeySchema:
-            -
-              AttributeName: "fromUserID"
+            - AttributeName: "fromUserID"
               KeyType: "HASH"
           Projection:
             ProjectionType: ALL
-        -
-          IndexName: "TU-ID-GSI"
+        - IndexName: "TU-ID-GSI"
           KeySchema:
-            -
-              AttributeName: "toUserID"
+            - AttributeName: "toUserID"
               KeyType: "HASH"
           Projection:
             ProjectionType: ALL
@@ -691,12 +671,10 @@ Resources:
     Properties:
       TableName: "ghHooks-message-lookup-table"
       AttributeDefinitions:
-        -
-          AttributeName: "id"
+        - AttributeName: "id"
           AttributeType: "S"
       KeySchema:
-        -
-          AttributeName: "id"
+        - AttributeName: "id"
           KeyType: "HASH"
       BillingMode: PAY_PER_REQUEST
       PointInTimeRecoverySpecification:
