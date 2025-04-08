@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:6.0-noble as build
+FROM swift:6.1-noble as build
 
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
