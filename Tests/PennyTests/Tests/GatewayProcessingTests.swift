@@ -527,7 +527,16 @@ final class GatewayProcessingTests: Sendable {
 
         let embed = try #require(message.embeds?.first)
         #expect(embed.title == "Swift 6.0.1 Release")
-        #expect(embed.description == "Doesn't come with a dedicated Xcode release")
+        #expect(
+            embed.description == """
+                Doesn't come with a dedicated Xcode release.
+                Install via [swiftly](https://www.swift.org/install/):
+                ```
+                swiftly install 6.0.1
+                swiftly use 6.0.1
+                ```
+                """
+        )
 
         /// No more messages should be sent
         let _newMessage = await responseStorage.awaitResponse(

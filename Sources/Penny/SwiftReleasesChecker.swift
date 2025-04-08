@@ -58,11 +58,16 @@ actor SwiftReleasesChecker: Service {
                     .init(
                         title: "Swift \(release.stableName) Release".unicodesPrefix(256),
                         description: """
-                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)" : "Doesn't come with a dedicated Xcode release")
+                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)," : "Doesn't come with a dedicated Xcode release.")
+                            \((release.xcodeRelease == true) ? "and" : "Install") via [swiftly](https://www.swift.org/install/):
+                            ```
+                            swiftly install \(release.stableName)
+                            swiftly use \(release.stableName)
+                            ```
                             """,
                         url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
-                        color: .orange,
-                        image: .init(url: .exact(image))
+                        color: .blue,
+                        thumbnail: .init(url: .exact(image))
                     )
                 ])
             )
