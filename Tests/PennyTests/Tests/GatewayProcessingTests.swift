@@ -535,6 +535,7 @@ final class GatewayProcessingTests: Sendable {
                 swiftly install 6.0.1
                 swiftly use 6.0.1
                 ```
+                or [explore](https://hub.docker.com/_/swift/tags?name=6.0.1) Docker images.
                 """
         )
 
