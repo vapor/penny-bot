@@ -56,13 +56,19 @@ actor SwiftReleasesChecker: Service {
                 channelId: Constants.Channels.news.id,
                 payload: .init(embeds: [
                     .init(
-                        title: "Swift \(release.stableName) Release".unicodesPrefix(256),
+                        title: "Swift \(release.name) Release".unicodesPrefix(256),
                         description: """
-                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)" : "Doesn't come with a dedicated Xcode release")
+                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)," : "Doesn't come with a dedicated Xcode release.")
+                            \((release.xcodeRelease == true) ? "and" : "Install") via [swiftly](https://www.swift.org/install/):
+                            ```
+                            swiftly install \(release.name)
+                            swiftly use \(release.name)
+                            ```
+                            or [explore](https://hub.docker.com/_/swift/tags?name=\(release.name)) Docker images.
                             """,
-                        url: "https://github.com/swiftlang/swift/releases/tag/\(release.tag)",
-                        color: .orange,
-                        image: .init(url: .exact(image))
+                        url: "https://github.com/swiftlang/swift/releases/tag/\(release.name)",
+                        color: .blue,
+                        thumbnail: .init(url: .exact(image))
                     )
                 ])
             )
@@ -83,18 +89,6 @@ struct SwiftOrgRelease: Codable {
     let tag: String
     let xcode: String
     let xcodeRelease: Bool?
-
-    var stableName: String {
-        let components = self.name.split(
-            separator: ".",
-            omittingEmptySubsequences: false
-        )
-        if components.count == 2 {
-            return self.name + ".0"
-        } else {
-            return self.name
-        }
-    }
 }
 
 extension SwiftOrgRelease: Hashable {
