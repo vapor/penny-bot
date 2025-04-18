@@ -1,5 +1,5 @@
 {
-  "originHash" : "286c1787470f5cec212ba137e92bc83aa51274361a7482caa52fb142d59f2460",
+  "originHash" : "899ba7b91be0df87d7527e8d5a2fd4d8549ada8aadb191658def493de2d0fe65",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -60,8 +60,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/vapor/leaf-kit.git",
       "state" : {
-        "revision" : "73f4ad49bfd414caa7c18522888e0ddc2ff77a95",
-        "version" : "1.13.0"
+        "revision" : "cf186d8f2ef33e16fd1dd78df36466c22c2e632f",
+        "version" : "1.13.1"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "17f4707987d5f422d2ce91066cd5388121c67509",
-        "version" : "7.6.0"
+        "revision" : "ab7bab78dbe6fd77722639a7f7f7521b1a79e900",
+        "version" : "7.6.1"
       }
     },
     {
