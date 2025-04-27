@@ -155,15 +155,15 @@ actor EvolutionChecker: Service {
 
             let proposal = queuedProposal.proposal
 
-            let payload: Payloads.CreateMessage
-            if let previousState = queuedProposal.firstKnownStateBeforeQueue {
-                payload = await makePayloadForUpdatedProposal(
-                    proposal,
-                    previousState: previousState
-                )
-            } else {
-                payload = await makePayloadForNewProposal(proposal)
-            }
+            let payload =
+                if let previousState = queuedProposal.firstKnownStateBeforeQueue {
+                    await makePayloadForUpdatedProposal(
+                        proposal,
+                        previousState: previousState
+                    )
+                } else {
+                    await makePayloadForNewProposal(proposal)
+                }
 
             await self.send(proposal: proposal, payload: payload)
             sentProposalUUIDs.append(queuedProposal.uuid)
