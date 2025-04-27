@@ -234,7 +234,7 @@ private enum Status: String {
     }
 
     init(issue: Issue) {
-        if issue.knownLabels.contains(.duplicate) {
+        if issue.stateReason == .duplicate || issue.knownLabels.contains(.duplicate) {
             self = .duplicate
         } else if issue.stateReason == .notPlanned {
             self = .notPlanned

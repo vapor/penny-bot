@@ -3576,6 +3576,7 @@ package enum Components {
                 case completed = "completed"
                 case reopened = "reopened"
                 case notPlanned = "not_planned"
+                case duplicate = "duplicate"
             }
             /// The reason for the current state
             ///

@@ -5,6 +5,8 @@ accessModifier: package
 namingStrategy: idiomatic
 filter:
   operations:
+    # Need to manually add 'duplicate' to all 'state_reason' fields (search for places where 'not_planned' is used, and add 'duplicate' to the list)
+
     - apps/create-installation-access-token
     - issues/create
     - issues/get
