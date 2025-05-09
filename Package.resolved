@@ -1,5 +1,5 @@
 {
-  "originHash" : "03e493ac5ec5c0d35530baf9f007efe685e43f88b3705f5aaaa27ef27e99efd4",
+  "originHash" : "9a247bfc362df926179f87ffa0eac8a88022273fc9cb2cb2bbd8a07051bd3e29",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "bfe6d6f94a82c9268b15ac636005ae57f4129de9",
-        "version" : "7.6.0"
+        "revision" : "55a8ebcfe5f65cb333e1ca8c2e8c6ce97d141f53",
+        "version" : "7.7.0"
       }
     },
     {
