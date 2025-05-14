@@ -6,6 +6,7 @@ namingStrategy: idiomatic
 filter:
   operations:
     # Need to manually add 'duplicate' to all 'state_reason' fields (search for places where 'not_planned' is used, and add 'duplicate' to the list)
+    # Need to manually mark 'pull-request' and 'pull-request-simple' have marked .labels.description and .head.repo as nullable.
 
     - apps/create-installation-access-token
     - issues/create

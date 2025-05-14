@@ -77,8 +77,14 @@ extension String {
     fileprivate var hasDoNotMergePrefix: Bool {
         let folded = self.lowercased()
             .filter { !$0.isPunctuation }
-            .folding(options: .caseInsensitive, locale: nil)
-            .folding(options: .diacriticInsensitive, locale: nil)
+            .folding(
+                options: .caseInsensitive,
+                locale: nil
+            )
+            .folding(
+                options: .diacriticInsensitive,
+                locale: nil
+            )
         return folded.hasPrefix("dnm") || folded.hasPrefix("do not merge")
     }
 }

@@ -5552,7 +5552,7 @@ package enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/LabelsPayload/name`.
                 package var name: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/LabelsPayload/description`.
-                package var description: Swift.String
+                package var description: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/LabelsPayload/color`.
                 package var color: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/LabelsPayload/default`.
@@ -5572,7 +5572,7 @@ package enum Components {
                     nodeId: Swift.String,
                     url: Swift.String,
                     name: Swift.String,
-                    description: Swift.String,
+                    description: Swift.String? = nil,
                     color: Swift.String,
                     _default: Swift.Bool
                 ) {
@@ -5627,7 +5627,7 @@ package enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/head/ref`.
                 package var ref: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/head/repo`.
-                package var repo: Components.Schemas.Repository
+                package var repo: Components.Schemas.Repository?
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/head/sha`.
                 package var sha: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request-simple/head/user`.
@@ -5643,7 +5643,7 @@ package enum Components {
                 package init(
                     label: Swift.String,
                     ref: Swift.String,
-                    repo: Components.Schemas.Repository,
+                    repo: Components.Schemas.Repository? = nil,
                     sha: Swift.String,
                     user: Components.Schemas.NullableSimpleUser? = nil
                 ) {
@@ -6377,7 +6377,7 @@ package enum Components {
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/ref`.
                 package var ref: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/repo`.
-                package var repo: Components.Schemas.Repository
+                package var repo: Components.Schemas.Repository?
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/sha`.
                 package var sha: Swift.String
                 /// - Remark: Generated from `#/components/schemas/pull-request/head/user`.
@@ -6393,7 +6393,7 @@ package enum Components {
                 package init(
                     label: Swift.String,
                     ref: Swift.String,
-                    repo: Components.Schemas.Repository,
+                    repo: Components.Schemas.Repository? = nil,
                     sha: Swift.String,
                     user: Components.Schemas.SimpleUser
                 ) {
