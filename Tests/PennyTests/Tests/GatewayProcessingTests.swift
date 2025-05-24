@@ -530,6 +530,7 @@ final class GatewayProcessingTests: Sendable {
         #expect(
             embed.description == """
                 Doesn't come with a dedicated Xcode release.
+
                 Install via [swiftly](https://www.swift.org/install/):
                 ```
                 swiftly install 6.0.1
