@@ -58,7 +58,7 @@ actor SwiftReleasesChecker: Service {
                     .init(
                         title: "Swift \(release.name) Release".unicodesPrefix(256),
                         description: """
-                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)," : "Doesn't come with a dedicated Xcode release.")
+                            \((release.xcodeRelease == true) ? "Available on \(release.xcode)," : "Doesn't come with a dedicated Xcode release.\n")
                             \((release.xcodeRelease == true) ? "and" : "Install") via [swiftly](https://www.swift.org/install/):
                             ```
                             swiftly install \(release.name)
@@ -66,7 +66,7 @@ actor SwiftReleasesChecker: Service {
                             ```
                             or [explore](https://hub.docker.com/_/swift/tags?name=\(release.name)) Docker images.
                             """,
-                        url: "https://github.com/swiftlang/swift/releases/tag/\(release.name)",
+                        url: "https://github.com/swiftlang/swift/releases/tag/\(release.name)-RELEASE",
                         color: .blue,
                         thumbnail: .init(url: .exact(image))
                     )
