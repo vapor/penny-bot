@@ -66,7 +66,7 @@ actor SwiftReleasesChecker: Service {
                             ```
                             or [explore](https://hub.docker.com/_/swift/tags?name=\(release.name)) Docker images.
                             """,
-                        url: "https://github.com/swiftlang/swift/releases/tag/\(release.name)-RELEASE",
+                        url: "https://github.com/swiftlang/swift/releases/tag/swift-\(release.name)-RELEASE",
                         color: .blue,
                         thumbnail: .init(url: .exact(image))
                     )
