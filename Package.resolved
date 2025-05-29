@@ -1,5 +1,5 @@
 {
-  "originHash" : "52dcde5057d480a5be35e3950e4f8b9fc4b6c95d4371e823105efa450badf788",
+  "originHash" : "e8a223b0d2b67d807b37ec77416cac65b62bc97aed04e43311d72324e4d3723e",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "ab7bab78dbe6fd77722639a7f7f7521b1a79e900",
-        "version" : "7.6.1"
+        "revision" : "7eb88f2558101e6a242547b365cc17cdc05c932e",
+        "version" : "7.7.0"
       }
     },
     {
@@ -114,8 +114,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-argument-parser.git",
       "state" : {
-        "revision" : "41982a3656a71c768319979febd796c6fd111d5c",
-        "version" : "1.5.0"
+        "revision" : "011f0c765fb46d9cac61bca19be0527e99c98c8b",
+        "version" : "1.5.1"
       }
     },
     {
@@ -384,8 +384,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-system.git",
       "state" : {
-        "revision" : "a34201439c74b53f0fd71ef11741af7e7caf01e1",
-        "version" : "1.4.2"
+        "revision" : "61e4ca4b81b9e09e2ec863b00c340eb13497dac6",
+        "version" : "1.5.0"
       }
     },
     {
