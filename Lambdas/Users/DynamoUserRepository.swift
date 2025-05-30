@@ -15,6 +15,7 @@ struct DynamoUserRepository {
 
     let db: DynamoDB
     let logger: Logger
+    let dynamoDBDecoder: DynamoDBDecoder
 
     let tableName = "penny-user-table"
     let discordIndex = "D-ID-GSI"
@@ -23,6 +24,7 @@ struct DynamoUserRepository {
     init(db: DynamoDB, logger: Logger) {
         self.db = db
         self.logger = logger
+        self.dynamoDBDecoder = DynamoDBDecoder()
     }
 
     func createUser(_ user: DynamoDBUser) async throws {
@@ -74,16 +76,24 @@ struct DynamoUserRepository {
 
     /// Returns nil if user does not exist.
     private func queryUser(with query: DynamoDB.QueryInput) async throws -> DynamoDBUser? {
-        var user = try await db.query(
+        /// SotoDynamoDB already has a function that decodes the response similarly to below, but I changed the code to
+        /// manually decode the response in order to dodge a Swift runtime bug which consistently crashes this lambda.
+        let response = try await db.query(
             query,
-            type: DynamoDBUser.self,
             logger: self.logger
-        ).items?.first
+        )
+        guard let userData = response.items?.first else {
+            return nil
+        }
+        var user = try self.dynamoDBDecoder.decode(
+            DynamoDBUser.self,
+            from: userData
+        )
 
-        if user?.githubID == Configuration.githubIDNilEquivalent {
+        if user.githubID == Configuration.githubIDNilEquivalent {
             /// Can't set this to `nil` or empty string when it's already populated.
-            /// So `" "` (a single whitespace) is an equivalent for `nil`.
-            user?.githubID = nil
+            /// So `" "` (a single whitespace) is equivalent to `nil`.
+            user.githubID = nil
         }
 
         return user

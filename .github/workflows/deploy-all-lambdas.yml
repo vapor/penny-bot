@@ -56,26 +56,23 @@ jobs:
             tr '\n' ' '
           )" >> $GITHUB_OUTPUT
 
-      - name: Build and package
+      - name: Build, package and deploy
         working-directory: ${{ github.event.repository.name }}
         run: |
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
-            # There is a runtime Swift bug in 6.1, so build UsersLambda in debug mode so it doesn't crash.
-            if [ "$name" == "UsersLambda" ]; then
-              config=debug
-            else
-              config=release
-            fi
             swift package archive \
               --verbose \
-              --configuration "${config}" \
               --output-path ./zips \
               --products "${name}"
             aws s3api put-object \
               --bucket penny-lambdas-store \
               --key "${name}.zip" \
               --body ./zips/${name}/${name}.zip
+            aws lambda update-function-code \
+              --function-name "${name}" \
+              --s3-bucket "penny-lambdas-store" \
+              --s3-key "${name}.zip"
           done
 
       - name: Cache .build
@@ -84,13 +81,3 @@ jobs:
         with:
           path: ${{ github.event.repository.name }}/.build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
-
-      - name: Deploy
-        working-directory: ${{ github.event.repository.name }}
-        run: |
-          for name in ${{ steps.find_package_names.outputs.names }}; do
-            aws lambda update-function-code \
-              --function-name "${name}" \
-              --s3-bucket "penny-lambdas-store" \
-              --s3-key "${name}.zip"
-          done
