@@ -1,3 +1,5 @@
+import NIOHTTP1
+
 @testable import DiscordHTTP
 
 extension Endpoint {

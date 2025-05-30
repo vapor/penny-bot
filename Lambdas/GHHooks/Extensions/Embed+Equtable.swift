@@ -1,4 +1,5 @@
-import DiscordModels
+/// Public import for `Embed` conformances
+public import DiscordModels
 
 extension Embed: @retroactive Equatable {
     public static func == (lhs: Embed, rhs: Embed) -> Bool {

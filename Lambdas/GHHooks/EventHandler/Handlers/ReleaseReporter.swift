@@ -4,6 +4,9 @@ import Collections
 import DiscordBM
 import GitHubAPI
 import Logging
+import NIOCore
+import NIOHTTP1
+import Shared
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

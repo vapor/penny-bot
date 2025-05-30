@@ -2,6 +2,7 @@ import DiscordBM
 import Logging
 import Markdown
 import ServiceLifecycle
+import Shared
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

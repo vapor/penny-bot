@@ -1,4 +1,4 @@
-import AsyncHTTPClient
+package import class AsyncHTTPClient.HTTPClient
 
 package enum ServiceFactory {
     package static func makeUsersService(httpClient: HTTPClient, apiBaseURL: String) -> any UsersService {

@@ -1,4 +1,6 @@
 import AsyncHTTPClient
+/// Import full foundation even on linux for `hash`, for now.
+import Foundation
 import Models
 
 @testable import Penny

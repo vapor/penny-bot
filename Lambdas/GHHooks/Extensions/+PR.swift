@@ -1,10 +1,6 @@
-import GitHubAPI
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
+/// Import full foundation even on linux for `folding(options:locale:)`, for now.
 import Foundation
-#endif
+import GitHubAPI
 
 extension PullRequest {
 

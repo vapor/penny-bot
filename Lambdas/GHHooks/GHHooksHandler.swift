@@ -4,6 +4,7 @@ import AsyncHTTPClient
 import DiscordHTTP
 import DiscordUtilities
 import GitHubAPI
+import HTTPTypes
 import LambdasShared
 import Logging
 import Rendering

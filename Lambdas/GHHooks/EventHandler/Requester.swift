@@ -2,6 +2,9 @@ import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
 import Logging
+import Models
+import NIOCore
+import NIOHTTP1
 import Shared
 
 protocol GenericRequester: Sendable {

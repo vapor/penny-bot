@@ -1,13 +1,10 @@
 import DiscordBM
+/// Import full foundation even on linux for `trimmingCharacters`, for now.
+import Foundation
 import JWTKit
 import Logging
 import Models
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+import Shared
 
 private typealias Expression = S3AutoPingItems.Expression
 

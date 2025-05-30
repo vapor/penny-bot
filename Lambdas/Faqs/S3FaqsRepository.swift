@@ -1,5 +1,8 @@
 import Models
+import NIOFoundationCompat
 import SotoS3
+
+package import class SotoCore.AWSClient
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

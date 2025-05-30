@@ -1,7 +1,7 @@
-import AsyncHTTPClient
-import Logging
+package import Logging
 
-import struct NIOCore.TimeAmount
+package import class AsyncHTTPClient.HTTPClient
+package import struct NIOCore.TimeAmount
 
 extension Client {
     package static func makeForGitHub(

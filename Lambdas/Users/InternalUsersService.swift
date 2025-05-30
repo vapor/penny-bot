@@ -1,3 +1,4 @@
+import Logging
 import Models
 import SotoDynamoDB
 
@@ -7,12 +8,12 @@ import FoundationEssentials
 import Foundation
 #endif
 
-package struct InternalUsersService {
+struct InternalUsersService {
     private let userRepo: DynamoUserRepository
     private let coinEntryRepo: DynamoCoinEntryRepository
     let logger: Logger
 
-    package init(awsClient: AWSClient, logger: Logger) {
+    init(awsClient: AWSClient, logger: Logger) {
         let euWest = Region(awsRegionName: "eu-west-1")
         let dynamoDB = DynamoDB(client: awsClient, region: euWest)
         self.userRepo = DynamoUserRepository(
@@ -27,7 +28,7 @@ package struct InternalUsersService {
     }
 
     /// `freshUser` must be a fresh user you just got from the db.
-    package func addCoinEntry(
+    func addCoinEntry(
         _ coinEntry: CoinEntry,
         freshUser user: DynamoDBUser
     ) async throws -> DynamoDBUser {
@@ -45,7 +46,7 @@ package struct InternalUsersService {
         try await userRepo.getUser(discordID: discordID)
     }
 
-    package func getOrCreateUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
+    func getOrCreateUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
         if let existing = try await self.getUser(discordID: discordID) {
             return existing
         } else {
@@ -56,18 +57,18 @@ package struct InternalUsersService {
     }
 
     /// Returns nil if user does not exist.
-    package func getUser(githubID: String) async throws -> DynamoDBUser? {
+    func getUser(githubID: String) async throws -> DynamoDBUser? {
         try await userRepo.getUser(githubID: githubID)
     }
 
-    package func linkGithubID(discordID: UserSnowflake, githubID: String) async throws {
+    func linkGithubID(discordID: UserSnowflake, githubID: String) async throws {
         var user = try await self.getOrCreateUser(discordID: discordID)
         user.githubID = githubID
 
         try await userRepo.updateUser(user)
     }
 
-    package func unlinkGithubID(discordID: UserSnowflake) async throws {
+    func unlinkGithubID(discordID: UserSnowflake) async throws {
         var user = try await self.getOrCreateUser(discordID: discordID)
         user.githubID = nil
 

@@ -1,4 +1,7 @@
+/// Import full foundation even on linux for `trimmingCharacters`, for now.
+import Foundation
 import Markdown
+import Shared
 
 extension String {
     /// Formats markdown in a way that looks decent on both Discord and GitHub at the same time.

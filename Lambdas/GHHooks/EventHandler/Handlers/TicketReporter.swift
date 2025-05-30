@@ -1,4 +1,5 @@
 import DiscordBM
+import Logging
 import Shared
 
 #if canImport(FoundationEssentials)

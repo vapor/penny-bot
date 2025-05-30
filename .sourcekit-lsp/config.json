@@ -1,4 +1,5 @@
 {
+  "$schema": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/refs/heads/main/config.schema.json",
   "backgroundIndexing": true,
   "backgroundPreparationMode": "enabled",
   "maxCoresPercentageToUseForBackgroundIndexing": 0.7,

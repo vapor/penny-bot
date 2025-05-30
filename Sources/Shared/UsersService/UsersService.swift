@@ -1,5 +1,5 @@
-import DiscordModels
-import Models
+package import DiscordModels
+package import Models
 
 package protocol UsersService: Sendable {
     func getUser(githubID: String) async throws -> DynamoDBUser?

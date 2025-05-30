@@ -1,12 +1,10 @@
 import AsyncHTTPClient
+/// Import full foundation even on linux for `urlQueryAllowed`, for now.
+import Foundation
 import Logging
 import NIOCore
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+import NIOFoundationCompat
+import NIOHTTP1
 
 struct DefaultSOService: SOService {
     let httpClient: HTTPClient

@@ -1,6 +1,7 @@
 import AsyncHTTPClient
 import DiscordLogger
 import NIO
+import Rendering
 import ServiceLifecycle
 import Shared
 import SotoCore
@@ -10,6 +11,12 @@ import Testing
 @testable import DiscordModels
 @testable import Logging
 @testable import Penny
+
+#if canImport(FoundationEssentials)
+import struct FoundationEssentials.Date
+#else
+import struct Foundation.Date
+#endif
 
 actor FakeMainService: MainService {
     let manager: FakeManager
