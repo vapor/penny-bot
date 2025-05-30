@@ -45,6 +45,7 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
         id: find_package_names
         run: |
+          sed -i 's/swift-tools-version: 6.1/swift-tools-version: 6.0/' Package.swift
           echo "names=$(
             swift package describe --type json | \
             jq -r '.targets[] |
