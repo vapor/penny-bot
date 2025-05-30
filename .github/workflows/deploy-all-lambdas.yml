@@ -45,7 +45,8 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
         id: find_package_names
         run: |
-          sed -i 's/swift-tools-version: 6.1/swift-tools-version: 6.0/' Package.swift
+          # sed -i didn't work for some reason
+          sed '1s/6.1/6.0/' Package.swift > temp && mv temp Package.swift
           echo "names=$(
             swift package describe --type json | \
             jq -r '.targets[] |
@@ -60,7 +61,6 @@ jobs:
       - name: Build, package and deploy
         working-directory: ${{ github.event.repository.name }}
         run: |
-          sed -i 's/swift-tools-version: 6.1/swift-tools-version: 6.0/' Package.swift
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package archive \
