@@ -207,13 +207,10 @@ let package = Package(
 /// https://github.com/apple/swift-package-manager/issues/6597
 var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     [
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0335-existential-any.md
-        /// Require `any` for existential types.
         .enableUpcomingFeature("ExistentialAny"),
-
-        /// https://github.com/apple/swift-evolution/blob/main/proposals/0413-typed-throws.md
-        /// Enable the full potential of typed throws.
         .enableUpcomingFeature("FullTypedThrows"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+        .enableUpcomingFeature("InternalImportsByDefault"),
     ]
 }
 

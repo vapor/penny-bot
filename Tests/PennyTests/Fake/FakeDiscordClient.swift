@@ -1,3 +1,4 @@
+import NIOFoundationCompat
 import NIOHTTP1
 import Testing
 

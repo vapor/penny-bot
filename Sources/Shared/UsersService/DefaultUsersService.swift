@@ -1,13 +1,12 @@
 import AsyncHTTPClient
 import DiscordModels
+/// Import full foundation even on linux for `trimmingCharacters`, for now.
+import Foundation
 import Logging
 import Models
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+import NIOCore
+import NIOFoundationCompat
+import NIOHTTP1
 
 struct DefaultUsersService: UsersService {
     let httpClient: HTTPClient

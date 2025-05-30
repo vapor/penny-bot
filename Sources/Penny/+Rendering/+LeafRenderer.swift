@@ -2,6 +2,7 @@ import AsyncHTTPClient
 import LeafKit
 import Logging
 import NIO
+import Rendering
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

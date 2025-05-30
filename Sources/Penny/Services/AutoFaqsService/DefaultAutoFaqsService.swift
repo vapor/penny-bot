@@ -1,16 +1,14 @@
 import AsyncHTTPClient
 import Collections
 import DiscordModels
+/// Import full foundation even on linux for `hash`, for now.
+import Foundation
 import Logging
 import Models
+import NIOCore
+import NIOFoundationCompat
 import NIOHTTP1
 import Shared
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 actor DefaultAutoFaqsService: AutoFaqsService {
 

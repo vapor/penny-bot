@@ -1,3 +1,6 @@
+/// Import full foundation even on linux for `addingPercentEncoding`, for now.
+import Foundation
+
 extension String {
     package func urlPathEncoded() -> String {
         self.addingPercentEncoding(

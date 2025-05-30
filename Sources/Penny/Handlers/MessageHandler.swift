@@ -1,6 +1,9 @@
 import DiscordBM
+/// Import full foundation even on linux for `hash`, for now.
+import Foundation
 import Logging
 import Models
+import Shared
 
 struct MessageHandler {
     let event: Gateway.MessageCreate

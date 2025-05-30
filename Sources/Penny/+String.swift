@@ -1,11 +1,7 @@
-import Models
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-import struct Foundation.CharacterSet
-#else
+/// Import full foundation even on linux for `trimmingCharacters`, for now.
+/// Also need `CharacterSet` too on Linux, for future reference.
 import Foundation
-#endif
+import Models
 
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {

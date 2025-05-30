@@ -4,6 +4,7 @@ import DiscordLogger
 import Logging
 import NIOCore
 import NIOPosix
+import Rendering
 import ServiceLifecycle
 import Shared
 import SotoCore

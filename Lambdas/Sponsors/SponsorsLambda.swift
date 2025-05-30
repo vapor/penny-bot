@@ -2,7 +2,9 @@ import AWSLambdaEvents
 import AWSLambdaRuntime
 import AsyncHTTPClient
 import DiscordBM
+import HTTPTypes
 import LambdasShared
+import Models
 import NIOHTTP1
 import Shared
 import SotoCore
@@ -132,11 +134,16 @@ struct SponsorsHandler: LambdaHandler {
             }
             context.logger.debug("Done, returning 200")
             return APIGatewayV2Response(statusCode: .ok, body: "All jobs executed correctly")
-        } catch let error {
-            context.logger.error("Error: \(error.localizedDescription)")
+        } catch {
+            context.logger.error(
+                "Error when handling sponsorship event",
+                metadata: [
+                    "error": "\(String(reflecting: error))"
+                ]
+            )
             return APIGatewayV2Response(
                 statusCode: .badRequest,
-                body: "Error: \(error.localizedDescription)"
+                body: "Error: \(error)"
             )
         }
     }
@@ -155,7 +162,7 @@ struct SponsorsHandler: LambdaHandler {
             case let .some(error):
                 switch error {
                 case let .jsonError(jsonError)
-                where [.invalidRole, .unknownRole].contains(jsonError.code):
+                where (jsonError.code == .invalidRole) || (jsonError.code == .unknownRole):
                     /// This is fine
                     logger.debug(
                         "User \(discordID) probably didn't have the \(role.rawValue) role in the first place, to be deleted"

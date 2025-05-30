@@ -1,4 +1,5 @@
 @preconcurrency import LeafKit
+import NIOCore
 
 package struct RenderClient: Sendable {
     let renderer: LeafRenderer

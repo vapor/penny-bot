@@ -1,7 +1,9 @@
-import AsyncHTTPClient
-@preconcurrency import LeafKit
-import Logging
-import NIO
+@preconcurrency package import LeafKit
+package import Logging
+import NIOPosix
+
+package import class AsyncHTTPClient.HTTPClient
+package import protocol NIOCore.EventLoop
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

@@ -1,5 +1,5 @@
-import DiscordBM
-import JWTKit
+package import DiscordBM
+package import JWTKit
 
 #if canImport(FoundationEssentials)
 import struct FoundationEssentials.Date

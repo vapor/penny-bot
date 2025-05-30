@@ -1,6 +1,7 @@
 import AWSLambdaEvents
 import Crypto
-import HTTPTypes
+
+package import struct HTTPTypes.HTTPResponse
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
@@ -60,10 +61,10 @@ package struct GatewayFailure: Encodable {
     }
 }
 
-package enum APIGatewayErrors: Error, CustomStringConvertible {
+enum APIGatewayErrors: Error, CustomStringConvertible {
     case emptyBody(APIGatewayV2Request)
 
-    package var description: String {
+    var description: String {
         switch self {
         case let .emptyBody(request):
             return "emptyBody(\(request))"

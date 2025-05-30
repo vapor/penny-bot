@@ -3,6 +3,7 @@ import Logging
 import Models
 import NIOCore
 import NIOFoundationCompat
+import Shared
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

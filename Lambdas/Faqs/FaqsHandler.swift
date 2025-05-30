@@ -1,8 +1,10 @@
 import AWSLambdaEvents
 import AWSLambdaRuntime
 import AsyncHTTPClient
+import HTTPTypes
 import LambdasShared
 import Models
+import Shared
 import SotoCore
 
 #if canImport(FoundationEssentials)

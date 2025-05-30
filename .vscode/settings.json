@@ -81,5 +81,6 @@
   "terminal.integrated.scrollback": 10000,
   "workbench.editor.enablePreview": false,
   "yaml.format.enable": true,
-  "yaml.maxItemsComputed": 1000000
+  "yaml.maxItemsComputed": 1000000,
+  "swift.debugger.debugAdapter": "CodeLLDB"
 }

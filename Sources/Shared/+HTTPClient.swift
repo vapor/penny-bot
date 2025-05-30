@@ -1,4 +1,6 @@
-import AsyncHTTPClient
+package import class AsyncHTTPClient.HTTPClient
+import struct NIOCore.TimeAmount
+import enum NIOHTTPCompression.NIOHTTPDecompression
 
 extension HTTPClient.Configuration {
     package static var forPenny: Self {

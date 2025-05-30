@@ -2,6 +2,8 @@ import AsyncHTTPClient
 import DiscordBM
 import Logging
 import Models
+import NIOCore
+import NIOFoundationCompat
 import NIOHTTP1
 import Shared
 

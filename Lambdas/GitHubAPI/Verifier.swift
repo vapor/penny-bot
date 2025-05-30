@@ -1,10 +1,6 @@
 import Crypto
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+/// Import full foundation even on linux for `String(format:_:)`, for now.
+package import Foundation
 
 package enum Verifier {
 

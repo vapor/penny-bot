@@ -2,10 +2,12 @@ import AWSLambdaEvents
 import AWSLambdaRuntime
 import AsyncHTTPClient
 import DiscordBM
+import HTTPTypes
 import JWTKit
 import LambdasShared
 import Logging
 import Models
+import NIOFoundationCompat
 import Shared
 import SotoCore
 

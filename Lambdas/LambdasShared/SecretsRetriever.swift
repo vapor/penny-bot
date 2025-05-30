@@ -1,7 +1,8 @@
 import Logging
 import Shared
-import SotoCore
 import SotoSecretsManager
+
+package import class SotoCore.AWSClient
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

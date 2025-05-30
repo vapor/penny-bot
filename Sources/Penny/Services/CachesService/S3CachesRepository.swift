@@ -1,3 +1,4 @@
+import NIOFoundationCompat
 import SotoS3
 
 #if canImport(FoundationEssentials)

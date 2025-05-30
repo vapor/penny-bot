@@ -1,15 +1,13 @@
+import DiscordHTTP
 import DiscordModels
 import EvolutionMetadataModel
+/// Import full foundation even on linux for `trimmingCharacters`, for now.
+import Foundation
 import Logging
 import Markdown
 import Models
 import ServiceLifecycle
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+import Shared
 
 actor EvolutionChecker: Service {
 

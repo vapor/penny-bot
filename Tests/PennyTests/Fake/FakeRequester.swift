@@ -1,4 +1,5 @@
 import AsyncHTTPClient
+import DiscordModels
 import Logging
 
 @testable import GHHooksLambda

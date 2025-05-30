@@ -1,6 +1,7 @@
 import DiscordBM
 import GitHubAPI
 import Logging
+import Shared
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

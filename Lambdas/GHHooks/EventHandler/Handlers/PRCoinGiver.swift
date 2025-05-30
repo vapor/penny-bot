@@ -1,6 +1,8 @@
 import DiscordBM
 import GitHubAPI
 import Logging
+import Models
+import Shared
 
 /// Gives coins to GitHub users that have a linked Discord account, if their PR is merged.
 struct PRCoinGiver {

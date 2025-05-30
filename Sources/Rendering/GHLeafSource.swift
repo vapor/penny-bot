@@ -2,6 +2,7 @@ import AsyncHTTPClient
 import LeafKit
 import Logging
 import NIO
+import NIOHTTP1
 import Shared
 
 struct GHLeafSource: LeafSource {

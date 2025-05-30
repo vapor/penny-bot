@@ -1,7 +1,9 @@
 import AsyncHTTPClient
 import Logging
 import NIOCore
+import NIOHTTP1
 import Rendering
+import Shared
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

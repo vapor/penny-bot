@@ -1,9 +1,8 @@
 {
   "configurations": [
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug Penny",
       "program": "${workspaceFolder:penny-bot}/.build/debug/Penny",
       "args": [],
@@ -14,9 +13,8 @@
       }
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release Penny",
       "program": "${workspaceFolder:penny-bot}/.build/release/Penny",
       "args": [],
@@ -27,9 +25,8 @@
       }
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug UsersLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/UsersLambda",
       "args": [],
@@ -37,9 +34,8 @@
       "preLaunchTask": "swift: Build Debug UsersLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release UsersLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/UsersLambda",
       "args": [],
@@ -47,9 +43,8 @@
       "preLaunchTask": "swift: Build Release UsersLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug SponsorsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/SponsorsLambda",
       "args": [],
@@ -57,9 +52,8 @@
       "preLaunchTask": "swift: Build Debug SponsorsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release SponsorsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/SponsorsLambda",
       "args": [],
@@ -67,9 +61,8 @@
       "preLaunchTask": "swift: Build Release SponsorsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug GHOAuthLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/GHOAuthLambda",
       "args": [],
@@ -77,9 +70,8 @@
       "preLaunchTask": "swift: Build Debug GHOAuthLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release GHOAuthLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/GHOAuthLambda",
       "args": [],
@@ -87,9 +79,8 @@
       "preLaunchTask": "swift: Build Release GHOAuthLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug GHHooksLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/GHHooksLambda",
       "args": [],
@@ -97,9 +88,8 @@
       "preLaunchTask": "swift: Build Debug GHHooksLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release GHHooksLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/GHHooksLambda",
       "args": [],
@@ -107,9 +97,8 @@
       "preLaunchTask": "swift: Build Release GHHooksLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug FaqsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/FaqsLambda",
       "args": [],
@@ -117,9 +106,8 @@
       "preLaunchTask": "swift: Build Debug FaqsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release FaqsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/FaqsLambda",
       "args": [],
@@ -127,9 +115,8 @@
       "preLaunchTask": "swift: Build Release FaqsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug AutoPingsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/AutoPingsLambda",
       "args": [],
@@ -137,9 +124,8 @@
       "preLaunchTask": "swift: Build Debug AutoPingsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release AutoPingsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/AutoPingsLambda",
       "args": [],
@@ -147,9 +133,8 @@
       "preLaunchTask": "swift: Build Release AutoPingsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Debug AutoFaqsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/debug/AutoFaqsLambda",
       "args": [],
@@ -157,9 +142,8 @@
       "preLaunchTask": "swift: Build Debug AutoFaqsLambda"
     },
     {
-      "type": "swift-lldb",
+      "type": "lldb-dap",
       "request": "launch",
-      "sourceLanguages": ["swift"],
       "name": "Release AutoFaqsLambda",
       "program": "${workspaceFolder:penny-bot}/.build/release/AutoFaqsLambda",
       "args": [],

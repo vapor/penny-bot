@@ -1,17 +1,14 @@
 import AsyncHTTPClient
 import DiscordBM
+/// Import full foundation even on linux for `trimmingCharacters`, for now.
+import Foundation
 import GitHubAPI
 import Logging
 import Markdown
 import NIOCore
 import NIOFoundationCompat
+import Shared
 import SwiftSemver
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 struct ReleaseMaker {
 
