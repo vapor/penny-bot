@@ -76,51 +76,16 @@ struct DynamoUserRepository {
     private func queryUser(with query: DynamoDB.QueryInput) async throws -> DynamoDBUser? {
         /// SotoDynamoDB already has a function that decodes the response similarly to below, but I changed the code to
         /// manually decode the response in order to dodge a Swift runtime bug which consistently crashes this lambda.
-        let response = try await db.query(
+        var user = try await db.query(
             query,
+            type: DynamoDBUser.self,
             logger: self.logger
-        )
-        guard let userData = response.items?.first else {
-            return nil
-        }
+        ).items?.first
 
-        guard case .s(let value) = userData[DynamoDBUser.CodingKeys.id.rawValue],
-            let id = UUID(uuidString: value),
-            case .s(let discordIDstring) = userData[DynamoDBUser.CodingKeys.discordID.rawValue],
-            case .n(let value) = userData[DynamoDBUser.CodingKeys.coinCount.rawValue],
-            let coinCount = Int(value),
-            case .n(let value) = userData[DynamoDBUser.CodingKeys.createdAt.rawValue],
-            let createdAtEpoch = Double(value)
-        else {
-            throw DecodingError.typeMismatch(
-                DynamoDBUser.self,
-                .init(
-                    codingPath: [],
-                    debugDescription: "Cannot manually convert from \(userData) to 'DynamoDBUser'"
-                )
-            )
-        }
-        let discordID = UserSnowflake(discordIDstring)
-        let githubID: String? =
-            if case .s(let value) = userData[DynamoDBUser.CodingKeys.githubID.rawValue] {
-                value
-            } else {
-                nil
-            }
-        let createdAt = Date(timeIntervalSince1970: createdAtEpoch)
-
-        var user = DynamoDBUser(
-            id: id,
-            discordID: discordID,
-            githubID: githubID,
-            coinCount: coinCount,
-            createdAt: createdAt
-        )
-
-        if user.githubID == Configuration.githubIDNilEquivalent {
+        if user?.githubID == Configuration.githubIDNilEquivalent {
             /// Can't set this to `nil` or empty string when it's already populated.
             /// So `" "` (a single whitespace) is equivalent to `nil`.
-            user.githubID = nil
+            user?.githubID = nil
         }
 
         return user
