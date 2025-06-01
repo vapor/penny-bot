@@ -14,26 +14,38 @@ import Foundation
 #endif
 
 @main
-struct AutoFaqsHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
-
-    let awsClient: AWSClient
-    let autoFaqsRepo: S3AutoFaqsRepository
-
-    init(context: LambdaInitializationContext) async {
-        let httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
-            configuration: .forPenny
-        )
-        self.awsClient = AWSClient(httpClient: httpClient)
-        self.autoFaqsRepo = S3AutoFaqsRepository(awsClient: self.awsClient, logger: context.logger)
+@dynamicMemberLookup
+struct AutoFaqsHandler {
+    struct SharedContext {
+        let awsClient: AWSClient
     }
 
-    func handle(
-        _ event: APIGatewayV2Request,
-        context: LambdaContext
-    ) async -> APIGatewayV2Response {
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
+    let autoFaqsRepo: S3AutoFaqsRepository
+
+    static func main() async throws {
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
+            configuration: .forPenny
+        )
+        let awsClient = AWSClient(httpClient: httpClient)
+        let sharedContext = SharedContext(awsClient: awsClient)
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = AutoFaqsHandler(context: context, sharedContext: sharedContext)
+            return await handler.handle(event)
+        }.run()
+    }
+
+    init(context: LambdaContext, sharedContext: SharedContext) {
+        self.sharedContext = sharedContext
+        self.autoFaqsRepo = S3AutoFaqsRepository(awsClient: sharedContext.awsClient, logger: context.logger)
+    }
+
+    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
         let request: AutoFaqsRequest
         do {
             request = try event.decode()

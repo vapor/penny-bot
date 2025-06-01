@@ -14,26 +14,38 @@ import Foundation
 #endif
 
 @main
-struct AutoPingsHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
-
-    let awsClient: AWSClient
-    let pingsRepo: S3AutoPingsRepository
-
-    init(context: LambdaInitializationContext) async {
-        let httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
-            configuration: .forPenny
-        )
-        self.awsClient = AWSClient(httpClient: httpClient)
-        self.pingsRepo = S3AutoPingsRepository(awsClient: self.awsClient, logger: context.logger)
+@dynamicMemberLookup
+struct AutoPingsHandler {
+    struct SharedContext {
+        let awsClient: AWSClient
     }
 
-    func handle(
-        _ event: APIGatewayV2Request,
-        context: LambdaContext
-    ) async -> APIGatewayV2Response {
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
+    let pingsRepo: S3AutoPingsRepository
+
+    static func main() async throws {
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
+            configuration: .forPenny
+        )
+        let awsClient = AWSClient(httpClient: httpClient)
+        let sharedContext = SharedContext(awsClient: awsClient)
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = AutoPingsHandler(context: context, sharedContext: sharedContext)
+            return await handler.handle(event)
+        }.run()
+    }
+
+    init(context: LambdaContext, sharedContext: SharedContext) {
+        self.sharedContext = sharedContext
+        self.pingsRepo = S3AutoPingsRepository(awsClient: sharedContext.awsClient, logger: context.logger)
+    }
+
+    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
         let newItems: S3AutoPingItems
         if event.rawPath.hasSuffix("all") {
             do {

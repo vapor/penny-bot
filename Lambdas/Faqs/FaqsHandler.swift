@@ -14,27 +14,38 @@ import Foundation
 #endif
 
 @main
-struct FaqsHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
+@dynamicMemberLookup
+struct FaqsHandler {
+    struct SharedContext {
+        let awsClient: AWSClient
+    }
 
-    let awsClient: AWSClient
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
     let faqsRepo: S3FaqsRepository
 
-    init(context: LambdaInitializationContext) async {
+    static func main() async throws {
         let httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
             configuration: .forPenny
         )
         let awsClient = AWSClient(httpClient: httpClient)
-        self.awsClient = awsClient
-        self.faqsRepo = S3FaqsRepository(awsClient: awsClient, logger: context.logger)
+        let sharedContext = SharedContext(awsClient: awsClient)
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = FaqsHandler(context: context, sharedContext: sharedContext)
+            return await handler.handle(event)
+        }.run()
     }
 
-    func handle(
-        _ event: APIGatewayV2Request,
-        context: LambdaContext
-    ) async -> APIGatewayV2Response {
+    init(context: LambdaContext, sharedContext: SharedContext) {
+        self.sharedContext = sharedContext
+        self.faqsRepo = S3FaqsRepository(awsClient: sharedContext.awsClient, logger: context.logger)
+    }
+
+    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
         let request: FaqsRequest
         do {
             request = try event.decode()

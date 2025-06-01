@@ -1,5 +1,5 @@
 {
-  "originHash" : "e8a223b0d2b67d807b37ec77416cac65b62bc97aed04e43311d72324e4d3723e",
+  "originHash" : "b81c3e140decc5e86c2239255e5b380def768bcf9232bda6bf1955b5d07a4024",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -159,8 +159,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-runtime.git",
       "state" : {
-        "revision" : "5ecc24fa54e61756fe7a7a01f2451da1cffa916e",
-        "version" : "1.0.0-alpha.3"
+        "revision" : "c7df9bcd8af279c70f991f5d53e48d73d3e6821a"
       }
     },
     {
@@ -319,7 +318,7 @@
     {
       "identity" : "swift-openapi-async-http-client",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-openapi-async-http-client.git",
+      "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
       "state" : {
         "revision" : "915aeff168625b0f88a5810ee7ab8e9c00af671b",
         "version" : "1.1.0"
