@@ -13,7 +13,9 @@ extension String? {
 
 extension StringProtocol where Self: Sendable, SubSequence == Substring {
     func isPrimaryOrReleaseBranch(repo: Repository) -> Bool {
-        let result = repo.primaryBranch == self || self.isSuffixedWithStableOrPartialStableSemVer
+        let result =
+            repo.primaryBranch == self
+            || (self.hasAcceptablePrefix(repo: repo) && self.isSuffixedWithStableOrPartialStableSemVer)
         Logger(label: "StringProtocol.isPrimaryOrReleaseBranch").debug(
             "Checking branch status for 'isPrimaryOrReleaseBranch'",
             metadata: [
@@ -43,7 +45,14 @@ extension StringProtocol where Self: Sendable, SubSequence == Substring {
         /// 1- Allow for some `.x`s.
         /// 2- Reject pre-release and build identifies.
         /// https://github.com/gwynne/swift-semver/blob/main/Sources/SwiftSemver/SemanticVersion.swift
-        let pattern = #/^(\d+)(\.(([1-9]+)))?(\.(([1-9]+|x)))$/#
+        let pattern = #/^(\d+)(\.(([1-9]+|x)))?(\.(([1-9]+|x)))?$/#
         return self.wholeMatch(of: pattern) != nil
+    }
+
+    private func hasAcceptablePrefix(repo: Repository) -> Bool {
+        let lowercased = self.lowercased()
+        return [repo.name.lowercased(), "release"].contains {
+            lowercased.hasPrefix($0)
+        }
     }
 }
