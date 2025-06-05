@@ -18,13 +18,20 @@ import Foundation
 #endif
 
 @main
-struct GHHooksHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
+@dynamicMemberLookup
+struct GHHooksHandler {
+    struct SharedContext {
+        let httpClient: HTTPClient
+        let githubClient: Client
+        let awsClient: AWSClient
+        let secretsRetriever: SecretsRetriever
+    }
 
-    let httpClient: HTTPClient
-    let githubClient: Client
-    let secretsRetriever: SecretsRetriever
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
     let messageLookupRepo: any MessageLookupRepo
     let logger: Logger
 
@@ -32,55 +39,59 @@ struct GHHooksHandler: LambdaHandler {
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
-            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-            return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+            let botToken = try await self.secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            return await DefaultDiscordClient(httpClient: self.httpClient, token: botToken)
         }
     }
 
-    init(context: LambdaInitializationContext) async throws {
-        self.logger = context.logger
-        /// We can remove this if/when the lambda runtime gets support for
-        /// bootstrapping the logging system which it appears to not have.
-        DiscordGlobalConfiguration.makeLogger = { _ in context.logger }
-
-        self.httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
+    static func main() async throws {
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
             configuration: .forPenny
         )
-
-        let awsClient = AWSClient(httpClient: self.httpClient)
-        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
-
+        let awsClient = AWSClient(httpClient: httpClient)
+        let secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: Logger(label: "GHHooksHandler"))
         let authenticator = Authenticator(
             secretsRetriever: secretsRetriever,
             httpClient: httpClient,
-            logger: logger
+            logger: Logger(label: "GitHubClient.Authenticator")
         )
 
-        self.githubClient = try .makeForGitHub(
+        let githubClient = try Client.makeForGitHub(
             httpClient: httpClient,
             authorization: .computedBearer { isRetry in
                 try await authenticator.generateAccessToken(
                     forceRefreshToken: isRetry
                 )
             },
-            logger: logger
+            logger: Logger(label: "GitHubClient")
         )
-
-        self.messageLookupRepo = DynamoMessageRepo(
+        let sharedContext = SharedContext(
+            httpClient: httpClient,
+            githubClient: githubClient,
             awsClient: awsClient,
-            logger: logger
+            secretsRetriever: secretsRetriever
         )
-
-        context.logger.trace("Handler did initialize")
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = try GHHooksHandler(context: context, sharedContext: sharedContext)
+            return try await handler.handle(event)
+        }.run()
     }
 
-    func handle(
-        _ request: APIGatewayV2Request,
-        context: LambdaContext
-    ) async throws -> APIGatewayV2Response {
+    init(context: LambdaContext, sharedContext: SharedContext) throws {
+        self.sharedContext = sharedContext
+        self.logger = context.logger
+        self.messageLookupRepo = DynamoMessageRepo(
+            awsClient: sharedContext.awsClient,
+            logger: logger
+        )
+
+        self.logger.trace("Handler did initialize")
+    }
+
+    func handle(_ request: APIGatewayV2Request) async throws -> APIGatewayV2Response {
         do {
-            return try await handleThrowing(request, context: context)
+            return try await handleThrowing(request)
         } catch {
             do {
                 /// Report to Discord server for easier notification of maintainers
@@ -130,10 +141,7 @@ struct GHHooksHandler: LambdaHandler {
         }
     }
 
-    func handleThrowing(
-        _ request: APIGatewayV2Request,
-        context: LambdaContext
-    ) async throws -> APIGatewayV2Response {
+    func handleThrowing(_ request: APIGatewayV2Request) async throws -> APIGatewayV2Response {
         logger.debug(
             "Got request",
             metadata: [
@@ -172,21 +180,21 @@ struct GHHooksHandler: LambdaHandler {
             context: .init(
                 eventName: eventName,
                 event: event,
-                httpClient: httpClient,
-                discordClient: discordClient,
-                githubClient: githubClient,
+                httpClient: self.httpClient,
+                discordClient: self.discordClient,
+                githubClient: self.githubClient,
                 renderClient: RenderClient(
                     renderer: try .forGHHooks(
-                        httpClient: httpClient,
-                        logger: logger
+                        httpClient: self.httpClient,
+                        logger: self.logger
                     )
                 ),
                 messageLookupRepo: self.messageLookupRepo,
                 usersService: ServiceFactory.makeUsersService(
-                    httpClient: httpClient,
+                    httpClient: self.httpClient,
                     apiBaseURL: apiBaseURL
                 ),
-                logger: logger
+                logger: self.logger
             )
         ).handle()
 
@@ -201,7 +209,7 @@ struct GHHooksHandler: LambdaHandler {
             throw Errors.headerNotFound(name: "x-hub-signature-256", headers: request.headers)
         }
         let body = Data((request.body ?? "").utf8)
-        let secret = try await secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
+        let secret = try await self.secretsRetriever.getSecret(arnEnvVarKey: "WH_SECRET_ARN")
         try Verifier.verifyWebhookSignature(
             signatureHeader: signature,
             requestBody: body,

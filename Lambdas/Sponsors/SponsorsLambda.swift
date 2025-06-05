@@ -16,21 +16,27 @@ import Foundation
 #endif
 
 @main
-struct SponsorsHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
+@dynamicMemberLookup
+struct SponsorsHandler {
+    struct SharedContext {
+        let httpClient: HTTPClient
+        let awsClient: AWSClient
+        let secretsRetriever: SecretsRetriever
+    }
 
-    let httpClient: HTTPClient
-    let awsClient: AWSClient
-    let secretsRetriever: SecretsRetriever
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
     let logger: Logger
 
     /// We don't do this in the initializer to avoid a possible unnecessary
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
-            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-            return await DefaultDiscordClient(httpClient: httpClient, token: botToken)
+            let botToken = try await self.secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            return await DefaultDiscordClient(httpClient: self.httpClient, token: botToken)
         }
     }
 
@@ -38,47 +44,60 @@ struct SponsorsHandler: LambdaHandler {
         static let guildID: GuildSnowflake = "431917998102675485"
     }
 
-    init(context: LambdaInitializationContext) async throws {
-        self.httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
+    static func main() async throws {
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
             configuration: .forPenny
         )
-        self.awsClient = AWSClient(httpClient: self.httpClient)
-        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: context.logger)
+        let awsClient = AWSClient(httpClient: httpClient)
+        let secretsRetriever = SecretsRetriever(
+            awsClient: awsClient,
+            logger: Logger(label: "SponsorsHandler")
+        )
+        let sharedContext = SharedContext(
+            httpClient: httpClient,
+            awsClient: awsClient,
+            secretsRetriever: secretsRetriever
+        )
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = SponsorsHandler(context: context, sharedContext: sharedContext)
+            return await handler.handle(event)
+        }.run()
+    }
+
+    init(context: LambdaContext, sharedContext: SharedContext) {
+        self.sharedContext = sharedContext
         self.logger = context.logger
     }
 
-    func handle(
-        _ event: APIGatewayV2Request,
-        context: LambdaContext
-    ) async throws -> APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
         // Only accept sponsorship events
-        context.logger.debug("Headers are: \(event.headers.description)")
-        context.logger.debug("Body is: \(event.body ?? "empty")")
+        self.logger.debug("Headers are: \(event.headers.description)")
+        self.logger.debug("Body is: \(event.body ?? "empty")")
         guard event.headers.first(name: "x-github-event") == "sponsorship" else {
-            context.logger.debug("Did not get sponsorship event, exiting with code 200")
+            self.logger.debug("Did not get sponsorship event, exiting with code 200")
             return APIGatewayV2Response(statusCode: .ok)
         }
         do {
-            context.logger.debug("Received sponsorship event")
+            self.logger.debug("Received sponsorship event")
 
             // Try updating the GitHub Readme with the new sponsor
             try await requestReadmeWorkflowTrigger(on: event)
 
             // Decode GitHub Webhook Response
-            context.logger.debug("Decoding GitHub Payload")
+            self.logger.debug("Decoding GitHub Payload")
             let payload = try event.decode(as: GitHubWebhookPayload.self)
 
             // Look for the user in the DB
-            context.logger.debug("Looking for user in the DB")
+            self.logger.debug("Looking for user in the DB")
             let newSponsorID = payload.sender.id
             let apiBaseURL = try requireEnvVar("API_BASE_URL")
             let userService = ServiceFactory.makeUsersService(
-                httpClient: httpClient,
+                httpClient: self.httpClient,
                 apiBaseURL: apiBaseURL
             )
             guard let user = try await userService.getUser(githubID: "\(newSponsorID)") else {
-                context.logger.error("No user found with GitHub ID \(newSponsorID)")
+                self.logger.error("No user found with GitHub ID \(newSponsorID)")
                 return APIGatewayV2Response(
                     statusCode: .ok,
                     body: "Error: no user found with GitHub ID \(newSponsorID)"
@@ -94,7 +113,7 @@ struct SponsorsHandler: LambdaHandler {
             // Do different stuff depending on what happened to the sponsorship
             let actionType = GitHubWebhookPayload.ActionType(rawValue: payload.action)!
 
-            context.logger.debug("Managing Discord roles")
+            self.logger.debug("Managing Discord roles")
 
             switch actionType {
             case .created:
@@ -113,7 +132,7 @@ struct SponsorsHandler: LambdaHandler {
                 break
             case .tierChanged:
                 guard let changes = payload.changes else {
-                    context.logger.error(
+                    self.logger.error(
                         "Error: GitHub returned 'tier_changed' event but no 'changes' data in the payload"
                     )
                     return APIGatewayV2Response(
@@ -132,10 +151,10 @@ struct SponsorsHandler: LambdaHandler {
             case .pendingTierChange:
                 break
             }
-            context.logger.debug("Done, returning 200")
+            self.logger.debug("Done, returning 200")
             return APIGatewayV2Response(statusCode: .ok, body: "All jobs executed correctly")
         } catch {
-            context.logger.error(
+            self.logger.error(
                 "Error when handling sponsorship event",
                 metadata: [
                     "error": "\(String(reflecting: error))"
@@ -224,7 +243,7 @@ struct SponsorsHandler: LambdaHandler {
     }
 
     private func getWorkflowToken() async throws -> String {
-        try await secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
+        try await self.secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
     }
 
     /// Sends a request to GitHub to trigger the workflow that is going to update the repository readme file with the new sponsor.
@@ -245,7 +264,7 @@ struct SponsorsHandler: LambdaHandler {
         triggerActionRequest.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))
 
         // Send request to trigger workflow and read response
-        let githubResponse = try await httpClient.execute(triggerActionRequest, timeout: .seconds(10))
+        let githubResponse = try await self.httpClient.execute(triggerActionRequest, timeout: .seconds(10))
 
         guard 200..<300 ~= githubResponse.status.code else {
             let body = try await githubResponse.body.collect(upTo: 1024 * 1024)

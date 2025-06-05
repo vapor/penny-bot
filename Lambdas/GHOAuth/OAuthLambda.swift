@@ -18,49 +18,70 @@ import Foundation
 #endif
 
 @main
-struct GHOAuthHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
+@dynamicMemberLookup
+struct GHOAuthHandler {
+    struct SharedContext {
+        let httpClient: HTTPClient
+        let awsClient: AWSClient
+        let secretsRetriever: SecretsRetriever
+        let jwtKeys: JWTKeyCollection
+        let jsonDecoder = JSONDecoder()
+        let jsonEncoder = JSONEncoder()
+    }
 
-    let client: HTTPClient
-    let secretsRetriever: SecretsRetriever
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
     let userService: any UsersService
-    let jwtKeys: JWTKeyCollection
     let logger: Logger
-
-    let jsonDecoder = JSONDecoder()
-    let jsonEncoder = JSONEncoder()
 
     /// We don't do this in the initializer to avoid a possible unnecessary
     /// `secretsRetriever.getSecret()` call which costs $$$.
     var discordClient: any DiscordClient {
         get async throws {
-            let botToken = try await secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
-            return await DefaultDiscordClient(httpClient: client, token: botToken)
+            let botToken = try await self.secretsRetriever.getSecret(arnEnvVarKey: "BOT_TOKEN_ARN")
+            return await DefaultDiscordClient(httpClient: self.httpClient, token: botToken)
         }
     }
 
-    init(context: LambdaInitializationContext) async throws {
-        self.client = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
+    static func main() async throws {
+        let httpClient = HTTPClient(
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
             configuration: .forPenny
         )
-        self.logger = context.logger
-
-        let awsClient = AWSClient(httpClient: client)
-        self.secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: logger)
-
-        let apiBaseURL = try requireEnvVar("API_BASE_URL")
-        self.userService = ServiceFactory.makeUsersService(
-            httpClient: client,
-            apiBaseURL: apiBaseURL
+        let awsClient = AWSClient(httpClient: httpClient)
+        let secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: Logger(label: "GHOAuthHandler"))
+        let jwtKeys = JWTKeyCollection()
+        await jwtKeys.add(
+            ecdsa: try getJWTSignersPublicKey(
+                logger: Logger(label: "GHOAuthHandler")
+            )
         )
-
-        jwtKeys = JWTKeyCollection()
-        await jwtKeys.add(ecdsa: try getJWTSignersPublicKey())
+        let sharedContext = SharedContext(
+            httpClient: httpClient,
+            awsClient: awsClient,
+            secretsRetriever: secretsRetriever,
+            jwtKeys: jwtKeys
+        )
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = try GHOAuthHandler(context: context, sharedContext: sharedContext)
+            return await handler.handle(event)
+        }.run()
     }
 
-    private func getJWTSignersPublicKey() throws -> some ECDSAKey {
+    init(context: LambdaContext, sharedContext: SharedContext) throws {
+        self.sharedContext = sharedContext
+        let apiBaseURL = try requireEnvVar("API_BASE_URL")
+        self.userService = ServiceFactory.makeUsersService(
+            httpClient: sharedContext.httpClient,
+            apiBaseURL: apiBaseURL
+        )
+        self.logger = context.logger
+    }
+
+    private static func getJWTSignersPublicKey(logger: Logger) throws -> some ECDSAKey {
         logger.debug("Retrieving JWT signer secrets")
         let key = try requireEnvVar("ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY")
         guard let data = Data(base64Encoded: key) else {
@@ -70,7 +91,7 @@ struct GHOAuthHandler: LambdaHandler {
         return ecdsa
     }
 
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
         logger.debug("Received event: \(event)")
 
         guard let code = event.queryStringParameters["code"] else {
@@ -97,7 +118,7 @@ struct GHOAuthHandler: LambdaHandler {
 
         logger.debug("Verifying state")
         do {
-            jwt = try await jwtKeys.verify(state, as: GHOAuthPayload.self)
+            jwt = try await self.jwtKeys.verify(state, as: GHOAuthPayload.self)
         } catch {
             logger.error(
                 "Error during state verification",
@@ -198,7 +219,7 @@ struct GHOAuthHandler: LambdaHandler {
     func getGHAccessToken(code: String) async throws -> String {
         logger.debug("Retrieving GitHub client secrets")
 
-        let clientSecret = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
+        let clientSecret = try await self.secretsRetriever.getSecret(arnEnvVarKey: "GH_CLIENT_SECRET_ARN")
         let clientID = try requireEnvVar("GH_CLIENT_ID")
 
         // https://docs.github.com/en/apps/oauth-apps/building-oauth-apps/authorizing-oauth-apps
@@ -210,14 +231,14 @@ struct GHOAuthHandler: LambdaHandler {
             "Accept": "application/json",
             "Content-Type": "application/json",
         ]
-        let requestBody = try jsonEncoder.encode([
+        let requestBody = try self.jsonEncoder.encode([
             "client_id": clientID,
             "client_secret": clientSecret,
             "code": code,
         ])
         request.body = .bytes(requestBody)
 
-        let response = try await client.execute(request, timeout: .seconds(5))
+        let response = try await self.httpClient.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1 << 22)
 
         logger.debug(
@@ -233,7 +254,7 @@ struct GHOAuthHandler: LambdaHandler {
             throw Errors.httpRequestFailed(response: response, body: String(buffer: body))
         }
 
-        let accessToken = try jsonDecoder.decode(AccessTokenResponse.self, from: body).accessToken
+        let accessToken = try self.jsonDecoder.decode(AccessTokenResponse.self, from: body).accessToken
 
         return accessToken
     }
@@ -252,7 +273,7 @@ struct GHOAuthHandler: LambdaHandler {
         ]
 
         logger.trace("Will send get-GH-user request", metadata: ["accessToken": .string(accessToken)])
-        let response = try await client.execute(request, timeout: .seconds(5))
+        let response = try await self.httpClient.execute(request, timeout: .seconds(5))
         let body = try await response.body.collect(upTo: 1024 * 1024)
 
         logger.debug(
@@ -268,7 +289,7 @@ struct GHOAuthHandler: LambdaHandler {
             throw Errors.httpRequestFailed(response: response, body: String(buffer: body))
         }
 
-        let user = try jsonDecoder.decode(User.self, from: body)
+        let user = try self.jsonDecoder.decode(User.self, from: body)
 
         logger.info("Got user: \(user)")
 

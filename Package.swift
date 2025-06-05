@@ -30,7 +30,11 @@ let package = Package(
         /// Not-released area:
         .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "0.1.0"),
         .package(url: "https://github.com/apple/swift-markdown.git", from: "0.5.0"),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "1.0.0-alpha.3"),
+        .package(
+            url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
+            /// Last commit on main as of this code change; V2
+            revision: "c7df9bcd8af279c70f991f5d53e48d73d3e6821a"
+        ),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.0.0"),
     ],
     targets: [

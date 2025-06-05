@@ -1,4 +1,4 @@
-/// Import full foundation even on linux for `trimmingCharacters`, for now.
+/// Import full foundation even on linux for `trimmingCharacters` and `folding(options:locale:)`, for now.
 /// Also need `CharacterSet` too on Linux, for future reference.
 import Foundation
 import Models
