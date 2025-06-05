@@ -759,22 +759,31 @@ actor GHHooksTests {
             eventName: .pull_request,
             eventKey: "pr3"
         )
-        let repo = try #require(context.event.repository)
+        var repo = try #require(context.event.repository)
 
         #expect("main".isPrimaryOrReleaseBranch(repo: repo))
 
-        #expect(!"mainiac".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(!"maniac".isPrimaryOrReleaseBranch(repo: repo))
         #expect(!"master".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(!"master-maniac".isPrimaryOrReleaseBranch(repo: repo))
 
         #expect("release/1.0.4".isPrimaryOrReleaseBranch(repo: repo))
-        #expect("postgres-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
+        repo.name = "postgres-nio"
+        #expect("postgres-nio-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
+        repo.name = "console-kit"
+        #expect("console-kit-5".isPrimaryOrReleaseBranch(repo: repo))
+        repo.name = "vapor"
+        #expect("vapor-5".isPrimaryOrReleaseBranch(repo: repo))
+        #expect("release/3".isPrimaryOrReleaseBranch(repo: repo))
         #expect("release/58.x".isPrimaryOrReleaseBranch(repo: repo))
         #expect("release/58.1".isPrimaryOrReleaseBranch(repo: repo))
+        /// Weird but ¯\_(ツ)_/¯
+        #expect("release/5.x.9".isPrimaryOrReleaseBranch(repo: repo))
+        #expect("release/x.9".isPrimaryOrReleaseBranch(repo: repo))
 
-        #expect(!"release/x.9".isPrimaryOrReleaseBranch(repo: repo))
-        #expect(!"release/5.x.9".isPrimaryOrReleaseBranch(repo: repo))
+        repo.name = "postgres-nio"
+        #expect(!"postgres-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
         #expect(!"release/x".isPrimaryOrReleaseBranch(repo: repo))
-        #expect(!"release/3".isPrimaryOrReleaseBranch(repo: repo))
         /// No pre-release / build identifiers supported
         #expect(!"postgres-my/branch#42.99.56-alpha.x".isPrimaryOrReleaseBranch(repo: repo))
         #expect(!"postgres-my/branch#42.99.56-alpha.1345".isPrimaryOrReleaseBranch(repo: repo))
