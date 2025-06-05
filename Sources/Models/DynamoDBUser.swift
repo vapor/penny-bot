@@ -23,7 +23,7 @@ package struct DynamoDBUser: Sendable, Codable {
         }
     }
 
-    package init(
+    private init(
         id: UUID,
         discordID: UserSnowflake,
         githubID: String?,

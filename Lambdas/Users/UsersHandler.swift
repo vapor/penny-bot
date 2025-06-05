@@ -14,24 +14,41 @@ import Foundation
 #endif
 
 @main
-struct UsersHandler: LambdaHandler {
-    typealias Event = APIGatewayV2Request
-    typealias Output = APIGatewayV2Response
+@dynamicMemberLookup
+struct UsersHandler {
+    struct SharedContext {
+        let httpClient: HTTPClient
+        let awsClient: AWSClient
+    }
 
+    subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
+        sharedContext[keyPath: keyPath]
+    }
+
+    let sharedContext: SharedContext
     let internalService: InternalUsersService
     let logger: Logger
 
-    init(context: LambdaInitializationContext) async {
+    static func main() async throws {
         let httpClient = HTTPClient(
-            eventLoopGroupProvider: .shared(context.eventLoop),
+            eventLoopGroupProvider: .shared(Lambda.defaultEventLoop),
             configuration: .forPenny
         )
         let awsClient = AWSClient(httpClient: httpClient)
-        self.internalService = InternalUsersService(awsClient: awsClient, logger: context.logger)
+        let sharedContext = SharedContext(httpClient: httpClient, awsClient: awsClient)
+        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+            let handler = UsersHandler(context: context, sharedContext: sharedContext)
+            return await handler.handle(event)
+        }.run()
+    }
+
+    init(context: LambdaContext, sharedContext: SharedContext) {
+        self.sharedContext = sharedContext
+        self.internalService = InternalUsersService(awsClient: sharedContext.awsClient, logger: context.logger)
         self.logger = context.logger
     }
 
-    func handle(_ event: APIGatewayV2Request, context: LambdaContext) async -> APIGatewayV2Response {
+    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
         do {
             let request = try event.decode(as: UserRequest.self)
             switch request {
@@ -47,7 +64,7 @@ struct UsersHandler: LambdaHandler {
                 return try await handleUnlinkGitHubRequest(discordID: discordID)
             }
         } catch {
-            context.logger.error(
+            self.logger.error(
                 "Received error while handling request",
                 metadata: [
                     "event": "\(event)",

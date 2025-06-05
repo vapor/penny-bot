@@ -18,7 +18,6 @@ private let iso8601jsonDecoder: JSONDecoder = {
 private let jsonEncoder = JSONEncoder()
 
 extension APIGatewayV2Request {
-
     package func decode<D: Decodable>(as type: D.Type = D.self) throws -> D {
         guard let body = self.body else {
             throw APIGatewayErrors.emptyBody(self)

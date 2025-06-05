@@ -159,8 +159,7 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-runtime.git",
       "state" : {
-        "revision" : "5ecc24fa54e61756fe7a7a01f2451da1cffa916e",
-        "version" : "1.0.0-alpha.3"
+        "revision" : "c7df9bcd8af279c70f991f5d53e48d73d3e6821a"
       }
     },
     {
@@ -319,7 +318,7 @@
     {
       "identity" : "swift-openapi-async-http-client",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/swift-server/swift-openapi-async-http-client.git",
+      "location" : "https://github.com/swift-server/swift-openapi-async-http-client",
       "state" : {
         "revision" : "915aeff168625b0f88a5810ee7ab8e9c00af671b",
         "version" : "1.1.0"
