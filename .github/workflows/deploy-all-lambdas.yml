@@ -64,7 +64,7 @@ jobs:
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package \
-              --allow-network-connections all \
+              --allow-network-connections docker \
               archive \
               --verbose \
               --output-path ./zips \
