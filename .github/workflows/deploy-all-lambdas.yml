@@ -64,7 +64,6 @@ jobs:
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package \
-              --disable-sandbox \
               --allow-network-connections docker \
               archive \
               --verbose \
