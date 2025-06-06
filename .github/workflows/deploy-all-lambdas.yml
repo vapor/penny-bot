@@ -63,7 +63,8 @@ jobs:
         run: |
           mkdir zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
-            swift package archive \
+            swift package --allow-network-connections \
+            archive \
               --verbose \
               --output-path ./zips \
               --products "${name}"
