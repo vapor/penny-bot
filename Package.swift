@@ -142,8 +142,9 @@ let package = Package(
             ],
             path: "./Lambdas/GitHubAPI",
             resources: [
-                .copy("openapi-generator-config.yaml"),
-                .copy("openapi.yaml"),
+                /// `embedInCode` to dodge a compiler issue in Swift 6.1 amzlnx2 image when running the packager plugin
+                .embedInCode("openapi-generator-config.yaml"),
+                .embedInCode("openapi.yaml"),
             ],
             swiftSettings: targetsSwiftSettings
         ),
