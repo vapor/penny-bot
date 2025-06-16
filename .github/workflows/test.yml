@@ -14,7 +14,6 @@ jobs:
       with_coverage: false
       with_tsan: false
       with_api_check: false
-      with_deps_submission: true
       with_linting: true
 
   cloudformation-lint:
