@@ -1,5 +1,5 @@
 {
-  "originHash" : "62dafd8de1cb51f2e82fcbe7fb75c100e984c81d5957e22cc3e1f440c22ac470",
+  "originHash" : "66a3b17e9b08d6d5f97929eccad0ca128d47da6bca7ff4c6366d924ada9e8660",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -96,8 +96,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto-core.git",
       "state" : {
-        "revision" : "b75d7f4793086a324e5005399182dc1c7e845f63",
-        "version" : "7.7.1"
+        "revision" : "87e79a75dbfb6867bc7c0d04a48791336a6682ea",
+        "version" : "7.7.2"
       }
     },
     {
@@ -401,8 +401,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/jpsim/Yams",
       "state" : {
-        "revision" : "7568d1c6c63a094405afb32264c57dc4e1435835",
-        "version" : "6.0.1"
+        "revision" : "f4d4d6827d36092d151ad7f6fef1991c1b7192f6",
+        "version" : "6.0.2"
       }
     }
   ],
