@@ -18,7 +18,6 @@ WORKDIR /build
 COPY . .
 
 RUN --mount=type=cache,target=.build \
-    du -hs * && \
     swift build \
       --product "$EXEC_NAME" \
       -c release \
