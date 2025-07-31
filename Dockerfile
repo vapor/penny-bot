@@ -1,7 +1,7 @@
 # ================================
 # Build image
 # ================================
-FROM swift:6.1-noble as build
+FROM swift:6.1-noble AS build
 
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
@@ -15,10 +15,10 @@ RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
 # Set up a build area
 WORKDIR /build
 
-# Copy entire repo into container
 COPY . .
 
-RUN --mount=type=cache,target=/build/.build \
+RUN --mount=type=cache,target=.build \
+    du -hs * && \
     swift build \
       --product Penny \
       -c release \
@@ -29,15 +29,15 @@ RUN --mount=type=cache,target=/build/.build \
 WORKDIR /staging
 
 # Move executable to the root of the staging area
-RUN --mount=type=cache,target=/staging/.build \
-    mv .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
+RUN --mount=type=bind,target=. \
+    cp "$(swift build -c $SWIFT_CONFIGURATION --show-bin-path)/$EXEC_NAME" ./
 
 # Copy static swift backtracer binary to staging area
 RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
 
 # Copy resources bundled by SPM to staging area
-RUN --mount=type=cache,target=/staging/.build \
-    find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
+RUN --mount=type=bind,target=.build \
+    find -L "$(swift build -c $SWIFT_CONFIGURATION --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
 # ================================
 # Run image

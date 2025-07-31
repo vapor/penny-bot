@@ -13,7 +13,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: swift:6.1-noble
+    container: ubuntu:noble
 
     steps:
       - name: Checkout
@@ -32,6 +32,9 @@ jobs:
 
           # Install Docker
           ./.github/scripts/install-docker.bash
+
+      - name: Set up Docker Buildx with GHA caching support
+        uses: docker/setup-buildx-action@v3
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -53,32 +56,19 @@ jobs:
           key: "penny-release-docker-static-build-${{ runner.os }}-${{ github.event.after }}"
           restore-keys: "penny-release-docker-static-build-${{ runner.os }}-"
 
-      - name: Build and tag image
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: penny-bot-discord-image
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
-            --build-arg SWIFT_CONFIGURATION=release \
-            --build-arg EXEC_NAME=Penny
-
-      - name: Cache .build
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
+      - name: Build, tag and push Docker image
+        uses: docker/build-push-action@v6
         with:
-          path: .build
-          key: "penny-release-docker-static-build-${{ runner.os }}-${{ github.event.after }}"
-
-      - name: Push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: penny-bot-discord-image
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+          context: .
+          file: ./Dockerfile
+          build-args: |
+            SWIFT_CONFIGURATION=release
+            EXEC_NAME=Penny
+          # CHANGE TO TRUE BEFORE MERGE
+          push: false
+          tags: ${{ steps.login-ecr.outputs.registry }}/penny-bot-discord-image:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
@@ -86,7 +76,7 @@ jobs:
         with:
           task-definition: ./deploy/penny-discord-bot-task.json
           container-name: penny-bot
-          image: ${{ steps.build-image.outputs.image }}
+          image: ${{ steps.login-ecr.outputs.registry }}/penny-bot-discord-image:${{ github.sha }}
 
       - name: Deploy to Amazon ECS Service
         id: task-dep
