@@ -6,22 +6,38 @@ FROM swift:6.1-noble as build
 ARG SWIFT_CONFIGURATION
 ARG EXEC_NAME
 
+# Install OS updates
+RUN export DEBIAN_FRONTEND=noninteractive DEBCONF_NONINTERACTIVE_SEEN=true \
+    && apt-get -q update \
+    && apt-get -q dist-upgrade -y \
+    && apt-get install -y libjemalloc-dev
+
+# Set up a build area
+WORKDIR /build
+
+# Copy entire repo into container
+COPY . .
+
+RUN --mount=type=cache,target=/build/.build \
+    swift build \
+      --product Penny \
+      -c release \
+      --force-resolved-versions \
+      --static-swift-stdlib \
+      -Xlinker -ljemalloc
+
 WORKDIR /staging
 
-# Copy .build to staging area
-COPY .build ./.build
-
 # Move executable to the root of the staging area
-RUN mv .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
+RUN --mount=type=cache,target=/staging/.build \
+    mv .build/$SWIFT_CONFIGURATION/$EXEC_NAME ./
 
 # Copy static swift backtracer binary to staging area
 RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
 
 # Copy resources bundled by SPM to staging area
-RUN find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
-
-# Remove .build directory
-RUN rm -dr .build
+RUN --mount=type=cache,target=/staging/.build \
+    find -L ".build/$SWIFT_CONFIGURATION/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
 
 # ================================
 # Run image

@@ -4,6 +4,8 @@ concurrency:
   cancel-in-progress: true
 on:
   push: { branches: [main] }
+  # TODO: REMOVE BEFORE MERGE
+  pull_request: { branches: [main] }
 
 jobs:
   deploy:
@@ -22,33 +24,6 @@ jobs:
         run: |
           apt-get update -y
           apt-get install -y zstd
-
-      - name: Restore .build
-        if: ${{ runner.debug != '1' }}
-        id: "restore-cache"
-        uses: actions/cache/restore@v4
-        with:
-          path: .build
-          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
-          restore-keys: "penny-release-static-build-${{ runner.os }}-"
-
-      - name: Build Penny
-        run: |
-          apt-get update -y
-          apt-get install -y libjemalloc-dev
-          swift build \
-            --product Penny \
-            -c release \
-            --force-resolved-versions \
-            --static-swift-stdlib \
-            -Xlinker -ljemalloc
-
-      - name: Cache .build
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v4
-        with:
-          path: .build
-          key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
 
       - name: Install Docker
         run: |
@@ -69,19 +44,39 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build, tag, and push image to Amazon ECR
+      - name: Restore .build
+        if: ${{ runner.debug != '1' }}
+        id: "restore-cache"
+        uses: actions/cache/restore@v4
+        with:
+          path: .build
+          key: "penny-release-docker-static-build-${{ runner.os }}-${{ github.event.after }}"
+          restore-keys: "penny-release-docker-static-build-${{ runner.os }}-"
+
+      - name: Build and tag image
         id: build-image
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: penny-bot-discord-image
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
             --build-arg SWIFT_CONFIGURATION=release \
             --build-arg EXEC_NAME=Penny
+
+      - name: Cache .build
+        if: steps.restore-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: .build
+          key: "penny-release-docker-static-build-${{ runner.os }}-${{ github.event.after }}"
+
+      - name: Push image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: penny-bot-discord-image
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
