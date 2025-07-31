@@ -20,24 +20,16 @@ COPY . .
 RUN --mount=type=cache,target=.build \
     du -hs * && \
     swift build \
-      --product Penny \
+      --product "$EXEC_NAME" \
       -c release \
       --force-resolved-versions \
       --static-swift-stdlib \
-      -Xlinker -ljemalloc
+      -Xlinker -ljemalloc && \
+    mkdir -p /staging && \
+    cp "$(swift build -c $SWIFT_CONFIGURATION --show-bin-path)/$EXEC_NAME" /staging/ && \
+    find -L "$(swift build -c $SWIFT_CONFIGURATION --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} /staging/ \;
 
-WORKDIR /staging
-
-# Move executable to the root of the staging area
-RUN --mount=type=bind,target=. \
-    cp "$(swift build -c $SWIFT_CONFIGURATION --show-bin-path)/$EXEC_NAME" ./
-
-# Copy static swift backtracer binary to staging area
-RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" ./
-
-# Copy resources bundled by SPM to staging area
-RUN --mount=type=bind,target=.build \
-    find -L "$(swift build -c $SWIFT_CONFIGURATION --show-bin-path)/" -regex '.*\.resources$' -exec cp -Ra {} ./ \;
+RUN cp "/usr/libexec/swift/linux/swift-backtrace-static" /staging/
 
 # ================================
 # Run image
