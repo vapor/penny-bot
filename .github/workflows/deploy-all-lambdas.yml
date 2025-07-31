@@ -45,8 +45,6 @@ jobs:
         working-directory: ${{ github.event.repository.name }}
         id: find_package_names
         run: |
-          # sed -i didn't work for some reason
-          # sed '1s/6.1/6.0/' Package.swift > temp && mv temp Package.swift
           echo "names=$(
             swift package describe --type json | \
             jq -r '.targets[] |
