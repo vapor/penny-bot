@@ -19,12 +19,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # actions/cache will detect zstd and will become much faster.
-      - name: Install zstd
-        run: |
-          apt-get update -y
-          apt-get install -y zstd
-
       - name: Install Docker
         run: |
           # Make scripts executable
@@ -67,29 +61,29 @@ jobs:
           # CHANGE TO TRUE BEFORE MERGE
           push: false
           tags: ${{ steps.login-ecr.outputs.registry }}/penny-bot-discord-image:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,compression=zstd
+          cache-to: type=gha,compression=zstd,mode=max
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: ./deploy/penny-discord-bot-task.json
-          container-name: penny-bot
-          image: ${{ steps.login-ecr.outputs.registry }}/penny-bot-discord-image:${{ github.sha }}
+      # - name: Fill in the new image ID in the Amazon ECS task definition
+      #   id: task-def
+      #   uses: aws-actions/amazon-ecs-render-task-definition@v1
+      #   with:
+      #     task-definition: ./deploy/penny-discord-bot-task.json
+      #     container-name: penny-bot
+      #     image: ${{ steps.login-ecr.outputs.registry }}/penny-bot-discord-image:${{ github.sha }}
 
-      - name: Deploy to Amazon ECS Service
-        id: task-dep
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          wait-for-service-stability: true
+      # - name: Deploy to Amazon ECS Service
+      #   id: task-dep
+      #   uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      #   with:
+      #     task-definition: ${{ steps.task-def.outputs.task-definition }}
+      #     wait-for-service-stability: true
 
-      - name: Deploy to AWS cloudformation
-        uses: aws-actions/aws-cloudformation-github-deploy@v1
-        with:
-          name: penny-discord-bot-stack
-          template: ./deploy/penny-discord-bot-stack.yml
-          no-fail-on-empty-changeset: "1"
-          parameter-overrides: >-
-            TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
+      # - name: Deploy to AWS cloudformation
+      #   uses: aws-actions/aws-cloudformation-github-deploy@v1
+      #   with:
+      #     name: penny-discord-bot-stack
+      #     template: ./deploy/penny-discord-bot-stack.yml
+      #     no-fail-on-empty-changeset: "1"
+      #     parameter-overrides: >-
+      #       TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
