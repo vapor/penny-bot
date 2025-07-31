@@ -41,15 +41,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Restore .build
-        if: ${{ runner.debug != '1' }}
-        id: "restore-cache"
-        uses: actions/cache/restore@v4
-        with:
-          path: .build
-          key: "penny-release-docker-static-build-${{ runner.os }}-${{ github.event.after }}"
-          restore-keys: "penny-release-docker-static-build-${{ runner.os }}-"
-
       - name: Build, tag and push Docker image
         uses: docker/build-push-action@v6
         with:

@@ -29,7 +29,7 @@ enum Constants {
                 )
                 fatalError(
                     """
-                    Invalid deployment environment env var provided: '\(value ?? "<null>")'.
+                    Invalid deployment environment env var provided: '\(value ?? "null")'.
                     Set 'DEPLOYMENT_ENVIRONMENT' to 'local' for local developments.
                     """
                 )
