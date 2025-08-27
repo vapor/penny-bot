@@ -17,11 +17,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      # actions/cache will detect zstd and will become much faster.
+      # actions/cache will detect zstd and will become much faster. curl for docker installation.
       - name: Install zstd
         run: |
           apt-get update -y
-          apt-get install -y zstd
+          apt-get install -y curl zstd
 
       - name: Restore .build
         if: ${{ runner.debug != '1' }}
