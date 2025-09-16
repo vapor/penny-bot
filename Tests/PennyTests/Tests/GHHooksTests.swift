@@ -1081,6 +1081,15 @@ actor GHHooksTests {
     }
 
     @Test
+    func handleSecurityAdvisory1() async throws {
+        try await handleEvent(
+            key: "security_advisory1",
+            eventName: .security_advisory,
+            expect: .noResponse
+        )
+    }
+
+    @Test
     func handleOtherEvent1() async throws {
         try await handleEvent(
             key: "projects_v2_item1",

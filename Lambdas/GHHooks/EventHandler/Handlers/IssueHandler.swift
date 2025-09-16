@@ -179,8 +179,9 @@ struct IssueHandler: Sendable {
         if issue.closedAt == nil {
             return nil
         }
+        let sender = try event.sender.requireValue()
         if action == .closed {
-            return (event.sender.id, event.sender.uiName)
+            return (sender.id, sender.uiName)
         } else {
             return try await context.githubClient.issuesGet(
                 path: .init(
