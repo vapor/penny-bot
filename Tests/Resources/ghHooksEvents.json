@@ -12156,5 +12156,60 @@
       "type": "User",
       "site_admin": false
     }
+  },
+  "security_advisory1": {
+    "action": "published",
+    "security_advisory": {
+      "ghsa_id": "GHSA-qq7f-c3gc-q93g",
+      "cve_id": null,
+      "summary": "Malware in verror-extra",
+      "description": "Any computer that has this package installed or running should be considered fully compromised. All secrets and keys stored on that computer should be rotated immediately from a different computer. The package should be removed, but as full control of the computer may have been given to an outside entity, there is no guarantee that removing the package will remove all malicious software resulting from installing it.",
+      "severity": "critical",
+      "identifiers": [
+        {
+          "value": "GHSA-qq7f-c3gc-q93g",
+          "type": "GHSA"
+        }
+      ],
+      "references": [
+        {
+          "url": "https://github.com/advisories/GHSA-qq7f-c3gc-q93g"
+        }
+      ],
+      "published_at": "2025-09-16T07:57:02Z",
+      "updated_at": "2025-09-16T07:57:02Z",
+      "withdrawn_at": null,
+      "vulnerabilities": [
+        {
+          "package": {
+            "ecosystem": "npm",
+            "name": "verror-extra"
+          },
+          "severity": "critical",
+          "vulnerable_version_range": ">= 0",
+          "first_patched_version": null
+        }
+      ],
+      "cvss_severities": {
+        "cvss_v3": {
+          "vector_string": null,
+          "score": 0
+        },
+        "cvss_v4": {
+          "vector_string": null,
+          "score": 0
+        }
+      },
+      "cvss": {
+        "vector_string": null,
+        "score": 0
+      },
+      "cwes": [
+        {
+          "cwe_id": "CWE-506",
+          "name": "Embedded Malicious Code"
+        }
+      ]
+    }
   }
 }

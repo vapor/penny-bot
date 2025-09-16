@@ -7,7 +7,7 @@ import Foundation
 /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
 package struct GHEvent: Sendable, Codable {
     package let action: String?
-    package let sender: User
+    package let sender: User?
     package let repository: Repository?
 
     package let issue: Issue?

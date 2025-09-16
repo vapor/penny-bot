@@ -85,7 +85,6 @@
   "workbench.editor.enablePreview": false,
   "yaml.format.enable": true,
   "yaml.maxItemsComputed": 1000000,
-  "swift.debugger.debugAdapter": "CodeLLDB"
   "swift.debugger.debugAdapter": "CodeLLDB",
   "swift.buildArguments": ["--enable-experimental-prebuilts"]
 }
