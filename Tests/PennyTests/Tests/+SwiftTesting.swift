@@ -12,32 +12,34 @@ func expectMultilineStringsEqual(
 ) {
     let expression1 = expression1.trimmingSuffix(while: \.isNewline)
     let expression2 = expression2.trimmingSuffix(while: \.isNewline)
-    if expression1 != expression2 {
-        /// Not using `whereSeparator: \.isNewline` so it doesn't match non `\n` characters.
-        let lines1 =
-            expression1
-            .split(separator: "\n", omittingEmptySubsequences: false)
-            .map { $0.trimmingSuffix(while: \.isWhitespace) }
-        let lines2 =
-            expression2
-            .split(separator: "\n", omittingEmptySubsequences: false)
-            .map { $0.trimmingSuffix(while: \.isWhitespace) }
 
-        if lines1.count == lines2.count {
-            for (idx, (line1, line2)) in zip(lines1, lines2).enumerated() {
-                if line1 != line2 {
-                    Issue.record(
-                        """
-                        Not equal at line \(idx + 1):
-                        Got:      \(line1.debugDescription)
-                        Expected: \(line2.debugDescription)
-                        """,
-                        sourceLocation: sourceLocation
-                    )
-                }
+    /// Short-circuit if the lines are completely equal.
+    if expression1 == expression2 {
+        return
+    }
+
+    /// Not using `whereSeparator: \.isNewline` so it doesn't match non `\n` characters.
+    let lines1 =
+        expression1
+        .split(separator: "\n", omittingEmptySubsequences: false)
+        .map { $0.trimmingSuffix(while: \.isWhitespace) }
+    let lines2 =
+        expression2
+        .split(separator: "\n", omittingEmptySubsequences: false)
+        .map { $0.trimmingSuffix(while: \.isWhitespace) }
+
+    if lines1.count == lines2.count {
+        for (idx, (line1, line2)) in zip(lines1, lines2).enumerated() {
+            if line1 != line2 {
+                Issue.record(
+                    """
+                    Not equal at line \(idx + 1):
+                    Got:      \(line1.debugDescription)
+                    Expected: \(line2.debugDescription)
+                    """,
+                    sourceLocation: sourceLocation
+                )
             }
-        } else {
-            #expect(expression1 == expression2, sourceLocation: sourceLocation)
         }
     }
 }
