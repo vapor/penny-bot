@@ -1,4 +1,4 @@
-// swift-tools-version:6.1
+// swift-tools-version:6.2
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -29,13 +29,9 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.3.0"),
         /// Not-released area:
         .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "0.1.0"),
-        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.5.0"),
-        .package(
-            url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
-            /// Last commit on main as of this code change; V2
-            revision: "c7df9bcd8af279c70f991f5d53e48d73d3e6821a"
-        ),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.7.1"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.0.0-beta.3"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.2.1"),
     ],
     targets: [
         .executableTarget(
@@ -54,7 +50,7 @@ let package = Package(
                 .target(name: "Shared"),
                 .target(name: "Models"),
             ],
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
         .lambdaTarget(
             name: "Users",
@@ -122,10 +118,11 @@ let package = Package(
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .target(name: "Shared"),
             ],
             path: "./Lambdas/LambdasShared",
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
         .target(
             name: "GitHubAPI",
@@ -145,14 +142,14 @@ let package = Package(
                 .copy("openapi-generator-config.yaml"),
                 .copy("openapi.yaml"),
             ],
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
         .target(
             name: "Models",
             dependencies: [
                 .product(name: "DiscordModels", package: "DiscordBM")
             ],
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
         .target(
             name: "Shared",
@@ -163,7 +160,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Models"),
             ],
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
         .target(
             name: "Rendering",
@@ -175,7 +172,7 @@ let package = Package(
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "Shared"),
             ],
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
         .testTarget(
             name: "PennyTests",
@@ -202,12 +199,12 @@ let package = Package(
                 .target(name: "Penny"),
                 .target(name: "GHHooksLambda"),
             ],
-            swiftSettings: testsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         ),
     ]
 )
 
-/// Bug alert! Don't make these constants, or they won't take effect!
+/// Bug alert! Don't make this a constant, or it won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     [
@@ -216,20 +213,6 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         .enableUpcomingFeature("MemberImportVisibility"),
         .enableUpcomingFeature("InternalImportsByDefault"),
     ]
-}
-
-var targetsSwiftSettings: [SwiftSetting] {
-    upcomingFeaturesSwiftSettings + [
-        /// https://github.com/apple/swift/issues/67214
-        .unsafeFlags(
-            ["-Xllvm", "-vectorize-slp=false"],
-            .when(platforms: [.linux], configuration: .release)
-        )
-    ]
-}
-
-var testsSwiftSettings: [SwiftSetting] {
-    upcomingFeaturesSwiftSettings
 }
 
 extension PackageDescription.Target {
@@ -249,7 +232,7 @@ extension PackageDescription.Target {
                 .target(name: "Models"),
             ] + additionalDependencies,
             path: "./Lambdas/\(name)",
-            swiftSettings: targetsSwiftSettings
+            swiftSettings: upcomingFeaturesSwiftSettings
         )
     }
 }

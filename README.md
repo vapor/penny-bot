@@ -29,8 +29,8 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
     </a>
     <a href="https://swift.org">
         <img
-            src="https://design.vapor.codes/images/swift61up.svg"
-            alt="Swift 6.1+"
+            src="https://design.vapor.codes/images/swift62up.svg"
+            alt="Swift 6.2+"
         >
     </a>
 </p>
@@ -63,7 +63,7 @@ The related labels are:
 * `semver-noop`
 * `release`
 * `prerelease`
-* `no-release-needed` 
+* `no-release-needed`
 
 Some other notes:
 * `semver-major` and `release` are of limited use for automatic releases. Penny won't do a whole major release by itself since those are rare and they can be risky to do.
