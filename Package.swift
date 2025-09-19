@@ -29,13 +29,9 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.3.0"),
         /// Not-released area:
         .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "0.1.0"),
-        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.5.0"),
-        .package(
-            url: "https://github.com/swift-server/swift-aws-lambda-runtime.git",
-            /// Last commit on main as of this code change; V2
-            revision: "c7df9bcd8af279c70f991f5d53e48d73d3e6821a"
-        ),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.7.1"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.0.0-beta.3"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.2.1"),
     ],
     targets: [
         .executableTarget(
@@ -208,7 +204,7 @@ let package = Package(
     ]
 )
 
-/// Bug alert! Don't make these constants, or they won't take effect!
+/// Bug alert! Don't make this a constant, or it won't take effect!
 /// https://github.com/apple/swift-package-manager/issues/6597
 var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     [
