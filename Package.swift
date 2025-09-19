@@ -122,6 +122,7 @@ let package = Package(
                 .product(name: "SotoSecretsManager", package: "soto"),
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
+                .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
                 .target(name: "Shared"),
             ],
             path: "./Lambdas/LambdasShared",
