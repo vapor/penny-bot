@@ -29,7 +29,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.3.0"),
         /// Not-released area:
         .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "0.1.0"),
-        .package(url: "https://github.com/apple/swift-markdown.git", from: "0.7.1"),
+        .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.7.1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.0.0-beta.3"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.2.1"),
     ],
