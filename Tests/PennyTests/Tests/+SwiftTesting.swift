@@ -28,18 +28,21 @@ func expectMultilineStringsEqual(
         .split(separator: "\n", omittingEmptySubsequences: false)
         .map { $0.trimmingSuffix(while: \.isWhitespace) }
 
-    if lines1.count == lines2.count {
-        for (idx, (line1, line2)) in zip(lines1, lines2).enumerated() {
-            if line1 != line2 {
-                Issue.record(
-                    """
-                    Not equal at line \(idx + 1):
-                    Got:      \(line1.debugDescription)
-                    Expected: \(line2.debugDescription)
-                    """,
-                    sourceLocation: sourceLocation
-                )
-            }
+    guard lines1.count == lines2.count else {
+        #expect(expression1 == expression2, sourceLocation: sourceLocation)
+        return
+    }
+
+    for (idx, (line1, line2)) in zip(lines1, lines2).enumerated() {
+        if line1 != line2 {
+            Issue.record(
+                """
+                Not equal at line \(idx + 1):
+                Got:      \(line1.debugDescription)
+                Expected: \(line2.debugDescription)
+                """,
+                sourceLocation: sourceLocation
+            )
         }
     }
 }
