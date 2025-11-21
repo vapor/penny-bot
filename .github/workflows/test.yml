@@ -15,6 +15,7 @@ jobs:
       with_tsan: false
       with_api_check: false
       with_linting: true
+      extra_flags: "--disable-experimental-prebuilts"
 
   cloudformation-lint:
     name: Check CloudFormation

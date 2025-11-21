@@ -1,5 +1,6 @@
 import DiscordBM
 import GitHubAPI
+import Logging
 import Shared
 
 struct IssueHandler: Sendable {
@@ -70,25 +71,42 @@ struct IssueHandler: Sendable {
         let newIssue = try changes.new_issue.requireValue()
         let newRepo = try changes.new_repository.requireValue()
         let repo = try repo
-        let existingMessageID = try await context.messageLookupRepo.getMessageID(
-            repoID: repo.id,
-            number: self.issue.number
-        )
-        try await self.makeReporter(
-            embedIssue: newIssue,
-            embedRepo: changes.new_repository
-        ).reportEdition(
-            requiresPreexistingReport: self.action == .labeled
-        )
-        try await self.context.messageLookupRepo.markAsUnavailable(
-            repoID: repo.id,
-            number: self.issue.number
-        )
-        try await self.context.messageLookupRepo.saveMessageID(
-            messageID: existingMessageID,
-            repoID: newRepo.id,
-            number: newIssue.number
-        )
+        do {
+            let existingMessageID = try await context.messageLookupRepo.getMessageID(
+                repoID: repo.id,
+                number: self.issue.number
+            )
+            context.logger.debug(
+                "Found existing Discord message for transferred ticket",
+                metadata: [
+                    "messageID": .stringConvertible(existingMessageID)
+                ]
+            )
+            try await self.makeReporter(
+                embedIssue: newIssue,
+                embedRepo: changes.new_repository
+            ).reportEdition(
+                requiresPreexistingReport: self.action == .labeled
+            )
+            try await self.context.messageLookupRepo.markAsUnavailable(
+                repoID: repo.id,
+                number: self.issue.number
+            )
+            try await self.context.messageLookupRepo.saveMessageID(
+                messageID: existingMessageID,
+                repoID: newRepo.id,
+                number: newIssue.number
+            )
+        } catch let error as DynamoMessageRepo.Errors where error == .unavailable {
+            context.logger.debug("The transferred ticket's Discord message is marked as unavailable")
+            return
+        } catch let error as DynamoMessageRepo.Errors where error == .notFound {
+            context.logger.debug("Couldn't find a Discord message for the transferred ticket, will create a new one")
+            try await self.makeReporter(
+                embedIssue: newIssue,
+                embedRepo: changes.new_repository
+            ).reportCreation()
+        }
     }
 
     func makeReporter(
