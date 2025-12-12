@@ -35,7 +35,7 @@ jobs:
       - name: Restore .build
         if: false # ❌ Needs node 20 which amazonlinux2 doesn't have
         id: "restore-cache"
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: ${{ github.event.repository.name }}/.build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
@@ -79,7 +79,7 @@ jobs:
 
       - name: Cache .build
         if: false # ❌ Needs node 20 which amazonlinux2 doesn't have
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: ${{ github.event.repository.name }}/.build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
