@@ -46,16 +46,22 @@ struct ReleaseReporter {
             logger.debug("Sending release report for no PRs")
             try await self.sendToDiscordWithRelease()
         } else if relatedPRs.count == 1 || release.author.id == Constants.GitHub.userID {
-            logger.debug("Sending release report for 1 PR or Penny released this", metadata: [
-                "prCount": .stringConvertible(relatedPRs.count)
-            ])
+            logger.debug(
+                "Sending release report for 1 PR or Penny released this",
+                metadata: [
+                    "prCount": .stringConvertible(relatedPRs.count)
+                ]
+            )
             /// If there is only 1 PR or if Penny released this, then just mention the last PR.
             try await self.sendToDiscord(pr: relatedPRs[0])
         } else {
-            logger.debug("Sending release report for multiple PRs", metadata: [
-                "prCount": .stringConvertible(relatedPRs.count),
-                "commitCount": .stringConvertible(commitCount)
-            ])
+            logger.debug(
+                "Sending release report for multiple PRs",
+                metadata: [
+                    "prCount": .stringConvertible(relatedPRs.count),
+                    "commitCount": .stringConvertible(commitCount),
+                ]
+            )
             try await self.sendToDiscord(prs: relatedPRs, commitCount: commitCount)
         }
     }
