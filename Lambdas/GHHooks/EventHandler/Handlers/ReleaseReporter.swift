@@ -43,11 +43,19 @@ struct ReleaseReporter {
     func handleReleasePublished() async throws {
         let (commitCount, relatedPRs) = try await self.getPRsRelatedToRelease()
         if relatedPRs.isEmpty {
+            logger.debug("Sending release report for no PRs")
             try await self.sendToDiscordWithRelease()
         } else if relatedPRs.count == 1 || release.author.id == Constants.GitHub.userID {
+            logger.debug("Sending release report for 1 PR or Penny released this", metadata: [
+                "prCount": .stringConvertible(relatedPRs.count)
+            ])
             /// If there is only 1 PR or if Penny released this, then just mention the last PR.
             try await self.sendToDiscord(pr: relatedPRs[0])
         } else {
+            logger.debug("Sending release report for multiple PRs", metadata: [
+                "prCount": .stringConvertible(relatedPRs.count),
+                "commitCount": .stringConvertible(commitCount)
+            ])
             try await self.sendToDiscord(prs: relatedPRs, commitCount: commitCount)
         }
     }
@@ -73,7 +81,25 @@ struct ReleaseReporter {
 
         for commit in commits.prefix(maxCommits) {
             let newPRs = try await getPRsRelatedToCommit(sha: commit.sha)
+            logger.debug(
+                "Found PRs related to commit",
+                metadata: [
+                    "commit": .string(commit.sha),
+                    "prLinks": .stringConvertible(newPRs.map(\.htmlUrl)),
+                    "prTitles": .stringConvertible(newPRs.map(\.title)),
+                ]
+            )
             for pr in newPRs {
+                if pr.user?.isBot == true {
+                    logger.debug(
+                        "Skipping bot PR",
+                        metadata: [
+                            "prLink": .string(pr.htmlUrl),
+                            "prTitle": .string(pr.title),
+                        ]
+                    )
+                    continue
+                }
                 prs[pr.htmlUrl] = pr
                 if prs.count >= maxPRs { break }
             }
@@ -84,6 +110,7 @@ struct ReleaseReporter {
 
     func findComparisonRange() -> String? {
         guard let body = release.body else {
+            logger.debug("Could not compute comparison range in release because release body is nil")
             return nil
         }
         let linkPrefix = "https://github.com/\(repo.fullName)/compare/"
@@ -99,7 +126,18 @@ struct ReleaseReporter {
         }?.split(
             separator: "/"
         ).last
-        return comparisonRange.map(String.init)
+        if let comparisonRange {
+            logger.debug(
+                "Found comparison range in release",
+                metadata: [
+                    "comparisonRange": .stringConvertible(comparisonRange)
+                ]
+            )
+            return String(comparisonRange)
+        } else {
+            logger.debug("Could not compute comparison range in release")
+            return nil
+        }
     }
 
     func getTagBefore() async throws -> String? {
