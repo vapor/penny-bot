@@ -70,8 +70,7 @@
   "json.maxItemsComputed": 1000000,
   "markdown.validate.enabled": true,
   "swift.additionalTestArguments": [
-    "--disable-xctest",
-    "--enable-experimental-prebuilts"
+    "--disable-xctest"
   ],
   "swift.pluginArguments": {
     "swift-openapi-generator:generate-code-from-openapi": ["-c", "release"]
@@ -86,5 +85,5 @@
   "yaml.format.enable": true,
   "yaml.maxItemsComputed": 1000000,
   "swift.debugger.debugAdapter": "CodeLLDB",
-  "swift.buildArguments": ["--enable-experimental-prebuilts"]
+  "swift.buildArguments": []
 }

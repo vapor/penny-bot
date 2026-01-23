@@ -16,7 +16,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/jwt-kit.git", from: "5.0.1"),
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
-        .package(url: "https://github.com/apple/swift-algorithms", from: "1.0.0"),
+        .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
         .package(url: "https://github.com/swift-server/swift-openapi-async-http-client.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-openapi-generator.git", from: "1.6.0"),
@@ -28,10 +28,10 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "7.3.0"),
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.3.0"),
         /// Not-released area:
-        .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "0.1.0"),
+        .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "1.0.0"),
         .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.7.1"),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.0.0-beta.3"),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.2.1"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.5.2"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.4.0"),
     ],
     targets: [
         .executableTarget(
