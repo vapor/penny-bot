@@ -100,6 +100,5 @@ jobs:
         with:
           name: penny-discord-bot-stack
           template: ./deploy/penny-discord-bot-stack.yml
-          no-fail-on-empty-changeset: "1"
           parameter-overrides: >-
             TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
