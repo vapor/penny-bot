@@ -2233,7 +2233,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 0
+      "color": 0,
+      "colors": {
+        "primary_color": 0,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118810,
@@ -2248,7 +2253,12 @@
       "icon": null,
       "hoist": true,
       "flags": 0,
-      "color": 15105570
+      "color": 15105570,
+      "colors": {
+        "primary_color": 15105570,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118796,
@@ -2263,7 +2273,12 @@
       "icon": null,
       "hoist": true,
       "flags": 0,
-      "color": 3447003
+      "color": 3447003,
+      "colors": {
+        "primary_color": 3447003,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118806,
@@ -2278,7 +2293,12 @@
       "icon": null,
       "hoist": true,
       "flags": 0,
-      "color": 15158332
+      "color": 15158332,
+      "colors": {
+        "primary_color": 15158332,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118790,
@@ -2293,7 +2313,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 3066993
+      "color": 3066993,
+      "colors": {
+        "primary_color": 3066993,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118783,
@@ -2308,7 +2333,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 1146986
+      "color": 1146986,
+      "colors": {
+        "primary_color": 1146986,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118780,
@@ -2323,7 +2353,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 9807270
+      "color": 9807270,
+      "colors": {
+        "primary_color": 9807270,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118793,
@@ -2338,7 +2373,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 15844367
+      "color": 15844367,
+      "colors": {
+        "primary_color": 15844367,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118775,
@@ -2355,7 +2395,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 0
+      "color": 0,
+      "colors": {
+        "primary_color": 0,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118803,
@@ -2370,7 +2415,12 @@
       "icon": null,
       "hoist": true,
       "flags": 0,
-      "color": 10181046
+      "color": 10181046,
+      "colors": {
+        "primary_color": 10181046,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118765,
@@ -2387,7 +2437,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 1752220
+      "color": 1752220,
+      "colors": {
+        "primary_color": 1752220,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118759,
@@ -2404,7 +2459,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 0
+      "color": 0,
+      "colors": {
+        "primary_color": 0,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     },
     {
       "version": 1666004118990,
@@ -2419,7 +2479,12 @@
       "icon": null,
       "hoist": false,
       "flags": 0,
-      "color": 0
+      "color": 0,
+      "colors": {
+        "primary_color": 0,
+        "secondary_color": null,
+        "tertiary_color": null
+      }
     }
   ],
   "preferred_locale": "en-US",
@@ -2664,7 +2729,9 @@
       "id": "1029010376580415548",
       "guild_id": "431917998102675485",
       "flags": 0,
-      "applied_tags": ["1029009412242800730"]
+      "applied_tags": [
+        "1029009412242800730"
+      ]
     },
     {
       "type": 11,
@@ -2737,7 +2804,10 @@
         "avatar_decoration": null,
         "avatar": "a3a7e4c4ded91fc9b2bf71a77ae68367"
       },
-      "roles": ["950719637044207689", "441346871651336193"],
+      "roles": [
+        "950719637044207689",
+        "441346871651336193"
+      ],
       "premium_since": null,
       "pending": false,
       "nick": null,
