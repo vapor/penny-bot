@@ -26,7 +26,7 @@ let package = Package(
         .package(
             url: "https://github.com/DiscordBM/DiscordBM.git",
             branch: "main",
-            traits: ["Non64BitSystemsCompatibility"]
+            traits: ["ExperimentalNon64BitSystemsCompatibility"]
         ),
         .package(url: "https://github.com/DiscordBM/DiscordLogger.git", from: "1.0.0-rc.2"),
         .package(url: "https://github.com/soto-project/soto.git", from: "7.3.0"),
