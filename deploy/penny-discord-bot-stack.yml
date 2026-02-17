@@ -141,7 +141,7 @@ Resources:
       MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 20
 
   lambdaUsersRoutePermission:
@@ -191,7 +191,7 @@ Resources:
       MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 20
 
   lambdaSponsorsPermission:
@@ -345,7 +345,7 @@ Resources:
       MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 20
 
   lambdaAutoPingsRoutePermission:
@@ -402,7 +402,7 @@ Resources:
       MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 20
 
   lambdaFaqsRoutePermission:
@@ -459,7 +459,7 @@ Resources:
       MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 20
 
   lambdaAutoFaqsRoutePermission:
@@ -523,7 +523,7 @@ Resources:
       MemorySize: 512
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 30
 
   lambdaGHHooksRoutePermission:
@@ -581,7 +581,7 @@ Resources:
       MemorySize: 256
       Handler: handler
       Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2
+      Runtime: provided.al2023
       Timeout: 20
 
   lambdaGHOAuthRoutePermission:
