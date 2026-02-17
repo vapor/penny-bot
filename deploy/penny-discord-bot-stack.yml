@@ -128,6 +128,8 @@ Resources:
   usersFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${UsersFilename}.zip
@@ -180,6 +182,8 @@ Resources:
   sponsorsFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${SponsorsFilename}.zip
@@ -332,6 +336,8 @@ Resources:
   autoPingsFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoPingsFilename}.zip
@@ -387,6 +393,8 @@ Resources:
   faqsFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${FaqsFilename}.zip
@@ -442,6 +450,8 @@ Resources:
   autoFaqsFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${AutoFaqsFilename}.zip
@@ -497,6 +507,8 @@ Resources:
   ghHooksFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${GHHooksFilename}.zip
@@ -552,6 +564,8 @@ Resources:
   ghOAuthFunction:
     Type: AWS::Lambda::Function
     Properties:
+      Architectures:
+        - arm64
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${GHOAuthFilename}.zip

@@ -1,0 +1,12 @@
+runners:
+  # https://runs-on.com/features/custom-runners/
+  # https://aws.amazon.com/ec2/instance-types/
+
+  medium:
+    cpu: 8
+    ram: 16
+    family: ["c7g", "c7gn"]
+    hdd: 40
+    image: ubuntu24-full-arm64
+    spot: pco
+    ssh: false
