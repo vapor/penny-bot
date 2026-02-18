@@ -7,12 +7,7 @@ on:
 
 jobs:
   deploy-lambdas:
-    # https://runs-on.com/features/custom-runners/
-    runs-on:
-      labels:
-        - runs-on
-        - runner=medium
-        - run-id=${{ github.run_id }}
+    runs-on: ubuntu-24.04-arm
     container: amazonlinux:2023
 
     env:
@@ -22,9 +17,6 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
 
     steps:
-      - name: Configure RunsOn
-        uses: runs-on/action@v2
-
       - name: Install AWSCLI v2, Swift, git, jq, zip, tar, zstd, zlib-devel
         run: |
           dnf install git jq zip tar awscli zstd zlib-devel swiftlang -y
