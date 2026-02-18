@@ -7,42 +7,34 @@ on:
 
 jobs:
   deploy-lambdas:
-    runs-on: ubuntu-latest
-    container: swift:6.2-amazonlinux2
+    runs-on: ubuntu-24.04-arm
+    container: amazonlinux:2023
 
     env:
+      AWS_BUCKET_NAME: penny-lambdas-store
       AWS_DEFAULT_REGION: eu-west-1
       AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
 
     steps:
-      - name: Install additional dependencies and AWSCLI v2
+      - name: Install AWSCLI v2, Swift, git, jq, zip, tar, zstd, zlib-devel
         run: |
-          yum -y install \
-            {libuuid,libicu,libedit,sqlite,python,ncurses,openssl}-devel \
-            libtool jq zip
-          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-          unzip awscliv2.zip
-          ./aws/install
+          dnf install git jq zip tar awscli zstd zlib-devel swiftlang -y
+          swift --version
 
       - name: Check out repository
-        # uses: actions/checkout@v3 ❌ Needs node 20 which amazonlinux2 doesn't have
-        run: |
-          git clone https://github.com/${{ github.repository }}
-          cd ${{ github.event.repository.name }}
-          git checkout ${{ github.sha }}
+        uses: actions/checkout@v6
 
       - name: Restore .build
-        if: false # ❌ Needs node 20 which amazonlinux2 doesn't have
+        if: ${{ runner.debug != '1' }}
         id: "restore-cache"
         uses: actions/cache/restore@v5
         with:
-          path: ${{ github.event.repository.name }}/.build
+          path: .build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
           restore-keys: "lambdas-build-${{ runner.os }}-"
 
       - name: Find package names
-        working-directory: ${{ github.event.repository.name }}
         id: find_package_names
         run: |
           echo "names=$(
@@ -56,10 +48,9 @@ jobs:
             tr '\n' ' '
           )" >> $GITHUB_OUTPUT
 
-      - name: Build, package and deploy
-        working-directory: ${{ github.event.repository.name }}
+      - name: Build lambdas
         run: |
-          mkdir zips
+          mkdir ./zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package \
               --allow-network-connections docker \
@@ -67,19 +58,25 @@ jobs:
               --verbose \
               --output-path ./zips \
               --products "${name}"
-            aws s3api put-object \
-              --bucket penny-lambdas-store \
-              --key "${name}.zip" \
-              --body ./zips/${name}/${name}.zip
-            aws lambda update-function-code \
-              --function-name "${name}" \
-              --s3-bucket "penny-lambdas-store" \
-              --s3-key "${name}.zip"
           done
 
       - name: Cache .build
-        if: false # ❌ Needs node 20 which amazonlinux2 doesn't have
+        if: steps.restore-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v5
         with:
-          path: ${{ github.event.repository.name }}/.build
+          path: .build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
+
+      - name: Package and deploy lambdas
+        run: |
+          for name in ${{ steps.find_package_names.outputs.names }}; do
+            aws s3api put-object \
+              --bucket "${AWS_BUCKET_NAME}" \
+              --key "${name}".zip \
+              --body ./zips/"${name}"/"${name}".zip
+
+            aws lambda update-function-code \
+              --function-name "${name}" \
+              --s3-bucket "${AWS_BUCKET_NAME}" \
+              --s3-key "${name}.zip"
+          done
