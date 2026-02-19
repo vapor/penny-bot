@@ -9,7 +9,7 @@ jobs:
   deploy:
     name: Deploy Stack
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm
 
     container: swift:6.2-noble
 
@@ -71,9 +71,6 @@ jobs:
           ECR_REPOSITORY: penny-bot-discord-image
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # Build a docker container and
-          # push it to ECR so that it can
-          # be deployed to ECS.
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
             --build-arg SWIFT_CONFIGURATION=release \
             --build-arg EXEC_NAME=Penny

@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy-lambdas:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest-arm
     container: amazonlinux:2023
 
     env:
@@ -48,7 +48,7 @@ jobs:
             tr '\n' ' '
           )" >> $GITHUB_OUTPUT
 
-      - name: Build lambdas
+      - name: Build and package lambdas
         run: |
           mkdir ./zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
@@ -67,7 +67,7 @@ jobs:
           path: .build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
 
-      - name: Package and deploy lambdas
+      - name: Deploy lambdas
         run: |
           for name in ${{ steps.find_package_names.outputs.names }}; do
             aws s3api put-object \

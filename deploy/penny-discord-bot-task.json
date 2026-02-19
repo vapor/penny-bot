@@ -57,6 +57,10 @@
     "requiresCompatibilities": [
         "FARGATE"
     ],
+    "runtimePlatform": {
+        "cpuArchitecture": "ARM64",
+        "operatingSystemFamily": "LINUX"
+    },
     "cpu": "256",
     "memory": "512",
     "executionRoleArn": "arn:aws:iam::177420307256:role/ecsTaskExecutionRole",
