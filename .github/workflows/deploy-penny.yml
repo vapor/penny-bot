@@ -11,7 +11,7 @@ jobs:
 
     runs-on: ubuntu-24.04-arm
 
-    container: swift:6.2-noble
+    container: swift:6.3-noble
 
     steps:
       - name: Checkout
