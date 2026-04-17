@@ -1,6 +1,6 @@
 import Algorithms
 import AsyncHTTPClient
-import Collections
+import OrderedCollections
 import DiscordBM
 import GitHubAPI
 import Logging

@@ -60,7 +60,7 @@ let package = Package(
             name: "Users",
             additionalDependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "OrderedCollections", package: "swift-collections"),
             ]
         ),
         .lambdaTarget(
@@ -99,7 +99,7 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Markdown", package: "swift-markdown"),
-                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "GitHubAPI"),
@@ -161,6 +161,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
+                .product(name: "DequeModule", package: "swift-collections"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Models"),
             ],

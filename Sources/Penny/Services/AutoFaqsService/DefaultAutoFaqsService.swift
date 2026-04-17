@@ -1,5 +1,5 @@
 import AsyncHTTPClient
-import Collections
+import OrderedCollections
 import DiscordModels
 /// Import full foundation even on linux for `hash`, for now.
 import Foundation

@@ -1,4 +1,4 @@
-import Collections
+import OrderedCollections
 import DiscordBM
 /// Public import for `Emoji` conformances
 public import DiscordModels
