@@ -30,7 +30,10 @@ jobs:
       - name: Restore .build
         if: ${{ runner.debug != '1' }}
         id: "restore-cache"
-        uses: actions/cache/restore@v5
+     - name: Cache .build
+if: ${{ runner.debug != '1' }}
+id: "restore-cache"
+uses: actions/cache@v5
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
