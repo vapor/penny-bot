@@ -1,8 +1,8 @@
-import OrderedCollections
 import DiscordBM
 /// Public import for `Emoji` conformances
 public import DiscordModels
 import Logging
+import OrderedCollections
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

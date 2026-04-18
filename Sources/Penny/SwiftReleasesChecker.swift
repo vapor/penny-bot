@@ -1,6 +1,6 @@
-import OrderedCollections
 import DiscordBM
 import Logging
+import OrderedCollections
 import ServiceLifecycle
 import Shared
 

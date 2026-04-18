@@ -1,11 +1,11 @@
 import Algorithms
 import AsyncHTTPClient
-import OrderedCollections
 import DiscordBM
 import GitHubAPI
 import Logging
 import NIOCore
 import NIOHTTP1
+import OrderedCollections
 import Shared
 
 #if canImport(FoundationEssentials)
