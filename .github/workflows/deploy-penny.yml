@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-  
+
     permissions:
       contents: read
       id-token: write
@@ -27,13 +27,10 @@ jobs:
           apt-get update -y
           apt-get install -y curl zstd
 
-      - name: Restore .build
+      - name: Restore/Cache .build
         if: ${{ runner.debug != '1' }}
         id: "restore-cache"
-     - name: Cache .build
-if: ${{ runner.debug != '1' }}
-id: "restore-cache"
-uses: actions/cache@v5
+        uses: actions/cache@v5
         with:
           path: .build
           key: "penny-release-static-build-${{ runner.os }}-${{ github.event.after }}"
@@ -49,12 +46,6 @@ uses: actions/cache@v5
             --force-resolved-versions \
             --static-swift-stdlib \
             -Xlinker -ljemalloc
-
-      - name: Cache .build
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: .build
 
       - name: Install Docker
         run: curl -fsSL https://get.docker.com | bash
