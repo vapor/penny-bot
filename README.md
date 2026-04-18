@@ -33,7 +33,15 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
             alt="Swift 6.3+"
         >
     </a>
-</p>
+<div align="center">
+
+[![Team Chat](https://design.vapor.codes/images/discordchat.svg)](https://discord.gg/vapor)
+[![Tests CI](https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=ccc)](https://github.com/vapor/penny-bot/actions/workflows/test.yml)
+[![Deploy Lambdas CI](https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/deploy-all-lambdas.yml?event=push&style=plastic&logo=github&label=deploy%20lambda%20functions&logoColor=ccc)](https://github.com/vapor/penny-bot/actions/workflows/deploy-all-lambdas.yml)
+[![Deploy Penny CI](https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/deploy-penny.yml?event=push&style=plastic&logo=github&label=deploy%20Penny&logoColor=ccc)](https://github.com/vapor/penny-bot/actions/workflows/deploy-penny.yml)
+[![Swift 6.3+](https://design.vapor.codes/images/swift63up.svg)](https://swift.org)
+
+</div>
 
 ### Features
 * [x] Give coins to the members when they're "thanked".
