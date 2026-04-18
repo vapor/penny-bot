@@ -20,7 +20,7 @@ jobs:
   cloudformation-lint:
     permissions:
       contents: read
-    name: Check CloudFormation
+
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
