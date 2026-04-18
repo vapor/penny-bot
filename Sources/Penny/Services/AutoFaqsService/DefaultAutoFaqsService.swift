@@ -1,5 +1,4 @@
 import AsyncHTTPClient
-import Collections
 import DiscordModels
 /// Import full foundation even on linux for `hash`, for now.
 import Foundation
@@ -8,6 +7,7 @@ import Models
 import NIOCore
 import NIOFoundationCompat
 import NIOHTTP1
+import OrderedCollections
 import Shared
 
 actor DefaultAutoFaqsService: AutoFaqsService {

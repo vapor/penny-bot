@@ -1,4 +1,4 @@
-import Collections
+import DequeModule
 
 /// Provides an _async_ locking mechanism for each key.
 package actor SerialProcessor {

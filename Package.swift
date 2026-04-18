@@ -1,4 +1,4 @@
-// swift-tools-version:6.2
+// swift-tools-version:6.3
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -20,7 +20,7 @@ let package = Package(
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
         .package(url: "https://github.com/swift-server/swift-openapi-async-http-client.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-openapi-generator.git", from: "1.6.0"),
-        .package(url: "https://github.com/apple/swift-openapi-runtime.git", from: "1.7.0"),
+        .package(url: "https://github.com/apple/swift-openapi-runtime.git", from: "1.7.0", traits: []),
         .package(url: "https://github.com/gwynne/swift-semver.git", from: "1.0.0"),
         .package(url: "https://github.com/swift-server/swift-service-lifecycle.git", from: "2.0.0"),
         .package(
@@ -60,7 +60,7 @@ let package = Package(
             name: "Users",
             additionalDependencies: [
                 .product(name: "SotoDynamoDB", package: "soto"),
-                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "OrderedCollections", package: "swift-collections"),
             ]
         ),
         .lambdaTarget(
@@ -99,7 +99,7 @@ let package = Package(
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Markdown", package: "swift-markdown"),
-                .product(name: "Collections", package: "swift-collections"),
+                .product(name: "OrderedCollections", package: "swift-collections"),
                 .product(name: "Algorithms", package: "swift-algorithms"),
                 .product(name: "LeafKit", package: "leaf-kit"),
                 .target(name: "GitHubAPI"),
@@ -161,6 +161,7 @@ let package = Package(
                 .product(name: "AsyncHTTPClient", package: "async-http-client"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
+                .product(name: "DequeModule", package: "swift-collections"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .target(name: "Models"),
             ],

@@ -7,6 +7,9 @@ on:
 
 jobs:
   deploy-lambdas:
+    permissions:
+      contents: read
+
     runs-on: ubuntu-24.04-arm
     container: amazonlinux:2023
 
@@ -25,10 +28,10 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v6
 
-      - name: Restore .build
+      - name: Restore/Cache .build
         if: ${{ runner.debug != '1' }}
         id: "restore-cache"
-        uses: actions/cache/restore@v5
+        uses: actions/cache@v5
         with:
           path: .build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
@@ -59,13 +62,6 @@ jobs:
               --output-path ./zips \
               --products "${name}"
           done
-
-      - name: Cache .build
-        if: steps.restore-cache.outputs.cache-hit != 'true'
-        uses: actions/cache/save@v5
-        with:
-          path: .build
-          key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
 
       - name: Deploy lambdas
         run: |
