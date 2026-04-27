@@ -2,39 +2,6 @@
 
 Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 
-<p>
-    <a href="https://discord.gg/vapor">
-        <img
-            src="https://design.vapor.codes/images/discordchat.svg"
-            alt="Team Chat"
-        >
-    </a>
-    <a href="https://github.com/vapor/penny-bot/actions/workflows/test.yml">
-        <img
-            src="https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=%23ccc"
-            alt="Tests CI"
-        >
-    </a>
-    <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy-all-lambdas.yml">
-        <img
-            src="https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/deploy-all-lambdas.yml?event=push&style=plastic&logo=github&label=deploy%20lambda%20functions&logoColor=%23ccc"
-            alt="Deploy Lambdas CI"
-        >
-    </a>
-    <a href="https://github.com/vapor/penny-bot/actions/workflows/deploy-penny.yml">
-        <img
-            src="https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/deploy-penny.yml?event=push&style=plastic&logo=github&label=deploy%20Penny&logoColor=%23ccc"
-            alt="Deploy Penny CI"
-        >
-    </a>
-    <a href="https://swift.org">
-        <img
-            src="https://design.vapor.codes/images/swift63up.svg"
-            alt="Swift 6.3+"
-        >
-    </a>
-<div align="center">
-
 [![Team Chat](https://design.vapor.codes/images/discordchat.svg)](https://discord.gg/vapor)
 [![Tests CI](https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/test.yml?event=push&style=plastic&logo=github&label=tests&logoColor=ccc)](https://github.com/vapor/penny-bot/actions/workflows/test.yml)
 [![Deploy Lambdas CI](https://img.shields.io/github/actions/workflow/status/vapor/penny-bot/deploy-all-lambdas.yml?event=push&style=plastic&logo=github&label=deploy%20lambda%20functions&logoColor=ccc)](https://github.com/vapor/penny-bot/actions/workflows/deploy-all-lambdas.yml)
