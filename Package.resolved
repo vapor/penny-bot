@@ -25,7 +25,7 @@
       "location" : "https://github.com/DiscordBM/DiscordBM.git",
       "state" : {
         "branch" : "main",
-        "revision" : "3c457081f9a80804bb532cab2e8a4696a2e0cb28"
+        "revision" : "ebb0fe6820ea831a13203077142de0411869f015"
       }
     },
     {
@@ -87,8 +87,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/soto-project/soto.git",
       "state" : {
-        "revision" : "95513f2a8df8bdfff1e5cde951dfdf9c5a6b691e",
-        "version" : "7.13.0"
+        "revision" : "f732b562bb5e0202470157a6041aa754229e777e",
+        "version" : "7.14.0"
       }
     },
     {
@@ -267,8 +267,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-metrics.git",
       "state" : {
-        "revision" : "c6593dac9d65f2517280d88c430dadffdf259737",
-        "version" : "2.10.0"
+        "revision" : "d51c8d13fa366eec807eedb4e37daa60ff5bfdd5",
+        "version" : "2.10.1"
       }
     },
     {
@@ -276,8 +276,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "cd6710454f25733900e133c6caf5188952763c36",
-        "version" : "2.98.0"
+        "revision" : "f71c8d2a5e74a2c6d11a0fbe324774b5d6084237",
+        "version" : "2.99.0"
       }
     },
     {
@@ -312,8 +312,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio-transport-services.git",
       "state" : {
-        "revision" : "9d4e67af1eea85967c7de778ad73e7776e5f1f22",
-        "version" : "1.27.0"
+        "revision" : "67787bb645a5e67d2edcdfbe48a216cc549222d5",
+        "version" : "1.28.0"
       }
     },
     {
@@ -339,8 +339,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-openapi-generator.git",
       "state" : {
-        "revision" : "73997cc62c2193d5046e431c9d546119dda14502",
-        "version" : "1.11.1"
+        "revision" : "83e8301d6d62c423f8e11d6fcb0c8276d4dbb032",
+        "version" : "1.12.0"
       }
     },
     {
@@ -384,8 +384,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-syntax.git",
       "state" : {
-        "revision" : "2b59c0c741e9184ab057fd22950b491076d42e91",
-        "version" : "603.0.0"
+        "revision" : "9de99a78f099e59caf2b2beec65a4c45d54b2081",
+        "version" : "603.0.1"
       }
     },
     {

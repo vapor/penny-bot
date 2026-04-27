@@ -15,7 +15,7 @@ jobs:
       with_tsan: false
       with_api_check: false
       with_linting: true
-      extra_flags: "--disable-experimental-prebuilts"
+      extra_flags: "--explicit-target-dependency-import-check error -Xswiftc -require-explicit-sendable"
 
   cloudformation-lint:
     permissions:
