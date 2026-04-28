@@ -86,7 +86,7 @@ jobs:
           wait-for-service-stability: true
 
       - name: Deploy to AWS cloudformation
-        uses: aws-actions/aws-cloudformation-github-deploy@64bde66a4001208fc0917038be8846d99c9d0585 # v2.1.0
+        uses: aws-actions/aws-cloudformation-github-deploy@81e3b03d2266bcb76c4bcc37a7d71d9cb67838bb # v2.2.0
         with:
           name: penny-discord-bot-stack
           template: ./deploy/penny-discord-bot-stack.yml
