@@ -11,7 +11,7 @@ jobs:
       contents: read
 
     runs-on: ubuntu-24.04-arm
-    container: amazonlinux:2023
+    container: swift:6.3-amazonlinux2023
 
     env:
       AWS_BUCKET_NAME: penny-lambdas-store
@@ -22,8 +22,8 @@ jobs:
     steps:
       - name: Install AWSCLI v2, Swift, git, jq, zip, tar, zstd, zlib-devel
         run: |
-          dnf install git jq zip tar awscli zstd zlib-devel swiftlang -y
-          swift --version
+          dnf update -y
+          dnf install jq awscli zstd -y
 
       - name: Check out repository
         uses: actions/checkout@v6
