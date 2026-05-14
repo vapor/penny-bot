@@ -20,7 +20,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
 
     steps:
-      - name: Install AWSCLI v2, Swift, git, jq, zip, tar, zstd, zlib-devel
+      - name: Install AWSCLI v2, jq, zstd
         run: |
           dnf update -y
           dnf install jq awscli zstd -y
@@ -59,6 +59,7 @@ jobs:
               --allow-network-connections docker \
               archive \
               --verbose \
+              --base-docker-image swift:6.3-amazonlinux2023 \
               --output-path ./zips \
               --products "${name}"
           done
