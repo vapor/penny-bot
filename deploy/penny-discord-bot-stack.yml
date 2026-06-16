@@ -187,6 +187,12 @@ Resources:
       Code:
         S3Bucket: penny-lambdas-store
         S3Key: !Sub ${SponsorsFilename}.zip
+      Environment:
+        Variables:
+          GH_WORKFLOW_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
+          BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
+          API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}.amazonaws.com/prod
+          LOG_LEVEL: debug
       FunctionName: !Sub ${SponsorsFilename}
       MemorySize: 256
       Handler: handler
