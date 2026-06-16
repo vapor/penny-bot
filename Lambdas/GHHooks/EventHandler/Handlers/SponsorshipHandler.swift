@@ -17,10 +17,6 @@ import Foundation
 /// Handles GitHub Sponsors `sponsorship` webhook events:
 /// 1. Triggers the `vapor/vapor` workflow that regenerates the sponsors README.
 /// 2. Adds/removes the relevant Discord roles and welcomes new sponsors.
-///
-/// This was previously a standalone `SponsorsLambda` reachable at `POST /sponsors`.
-/// It now lives here because GitHub delivers `sponsorship` events to the
-/// consolidated `/gh-hooks` endpoint (which also verifies the webhook signature).
 struct SponsorshipHandler: Sendable {
     let context: HandlerContext
 
@@ -33,7 +29,6 @@ struct SponsorshipHandler: Sendable {
     }
 
     func handle() async throws {
-        /// Trigger the README-regeneration workflow first; it's the most important step.
         try await self.requestReadmeWorkflowTrigger()
 
         guard let action = event.action.flatMap(GHEvent.Sponsorship.Action.init(rawValue:)) else {
@@ -56,7 +51,6 @@ struct SponsorshipHandler: Sendable {
         switch action {
         case .created:
             try await self.addRole(to: discordID, role: role)
-            /// A sponsor also gets the backer role.
             if role == .sponsor {
                 try await self.addRole(to: discordID, role: .backer)
             }
@@ -135,7 +129,6 @@ struct SponsorshipHandler: Sendable {
         switch error {
         case let .some(.jsonError(jsonError))
         where (jsonError.code == .invalidRole) || (jsonError.code == .unknownRole):
-            /// The user didn't have the role in the first place; that's fine.
             logger.debug(
                 "User probably didn't have the role to be removed",
                 metadata: ["role": "\(role)", "user": "\(discordID)"]

@@ -17,9 +17,6 @@ struct HandlerContext: Sendable {
     let messageLookupRepo: any MessageLookupRepo
     let usersService: any UsersService
     let requester: any GenericRequester
-    /// Used by handlers that need to read secrets at request time (e.g. the
-    /// sponsorship handler's workflow-trigger token). Optional so tests don't
-    /// need a live AWS client.
     let secretsRetriever: SecretsRetriever?
     var logger: Logger
 
