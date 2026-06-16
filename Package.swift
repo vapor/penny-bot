@@ -64,14 +64,6 @@ let package = Package(
             ]
         ),
         .lambdaTarget(
-            name: "Sponsors",
-            additionalDependencies: [
-                .product(name: "AsyncHTTPClient", package: "async-http-client"),
-                .product(name: "DiscordBM", package: "DiscordBM"),
-                .target(name: "Shared"),
-            ]
-        ),
-        .lambdaTarget(
             name: "AutoPings",
             additionalDependencies: [
                 .product(name: "SotoS3", package: "soto")

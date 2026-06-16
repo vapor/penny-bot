@@ -3,7 +3,10 @@ import DiscordBM
 import GitHubAPI
 import LambdasShared
 import Logging
+import Models
 import NIOCore
+import NIOHTTP1
+import Shared
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

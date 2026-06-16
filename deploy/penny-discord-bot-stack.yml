@@ -8,10 +8,6 @@ Parameters:
     Type: String
     Description: Filename containing the code to be executed for users
     Default: UsersLambda
-  SponsorsFilename:
-    Type: String
-    Description: Filename containing the code to be executed when a new sponsor joins
-    Default: SponsorsLambda
   AutoPingsFilename:
     Type: String
     Description: Filename containing the code to be executed for auto-pings
@@ -159,62 +155,6 @@ Resources:
       LogGroupName: !Sub /aws/lambda/${UsersFilename}
       RetentionInDays: 30
 
-  # Sponsors lambda config
-
-  sponsorsIntegration:
-    Type: AWS::ApiGatewayV2::Integration
-    Properties:
-      Description: Lambda Sponsor Integration
-      ApiId: !Ref apiGateway
-      ConnectionType: INTERNET
-      IntegrationMethod: POST
-      IntegrationType: AWS_PROXY
-      IntegrationUri: !GetAtt sponsorsFunction.Arn
-      PayloadFormatVersion: "2.0"
-
-  sponsorsRoute:
-    Type: AWS::ApiGatewayV2::Route
-    Properties:
-      ApiId: !Ref apiGateway
-      RouteKey: "POST /sponsors"
-      Target: !Sub "integrations/${sponsorsIntegration}"
-
-  sponsorsFunction:
-    Type: AWS::Lambda::Function
-    Properties:
-      Architectures:
-        - arm64
-      Code:
-        S3Bucket: penny-lambdas-store
-        S3Key: !Sub ${SponsorsFilename}.zip
-      Environment:
-        Variables:
-          GH_WORKFLOW_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
-          BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-          API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}.amazonaws.com/prod
-          LOG_LEVEL: debug
-      FunctionName: !Sub ${SponsorsFilename}
-      MemorySize: 256
-      Handler: handler
-      Role: !GetAtt lambdaIAMRole.Arn
-      Runtime: provided.al2023
-      Timeout: 20
-
-  lambdaSponsorsPermission:
-    Type: AWS::Lambda::Permission
-    Properties:
-      Action: lambda:InvokeFunction
-      FunctionName: !Sub ${SponsorsFilename}
-      Principal: apigateway.amazonaws.com
-    DependsOn:
-      - sponsorsFunction
-
-  sponsorsLogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub /aws/lambda/${SponsorsFilename}
-      RetentionInDays: 30
-
   # IAM roles
 
   lambdaIAMRole:
@@ -269,9 +209,6 @@ Resources:
 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${UsersFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${UsersFilename}
-
-                  - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${SponsorsFilename}:*
-                  - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${SponsorsFilename}
 
                   - !Sub arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${AutoPingsFilename}:*
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${AutoPingsFilename}
@@ -716,9 +653,6 @@ Outputs:
 
   autoPingsLambdaARN:
     Value: !GetAtt autoPingsFunction.Arn
-
-  sponsorsLambdaARN:
-    Value: !GetAtt sponsorsFunction.Arn
 
   usersLambdaARN:
     Value: !GetAtt usersFunction.Arn
