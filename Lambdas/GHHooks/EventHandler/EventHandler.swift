@@ -20,7 +20,7 @@ struct EventHandler: Sendable {
         case .ping:
             try await onPing()
         case .sponsorship:
-            try await onSponsorship()
+            try await SponsorshipHandler(context: context).handle()
         case .pull_request_review,
             .projects_v2_item,
             .project_card,
@@ -45,22 +45,6 @@ struct EventHandler: Sendable {
                         Repo: \(context.event.repository?.name ?? "<null>")
                         """,
                     color: .red
-                )
-            ])
-        ).guardSuccess()
-    }
-
-    func onSponsorship() async throws {
-        try await context.discordClient.createMessage(
-            channelId: Constants.Channels.botLogs.id,
-            payload: .init(embeds: [
-                .init(
-                    title: "Got Sponsorship payload. Check the logs!",
-                    description: """
-                        Action: \(context.event.action ?? "<null>")
-                        Repo: \(context.event.repository?.name ?? "<null>")
-                        """,
-                    color: .yellow
                 )
             ])
         ).guardSuccess()

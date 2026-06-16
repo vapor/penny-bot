@@ -28,6 +28,20 @@ package struct GHEvent: Sendable, Codable {
     package let installation: Installation?
     package let pusher: Committer?
     package let ref: String?
+    package let sponsorship: Sponsorship?
+}
+
+extension GHEvent {
+    /// The `sponsorship` object sent with GitHub Sponsors `sponsorship` webhook events.
+    /// https://docs.github.com/en/webhooks/webhook-events-and-payloads#sponsorship
+    package struct Sponsorship: Sendable, Codable {
+        package let tier: Tier
+        package let privacy_level: String?
+
+        package struct Tier: Sendable, Codable {
+            package let monthly_price_in_cents: Int
+        }
+    }
 }
 
 extension GHEvent {

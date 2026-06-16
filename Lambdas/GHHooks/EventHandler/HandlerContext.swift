@@ -1,6 +1,7 @@
 import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
+import LambdasShared
 import Logging
 import OpenAPIRuntime
 import Rendering
@@ -16,6 +17,10 @@ struct HandlerContext: Sendable {
     let messageLookupRepo: any MessageLookupRepo
     let usersService: any UsersService
     let requester: any GenericRequester
+    /// Used by handlers that need to read secrets at request time (e.g. the
+    /// sponsorship handler's workflow-trigger token). Optional so tests don't
+    /// need a live AWS client.
+    let secretsRetriever: SecretsRetriever?
     var logger: Logger
 
     init(
@@ -28,6 +33,7 @@ struct HandlerContext: Sendable {
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
         requester: any GenericRequester,
+        secretsRetriever: SecretsRetriever? = nil,
         logger: Logger
     ) {
         self.eventName = eventName
@@ -39,6 +45,7 @@ struct HandlerContext: Sendable {
         self.messageLookupRepo = messageLookupRepo
         self.usersService = usersService
         self.requester = requester
+        self.secretsRetriever = secretsRetriever
         self.logger = logger
     }
 
@@ -51,6 +58,7 @@ struct HandlerContext: Sendable {
         renderClient: RenderClient,
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
+        secretsRetriever: SecretsRetriever? = nil,
         logger: Logger
     ) {
         self.eventName = eventName
@@ -70,6 +78,7 @@ struct HandlerContext: Sendable {
             usersService: usersService,
             logger: logger
         )
+        self.secretsRetriever = secretsRetriever
         self.logger = logger
     }
 }
