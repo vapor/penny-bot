@@ -1,18 +1,8 @@
-import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
-import LambdasShared
 import Logging
 import Models
-import NIOCore
-import NIOHTTP1
 import Shared
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 /// Handles GitHub Sponsors `sponsorship` webhook events:
 /// 1. Triggers the `vapor/vapor` workflow that regenerates the sponsors README.
@@ -29,7 +19,7 @@ struct SponsorshipHandler: Sendable {
     }
 
     func handle() async throws {
-        try await self.requestReadmeWorkflowTrigger()
+        try await self.context.requester.triggerSponsorsWorkflow()
 
         guard let action = event.action.flatMap(Sponsorship.Action.init(rawValue:)) else {
             logger.error("Unknown or missing sponsorship action", metadata: ["action": "\(event.action ?? "<null>")"])
@@ -69,37 +59,6 @@ struct SponsorshipHandler: Sendable {
         case .edited, .pending_cancellation, .pending_tier_change:
             break
         }
-    }
-
-    /// Triggers the `vapor/vapor` workflow that updates the README with the new sponsor.
-    private func requestReadmeWorkflowTrigger() async throws {
-        let secretsRetriever = self.context.secretsRetriever
-        let workflowToken = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
-
-        var request = HTTPClientRequest(
-            url: "https://api.github.com/repos/vapor/vapor/actions/workflows/sponsors.yml/dispatches"
-        )
-        request.method = .POST
-        request.headers.add(contentsOf: [
-            "Accept": "application/vnd.github+json",
-            "Authorization": "Bearer \(workflowToken)",
-            "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)",
-        ])
-        request.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))
-
-        let response = try await self.context.httpClient.execute(request, timeout: .seconds(10))
-        guard 200..<300 ~= response.status.code else {
-            let body = try await response.body.collect(upTo: 1024 * 1024)
-            logger.error(
-                "GitHub did not run the sponsors workflow",
-                metadata: [
-                    "status": "\(response.status.code)",
-                    "body": "\(String(buffer: body))",
-                ]
-            )
-            throw SponsorshipError.runWorkflowFailed(status: response.status.code)
-        }
-        logger.info("Successfully triggered the sponsors README workflow")
     }
 
     private func addRole(to discordID: UserSnowflake, role: SponsorType) async throws {

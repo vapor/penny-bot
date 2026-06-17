@@ -10,7 +10,7 @@ import FoundationEssentials
 import Foundation
 #endif
 
-package actor SecretsRetriever: GenericSecretsRetriever {
+package actor SecretsRetriever {
 
     enum Errors: Error, CustomStringConvertible {
         case secretNotFound(arn: String)

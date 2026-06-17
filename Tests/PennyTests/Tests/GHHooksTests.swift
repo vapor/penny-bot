@@ -1230,7 +1230,6 @@ actor GHHooksTests {
             messageLookupRepo: FakeMessageLookupRepo(),
             usersService: FakeUsersService(),
             requester: FakeRequester(),
-            secretsRetriever: FakeSecretsRetriever(),
             logger: logger
         )
     }

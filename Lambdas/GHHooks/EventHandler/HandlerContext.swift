@@ -17,7 +17,6 @@ struct HandlerContext: Sendable {
     let messageLookupRepo: any MessageLookupRepo
     let usersService: any UsersService
     let requester: any GenericRequester
-    let secretsRetriever: any GenericSecretsRetriever
     var logger: Logger
 
     init(
@@ -30,7 +29,6 @@ struct HandlerContext: Sendable {
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
         requester: any GenericRequester,
-        secretsRetriever: any GenericSecretsRetriever,
         logger: Logger
     ) {
         self.eventName = eventName
@@ -42,7 +40,6 @@ struct HandlerContext: Sendable {
         self.messageLookupRepo = messageLookupRepo
         self.usersService = usersService
         self.requester = requester
-        self.secretsRetriever = secretsRetriever
         self.logger = logger
     }
 
@@ -55,7 +52,7 @@ struct HandlerContext: Sendable {
         renderClient: RenderClient,
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
-        secretsRetriever: any GenericSecretsRetriever,
+        secretsRetriever: SecretsRetriever,
         logger: Logger
     ) {
         self.eventName = eventName
@@ -73,9 +70,9 @@ struct HandlerContext: Sendable {
             discordClient: discordClient,
             githubClient: githubClient,
             usersService: usersService,
+            secretsRetriever: secretsRetriever,
             logger: logger
         )
-        self.secretsRetriever = secretsRetriever
         self.logger = logger
     }
 }
