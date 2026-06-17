@@ -132,13 +132,13 @@ enum SponsorType: String, Sendable {
 
     var roleID: RoleSnowflake {
         switch self {
-        case .sponsor: "444167329748746262"
-        case .backer: "431921695524126722"
+        case .sponsor: Constants.Roles.sponsor.id
+        case .backer: Constants.Roles.backer.id
         }
     }
 
     var channelID: ChannelSnowflake {
-        "633345683012976640"
+        Constants.Channels.backers.id
     }
 
     var discordColor: DiscordColor {
