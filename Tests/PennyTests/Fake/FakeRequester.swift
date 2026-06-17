@@ -45,4 +45,6 @@ struct FakeRequester: GenericRequester {
             fatalError("Unhandled repo: \(repoFullName)")
         }
     }
+
+    func triggerSponsorsWorkflow() async throws {}
 }

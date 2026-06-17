@@ -61,3 +61,15 @@ extension Release {
         case unpublished
     }
 }
+
+extension Sponsorship {
+    /// https://docs.github.com/en/webhooks/webhook-events-and-payloads#sponsorship
+    package enum Action: String, Sendable {
+        case created
+        case cancelled
+        case edited
+        case tier_changed
+        case pending_cancellation
+        case pending_tier_change
+    }
+}

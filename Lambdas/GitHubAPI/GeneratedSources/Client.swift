@@ -799,6 +799,63 @@ package struct Client: APIProtocol {
             }
         )
     }
+    /// Create a workflow dispatch event
+    ///
+    /// You can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`.
+    ///
+    /// You must configure your GitHub Actions workflow to run when the [`workflow_dispatch` webhook](/developers/webhooks-and-events/webhook-events-and-payloads#workflow_dispatch) event occurs. The `inputs` are configured in the workflow file. For more information about how to configure the `workflow_dispatch` event in the workflow file, see "[Events that trigger workflows](/actions/reference/events-that-trigger-workflows#workflow_dispatch)."
+    ///
+    /// OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/post(actions/create-workflow-dispatch)`.
+    package func actionsCreateWorkflowDispatch(
+        _ input: Operations.ActionsCreateWorkflowDispatch.Input
+    ) async throws -> Operations.ActionsCreateWorkflowDispatch.Output {
+        try await client.send(
+            input: input,
+            forOperation: Operations.ActionsCreateWorkflowDispatch.id,
+            serializer: { input in
+                let path = try converter.renderedPath(
+                    template: "/repos/{}/{}/actions/workflows/{}/dispatches",
+                    parameters: [
+                        input.path.owner,
+                        input.path.repo,
+                        input.path.workflowId,
+                    ]
+                )
+                var request: HTTPTypes.HTTPRequest = .init(
+                    soar_path: path,
+                    method: .post
+                )
+                suppressMutabilityWarning(&request)
+                let body: OpenAPIRuntime.HTTPBody?
+                switch input.body {
+                case let .json(value):
+                    body = try converter.setRequiredRequestBodyAsJSON(
+                        value,
+                        headerFields: &request.headerFields,
+                        contentType: "application/json; charset=utf-8"
+                    )
+                }
+                return (request, body)
+            },
+            deserializer: { response, responseBody in
+                switch response.status.code {
+                case 204:
+                    return .noContent(.init())
+                default:
+                    return .undocumented(
+                        statusCode: response.status.code,
+                        .init(
+                            headerFields: response.headerFields,
+                            body: responseBody
+                        )
+                    )
+                }
+            }
+        )
+    }
     /// List commits
     ///
     /// **Signature verification object**

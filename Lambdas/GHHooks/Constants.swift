@@ -27,6 +27,7 @@ enum Constants {
         case release = "431926479752921098"
         case thanks = "443074453719744522"
         case documentation = "484454139506458634"
+        case backers = "633345683012976640"
 
         var id: ChannelSnowflake {
             self.rawValue
@@ -35,6 +36,8 @@ enum Constants {
 
     enum Roles: RoleSnowflake {
         case core = "431919254372089857"
+        case sponsor = "444167329748746262"
+        case backer = "431921695524126722"
 
         var id: RoleSnowflake {
             self.rawValue

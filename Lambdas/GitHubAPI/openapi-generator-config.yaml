@@ -8,6 +8,7 @@ filter:
     # Need to manually add 'duplicate' to all 'state_reason' fields (search for places where 'not_planned' is used, and add 'duplicate' to the list)
     # Need to manually mark 'pull-request' and 'pull-request-simple' have marked .labels.description and .head.repo as nullable.
 
+    - actions/create-workflow-dispatch
     - apps/create-installation-access-token
     - issues/create
     - issues/get
@@ -41,3 +42,5 @@ filter:
     - simple-commit
     # Need to manually mark simple-installation.node_id as nullable
     - simple-installation
+    - webhooks_sponsorship
+    - webhooks_changes_8

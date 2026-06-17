@@ -28,6 +28,7 @@ package struct GHEvent: Sendable, Codable {
     package let installation: Installation?
     package let pusher: Committer?
     package let ref: String?
+    package let sponsorship: Sponsorship?
 }
 
 extension GHEvent {

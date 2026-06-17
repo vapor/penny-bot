@@ -10,6 +10,7 @@ import Shared
 protocol GenericRequester: Sendable {
     func getDiscordMember(githubID: String) async throws -> GuildMember?
     func getCodeOwners(repoFullName: String, branch: some StringProtocol) async throws -> CodeOwners
+    func triggerSponsorsWorkflow() async throws
 }
 
 /// A shared place for requests that more than 1 place uses.
@@ -24,6 +25,14 @@ struct Requester: Sendable {
 }
 
 extension Requester: GenericRequester {
+    /// Triggers the `vapor/vapor` workflow that updates the README with the new sponsor.
+    func triggerSponsorsWorkflow() async throws {
+        _ = try await self.githubClient.actionsCreateWorkflowDispatch(
+            path: .init(owner: "vapor", repo: "vapor", workflowId: .case2("sponsors.yml")),
+            body: .json(.init(ref: "main"))
+        ).noContent
+    }
+
     func getDiscordMember(githubID: String) async throws -> GuildMember? {
         guard let user = try await self.usersService.getUser(githubID: githubID) else {
             return nil

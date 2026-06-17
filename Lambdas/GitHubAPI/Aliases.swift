@@ -17,3 +17,5 @@ package typealias Committer = Components.Schemas.SimpleCommit.CommitterPayload
 package typealias Installation = Components.Schemas.SimpleInstallation
 package typealias Tag = Components.Schemas.Tag
 package typealias ProjectCard = Components.Schemas.ProjectCard
+package typealias Sponsorship = Components.Schemas.WebhooksSponsorship
+package typealias SponsorshipTierChange = Components.Schemas.WebhooksChanges8.TierPayload
