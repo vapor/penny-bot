@@ -197,7 +197,6 @@ struct GHHooksHandler {
                     httpClient: self.httpClient,
                     apiBaseURL: apiBaseURL
                 ),
-                secretsRetriever: self.secretsRetriever,
                 logger: self.logger
             )
         ).handle()

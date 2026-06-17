@@ -116,13 +116,10 @@ struct SponsorshipHandler: Sendable {
 }
 
 enum SponsorshipError: Error, CustomStringConvertible {
-    case runWorkflowFailed(status: UInt)
     case noSponsorType(amount: Int)
 
     var description: String {
         switch self {
-        case let .runWorkflowFailed(status):
-            return "runWorkflowFailed(status: \(status))"
         case let .noSponsorType(amount):
             return "noSponsorType(amount: \(amount))"
         }

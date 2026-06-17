@@ -1,7 +1,6 @@
 import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
-import LambdasShared
 import Logging
 import Models
 import NIOCore
@@ -22,39 +21,16 @@ struct Requester: Sendable {
     let discordClient: any DiscordClient
     let githubClient: Client
     let usersService: any UsersService
-    let secretsRetriever: SecretsRetriever
     let logger: Logger
 }
 
 extension Requester: GenericRequester {
     /// Triggers the `vapor/vapor` workflow that updates the README with the new sponsor.
     func triggerSponsorsWorkflow() async throws {
-        let workflowToken = try await self.secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
-
-        var request = HTTPClientRequest(
-            url: "https://api.github.com/repos/vapor/vapor/actions/workflows/sponsors.yml/dispatches"
-        )
-        request.method = .POST
-        request.headers.add(contentsOf: [
-            "Accept": "application/vnd.github+json",
-            "Authorization": "Bearer \(workflowToken)",
-            "User-Agent": "Penny/1.0.0 (https://github.com/vapor/penny-bot)",
-        ])
-        request.body = .bytes(ByteBuffer(string: #"{"ref":"main"}"#))
-
-        let response = try await self.httpClient.execute(request, timeout: .seconds(10))
-        guard 200..<300 ~= response.status.code else {
-            let body = try await response.body.collect(upTo: 1024 * 1024)
-            logger.error(
-                "GitHub did not run the sponsors workflow",
-                metadata: [
-                    "status": "\(response.status.code)",
-                    "body": "\(String(buffer: body))",
-                ]
-            )
-            throw SponsorshipError.runWorkflowFailed(status: response.status.code)
-        }
-        logger.info("Successfully triggered the sponsors README workflow")
+        _ = try await self.githubClient.actionsCreateWorkflowDispatch(
+            path: .init(owner: "vapor", repo: "vapor", workflowId: .case2("sponsors.yml")),
+            body: .json(.init(ref: "main"))
+        ).noContent
     }
 
     func getDiscordMember(githubID: String) async throws -> GuildMember? {

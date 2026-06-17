@@ -61,6 +61,19 @@ package protocol APIProtocol: Sendable {
     func projectsCreateCard(
         _ input: Operations.ProjectsCreateCard.Input
     ) async throws -> Operations.ProjectsCreateCard.Output
+    /// Create a workflow dispatch event
+    ///
+    /// You can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`.
+    ///
+    /// You must configure your GitHub Actions workflow to run when the [`workflow_dispatch` webhook](/developers/webhooks-and-events/webhook-events-and-payloads#workflow_dispatch) event occurs. The `inputs` are configured in the workflow file. For more information about how to configure the `workflow_dispatch` event in the workflow file, see "[Events that trigger workflows](/actions/reference/events-that-trigger-workflows#workflow_dispatch)."
+    ///
+    /// OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/post(actions/create-workflow-dispatch)`.
+    func actionsCreateWorkflowDispatch(
+        _ input: Operations.ActionsCreateWorkflowDispatch.Input
+    ) async throws -> Operations.ActionsCreateWorkflowDispatch.Output
     /// List commits
     ///
     /// **Signature verification object**
@@ -444,6 +457,27 @@ extension APIProtocol {
             Operations.ProjectsCreateCard.Input(
                 path: path,
                 headers: headers,
+                body: body
+            )
+        )
+    }
+    /// Create a workflow dispatch event
+    ///
+    /// You can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`.
+    ///
+    /// You must configure your GitHub Actions workflow to run when the [`workflow_dispatch` webhook](/developers/webhooks-and-events/webhook-events-and-payloads#workflow_dispatch) event occurs. The `inputs` are configured in the workflow file. For more information about how to configure the `workflow_dispatch` event in the workflow file, see "[Events that trigger workflows](/actions/reference/events-that-trigger-workflows#workflow_dispatch)."
+    ///
+    /// OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/post(actions/create-workflow-dispatch)`.
+    package func actionsCreateWorkflowDispatch(
+        path: Operations.ActionsCreateWorkflowDispatch.Input.Path,
+        body: Operations.ActionsCreateWorkflowDispatch.Input.Body
+    ) async throws -> Operations.ActionsCreateWorkflowDispatch.Output {
+        try await actionsCreateWorkflowDispatch(
+            Operations.ActionsCreateWorkflowDispatch.Input(
+                path: path,
                 body: body
             )
         )
@@ -8330,6 +8364,43 @@ package enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/column-id`.
         package typealias ColumnId = Swift.Int
+        /// The ID of the workflow. You can also pass the workflow file name as a string.
+        ///
+        /// - Remark: Generated from `#/components/parameters/workflow-id`.
+        @frozen package enum WorkflowId: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/parameters/workflow-id/case1`.
+            case case1(Swift.Int)
+            /// - Remark: Generated from `#/components/parameters/workflow-id/case2`.
+            case case2(Swift.String)
+            package init(from decoder: any Swift.Decoder) throws {
+                var errors: [any Swift.Error] = []
+                do {
+                    self = .case1(try decoder.decodeFromSingleValueContainer())
+                    return
+                } catch {
+                    errors.append(error)
+                }
+                do {
+                    self = .case2(try decoder.decodeFromSingleValueContainer())
+                    return
+                } catch {
+                    errors.append(error)
+                }
+                throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                    type: Self.self,
+                    codingPath: decoder.codingPath,
+                    errors: errors
+                )
+            }
+            package func encode(to encoder: any Swift.Encoder) throws {
+                switch self {
+                case let .case1(value):
+                    try encoder.encodeToSingleValueContainer(value)
+                case let .case2(value):
+                    try encoder.encodeToSingleValueContainer(value)
+                }
+            }
+        }
         /// The SHA of the commit.
         ///
         /// - Remark: Generated from `#/components/parameters/commit-sha`.
@@ -10542,6 +10613,193 @@ package enum Operations {
                     .json
                 ]
             }
+        }
+    }
+    /// Create a workflow dispatch event
+    ///
+    /// You can use this endpoint to manually trigger a GitHub Actions workflow run. You can replace `workflow_id` with the workflow file name. For example, you could use `main.yaml`.
+    ///
+    /// You must configure your GitHub Actions workflow to run when the [`workflow_dispatch` webhook](/developers/webhooks-and-events/webhook-events-and-payloads#workflow_dispatch) event occurs. The `inputs` are configured in the workflow file. For more information about how to configure the `workflow_dispatch` event in the workflow file, see "[Events that trigger workflows](/actions/reference/events-that-trigger-workflows#workflow_dispatch)."
+    ///
+    /// OAuth tokens and personal access tokens (classic) need the `repo` scope to use this endpoint.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/post(actions/create-workflow-dispatch)`.
+    package enum ActionsCreateWorkflowDispatch {
+        package static let id: Swift.String = "actions/create-workflow-dispatch"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/path/owner`.
+                package var owner: Components.Parameters.Owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/path/repo`.
+                package var repo: Components.Parameters.Repo
+                /// - Remark: Generated from `#/components/parameters/workflow-id`.
+                @frozen package enum WorkflowId: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/parameters/workflow-id/case1`.
+                    case case1(Swift.Int)
+                    /// - Remark: Generated from `#/components/parameters/workflow-id/case2`.
+                    case case2(Swift.String)
+                    package init(from decoder: any Swift.Decoder) throws {
+                        var errors: [any Swift.Error] = []
+                        do {
+                            self = .case1(try decoder.decodeFromSingleValueContainer())
+                            return
+                        } catch {
+                            errors.append(error)
+                        }
+                        do {
+                            self = .case2(try decoder.decodeFromSingleValueContainer())
+                            return
+                        } catch {
+                            errors.append(error)
+                        }
+                        throw Swift.DecodingError.failedToDecodeOneOfSchema(
+                            type: Self.self,
+                            codingPath: decoder.codingPath,
+                            errors: errors
+                        )
+                    }
+                    package func encode(to encoder: any Swift.Encoder) throws {
+                        switch self {
+                        case let .case1(value):
+                            try encoder.encodeToSingleValueContainer(value)
+                        case let .case2(value):
+                            try encoder.encodeToSingleValueContainer(value)
+                        }
+                    }
+                }
+                /// The ID of the workflow. You can also pass the workflow file name as a string.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/path/workflow_id`.
+                package var workflowId: Components.Parameters.WorkflowId
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - workflowId: The ID of the workflow. You can also pass the workflow file name as a string.
+                package init(
+                    owner: Components.Parameters.Owner,
+                    repo: Components.Parameters.Repo,
+                    workflowId: Components.Parameters.WorkflowId
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.workflowId = workflowId
+                }
+            }
+            package var path: Operations.ActionsCreateWorkflowDispatch.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/requestBody`.
+            @frozen package enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/requestBody/json`.
+                package struct JsonPayload: Codable, Hashable, Sendable {
+                    /// The git reference for the workflow. The reference can be a branch or tag name.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/requestBody/json/ref`.
+                    package var ref: Swift.String
+                    /// Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when `inputs` are omitted.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/requestBody/json/inputs`.
+                    package struct InputsPayload: Codable, Hashable, Sendable {
+                        /// A container of undocumented properties.
+                        package var additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer
+                        /// Creates a new `InputsPayload`.
+                        ///
+                        /// - Parameters:
+                        ///   - additionalProperties: A container of undocumented properties.
+                        package init(additionalProperties: OpenAPIRuntime.OpenAPIObjectContainer = .init()) {
+                            self.additionalProperties = additionalProperties
+                        }
+                        package init(from decoder: any Swift.Decoder) throws {
+                            additionalProperties = try decoder.decodeAdditionalProperties(knownKeys: [])
+                        }
+                        package func encode(to encoder: any Swift.Encoder) throws {
+                            try encoder.encodeAdditionalProperties(additionalProperties)
+                        }
+                    }
+                    /// Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when `inputs` are omitted.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/requestBody/json/inputs`.
+                    package var inputs: Operations.ActionsCreateWorkflowDispatch.Input.Body.JsonPayload.InputsPayload?
+                    /// Creates a new `JsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - ref: The git reference for the workflow. The reference can be a branch or tag name.
+                    ///   - inputs: Input keys and values configured in the workflow file. The maximum number of properties is 10. Any default properties configured in the workflow file will be used when `inputs` are omitted.
+                    package init(
+                        ref: Swift.String,
+                        inputs: Operations.ActionsCreateWorkflowDispatch.Input.Body.JsonPayload.InputsPayload? = nil
+                    ) {
+                        self.ref = ref
+                        self.inputs = inputs
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case ref
+                        case inputs
+                    }
+                }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/POST/requestBody/content/application\/json`.
+                case json(Operations.ActionsCreateWorkflowDispatch.Input.Body.JsonPayload)
+            }
+            package var body: Operations.ActionsCreateWorkflowDispatch.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - body:
+            package init(
+                path: Operations.ActionsCreateWorkflowDispatch.Input.Path,
+                body: Operations.ActionsCreateWorkflowDispatch.Input.Body
+            ) {
+                self.path = path
+                self.body = body
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct NoContent: Sendable, Hashable {
+                /// Creates a new `NoContent`.
+                package init() {}
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/post(actions/create-workflow-dispatch)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            case noContent(Operations.ActionsCreateWorkflowDispatch.Output.NoContent)
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches/post(actions/create-workflow-dispatch)/responses/204`.
+            ///
+            /// HTTP response code: `204 noContent`.
+            package static var noContent: Self {
+                .noContent(.init())
+            }
+            /// The associated value of the enum case if `self` is `.noContent`.
+            ///
+            /// - Throws: An error if `self` is not `.noContent`.
+            /// - SeeAlso: `.noContent`.
+            package var noContent: Operations.ActionsCreateWorkflowDispatch.Output.NoContent {
+                get throws {
+                    switch self {
+                    case let .noContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "noContent",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
         }
     }
     /// List commits

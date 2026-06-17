@@ -226,7 +226,6 @@ Resources:
                   - !Sub arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${GHOAuthFilename}
 
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
-                  - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-client-secret-n8bwqN
                   - !Sub arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
@@ -460,7 +459,6 @@ Resources:
           BOT_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/discord-bot-token-VmhBXH
           WH_SECRET_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/github-webhook-secret-MASfKL
           GH_APP_AUTH_PRIV_KEY_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/github-penny-app-private-key-vhi2WZ
-          GH_WORKFLOW_TOKEN_ARN: !Sub arn:aws:secretsmanager:${AWS::Region}:177420307256:secret:prod/penny/penny-bot/trigger-gh-readme-workflow-token-cpZwMv
           API_BASE_URL: !Sub https://ncy6caaavg.execute-api.${AWS::Region}.amazonaws.com/prod
           LOG_LEVEL: debug
       FunctionName: !Sub ${GHHooksFilename}

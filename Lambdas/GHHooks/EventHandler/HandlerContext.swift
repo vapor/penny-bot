@@ -1,7 +1,6 @@
 import AsyncHTTPClient
 import DiscordBM
 import GitHubAPI
-import LambdasShared
 import Logging
 import OpenAPIRuntime
 import Rendering
@@ -52,7 +51,6 @@ struct HandlerContext: Sendable {
         renderClient: RenderClient,
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
-        secretsRetriever: SecretsRetriever,
         logger: Logger
     ) {
         self.eventName = eventName
@@ -70,7 +68,6 @@ struct HandlerContext: Sendable {
             discordClient: discordClient,
             githubClient: githubClient,
             usersService: usersService,
-            secretsRetriever: secretsRetriever,
             logger: logger
         )
         self.logger = logger
