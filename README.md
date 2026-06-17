@@ -27,6 +27,12 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 * [x] Thank members when they contribute to Vapor repositories.
 * [x] Manage sponsor/backer status of GitHub users.
 
+### Infrastructure
+
+Penny's AWS infrastructure resources are managed via Terraform.
+This includes ECS, Lambdas, API Gateway, DynamoDB, S3, IAM, Secrets Manager.
+See [`terraform/README.md`](terraform/README.md) for more info.
+
 ### Automatic Releases
 
 Penny detects usage of specific labels in PRs and tries to act accordingly and automatically tag a new release when an applicable PR is merged.

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-set -eu
+set -euxo pipefail
 
 # Formats all Swift files
 
-# Update PATH incase it's run from Xcode scripts.
+# Update PATH in-case it's run from Xcode scripts.
 PATH="$PATH:/usr/local/bin/:/opt/homebrew/bin/"
 
 # This script is in `./scripts` directory so `./scripts/..` would be the same as `./`.
-BASE_DIR=$(dirname "$0")/..
+BASE_DIR="$(dirname "$0")/.."
 
 note() {
   printf -- "** %s\n" "$*" >&2
@@ -19,7 +19,7 @@ note "Starting the script at $(date)"
 # Take an argument for BASE_DIR, incase this is run from Xcode scripts.
 if [ "${1:-}" != "" ]; then
   note "Got BASE_DIR argument: $1"
-  BASE_DIR=$1
+  BASE_DIR="$1"
 fi
 
 cd "$BASE_DIR"

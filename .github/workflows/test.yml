@@ -17,7 +17,7 @@ jobs:
       with_linting: true
       extra_flags: "--disable-experimental-prebuilts --explicit-target-dependency-import-check error -Xswiftc -require-explicit-sendable"
 
-  cloudformation-lint:
+  terraform-lint:
     permissions:
       contents: read
 
@@ -25,7 +25,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
-      - name: Setup and run CloudFormation lint
-        uses: ScottBrenner/cfn-lint-action@ed184e91f5085a2932501da8314e899e5e0ef5be # v2.7.1
-        with:
-          command: cfn-lint -t ./deploy/penny-discord-bot-stack.yml
+
+      - name: Setup mise
+        uses: jdx/mise-action@dba19683ed58901619b14f395a24841710cb4925 # v4.1.0
+
+      - name: Lint
+        env:
+          # so tflint --init can dodge GH API rate limits by using this token
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          ./scripts/tf-check.bash
