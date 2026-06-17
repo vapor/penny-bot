@@ -8196,6 +8196,105 @@ package enum Components {
                 case tier
             }
         }
+        /// - Remark: Generated from `#/components/schemas/webhooks_changes_8`.
+        package struct WebhooksChanges8: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier`.
+            package struct TierPayload: Codable, Hashable, Sendable {
+                /// The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload.
+                ///
+                /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from`.
+                package struct FromPayload: Codable, Hashable, Sendable {
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/created_at`.
+                    package var createdAt: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/description`.
+                    package var description: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/is_custom_ammount`.
+                    package var isCustomAmmount: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/is_custom_amount`.
+                    package var isCustomAmount: Swift.Bool?
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/is_one_time`.
+                    package var isOneTime: Swift.Bool
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/monthly_price_in_cents`.
+                    package var monthlyPriceInCents: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/monthly_price_in_dollars`.
+                    package var monthlyPriceInDollars: Swift.Int
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/name`.
+                    package var name: Swift.String
+                    /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from/node_id`.
+                    package var nodeId: Swift.String
+                    /// Creates a new `FromPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - createdAt:
+                    ///   - description:
+                    ///   - isCustomAmmount:
+                    ///   - isCustomAmount:
+                    ///   - isOneTime:
+                    ///   - monthlyPriceInCents:
+                    ///   - monthlyPriceInDollars:
+                    ///   - name:
+                    ///   - nodeId:
+                    package init(
+                        createdAt: Swift.String,
+                        description: Swift.String,
+                        isCustomAmmount: Swift.Bool? = nil,
+                        isCustomAmount: Swift.Bool? = nil,
+                        isOneTime: Swift.Bool,
+                        monthlyPriceInCents: Swift.Int,
+                        monthlyPriceInDollars: Swift.Int,
+                        name: Swift.String,
+                        nodeId: Swift.String
+                    ) {
+                        self.createdAt = createdAt
+                        self.description = description
+                        self.isCustomAmmount = isCustomAmmount
+                        self.isCustomAmount = isCustomAmount
+                        self.isOneTime = isOneTime
+                        self.monthlyPriceInCents = monthlyPriceInCents
+                        self.monthlyPriceInDollars = monthlyPriceInDollars
+                        self.name = name
+                        self.nodeId = nodeId
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case createdAt = "created_at"
+                        case description
+                        case isCustomAmmount = "is_custom_ammount"
+                        case isCustomAmount = "is_custom_amount"
+                        case isOneTime = "is_one_time"
+                        case monthlyPriceInCents = "monthly_price_in_cents"
+                        case monthlyPriceInDollars = "monthly_price_in_dollars"
+                        case name
+                        case nodeId = "node_id"
+                    }
+                }
+                /// The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload.
+                ///
+                /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier/from`.
+                package var from: Components.Schemas.WebhooksChanges8.TierPayload.FromPayload
+                /// Creates a new `TierPayload`.
+                ///
+                /// - Parameters:
+                ///   - from: The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload.
+                package init(from: Components.Schemas.WebhooksChanges8.TierPayload.FromPayload) {
+                    self.from = from
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case from
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/webhooks_changes_8/tier`.
+            package var tier: Components.Schemas.WebhooksChanges8.TierPayload
+            /// Creates a new `WebhooksChanges8`.
+            ///
+            /// - Parameters:
+            ///   - tier:
+            package init(tier: Components.Schemas.WebhooksChanges8.TierPayload) {
+                self.tier = tier
+            }
+            package enum CodingKeys: String, CodingKey {
+                case tier
+            }
+        }
     }
     /// Types generated from the `#/components/parameters` section of the OpenAPI document.
     package enum Parameters {
