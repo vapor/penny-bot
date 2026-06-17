@@ -17,7 +17,7 @@ struct HandlerContext: Sendable {
     let messageLookupRepo: any MessageLookupRepo
     let usersService: any UsersService
     let requester: any GenericRequester
-    let secretsRetriever: SecretsRetriever?
+    let secretsRetriever: SecretsRetriever
     var logger: Logger
 
     init(
@@ -30,7 +30,7 @@ struct HandlerContext: Sendable {
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
         requester: any GenericRequester,
-        secretsRetriever: SecretsRetriever? = nil,
+        secretsRetriever: SecretsRetriever,
         logger: Logger
     ) {
         self.eventName = eventName
@@ -55,7 +55,7 @@ struct HandlerContext: Sendable {
         renderClient: RenderClient,
         messageLookupRepo: any MessageLookupRepo,
         usersService: any UsersService,
-        secretsRetriever: SecretsRetriever? = nil,
+        secretsRetriever: SecretsRetriever,
         logger: Logger
     ) {
         self.eventName = eventName

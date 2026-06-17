@@ -50,7 +50,10 @@ struct GHHooksHandler {
             configuration: .forPenny
         )
         let awsClient = AWSClient(httpClient: httpClient)
-        let secretsRetriever = SecretsRetriever(awsClient: awsClient, logger: Logger(label: "GHHooksHandler"))
+        let secretsRetriever = SecretsRetriever(
+            awsClient: awsClient,
+            logger: Logger(label: "GHHooksHandler")
+        )
         let authenticator = Authenticator(
             secretsRetriever: secretsRetriever,
             httpClient: httpClient,

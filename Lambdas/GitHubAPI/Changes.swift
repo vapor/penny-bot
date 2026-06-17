@@ -4,6 +4,6 @@ package struct Changes: Sendable, Codable {
     package let tier: SponsorshipTierChange?
 
     package struct SponsorshipTierChange: Sendable, Codable {
-        package let from: GHEvent.Sponsorship.Tier
+        package let from: Sponsorship.TierPayload
     }
 }

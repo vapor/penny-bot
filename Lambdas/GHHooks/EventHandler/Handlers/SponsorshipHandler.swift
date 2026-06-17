@@ -31,13 +31,13 @@ struct SponsorshipHandler: Sendable {
     func handle() async throws {
         try await self.requestReadmeWorkflowTrigger()
 
-        guard let action = event.action.flatMap(GHEvent.Sponsorship.Action.init(rawValue:)) else {
+        guard let action = event.action.flatMap(Sponsorship.Action.init(rawValue:)) else {
             logger.error("Unknown or missing sponsorship action", metadata: ["action": "\(event.action ?? "<null>")"])
             return
         }
 
         let sponsorship = try event.sponsorship.requireValue()
-        let role = try SponsorType.for(sponsorshipAmount: sponsorship.tier.monthly_price_in_cents)
+        let role = try SponsorType.for(sponsorshipAmount: sponsorship.tier.monthlyPriceInCents)
         let sender = try event.sender.requireValue()
 
         guard let user = try await self.context.usersService.getUser(githubID: "\(sender.id)") else {
@@ -58,22 +58,22 @@ struct SponsorshipHandler: Sendable {
         case .cancelled:
             try await self.removeRole(from: discordID, role: .sponsor)
             try await self.removeRole(from: discordID, role: .backer)
-        case .tierChanged:
+        case .tier_changed:
             let from = try event.changes.requireValue().tier.requireValue().from
             /// If they downgraded from a sponsor to a backer, remove the sponsor role.
-            if try SponsorType.for(sponsorshipAmount: from.monthly_price_in_cents) == .sponsor,
+            if try SponsorType.for(sponsorshipAmount: from.monthlyPriceInCents) == .sponsor,
                 role == .backer
             {
                 try await self.removeRole(from: discordID, role: .sponsor)
             }
-        case .edited, .pendingCancellation, .pendingTierChange:
+        case .edited, .pending_cancellation, .pending_tier_change:
             break
         }
     }
 
     /// Triggers the `vapor/vapor` workflow that updates the README with the new sponsor.
     private func requestReadmeWorkflowTrigger() async throws {
-        let secretsRetriever = try self.context.secretsRetriever.requireValue()
+        let secretsRetriever = self.context.secretsRetriever
         let workflowToken = try await secretsRetriever.getSecret(arnEnvVarKey: "GH_WORKFLOW_TOKEN_ARN")
 
         var request = HTTPClientRequest(
@@ -198,18 +198,5 @@ enum SponsorType: String, Sendable {
         case 10000...: .sponsor
         default: throw SponsorshipError.noSponsorType(amount: sponsorshipAmount)
         }
-    }
-}
-
-extension GHEvent.Sponsorship {
-    /// The `action` values GitHub sends with `sponsorship` events.
-    /// https://docs.github.com/en/webhooks/webhook-events-and-payloads#sponsorship
-    enum Action: String, Sendable {
-        case created
-        case cancelled
-        case edited
-        case tierChanged = "tier_changed"
-        case pendingCancellation = "pending_cancellation"
-        case pendingTierChange = "pending_tier_change"
     }
 }

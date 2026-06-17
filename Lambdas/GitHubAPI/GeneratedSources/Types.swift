@@ -7651,6 +7651,551 @@ package enum Components {
                 case nodeId = "node_id"
             }
         }
+        /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship`.
+        package struct WebhooksSponsorship: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/created_at`.
+            package var createdAt: Swift.String
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer`.
+            package struct MaintainerPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/avatar_url`.
+                package var avatarUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/events_url`.
+                package var eventsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/followers_url`.
+                package var followersUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/following_url`.
+                package var followingUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/gists_url`.
+                package var gistsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/gravatar_id`.
+                package var gravatarId: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/html_url`.
+                package var htmlUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/id`.
+                package var id: Swift.Int?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/login`.
+                package var login: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/node_id`.
+                package var nodeId: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/organizations_url`.
+                package var organizationsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/received_events_url`.
+                package var receivedEventsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/repos_url`.
+                package var reposUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/site_admin`.
+                package var siteAdmin: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/starred_url`.
+                package var starredUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/subscriptions_url`.
+                package var subscriptionsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/type`.
+                package var _type: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/url`.
+                package var url: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer/user_view_type`.
+                package var userViewType: Swift.String?
+                /// Creates a new `MaintainerPayload`.
+                ///
+                /// - Parameters:
+                ///   - avatarUrl:
+                ///   - eventsUrl:
+                ///   - followersUrl:
+                ///   - followingUrl:
+                ///   - gistsUrl:
+                ///   - gravatarId:
+                ///   - htmlUrl:
+                ///   - id:
+                ///   - login:
+                ///   - nodeId:
+                ///   - organizationsUrl:
+                ///   - receivedEventsUrl:
+                ///   - reposUrl:
+                ///   - siteAdmin:
+                ///   - starredUrl:
+                ///   - subscriptionsUrl:
+                ///   - _type:
+                ///   - url:
+                ///   - userViewType:
+                package init(
+                    avatarUrl: Swift.String? = nil,
+                    eventsUrl: Swift.String? = nil,
+                    followersUrl: Swift.String? = nil,
+                    followingUrl: Swift.String? = nil,
+                    gistsUrl: Swift.String? = nil,
+                    gravatarId: Swift.String? = nil,
+                    htmlUrl: Swift.String? = nil,
+                    id: Swift.Int? = nil,
+                    login: Swift.String? = nil,
+                    nodeId: Swift.String? = nil,
+                    organizationsUrl: Swift.String? = nil,
+                    receivedEventsUrl: Swift.String? = nil,
+                    reposUrl: Swift.String? = nil,
+                    siteAdmin: Swift.Bool? = nil,
+                    starredUrl: Swift.String? = nil,
+                    subscriptionsUrl: Swift.String? = nil,
+                    _type: Swift.String? = nil,
+                    url: Swift.String? = nil,
+                    userViewType: Swift.String? = nil
+                ) {
+                    self.avatarUrl = avatarUrl
+                    self.eventsUrl = eventsUrl
+                    self.followersUrl = followersUrl
+                    self.followingUrl = followingUrl
+                    self.gistsUrl = gistsUrl
+                    self.gravatarId = gravatarId
+                    self.htmlUrl = htmlUrl
+                    self.id = id
+                    self.login = login
+                    self.nodeId = nodeId
+                    self.organizationsUrl = organizationsUrl
+                    self.receivedEventsUrl = receivedEventsUrl
+                    self.reposUrl = reposUrl
+                    self.siteAdmin = siteAdmin
+                    self.starredUrl = starredUrl
+                    self.subscriptionsUrl = subscriptionsUrl
+                    self._type = _type
+                    self.url = url
+                    self.userViewType = userViewType
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case avatarUrl = "avatar_url"
+                    case eventsUrl = "events_url"
+                    case followersUrl = "followers_url"
+                    case followingUrl = "following_url"
+                    case gistsUrl = "gists_url"
+                    case gravatarId = "gravatar_id"
+                    case htmlUrl = "html_url"
+                    case id
+                    case login
+                    case nodeId = "node_id"
+                    case organizationsUrl = "organizations_url"
+                    case receivedEventsUrl = "received_events_url"
+                    case reposUrl = "repos_url"
+                    case siteAdmin = "site_admin"
+                    case starredUrl = "starred_url"
+                    case subscriptionsUrl = "subscriptions_url"
+                    case _type = "type"
+                    case url
+                    case userViewType = "user_view_type"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/maintainer`.
+            package var maintainer: Components.Schemas.WebhooksSponsorship.MaintainerPayload?
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/node_id`.
+            package var nodeId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/privacy_level`.
+            package var privacyLevel: Swift.String
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor`.
+            package struct SponsorPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/avatar_url`.
+                package var avatarUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/deleted`.
+                package var deleted: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/email`.
+                package var email: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/events_url`.
+                package var eventsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/followers_url`.
+                package var followersUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/following_url`.
+                package var followingUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/gists_url`.
+                package var gistsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/gravatar_id`.
+                package var gravatarId: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/html_url`.
+                package var htmlUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/id`.
+                package var id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/login`.
+                package var login: Swift.String
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/name`.
+                package var name: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/node_id`.
+                package var nodeId: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/organizations_url`.
+                package var organizationsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/received_events_url`.
+                package var receivedEventsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/repos_url`.
+                package var reposUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/site_admin`.
+                package var siteAdmin: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/starred_url`.
+                package var starredUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/subscriptions_url`.
+                package var subscriptionsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/type`.
+                @frozen package enum _TypePayload: String, Codable, Hashable, Sendable, CaseIterable {
+                    case bot = "Bot"
+                    case user = "User"
+                    case organization = "Organization"
+                }
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/type`.
+                package var _type: Components.Schemas.WebhooksSponsorship.SponsorPayload._TypePayload?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/url`.
+                package var url: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor/user_view_type`.
+                package var userViewType: Swift.String?
+                /// Creates a new `SponsorPayload`.
+                ///
+                /// - Parameters:
+                ///   - avatarUrl:
+                ///   - deleted:
+                ///   - email:
+                ///   - eventsUrl:
+                ///   - followersUrl:
+                ///   - followingUrl:
+                ///   - gistsUrl:
+                ///   - gravatarId:
+                ///   - htmlUrl:
+                ///   - id:
+                ///   - login:
+                ///   - name:
+                ///   - nodeId:
+                ///   - organizationsUrl:
+                ///   - receivedEventsUrl:
+                ///   - reposUrl:
+                ///   - siteAdmin:
+                ///   - starredUrl:
+                ///   - subscriptionsUrl:
+                ///   - _type:
+                ///   - url:
+                ///   - userViewType:
+                package init(
+                    avatarUrl: Swift.String? = nil,
+                    deleted: Swift.Bool? = nil,
+                    email: Swift.String? = nil,
+                    eventsUrl: Swift.String? = nil,
+                    followersUrl: Swift.String? = nil,
+                    followingUrl: Swift.String? = nil,
+                    gistsUrl: Swift.String? = nil,
+                    gravatarId: Swift.String? = nil,
+                    htmlUrl: Swift.String? = nil,
+                    id: Swift.Int,
+                    login: Swift.String,
+                    name: Swift.String? = nil,
+                    nodeId: Swift.String? = nil,
+                    organizationsUrl: Swift.String? = nil,
+                    receivedEventsUrl: Swift.String? = nil,
+                    reposUrl: Swift.String? = nil,
+                    siteAdmin: Swift.Bool? = nil,
+                    starredUrl: Swift.String? = nil,
+                    subscriptionsUrl: Swift.String? = nil,
+                    _type: Components.Schemas.WebhooksSponsorship.SponsorPayload._TypePayload? = nil,
+                    url: Swift.String? = nil,
+                    userViewType: Swift.String? = nil
+                ) {
+                    self.avatarUrl = avatarUrl
+                    self.deleted = deleted
+                    self.email = email
+                    self.eventsUrl = eventsUrl
+                    self.followersUrl = followersUrl
+                    self.followingUrl = followingUrl
+                    self.gistsUrl = gistsUrl
+                    self.gravatarId = gravatarId
+                    self.htmlUrl = htmlUrl
+                    self.id = id
+                    self.login = login
+                    self.name = name
+                    self.nodeId = nodeId
+                    self.organizationsUrl = organizationsUrl
+                    self.receivedEventsUrl = receivedEventsUrl
+                    self.reposUrl = reposUrl
+                    self.siteAdmin = siteAdmin
+                    self.starredUrl = starredUrl
+                    self.subscriptionsUrl = subscriptionsUrl
+                    self._type = _type
+                    self.url = url
+                    self.userViewType = userViewType
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case avatarUrl = "avatar_url"
+                    case deleted
+                    case email
+                    case eventsUrl = "events_url"
+                    case followersUrl = "followers_url"
+                    case followingUrl = "following_url"
+                    case gistsUrl = "gists_url"
+                    case gravatarId = "gravatar_id"
+                    case htmlUrl = "html_url"
+                    case id
+                    case login
+                    case name
+                    case nodeId = "node_id"
+                    case organizationsUrl = "organizations_url"
+                    case receivedEventsUrl = "received_events_url"
+                    case reposUrl = "repos_url"
+                    case siteAdmin = "site_admin"
+                    case starredUrl = "starred_url"
+                    case subscriptionsUrl = "subscriptions_url"
+                    case _type = "type"
+                    case url
+                    case userViewType = "user_view_type"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsor`.
+            package var sponsor: Components.Schemas.WebhooksSponsorship.SponsorPayload?
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable`.
+            package struct SponsorablePayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/avatar_url`.
+                package var avatarUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/deleted`.
+                package var deleted: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/email`.
+                package var email: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/events_url`.
+                package var eventsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/followers_url`.
+                package var followersUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/following_url`.
+                package var followingUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/gists_url`.
+                package var gistsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/gravatar_id`.
+                package var gravatarId: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/html_url`.
+                package var htmlUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/id`.
+                package var id: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/login`.
+                package var login: Swift.String
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/name`.
+                package var name: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/node_id`.
+                package var nodeId: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/organizations_url`.
+                package var organizationsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/received_events_url`.
+                package var receivedEventsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/repos_url`.
+                package var reposUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/site_admin`.
+                package var siteAdmin: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/starred_url`.
+                package var starredUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/subscriptions_url`.
+                package var subscriptionsUrl: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/type`.
+                @frozen package enum _TypePayload: String, Codable, Hashable, Sendable, CaseIterable {
+                    case bot = "Bot"
+                    case user = "User"
+                    case organization = "Organization"
+                }
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/type`.
+                package var _type: Components.Schemas.WebhooksSponsorship.SponsorablePayload._TypePayload?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/url`.
+                package var url: Swift.String?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable/user_view_type`.
+                package var userViewType: Swift.String?
+                /// Creates a new `SponsorablePayload`.
+                ///
+                /// - Parameters:
+                ///   - avatarUrl:
+                ///   - deleted:
+                ///   - email:
+                ///   - eventsUrl:
+                ///   - followersUrl:
+                ///   - followingUrl:
+                ///   - gistsUrl:
+                ///   - gravatarId:
+                ///   - htmlUrl:
+                ///   - id:
+                ///   - login:
+                ///   - name:
+                ///   - nodeId:
+                ///   - organizationsUrl:
+                ///   - receivedEventsUrl:
+                ///   - reposUrl:
+                ///   - siteAdmin:
+                ///   - starredUrl:
+                ///   - subscriptionsUrl:
+                ///   - _type:
+                ///   - url:
+                ///   - userViewType:
+                package init(
+                    avatarUrl: Swift.String? = nil,
+                    deleted: Swift.Bool? = nil,
+                    email: Swift.String? = nil,
+                    eventsUrl: Swift.String? = nil,
+                    followersUrl: Swift.String? = nil,
+                    followingUrl: Swift.String? = nil,
+                    gistsUrl: Swift.String? = nil,
+                    gravatarId: Swift.String? = nil,
+                    htmlUrl: Swift.String? = nil,
+                    id: Swift.Int,
+                    login: Swift.String,
+                    name: Swift.String? = nil,
+                    nodeId: Swift.String? = nil,
+                    organizationsUrl: Swift.String? = nil,
+                    receivedEventsUrl: Swift.String? = nil,
+                    reposUrl: Swift.String? = nil,
+                    siteAdmin: Swift.Bool? = nil,
+                    starredUrl: Swift.String? = nil,
+                    subscriptionsUrl: Swift.String? = nil,
+                    _type: Components.Schemas.WebhooksSponsorship.SponsorablePayload._TypePayload? = nil,
+                    url: Swift.String? = nil,
+                    userViewType: Swift.String? = nil
+                ) {
+                    self.avatarUrl = avatarUrl
+                    self.deleted = deleted
+                    self.email = email
+                    self.eventsUrl = eventsUrl
+                    self.followersUrl = followersUrl
+                    self.followingUrl = followingUrl
+                    self.gistsUrl = gistsUrl
+                    self.gravatarId = gravatarId
+                    self.htmlUrl = htmlUrl
+                    self.id = id
+                    self.login = login
+                    self.name = name
+                    self.nodeId = nodeId
+                    self.organizationsUrl = organizationsUrl
+                    self.receivedEventsUrl = receivedEventsUrl
+                    self.reposUrl = reposUrl
+                    self.siteAdmin = siteAdmin
+                    self.starredUrl = starredUrl
+                    self.subscriptionsUrl = subscriptionsUrl
+                    self._type = _type
+                    self.url = url
+                    self.userViewType = userViewType
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case avatarUrl = "avatar_url"
+                    case deleted
+                    case email
+                    case eventsUrl = "events_url"
+                    case followersUrl = "followers_url"
+                    case followingUrl = "following_url"
+                    case gistsUrl = "gists_url"
+                    case gravatarId = "gravatar_id"
+                    case htmlUrl = "html_url"
+                    case id
+                    case login
+                    case name
+                    case nodeId = "node_id"
+                    case organizationsUrl = "organizations_url"
+                    case receivedEventsUrl = "received_events_url"
+                    case reposUrl = "repos_url"
+                    case siteAdmin = "site_admin"
+                    case starredUrl = "starred_url"
+                    case subscriptionsUrl = "subscriptions_url"
+                    case _type = "type"
+                    case url
+                    case userViewType = "user_view_type"
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/sponsorable`.
+            package var sponsorable: Components.Schemas.WebhooksSponsorship.SponsorablePayload?
+            /// The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload.
+            ///
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier`.
+            package struct TierPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/created_at`.
+                package var createdAt: Swift.String
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/description`.
+                package var description: Swift.String
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/is_custom_ammount`.
+                package var isCustomAmmount: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/is_custom_amount`.
+                package var isCustomAmount: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/is_one_time`.
+                package var isOneTime: Swift.Bool
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/monthly_price_in_cents`.
+                package var monthlyPriceInCents: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/monthly_price_in_dollars`.
+                package var monthlyPriceInDollars: Swift.Int
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/name`.
+                package var name: Swift.String
+                /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier/node_id`.
+                package var nodeId: Swift.String
+                /// Creates a new `TierPayload`.
+                ///
+                /// - Parameters:
+                ///   - createdAt:
+                ///   - description:
+                ///   - isCustomAmmount:
+                ///   - isCustomAmount:
+                ///   - isOneTime:
+                ///   - monthlyPriceInCents:
+                ///   - monthlyPriceInDollars:
+                ///   - name:
+                ///   - nodeId:
+                package init(
+                    createdAt: Swift.String,
+                    description: Swift.String,
+                    isCustomAmmount: Swift.Bool? = nil,
+                    isCustomAmount: Swift.Bool? = nil,
+                    isOneTime: Swift.Bool,
+                    monthlyPriceInCents: Swift.Int,
+                    monthlyPriceInDollars: Swift.Int,
+                    name: Swift.String,
+                    nodeId: Swift.String
+                ) {
+                    self.createdAt = createdAt
+                    self.description = description
+                    self.isCustomAmmount = isCustomAmmount
+                    self.isCustomAmount = isCustomAmount
+                    self.isOneTime = isOneTime
+                    self.monthlyPriceInCents = monthlyPriceInCents
+                    self.monthlyPriceInDollars = monthlyPriceInDollars
+                    self.name = name
+                    self.nodeId = nodeId
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case createdAt = "created_at"
+                    case description
+                    case isCustomAmmount = "is_custom_ammount"
+                    case isCustomAmount = "is_custom_amount"
+                    case isOneTime = "is_one_time"
+                    case monthlyPriceInCents = "monthly_price_in_cents"
+                    case monthlyPriceInDollars = "monthly_price_in_dollars"
+                    case name
+                    case nodeId = "node_id"
+                }
+            }
+            /// The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload.
+            ///
+            /// - Remark: Generated from `#/components/schemas/webhooks_sponsorship/tier`.
+            package var tier: Components.Schemas.WebhooksSponsorship.TierPayload
+            /// Creates a new `WebhooksSponsorship`.
+            ///
+            /// - Parameters:
+            ///   - createdAt:
+            ///   - maintainer:
+            ///   - nodeId:
+            ///   - privacyLevel:
+            ///   - sponsor:
+            ///   - sponsorable:
+            ///   - tier: The `tier_changed` and `pending_tier_change` will include the original tier before the change or pending change. For more information, see the pending tier change payload.
+            package init(
+                createdAt: Swift.String,
+                maintainer: Components.Schemas.WebhooksSponsorship.MaintainerPayload? = nil,
+                nodeId: Swift.String,
+                privacyLevel: Swift.String,
+                sponsor: Components.Schemas.WebhooksSponsorship.SponsorPayload? = nil,
+                sponsorable: Components.Schemas.WebhooksSponsorship.SponsorablePayload? = nil,
+                tier: Components.Schemas.WebhooksSponsorship.TierPayload
+            ) {
+                self.createdAt = createdAt
+                self.maintainer = maintainer
+                self.nodeId = nodeId
+                self.privacyLevel = privacyLevel
+                self.sponsor = sponsor
+                self.sponsorable = sponsorable
+                self.tier = tier
+            }
+            package enum CodingKeys: String, CodingKey {
+                case createdAt = "created_at"
+                case maintainer
+                case nodeId = "node_id"
+                case privacyLevel = "privacy_level"
+                case sponsor
+                case sponsorable
+                case tier
+            }
+        }
     }
     /// Types generated from the `#/components/parameters` section of the OpenAPI document.
     package enum Parameters {
