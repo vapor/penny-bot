@@ -26,12 +26,12 @@ jobs:
           dnf install jq awscli zstd -y
 
       - name: Check out repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Restore/Cache .build
         if: ${{ runner.debug != '1' }}
         id: "restore-cache"
-        uses: actions/cache@v5
+        uses: actions/cache@v6
         with:
           path: .build
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
