@@ -753,40 +753,65 @@ actor GHHooksTests {
         #expect(body.hasPrefix("## What's Changed"), "\(body)")
     }
 
-    @Test
-    func isPrimaryOrReleaseBranch() async throws {
+    @Test(arguments: ["refs/heads/", ""])
+    func releaseBranch(branchPrefix: String) async throws {
         let context = try makeContext(
             eventName: .pull_request,
             eventKey: "pr3"
         )
         var repo = try #require(context.event.repository)
 
-        #expect("main".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)main", repo: repo)?.majorVersion == nil)
 
-        #expect(!"maniac".isPrimaryOrReleaseBranch(repo: repo))
-        #expect(!"master".isPrimaryOrReleaseBranch(repo: repo))
-        #expect(!"master-maniac".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)maniac", repo: repo) == nil)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)master", repo: repo) == nil)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)master-maniac", repo: repo) == nil)
 
-        #expect("release/1.0.4".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/1.0.4", repo: repo)?.majorVersion == 1)
         repo.name = "postgres-nio"
-        #expect("postgres-nio-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)postgres-nio-3.2.x", repo: repo)?.majorVersion == 3)
         repo.name = "console-kit"
-        #expect("console-kit-5".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)console-kit-5", repo: repo)?.majorVersion == 5)
         repo.name = "vapor"
-        #expect("vapor-5".isPrimaryOrReleaseBranch(repo: repo))
-        #expect("release/3".isPrimaryOrReleaseBranch(repo: repo))
-        #expect("release/58.x".isPrimaryOrReleaseBranch(repo: repo))
-        #expect("release/58.1".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)vapor-5", repo: repo)?.majorVersion == 5)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)vapor-4", repo: repo)?.majorVersion == 4)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/3", repo: repo)?.majorVersion == 3)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/58.x", repo: repo)?.majorVersion == 58)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/58.1", repo: repo)?.majorVersion == 58)
         /// Weird but ¯\_(ツ)_/¯
-        #expect("release/5.x.9".isPrimaryOrReleaseBranch(repo: repo))
-        #expect("release/x.9".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/5.x.9", repo: repo)?.majorVersion == 5)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/x.9", repo: repo)?.majorVersion == nil)
 
         repo.name = "postgres-nio"
-        #expect(!"postgres-3.2.x".isPrimaryOrReleaseBranch(repo: repo))
-        #expect(!"release/x".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)postgres-3.2.x", repo: repo) == nil)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)release/x", repo: repo) == nil)
         /// No pre-release / build identifiers supported
-        #expect(!"postgres-my/branch#42.99.56-alpha.x".isPrimaryOrReleaseBranch(repo: repo))
-        #expect(!"postgres-my/branch#42.99.56-alpha.1345".isPrimaryOrReleaseBranch(repo: repo))
+        #expect(ReleaseBranch(branch: "\(branchPrefix)postgres-my/branch#42.99.56-alpha.x", repo: repo) == nil)
+        #expect(ReleaseBranch(branch: "\(branchPrefix)postgres-my/branch#42.99.56-alpha.1345", repo: repo) == nil)
+    }
+
+    @Test
+    func shouldMarkReleaseAsLatest() async throws {
+        #expect(ReleaseMaker.shouldMarkAsLatest(isPrerelease: false, baseRef: "main", primaryBranch: "main"))
+        #expect(!ReleaseMaker.shouldMarkAsLatest(isPrerelease: true, baseRef: "main", primaryBranch: "main"))
+        #expect(!ReleaseMaker.shouldMarkAsLatest(isPrerelease: false, baseRef: "vapor-4", primaryBranch: "main"))
+        #expect(!ReleaseMaker.shouldMarkAsLatest(isPrerelease: true, baseRef: "vapor-4", primaryBranch: "main"))
+    }
+
+    @Test
+    func previousTagOnSameMajorLine() async throws {
+        let tags = ["5.0.0-alpha.1", "4.121.4", "4.121.3", "4.121.2", "4.121.1", "4.121.0", "4.120.0"]
+        #expect(ReleaseReporter.previousTagOnSameMajorLine(tags: tags, current: "4.121.4") == "4.121.3")
+        #expect(ReleaseReporter.previousTagOnSameMajorLine(tags: tags, current: "4.121.0") == "4.120.0")
+        #expect(ReleaseReporter.previousTagOnSameMajorLine(tags: tags, current: "5.0.0-alpha.1") == nil)
+
+        let shuffled = ["4.120.0", "5.0.0-alpha.1", "4.121.4", "4.121.3"]
+        #expect(ReleaseReporter.previousTagOnSameMajorLine(tags: shuffled, current: "4.121.4") == "4.121.3")
+
+        let withV5 = ["5.1.0", "5.0.0", "4.121.4"]
+        #expect(ReleaseReporter.previousTagOnSameMajorLine(tags: withV5, current: "5.1.0") == "5.0.0")
+
+        #expect(ReleaseReporter.previousTagOnSameMajorLine(tags: tags, current: "not-a-version") == nil)
     }
 
     @Test

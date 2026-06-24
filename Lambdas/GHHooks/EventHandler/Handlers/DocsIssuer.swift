@@ -26,12 +26,12 @@ struct DocsIssuer {
     }
 
     func handle() async throws {
-        guard self.repo.id == Configuration.docsRepoID else {
+        guard self.repo.id == Configuration.docsRepoID,
+            let ref = self.event.ref,
+            ReleaseBranch(branch: ref, repo: repo) != nil
+        else {
             return
         }
-        guard let branch = self.event.ref.extractHeadBranchFromRef(),
-            branch.isPrimaryOrReleaseBranch(repo: repo)
-        else { return }
 
         for pr in try await self.getPRsRelatedToCommit() {
             guard self.needsNewIssue(pr: pr) else {
