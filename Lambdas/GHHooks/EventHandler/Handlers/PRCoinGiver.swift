@@ -23,14 +23,14 @@ struct PRCoinGiver {
     }
 
     func handle() async throws {
-        guard let branch = self.event.ref.extractHeadBranchFromRef(),
-            branch.isPrimaryOrReleaseBranch(repo: repo)
+        guard let ref = self.event.ref,
+            let releaseBranch = ReleaseBranch(branch: ref, repo: repo)
         else { return }
         let prs = try await getPRsRelatedToCommit()
         if prs.isEmpty { return }
         let codeOwners = try await context.requester.getCodeOwners(
             repoFullName: repo.fullName,
-            branch: branch
+            branch: releaseBranch.name
         )
         for pr in prs {
             if pr.mergedAt == nil {

@@ -7,6 +7,7 @@ import NIOCore
 import NIOHTTP1
 import OrderedCollections
 import Shared
+import SwiftSemver
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
@@ -151,8 +152,16 @@ struct ReleaseReporter {
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name
-            )
+            ),
+            query: .init(perPage: 100)
         ).ok.body.json
+
+        if let previousOnSameMajor = Self.previousTagOnSameMajorLine(
+            tags: json.map(\.name),
+            current: release.tagName
+        ) {
+            return previousOnSameMajor
+        }
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tagName }),
             json.count > releaseIdx
@@ -168,6 +177,19 @@ struct ReleaseReporter {
             )
             return json.first?.name
         }
+    }
+
+    static func previousTagOnSameMajorLine(tags: [String], current: String) -> String? {
+        guard let (_, currentVersion) = SemanticVersion.fromGitHubTag(current) else {
+            return nil
+        }
+        return tags.compactMap { name -> (name: String, version: SemanticVersion)? in
+            guard let (_, version) = SemanticVersion.fromGitHubTag(name),
+                version.major == currentVersion.major,
+                version < currentVersion
+            else { return nil }
+            return (name, version)
+        }.max(by: { $0.version < $1.version })?.name
     }
 
     func getCommitsInRelease(comparisonRange: String) async throws -> [Commit] {

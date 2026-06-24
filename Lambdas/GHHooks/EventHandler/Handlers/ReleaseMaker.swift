@@ -61,12 +61,15 @@ struct ReleaseMaker {
         guard !Configuration.repositoryIDDenyList.contains(repo.id),
             Configuration.organizationIDAllowList.contains(repo.owner.id),
             let mergedBy = pr.mergedBy,
-            pr.base.ref.isPrimaryOrReleaseBranch(repo: repo),
+            let releaseBranch = ReleaseBranch(branch: pr.base.ref, repo: repo),
             let bump = pr.knownLabels.semVerBump()
         else { return }
 
         let prereleaseRequested = pr.knownLabels.contains(.prerelease)
-        let previousRelease = try await getLastRelease(prerelease: prereleaseRequested)
+        let previousRelease = try await getLastRelease(
+            prerelease: prereleaseRequested,
+            releaseBranch: releaseBranch
+        )
 
         let previousTag = previousRelease.tagName
         guard let (tagPrefix, previousVersion) = SemanticVersion.fromGitHubTag(previousTag) else {
@@ -88,15 +91,13 @@ struct ReleaseMaker {
         try await updatePRBodyWithReleaseNotice(release: release)
     }
 
-    func getLastRelease(prerelease: Bool) async throws -> Release {
+    func getLastRelease(prerelease: Bool, releaseBranch: ReleaseBranch) async throws -> Release {
         let releases = try await self.getRelatedReleases()
 
         let latest = try await self.getLatestRelease(from: releases, prerelease: prerelease)
 
         let filteredReleases: [Release] = releases.filter { release, version -> Bool in
-            if let majorVersion = Int(pr.base.ref) {
-                /// If the branch name is an integer, only include releases
-                /// for that major version.
+            if let majorVersion = releaseBranch.majorVersion {
                 return version.major == majorVersion
             }
             return true
@@ -185,6 +186,27 @@ struct ReleaseMaker {
         }
     }
 
+    static func shouldMarkAsLatestPayload(
+        isPrerelease: Bool,
+        baseRef: String,
+        primaryBranch: String
+    ) -> Operations.ReposCreateRelease.Input.Body.JsonPayload.MakeLatestPayload {
+        let should = shouldMarkAsLatest(
+            isPrerelease: isPrerelease,
+            baseRef: baseRef,
+            primaryBranch: primaryBranch
+        )
+        return should ? ._true : ._false
+    }
+
+    static func shouldMarkAsLatest(
+        isPrerelease: Bool,
+        baseRef: String,
+        primaryBranch: String
+    ) -> Bool {
+        !isPrerelease && baseRef == primaryBranch
+    }
+
     func makeNewRelease(
         previousVersion: String,
         newVersion: String,
@@ -195,6 +217,11 @@ struct ReleaseMaker {
             mergedBy: mergedBy,
             previousVersion: previousVersion,
             newVersion: newVersion
+        )
+        let makeLatest = Self.shouldMarkAsLatestPayload(
+            isPrerelease: isPrerelease,
+            baseRef: pr.base.ref,
+            primaryBranch: repo.primaryBranch
         )
         return try await context.githubClient.reposCreateRelease(
             path: .init(
@@ -209,7 +236,7 @@ struct ReleaseMaker {
                     body: body,
                     draft: false,
                     prerelease: isPrerelease,
-                    makeLatest: isPrerelease ? ._false : ._true
+                    makeLatest: makeLatest
                 )
             )
         ).created.body.json
