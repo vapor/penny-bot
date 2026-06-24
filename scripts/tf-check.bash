@@ -7,7 +7,7 @@ PATH="$PATH:/usr/local/bin/:/opt/homebrew/bin/"
 
 BASE_DIR="$(dirname "$0")/.."
 
-cd "$BASE_DIR/terraform"
+cd "$BASE_DIR/infra"
 
 mise x -- terraform fmt -check -recursive
 mise x -- terraform init -backend=false -input=false

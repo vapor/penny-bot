@@ -15,7 +15,7 @@ aws login --profile vapor
 ./scripts/tf-check.bash
 
 # work with terraform
-cd ./terraform
+cd ./infra
 # is mise already activated?
 mise doctor | grep 'activated'
 # activate mise so you don't need to prefix all the following terraform commands with `mise x --`
@@ -51,7 +51,7 @@ At first run, you'll need to run the bootstrap terraform to create the state S3 
 mise doctor | grep 'activated'
 # activate mise so you don't need to prefix all the following terraform commands with `mise x --`
 mise activate fish | source # bash: eval "$(mise activate bash)" — puts the pinned tools on PATH
-cd ./terraform/bootstrap && terraform init && terraform apply
+cd ./infra/bootstrap && terraform init && terraform apply
 cd .. && terraform init && terraform plan
 terraform apply
 ```
