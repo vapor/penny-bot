@@ -14,6 +14,9 @@ jobs:
     runs-on: ubuntu-24.04-arm
     container: swift:6.3-noble
 
+    env:
+      IMAGE_TAG: ${{ github.sha }}
+
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -50,7 +53,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@254c19bd240aabef8777f48595e9d2d7b972184b # v6.2.1
         with:
-          role-to-assume: ${{ vars.OIDC_ROLE_ARN }}
+          role-to-assume: ${{ vars.PENNY_OIDC_ROLE_ARN }}
           aws-region: eu-west-1
 
       - name: Login to Amazon ECR
@@ -62,33 +65,28 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: penny-bot-discord-image
-          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
             --build-arg SWIFT_CONFIGURATION=release \
             --build-arg EXEC_NAME=Penny
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      - name: Fill in the new image ID in the Amazon ECS task definition
-        id: task-def
-        uses: aws-actions/amazon-ecs-render-task-definition@138c24f321fdbdf7edee4a685519d253cae2cdea # v1.9.0
-        with:
-          task-definition: ./deploy/penny-discord-bot-task.json
-          container-name: penny-bot
-          image: ${{ steps.build-image.outputs.image }}
+      - name: Setup mise
+        uses: jdx/mise-action@dba19683ed58901619b14f395a24841710cb4925 # v4.1.0
 
-      - name: Deploy to Amazon ECS Service
-        id: task-dep
-        uses: aws-actions/amazon-ecs-deploy-task-definition@a310a830f5c14e583e35d84e4e1ec7dd177c3c9c # v2.6.2
-        with:
-          task-definition: ${{ steps.task-def.outputs.task-definition }}
-          wait-for-service-stability: true
+      - name: Terraform init
+        working-directory: infra
+        env:
+          # A hack to skip using a profile in CI, to use OIDC instead
+          TF_VAR_aws_profile: ""
+        run: |
+          terraform init -input=false -backend-config="profile="
 
-      - name: Deploy to AWS cloudformation
-        uses: aws-actions/aws-cloudformation-github-deploy@81e3b03d2266bcb76c4bcc37a7d71d9cb67838bb # v2.2.0
-        with:
-          name: penny-discord-bot-stack
-          template: ./deploy/penny-discord-bot-stack.yml
-          parameter-overrides: >-
-            TaskDefinition=${{ steps.task-dep.outputs.task-definition-arn }}
+      - name: Terraform apply
+        working-directory: infra
+        env:
+          # A hack to skip using a profile in CI, to use OIDC instead
+          TF_VAR_aws_profile: ""
+          TF_VAR_penny_image_tag: ${{ env.IMAGE_TAG }}
+        run: |
+          terraform apply -input=false -auto-approve

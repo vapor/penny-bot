@@ -1,0 +1,3 @@
+[tools]
+terraform = "1.15.6"
+tflint = "0.61.0"
