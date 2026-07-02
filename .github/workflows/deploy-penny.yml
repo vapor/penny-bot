@@ -80,7 +80,7 @@ jobs:
 
       - name: Deploy to Amazon ECS Service
         id: task-dep
-        uses: aws-actions/amazon-ecs-deploy-task-definition@a310a830f5c14e583e35d84e4e1ec7dd177c3c9c # v2.6.2
+        uses: aws-actions/amazon-ecs-deploy-task-definition@c465972ecbd160473f22e683363b422a5412a3de # v2.6.3
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
           wait-for-service-stability: true
