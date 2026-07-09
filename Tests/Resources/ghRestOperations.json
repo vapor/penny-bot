@@ -3794,6 +3794,18 @@
       }
     ]
   },
+  "GET-https://api.github.com/repos/vapor/design/tags?per_page=100": [
+    {
+      "name": "1.0.0-rc.1",
+      "zipball_url": "https://api.github.com/repos/vapor/design/zipball/refs/tags/1.0.0-rc.1",
+      "tarball_url": "https://api.github.com/repos/vapor/design/tarball/refs/tags/1.0.0-rc.1",
+      "commit": {
+        "sha": "8dd8697afd6cf1464ac30a52287a92144bed0d67",
+        "url": "https://api.github.com/repos/vapor/design/commits/8dd8697afd6cf1464ac30a52287a92144bed0d67"
+      },
+      "node_id": "REF_kwDOH3eY47RyZWZzL3RhZ3MvMS4wLjAtcmMuMQ"
+    }
+  ],
   "GET-https://api.github.com/repos/vapor/apns/tags": [
     {
       "name": "4.0.0",

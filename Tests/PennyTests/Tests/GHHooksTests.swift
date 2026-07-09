@@ -1105,6 +1105,16 @@ actor GHHooksTests {
         )
     }
 
+    /// A published release that does not have a previous tag, but still needs a Discord announcement.
+    @Test
+    func handleReleaseEvent7() async throws {
+        try await handleEvent(
+            key: "release7",
+            eventName: .release,
+            expect: .response(at: .release, type: .create)
+        )
+    }
+
     @Test
     func handleSecurityAdvisory1() async throws {
         try await handleEvent(

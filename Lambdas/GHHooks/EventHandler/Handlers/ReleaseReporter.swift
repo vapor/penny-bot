@@ -164,7 +164,7 @@ struct ReleaseReporter {
         }
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tagName }),
-            json.count > releaseIdx
+            releaseIdx + 1 < json.count
         {
             return json[releaseIdx + 1].name
         } else {
