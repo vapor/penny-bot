@@ -142,7 +142,8 @@ extension Constants.Channels {
             return .issuesAndPRs
         } else {
             switch repoID {
-            case 64_560_805:
+            case 64_560_805, 74_170_122:
+                /// docs or api-docs repos
                 return .documentation
             default:
                 return .issuesAndPRs
