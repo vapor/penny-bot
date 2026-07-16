@@ -10,10 +10,8 @@ struct ProjectBoardHandler {
         self.context.event
     }
 
-    /// Yes, send the raw url as the "note" of the card. GitHub will take care of properly showing it.
-    /// If you send customized text instead, the card won't be recognized as an issue-card.
-    var note: String {
-        self.issue.htmlUrl
+    var org: String {
+        self.repo.owner.login
     }
 
     init(context: HandlerContext, action: Issue.Action, issue: Issue) throws {
@@ -53,12 +51,7 @@ struct ProjectBoardHandler {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
         let possibleUnlabeledProjects = Project.allCases.filter { !relatedProjects.contains($0) }
         for project in Set(possibleUnlabeledProjects) {
-            for column in Project.Column.allCases {
-                let cards = try await self.getCards(in: project.columnID(of: column))
-                if let card = cards.firstCard(note: note) {
-                    try await self.delete(cardID: card.id)
-                }
-            }
+            try await self.deleteItem(in: project)
         }
     }
 
@@ -78,7 +71,7 @@ struct ProjectBoardHandler {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
         if self.issue.stateReason == .notPlanned {
             for project in Set(relatedProjects) {
-                try await self.deleteCard(in: project)
+                try await self.deleteItem(in: project)
             }
         } else {
             for project in Set(relatedProjects) {
@@ -99,73 +92,80 @@ struct ProjectBoardHandler {
         }
     }
 
-    func createCard(columnID: Int) async throws {
-        _ = try await self.context.githubClient.projectsCreateCard(
-            path: .init(columnId: columnID),
-            body: .json(.case1(.init(note: self.note)))
-        ).created
+    /// The item id is an issue/pull-request that is already in the project, or the item
+    /// that gets created if the issue/pull-request isn't in the project yet.
+    private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {
+        let itemID: Int
+        if let existingItemID = try await self.itemID(in: project) {
+            itemID = existingItemID
+        } else {
+            itemID = try await self.createItem(in: project)
+        }
+        try await self.setStatus(itemID: itemID, targetColumn: targetColumn, in: project)
     }
 
-    func move(toColumnID columnID: Int, cardID: Int64) async throws {
-        _ = try await self.context.githubClient.projectsMoveCard(
-            path: .init(cardId: Int(cardID)),
-            body: .json(.init(position: "top", columnId: columnID))
-        ).created
-    }
-
-    func delete(cardID: Int64) async throws {
-        _ = try await self.context.githubClient.projectsDeleteCard(
-            path: .init(cardId: Int(cardID))
+    private func deleteItem(in project: Project) async throws {
+        guard let itemID = try await self.itemID(in: project) else { return }
+        _ = try await self.context.githubClient.projectsDeleteItemForOrg(
+            path: .init(
+                projectNumber: project.number,
+                org: self.org,
+                itemId: itemID
+            )
         ).noContent
     }
 
-    func getCards(in columnID: Int) async throws -> [ProjectCard] {
-        try await self.context.githubClient.projectsListCards(
-            path: .init(columnId: columnID)
+    private func createItem(in project: Project) async throws -> Int {
+        let item = try await self.context.githubClient.projectsAddItemForOrg(
+            path: .init(
+                org: self.org,
+                projectNumber: project.number
+            ),
+            body: .json(
+                .init(
+                    _type: .issue,
+                    owner: self.org,
+                    repo: self.repo.name,
+                    number: self.issue.number
+                )
+            )
+        ).created.body.json
+        return Int(item.id)
+    }
+
+    private func setStatus(itemID: Int, targetColumn: Project.Column, in project: Project) async throws {
+        _ = try await self.context.githubClient.projectsUpdateItemForOrg(
+            path: .init(
+                projectNumber: project.number,
+                org: self.org,
+                itemId: itemID
+            ),
+            body: .json(
+                .init(
+                    fields: [
+                        .init(
+                            id: project.statusFieldID,
+                            value: .case1(project.columnID(of: targetColumn))
+                        )
+                    ]
+                )
+            )
+        ).ok
+    }
+
+    /// Finds the project item whose content is this issue, returning its item id if present.
+    private func itemID(in project: Project) async throws -> Int? {
+        let items = try await self.context.githubClient.projectsListItemsForOrg(
+            path: .init(
+                projectNumber: project.number,
+                org: self.org
+            ),
+            query: .init(perPage: 100)
         ).ok.body.json
-    }
-
-    private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {
-        func cards(column: Project.Column) async throws -> [ProjectCard] {
-            try await self.getCards(in: project.columnID(of: column))
+        let item = items.first { item in
+            item.contentNodeID == self.issue.nodeId
         }
-
-        func move(cardID: Int64) async throws {
-            try await self.move(toColumnID: project.columnID(of: targetColumn), cardID: cardID)
-        }
-
-        let otherColumns = Project.Column.allCases.filter { $0 != targetColumn }
-
-        var alreadyMoved = false
-        for column in otherColumns {
-            let cards = try await cards(column: column)
-            if let card = cards.firstCard(note: note) {
-                if alreadyMoved {
-                    try await self.delete(cardID: card.id)
-                } else {
-                    try await move(cardID: card.id)
-                    alreadyMoved = true
-                }
-            }
-        }
-
-        if alreadyMoved {
-            return
-        }
-
-        let cards = try await cards(column: targetColumn)
-        if !cards.containsCard(note: self.note) {
-            try await self.createCard(columnID: project.columnID(of: targetColumn))
-        }
-    }
-
-    private func deleteCard(in project: Project) async throws {
-        for column in Project.Column.allCases {
-            let cards = try await self.getCards(in: project.columnID(of: column))
-            if let card = cards.firstCard(note: note) {
-                try await self.delete(cardID: card.id)
-            }
-        }
+        return item.map { Int($0.id) }
     }
 }
 
@@ -179,34 +179,46 @@ private enum Project: String, CaseIterable {
         case done
     }
 
-    var id: Int {
+    /// The project's number, as seen in its URL.
+    var number: Int {
         switch self {
         case .helpWanted:
-            return 14_402_911
+            return 13
         case .beginner:
-            return 14_183_112
+            return 14
         }
     }
 
-    func columnID(of column: Column) -> Int {
+    /// The id of the project's `Status` single-select field.
+    var statusFieldID: Int {
+        switch self {
+        case .helpWanted:
+            return 129_033_232
+        case .beginner:
+            return 129_033_282
+        }
+    }
+
+    /// The id of the `Status` field's option that corresponds to the column.
+    func columnID(of column: Column) -> String {
         switch self {
         case .helpWanted:
             switch column {
             case .toDo:
-                return 18_549_893
+                return "42be116a"
             case .inProgress:
-                return 18_549_894
+                return "3bb65142"
             case .done:
-                return 18_549_895
+                return "0a70d603"
             }
         case .beginner:
             switch column {
             case .toDo:
-                return 17_909_684
+                return "069550a6"
             case .inProgress:
-                return 17_909_685
+                return "5fea3daa"
             case .done:
-                return 17_909_686
+                return "0934de2f"
             }
         }
     }
@@ -220,20 +232,6 @@ private enum Project: String, CaseIterable {
         default:
             return nil
         }
-    }
-}
-
-extension [ProjectCard] {
-    private func areNotesEqual(_ element: Self.Element, _ note: String) -> Bool {
-        element.contentUrl == note || element.note == note
-    }
-
-    fileprivate func containsCard(note: String) -> Bool {
-        self.contains { areNotesEqual($0, note) }
-    }
-
-    fileprivate func firstCard(note: String) -> Self.Element? {
-        self.first { areNotesEqual($0, note) }
     }
 }
 
