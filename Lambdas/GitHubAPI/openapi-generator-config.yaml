@@ -12,10 +12,11 @@ filter:
     - apps/create-installation-access-token
     - issues/create
     - issues/get
-    - projects/create-card
-    - projects/delete-card
-    - projects/list-cards
-    - projects/move-card
+    - projects/add-item-for-org
+    - projects/delete-item-for-org
+    - projects/list-fields-for-org
+    - projects/list-items-for-org
+    - projects/update-item-for-org
     # Need to manually mark auto_merge.commit_title and .commit_message as nullable.
     # Also pull_request.assignee, .body, .closed_at, .merge_commit_sha, .merged_at, .milestone, .additions, .changed_files, .comments, .commits, .deletions, .mergeable, .mergeable_state, .merged, .maintainer_can_modify, .merged_by, .review_comments.
     - pulls/get
