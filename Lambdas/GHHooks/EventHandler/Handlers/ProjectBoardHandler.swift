@@ -48,11 +48,11 @@ struct ProjectBoardHandler {
     }
 
     func onUnlabeled() async throws {
-        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        let possibleUnlabeledProjects = Project.allCases.filter { !relatedProjects.contains($0) }
-        for project in Set(possibleUnlabeledProjects) {
-            try await self.deleteItem(in: project)
-        }
+        guard let removedLabel = self.event.label?.name,
+            let knownLabel = Issue.KnownLabel(rawValue: removedLabel),
+            let project = Project(label: knownLabel)
+        else { return }
+        try await self.deleteItem(in: project)
     }
 
     func onAssigned() async throws {
@@ -130,10 +130,12 @@ struct ProjectBoardHandler {
                 )
             )
         ).created.body.json
-        return Int(item.id)
+        return try self.itemID(from: item.id)
     }
 
     private func setStatus(itemID: Int, targetColumn: Project.Column, in project: Project) async throws {
+        let statusField = try await self.statusField(in: project)
+        let optionID = try statusField.optionID(of: targetColumn)
         _ = try await self.context.githubClient.projectsUpdateItemForOrg(
             path: .init(
                 projectNumber: project.number,
@@ -144,8 +146,8 @@ struct ProjectBoardHandler {
                 .init(
                     fields: [
                         .init(
-                            id: project.statusFieldID,
-                            value: .case1(project.columnID(of: targetColumn))
+                            id: statusField.id,
+                            value: .case1(optionID)
                         )
                     ]
                 )
@@ -153,19 +155,126 @@ struct ProjectBoardHandler {
         ).ok
     }
 
-    /// Finds the project item whose content is this issue, returning its item id if present.
-    private func itemID(in project: Project) async throws -> Int? {
-        let items = try await self.context.githubClient.projectsListItemsForOrg(
+    private func statusField(in project: Project) async throws -> StatusField {
+        let fields = try await self.context.githubClient.projectsListFieldsForOrg(
             path: .init(
                 projectNumber: project.number,
                 org: self.org
             ),
             query: .init(perPage: 100)
         ).ok.body.json
-        let item = items.first { item in
-            item.contentNodeID == self.issue.nodeId
+        guard
+            let field = fields.first(where: { field in
+                field.dataType == .singleSelect
+                    && field.name.lowercased() == "status"
+            })
+        else {
+            throw ProjectBoardError.statusFieldNotFound(project: project.number)
         }
-        return item.map { Int($0.id) }
+        var optionIDsByNormalizedName: [String: String] = [:]
+        for option in field.options ?? [] {
+            let key = StatusField.normalize(option.name.raw)
+            if optionIDsByNormalizedName[key] == nil {
+                optionIDsByNormalizedName[key] = option.id
+            }
+        }
+        return StatusField(id: field.id, optionIDsByNormalizedName: optionIDsByNormalizedName)
+    }
+
+    /// Finds the project item whose content is this issue, returning its item id if present.
+    private func itemID(in project: Project) async throws -> Int? {
+        var after: String?
+        while true {
+            let ok = try await self.context.githubClient.projectsListItemsForOrg(
+                path: .init(
+                    projectNumber: project.number,
+                    org: self.org
+                ),
+                query: .init(after: after, perPage: 100)
+            ).ok
+            let items = try ok.body.json
+            if let item = items.first(where: { $0.contentNodeID == self.issue.nodeId }) {
+                return try self.itemID(from: item.id)
+            }
+            guard let next = self.nextCursor(fromLinkHeader: ok.headers.link) else {
+                return nil
+            }
+            after = next
+        }
+    }
+
+    private func itemID(from id: Double) throws -> Int {
+        guard let itemID = Int(exactly: id.rounded()) else {
+            throw ProjectBoardError.invalidItemID(id)
+        }
+        return itemID
+    }
+
+    private func nextCursor(fromLinkHeader link: String?) -> String? {
+        guard let link else { return nil }
+        for entry in link.split(separator: ",") {
+            guard
+                entry.firstRange(of: #"rel="next""#) != nil,
+                let afterRange = entry.firstRange(of: "after=")
+            else { continue }
+            let value = entry[afterRange.upperBound...].prefix { $0 != "&" && $0 != ">" }
+            return self.percentDecoded(value)
+        }
+        return nil
+    }
+
+    private func percentDecoded(_ value: Substring) -> String {
+        let characters = Array(value)
+        var bytes: [UInt8] = []
+        bytes.reserveCapacity(characters.count)
+        var index = 0
+        while index < characters.count {
+            let character = characters[index]
+            if character == "%",
+                index + 2 < characters.count,
+                let high = characters[index + 1].hexDigitValue,
+                let low = characters[index + 2].hexDigitValue {
+                bytes.append(UInt8(high << 4 | low))
+                index += 3
+            } else {
+                bytes.append(contentsOf: String(character).utf8)
+                index += 1
+            }
+        }
+        return String(decoding: bytes, as: UTF8.self)
+    }
+}
+
+private struct StatusField {
+    let id: Int
+    let optionIDsByNormalizedName: [String: String]
+
+    static func normalize(_ name: String) -> String {
+        name.lowercased().filter { !$0.isWhitespace }
+    }
+
+    func optionID(of column: Project.Column) throws -> String {
+        guard let optionID = self.optionIDsByNormalizedName[Self.normalize(column.optionName)] else {
+            throw ProjectBoardError.statusOptionNotFound(column: column.optionName)
+        }
+        return optionID
+    }
+}
+
+enum ProjectBoardError: Error, CustomStringConvertible {
+    case statusFieldNotFound(project: Int)
+    case statusOptionNotFound(column: String)
+    case invalidItemID(Double)
+
+    var description: String {
+        switch self {
+        case let .statusFieldNotFound(project):
+            return "statusFieldNotFound(project: \(project))"
+        case let .statusOptionNotFound(column):
+            return "statusOptionNotFound(column: \(column))"
+        case let .invalidItemID(id):
+            return "invalidItemID(\(id))"
+        }
     }
 }
 
@@ -177,6 +286,17 @@ private enum Project: String, CaseIterable {
         case toDo
         case inProgress
         case done
+
+        var optionName: String {
+            switch self {
+            case .toDo:
+                return "Todo"
+            case .inProgress:
+                return "In Progress"
+            case .done:
+                return "Done"
+            }
+        }
     }
 
     /// The project's number, as seen in its URL.
@@ -186,40 +306,6 @@ private enum Project: String, CaseIterable {
             return 13
         case .beginner:
             return 14
-        }
-    }
-
-    /// The id of the project's `Status` single-select field.
-    var statusFieldID: Int {
-        switch self {
-        case .helpWanted:
-            return 129_033_232
-        case .beginner:
-            return 129_033_282
-        }
-    }
-
-    /// The id of the `Status` field's option that corresponds to the column.
-    func columnID(of column: Column) -> String {
-        switch self {
-        case .helpWanted:
-            switch column {
-            case .toDo:
-                return "42be116a"
-            case .inProgress:
-                return "3bb65142"
-            case .done:
-                return "0a70d603"
-            }
-        case .beginner:
-            switch column {
-            case .toDo:
-                return "069550a6"
-            case .inProgress:
-                return "5fea3daa"
-            case .done:
-                return "0934de2f"
-            }
         }
     }
 
