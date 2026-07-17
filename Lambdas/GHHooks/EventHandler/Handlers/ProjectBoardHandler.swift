@@ -175,14 +175,7 @@ struct ProjectBoardHandler {
         else {
             throw ProjectBoardError.statusFieldNotFound(project: project.number)
         }
-        var optionIDsByNormalizedName: [String: String] = [:]
-        for option in field.options ?? [] {
-            let key = StatusField.normalize(option.name.raw)
-            if optionIDsByNormalizedName[key] == nil {
-                optionIDsByNormalizedName[key] = option.id
-            }
-        }
-        return StatusField(id: field.id, optionIDsByNormalizedName: optionIDsByNormalizedName)
+        return StatusField(field: field)
     }
 
     /// Finds the project item whose content is this issue, returning its item id if present.
@@ -268,6 +261,19 @@ struct ProjectBoardHandler {
 private struct StatusField {
     let id: Int
     let optionIDsByNormalizedName: [String: String]
+
+    init(field: Components.Schemas.ProjectsV2Field) {
+        self.id = field.id
+        var optionIDsByNormalizedName: [String: String] = [:]
+        optionIDsByNormalizedName.reserveCapacity(field.options?.count ?? 0)
+        for option in field.options ?? [] {
+            let key = Self.normalize(option.name.raw)
+            if !optionIDsByNormalizedName.keys.contains(key) {
+                optionIDsByNormalizedName[key] = option.id
+            }
+        }
+        self.optionIDsByNormalizedName = optionIDsByNormalizedName
+    }
 
     static func normalize(_ name: String) -> String {
         name.lowercased().filter { !$0.isWhitespace }
