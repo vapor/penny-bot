@@ -5,7 +5,7 @@ package enum AuthorizationHeader: Sendable {
     case computedBearer(BearerComputer)
     case none
 
-    var isRetryable: Bool {
+    var canBeRetried: Bool {
         switch self {
         case .bearer, .none:
             return false
