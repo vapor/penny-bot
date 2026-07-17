@@ -4251,6 +4251,37 @@
     }
   ],
   "projects/list-items-for-org": [],
+  "projects/list-fields-for-org": [
+    {
+      "id": 123456,
+      "node_id": "PVTSSF_lADOAlkROc4AXkY0zgOWXBs",
+      "project_url": "https://api.github.com/orgs/vapor/projectsV2/13",
+      "name": "Status",
+      "data_type": "single_select",
+      "options": [
+        {
+          "id": "42be116a",
+          "name": { "raw": "Todo", "html": "Todo" },
+          "description": { "raw": "", "html": "" },
+          "color": "GREEN"
+        },
+        {
+          "id": "3bb65142",
+          "name": { "raw": "In Progress", "html": "In Progress" },
+          "description": { "raw": "", "html": "" },
+          "color": "YELLOW"
+        },
+        {
+          "id": "0a70d603",
+          "name": { "raw": "Done", "html": "Done" },
+          "description": { "raw": "", "html": "" },
+          "color": "PURPLE"
+        }
+      ],
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-01-01T00:00:00Z"
+    }
+  ],
   "projects/add-item-for-org": {
     "id": 1,
     "content_type": "Issue",
