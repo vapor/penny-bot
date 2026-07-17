@@ -1,5 +1,6 @@
 import DiscordBM
 import GitHubAPI
+import Logging
 
 struct ProjectBoardHandler {
     let context: HandlerContext
@@ -8,6 +9,9 @@ struct ProjectBoardHandler {
     let repo: Repository
     var event: GHEvent {
         self.context.event
+    }
+    var logger: Logger {
+        self.context.logger
     }
 
     var org: String {
@@ -183,6 +187,21 @@ struct ProjectBoardHandler {
 
     /// Finds the project item whose content is this issue, returning its item id if present.
     private func itemID(in project: Project) async throws -> Int? {
+        let itemID = try await self._itemID(in: project)
+        self.context.logger.debug(
+            "Tried to find item for issue in project",
+            metadata: [
+                "issueNumber": .stringConvertible(self.issue.number),
+                "projectName": .string(project.description),
+                "projectNumber": .stringConvertible(project.number),
+                "itemID": .string(itemID?.description ?? "<nil>"),
+            ]
+        )
+        return itemID
+    }
+
+    /// Finds the project item whose content is this issue, returning its item id if present.
+    private func _itemID(in project: Project) async throws -> Int? {
         var after: String?
         while true {
             let ok = try await self.context.githubClient.projectsListItemsForOrg(
@@ -279,7 +298,7 @@ enum ProjectBoardError: Error, CustomStringConvertible {
     }
 }
 
-private enum Project: String, CaseIterable {
+private enum Project: String, CaseIterable, CustomStringConvertible {
     case helpWanted
     case beginner
 
@@ -297,6 +316,15 @@ private enum Project: String, CaseIterable {
             case .done:
                 return "Done"
             }
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .helpWanted:
+            return "Help Wanted"
+        case .beginner:
+            return "Beginner"
         }
     }
 
