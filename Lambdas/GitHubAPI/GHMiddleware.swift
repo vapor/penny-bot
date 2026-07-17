@@ -90,10 +90,24 @@ struct GHMiddleware: ClientMiddleware {
             logger.debug(
                 "Got response from GitHub",
                 metadata: [
-                    "response": .string(response.debugDescription),
+                    "operationID": .string(operationID),
                     "requestID": .stringConvertible(requestID),
+                    "status": .stringConvertible(response.status.code),
                 ]
             )
+
+            if operationID.hasPrefix("projects/") {
+                /// Logging for usage in tests. Can remove after we have test cases.
+                logger.debug(
+                    "GitHub projects response body",
+                    metadata: [
+                        "operationID": .string(operationID),
+                        "requestID": .stringConvertible(requestID),
+                        "status": .stringConvertible(response.status.code),
+                        "body": .string(collectedBody.map { String(buffer: $0) } ?? "<empty>"),
+                    ]
+                )
+            }
 
             /// If this is not _the_ retry,
             /// and if the authorization is retryable,
