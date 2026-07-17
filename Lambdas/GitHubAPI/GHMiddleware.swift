@@ -39,9 +39,10 @@ struct GHMiddleware: ClientMiddleware {
             name: .accept,
             value: "application/vnd.github.raw+json"
         )
+        let xGitHubAPIVersion = operationID.hasPrefix("projects/") ? "2026-03-10" : "2022-11-28"
         request.headerFields.addOrReplace(
             name: .xGitHubAPIVersion,
-            value: "2022-11-28"
+            value: xGitHubAPIVersion
         )
         request.headerFields.addOrReplace(
             name: .userAgent,
@@ -89,17 +90,31 @@ struct GHMiddleware: ClientMiddleware {
             logger.debug(
                 "Got response from GitHub",
                 metadata: [
-                    "response": .string(response.debugDescription),
+                    "operationID": .string(operationID),
                     "requestID": .stringConvertible(requestID),
+                    "status": .stringConvertible(response.status.code),
                 ]
             )
 
+            if operationID.hasPrefix("projects/") {
+                /// Logging for usage in tests. Can remove after we have test cases.
+                logger.debug(
+                    "GitHub projects response body",
+                    metadata: [
+                        "operationID": .string(operationID),
+                        "requestID": .stringConvertible(requestID),
+                        "status": .stringConvertible(response.status.code),
+                        "body": .string(collectedBody.map { String(buffer: $0) } ?? "<empty>"),
+                    ]
+                )
+            }
+
             /// If this is not _the_ retry,
-            /// and if the authorization is retriable,
+            /// and if the authorization can be retried,
             /// and if the response status is `401 Unauthorized`,
             /// then retry the request with a force-refreshed token.
             if !isRetry,
-                authorization.isRetriable,
+                authorization.canBeRetried,
                 response.status == .unauthorized
             {
                 logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")

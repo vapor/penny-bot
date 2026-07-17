@@ -1,5 +1,6 @@
 import DiscordBM
 import GitHubAPI
+import Logging
 
 struct ProjectBoardHandler {
     let context: HandlerContext
@@ -9,11 +10,12 @@ struct ProjectBoardHandler {
     var event: GHEvent {
         self.context.event
     }
+    var logger: Logger {
+        self.context.logger
+    }
 
-    /// Yes, send the raw url as the "note" of the card. GitHub will take care of properly showing it.
-    /// If you send customized text instead, the card won't be recognized as an issue-card.
-    var note: String {
-        self.issue.htmlUrl
+    var org: String {
+        self.repo.owner.login
     }
 
     init(context: HandlerContext, action: Issue.Action, issue: Issue) throws {
@@ -50,16 +52,11 @@ struct ProjectBoardHandler {
     }
 
     func onUnlabeled() async throws {
-        let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
-        let possibleUnlabeledProjects = Project.allCases.filter { !relatedProjects.contains($0) }
-        for project in Set(possibleUnlabeledProjects) {
-            for column in Project.Column.allCases {
-                let cards = try await self.getCards(in: project.columnID(of: column))
-                if let card = cards.firstCard(note: note) {
-                    try await self.delete(cardID: card.id)
-                }
-            }
-        }
+        guard let removedLabel = self.event.label?.name,
+            let knownLabel = Issue.KnownLabel(rawValue: removedLabel),
+            let project = Project(label: knownLabel)
+        else { return }
+        try await self.deleteItem(in: project)
     }
 
     func onAssigned() async throws {
@@ -78,7 +75,7 @@ struct ProjectBoardHandler {
         let relatedProjects = self.issue.knownLabels.compactMap(Project.init(label:))
         if self.issue.stateReason == .notPlanned {
             for project in Set(relatedProjects) {
-                try await self.deleteCard(in: project)
+                try await self.deleteItem(in: project)
             }
         } else {
             for project in Set(relatedProjects) {
@@ -99,77 +96,197 @@ struct ProjectBoardHandler {
         }
     }
 
-    func createCard(columnID: Int) async throws {
-        _ = try await self.context.githubClient.projectsCreateCard(
-            path: .init(columnId: columnID),
-            body: .json(.case1(.init(note: self.note)))
-        ).created
+    /// The item id is an issue/pull-request that is already in the project, or the item
+    /// that gets created if the issue/pull-request isn't in the project yet.
+    private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {
+        let itemID: Int
+        if let existingItemID = try await self.itemID(in: project) {
+            itemID = existingItemID
+        } else {
+            itemID = try await self.createItem(in: project)
+        }
+        try await self.setStatus(itemID: itemID, targetColumn: targetColumn, in: project)
     }
 
-    func move(toColumnID columnID: Int, cardID: Int64) async throws {
-        _ = try await self.context.githubClient.projectsMoveCard(
-            path: .init(cardId: Int(cardID)),
-            body: .json(.init(position: "top", columnId: columnID))
-        ).created
-    }
-
-    func delete(cardID: Int64) async throws {
-        _ = try await self.context.githubClient.projectsDeleteCard(
-            path: .init(cardId: Int(cardID))
+    private func deleteItem(in project: Project) async throws {
+        guard let itemID = try await self.itemID(in: project) else { return }
+        _ = try await self.context.githubClient.projectsDeleteItemForOrg(
+            path: .init(
+                projectNumber: project.number,
+                org: self.org,
+                itemId: itemID
+            )
         ).noContent
     }
 
-    func getCards(in columnID: Int) async throws -> [ProjectCard] {
-        try await self.context.githubClient.projectsListCards(
-            path: .init(columnId: columnID)
+    private func createItem(in project: Project) async throws -> Int {
+        let item = try await self.context.githubClient.projectsAddItemForOrg(
+            path: .init(
+                org: self.org,
+                projectNumber: project.number
+            ),
+            body: .json(
+                .init(
+                    _type: .issue,
+                    owner: self.org,
+                    repo: self.repo.name,
+                    number: self.issue.number
+                )
+            )
+        ).created.body.json
+        return try self.itemID(from: item.id)
+    }
+
+    private func setStatus(itemID: Int, targetColumn: Project.Column, in project: Project) async throws {
+        let statusField = try await self.statusField(in: project)
+        let optionID = try statusField.optionID(of: targetColumn)
+        _ = try await self.context.githubClient.projectsUpdateItemForOrg(
+            path: .init(
+                projectNumber: project.number,
+                org: self.org,
+                itemId: itemID
+            ),
+            body: .json(
+                .init(
+                    fields: [
+                        .init(
+                            id: statusField.id,
+                            value: .case1(optionID)
+                        )
+                    ]
+                )
+            )
+        ).ok
+    }
+
+    private func statusField(in project: Project) async throws -> StatusField {
+        let fields = try await self.context.githubClient.projectsListFieldsForOrg(
+            path: .init(
+                projectNumber: project.number,
+                org: self.org
+            ),
+            query: .init(perPage: 100)
         ).ok.body.json
+        guard
+            let field = fields.first(where: { field in
+                field.dataType == .singleSelect
+                    && field.name.lowercased() == "status"
+            })
+        else {
+            throw ProjectBoardError.statusFieldNotFound(project: project.number)
+        }
+        return StatusField(field: field)
     }
 
-    private func moveOrCreate(targetColumn: Project.Column, in project: Project) async throws {
-        func cards(column: Project.Column) async throws -> [ProjectCard] {
-            try await self.getCards(in: project.columnID(of: column))
-        }
+    /// Finds the project item whose content is this issue, returning its item id if present.
+    private func itemID(in project: Project) async throws -> Int? {
+        let itemID = try await self._itemID(in: project)
+        self.context.logger.debug(
+            "Tried to find item for issue in project",
+            metadata: [
+                "issueNumber": .stringConvertible(self.issue.number),
+                "projectName": .string(project.description),
+                "projectNumber": .stringConvertible(project.number),
+                "itemID": .string(itemID?.description ?? "<nil>"),
+            ]
+        )
+        return itemID
+    }
 
-        func move(cardID: Int64) async throws {
-            try await self.move(toColumnID: project.columnID(of: targetColumn), cardID: cardID)
-        }
-
-        let otherColumns = Project.Column.allCases.filter { $0 != targetColumn }
-
-        var alreadyMoved = false
-        for column in otherColumns {
-            let cards = try await cards(column: column)
-            if let card = cards.firstCard(note: note) {
-                if alreadyMoved {
-                    try await self.delete(cardID: card.id)
-                } else {
-                    try await move(cardID: card.id)
-                    alreadyMoved = true
-                }
+    /// Finds the project item whose content is this issue, returning its item id if present.
+    private func _itemID(in project: Project) async throws -> Int? {
+        var after: String?
+        while true {
+            let ok = try await self.context.githubClient.projectsListItemsForOrg(
+                path: .init(
+                    projectNumber: project.number,
+                    org: self.org
+                ),
+                query: .init(after: after, perPage: 100)
+            ).ok
+            let items = try ok.body.json
+            if let item = items.first(where: { $0.contentNodeID == self.issue.nodeId }) {
+                return try self.itemID(from: item.id)
             }
-        }
-
-        if alreadyMoved {
-            return
-        }
-
-        let cards = try await cards(column: targetColumn)
-        if !cards.containsCard(note: self.note) {
-            try await self.createCard(columnID: project.columnID(of: targetColumn))
+            guard let next = self.nextCursor(fromLinkHeader: ok.headers.link) else {
+                return nil
+            }
+            after = next
         }
     }
 
-    private func deleteCard(in project: Project) async throws {
-        for column in Project.Column.allCases {
-            let cards = try await self.getCards(in: project.columnID(of: column))
-            if let card = cards.firstCard(note: note) {
-                try await self.delete(cardID: card.id)
+    private func itemID(from id: Double) throws -> Int {
+        guard let itemID = Int(exactly: id.rounded()) else {
+            throw ProjectBoardError.invalidItemID(id)
+        }
+        return itemID
+    }
+
+    private func nextCursor(fromLinkHeader link: String?) -> String? {
+        guard let link else { return nil }
+        for entry in link.split(separator: ",") {
+            guard
+                entry.firstRange(of: #"rel="next""#) != nil,
+                let afterRange = entry.firstRange(of: "after=")
+            else { continue }
+            let value = entry[afterRange.upperBound...].prefix { $0 != "&" && $0 != ">" }
+            let naivelyPercentDecoded = value.replacing(
+                #/(?i)%([\da-f]{2})/#,
+                with: { String(UnicodeScalar(UInt8($0.output.1, radix: 16)!)) }
+            )
+            return String(naivelyPercentDecoded)
+        }
+        return nil
+    }
+}
+
+private struct StatusField {
+    let id: Int
+    let optionIDsByNormalizedName: [String: String]
+
+    init(field: Components.Schemas.ProjectsV2Field) {
+        self.id = field.id
+        var optionIDsByNormalizedName: [String: String] = [:]
+        optionIDsByNormalizedName.reserveCapacity(field.options?.count ?? 0)
+        for option in field.options ?? [] {
+            let key = Self.normalize(option.name.raw)
+            if !optionIDsByNormalizedName.keys.contains(key) {
+                optionIDsByNormalizedName[key] = option.id
             }
+        }
+        self.optionIDsByNormalizedName = optionIDsByNormalizedName
+    }
+
+    static func normalize(_ name: String) -> String {
+        name.lowercased().filter { !$0.isWhitespace }
+    }
+
+    func optionID(of column: Project.Column) throws -> String {
+        guard let optionID = self.optionIDsByNormalizedName[Self.normalize(column.optionName)] else {
+            throw ProjectBoardError.statusOptionNotFound(column: column.optionName)
+        }
+        return optionID
+    }
+}
+
+enum ProjectBoardError: Error, CustomStringConvertible {
+    case statusFieldNotFound(project: Int)
+    case statusOptionNotFound(column: String)
+    case invalidItemID(Double)
+
+    var description: String {
+        switch self {
+        case let .statusFieldNotFound(project):
+            return "statusFieldNotFound(project: \(project))"
+        case let .statusOptionNotFound(column):
+            return "statusOptionNotFound(column: \(column))"
+        case let .invalidItemID(id):
+            return "invalidItemID(\(id))"
         }
     }
 }
 
-private enum Project: String, CaseIterable {
+private enum Project: String, CaseIterable, CustomStringConvertible {
     case helpWanted
     case beginner
 
@@ -177,37 +294,35 @@ private enum Project: String, CaseIterable {
         case toDo
         case inProgress
         case done
-    }
 
-    var id: Int {
-        switch self {
-        case .helpWanted:
-            return 14_402_911
-        case .beginner:
-            return 14_183_112
+        var optionName: String {
+            switch self {
+            case .toDo:
+                return "Todo"
+            case .inProgress:
+                return "In Progress"
+            case .done:
+                return "Done"
+            }
         }
     }
 
-    func columnID(of column: Column) -> Int {
+    var description: String {
         switch self {
         case .helpWanted:
-            switch column {
-            case .toDo:
-                return 18_549_893
-            case .inProgress:
-                return 18_549_894
-            case .done:
-                return 18_549_895
-            }
+            return "Help Wanted"
         case .beginner:
-            switch column {
-            case .toDo:
-                return 17_909_684
-            case .inProgress:
-                return 17_909_685
-            case .done:
-                return 17_909_686
-            }
+            return "Beginner"
+        }
+    }
+
+    /// The project's number, as seen in its URL.
+    var number: Int {
+        switch self {
+        case .helpWanted:
+            return 13
+        case .beginner:
+            return 14
         }
     }
 
@@ -220,20 +335,6 @@ private enum Project: String, CaseIterable {
         default:
             return nil
         }
-    }
-}
-
-extension [ProjectCard] {
-    private func areNotesEqual(_ element: Self.Element, _ note: String) -> Bool {
-        element.contentUrl == note || element.note == note
-    }
-
-    fileprivate func containsCard(note: String) -> Bool {
-        self.contains { areNotesEqual($0, note) }
-    }
-
-    fileprivate func firstCard(note: String) -> Self.Element? {
-        self.first { areNotesEqual($0, note) }
     }
 }
 
