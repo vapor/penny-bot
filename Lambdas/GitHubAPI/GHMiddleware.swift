@@ -110,7 +110,7 @@ struct GHMiddleware: ClientMiddleware {
             }
 
             /// If this is not _the_ retry,
-            /// and if the authorization is retryable,
+            /// and if the authorization can be retried,
             /// and if the response status is `401 Unauthorized`,
             /// then retry the request with a force-refreshed token.
             if !isRetry,
