@@ -2,12 +2,6 @@ import DiscordBM
 import GitHubAPI
 import Logging
 
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
-
 struct ProjectBoardHandler {
     let context: HandlerContext
     let action: Issue.Action
@@ -236,7 +230,11 @@ struct ProjectBoardHandler {
                 let afterRange = entry.firstRange(of: "after=")
             else { continue }
             let value = entry[afterRange.upperBound...].prefix { $0 != "&" && $0 != ">" }
-            return value.removingPercentEncoding
+            let naivelyPercentDecoded = value.replacing(
+                #/(?i)%([\da-f]{2})/#,
+                with: { String(UnicodeScalar(UInt8($0.output.1, radix: 16)!)) }
+            )
+            return String(naivelyPercentDecoded)
         }
         return nil
     }
