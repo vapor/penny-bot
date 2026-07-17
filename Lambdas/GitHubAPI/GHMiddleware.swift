@@ -114,7 +114,7 @@ struct GHMiddleware: ClientMiddleware {
             /// and if the response status is `401 Unauthorized`,
             /// then retry the request with a force-refreshed token.
             if !isRetry,
-                authorization.isRetryable,
+                authorization.canBeRetried,
                 response.status == .unauthorized
             {
                 logger.warning("Got 401 from GitHub. Will retry the request with a fresh token")
