@@ -233,7 +233,8 @@ struct ProjectBoardHandler {
             if character == "%",
                 index + 2 < characters.count,
                 let high = characters[index + 1].hexDigitValue,
-                let low = characters[index + 2].hexDigitValue {
+                let low = characters[index + 2].hexDigitValue
+            {
                 bytes.append(UInt8(high << 4 | low))
                 index += 3
             } else {
