@@ -1,12 +1,11 @@
 package enum AuthorizationHeader: Sendable {
-    /// The `Bool` is `isRetry`.
-    package typealias BearerComputer = @Sendable (Bool) async throws -> String
+    package typealias BearerComputer = @Sendable (_ isRetry: Bool) async throws -> String
 
     case bearer(String)
     case computedBearer(BearerComputer)
     case none
 
-    var isRetriable: Bool {
+    var canBeRetried: Bool {
         switch self {
         case .bearer, .none:
             return false

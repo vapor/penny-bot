@@ -164,7 +164,7 @@ struct ReleaseReporter {
         }
 
         if let releaseIdx = json.firstIndex(where: { $0.name == release.tagName }),
-            json.count > releaseIdx
+            releaseIdx + 1 < json.count
         {
             return json[releaseIdx + 1].name
         } else {
@@ -239,9 +239,18 @@ struct ReleaseReporter {
     func sendToDiscord(prs: [SimplePullRequest], commitCount: Int) async throws {
         precondition(!prs.isEmpty)
 
+        let codeOwners = try await context.requester.getCodeOwners(
+            repoFullName: repo.fullName,
+            branch: release.targetCommitish
+        )
+
         let prDescriptions = try prs.map {
             let user = try $0.user.requireValue()
-            return "\($0.title) by [@\(user.uiName)](\(user.htmlUrl)) in [#\($0.number)](\($0.htmlUrl))"
+            if codeOwners.contains(user: user) {
+                return "\($0.title) in [#\($0.number)](\($0.htmlUrl))"
+            } else {
+                return "\($0.title) by [@\(user.uiName)](\(user.htmlUrl)) in [#\($0.number)](\($0.htmlUrl))"
+            }
         }.map {
             "- \($0)"
         }.joined(

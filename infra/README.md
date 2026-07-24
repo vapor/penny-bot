@@ -12,7 +12,7 @@ mise install
 # login via aws CLI; requires aws CLI installed and configured with a `vapor` profile
 aws login --profile vapor
 # run lint if needed; requires terraform and tflint installed
-./scripts/tf-check.bash
+./scripts/tf-check.sh
 
 # work with terraform
 cd ./infra

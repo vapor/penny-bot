@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-set -euxo pipefail
+set -Eeuxo pipefail
 
 # Update PATH in-case it's run from Xcode scripts.
 PATH="$PATH:/usr/local/bin/:/opt/homebrew/bin/"

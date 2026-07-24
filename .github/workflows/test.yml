@@ -35,4 +35,4 @@ jobs:
           # so tflint --init can dodge GH API rate limits by using this token
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          ./scripts/tf-check.bash
+          ./scripts/tf-check.sh

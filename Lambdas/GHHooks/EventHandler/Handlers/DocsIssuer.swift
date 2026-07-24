@@ -14,7 +14,6 @@ struct DocsIssuer {
     var event: GHEvent {
         self.context.event
     }
-
     var logger: Logger {
         self.context.logger
     }
