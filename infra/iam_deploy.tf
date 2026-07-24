@@ -120,6 +120,7 @@ data "aws_iam_policy_document" "github_deploy" {
     actions = [
       "lambda:GetFunction",
       "lambda:GetFunctionConfiguration",
+      "lambda:GetFunctionCodeSigningConfig",
       "lambda:GetPolicy",
       "lambda:ListVersionsByFunction",
       "lambda:UpdateFunctionConfiguration",
@@ -170,6 +171,7 @@ data "aws_iam_policy_document" "github_deploy" {
   statement {
     sid = "S3Buckets"
     actions = [
+      "s3:ListBucket",
       "s3:GetBucketLocation",
       "s3:GetBucketVersioning",
       "s3:PutBucketVersioning",
@@ -202,6 +204,16 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 
   statement {
+    sid = "Ec2Read"
+    actions = [
+      "ec2:DescribeVpcs",
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSecurityGroupRules",
+    ]
+    resources = ["*"]
+  }
+
+  statement {
     sid = "SecretsManager"
     actions = [
       "secretsmanager:DescribeSecret",
@@ -216,13 +228,18 @@ data "aws_iam_policy_document" "github_deploy" {
   statement {
     sid = "Logs"
     actions = [
-      "logs:DescribeLogGroups",
       "logs:ListTagsForResource",
       "logs:PutRetentionPolicy",
       "logs:DeleteRetentionPolicy",
       "logs:TagResource",
     ]
     resources = local.penny_log_group_arns
+  }
+
+  statement {
+    sid       = "LogsDescribe"
+    actions   = ["logs:DescribeLogGroups"]
+    resources = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
   }
 
   statement {
@@ -243,6 +260,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "iam:GetPolicyVersion",
       "iam:ListPolicyVersions",
       "iam:GetOpenIDConnectProvider",
+      "iam:ListOpenIDConnectProviders",
     ]
     resources = ["*"]
   }
