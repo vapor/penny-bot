@@ -207,6 +207,7 @@ data "aws_iam_policy_document" "github_deploy" {
     sid = "Ec2Read"
     actions = [
       "ec2:DescribeVpcs",
+      "ec2:DescribeVpcAttribute",
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeSecurityGroupRules",
     ]
@@ -233,7 +234,10 @@ data "aws_iam_policy_document" "github_deploy" {
       "logs:DeleteRetentionPolicy",
       "logs:TagResource",
     ]
-    resources = local.penny_log_group_arns
+    resources = concat(
+      local.penny_log_group_arns,
+      [for arn in local.penny_log_group_arns : trimsuffix(arn, ":*")]
+    )
   }
 
   statement {
