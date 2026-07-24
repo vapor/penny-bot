@@ -11,4 +11,3 @@ DerivedData/
 *.xcscheme
 .vscode/launch.json
 .devcontainer
-Sources/DBMigration/Data
