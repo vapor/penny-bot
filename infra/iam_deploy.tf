@@ -107,6 +107,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecs:DescribeClusters",
       "ecs:DescribeServices",
       "ecs:ListServiceDeployments",
+      "ecs:DescribeServiceDeployments",
       "ecs:UpdateService",
       "ecs:ListTagsForResource",
     ]
