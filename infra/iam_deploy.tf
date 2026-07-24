@@ -118,6 +118,12 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 
   statement {
+    sid       = "EcsServiceDeployments"
+    actions   = ["ecs:DescribeServiceDeployments"]
+    resources = ["arn:aws:ecs:${local.region}:${local.account_id}:service-deployment/${aws_ecs_cluster.penny.name}/${aws_ecs_service.penny.name}/*"]
+  }
+
+  statement {
     sid = "Lambda"
     actions = [
       "lambda:GetFunction",
