@@ -26,6 +26,10 @@ output "secret_name_prefix" {
   value = local.secret_name_prefix
 }
 
+output "gh_oauth_client_id" {
+  value = local.gh_oauth_client_id
+}
+
 output "lambda_function_names" {
   value = local.lambda_function_names
 }

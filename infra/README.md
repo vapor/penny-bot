@@ -40,7 +40,7 @@ mise x -- terraform -chdir=infra apply
 ## Changing CI permissions
 
 * All IAM stuff including the role CI assumes (`penny-bot-deploy`) are defined in `infra/bootstrap/iam_deploy.tf`.
-* Modifying them role requires manually applying the changes. The CI intentionally doesn't have permissions to do this.
+* Modifying the roles requires manually applying the changes. The CI intentionally doesn't have permissions to do this.
 
 ```bash
 # 1. grant the permission (you, locally)

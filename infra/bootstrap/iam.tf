@@ -60,7 +60,7 @@ data "aws_iam_policy_document" "ecs_task_s3_caches" {
 }
 
 resource "aws_iam_role_policy" "ecs_task_s3_caches" {
-  name   = "S3-peeny-caches"
+  name   = "S3-penny-caches"
   role   = aws_iam_role.ecs_task.id
   policy = data.aws_iam_policy_document.ecs_task_s3_caches.json
 }

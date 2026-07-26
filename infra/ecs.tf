@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "penny" {
         },
         {
           name  = "GH_OAUTH_CLIENT_ID"
-          value = "Iv1.683ea075648a5cd2"
+          value = module.constants.gh_oauth_client_id
         }
       ]
       secrets = [
@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "penny" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/${local.api_name}"
+          awslogs-group         = aws_cloudwatch_log_group.ecs_api.name
           awslogs-region        = local.region
           awslogs-stream-prefix = "ecs"
         }

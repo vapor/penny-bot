@@ -1,5 +1,5 @@
 resource "aws_cloudwatch_log_group" "ecs_api" {
-  name              = "/ecs/${local.api_name}"
+  name              = module.constants.log_group_names.ecs_api
   retention_in_days = 3
 }
 

@@ -9,6 +9,8 @@ locals {
 
   secret_name_prefix = "prod/penny/penny-bot"
 
+  gh_oauth_client_id = "Iv1.683ea075648a5cd2"
+
   lambda_function_names = {
     users      = "UsersLambda"
     auto_pings = "AutoPingsLambda"

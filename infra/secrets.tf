@@ -18,7 +18,7 @@ resource "aws_secretsmanager_secret" "github_app_client_secret" {
 
 resource "aws_secretsmanager_secret" "github_app_private_key" {
   name        = module.constants.secret_names.github_app_private_key
-  description = "Private key for the GH app to sign access token requests "
+  description = "Private key for the GH app to sign access token requests"
 }
 
 resource "aws_secretsmanager_secret" "account_linking_priv_key" {
