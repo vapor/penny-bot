@@ -1,36 +1,5 @@
-terraform {
-  required_version = "1.15.6"
-
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "6.50.0"
-    }
-  }
-}
-
-provider "aws" {
-  region  = var.aws_region
-  profile = var.aws_profile
-}
-
-variable "aws_region" {
-  type    = string
-  default = "eu-west-1"
-}
-
-variable "aws_profile" {
-  type    = string
-  default = "vapor"
-}
-
-variable "state_bucket_name" {
-  type    = string
-  default = "penny-bot-terraform-state"
-}
-
 resource "aws_s3_bucket" "state" {
-  bucket = var.state_bucket_name
+  bucket = module.bootstrap_config.state_bucket
 }
 
 resource "aws_s3_bucket_versioning" "state" {
@@ -62,8 +31,4 @@ resource "aws_s3_bucket_ownership_controls" "state" {
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
-}
-
-output "state_bucket_name" {
-  value = aws_s3_bucket.state.id
 }

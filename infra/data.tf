@@ -16,20 +16,20 @@ data "aws_ecs_container_definition" "current" {
   container_name  = "penny-bot"
 }
 
+module "bootstrap_config" {
+  source = "./modules/bootstrap_config"
+
+  account_id = data.aws_caller_identity.current.account_id
+  region     = data.aws_region.current.region
+}
+
 locals {
   account_id = data.aws_caller_identity.current.account_id
   region     = data.aws_region.current.region
 
-  api_name = "penny-bot-api"
+  api_name = module.bootstrap_config.api_name
 
-  lambda_function_names = {
-    users      = "UsersLambda"
-    auto_pings = "AutoPingsLambda"
-    faqs       = "FaqsLambda"
-    auto_faqs  = "AutoFaqsLambda"
-    gh_hooks   = "GHHooksLambda"
-    gh_oauth   = "GHOAuthLambda"
-  }
+  lambda_function_names = module.bootstrap_config.lambda_function_names
 
   api_base_url = "https://${aws_apigatewayv2_api.penny.id}.execute-api.${local.region}.amazonaws.com/prod"
 
