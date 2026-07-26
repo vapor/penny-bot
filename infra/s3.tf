@@ -14,7 +14,6 @@ module "auto_pings_lambda" {
   source = "./modules/bucket"
 
   name               = module.bootstrap_config.bucket_names.auto_pings_lambda
-  object_ownership   = "BucketOwnerPreferred"
   versioning_enabled = true
 
   lifecycle_rule = {
@@ -30,7 +29,6 @@ module "faqs_lambda" {
   source = "./modules/bucket"
 
   name               = module.bootstrap_config.bucket_names.faqs_lambda
-  object_ownership   = "BucketOwnerPreferred"
   versioning_enabled = true
 
   lifecycle_rule = {

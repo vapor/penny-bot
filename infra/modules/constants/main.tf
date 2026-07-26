@@ -21,7 +21,7 @@ locals {
   role_names = {
     ecs_task_execution = "ecsTaskExecutionRole"
     ecs_task           = "ecsTaskIAMRole"
-    lambda             = "penny-discord-bot-stack-lambdaIAMRole-148Q8DRX26QFA"
+    lambda             = "penny-lambda"
     github_deploy      = "penny-bot-deploy"
   }
 

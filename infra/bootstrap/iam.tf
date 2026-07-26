@@ -82,6 +82,12 @@ resource "aws_iam_role" "lambda" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
+resource "aws_iam_role_policy" "lambda" {
+  name   = "lambda"
+  role   = aws_iam_role.lambda.id
+  policy = data.aws_iam_policy_document.lambda.json
+}
+
 data "aws_iam_policy_document" "lambda" {
   statement {
     sid    = "Logs"
@@ -101,16 +107,10 @@ data "aws_iam_policy_document" "lambda" {
     sid    = "DynamoDB"
     effect = "Allow"
     actions = [
-      "dynamodb:DescribeTable",
       "dynamodb:GetItem",
       "dynamodb:Query",
-      "dynamodb:Scan",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
-      "dynamodb:DeleteItem",
-      "dynamodb:BatchGetItem",
-      "dynamodb:BatchWriteItem",
-      "dynamodb:ConditionCheckItem",
     ]
     resources = flatten([
       for arn in [
@@ -143,10 +143,4 @@ data "aws_iam_policy_document" "lambda" {
       "${module.bootstrap_config.bucket_arns.auto_faqs_lambda}/*",
     ]
   }
-}
-
-resource "aws_iam_role_policy" "lambda" {
-  name   = "lambda"
-  role   = aws_iam_role.lambda.id
-  policy = data.aws_iam_policy_document.lambda.json
 }

@@ -83,7 +83,7 @@ resource "aws_ecs_service" "penny" {
   deployment_maximum_percent         = 200
 
   network_configuration {
-    subnets          = [var.ecs_subnet_id]
+    subnets          = data.aws_subnets.default.ids
     security_groups  = [aws_security_group.ecs_service.id]
     assign_public_ip = true
   }

@@ -69,6 +69,8 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecr:GetRepositoryPolicy",
       "ecr:SetRepositoryPolicy",
       "ecr:GetLifecyclePolicy",
+      "ecr:TagResource",
+      "ecr:UntagResource",
     ]
     resources = [module.bootstrap_config.ecr_repository_arn]
   }
@@ -79,6 +81,8 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecs:RegisterTaskDefinition",
       "ecs:DeregisterTaskDefinition",
       "ecs:DescribeTaskDefinition",
+      "ecs:TagResource",
+      "ecs:UntagResource",
     ]
     resources = ["*"]
   }
@@ -174,6 +178,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "s3:GetBucketOwnershipControls",
       "s3:PutBucketOwnershipControls",
       "s3:GetBucketTagging",
+      "s3:PutBucketTagging",
       "s3:GetBucketPolicy",
       "s3:GetBucketAcl",
       "s3:GetAccelerateConfiguration",
@@ -200,10 +205,17 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 
   statement {
+    sid       = "Ec2Tags"
+    actions   = ["ec2:CreateTags", "ec2:DeleteTags"]
+    resources = ["arn:aws:ec2:${local.region}:${local.account_id}:security-group/*"]
+  }
+
+  statement {
     sid = "Ec2Read"
     actions = [
       "ec2:DescribeVpcs",
       "ec2:DescribeVpcAttribute",
+      "ec2:DescribeSubnets",
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeSecurityGroupRules",
     ]
@@ -237,12 +249,9 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 
   statement {
-    sid     = "LogsDescribe"
-    actions = ["logs:DescribeLogGroups"]
-    resources = concat(
-      local.penny_log_group_arns,
-      [for arn in local.penny_log_group_arns : trimsuffix(arn, ":*")]
-    )
+    sid       = "LogsDescribe"
+    actions   = ["logs:DescribeLogGroups"]
+    resources = ["arn:aws:logs:${local.region}:${local.account_id}:log-group:*"]
   }
 
   statement {

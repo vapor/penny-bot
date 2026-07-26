@@ -6,8 +6,11 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_iam_role" "github_oidc" {
-  name = var.github_oidc_role_name
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 data "aws_ecs_container_definition" "current" {
@@ -24,8 +27,7 @@ module "bootstrap_config" {
 }
 
 locals {
-  account_id = data.aws_caller_identity.current.account_id
-  region     = data.aws_region.current.region
+  region = data.aws_region.current.region
 
   api_name = module.bootstrap_config.api_name
 
