@@ -41,44 +41,6 @@ resource "aws_iam_role" "ecs_task" {
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
 }
 
-data "aws_iam_policy_document" "ecs_task_database_migration_perms" {
-  statement {
-    sid    = "VisualEditor0"
-    effect = "Deny"
-    actions = [
-      "dynamodb:DeleteTable",
-      "dynamodb:DescribeTable",
-      "dynamodb:GetItem",
-      "dynamodb:DescribeContinuousBackups",
-      "dynamodb:BatchGetItem",
-      "dynamodb:PutItem",
-      "dynamodb:Scan",
-      "dynamodb:UpdateItem",
-      "dynamodb:CreateTable",
-      "dynamodb:DeleteItem",
-      "dynamodb:UpdateContinuousBackups",
-      "dynamodb:ConditionCheckItem",
-      "dynamodb:Query",
-    ]
-    resources = [
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-bot-table",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-bot-table/*",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table/*",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-user-table",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-user-table/*",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/ghHooks-message-lookup-table",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/ghHooks-message-lookup-table/*",
-    ]
-  }
-}
-
-resource "aws_iam_role_policy" "ecs_task_database_migration_perms" {
-  name   = "database-migration-perms"
-  role   = aws_iam_role.ecs_task.id
-  policy = data.aws_iam_policy_document.ecs_task_database_migration_perms.json
-}
-
 data "aws_iam_policy_document" "ecs_task_s3_caches" {
   statement {
     effect = "Allow"
@@ -285,11 +247,8 @@ data "aws_iam_policy_document" "penny_bot_deployer" {
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.auto_pings}:*",
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.faqs}:*",
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.auto_faqs}:*",
-      "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/SponsorsLambda:*",
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.gh_hooks}:*",
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.gh_oauth}:*",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-bot-table",
-      "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-bot-table/*",
       "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table",
       "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table/*",
       "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-user-table",
@@ -298,7 +257,6 @@ data "aws_iam_policy_document" "penny_bot_deployer" {
       "arn:aws:dynamodb:${local.region}:${local.account_id}:table/ghHooks-message-lookup-table/*",
       "arn:aws:apigateway:${local.region}::/apis",
       "arn:aws:apigateway:${local.region}::/apis/*",
-      "arn:aws:iam::${local.account_id}:role/service-role/PennyBotAppRunner",
       "arn:aws:iam::${local.account_id}:role/penny-discord-bot-stack*",
       "arn:aws:s3:::penny-lambdas-store",
       "arn:aws:s3:::penny-auto-pings-lambda",
@@ -313,7 +271,6 @@ data "aws_iam_policy_document" "penny_bot_deployer" {
       "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.faqs}",
       "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.auto_faqs}",
       "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.auto_pings}",
-      "arn:aws:lambda:${local.region}:${local.account_id}:function:SponsorsLambda",
       "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.users}",
       "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.gh_hooks}",
       "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.gh_oauth}",
@@ -334,33 +291,6 @@ data "aws_iam_policy_document" "penny_bot_deployer" {
       "arn:aws:apigateway:${local.region}::/apis",
       "arn:aws:apigateway:${local.region}::/apis/*",
       "arn:aws:apigateway:${local.region}::/tags/*",
-    ]
-  }
-
-  statement {
-    sid    = "VisualEditor6"
-    effect = "Allow"
-    actions = [
-      "cloudformation:CreateStack",
-      "cloudformation:CreateChangeSet",
-      "cloudformation:DescribeChangeSet",
-      "cloudformation:DescribeEvents",
-      "cloudformation:DescribeStackEvents",
-      "cloudformation:ExecuteChangeSet",
-      "cloudformation:DeleteChangeSet",
-      "cloudformation:DescribeStacks",
-    ]
-    resources = [
-      "arn:aws:cloudformation:${local.region}:${local.account_id}:stack/penny-discord-bot-stack/*",
-      "arn:aws:s3:::penny-lambdas-store/*",
-      "arn:aws:s3:::penny-lambdas-store",
-      "arn:aws:apigateway:${local.region}::/apis",
-      "arn:aws:apigateway:${local.region}::/apis/*",
-      "arn:aws:apigateway:${local.region}::/tags/*",
-      "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/PennyLambda:*",
-      "arn:aws:apprunner:${local.region}:${local.account_id}:service/Penny-Bot/*",
-      "arn:aws:iam::${local.account_id}:role/service-role/PennyBotAppRunner",
-      "arn:aws:iam::${local.account_id}:role/penny-discord-bot-stack*",
     ]
   }
 
@@ -391,31 +321,3 @@ resource "aws_iam_user_policy_attachment" "deployer_penny_bot_deployer" {
   policy_arn = aws_iam_policy.penny_bot_deployer.arn
 }
 
-resource "aws_iam_user_policy_attachment" "deployer_app_runner" {
-  user       = aws_iam_user.deployer.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSAppRunnerFullAccess"
-}
-
-data "aws_iam_policy_document" "apprunner_assume" {
-  statement {
-    effect  = "Allow"
-    actions = ["sts:AssumeRole"]
-
-    principals {
-      type        = "Service"
-      identifiers = ["build.apprunner.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "apprunner" {
-  name               = "PennyBotAppRunner"
-  path               = "/service-role/"
-  description        = "This role gives App Runner permission to access ECR"
-  assume_role_policy = data.aws_iam_policy_document.apprunner_assume.json
-}
-
-resource "aws_iam_role_policy_attachment" "apprunner_ecr" {
-  role       = aws_iam_role.apprunner.name
-  policy_arn = aws_iam_policy.penny_bot_ecr.arn
-}

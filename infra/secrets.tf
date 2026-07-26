@@ -2,11 +2,6 @@ resource "aws_secretsmanager_secret" "discord_bot_token" {
   name = "prod/penny/penny-bot/discord-bot-token"
 }
 
-resource "aws_secretsmanager_secret" "trigger_gh_readme_token" {
-  name        = "prod/penny/penny-bot/trigger-gh-readme-workflow-token"
-  description = "This secret contains a GitHub token that is used to trigger a workflow when a new sponsor joins the vapor org"
-}
-
 resource "aws_secretsmanager_secret" "logs_webhook_url" {
   name = "prod/penny/penny-bot/logs-webhook-url"
 }
