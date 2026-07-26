@@ -18,9 +18,14 @@ resource "aws_iam_role" "ecs_task_execution" {
 
 data "aws_iam_policy_document" "ecs_task_execution_secrets_manager_read" {
   statement {
-    effect    = "Allow"
-    actions   = ["secretsmanager:GetSecretValue"]
-    resources = ["arn:aws:secretsmanager:${local.region}:${local.account_id}:secret:*"]
+    effect  = "Allow"
+    actions = ["secretsmanager:GetSecretValue"]
+    resources = [
+      aws_secretsmanager_secret.discord_bot_token.arn,
+      aws_secretsmanager_secret.logs_webhook_url.arn,
+      aws_secretsmanager_secret.account_linking_priv_key.arn,
+      aws_secretsmanager_secret.stack_overflow_api_key.arn,
+    ]
   }
 }
 
@@ -77,68 +82,73 @@ resource "aws_iam_role" "lambda" {
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
-resource "aws_iam_role_policy" "lambda" {
-  name = "lambda"
-  role = aws_iam_role.lambda.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "logs:CreateLogGroup",
-          "logs:CreateLogStream",
-          "logs:PutLogEvents",
-          "dynamodb:DescribeTable",
-          "dynamodb:GetItem",
-          "dynamodb:Query",
-          "dynamodb:PutItem",
-          "dynamodb:UpdateItem",
-          "dynamodb:BatchGetItem",
-          "dynamodb:BatchWriteItem",
-          "dynamodb:DeleteItem",
-          "dynamodb:ConditionCheckItem",
-          "dynamodb:Scan",
-          "lambda:UpdateFunctionCode",
-          "lambda:InvokeFunction",
-          "secretsmanager:GetSecretValue",
-          "s3:PutObject",
-          "s3:GetObject"
-        ]
-        Resource = [
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/ghHooks-message-lookup-table",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-user-table",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-user-table",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-user-table/*",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/penny-coin-table/*",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/ghHooks-message-lookup-table",
-          "arn:aws:dynamodb:${local.region}:${local.account_id}:table/ghHooks-message-lookup-table/*",
-          "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.users}:*",
-          "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.users}",
-          "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.auto_pings}:*",
-          "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.auto_pings}",
-          "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.faqs}:*",
-          "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.faqs}",
-          "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.auto_faqs}:*",
-          "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.auto_faqs}",
-          "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.gh_hooks}:*",
-          "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.gh_hooks}",
-          "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${local.lambda_function_names.gh_oauth}:*",
-          "arn:aws:lambda:${local.region}:${local.account_id}:function:${local.lambda_function_names.gh_oauth}",
-          aws_secretsmanager_secret.discord_bot_token.arn,
-          aws_secretsmanager_secret.github_webhook_secret.arn,
-          aws_secretsmanager_secret.github_app_client_secret.arn,
-          aws_secretsmanager_secret.github_app_private_key.arn,
-          "arn:aws:s3:::penny-auto-pings-lambda/*",
-          "arn:aws:s3:::penny-faqs-lambda/*",
-          "arn:aws:s3:::penny-auto-faqs-lambda/*"
-        ]
-      }
+data "aws_iam_policy_document" "lambda" {
+  statement {
+    sid    = "Logs"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogGroup",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
     ]
-  })
+    resources = [
+      for name in values(local.lambda_function_names) :
+      "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${name}:*"
+    ]
+  }
+
+  statement {
+    sid    = "DynamoDB"
+    effect = "Allow"
+    actions = [
+      "dynamodb:DescribeTable",
+      "dynamodb:GetItem",
+      "dynamodb:Query",
+      "dynamodb:Scan",
+      "dynamodb:PutItem",
+      "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
+      "dynamodb:BatchGetItem",
+      "dynamodb:BatchWriteItem",
+      "dynamodb:ConditionCheckItem",
+    ]
+    resources = flatten([
+      for arn in [
+        aws_dynamodb_table.penny_user.arn,
+        aws_dynamodb_table.penny_coin.arn,
+        aws_dynamodb_table.ghhooks_message_lookup.arn,
+      ] : [arn, "${arn}/*"]
+    ])
+  }
+
+  statement {
+    sid     = "SecretsManager"
+    effect  = "Allow"
+    actions = ["secretsmanager:GetSecretValue"]
+    resources = [
+      aws_secretsmanager_secret.discord_bot_token.arn,
+      aws_secretsmanager_secret.github_webhook_secret.arn,
+      aws_secretsmanager_secret.github_app_client_secret.arn,
+      aws_secretsmanager_secret.github_app_private_key.arn,
+    ]
+  }
+
+  statement {
+    sid     = "S3"
+    effect  = "Allow"
+    actions = ["s3:PutObject", "s3:GetObject"]
+    resources = [
+      "${aws_s3_bucket.auto_pings_lambda.arn}/*",
+      "${aws_s3_bucket.faqs_lambda.arn}/*",
+      "${aws_s3_bucket.auto_faqs_lambda.arn}/*",
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda" {
+  name   = "lambda"
+  role   = aws_iam_role.lambda.id
+  policy = data.aws_iam_policy_document.lambda.json
 }
 
 resource "aws_iam_user" "deployer" {
