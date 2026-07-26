@@ -212,6 +212,12 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 
   statement {
+    sid       = "LambdaArtifacts"
+    actions   = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.lambdas_store.arn}/*"]
+  }
+
+  statement {
     sid = "Ec2Read"
     actions = [
       "ec2:DescribeVpcs",

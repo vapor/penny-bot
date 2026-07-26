@@ -9,6 +9,7 @@ jobs:
   deploy-lambdas:
     permissions:
       contents: read
+      id-token: write
 
     runs-on: ubuntu-24.04-arm
     container: swift:6.3-amazonlinux2023
@@ -16,8 +17,6 @@ jobs:
     env:
       AWS_BUCKET_NAME: penny-lambdas-store
       AWS_DEFAULT_REGION: eu-west-1
-      AWS_ACCESS_KEY_ID: ${{ secrets.DEPLOYER_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.DEPLOYER_ACCESS_SECRET_KEY }}
 
     steps:
       - name: Install AWSCLI v2, jq, zstd
@@ -63,6 +62,12 @@ jobs:
               --output-path ./zips \
               --products "${name}"
           done
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
+        with:
+          role-to-assume: ${{ vars.PENNY_OIDC_ROLE_ARN }}
+          aws-region: eu-west-1
 
       - name: Deploy lambdas
         run: |
