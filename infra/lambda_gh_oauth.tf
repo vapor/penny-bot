@@ -1,5 +1,5 @@
 module "lambda_gh_oauth" {
-  source = "./modules/lambda_endpoint"
+  source = "./modules/lambda"
 
   function_name           = local.lambda_function_names.gh_oauth
   role_arn                = data.aws_iam_role.lambda.arn
