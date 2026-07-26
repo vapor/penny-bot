@@ -16,12 +16,13 @@ module "auto_pings_lambda" {
   name               = module.constants.bucket_names.auto_pings_lambda
   versioning_enabled = true
 
-  lifecycle_rule = {
-    id                        = "auto-pings-repo.json versioning"
-    prefix                    = "auto-pings-repo.json"
-    object_size_less_than     = 16777216
-    noncurrent_days           = 30
-    newer_noncurrent_versions = 5
+  lifecycle_rules = {
+    "auto-pings-repo.json versioning" = {
+      prefix                    = "auto-pings-repo.json"
+      object_size_less_than     = 16 * 1024 * 1024
+      noncurrent_days           = 30
+      newer_noncurrent_versions = 5
+    }
   }
 }
 
@@ -31,12 +32,13 @@ module "faqs_lambda" {
   name               = module.constants.bucket_names.faqs_lambda
   versioning_enabled = true
 
-  lifecycle_rule = {
-    id                        = "faqs-repo.json versioning"
-    prefix                    = "faqs-repo.json"
-    object_size_less_than     = 33554432
-    noncurrent_days           = 30
-    newer_noncurrent_versions = 5
+  lifecycle_rules = {
+    "faqs-repo.json versioning" = {
+      prefix                    = "faqs-repo.json"
+      object_size_less_than     = 32 * 1024 * 1024
+      noncurrent_days           = 30
+      newer_noncurrent_versions = 5
+    }
   }
 }
 

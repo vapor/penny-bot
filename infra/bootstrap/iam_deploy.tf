@@ -208,6 +208,12 @@ data "aws_iam_policy_document" "github_deploy" {
     sid       = "Ec2Tags"
     actions   = ["ec2:CreateTags", "ec2:DeleteTags"]
     resources = ["arn:aws:ec2:${local.region}:${local.account_id}:security-group/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Project"
+      values   = ["penny-bot"]
+    }
   }
 
   statement {
