@@ -88,33 +88,3 @@ resource "aws_ecs_service" "penny" {
     assign_public_ip = true
   }
 }
-
-resource "aws_s3_bucket" "penny_caches" {
-  bucket = "penny-caches"
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "penny_caches" {
-  bucket = aws_s3_bucket.penny_caches.id
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-    bucket_key_enabled = false
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "penny_caches" {
-  bucket                  = aws_s3_bucket.penny_caches.id
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_ownership_controls" "penny_caches" {
-  bucket = aws_s3_bucket.penny_caches.id
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
-}
-

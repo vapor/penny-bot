@@ -1,28 +1,49 @@
-resource "aws_s3_bucket" "lambdas_store" {
-  bucket = "penny-lambdas-store"
+module "lambdas_store" {
+  source = "./modules/bucket"
+
+  name = module.bootstrap_config.bucket_names.lambdas_store
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "lambdas_store" {
-  bucket = aws_s3_bucket.lambdas_store.id
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-    bucket_key_enabled = false
+module "penny_caches" {
+  source = "./modules/bucket"
+
+  name = module.bootstrap_config.bucket_names.penny_caches
+}
+
+module "auto_pings_lambda" {
+  source = "./modules/bucket"
+
+  name               = module.bootstrap_config.bucket_names.auto_pings_lambda
+  object_ownership   = "BucketOwnerPreferred"
+  versioning_enabled = true
+
+  lifecycle_rule = {
+    id                        = "auto-pings-repo.json versioning"
+    prefix                    = "auto-pings-repo.json"
+    object_size_less_than     = 16777216
+    noncurrent_days           = 30
+    newer_noncurrent_versions = 5
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "lambdas_store" {
-  bucket                  = aws_s3_bucket.lambdas_store.id
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = true
-  restrict_public_buckets = true
+module "faqs_lambda" {
+  source = "./modules/bucket"
+
+  name               = module.bootstrap_config.bucket_names.faqs_lambda
+  object_ownership   = "BucketOwnerPreferred"
+  versioning_enabled = true
+
+  lifecycle_rule = {
+    id                        = "faqs-repo.json versioning"
+    prefix                    = "faqs-repo.json"
+    object_size_less_than     = 33554432
+    noncurrent_days           = 30
+    newer_noncurrent_versions = 5
+  }
 }
 
-resource "aws_s3_bucket_ownership_controls" "lambdas_store" {
-  bucket = aws_s3_bucket.lambdas_store.id
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
+module "auto_faqs_lambda" {
+  source = "./modules/bucket"
+
+  name = module.bootstrap_config.bucket_names.auto_faqs_lambda
 }

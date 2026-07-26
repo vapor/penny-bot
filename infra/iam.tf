@@ -138,9 +138,9 @@ data "aws_iam_policy_document" "lambda" {
     effect  = "Allow"
     actions = ["s3:PutObject", "s3:GetObject"]
     resources = [
-      "${aws_s3_bucket.auto_pings_lambda.arn}/*",
-      "${aws_s3_bucket.faqs_lambda.arn}/*",
-      "${aws_s3_bucket.auto_faqs_lambda.arn}/*",
+      "${module.auto_pings_lambda.arn}/*",
+      "${module.faqs_lambda.arn}/*",
+      "${module.auto_faqs_lambda.arn}/*",
     ]
   }
 }

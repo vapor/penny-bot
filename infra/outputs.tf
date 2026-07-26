@@ -11,27 +11,27 @@ output "ecr_repository_url" {
 }
 
 output "users_lambda_arn" {
-  value = aws_lambda_function.users.arn
+  value = module.lambda_users.arn
 }
 
 output "auto_pings_lambda_arn" {
-  value = aws_lambda_function.auto_pings.arn
+  value = module.lambda_auto_pings.arn
 }
 
 output "faqs_lambda_arn" {
-  value = aws_lambda_function.faqs.arn
+  value = module.lambda_faqs.arn
 }
 
 output "auto_faqs_lambda_arn" {
-  value = aws_lambda_function.auto_faqs.arn
+  value = module.lambda_auto_faqs.arn
 }
 
 output "gh_hooks_lambda_arn" {
-  value = aws_lambda_function.gh_hooks.arn
+  value = module.lambda_gh_hooks.arn
 }
 
 output "gh_oauth_lambda_arn" {
-  value = aws_lambda_function.gh_oauth.arn
+  value = module.lambda_gh_oauth.arn
 }
 
 output "penny_user_table_arn" {

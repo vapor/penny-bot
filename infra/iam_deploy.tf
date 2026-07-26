@@ -10,12 +10,12 @@ locals {
   ]
 
   penny_lambda_arns = [
-    aws_lambda_function.users.arn,
-    aws_lambda_function.auto_pings.arn,
-    aws_lambda_function.faqs.arn,
-    aws_lambda_function.auto_faqs.arn,
-    aws_lambda_function.gh_hooks.arn,
-    aws_lambda_function.gh_oauth.arn,
+    module.lambda_users.arn,
+    module.lambda_auto_pings.arn,
+    module.lambda_faqs.arn,
+    module.lambda_auto_faqs.arn,
+    module.lambda_gh_hooks.arn,
+    module.lambda_gh_oauth.arn,
   ]
 }
 
@@ -200,18 +200,18 @@ data "aws_iam_policy_document" "github_deploy" {
       "s3:GetBucketObjectLockConfiguration",
     ]
     resources = [
-      aws_s3_bucket.lambdas_store.arn,
-      aws_s3_bucket.penny_caches.arn,
-      aws_s3_bucket.auto_pings_lambda.arn,
-      aws_s3_bucket.faqs_lambda.arn,
-      aws_s3_bucket.auto_faqs_lambda.arn,
+      module.lambdas_store.arn,
+      module.penny_caches.arn,
+      module.auto_pings_lambda.arn,
+      module.faqs_lambda.arn,
+      module.auto_faqs_lambda.arn,
     ]
   }
 
   statement {
     sid       = "LambdaArtifacts"
     actions   = ["s3:PutObject"]
-    resources = ["${aws_s3_bucket.lambdas_store.arn}/*"]
+    resources = ["${module.lambdas_store.arn}/*"]
   }
 
   statement {
