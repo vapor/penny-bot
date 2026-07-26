@@ -301,9 +301,6 @@ data "aws_iam_policy_document" "github_deploy" {
       aws_iam_role.ecs_task.arn,
       aws_iam_role.lambda.arn,
       aws_iam_role.github_deploy.arn,
-      aws_iam_user.deployer.arn,
-      aws_iam_policy.penny_bot_ecr.arn,
-      aws_iam_policy.penny_bot_deployer.arn,
     ]
   }
 
