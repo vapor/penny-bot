@@ -33,9 +33,8 @@ locals {
 
   log_group_names = merge(
     {
-      ecs_api      = "/ecs/${local.api_name}"
-      api_access   = "/aws/apigateway/${local.api_name}"
-      penny_legacy = "/aws/lambda/PennyLambda"
+      ecs_api    = "/ecs/${local.api_name}"
+      api_access = "/aws/apigateway/${local.api_name}"
     },
     { for key, name in local.lambda_function_names : key => "/aws/lambda/${name}" }
   )

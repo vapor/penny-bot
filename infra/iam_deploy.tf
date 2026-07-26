@@ -6,10 +6,7 @@ locals {
   state_bucket = "penny-bot-terraform-state"
 
   penny_log_group_arns = [
-    for lg in concat(
-      ["/ecs/${local.api_name}", "/aws/lambda/PennyLambda"],
-      [for n in values(local.lambda_function_names) : "/aws/lambda/${n}"]
-    ) : "arn:aws:logs:${local.region}:${local.account_id}:log-group:${lg}:*"
+    for arn in values(module.bootstrap_config.log_group_arns) : "${arn}:*"
   ]
 
   penny_lambda_arns = [
