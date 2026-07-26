@@ -11,23 +11,25 @@ resource "aws_ecr_repository" "penny_bot_discord_image" {
   }
 }
 
+data "aws_ecr_lifecycle_policy_document" "penny_bot_discord_image" {
+  rule {
+    priority    = 1
+    description = "Keep only the 30 most recent images"
+
+    selection {
+      tag_status   = "any"
+      count_type   = "imageCountMoreThan"
+      count_number = 30
+    }
+
+    action {
+      type = "expire"
+    }
+  }
+}
+
 resource "aws_ecr_lifecycle_policy" "penny_bot_discord_image" {
   repository = aws_ecr_repository.penny_bot_discord_image.name
 
-  policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1
-        description  = "Keep only the 30 most recent images"
-        selection = {
-          tagStatus   = "any"
-          countType   = "imageCountMoreThan"
-          countNumber = 30
-        }
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
+  policy = data.aws_ecr_lifecycle_policy_document.penny_bot_discord_image.json
 }
