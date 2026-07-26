@@ -31,10 +31,11 @@ resource "aws_cloudwatch_log_group" "gh_oauth" {
 }
 
 resource "aws_lambda_permission" "gh_oauth" {
-  statement_id  = "penny-discord-bot-stack-lambdaGHOAuthRoutePermission-1KQ0FJWLA5LI2"
+  statement_id  = "AllowApiGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.gh_oauth.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.penny.execution_arn}/*"
 }
 
 resource "aws_apigatewayv2_integration" "gh_oauth" {

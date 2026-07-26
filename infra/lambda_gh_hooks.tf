@@ -30,10 +30,11 @@ resource "aws_cloudwatch_log_group" "gh_hooks" {
 }
 
 resource "aws_lambda_permission" "gh_hooks" {
-  statement_id  = "penny-discord-bot-stack-lambdaGHHooksRoutePermission-10BVK7ATQ6UEX"
+  statement_id  = "AllowApiGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.gh_hooks.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.penny.execution_arn}/*"
 }
 
 resource "aws_apigatewayv2_integration" "gh_hooks" {

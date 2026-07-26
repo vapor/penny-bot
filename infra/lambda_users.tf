@@ -27,10 +27,11 @@ resource "aws_cloudwatch_log_group" "users" {
 }
 
 resource "aws_lambda_permission" "users" {
-  statement_id  = "penny-discord-bot-stack-lambdaUsersRoutePermission-X2F3NQYIUTN7"
+  statement_id  = "AllowApiGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.users.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.penny.execution_arn}/*"
 }
 
 resource "aws_apigatewayv2_integration" "users" {

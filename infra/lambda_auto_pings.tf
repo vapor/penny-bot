@@ -20,10 +20,11 @@ resource "aws_cloudwatch_log_group" "auto_pings" {
 }
 
 resource "aws_lambda_permission" "auto_pings" {
-  statement_id  = "penny-discord-bot-stack-lambdaAutoPingsRoutePermission-160KQ1SUYLIS3"
+  statement_id  = "AllowApiGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.auto_pings.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.penny.execution_arn}/*"
 }
 
 resource "aws_apigatewayv2_integration" "auto_pings" {

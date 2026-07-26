@@ -20,10 +20,11 @@ resource "aws_cloudwatch_log_group" "auto_faqs" {
 }
 
 resource "aws_lambda_permission" "auto_faqs" {
-  statement_id  = "penny-discord-bot-stack-lambdaAutoFaqsRoutePermission-dGTEmVQL3wq7"
+  statement_id  = "AllowApiGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.auto_faqs.function_name
   principal     = "apigateway.amazonaws.com"
+  source_arn    = "${aws_apigatewayv2_api.penny.execution_arn}/*"
 }
 
 resource "aws_apigatewayv2_integration" "auto_faqs" {
