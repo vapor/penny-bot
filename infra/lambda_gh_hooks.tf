@@ -2,7 +2,7 @@ module "lambda_gh_hooks" {
   source = "./modules/lambda_endpoint"
 
   function_name           = local.lambda_function_names.gh_hooks
-  role_arn                = aws_iam_role.lambda.arn
+  role_arn                = data.aws_iam_role.lambda.arn
   s3_bucket               = module.lambdas_store.id
   memory_size             = 512
   timeout                 = 30

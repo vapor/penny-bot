@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "ecs_tasks_assume" {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name               = "ecsTaskExecutionRole"
+  name               = module.bootstrap_config.role_names.ecs_task_execution
   description        = "Allows ECS tasks to call AWS services on your behalf."
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
 }
@@ -21,10 +21,10 @@ data "aws_iam_policy_document" "ecs_task_execution_secrets_manager_read" {
     effect  = "Allow"
     actions = ["secretsmanager:GetSecretValue"]
     resources = [
-      aws_secretsmanager_secret.discord_bot_token.arn,
-      aws_secretsmanager_secret.logs_webhook_url.arn,
-      aws_secretsmanager_secret.account_linking_priv_key.arn,
-      aws_secretsmanager_secret.stack_overflow_api_key.arn,
+      local.secret_arns.discord_bot_token,
+      local.secret_arns.logs_webhook_url,
+      local.secret_arns.account_linking_priv_key,
+      local.secret_arns.stack_overflow_api_key,
     ]
   }
 }
@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_managed" {
 }
 
 resource "aws_iam_role" "ecs_task" {
-  name               = "ecsTaskIAMRole"
+  name               = module.bootstrap_config.role_names.ecs_task
   description        = "Allows ECS tasks to call AWS services on your behalf."
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
 }
@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "ecs_task_s3_caches" {
       "s3:DeleteObject",
       "s3:ListBucket",
     ]
-    resources = ["arn:aws:s3:::penny-caches/*"]
+    resources = ["${module.bootstrap_config.bucket_arns.penny_caches}/*"]
   }
 }
 
@@ -78,7 +78,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name               = "penny-discord-bot-stack-lambdaIAMRole-148Q8DRX26QFA"
+  name               = module.bootstrap_config.role_names.lambda
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -92,7 +92,7 @@ data "aws_iam_policy_document" "lambda" {
       "logs:PutLogEvents",
     ]
     resources = [
-      for name in values(local.lambda_function_names) :
+      for name in values(module.bootstrap_config.lambda_function_names) :
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${name}:*"
     ]
   }
@@ -114,9 +114,9 @@ data "aws_iam_policy_document" "lambda" {
     ]
     resources = flatten([
       for arn in [
-        aws_dynamodb_table.penny_user.arn,
-        aws_dynamodb_table.penny_coin.arn,
-        aws_dynamodb_table.ghhooks_message_lookup.arn,
+        module.bootstrap_config.table_arns.penny_user,
+        module.bootstrap_config.table_arns.penny_coin,
+        module.bootstrap_config.table_arns.ghhooks_message_lookup,
       ] : [arn, "${arn}/*"]
     ])
   }
@@ -126,10 +126,10 @@ data "aws_iam_policy_document" "lambda" {
     effect  = "Allow"
     actions = ["secretsmanager:GetSecretValue"]
     resources = [
-      aws_secretsmanager_secret.discord_bot_token.arn,
-      aws_secretsmanager_secret.github_webhook_secret.arn,
-      aws_secretsmanager_secret.github_app_client_secret.arn,
-      aws_secretsmanager_secret.github_app_private_key.arn,
+      local.secret_arns.discord_bot_token,
+      local.secret_arns.github_webhook_secret,
+      local.secret_arns.github_app_client_secret,
+      local.secret_arns.github_app_private_key,
     ]
   }
 
@@ -138,9 +138,9 @@ data "aws_iam_policy_document" "lambda" {
     effect  = "Allow"
     actions = ["s3:PutObject", "s3:GetObject"]
     resources = [
-      "${module.auto_pings_lambda.arn}/*",
-      "${module.faqs_lambda.arn}/*",
-      "${module.auto_faqs_lambda.arn}/*",
+      "${module.bootstrap_config.bucket_arns.auto_pings_lambda}/*",
+      "${module.bootstrap_config.bucket_arns.faqs_lambda}/*",
+      "${module.bootstrap_config.bucket_arns.auto_faqs_lambda}/*",
     ]
   }
 }

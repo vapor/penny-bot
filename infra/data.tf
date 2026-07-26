@@ -35,3 +35,15 @@ locals {
 
   penny_image_tag = var.penny_image_tag != null ? var.penny_image_tag : reverse(split(":", data.aws_ecs_container_definition.current[0].image))[0]
 }
+
+data "aws_iam_role" "ecs_task_execution" {
+  name = module.bootstrap_config.role_names.ecs_task_execution
+}
+
+data "aws_iam_role" "ecs_task" {
+  name = module.bootstrap_config.role_names.ecs_task
+}
+
+data "aws_iam_role" "lambda" {
+  name = module.bootstrap_config.role_names.lambda
+}

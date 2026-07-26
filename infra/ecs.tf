@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "penny" {
-  name = "${local.api_name}-Cluster"
+  name = module.bootstrap_config.ecs_cluster_name
 }
 
 resource "aws_ecs_task_definition" "penny" {
@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "penny" {
   memory                   = "512"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
-  task_role_arn            = aws_iam_role.ecs_task.arn
+  execution_role_arn       = data.aws_iam_role.ecs_task_execution.arn
+  task_role_arn            = data.aws_iam_role.ecs_task.arn
 
   runtime_platform {
     cpu_architecture        = "ARM64"
@@ -71,7 +71,7 @@ resource "aws_ecs_task_definition" "penny" {
 }
 
 resource "aws_ecs_service" "penny" {
-  name                  = "Penny-Bot"
+  name                  = module.bootstrap_config.ecs_service_name
   cluster               = aws_ecs_cluster.penny.id
   task_definition       = "${aws_ecs_task_definition.penny.family}:${aws_ecs_task_definition.penny.revision}"
   desired_count         = 1

@@ -1,5 +1,5 @@
 resource "aws_ecr_repository" "penny_bot_discord_image" {
-  name                 = "penny-bot-discord-image"
+  name                 = module.bootstrap_config.ecr_repository_name
   image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {

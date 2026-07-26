@@ -1,5 +1,6 @@
 locals {
   api_name     = "penny-bot-api"
+  api_id       = "ncy6caaavg"
   state_bucket = "penny-bot-terraform-state"
 
   ecs_cluster_name    = "${local.api_name}-Cluster"
@@ -15,6 +16,23 @@ locals {
     auto_faqs  = "AutoFaqsLambda"
     gh_hooks   = "GHHooksLambda"
     gh_oauth   = "GHOAuthLambda"
+  }
+
+  role_names = {
+    ecs_task_execution = "ecsTaskExecutionRole"
+    ecs_task           = "ecsTaskIAMRole"
+    lambda             = "penny-discord-bot-stack-lambdaIAMRole-148Q8DRX26QFA"
+    github_deploy      = "penny-bot-deploy"
+  }
+
+  secret_names = {
+    discord_bot_token        = "${local.secret_name_prefix}/discord-bot-token"
+    logs_webhook_url         = "${local.secret_name_prefix}/logs-webhook-url"
+    github_webhook_secret    = "${local.secret_name_prefix}/github-webhook-secret"
+    github_app_client_secret = "${local.secret_name_prefix}/github-penny-app-client-secret"
+    github_app_private_key   = "${local.secret_name_prefix}/github-penny-app-private-key"
+    account_linking_priv_key = "${local.secret_name_prefix}/account-linking-oauth-flow-priv-key"
+    stack_overflow_api_key   = "${local.secret_name_prefix}/stack-overflow-api-key"
   }
 
   table_names = {

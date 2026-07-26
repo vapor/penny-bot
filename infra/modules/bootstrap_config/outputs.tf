@@ -2,6 +2,10 @@ output "api_name" {
   value = local.api_name
 }
 
+output "api_id" {
+  value = local.api_id
+}
+
 output "state_bucket" {
   value = local.state_bucket
 }
@@ -24,6 +28,14 @@ output "secret_name_prefix" {
 
 output "lambda_function_names" {
   value = local.lambda_function_names
+}
+
+output "role_names" {
+  value = local.role_names
+}
+
+output "secret_names" {
+  value = local.secret_names
 }
 
 output "table_names" {

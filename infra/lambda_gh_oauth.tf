@@ -2,7 +2,7 @@ module "lambda_gh_oauth" {
   source = "./modules/lambda_endpoint"
 
   function_name           = local.lambda_function_names.gh_oauth
-  role_arn                = aws_iam_role.lambda.arn
+  role_arn                = data.aws_iam_role.lambda.arn
   s3_bucket               = module.lambdas_store.id
   api_id                  = aws_apigatewayv2_api.penny.id
   api_execution_arn       = aws_apigatewayv2_api.penny.execution_arn
