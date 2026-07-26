@@ -19,8 +19,8 @@ data "aws_ecs_container_definition" "current" {
   container_name  = "penny-bot"
 }
 
-module "bootstrap_config" {
-  source = "./modules/bootstrap_config"
+module "constants" {
+  source = "./modules/constants"
 
   account_id = data.aws_caller_identity.current.account_id
   region     = data.aws_region.current.region
@@ -29,9 +29,9 @@ module "bootstrap_config" {
 locals {
   region = data.aws_region.current.region
 
-  api_name = module.bootstrap_config.api_name
+  api_name = module.constants.api_name
 
-  lambda_function_names = module.bootstrap_config.lambda_function_names
+  lambda_function_names = module.constants.lambda_function_names
 
   api_base_url = "https://${aws_apigatewayv2_api.penny.id}.execute-api.${local.region}.amazonaws.com/prod"
 
@@ -39,13 +39,13 @@ locals {
 }
 
 data "aws_iam_role" "ecs_task_execution" {
-  name = module.bootstrap_config.role_names.ecs_task_execution
+  name = module.constants.role_names.ecs_task_execution
 }
 
 data "aws_iam_role" "ecs_task" {
-  name = module.bootstrap_config.role_names.ecs_task
+  name = module.constants.role_names.ecs_task
 }
 
 data "aws_iam_role" "lambda" {
-  name = module.bootstrap_config.role_names.lambda
+  name = module.constants.role_names.lambda
 }

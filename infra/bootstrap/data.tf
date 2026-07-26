@@ -6,15 +6,15 @@ data "aws_iam_openid_connect_provider" "github" {
   url = "https://token.actions.githubusercontent.com"
 }
 
-module "bootstrap_config" {
-  source = "../modules/bootstrap_config"
+module "constants" {
+  source = "../modules/constants"
 
   account_id = data.aws_caller_identity.current.account_id
   region     = data.aws_region.current.region
 }
 
 data "aws_secretsmanager_secret" "this" {
-  for_each = module.bootstrap_config.secret_names
+  for_each = module.constants.secret_names
 
   name = each.value
 }

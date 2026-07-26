@@ -4,6 +4,6 @@ resource "aws_cloudwatch_log_group" "ecs_api" {
 }
 
 resource "aws_cloudwatch_log_group" "api_access_logs" {
-  name              = module.bootstrap_config.log_group_names.api_access
+  name              = module.constants.log_group_names.api_access
   retention_in_days = 30
 }

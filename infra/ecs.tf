@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "penny" {
-  name = module.bootstrap_config.ecs_cluster_name
+  name = module.constants.ecs_cluster_name
 }
 
 resource "aws_ecs_task_definition" "penny" {
@@ -71,7 +71,7 @@ resource "aws_ecs_task_definition" "penny" {
 }
 
 resource "aws_ecs_service" "penny" {
-  name                  = module.bootstrap_config.ecs_service_name
+  name                  = module.constants.ecs_service_name
   cluster               = aws_ecs_cluster.penny.id
   task_definition       = "${aws_ecs_task_definition.penny.family}:${aws_ecs_task_definition.penny.revision}"
   desired_count         = 1

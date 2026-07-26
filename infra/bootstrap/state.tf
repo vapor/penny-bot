@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "state" {
-  bucket = module.bootstrap_config.state_bucket
+  bucket = module.constants.state_bucket
 }
 
 resource "aws_s3_bucket_versioning" "state" {

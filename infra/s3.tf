@@ -1,19 +1,19 @@
 module "lambdas_store" {
   source = "./modules/bucket"
 
-  name = module.bootstrap_config.bucket_names.lambdas_store
+  name = module.constants.bucket_names.lambdas_store
 }
 
 module "penny_caches" {
   source = "./modules/bucket"
 
-  name = module.bootstrap_config.bucket_names.penny_caches
+  name = module.constants.bucket_names.penny_caches
 }
 
 module "auto_pings_lambda" {
   source = "./modules/bucket"
 
-  name               = module.bootstrap_config.bucket_names.auto_pings_lambda
+  name               = module.constants.bucket_names.auto_pings_lambda
   versioning_enabled = true
 
   lifecycle_rule = {
@@ -28,7 +28,7 @@ module "auto_pings_lambda" {
 module "faqs_lambda" {
   source = "./modules/bucket"
 
-  name               = module.bootstrap_config.bucket_names.faqs_lambda
+  name               = module.constants.bucket_names.faqs_lambda
   versioning_enabled = true
 
   lifecycle_rule = {
@@ -43,5 +43,5 @@ module "faqs_lambda" {
 module "auto_faqs_lambda" {
   source = "./modules/bucket"
 
-  name = module.bootstrap_config.bucket_names.auto_faqs_lambda
+  name = module.constants.bucket_names.auto_faqs_lambda
 }

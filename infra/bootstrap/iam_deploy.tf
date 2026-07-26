@@ -1,6 +1,6 @@
 locals {
   penny_log_group_arns = [
-    for arn in values(module.bootstrap_config.log_group_arns) : "${arn}:*"
+    for arn in values(module.constants.log_group_arns) : "${arn}:*"
   ]
 }
 
@@ -29,7 +29,7 @@ data "aws_iam_policy_document" "github_deploy_assume" {
 }
 
 resource "aws_iam_role" "github_deploy" {
-  name               = module.bootstrap_config.role_names.github_deploy
+  name               = module.constants.role_names.github_deploy
   assume_role_policy = data.aws_iam_policy_document.github_deploy_assume.json
 }
 
@@ -37,13 +37,13 @@ data "aws_iam_policy_document" "github_deploy" {
   statement {
     sid       = "TerraformState"
     actions   = ["s3:ListBucket", "s3:GetBucketLocation"]
-    resources = ["arn:aws:s3:::${module.bootstrap_config.state_bucket}"]
+    resources = ["arn:aws:s3:::${module.constants.state_bucket}"]
   }
 
   statement {
     sid       = "TerraformStateObjects"
     actions   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
-    resources = ["arn:aws:s3:::${module.bootstrap_config.state_bucket}/*"]
+    resources = ["arn:aws:s3:::${module.constants.state_bucket}/*"]
   }
 
   statement {
@@ -72,7 +72,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecr:TagResource",
       "ecr:UntagResource",
     ]
-    resources = [module.bootstrap_config.ecr_repository_arn]
+    resources = [module.constants.ecr_repository_arn]
   }
 
   statement {
@@ -98,15 +98,15 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecs:ListTagsForResource",
     ]
     resources = [
-      module.bootstrap_config.ecs_cluster_arn,
-      module.bootstrap_config.ecs_service_arn,
+      module.constants.ecs_cluster_arn,
+      module.constants.ecs_service_arn,
     ]
   }
 
   statement {
     sid       = "EcsServiceDeployments"
     actions   = ["ecs:DescribeServiceDeployments"]
-    resources = ["arn:aws:ecs:${local.region}:${local.account_id}:service-deployment/${module.bootstrap_config.ecs_cluster_name}/${module.bootstrap_config.ecs_service_name}/*"]
+    resources = ["arn:aws:ecs:${local.region}:${local.account_id}:service-deployment/${module.constants.ecs_cluster_name}/${module.constants.ecs_service_name}/*"]
   }
 
   statement {
@@ -125,7 +125,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "lambda:TagResource",
       "lambda:UntagResource",
     ]
-    resources = values(module.bootstrap_config.lambda_arns)
+    resources = values(module.constants.lambda_arns)
   }
 
   statement {
@@ -138,8 +138,8 @@ data "aws_iam_policy_document" "github_deploy" {
       "apigateway:DELETE",
     ]
     resources = [
-      "arn:aws:apigateway:${local.region}::/apis/${module.bootstrap_config.api_id}",
-      "arn:aws:apigateway:${local.region}::/apis/${module.bootstrap_config.api_id}/*",
+      "arn:aws:apigateway:${local.region}::/apis/${module.constants.api_id}",
+      "arn:aws:apigateway:${local.region}::/apis/${module.constants.api_id}/*",
       "arn:aws:apigateway:${local.region}::/tags/*",
     ]
   }
@@ -156,9 +156,9 @@ data "aws_iam_policy_document" "github_deploy" {
       "dynamodb:TagResource",
     ]
     resources = [
-      module.bootstrap_config.table_arns.penny_user,
-      module.bootstrap_config.table_arns.penny_coin,
-      module.bootstrap_config.table_arns.ghhooks_message_lookup,
+      module.constants.table_arns.penny_user,
+      module.constants.table_arns.penny_coin,
+      module.constants.table_arns.ghhooks_message_lookup,
     ]
   }
 
@@ -190,18 +190,18 @@ data "aws_iam_policy_document" "github_deploy" {
       "s3:GetBucketObjectLockConfiguration",
     ]
     resources = [
-      module.bootstrap_config.bucket_arns.lambdas_store,
-      module.bootstrap_config.bucket_arns.penny_caches,
-      module.bootstrap_config.bucket_arns.auto_pings_lambda,
-      module.bootstrap_config.bucket_arns.faqs_lambda,
-      module.bootstrap_config.bucket_arns.auto_faqs_lambda,
+      module.constants.bucket_arns.lambdas_store,
+      module.constants.bucket_arns.penny_caches,
+      module.constants.bucket_arns.auto_pings_lambda,
+      module.constants.bucket_arns.faqs_lambda,
+      module.constants.bucket_arns.auto_faqs_lambda,
     ]
   }
 
   statement {
     sid       = "LambdaArtifacts"
     actions   = ["s3:PutObject"]
-    resources = ["${module.bootstrap_config.bucket_arns.lambdas_store}/*"]
+    resources = ["${module.constants.bucket_arns.lambdas_store}/*"]
   }
 
   statement {

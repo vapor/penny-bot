@@ -11,7 +11,7 @@ data "aws_iam_policy_document" "ecs_tasks_assume" {
 }
 
 resource "aws_iam_role" "ecs_task_execution" {
-  name               = module.bootstrap_config.role_names.ecs_task_execution
+  name               = module.constants.role_names.ecs_task_execution
   description        = "Allows ECS tasks to call AWS services on your behalf."
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
 }
@@ -41,7 +41,7 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution_managed" {
 }
 
 resource "aws_iam_role" "ecs_task" {
-  name               = module.bootstrap_config.role_names.ecs_task
+  name               = module.constants.role_names.ecs_task
   description        = "Allows ECS tasks to call AWS services on your behalf."
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_assume.json
 }
@@ -55,7 +55,7 @@ data "aws_iam_policy_document" "ecs_task_s3_caches" {
       "s3:DeleteObject",
       "s3:ListBucket",
     ]
-    resources = ["${module.bootstrap_config.bucket_arns.penny_caches}/*"]
+    resources = ["${module.constants.bucket_arns.penny_caches}/*"]
   }
 }
 
@@ -78,7 +78,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 }
 
 resource "aws_iam_role" "lambda" {
-  name               = module.bootstrap_config.role_names.lambda
+  name               = module.constants.role_names.lambda
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
 }
 
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "lambda" {
       "logs:PutLogEvents",
     ]
     resources = [
-      for name in values(module.bootstrap_config.lambda_function_names) :
+      for name in values(module.constants.lambda_function_names) :
       "arn:aws:logs:${local.region}:${local.account_id}:log-group:/aws/lambda/${name}:*"
     ]
   }
@@ -114,9 +114,9 @@ data "aws_iam_policy_document" "lambda" {
     ]
     resources = flatten([
       for arn in [
-        module.bootstrap_config.table_arns.penny_user,
-        module.bootstrap_config.table_arns.penny_coin,
-        module.bootstrap_config.table_arns.ghhooks_message_lookup,
+        module.constants.table_arns.penny_user,
+        module.constants.table_arns.penny_coin,
+        module.constants.table_arns.ghhooks_message_lookup,
       ] : [arn, "${arn}/*"]
     ])
   }
@@ -138,9 +138,9 @@ data "aws_iam_policy_document" "lambda" {
     effect  = "Allow"
     actions = ["s3:PutObject", "s3:GetObject"]
     resources = [
-      "${module.bootstrap_config.bucket_arns.auto_pings_lambda}/*",
-      "${module.bootstrap_config.bucket_arns.faqs_lambda}/*",
-      "${module.bootstrap_config.bucket_arns.auto_faqs_lambda}/*",
+      "${module.constants.bucket_arns.auto_pings_lambda}/*",
+      "${module.constants.bucket_arns.faqs_lambda}/*",
+      "${module.constants.bucket_arns.auto_faqs_lambda}/*",
     ]
   }
 }

@@ -1,5 +1,5 @@
 resource "aws_dynamodb_table" "penny_user" {
-  name         = module.bootstrap_config.table_names.penny_user
+  name         = module.constants.table_names.penny_user
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "id"
 
@@ -44,7 +44,7 @@ resource "aws_dynamodb_table" "penny_user" {
 }
 
 resource "aws_dynamodb_table" "penny_coin" {
-  name         = module.bootstrap_config.table_names.penny_coin
+  name         = module.constants.table_names.penny_coin
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "id"
   range_key    = "createdAt"
@@ -95,7 +95,7 @@ resource "aws_dynamodb_table" "penny_coin" {
 }
 
 resource "aws_dynamodb_table" "ghhooks_message_lookup" {
-  name         = module.bootstrap_config.table_names.ghhooks_message_lookup
+  name         = module.constants.table_names.ghhooks_message_lookup
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "id"
 
