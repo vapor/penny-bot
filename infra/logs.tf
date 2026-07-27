@@ -1,9 +1,9 @@
 resource "aws_cloudwatch_log_group" "ecs_api" {
-  name              = "/ecs/${local.api_name}"
+  name              = module.constants.log_group_names.ecs_api
   retention_in_days = 3
 }
 
 resource "aws_cloudwatch_log_group" "api_access_logs" {
-  name              = "/aws/lambda/PennyLambda"
+  name              = module.constants.log_group_names.api_access
   retention_in_days = 30
 }

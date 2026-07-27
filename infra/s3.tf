@@ -1,28 +1,49 @@
-resource "aws_s3_bucket" "lambdas_store" {
-  bucket = "penny-lambdas-store"
+module "lambdas_store" {
+  source = "./modules/bucket"
+
+  name = module.constants.bucket_names.lambdas_store
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "lambdas_store" {
-  bucket = aws_s3_bucket.lambdas_store.id
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
+module "penny_caches" {
+  source = "./modules/bucket"
+
+  name = module.constants.bucket_names.penny_caches
+}
+
+module "auto_pings_lambda" {
+  source = "./modules/bucket"
+
+  name               = module.constants.bucket_names.auto_pings_lambda
+  versioning_enabled = true
+
+  lifecycle_rules = {
+    "auto-pings-repo.json versioning" = {
+      prefix                    = "auto-pings-repo.json"
+      object_size_less_than     = 16 * 1024 * 1024
+      noncurrent_days           = 30
+      newer_noncurrent_versions = 5
     }
-    bucket_key_enabled = false
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "lambdas_store" {
-  bucket                  = aws_s3_bucket.lambdas_store.id
-  block_public_acls       = false
-  ignore_public_acls      = false
-  block_public_policy     = false
-  restrict_public_buckets = false
+module "faqs_lambda" {
+  source = "./modules/bucket"
+
+  name               = module.constants.bucket_names.faqs_lambda
+  versioning_enabled = true
+
+  lifecycle_rules = {
+    "faqs-repo.json versioning" = {
+      prefix                    = "faqs-repo.json"
+      object_size_less_than     = 32 * 1024 * 1024
+      noncurrent_days           = 30
+      newer_noncurrent_versions = 5
+    }
+  }
 }
 
-resource "aws_s3_bucket_ownership_controls" "lambdas_store" {
-  bucket = aws_s3_bucket.lambdas_store.id
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
+module "auto_faqs_lambda" {
+  source = "./modules/bucket"
+
+  name = module.constants.bucket_names.auto_faqs_lambda
 }

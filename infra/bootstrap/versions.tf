@@ -10,9 +10,8 @@ terraform {
 }
 
 provider "aws" {
-  region = var.aws_region
-  # A hack to skip using a profile in CI, to use OIDC instead
-  profile = var.aws_profile == "" ? null : var.aws_profile
+  region  = var.aws_region
+  profile = var.aws_profile
 
   default_tags {
     tags = {

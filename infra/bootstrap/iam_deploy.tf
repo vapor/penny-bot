@@ -1,24 +1,6 @@
-data "aws_iam_openid_connect_provider" "github" {
-  url = "https://token.actions.githubusercontent.com"
-}
-
 locals {
-  state_bucket = "penny-bot-terraform-state"
-
   penny_log_group_arns = [
-    for lg in concat(
-      ["/ecs/${local.api_name}", "/aws/lambda/PennyLambda"],
-      [for n in values(local.lambda_function_names) : "/aws/lambda/${n}"]
-    ) : "arn:aws:logs:${local.region}:${local.account_id}:log-group:${lg}:*"
-  ]
-
-  penny_lambda_arns = [
-    aws_lambda_function.users.arn,
-    aws_lambda_function.auto_pings.arn,
-    aws_lambda_function.faqs.arn,
-    aws_lambda_function.auto_faqs.arn,
-    aws_lambda_function.gh_hooks.arn,
-    aws_lambda_function.gh_oauth.arn,
+    for arn in values(module.constants.log_group_arns) : "${arn}:*"
   ]
 }
 
@@ -47,7 +29,7 @@ data "aws_iam_policy_document" "github_deploy_assume" {
 }
 
 resource "aws_iam_role" "github_deploy" {
-  name               = "penny-bot-deploy"
+  name               = module.constants.role_names.github_deploy
   assume_role_policy = data.aws_iam_policy_document.github_deploy_assume.json
 }
 
@@ -55,13 +37,13 @@ data "aws_iam_policy_document" "github_deploy" {
   statement {
     sid       = "TerraformState"
     actions   = ["s3:ListBucket", "s3:GetBucketLocation"]
-    resources = ["arn:aws:s3:::${local.state_bucket}"]
+    resources = ["arn:aws:s3:::${module.constants.state_bucket}"]
   }
 
   statement {
     sid       = "TerraformStateObjects"
     actions   = ["s3:GetObject", "s3:PutObject", "s3:DeleteObject"]
-    resources = ["arn:aws:s3:::${local.state_bucket}/*"]
+    resources = ["arn:aws:s3:::${module.constants.state_bucket}/*"]
   }
 
   statement {
@@ -87,8 +69,10 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecr:GetRepositoryPolicy",
       "ecr:SetRepositoryPolicy",
       "ecr:GetLifecyclePolicy",
+      "ecr:TagResource",
+      "ecr:UntagResource",
     ]
-    resources = [aws_ecr_repository.penny_bot_discord_image.arn]
+    resources = [module.constants.ecr_repository_arn]
   }
 
   statement {
@@ -97,6 +81,8 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecs:RegisterTaskDefinition",
       "ecs:DeregisterTaskDefinition",
       "ecs:DescribeTaskDefinition",
+      "ecs:TagResource",
+      "ecs:UntagResource",
     ]
     resources = ["*"]
   }
@@ -112,15 +98,15 @@ data "aws_iam_policy_document" "github_deploy" {
       "ecs:ListTagsForResource",
     ]
     resources = [
-      aws_ecs_cluster.penny.arn,
-      aws_ecs_service.penny.id,
+      module.constants.ecs_cluster_arn,
+      module.constants.ecs_service_arn,
     ]
   }
 
   statement {
     sid       = "EcsServiceDeployments"
     actions   = ["ecs:DescribeServiceDeployments"]
-    resources = ["arn:aws:ecs:${local.region}:${local.account_id}:service-deployment/${aws_ecs_cluster.penny.name}/${aws_ecs_service.penny.name}/*"]
+    resources = ["arn:aws:ecs:${local.region}:${local.account_id}:service-deployment/${module.constants.ecs_cluster_name}/${module.constants.ecs_service_name}/*"]
   }
 
   statement {
@@ -139,7 +125,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "lambda:TagResource",
       "lambda:UntagResource",
     ]
-    resources = local.penny_lambda_arns
+    resources = values(module.constants.lambda_arns)
   }
 
   statement {
@@ -152,8 +138,8 @@ data "aws_iam_policy_document" "github_deploy" {
       "apigateway:DELETE",
     ]
     resources = [
-      "arn:aws:apigateway:${local.region}::/apis",
-      "arn:aws:apigateway:${local.region}::/apis/*",
+      "arn:aws:apigateway:${local.region}::/apis/${module.constants.api_id}",
+      "arn:aws:apigateway:${local.region}::/apis/${module.constants.api_id}/*",
       "arn:aws:apigateway:${local.region}::/tags/*",
     ]
   }
@@ -170,9 +156,9 @@ data "aws_iam_policy_document" "github_deploy" {
       "dynamodb:TagResource",
     ]
     resources = [
-      aws_dynamodb_table.penny_user.arn,
-      aws_dynamodb_table.penny_coin.arn,
-      aws_dynamodb_table.ghhooks_message_lookup.arn,
+      module.constants.table_arns.penny_user,
+      module.constants.table_arns.penny_coin,
+      module.constants.table_arns.ghhooks_message_lookup,
     ]
   }
 
@@ -192,6 +178,7 @@ data "aws_iam_policy_document" "github_deploy" {
       "s3:GetBucketOwnershipControls",
       "s3:PutBucketOwnershipControls",
       "s3:GetBucketTagging",
+      "s3:PutBucketTagging",
       "s3:GetBucketPolicy",
       "s3:GetBucketAcl",
       "s3:GetAccelerateConfiguration",
@@ -203,12 +190,30 @@ data "aws_iam_policy_document" "github_deploy" {
       "s3:GetBucketObjectLockConfiguration",
     ]
     resources = [
-      aws_s3_bucket.lambdas_store.arn,
-      aws_s3_bucket.penny_caches.arn,
-      aws_s3_bucket.auto_pings_lambda.arn,
-      aws_s3_bucket.faqs_lambda.arn,
-      aws_s3_bucket.auto_faqs_lambda.arn,
+      module.constants.bucket_arns.lambdas_store,
+      module.constants.bucket_arns.penny_caches,
+      module.constants.bucket_arns.auto_pings_lambda,
+      module.constants.bucket_arns.faqs_lambda,
+      module.constants.bucket_arns.auto_faqs_lambda,
     ]
+  }
+
+  statement {
+    sid       = "LambdaArtifacts"
+    actions   = ["s3:PutObject"]
+    resources = ["${module.constants.bucket_arns.lambdas_store}/*"]
+  }
+
+  statement {
+    sid       = "Ec2Tags"
+    actions   = ["ec2:CreateTags", "ec2:DeleteTags"]
+    resources = ["arn:aws:ec2:${local.region}:${local.account_id}:security-group/*"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "ec2:ResourceTag/Project"
+      values   = ["penny-bot"]
+    }
   }
 
   statement {
@@ -216,6 +221,7 @@ data "aws_iam_policy_document" "github_deploy" {
     actions = [
       "ec2:DescribeVpcs",
       "ec2:DescribeVpcAttribute",
+      "ec2:DescribeSubnets",
       "ec2:DescribeSecurityGroups",
       "ec2:DescribeSecurityGroupRules",
     ]
@@ -255,52 +261,12 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 
   statement {
-    sid = "IamRead"
-    actions = [
-      "iam:GetRole",
-      "iam:ListRolePolicies",
-      "iam:GetRolePolicy",
-      "iam:ListAttachedRolePolicies",
-      "iam:ListRoleTags",
-      "iam:GetUser",
-      "iam:ListAttachedUserPolicies",
-      "iam:ListUserPolicies",
-      "iam:ListUserTags",
-      "iam:ListAccessKeys",
-      "iam:GetAccessKeyLastUsed",
-      "iam:GetPolicy",
-      "iam:GetPolicyVersion",
-      "iam:ListPolicyVersions",
-      "iam:GetOpenIDConnectProvider",
-      "iam:ListOpenIDConnectProviders",
-    ]
-    resources = ["*"]
-  }
-
-  statement {
-    sid = "IamManage"
-    actions = [
-      "iam:PutRolePolicy",
-      "iam:DeleteRolePolicy",
-      "iam:AttachRolePolicy",
-      "iam:DetachRolePolicy",
-      "iam:CreatePolicyVersion",
-      "iam:DeletePolicyVersion",
-      "iam:AttachUserPolicy",
-      "iam:DetachUserPolicy",
-      "iam:TagRole",
-      "iam:UntagRole",
-      "iam:TagPolicy",
-      "iam:UntagPolicy",
-    ]
+    sid     = "IamRead"
+    actions = ["iam:GetRole", "iam:ListRoleTags"]
     resources = [
       aws_iam_role.ecs_task_execution.arn,
       aws_iam_role.ecs_task.arn,
       aws_iam_role.lambda.arn,
-      aws_iam_role.github_deploy.arn,
-      aws_iam_user.deployer.arn,
-      aws_iam_policy.penny_bot_ecr.arn,
-      aws_iam_policy.penny_bot_deployer.arn,
     ]
   }
 
@@ -319,8 +285,4 @@ resource "aws_iam_role_policy" "github_deploy" {
   name   = "penny-bot-terraform-deploy"
   role   = aws_iam_role.github_deploy.id
   policy = data.aws_iam_policy_document.github_deploy.json
-}
-
-output "github_deploy_role_arn" {
-  value = aws_iam_role.github_deploy.arn
 }

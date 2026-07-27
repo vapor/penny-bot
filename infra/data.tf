@@ -6,8 +6,11 @@ data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_iam_role" "github_oidc" {
-  name = var.github_oidc_role_name
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 data "aws_ecs_container_definition" "current" {
@@ -16,22 +19,33 @@ data "aws_ecs_container_definition" "current" {
   container_name  = "penny-bot"
 }
 
-locals {
+module "constants" {
+  source = "./modules/constants"
+
   account_id = data.aws_caller_identity.current.account_id
   region     = data.aws_region.current.region
+}
 
-  api_name = "penny-bot-api"
+locals {
+  region = data.aws_region.current.region
 
-  lambda_function_names = {
-    users      = "UsersLambda"
-    auto_pings = "AutoPingsLambda"
-    faqs       = "FaqsLambda"
-    auto_faqs  = "AutoFaqsLambda"
-    gh_hooks   = "GHHooksLambda"
-    gh_oauth   = "GHOAuthLambda"
-  }
+  api_name = module.constants.api_name
+
+  lambda_function_names = module.constants.lambda_function_names
 
   api_base_url = "https://${aws_apigatewayv2_api.penny.id}.execute-api.${local.region}.amazonaws.com/prod"
 
   penny_image_tag = var.penny_image_tag != null ? var.penny_image_tag : reverse(split(":", data.aws_ecs_container_definition.current[0].image))[0]
+}
+
+data "aws_iam_role" "ecs_task_execution" {
+  name = module.constants.role_names.ecs_task_execution
+}
+
+data "aws_iam_role" "ecs_task" {
+  name = module.constants.role_names.ecs_task
+}
+
+data "aws_iam_role" "lambda" {
+  name = module.constants.role_names.lambda
 }

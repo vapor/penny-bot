@@ -1,5 +1,5 @@
 resource "aws_ecs_cluster" "penny" {
-  name = "${local.api_name}-Cluster"
+  name = module.constants.ecs_cluster_name
 }
 
 resource "aws_ecs_task_definition" "penny" {
@@ -8,8 +8,8 @@ resource "aws_ecs_task_definition" "penny" {
   memory                   = "512"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
-  task_role_arn            = aws_iam_role.ecs_task.arn
+  execution_role_arn       = data.aws_iam_role.ecs_task_execution.arn
+  task_role_arn            = data.aws_iam_role.ecs_task.arn
 
   runtime_platform {
     cpu_architecture        = "ARM64"
@@ -37,7 +37,7 @@ resource "aws_ecs_task_definition" "penny" {
         },
         {
           name  = "GH_OAUTH_CLIENT_ID"
-          value = "Iv1.683ea075648a5cd2"
+          value = module.constants.gh_oauth_client_id
         }
       ]
       secrets = [
@@ -61,7 +61,7 @@ resource "aws_ecs_task_definition" "penny" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          awslogs-group         = "/ecs/${local.api_name}"
+          awslogs-group         = aws_cloudwatch_log_group.ecs_api.name
           awslogs-region        = local.region
           awslogs-stream-prefix = "ecs"
         }
@@ -71,7 +71,7 @@ resource "aws_ecs_task_definition" "penny" {
 }
 
 resource "aws_ecs_service" "penny" {
-  name                  = "Penny-Bot"
+  name                  = module.constants.ecs_service_name
   cluster               = aws_ecs_cluster.penny.id
   task_definition       = "${aws_ecs_task_definition.penny.family}:${aws_ecs_task_definition.penny.revision}"
   desired_count         = 1
@@ -83,38 +83,8 @@ resource "aws_ecs_service" "penny" {
   deployment_maximum_percent         = 200
 
   network_configuration {
-    subnets          = [var.ecs_subnet_id]
+    subnets          = data.aws_subnets.default.ids
     security_groups  = [aws_security_group.ecs_service.id]
     assign_public_ip = true
   }
 }
-
-resource "aws_s3_bucket" "penny_caches" {
-  bucket = "penny-caches"
-}
-
-resource "aws_s3_bucket_server_side_encryption_configuration" "penny_caches" {
-  bucket = aws_s3_bucket.penny_caches.id
-  rule {
-    apply_server_side_encryption_by_default {
-      sse_algorithm = "AES256"
-    }
-    bucket_key_enabled = false
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "penny_caches" {
-  bucket                  = aws_s3_bucket.penny_caches.id
-  block_public_acls       = true
-  ignore_public_acls      = true
-  block_public_policy     = true
-  restrict_public_buckets = true
-}
-
-resource "aws_s3_bucket_ownership_controls" "penny_caches" {
-  bucket = aws_s3_bucket.penny_caches.id
-  rule {
-    object_ownership = "BucketOwnerEnforced"
-  }
-}
-

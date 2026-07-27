@@ -7,8 +7,3 @@ variable "aws_profile" {
   type    = string
   default = "vapor"
 }
-
-variable "penny_image_tag" {
-  type    = string
-  default = null
-}

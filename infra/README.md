@@ -2,9 +2,26 @@
 
 Terraform project for Penny bot's infrastructure.
 
+## Layout
+
+Two independent configurations, each with its own state:
+
+| Path               | State Key                     | How to Apply Changes                | Contents                                       |
+| ------------------ | ----------------------------- | ----------------------------------- | ---------------------------------------------- |
+| `infra/bootstrap/` | `penny-bot/bootstrap.tfstate` | Manually                            | The state bucket and all IAM role and policies |
+| `infra/`           | `penny-bot/terraform.tfstate` | CI (`deploy-penny.yml`) or Manually | Everything Penny runs on, excluding IAM        |
+
+* All IAM lives in `bootstrap/` so that the CI role cannot modify permissions of anyone including its own.
+
+`infra/modules/` holds the local modules:
+
+- `constants`: the single source of truth for resource **names** and the ARNs derived from them.
+- `bucket`: an S3 bucket with encryption, public-access-block, ownership controls, and optional versioning/lifecycle.
+- `lambda`: a Lambda plus its log group, API Gateway integration, invoke permission and routes.
+
 ## Usage
 
-Example usage; see Requirements section below:
+Example usage; see Requirements section below. Ensure you're in repository's root directory.
 
 ```bash
 # install tools via mise; requires mise installed
@@ -15,15 +32,24 @@ aws login --profile vapor
 ./scripts/tf-check.sh
 
 # work with terraform
-cd ./infra
-# is mise already activated?
-mise doctor | grep 'activated'
-# activate mise so you don't need to prefix all the following terraform commands with `mise x --`
-mise activate fish | source # bash: eval "$(mise activate bash)" — puts the pinned tools on PATH
-terraform init
-terraform plan
-terraform apply
+mise x -- terraform -chdir=infra init
+mise x -- terraform -chdir=infra plan
+mise x -- terraform -chdir=infra apply
 ```
+
+## Changing CI permissions
+
+* All IAM stuff including the role CI assumes (`penny-bot-deploy`) are defined in `infra/bootstrap/iam_deploy.tf`.
+* Modifying the roles requires manually applying the changes. The CI intentionally doesn't have permissions to do this.
+
+```bash
+# 1. grant the permission (you, locally)
+mise x -- terraform -chdir=infra/bootstrap apply
+# 2. use it
+mise x -- terraform -chdir=infra apply
+```
+
+CI can modify Penny's resources but deliberately has no `ec2:CreateSecurityGroup`/`DeleteSecurityGroup` and no IAM write access — structural changes of that kind are local applies.
 
 ## Requirements
 
@@ -40,20 +66,23 @@ terraform apply
     Then sign in to the profile (e.g. `aws login --profile vapor`); see the [AWS CLI authentication guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-authentication.html) for the available sign-in options.
 
 - **[mise](https://mise.jdx.dev)** ([install](https://mise.jdx.dev/installing-mise.html)) — provides the pinned tools declared in `.mise.toml`. Run `mise install`, then [activate mise](https://mise.jdx.dev/installing-mise.html#shells) in your shell so the pinned tools are on your PATH (or prefix individual commands with `mise x --`).
-- **Terraform 1.15.6** (also enforced by `required_version`) and **TFLint 0.61.0** — pinned in `.mise.toml`, installed via mise (above).
+- **Terraform 1.15.8** (also enforced by `required_version`) and **TFLint 0.64.0** — pinned in `.mise.toml`, installed via mise (above).
 
 ## First run
 
-At first run, you'll need to run the bootstrap terraform to create the state S3 bucket:
+On a fresh account the bootstrap has a chicken-and-egg problem: `infra/bootstrap/backend.tf` points at the very S3 bucket that bootstrap creates. So the first apply must use local state, then migrate:
 
 ```bash
-# is mise already activated?
-mise doctor | grep 'activated'
-# activate mise so you don't need to prefix all the following terraform commands with `mise x --`
-mise activate fish | source # bash: eval "$(mise activate bash)" — puts the pinned tools on PATH
-cd ./infra/bootstrap && terraform init && terraform apply
-cd .. && terraform init && terraform plan
-terraform apply
+# 1. create the state bucket using local state, ignoring the S3 backend
+mise x -- terraform -chdir=infra/bootstrap init -backend=false
+mise x -- terraform -chdir=infra/bootstrap apply
+
+# 2. adopt the S3 backend and push the local state into the bucket just created
+mise x -- terraform -chdir=infra/bootstrap init -migrate-state
+
+# 3. everything else
+mise x -- terraform -chdir=infra init
+mise x -- terraform -chdir=infra apply
 ```
 
 Also ECR and Lambda deployments might fail since there can be cyclic dependencies between e.g. an ECR image / Lambda executable zip file existing and the ECS/lambda resources being created.
@@ -66,6 +95,7 @@ On a **fresh account** there is no live task definition to read, so you must sup
 
 Not in code (needed to replicate elsewhere):
 
-- Secret values for all 8 `prod/penny/penny-bot/*` secrets.
+- Secret values for all 7 `prod/penny/penny-bot/*` secrets.
 - `penny-bot-deployer` access-key secret (If needed, a recreation is required.).
 - Shared org resources used as data sources: default VPC, OIDC provider, `GithubOIdP-Role` (`repo:vapor/*`).
+- The `PENNY_OIDC_ROLE_ARN` repository variable, pointing at the `penny-bot-deploy` role both workflows assume.

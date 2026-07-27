@@ -66,6 +66,11 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: penny-bot-discord-image
         run: |
+          if docker buildx imagetools inspect "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" > /dev/null 2>&1; then
+            echo "Image $ECR_REPOSITORY:$IMAGE_TAG already exists, skipping build and push."
+            exit 0
+          fi
+
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Dockerfile . \
             --build-arg SWIFT_CONFIGURATION=release \
             --build-arg EXEC_NAME=Penny

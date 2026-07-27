@@ -1,9 +1,9 @@
 resource "aws_ecr_repository" "penny_bot_discord_image" {
-  name                 = "penny-bot-discord-image"
-  image_tag_mutability = "MUTABLE"
+  name                 = module.constants.ecr_repository_name
+  image_tag_mutability = "IMMUTABLE"
 
   image_scanning_configuration {
-    scan_on_push = false
+    scan_on_push = true
   }
 
   encryption_configuration {
@@ -11,24 +11,25 @@ resource "aws_ecr_repository" "penny_bot_discord_image" {
   }
 }
 
-data "aws_iam_policy_document" "ecr_penny_bot_discord_image" {
-  statement {
-    sid    = "penny-discord-ecs role"
-    effect = "Allow"
+data "aws_ecr_lifecycle_policy_document" "penny_bot_discord_image" {
+  rule {
+    priority    = 1
+    description = "Keep only the 30 most recent images"
 
-    principals {
-      type        = "AWS"
-      identifiers = ["AROASSTYTBM4BRFJQDX6P"]
+    selection {
+      tag_status   = "any"
+      count_type   = "imageCountMoreThan"
+      count_number = 30
     }
 
-    actions = [
-      "ecr:ListImages",
-      "ecr:PutImage",
-    ]
+    action {
+      type = "expire"
+    }
   }
 }
 
-resource "aws_ecr_repository_policy" "penny_bot_discord_image" {
+resource "aws_ecr_lifecycle_policy" "penny_bot_discord_image" {
   repository = aws_ecr_repository.penny_bot_discord_image.name
-  policy     = data.aws_iam_policy_document.ecr_penny_bot_discord_image.json
+
+  policy = data.aws_ecr_lifecycle_policy_document.penny_bot_discord_image.json
 }
