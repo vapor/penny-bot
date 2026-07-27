@@ -200,7 +200,7 @@ data "aws_iam_policy_document" "github_deploy" {
 
   statement {
     sid       = "LambdaArtifacts"
-    actions   = ["s3:PutObject"]
+    actions   = ["s3:PutObject", "s3:GetObject"]
     resources = ["${module.constants.bucket_arns.lambdas_store}/*"]
   }
 
