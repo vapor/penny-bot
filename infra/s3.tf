@@ -1,7 +1,15 @@
 module "lambdas_store" {
   source = "./modules/bucket"
 
-  name = module.constants.bucket_names.lambdas_store
+  name               = module.constants.bucket_names.lambdas_store
+  versioning_enabled = true
+
+  lifecycle_rules = {
+    "lambda zip versioning" = {
+      noncurrent_days           = 30
+      newer_noncurrent_versions = 5
+    }
+  }
 }
 
 module "penny_caches" {

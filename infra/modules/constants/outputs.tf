@@ -70,6 +70,10 @@ output "log_group_arns" {
   value = local.log_group_arns
 }
 
+output "secret_arns" {
+  value = local.secret_arns
+}
+
 output "ecs_cluster_arn" {
   value = "arn:aws:ecs:${var.region}:${var.account_id}:cluster/${local.ecs_cluster_name}"
 }

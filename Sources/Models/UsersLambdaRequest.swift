@@ -1,4 +1,4 @@
-package enum UserRequest: Sendable, Codable {
+package enum UsersLambdaRequest: Sendable, Codable {
     case addCoin(CoinEntryRequest)
     case getOrCreateUser(discordID: UserSnowflake)
     case getUser(githubID: String)

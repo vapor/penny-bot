@@ -8,7 +8,7 @@ struct FakeUsersService: UsersService {
 
     init() {}
 
-    func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse {
+    func postCoin(with coinRequest: UsersLambdaRequest.CoinEntryRequest) async throws -> CoinResponse {
         CoinResponse(
             sender: coinRequest.fromDiscordID,
             receiver: coinRequest.toDiscordID,

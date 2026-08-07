@@ -54,7 +54,6 @@ enum Constants {
     static let botId: UserSnowflake = "950695294906007573"
     static let botToken = env("BOT_TOKEN")
     static let loggingWebhookURL = env("LOGGING_WEBHOOK_URL")
-    static let apiBaseURL = env("API_BASE_URL")
     static let ghOAuthClientID = env("GH_OAUTH_CLIENT_ID")
     static let accountLinkOAuthPrivKey = env("ACCOUNT_LINKING_OAUTH_FLOW_PRIV_KEY")
     static let deploymentEnvironment = DeploymentEnvironment()

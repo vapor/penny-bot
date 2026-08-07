@@ -13,15 +13,16 @@ module "constants" {
   region     = data.aws_region.current.region
 }
 
-data "aws_secretsmanager_secret" "this" {
-  for_each = module.constants.secret_names
-
-  name = each.value
-}
-
 locals {
   account_id = data.aws_caller_identity.current.account_id
   region     = data.aws_region.current.region
 
-  secret_arns = { for key, secret in data.aws_secretsmanager_secret.this : key => secret.arn }
+  secret_arns = module.constants.secret_arns
+
+  invokable_lambda_arns = [
+    module.constants.lambda_arns.users,
+    module.constants.lambda_arns.auto_pings,
+    module.constants.lambda_arns.faqs,
+    module.constants.lambda_arns.auto_faqs,
+  ]
 }

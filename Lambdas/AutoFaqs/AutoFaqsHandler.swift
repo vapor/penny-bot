@@ -34,7 +34,7 @@ struct AutoFaqsHandler {
         )
         let awsClient = AWSClient(httpClient: httpClient)
         let sharedContext = SharedContext(awsClient: awsClient)
-        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+        try await LambdaRuntime { (event: AutoFaqsLambdaRequest, context: LambdaContext) in
             let handler = AutoFaqsHandler(context: context, sharedContext: sharedContext)
             return await handler.handle(event)
         }.run()
@@ -45,52 +45,18 @@ struct AutoFaqsHandler {
         self.autoFaqsRepo = S3AutoFaqsRepository(awsClient: sharedContext.awsClient, logger: context.logger)
     }
 
-    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
-        let request: AutoFaqsRequest
+    func handle(_ event: AutoFaqsLambdaRequest) async -> LambdaResult<[String: String]> {
         do {
-            request = try event.decode()
+            switch event {
+            case .all:
+                return .success(try await autoFaqsRepo.getAll())
+            case let .add(expression, value):
+                return .success(try await autoFaqsRepo.insert(expression: expression, value: value))
+            case let .remove(expression):
+                return .success(try await autoFaqsRepo.remove(expression: expression))
+            }
         } catch {
-            return APIGatewayV2Response(
-                status: .badRequest,
-                content: GatewayFailure(reason: "Unexpected body: \(event.body ?? "nil")")
-            )
+            return .failure(reason: "Error when handling auto-faqs request \(event): \(error)")
         }
-        let newItems: [String: String]
-        switch request {
-        case .all:
-            do {
-                newItems = try await autoFaqsRepo.getAll()
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when getting the full list: \(error)"
-                    )
-                )
-            }
-        case let .add(expression, value):
-            do {
-                newItems = try await autoFaqsRepo.insert(expression: expression, value: value)
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when adding faqs text: \(error)"
-                    )
-                )
-            }
-        case let .remove(expression):
-            do {
-                newItems = try await autoFaqsRepo.remove(expression: expression)
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when removing faqs text: \(error)"
-                    )
-                )
-            }
-        }
-        return APIGatewayV2Response(status: .ok, content: newItems)
     }
 }

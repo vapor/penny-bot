@@ -28,10 +28,6 @@ resource "aws_ecs_task_definition" "penny" {
       systemControls = []
       environment = [
         {
-          name  = "API_BASE_URL"
-          value = local.api_base_url
-        },
-        {
           name  = "DEPLOYMENT_ENVIRONMENT"
           value = "prod"
         },
