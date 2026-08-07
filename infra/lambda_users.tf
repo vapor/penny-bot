@@ -1,16 +1,11 @@
 module "lambda_users" {
   source = "./modules/lambda"
 
-  function_name           = local.lambda_function_names.users
-  role_arn                = data.aws_iam_role.lambda.arn
-  s3_bucket               = module.lambdas_store.id
-  api_id                  = aws_apigatewayv2_api.penny.id
-  api_execution_arn       = aws_apigatewayv2_api.penny.execution_arn
-  integration_description = "Lambda Users Integration"
-  routes                  = ["POST /users"]
+  function_name = local.lambda_function_names.users
+  role_arn      = data.aws_iam_role.lambda.arn
+  s3_bucket     = module.lambdas_store.id
 
   environment = {
-    API_BASE_URL = local.api_base_url
-    LOG_LEVEL    = "debug"
+    LOG_LEVEL = "debug"
   }
 }

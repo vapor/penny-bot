@@ -49,8 +49,8 @@ actor DefaultAutoFaqsService: AutoFaqsService {
         }
     }
 
-    var httpClient: HTTPClient!
-    var logger = Logger(label: "DefaultAutoFaqsService")
+    let invoker: LambdaInvoker
+    let logger = Logger(label: "DefaultAutoFaqsService")
 
     /// Use `getAll()` to retrieve.
     var _cachedItems: [String: String]?
@@ -67,8 +67,8 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     let decoder = JSONDecoder()
     let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient, backgroundProcessor: BackgroundProcessor) {
-        self.httpClient = httpClient
+    init(invoker: LambdaInvoker, backgroundProcessor: BackgroundProcessor) {
+        self.invoker = invoker
         backgroundProcessor.process {
             await self.getFreshItemsForCache()
         }
@@ -121,38 +121,8 @@ actor DefaultAutoFaqsService: AutoFaqsService {
     }
 
     /// Must "freshenCache" if it didn't throw an error.
-    func send(request autoFaqsRequest: AutoFaqsRequest) async throws {
-        let url = Constants.apiBaseURL + "/auto-faqs"
-        var request = HTTPClientRequest(url: url)
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try encoder.encode(autoFaqsRequest)
-        request.body = .bytes(data)
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(60),
-            logger: self.logger
-        )
-        logger.trace("HTTP head", metadata: ["response": "\(response)"])
-
-        guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            /// 64 KiB
-            let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error(
-                "Faqs-service failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(body)",
-                ]
-            )
-            throw ServiceError.badStatus(response.status)
-        }
-
-        let body = try await response.body.collect(upTo: 1 << 24)
-        /// 16 MiB
-        let items = try decoder.decode([String: String].self, from: body)
+    func send(request autoFaqsRequest: AutoFaqsLambdaRequest) async throws {
+        let items = try await self.invoker.invokeAutoFaqsLambda(autoFaqsRequest)
         freshenCache(items)
         resetItemsTask?.cancel()
     }

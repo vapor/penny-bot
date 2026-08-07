@@ -34,7 +34,7 @@ struct FaqsHandler {
         )
         let awsClient = AWSClient(httpClient: httpClient)
         let sharedContext = SharedContext(awsClient: awsClient)
-        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+        try await LambdaRuntime { (event: FaqsLambdaRequest, context: LambdaContext) in
             let handler = FaqsHandler(context: context, sharedContext: sharedContext)
             return await handler.handle(event)
         }.run()
@@ -45,52 +45,18 @@ struct FaqsHandler {
         self.faqsRepo = S3FaqsRepository(awsClient: sharedContext.awsClient, logger: context.logger)
     }
 
-    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
-        let request: FaqsRequest
+    func handle(_ event: FaqsLambdaRequest) async -> LambdaResult<[String: String]> {
         do {
-            request = try event.decode()
+            switch event {
+            case .all:
+                return .success(try await faqsRepo.getAll())
+            case let .add(name, value):
+                return .success(try await faqsRepo.insert(name: name, value: value))
+            case let .remove(name):
+                return .success(try await faqsRepo.remove(name: name))
+            }
         } catch {
-            return APIGatewayV2Response(
-                status: .badRequest,
-                content: GatewayFailure(reason: "Unexpected body: \(event.body ?? "nil")")
-            )
+            return .failure(reason: "Error when handling faqs request \(event): \(error)")
         }
-        let newItems: [String: String]
-        switch request {
-        case .all:
-            do {
-                newItems = try await faqsRepo.getAll()
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when getting the full list: \(error)"
-                    )
-                )
-            }
-        case let .add(name, value):
-            do {
-                newItems = try await faqsRepo.insert(name: name, value: value)
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when adding faqs text: \(error)"
-                    )
-                )
-            }
-        case let .remove(name):
-            do {
-                newItems = try await faqsRepo.remove(name: name)
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when removing faqs text: \(error)"
-                    )
-                )
-            }
-        }
-        return APIGatewayV2Response(status: .ok, content: newItems)
     }
 }

@@ -64,6 +64,26 @@ resource "aws_iam_role_policy" "ecs_task_s3_caches" {
   policy = data.aws_iam_policy_document.ecs_task_s3_caches.json
 }
 
+data "aws_iam_policy_document" "invoke_penny_lambdas" {
+  statement {
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = local.invokable_lambda_arns
+  }
+}
+
+resource "aws_iam_role_policy" "ecs_task_invoke_lambdas" {
+  name   = "invoke-penny-lambdas"
+  role   = aws_iam_role.ecs_task.id
+  policy = data.aws_iam_policy_document.invoke_penny_lambdas.json
+}
+
+resource "aws_iam_role_policy" "lambda_invoke_lambdas" {
+  name   = "invoke-penny-lambdas"
+  role   = aws_iam_role.lambda.id
+  policy = data.aws_iam_policy_document.invoke_penny_lambdas.json
+}
+
 data "aws_iam_policy_document" "lambda_assume" {
   statement {
     effect  = "Allow"

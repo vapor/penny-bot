@@ -31,17 +31,21 @@ variable "log_retention_in_days" {
 }
 
 variable "api_id" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "api_execution_arn" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "integration_description" {
-  type = string
+  type    = string
+  default = null
 }
 
 variable "routes" {
-  type = list(string)
+  type    = list(string)
+  default = []
 }

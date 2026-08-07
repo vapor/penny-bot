@@ -12,7 +12,6 @@ module "lambda_gh_hooks" {
   routes                  = ["POST /gh-hooks"]
 
   environment = {
-    API_BASE_URL             = local.api_base_url
     BOT_TOKEN_ARN            = aws_secretsmanager_secret.discord_bot_token.arn
     WH_SECRET_ARN            = aws_secretsmanager_secret.github_webhook_secret.arn
     GH_APP_AUTH_PRIV_KEY_ARN = aws_secretsmanager_secret.github_app_private_key.arn

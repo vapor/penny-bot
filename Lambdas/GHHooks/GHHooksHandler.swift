@@ -178,7 +178,6 @@ struct GHHooksHandler {
             ]
         )
 
-        let apiBaseURL = try requireEnvVar("API_BASE_URL")
         try await EventHandler(
             context: .init(
                 eventName: eventName,
@@ -195,7 +194,7 @@ struct GHHooksHandler {
                 messageLookupRepo: self.messageLookupRepo,
                 usersService: ServiceFactory.makeUsersService(
                     httpClient: self.httpClient,
-                    apiBaseURL: apiBaseURL
+                    invoker: LambdaInvoker(awsClient: self.awsClient)
                 ),
                 logger: self.logger
             )

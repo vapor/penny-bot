@@ -96,20 +96,21 @@ struct PennyService: MainService {
         awsClient: AWSClient
     ) async throws -> HandlerContext {
         let backgroundProcessor = BackgroundProcessor()
+        let invoker = LambdaInvoker(awsClient: awsClient)
         let usersService = ServiceFactory.makeUsersService(
             httpClient: httpClient,
-            apiBaseURL: Constants.apiBaseURL
+            invoker: invoker
         )
         let pingsService = DefaultPingsService(
-            httpClient: httpClient,
+            invoker: invoker,
             backgroundProcessor: backgroundProcessor
         )
         let faqsService = DefaultFaqsService(
-            httpClient: httpClient,
+            invoker: invoker,
             backgroundProcessor: backgroundProcessor
         )
         let autoFaqsService = DefaultAutoFaqsService(
-            httpClient: httpClient,
+            invoker: invoker,
             backgroundProcessor: backgroundProcessor
         )
         let evolutionService = DefaultEvolutionService(httpClient: httpClient)

@@ -73,10 +73,9 @@ struct GHOAuthHandler {
 
     init(context: LambdaContext, sharedContext: SharedContext) throws {
         self.sharedContext = sharedContext
-        let apiBaseURL = try requireEnvVar("API_BASE_URL")
         self.userService = ServiceFactory.makeUsersService(
             httpClient: sharedContext.httpClient,
-            apiBaseURL: apiBaseURL
+            invoker: LambdaInvoker(awsClient: sharedContext.awsClient)
         )
         self.logger = context.logger
     }
