@@ -1,12 +1,8 @@
-import AsyncHTTPClient
 import DiscordModels
 /// Import full foundation even on linux for `hash`, for now.
 import Foundation
 import Logging
 import Models
-import NIOCore
-import NIOFoundationCompat
-import NIOHTTP1
 import OrderedCollections
 import Shared
 
@@ -63,9 +59,6 @@ actor DefaultAutoFaqsService: AutoFaqsService {
 
     /// To not send the same faq-answer to the same person again and again.
     var responseRateLimiter = ResponseRateLimiter()
-
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     init(invoker: LambdaInvoker, backgroundProcessor: BackgroundProcessor) {
         self.invoker = invoker

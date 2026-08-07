@@ -91,12 +91,7 @@ struct GHOAuthHandler {
     }
 
     func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
-        logger.debug(
-            "Received event",
-            metadata: [
-                "event": "\(event)"
-            ]
-        )
+        logger.debug("Received event", metadata: ["event": "\(event)"])
 
         guard let code = event.queryStringParameters["code"] else {
             logger.error("Missing code query parameter")

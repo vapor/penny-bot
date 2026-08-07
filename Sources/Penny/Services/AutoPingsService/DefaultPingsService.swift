@@ -1,10 +1,6 @@
-import AsyncHTTPClient
 import DiscordBM
 import Logging
 import Models
-import NIOCore
-import NIOFoundationCompat
-import NIOHTTP1
 import Shared
 
 #if canImport(FoundationEssentials)
@@ -25,9 +21,6 @@ actor DefaultPingsService: AutoPingsService {
     /// `[ExpressionHash: Expression]`
     var _cachedExpressionsHashTable: [Int: Expression]?
     var resetItemsTask: Task<(), Never>?
-
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     init(invoker: LambdaInvoker, backgroundProcessor: BackgroundProcessor) {
         self.invoker = invoker

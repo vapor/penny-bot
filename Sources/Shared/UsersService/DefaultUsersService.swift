@@ -14,7 +14,6 @@ struct DefaultUsersService: UsersService {
     let logger = Logger(label: "DefaultUsersService")
 
     let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     init(httpClient: HTTPClient, invoker: LambdaInvoker) {
         self.httpClient = httpClient
