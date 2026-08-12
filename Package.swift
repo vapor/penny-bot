@@ -134,9 +134,9 @@ let package = Package(
                 .product(name: "Crypto", package: "swift-crypto"),
             ],
             path: "./Lambdas/GitHubAPI",
-            exclude: [
-                "openapi-generator-config.yaml",
-                "openapi.yaml",
+            resources: [
+                .copy("openapi-generator-config.yaml"),
+                .copy("openapi.yaml"),
             ],
             swiftSettings: upcomingFeaturesSwiftSettings
         ),
