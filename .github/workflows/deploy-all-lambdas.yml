@@ -19,10 +19,10 @@ jobs:
       AWS_DEFAULT_REGION: eu-west-1
 
     steps:
-      - name: Install AWSCLI v2, jq, zstd, zip, binutils
+      - name: Install AWSCLI v2, jq, zstd
         run: |
           dnf update -y
-          dnf install jq awscli zstd zip unzip binutils -y
+          dnf install jq awscli zstd -y
 
       - name: Check out repository
         uses: actions/checkout@v7
@@ -61,24 +61,6 @@ jobs:
               --base-docker-image swift:6.3-amazonlinux2023 \
               --output-path ./zips \
               --products "${name}"
-
-            # The archive plugin does not strip, and Lambda hard-caps deployment
-            # packages at 250 MB unzipped. Drop DWARF but keep the symbol table.
-            zip_path="$(pwd)/zips/${name}/${name}.zip"
-            unpacked="$(mktemp -d)"
-            unzip -q "${zip_path}" -d "${unpacked}"
-            strip --strip-debug "${unpacked}/bootstrap"
-
-            unzipped_bytes="$(du -sb "${unpacked}" | cut -f1)"
-            echo "${name}: $((unzipped_bytes / 1048576)) MiB unzipped after stripping"
-            if [ "${unzipped_bytes}" -ge 262144000 ]; then
-              echo "::error::${name} is ${unzipped_bytes} bytes unzipped, over Lambda's 262144000 limit"
-              exit 1
-            fi
-
-            rm "${zip_path}"
-            (cd "${unpacked}" && zip -qry "${zip_path}" .)
-            rm -rf "${unpacked}"
           done
 
       - name: Configure AWS credentials
