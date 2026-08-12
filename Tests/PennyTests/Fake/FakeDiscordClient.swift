@@ -1,4 +1,4 @@
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import NIOHTTP1
 import Testing
 

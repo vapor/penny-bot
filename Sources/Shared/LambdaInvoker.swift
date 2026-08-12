@@ -1,5 +1,6 @@
 import Logging
 package import Models
+import NIOFoundationEssentialsCompat
 package import SotoCore
 import SotoLambda
 

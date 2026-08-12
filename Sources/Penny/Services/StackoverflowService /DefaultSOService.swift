@@ -3,7 +3,7 @@ import AsyncHTTPClient
 import Foundation
 import Logging
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import NIOHTTP1
 
 struct DefaultSOService: SOService {

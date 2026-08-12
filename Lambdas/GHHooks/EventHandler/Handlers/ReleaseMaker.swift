@@ -6,7 +6,7 @@ import GitHubAPI
 import Logging
 import Markdown
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import Shared
 import SwiftSemver
 

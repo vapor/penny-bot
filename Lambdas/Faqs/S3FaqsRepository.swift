@@ -1,5 +1,5 @@
 import Models
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import SotoS3
 
 package import class SotoCore.AWSClient

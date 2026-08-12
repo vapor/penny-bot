@@ -5,7 +5,7 @@ import Foundation
 import Logging
 import Models
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import NIOHTTP1
 
 struct DefaultUsersService: UsersService {
