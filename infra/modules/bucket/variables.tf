@@ -14,8 +14,8 @@ variable "versioning_enabled" {
 
 variable "lifecycle_rules" {
   type = map(object({
-    prefix                    = string
-    object_size_less_than     = number
+    prefix                    = optional(string)
+    object_size_less_than     = optional(number)
     noncurrent_days           = number
     newer_noncurrent_versions = number
   }))

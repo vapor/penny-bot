@@ -1,5 +1,9 @@
 resource "aws_s3_bucket" "state" {
   bucket = module.constants.state_bucket
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_versioning" "state" {

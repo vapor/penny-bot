@@ -27,6 +27,8 @@ resource "aws_cloudwatch_log_group" "this" {
 }
 
 resource "aws_lambda_permission" "this" {
+  count = length(var.routes) == 0 ? 0 : 1
+
   statement_id  = "AllowApiGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.this.function_name
@@ -35,6 +37,8 @@ resource "aws_lambda_permission" "this" {
 }
 
 resource "aws_apigatewayv2_integration" "this" {
+  count = length(var.routes) == 0 ? 0 : 1
+
   api_id                 = var.api_id
   description            = var.integration_description
   integration_type       = "AWS_PROXY"
@@ -49,5 +53,5 @@ resource "aws_apigatewayv2_route" "this" {
 
   api_id    = var.api_id
   route_key = each.value
-  target    = "integrations/${aws_apigatewayv2_integration.this.id}"
+  target    = "integrations/${aws_apigatewayv2_integration.this[0].id}"
 }

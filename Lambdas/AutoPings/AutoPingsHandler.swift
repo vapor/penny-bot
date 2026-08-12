@@ -34,7 +34,7 @@ struct AutoPingsHandler {
         )
         let awsClient = AWSClient(httpClient: httpClient)
         let sharedContext = SharedContext(awsClient: awsClient)
-        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+        try await LambdaRuntime { (event: AutoPingsLambdaRequest, context: LambdaContext) in
             let handler = AutoPingsHandler(context: context, sharedContext: sharedContext)
             return await handler.handle(event)
         }.run()
@@ -45,68 +45,28 @@ struct AutoPingsHandler {
         self.pingsRepo = S3AutoPingsRepository(awsClient: sharedContext.awsClient, logger: context.logger)
     }
 
-    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
-        let newItems: S3AutoPingItems
-        if event.rawPath.hasSuffix("all") {
-            do {
-                newItems = try await pingsRepo.getAll()
-            } catch {
-                return APIGatewayV2Response(
-                    status: .expectationFailed,
-                    content: GatewayFailure(
-                        reason: "Error when getting the full list: \(error)"
-                    )
-                )
-            }
-        } else if event.rawPath.hasSuffix("users") {
-            switch event.context.http.method {
-            case .put:
-                do {
-                    let request = try event.decode(as: AutoPingsRequest.self)
-                    newItems = try await pingsRepo.insert(
+    func handle(_ event: AutoPingsLambdaRequest) async -> LambdaResult<S3AutoPingItems> {
+        do {
+            switch event {
+            case .all:
+                return .success(try await pingsRepo.getAll())
+            case let .insert(request):
+                return .success(
+                    try await pingsRepo.insert(
                         expressions: request.expressions,
                         forDiscordID: request.discordID
                     )
-                } catch {
-                    return APIGatewayV2Response(
-                        status: .expectationFailed,
-                        content: GatewayFailure(
-                            reason: "Error when adding texts for user: \(error)"
-                        )
-                    )
-                }
-            case .delete:
-                do {
-                    let request = try event.decode(as: AutoPingsRequest.self)
-                    newItems = try await pingsRepo.remove(
+                )
+            case let .remove(request):
+                return .success(
+                    try await pingsRepo.remove(
                         expressions: request.expressions,
                         forDiscordID: request.discordID
                     )
-                } catch {
-                    return APIGatewayV2Response(
-                        status: .expectationFailed,
-                        content: GatewayFailure(
-                            reason: "Error when removing texts for user: \(error)"
-                        )
-                    )
-                }
-            default:
-                return APIGatewayV2Response(
-                    status: .badRequest,
-                    content: GatewayFailure(
-                        reason: "Unexpected method: \(event.context.http.method)"
-                    )
                 )
             }
-        } else {
-            return APIGatewayV2Response(
-                status: .badRequest,
-                content: GatewayFailure(
-                    reason: "Unexpected path parameter: \(event.context.http.path)"
-                )
-            )
+        } catch {
+            return .failure(reason: "Error when handling auto-pings request \(event): \(error)")
         }
-
-        return APIGatewayV2Response(status: .ok, content: newItems)
     }
 }

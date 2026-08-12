@@ -99,3 +99,9 @@ Not in code (needed to replicate elsewhere):
 - `penny-bot-deployer` access-key secret (If needed, a recreation is required.).
 - Shared org resources used as data sources: default VPC, OIDC provider, `GithubOIdP-Role` (`repo:vapor/*`).
 - The `PENNY_OIDC_ROLE_ARN` repository variable, pointing at the `penny-bot-deploy` role both workflows assume.
+
+## Observability
+
+Currently Penny uses some default AWS CloudWatch setup for observability.
+
+Penny is knowingly weak on the observability side. Great observability is simply not needed at Penny's current scale of 1 Discord server / 2 GitHub orgs, so we're cutting on the maintenance and financial costs of having good observability.

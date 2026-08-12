@@ -1,6 +1,5 @@
-import AsyncHTTPClient
-import NIOHTTP1
+import Models
 
 enum ServiceError: Error {
-    case badStatus(HTTPClientResponse)
+    case unexpectedUsersLambdaResponse(UsersLambdaResponse)
 }

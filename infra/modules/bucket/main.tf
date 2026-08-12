@@ -1,5 +1,9 @@
 resource "aws_s3_bucket" "this" {
   bucket = var.name
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_server_side_encryption_configuration" "this" {
@@ -52,9 +56,13 @@ resource "aws_s3_bucket_lifecycle_configuration" "this" {
       status = "Enabled"
 
       filter {
-        and {
-          prefix                = rule.value.prefix
-          object_size_less_than = rule.value.object_size_less_than
+        dynamic "and" {
+          for_each = rule.value.prefix == null && rule.value.object_size_less_than == null ? [] : [1]
+
+          content {
+            prefix                = rule.value.prefix
+            object_size_less_than = rule.value.object_size_less_than
+          }
         }
       }
 

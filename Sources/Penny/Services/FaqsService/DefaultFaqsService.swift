@@ -1,17 +1,13 @@
-import AsyncHTTPClient
 /// Import full foundation even on linux for `hash`, for now.
 import Foundation
 import Logging
 import Models
-import NIOCore
-import NIOFoundationCompat
-import NIOHTTP1
 import Shared
 
 actor DefaultFaqsService: FaqsService {
 
-    var httpClient: HTTPClient!
-    var logger = Logger(label: "DefaultFaqsService")
+    let invoker: LambdaInvoker
+    let logger = Logger(label: "DefaultFaqsService")
 
     /// Use `getAll()` to retrieve.
     var _cachedItems: [String: String]?
@@ -20,11 +16,8 @@ actor DefaultFaqsService: FaqsService {
     var _cachedNamesHashTable: [Int: String]?
     var resetItemsTask: Task<(), Never>?
 
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
-
-    init(httpClient: HTTPClient, backgroundProcessor: BackgroundProcessor) {
-        self.httpClient = httpClient
+    init(invoker: LambdaInvoker, backgroundProcessor: BackgroundProcessor) {
+        self.invoker = invoker
         backgroundProcessor.process {
             await self.getFreshItemsForCache()
         }
@@ -68,38 +61,8 @@ actor DefaultFaqsService: FaqsService {
     }
 
     /// Must "freshenCache" if it didn't throw an error.
-    func send(request faqsRequest: FaqsRequest) async throws {
-        let url = Constants.apiBaseURL + "/faqs"
-        var request = HTTPClientRequest(url: url)
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-        let data = try encoder.encode(faqsRequest)
-        request.body = .bytes(data)
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(60),
-            logger: self.logger
-        )
-        logger.trace("HTTP head", metadata: ["response": "\(response)"])
-
-        guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            /// 64 KiB
-            let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error(
-                "Faqs-service failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(body)",
-                ]
-            )
-            throw ServiceError.badStatus(response.status)
-        }
-
-        let body = try await response.body.collect(upTo: 1 << 24)
-        /// 16 MiB
-        let items = try decoder.decode([String: String].self, from: body)
+    func send(request faqsRequest: FaqsLambdaRequest) async throws {
+        let items = try await self.invoker.invokeFaqsLambda(faqsRequest)
         freshenCache(items)
         resetItemsTask?.cancel()
     }

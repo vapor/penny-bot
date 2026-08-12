@@ -10,117 +10,38 @@ import NIOHTTP1
 
 struct DefaultUsersService: UsersService {
     let httpClient: HTTPClient
-    let apiBaseURL: String
+    let invoker: LambdaInvoker
     let logger = Logger(label: "DefaultUsersService")
 
     let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
-    init(httpClient: HTTPClient, apiBaseURL: String) {
+    init(httpClient: HTTPClient, invoker: LambdaInvoker) {
         self.httpClient = httpClient
-        self.apiBaseURL = apiBaseURL
+        self.invoker = invoker
     }
 
     private func getOrCreateUser(discordID: UserSnowflake) async throws -> DynamoDBUser {
-        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-
-        let requestContent = UserRequest.getOrCreateUser(discordID: discordID)
-        let data = try encoder.encode(requestContent)
-        request.body = .bytes(data)
-
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
-        )
-        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
-
-        let body = try await response.body.collect(upTo: 1 << 24)
-        /// 16 MiB
-
-        guard 200..<300 ~= response.status.code else {
-            logger.error(
-                "Get-coin-count failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(String(buffer: body))",
-                ]
-            )
-            throw ServiceError.badStatus(response)
+        let response = try await self.invoker.invokeUsersLambda(.getOrCreateUser(discordID: discordID))
+        guard case let .user(user) = response else {
+            throw ServiceError.unexpectedUsersLambdaResponse(response)
         }
-
-        return try decoder.decode(DynamoDBUser.self, from: body)
+        return user
     }
 
     func getUser(githubID: String) async throws -> DynamoDBUser? {
-        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-
-        let requestContent = UserRequest.getUser(githubID: githubID)
-        let data = try encoder.encode(requestContent)
-        request.body = .bytes(data)
-
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
-        )
-        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
-
-        let body = try await response.body.collect(upTo: 1 << 24)
-        /// 16 MiB
-
-        guard 200..<300 ~= response.status.code else {
-            logger.error(
-                "Get-coin-count failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(String(buffer: body))",
-                ]
-            )
-            throw ServiceError.badStatus(response)
+        let response = try await self.invoker.invokeUsersLambda(.getUser(githubID: githubID))
+        guard case let .userIfFound(user) = response else {
+            throw ServiceError.unexpectedUsersLambdaResponse(response)
         }
-
-        return try decoder.decode(DynamoDBUser?.self, from: body)
+        return user
     }
 
-    func postCoin(with coinRequest: UserRequest.CoinEntryRequest) async throws -> CoinResponse {
-        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-
-        let requestContent = UserRequest.addCoin(coinRequest)
-        let data = try encoder.encode(requestContent)
-        request.body = .bytes(data)
-
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
-        )
-        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
-
-        let body = try await response.body.collect(upTo: 1 << 24)
-        /// 16 MiB
-
-        guard 200..<300 ~= response.status.code else {
-            logger.error(
-                "Post-coin failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(String(buffer: body))",
-                ]
-            )
-            throw ServiceError.badStatus(response)
+    func postCoin(with coinRequest: UsersLambdaRequest.CoinEntryRequest) async throws -> CoinResponse {
+        let response = try await self.invoker.invokeUsersLambda(.addCoin(coinRequest))
+        guard case let .coinAdded(coinResponse) = response else {
+            throw ServiceError.unexpectedUsersLambdaResponse(response)
         }
-
-        return try decoder.decode(CoinResponse.self, from: body)
+        return coinResponse
     }
 
     func getCoinCount(of discordID: UserSnowflake) async throws -> Int {
@@ -128,67 +49,11 @@ struct DefaultUsersService: UsersService {
     }
 
     func linkGitHubID(discordID: UserSnowflake, toGitHubID githubID: String) async throws {
-        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-
-        let requestContent = UserRequest.linkGitHubID(discordID: discordID, toGitHubID: githubID)
-        let data = try encoder.encode(requestContent)
-        request.body = .bytes(data)
-
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
-        )
-        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
-
-        guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            /// 64 KiB
-            let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error(
-                "Link-GitHub-id failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(body)",
-                ]
-            )
-            throw ServiceError.badStatus(response)
-        }
+        _ = try await self.invoker.invokeUsersLambda(.linkGitHubID(discordID: discordID, toGitHubID: githubID))
     }
 
     func unlinkGitHubID(discordID: UserSnowflake) async throws {
-        var request = HTTPClientRequest(url: "\(apiBaseURL)/users")
-        request.method = .POST
-        request.headers.add(name: "Content-Type", value: "application/json")
-
-        let requestContent = UserRequest.unlinkGitHubID(discordID: discordID)
-        let data = try encoder.encode(requestContent)
-        request.body = .bytes(data)
-
-        let response = try await httpClient.execute(
-            request,
-            timeout: .seconds(30),
-            logger: self.logger
-        )
-        logger.trace("Received HTTP response", metadata: ["response": "\(response)"])
-
-        guard 200..<300 ~= response.status.code else {
-            let collected = try? await response.body.collect(upTo: 1 << 16)
-            /// 64 KiB
-            let body = collected.map { String(buffer: $0) } ?? "nil"
-            logger.error(
-                "Unlink-GitHub-id failed",
-                metadata: [
-                    "status": "\(response.status)",
-                    "headers": "\(response.headers)",
-                    "body": "\(body)",
-                ]
-            )
-            throw ServiceError.badStatus(response)
-        }
+        _ = try await self.invoker.invokeUsersLambda(.unlinkGitHubID(discordID: discordID))
     }
 
     func getGitHubName(of discordID: UserSnowflake) async throws -> GitHubUserResponse {

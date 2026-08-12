@@ -9,8 +9,13 @@ BASE_DIR="$(dirname "$0")/.."
 
 cd "$BASE_DIR/infra"
 
+readonly TFLINT_CONFIG="$PWD/.tflint.hcl"
+
 mise x -- terraform fmt -check -recursive
-mise x -- terraform init -backend=false -input=false
-mise x -- terraform validate -no-color
 mise x -- tflint --init
-mise x -- tflint --no-color
+
+for dir in . bootstrap; do
+  mise x -- terraform -chdir="$dir" init -backend=false -input=false
+  mise x -- terraform -chdir="$dir" validate -no-color
+  mise x -- tflint --no-color --chdir="$dir" --config="$TFLINT_CONFIG"
+done

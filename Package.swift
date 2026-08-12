@@ -155,6 +155,8 @@ let package = Package(
                 .product(name: "ServiceLifecycle", package: "swift-service-lifecycle"),
                 .product(name: "DequeModule", package: "swift-collections"),
                 .product(name: "DiscordBM", package: "DiscordBM"),
+                .product(name: "SotoCore", package: "soto-core"),
+                .product(name: "SotoLambda", package: "soto"),
                 .target(name: "Models"),
             ],
             swiftSettings: upcomingFeaturesSwiftSettings

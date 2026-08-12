@@ -78,4 +78,9 @@ locals {
     for key, name in local.log_group_names :
     key => "arn:aws:logs:${var.region}:${var.account_id}:log-group:${name}"
   }
+
+  secret_arns = {
+    for key, name in local.secret_names :
+    key => "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:${name}-??????"
+  }
 }

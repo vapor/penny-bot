@@ -36,7 +36,7 @@ struct UsersHandler {
         )
         let awsClient = AWSClient(httpClient: httpClient)
         let sharedContext = SharedContext(httpClient: httpClient, awsClient: awsClient)
-        try await LambdaRuntime { (event: APIGatewayV2Request, context: LambdaContext) in
+        try await LambdaRuntime { (event: UsersLambdaRequest, context: LambdaContext) in
             let handler = UsersHandler(context: context, sharedContext: sharedContext)
             return await handler.handle(event)
         }.run()
@@ -48,20 +48,21 @@ struct UsersHandler {
         self.logger = context.logger
     }
 
-    func handle(_ event: APIGatewayV2Request) async -> APIGatewayV2Response {
+    func handle(_ event: UsersLambdaRequest) async -> LambdaResult<UsersLambdaResponse> {
         do {
-            let request = try event.decode(as: UserRequest.self)
-            switch request {
+            switch event {
             case let .addCoin(entry):
-                return try await handleAddUserRequest(entry: entry)
+                return .success(try await handleAddCoin(entry: entry))
             case let .getOrCreateUser(discordID):
-                return try await handleGetOrCreateUserRequest(discordID: discordID)
+                return .success(.user(try await internalService.getOrCreateUser(discordID: discordID)))
             case let .getUser(githubID):
-                return try await handleGetUserRequest(githubID: githubID)
+                return .success(.userIfFound(try await internalService.getUser(githubID: githubID)))
             case let .linkGitHubID(discordID, toGitHubID):
-                return try await handleLinkGitHubRequest(discordID: discordID, githubID: toGitHubID)
+                try await internalService.linkGithubID(discordID: discordID, githubID: toGitHubID)
+                return .success(.done)
             case let .unlinkGitHubID(discordID):
-                return try await handleUnlinkGitHubRequest(discordID: discordID)
+                try await internalService.unlinkGithubID(discordID: discordID)
+                return .success(.done)
             }
         } catch {
             self.logger.error(
@@ -71,16 +72,13 @@ struct UsersHandler {
                     "error": .string(String(reflecting: error)),
                 ]
             )
-            return APIGatewayV2Response(
-                status: .badRequest,
-                content: GatewayFailure(reason: "Error: \(error)")
-            )
+            return .failure(reason: "Error: \(error)")
         }
     }
 
-    func handleAddUserRequest(
-        entry: UserRequest.CoinEntryRequest
-    ) async throws -> APIGatewayV2Response {
+    func handleAddCoin(
+        entry: UsersLambdaRequest.CoinEntryRequest
+    ) async throws -> UsersLambdaResponse {
         let fromUserID = try await internalService.getOrCreateUser(discordID: entry.fromDiscordID).id
         let toUser = try await internalService.getOrCreateUser(discordID: entry.toDiscordID)
         let coinEntry = CoinEntry(
@@ -106,29 +104,6 @@ struct UsersHandler {
             ]
         )
 
-        return APIGatewayV2Response(status: .ok, content: coinResponse)
-    }
-
-    func handleGetOrCreateUserRequest(discordID: UserSnowflake) async throws -> APIGatewayV2Response {
-        let user = try await internalService.getOrCreateUser(discordID: discordID)
-        return APIGatewayV2Response(status: .ok, content: user)
-    }
-
-    func handleGetUserRequest(githubID: String) async throws -> APIGatewayV2Response {
-        let user = try await internalService.getUser(githubID: githubID)
-        return APIGatewayV2Response(status: .ok, content: user)
-    }
-
-    func handleLinkGitHubRequest(
-        discordID: UserSnowflake,
-        githubID: String
-    ) async throws -> APIGatewayV2Response {
-        try await internalService.linkGithubID(discordID: discordID, githubID: githubID)
-        return APIGatewayV2Response(statusCode: .ok)
-    }
-
-    func handleUnlinkGitHubRequest(discordID: UserSnowflake) async throws -> APIGatewayV2Response {
-        try await internalService.unlinkGithubID(discordID: discordID)
-        return APIGatewayV2Response(statusCode: .ok)
+        return .coinAdded(coinResponse)
     }
 }

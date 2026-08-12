@@ -10,7 +10,6 @@ module "lambda_gh_oauth" {
   routes                  = ["GET /gh-oauth"]
 
   environment = {
-    API_BASE_URL                       = local.api_base_url
     BOT_TOKEN_ARN                      = aws_secretsmanager_secret.discord_bot_token.arn
     ACCOUNT_LINKING_OAUTH_FLOW_PUB_KEY = "LS0tLS1CRUdJTiBQVUJMSUMgS0VZLS0tLS0KTUZrd0V3WUhLb1pJemowQ0FRWUlLb1pJemowREFRY0RRZ0FFZlR5bkhvSnEwNHhOaVN1cmRGK0JpcXVyRDh1NQp1RjdGU2V4OGFNalhXTVpreFgrZ0d3U3lwazBIMExvQ2g0LzFKK1Vhbkp4MzhWVDIwMVJpa2RVZ25BPT0KLS0tLS1FTkQgUFVCTElDIEtFWS0tLS0tCg=="
     GH_CLIENT_ID                       = module.constants.gh_oauth_client_id

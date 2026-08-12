@@ -53,7 +53,6 @@ data "aws_iam_policy_document" "ecs_task_s3_caches" {
       "s3:PutObject",
       "s3:GetObject",
       "s3:DeleteObject",
-      "s3:ListBucket",
     ]
     resources = ["${module.constants.bucket_arns.penny_caches}/*"]
   }
@@ -65,6 +64,26 @@ resource "aws_iam_role_policy" "ecs_task_s3_caches" {
   policy = data.aws_iam_policy_document.ecs_task_s3_caches.json
 }
 
+data "aws_iam_policy_document" "invoke_penny_lambdas" {
+  statement {
+    effect    = "Allow"
+    actions   = ["lambda:InvokeFunction"]
+    resources = local.invokable_lambda_arns
+  }
+}
+
+resource "aws_iam_role_policy" "ecs_task_invoke_lambdas" {
+  name   = "invoke-penny-lambdas"
+  role   = aws_iam_role.ecs_task.id
+  policy = data.aws_iam_policy_document.invoke_penny_lambdas.json
+}
+
+resource "aws_iam_role_policy" "lambda_invoke_lambdas" {
+  name   = "invoke-penny-lambdas"
+  role   = aws_iam_role.lambda.id
+  policy = data.aws_iam_policy_document.invoke_penny_lambdas.json
+}
+
 data "aws_iam_policy_document" "lambda_assume" {
   statement {
     effect  = "Allow"
@@ -72,7 +91,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 
     principals {
       type        = "Service"
-      identifiers = ["lambda.amazonaws.com", "apigateway.amazonaws.com"]
+      identifiers = ["lambda.amazonaws.com"]
     }
   }
 }
@@ -93,7 +112,6 @@ data "aws_iam_policy_document" "lambda" {
     sid    = "Logs"
     effect = "Allow"
     actions = [
-      "logs:CreateLogGroup",
       "logs:CreateLogStream",
       "logs:PutLogEvents",
     ]
@@ -104,21 +122,31 @@ data "aws_iam_policy_document" "lambda" {
   }
 
   statement {
-    sid    = "DynamoDB"
-    effect = "Allow"
-    actions = [
-      "dynamodb:GetItem",
-      "dynamodb:Query",
-      "dynamodb:PutItem",
-      "dynamodb:UpdateItem",
-    ]
-    resources = flatten([
-      for arn in [
-        module.constants.table_arns.penny_user,
-        module.constants.table_arns.penny_coin,
-        module.constants.table_arns.ghhooks_message_lookup,
-      ] : [arn, "${arn}/*"]
-    ])
+    sid       = "DynamoDBPennyUser"
+    effect    = "Allow"
+    actions   = ["dynamodb:PutItem", "dynamodb:UpdateItem"]
+    resources = [module.constants.table_arns.penny_user]
+  }
+
+  statement {
+    sid       = "DynamoDBPennyUserIndexes"
+    effect    = "Allow"
+    actions   = ["dynamodb:Query"]
+    resources = ["${module.constants.table_arns.penny_user}/index/*"]
+  }
+
+  statement {
+    sid       = "DynamoDBPennyCoin"
+    effect    = "Allow"
+    actions   = ["dynamodb:PutItem"]
+    resources = [module.constants.table_arns.penny_coin]
+  }
+
+  statement {
+    sid       = "DynamoDBGHHooksMessageLookup"
+    effect    = "Allow"
+    actions   = ["dynamodb:Query", "dynamodb:UpdateItem"]
+    resources = [module.constants.table_arns.ghhooks_message_lookup]
   }
 
   statement {
