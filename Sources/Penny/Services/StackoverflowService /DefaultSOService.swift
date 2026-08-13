@@ -1,17 +1,21 @@
 import AsyncHTTPClient
-/// Import full foundation even on linux for `urlQueryAllowed`, for now.
-import Foundation
 import Logging
 import NIOCore
 import NIOFoundationEssentialsCompat
 import NIOHTTP1
+import Shared
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 struct DefaultSOService: SOService {
     let httpClient: HTTPClient
     let logger = Logger(label: "DefaultSOService")
     let decoder = JSONDecoder()
-    private static let urlEncodedAPIKey = Constants.StackOverflow.apiKey
-        .addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)!
+    private static let urlEncodedAPIKey = Constants.StackOverflow.apiKey.urlQueryEncoded()
 
     func listQuestions(after: Date) async throws -> [SOQuestions.Item] {
         let queries: KeyValuePairs = [

@@ -2,7 +2,7 @@ import AsyncHTTPClient
 import EvolutionMetadataModel
 import Models
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

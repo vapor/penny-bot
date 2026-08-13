@@ -6,10 +6,8 @@ import SotoLambda
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
-import NIOFoundationEssentialsCompat
 #else
 import Foundation
-import NIOFoundationCompat
 #endif
 
 package struct LambdaInvoker: Sendable {

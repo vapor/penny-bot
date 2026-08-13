@@ -1,10 +1,14 @@
 import DiscordModels
-/// Import full foundation even on linux for `hash`, for now.
-import Foundation
 import Logging
 import Models
 import OrderedCollections
 import Shared
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 actor DefaultAutoFaqsService: AutoFaqsService {
 
@@ -133,7 +137,7 @@ actor DefaultAutoFaqsService: AutoFaqsService {
             uniquingKeysWith: { l, _ in l }
         )
         self._cachedNamesHashTable = Dictionary(
-            uniqueKeysWithValues: new.map({ ($0.key.hash, $0.key) })
+            uniqueKeysWithValues: new.map({ ($0.key.stableHash, $0.key) })
         )
         self.resetItemsTask?.cancel()
     }

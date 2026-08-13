@@ -1,6 +1,10 @@
 import Crypto
-/// Import full foundation even on linux for `String(format:_:)`, for now.
+
+#if canImport(FoundationEssentials)
+package import FoundationEssentials
+#else
 package import Foundation
+#endif
 
 package enum Verifier {
 
@@ -34,6 +38,19 @@ package enum Verifier {
 extension Sequence where Element == UInt8 {
     /// Returns a hex-encoded `String` buffer from an array of bytes.
     func toHexDigest() -> String {
-        self.map { String(format: "%02x", $0) }.joined(separator: "")
+        var digest = ""
+        digest.reserveCapacity(self.underestimatedCount * 2)
+
+        for byte in self {
+            digest.unicodeScalars.append(hexLowercasedDigits[Int(byte >> 4)])
+            digest.unicodeScalars.append(hexLowercasedDigits[Int(byte & 0xF)])
+        }
+
+        return digest
     }
 }
+
+private let hexLowercasedDigits: [Unicode.Scalar] = [
+    "0", "1", "2", "3", "4", "5", "6", "7",
+    "8", "9", "a", "b", "c", "d", "e", "f",
+]

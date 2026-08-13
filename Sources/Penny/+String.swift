@@ -1,29 +1,27 @@
-/// Import full foundation even on linux for `trimmingCharacters` and `folding(options:locale:)`, for now.
-/// Also need `CharacterSet` too on Linux, for future reference.
-import Foundation
 import Models
+import Shared
 
 /// `StringProtocol` is basically either `String` or `Substring`.
 extension StringProtocol {
     /// Trims whitespaces and makes the string case, diacritic and punctuation insensitive.
     func heavyFolded() -> String {
-        self.trimmingCharacters(in: .whitespaces)
-            .removingOccurrences(of: .punctuationCharacters)
+        self.trimmingWhitespaces()
+            .removingOccurrences(where: \.isPunctuation)
             .lowercased()
-            .folding(options: .diacriticInsensitive, locale: nil)
+            .foldingDiacritics()
     }
 
     /// No whitespaces or lines and makes the string case, diacritic and punctuation insensitive.
     func superHeavyFolded() -> String {
         self.lowercased()
             .filter { !($0.isWhitespace || $0.isNewline || $0.isPunctuation) }
-            .folding(options: .diacriticInsensitive, locale: nil)
+            .foldingDiacritics()
     }
 
     func divideForPingCommandExactMatchChecking() -> [[Substring]] {
-        let modified = self.trimmingCharacters(in: .whitespaces)
+        let modified = self.trimmingWhitespaces()
             .lowercased()
-            .folding(options: .diacriticInsensitive, locale: nil)
+            .foldingDiacritics()
             .split(whereSeparator: \.isWhitespaceOrNewline)
 
         let dividedByPuncs = modified.flatMap { $0.split(whereSeparator: \.isPunctuation) }
@@ -32,31 +30,19 @@ extension StringProtocol {
     }
 
     func foldedForPingCommandContainmentChecking() -> String {
-        self.trimmingCharacters(in: .whitespaces)
+        self.trimmingWhitespaces()
             .lowercased()
-            .folding(options: .diacriticInsensitive, locale: nil)
+            .foldingDiacritics()
     }
 
-    /// Removes any occurrences of the characters in the character-set.
-    func removingOccurrences(of target: CharacterSet) -> String {
-        /// Couldn't make it properly work without copy-ing the string
-        /// into an array and by only using `String.Index`
-        var copy = Array(self)
-
-        var remove = [Int]()
-
-        for idx in copy.indices {
-            if copy[idx].unicodeScalars.contains(where: { target.contains($0) }) {
-                let removeAt = copy.index(idx, offsetBy: -remove.count)
-                remove.append(removeAt)
-            }
+    /// Removes any occurrences of the characters that the predicate matches.
+    func removingOccurrences(where shouldRemove: (Character) -> Bool) -> String {
+        /// Nothing to remove is the common case, so don't allocate for it.
+        guard self.contains(where: shouldRemove) else {
+            return String(self)
         }
 
-        for idx in remove {
-            copy.remove(at: idx)
-        }
-
-        return String(copy)
+        return String(self.filter { !shouldRemove($0) })
     }
 }
 

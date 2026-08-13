@@ -1,13 +1,17 @@
 import DiscordHTTP
 import DiscordModels
 import EvolutionMetadataModel
-/// Import full foundation even on linux for `trimmingCharacters`, for now.
-import Foundation
 import Logging
 import Markdown
 import Models
 import ServiceLifecycle
 import Shared
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 actor EvolutionChecker: Service {
 
@@ -379,7 +383,7 @@ actor EvolutionChecker: Service {
 
 extension String {
     fileprivate func sanitized() -> String {
-        self.trimmingCharacters(in: .whitespacesAndNewlines)
+        self.trimmingWhitespacesAndNewlines()
             .replacing(#"\/"#, with: "/")
         /// Un-escape
     }
@@ -408,7 +412,7 @@ struct LinkRepairer: MarkupRewriter {
     let relativeTo: String
 
     func visitLink(_ link: Link) -> (any Markup)? {
-        if let dest = link.destination?.trimmingCharacters(in: .whitespaces),
+        if let dest = link.destination?.trimmingWhitespaces(),
             !dest.hasPrefix("https://"),
             dest.hasSuffix(".md")
         {
@@ -492,6 +496,6 @@ extension Collection {
 
 extension String {
     fileprivate func replaceTripleNewlinesWithDoubleNewlines() -> String {
-        self.replacingOccurrences(of: "\n\n\n", with: "\n\n")
+        self.replacing("\n\n\n", with: "\n\n")
     }
 }
