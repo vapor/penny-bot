@@ -19,10 +19,12 @@ jobs:
       AWS_DEFAULT_REGION: eu-west-1
 
     steps:
-      - name: Install AWSCLI v2, jq, zstd, zip, docker
+      - name: Install AWSCLI v2, jq, zstd, and stub docker for the lambda-build plugin
         run: |
           dnf update -y
-          dnf install jq awscli zstd zip docker -y
+          dnf install jq awscli zstd -y
+          printf '#!/bin/sh\nexit 127\n' > /usr/local/bin/docker
+          chmod +x /usr/local/bin/docker
 
       - name: Check out repository
         uses: actions/checkout@v7
@@ -58,7 +60,6 @@ jobs:
               --allow-network-connections docker \
               lambda-build \
               --verbose \
-              --base-docker-image swift:6.3-amazonlinux2023 \
               --output-path ./zips \
               --no-strip \
               --products "${name}"
