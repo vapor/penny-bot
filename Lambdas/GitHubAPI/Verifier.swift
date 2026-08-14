@@ -35,22 +35,25 @@ package enum Verifier {
     }
 }
 
-extension Sequence where Element == UInt8 {
+extension ContiguousBytes {
     /// Returns a hex-encoded `String` buffer from an array of bytes.
     func toHexDigest() -> String {
-        var digest = ""
-        digest.reserveCapacity(self.underestimatedCount * 2)
-
-        for byte in self {
-            digest.unicodeScalars.append(hexLowercasedDigits[Int(byte >> 4)])
-            digest.unicodeScalars.append(hexLowercasedDigits[Int(byte & 0xF)])
+        self.withUnsafeBytes { bytes in
+            bytes.withMemoryRebound(to: UInt8.self) { bytes in
+                let span = bytes.span
+                return String(unsafeUninitializedCapacity: span.count * 2) { buffer in
+                    for index in span.indices {
+                        buffer[index * 2] = hexLowercasedDigits[Int(bytes[index] >> 4)]
+                        buffer[index * 2 + 1] = hexLowercasedDigits[Int(bytes[index] & 0xF)]
+                    }
+                    return span.count * 2
+                }
+            }
         }
-
-        return digest
     }
 }
 
-private let hexLowercasedDigits: [Unicode.Scalar] = [
-    "0", "1", "2", "3", "4", "5", "6", "7",
-    "8", "9", "a", "b", "c", "d", "e", "f",
+private let hexLowercasedDigits: [UInt8] = [
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+    0x38, 0x39, 0x61, 0x62, 0x63, 0x64, 0x65, 0x66,
 ]
