@@ -19,10 +19,10 @@ jobs:
       AWS_DEFAULT_REGION: eu-west-1
 
     steps:
-      - name: Install AWSCLI v2, jq, zstd, and stub docker for the lambda-build plugin
+      - name: Install AWSCLI v2, jq, zstd, zip, and stub docker for the lambda-build plugin
         run: |
           dnf update -y
-          dnf install jq awscli zstd -y
+          dnf install jq awscli zstd zip -y
           printf '#!/bin/sh\nexit 127\n' > /usr/local/bin/docker
           chmod +x /usr/local/bin/docker
 

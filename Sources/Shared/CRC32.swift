@@ -12,7 +12,7 @@
 ///
 /// This table is used by the ``crc32(_:)`` function below. It is borrowed from
 /// the [Swift standard library](https://github.com/swiftlang/swift/blob/main/stdlib/public/Backtracing/Elf.swift).
-private let _crc32Table: [UInt32] = [
+private let _crc32Table: InlineArray<256, UInt32> = [
     0x0000_0000, 0x7707_3096, 0xee0e_612c, 0x9909_51ba, 0x076d_c419, 0x706a_f48f,
     0xe963_a535, 0x9e64_95a3, 0x0edb_8832, 0x79dc_b8a4, 0xe0d5_e91e, 0x97d2_d988,
     0x09b6_4c2b, 0x7eb1_7cbd, 0xe7b8_2d07, 0x90bf_1d91, 0x1db7_1064, 0x6ab0_20f2,

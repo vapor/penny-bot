@@ -1,64 +1,8 @@
 extension String {
-    package func urlPathEncoded() -> String {
-        self.percentEncoded(
-            allowedBytes: urlPathAllowedBytes,
-            allowsColonAfterASlash: true
-        )
-    }
-
-    package func urlQueryEncoded() -> String {
-        self.percentEncoded(
-            allowedBytes: urlQueryAllowedBytes,
-            allowsColonAfterASlash: false
-        )
-    }
-
-    /// Matches what `Foundation`'s `addingPercentEncoding(withAllowedCharacters:)` produces for
-    /// `.urlPathAllowed` and `.urlQueryAllowed`, without needing `Foundation` itself.
-    private func percentEncoded(allowedBytes: [Bool], allowsColonAfterASlash: Bool) -> String {
-        var didPassASlash = false
-
-        /// Nothing to encode is by far the common case, so don't allocate for it.
-        guard
-            self.utf8.contains(where: {
-                !isAllowedInPercentEncoded($0, allowedBytes, allowsColonAfterASlash, &didPassASlash)
-            })
-        else {
-            return self
-        }
-
-        var encoded = ""
-        encoded.reserveCapacity(self.utf8.count)
-
-        /// The scan above stopped at the first disallowed byte, so start the slash tracking over.
-        didPassASlash = false
-
-        for byte in self.utf8 {
-            if isAllowedInPercentEncoded(byte, allowedBytes, allowsColonAfterASlash, &didPassASlash) {
-                encoded.unicodeScalars.append(Unicode.Scalar(byte))
-            } else {
-                encoded.unicodeScalars.append("%")
-                encoded.unicodeScalars.append(hexUppercasedDigits[Int(byte >> 4)])
-                encoded.unicodeScalars.append(hexUppercasedDigits[Int(byte & 0xF)])
-            }
-        }
-
-        return encoded
-    }
-
-    func isAllowedInPercentEncoded(
-        _ byte: UInt8,
-        _ allowedBytes: [Bool],
-        _ allowsColonAfterASlash: Bool,
-        _ didPassASlash: inout Bool
-    ) -> Bool {
-        if allowedBytes[Int(byte)] {
-            if byte == UInt8(ascii: "/") {
-                didPassASlash = true
-            }
-            return true
-        }
-        return allowsColonAfterASlash && didPassASlash && byte == UInt8(ascii: ":")
+    /// Unlike `hashValue`, this is stable across processes, so it's safe to persist or to
+    /// round-trip through Discord.
+    package var stableHash: Int {
+        Int(crc32(self.utf8Span.span))
     }
 
     @_disfavoredOverload
@@ -104,6 +48,57 @@ extension String {
         }.joined(
             separator: "\n"
         )
+    }
+
+    package func urlPathEncoded() -> String {
+        self.percentEncoded(
+            allowedBytes: .urlPath,
+            allowsColonAfterASlash: true
+        )
+    }
+
+    package func urlQueryEncoded() -> String {
+        self.percentEncoded(
+            allowedBytes: .urlQuery,
+            allowsColonAfterASlash: false
+        )
+    }
+
+    /// Matches what `Foundation`'s `addingPercentEncoding(withAllowedCharacters:)` produces for
+    /// `.urlPathAllowed` and `.urlQueryAllowed`, without needing `Foundation` itself.
+    private func percentEncoded(allowedBytes: AllowedBytes, allowsColonAfterASlash: Bool) -> String {
+        var didPassASlash = false
+
+        /// Nothing to encode is by far the common case, so don't allocate for it.
+        guard
+            self.utf8.contains(where: {
+                !isAllowedInPercentEncoded($0, allowedBytes, allowsColonAfterASlash, &didPassASlash)
+            })
+        else {
+            return self
+        }
+
+        let utf8 = self.utf8
+        /// Every byte takes at most a `%` and two hex digits.
+        return String(unsafeUninitializedCapacity: utf8.count * 3) { buffer in
+            /// The scan above stopped at the first disallowed byte, so start the slash tracking over.
+            var didPassASlash = false
+            var index = 0
+
+            for byte in utf8 {
+                if isAllowedInPercentEncoded(byte, allowedBytes, allowsColonAfterASlash, &didPassASlash) {
+                    buffer[index] = byte
+                    index += 1
+                } else {
+                    buffer[index] = UInt8(ascii: "%")
+                    buffer[index + 1] = hexUppercasedDigits[Int(byte >> 4)]
+                    buffer[index + 2] = hexUppercasedDigits[Int(byte & 0xF)]
+                    index += 3
+                }
+            }
+
+            return index
+        }
     }
 }
 
@@ -153,36 +148,66 @@ extension StringProtocol {
             return String(self)
         }
 
-        var folded = ""
-        folded.reserveCapacity(self.unicodeScalars.count)
+        let scalars = self.unicodeScalars
+        /// Folding either drops a scalar or replaces it with a shorter one, so the input's utf8
+        /// length is an upper bound for the output's.
+        return String(unsafeUninitializedCapacity: self.utf8.count) { buffer in
+            var index = 0
 
-        for scalar in self.unicodeScalars {
-            switch scalar.value {
-            case 0x00C0...0x00FF:
-                folded.unicodeScalars.append(latin1SupplementBases[Int(scalar.value - 0x00C0)] ?? scalar)
-            case 0x0100...0x017F:
-                folded.unicodeScalars.append(latinExtendedABases[Int(scalar.value - 0x0100)] ?? scalar)
-            default:
-                if scalar.properties.generalCategory != .nonspacingMark {
-                    folded.unicodeScalars.append(scalar)
+            for scalar in scalars {
+                let folded: Unicode.Scalar
+                switch scalar.value {
+                case 0x00C0...0x00FF:
+                    folded = latin1SupplementBases[Int(scalar.value - 0x00C0)] ?? scalar
+                case 0x0100...0x017F:
+                    folded = latinExtendedABases[Int(scalar.value - 0x0100)] ?? scalar
+                default:
+                    guard scalar.properties.generalCategory != .nonspacingMark else { continue }
+                    folded = scalar
+                }
+
+                for byte in Unicode.UTF8.encode(folded)! {
+                    buffer[index] = byte
+                    index += 1
                 }
             }
-        }
 
-        return folded
+            return index
+        }
     }
 }
 
-extension String {
-    /// Unlike `hashValue`, this is stable across processes, so it's safe to persist or to
-    /// round-trip through Discord.
-    package var stableHash: Int {
-        Int(crc32(self.utf8Span.span))
+/// Indexing the tables through a case rather than passing one of them keeps the 256-byte
+/// `InlineArray`s out of the call, where they would be copied on every invocation.
+private enum AllowedBytes {
+    case urlPath
+    case urlQuery
+
+    func contains(_ byte: UInt8) -> Bool {
+        switch self {
+        case .urlPath: urlPathAllowedBytes[Int(byte)]
+        case .urlQuery: urlQueryAllowedBytes[Int(byte)]
+        }
     }
+}
+
+private func isAllowedInPercentEncoded(
+    _ byte: UInt8,
+    _ allowedBytes: AllowedBytes,
+    _ allowsColonAfterASlash: Bool,
+    _ didPassASlash: inout Bool
+) -> Bool {
+    if allowedBytes.contains(byte) {
+        if byte == UInt8(ascii: "/") {
+            didPassASlash = true
+        }
+        return true
+    }
+    return allowsColonAfterASlash && didPassASlash && byte == UInt8(ascii: ":")
 }
 
 /// Base letters of `U+00C0...U+00FF`, in order. `nil` means "no folding".
-private let latin1SupplementBases: [Unicode.Scalar?] = [
+private let latin1SupplementBases: InlineArray<64, Unicode.Scalar?> = [
     "A", "A", "A", "A", "A", "A", nil, "C",
     "E", "E", "E", "E", "I", "I", "I", "I",
     nil, "N", "O", "O", "O", "O", "O", nil,
@@ -194,7 +219,7 @@ private let latin1SupplementBases: [Unicode.Scalar?] = [
 ]
 
 /// Base letters of `U+0100...U+017F`, in order. `nil` means "no folding".
-private let latinExtendedABases: [Unicode.Scalar?] = [
+private let latinExtendedABases: InlineArray<128, Unicode.Scalar?> = [
     "A", "a", "A", "a", "A", "a", "C", "c",
     "C", "c", "C", "c", "C", "c", "D", "d",
     nil, nil, "E", "e", "E", "e", "E", "e",
@@ -241,13 +266,13 @@ private func isNewlineScalar(_ scalar: Unicode.Scalar) -> Bool {
     }
 }
 
-private let hexUppercasedDigits: [Unicode.Scalar] = [
-    "0", "1", "2", "3", "4", "5", "6", "7",
-    "8", "9", "A", "B", "C", "D", "E", "F",
+private let hexUppercasedDigits: InlineArray<16, UInt8> = [
+    0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+    0x38, 0x39, 0x41, 0x42, 0x43, 0x44, 0x45, 0x46,
 ]
 
 /// Alphanumerics plus `!$&'()*+,-./;=@_~`, indexed by byte value.
-private let urlPathAllowedBytes: [Bool] = [
+private let urlPathAllowedBytes: InlineArray<256, Bool> = [
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, true, false, false, true, false, true, true, true, true, true, true, true, true, true, true,
@@ -267,7 +292,7 @@ private let urlPathAllowedBytes: [Bool] = [
 ]
 
 /// Alphanumerics plus `!$&'()*+,-./:;=?@_~`, indexed by byte value.
-private let urlQueryAllowedBytes: [Bool] = [
+private let urlQueryAllowedBytes: InlineArray<256, Bool> = [
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, true, false, false, true, false, true, true, true, true, true, true, true, true, true, true,
