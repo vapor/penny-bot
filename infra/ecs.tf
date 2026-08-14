@@ -4,6 +4,7 @@ resource "aws_ecs_cluster" "penny" {
 
 resource "aws_ecs_task_definition" "penny" {
   family                   = "penny-bot"
+  skip_destroy             = true
   cpu                      = "256"
   memory                   = "512"
   network_mode             = "awsvpc"
