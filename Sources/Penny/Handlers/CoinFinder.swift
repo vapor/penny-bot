@@ -2,7 +2,6 @@ import DiscordBM
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
-import struct Foundation.CharacterSet
 #else
 import Foundation
 #endif
@@ -57,7 +56,7 @@ struct CoinFinder {
             .lowercased()
             /// Punctuations can be problematic if someone sticks it to the end of a coin sign, like
             /// "@Penny thanks, ..." or  "@Penny thanks!"
-            .removingOccurrences(of: undesiredCharacterSet)
+            .removingOccurrences(where: isUndesiredCharacter)
 
         for mentionedUser in mentionedUsers {
             // Replacing `mentionedUser` with `" " + mentionedUser + " "` because
@@ -193,7 +192,9 @@ struct CoinFinder {
     }
 }
 
-private let undesiredCharacterSet = CharacterSet.punctuationCharacters.subtracting(["@", ":"])
+private func isUndesiredCharacter(_ character: Character) -> Bool {
+    character.isPunctuation && character != "@" && character != ":"
+}
 private let splitSigns = CoinFinder.Configuration.coinSigns.map {
     $0.split(whereSeparator: \.isWhitespace)
 }

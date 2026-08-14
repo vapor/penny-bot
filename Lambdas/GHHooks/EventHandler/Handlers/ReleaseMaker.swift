@@ -1,12 +1,10 @@
 import AsyncHTTPClient
 import DiscordBM
-/// Import full foundation even on linux for `trimmingCharacters`, for now.
-import Foundation
 import GitHubAPI
 import Logging
 import Markdown
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import Shared
 import SwiftSemver
 
@@ -251,7 +249,7 @@ struct ReleaseMaker {
             )
         ).ok.body.json
         if (current.body ?? "")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingWhitespacesAndNewlines()
             .hasPrefix(Configuration.releaseNoticePrefix)
         {
             logger.debug(
@@ -452,7 +450,7 @@ struct ReleaseMaker {
 
 extension String {
     func trimmingReleaseNoticeFromBody() -> String {
-        let trimmedBody = self.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedBody = self.trimmingWhitespacesAndNewlines()
         if trimmedBody.hasPrefix(ReleaseMaker.Configuration.releaseNoticePrefix) {
             return trimmedBody.split(
                 separator: "\n",
@@ -460,7 +458,7 @@ extension String {
             )
             .dropFirst()
             .joined(separator: "\n")
-            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .trimmingWhitespacesAndNewlines()
         } else {
             return trimmedBody
         }

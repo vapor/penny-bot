@@ -1,12 +1,16 @@
 import AsyncHTTPClient
 import DiscordModels
-/// Import full foundation even on linux for `trimmingCharacters`, for now.
-import Foundation
 import Logging
 import Models
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import NIOHTTP1
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 struct DefaultUsersService: UsersService {
     let httpClient: HTTPClient
@@ -60,7 +64,7 @@ struct DefaultUsersService: UsersService {
         let user = try await self.getOrCreateUser(discordID: discordID)
 
         guard let id = user.githubID,
-            !id.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+            !id.trimmingWhitespacesAndNewlines().isEmpty
         else {
             return .notLinked
         }

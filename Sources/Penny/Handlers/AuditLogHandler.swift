@@ -2,7 +2,7 @@ import DiscordBM
 import Logging
 import Models
 import NIOCore
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials

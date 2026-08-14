@@ -1,10 +1,14 @@
 import DiscordBM
-/// Import full foundation even on linux for `trimmingCharacters`, for now.
-import Foundation
 import JWTKit
 import Logging
 import Models
 import Shared
+
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
 
 private typealias Expression = S3AutoPingItems.Expression
 
@@ -225,7 +229,7 @@ extension InteractionHandler {
                     .requireComponent(customId: "texts")
                     .requireTextInput()
 
-                if let _text = textInput.value?.trimmingCharacters(in: .whitespaces),
+                if let _text = textInput.value?.trimmingWhitespaces(),
                     !_text.isEmpty
                 {
                     let dividedExpressions = _text.divideIntoAutoPingsExpressions(mode: mode)
@@ -923,7 +927,7 @@ extension InteractionHandler {
                 return accessLevelError
             }
             if let value = try await context.faqsService.get(name: name) {
-                let modalId = ModalID.faqs(.edit(nameHash: name.hash, value: value))
+                let modalId = ModalID.faqs(.edit(nameHash: name.stableHash, value: value))
                 return modalId.makeModal()
             } else {
                 return "No FAQ with name '\(name)' exists at all"
@@ -937,7 +941,7 @@ extension InteractionHandler {
                 return accessLevelError
             }
             if try await context.faqsService.get(name: name) != nil {
-                let modalId = ModalID.faqs(.rename(nameHash: name.hash, name: name))
+                let modalId = ModalID.faqs(.rename(nameHash: name.stableHash, name: name))
                 return modalId.makeModal()
             } else {
                 return "No FAQ with name '\(name)' exists at all"
@@ -1033,7 +1037,7 @@ extension InteractionHandler {
                 return accessLevelError
             }
             if let value = try await context.autoFaqsService.get(expression: expression) {
-                let modalId = ModalID.autoFaqs(.edit(expressionHash: expression.hash, value: value))
+                let modalId = ModalID.autoFaqs(.edit(expressionHash: expression.stableHash, value: value))
                 return modalId.makeModal()
             } else {
                 return "No Auto-FAQ with expression '\(expression)' exists at all"
@@ -1049,7 +1053,7 @@ extension InteractionHandler {
             if try await context.autoFaqsService.get(expression: expression) != nil {
                 let modalId = ModalID.autoFaqs(
                     .rename(
-                        expressionHash: expression.hash,
+                        expressionHash: expression.stableHash,
                         expression: expression
                     )
                 )

@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Penny",
     platforms: [
-        .macOS(.v15)
+        .macOS(.v26)
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
@@ -32,7 +32,7 @@ let package = Package(
         .package(url: "https://github.com/soto-project/soto.git", from: "7.3.0"),
         .package(url: "https://github.com/soto-project/soto-core.git", from: "7.3.0"),
         .package(url: "https://github.com/swiftlang/swift-evolution-metadata-extractor.git", from: "1.0.0"),
-        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "2.5.2"),
+        .package(url: "https://github.com/swift-server/swift-aws-lambda-runtime.git", from: "3.0.0-rc1"),
         .package(url: "https://github.com/swift-server/swift-aws-lambda-events.git", from: "1.4.0"),
         /// Not-released area:
         .package(url: "https://github.com/swiftlang/swift-markdown.git", from: "0.7.1"),

@@ -1,6 +1,5 @@
-/// Import full foundation even on linux for `folding(options:locale:)`, for now.
-import Foundation
 import GitHubAPI
+import Shared
 
 extension PullRequest {
 
@@ -73,14 +72,7 @@ extension String {
     fileprivate var hasDoNotMergePrefix: Bool {
         let folded = self.lowercased()
             .filter { !$0.isPunctuation }
-            .folding(
-                options: .caseInsensitive,
-                locale: nil
-            )
-            .folding(
-                options: .diacriticInsensitive,
-                locale: nil
-            )
+            .foldingDiacritics()
         return folded.hasPrefix("dnm") || folded.hasPrefix("do not merge")
     }
 }

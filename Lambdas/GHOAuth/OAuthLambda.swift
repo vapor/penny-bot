@@ -7,7 +7,7 @@ import JWTKit
 import LambdasShared
 import Logging
 import Models
-import NIOFoundationCompat
+import NIOFoundationEssentialsCompat
 import Shared
 import SotoCore
 

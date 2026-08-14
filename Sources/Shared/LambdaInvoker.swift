@@ -1,14 +1,13 @@
 import Logging
 package import Models
+import NIOFoundationEssentialsCompat
 package import SotoCore
 import SotoLambda
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
-import NIOFoundationEssentialsCompat
 #else
 import Foundation
-import NIOFoundationCompat
 #endif
 
 package struct LambdaInvoker: Sendable {

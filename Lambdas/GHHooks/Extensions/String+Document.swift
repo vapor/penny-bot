@@ -1,5 +1,3 @@
-/// Import full foundation even on linux for `trimmingCharacters`, for now.
-import Foundation
 import Markdown
 import Shared
 
@@ -119,9 +117,8 @@ extension String {
     }
 
     private func trimmingForMarkdown() -> String {
-        self.trimmingCharacters(
-            in: .whitespacesAndNewlines
-        ).trimmingWorthlessLines()
+        self.trimmingWhitespacesAndNewlines()
+            .trimmingWorthlessLines()
     }
 
     private func trimmingWorthlessLines() -> String {

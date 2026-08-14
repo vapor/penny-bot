@@ -1,7 +1,6 @@
 import AsyncHTTPClient
-/// Import full foundation even on linux for `hash`, for now.
-import Foundation
 import Models
+import Shared
 
 @testable import Penny
 
@@ -20,7 +19,7 @@ struct FakeFaqsService: FaqsService {
     }
 
     func getName(hash: Int) async throws -> String? {
-        self.all.first(where: { $0.key.hash == hash })?.key
+        self.all.first(where: { $0.key.stableHash == hash })?.key
     }
 
     func getAll() async throws -> [String: String] {
