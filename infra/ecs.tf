@@ -78,6 +78,11 @@ resource "aws_ecs_service" "penny" {
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
 
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
+
   network_configuration {
     subnets          = data.aws_subnets.default.ids
     security_groups  = [aws_security_group.ecs_service.id]
