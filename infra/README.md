@@ -99,6 +99,7 @@ Not in code (needed to replicate elsewhere):
 - `penny-bot-deployer` access-key secret (If needed, a recreation is required.).
 - Shared org resources used as data sources: default VPC, OIDC provider, `GithubOIdP-Role` (`repo:vapor/*`).
 - The `PENNY_OIDC_ROLE_ARN` repository variable, pointing at the `penny-bot-deploy` role both workflows assume.
+- The `PENNY_OIDC_CI_PLAN_ROLE_ARN` repository variable, pointing at the `penny-bot-ci-plan` role both workflows assume.
 
 ## Observability
 

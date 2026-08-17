@@ -56,7 +56,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@e6de054238d6b7531b4efff3b6587d9aade6a06c # v6.2.3
         with:
-          role-to-assume: ${{ vars.PENNY_OIDC_PLAN_ROLE_ARN }}
+          role-to-assume: ${{ vars.PENNY_OIDC_CI_PLAN_ROLE_ARN }}
           aws-region: eu-west-1
 
       - name: Terraform plan
