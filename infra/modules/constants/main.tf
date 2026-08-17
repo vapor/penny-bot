@@ -24,8 +24,8 @@ locals {
     ecs_task_execution = "ecsTaskExecutionRole"
     ecs_task           = "ecsTaskIAMRole"
     lambda             = "penny-lambda"
-    github_deploy      = "penny-bot-deploy"
-    github_plan        = "penny-bot-ci-plan"
+    ci_deploy          = "penny-bot-ci-deploy"
+    ci_plan            = "penny-bot-ci-plan"
   }
 
   secret_names = {

@@ -1,4 +1,4 @@
-data "aws_iam_policy_document" "github_plan_assume" {
+data "aws_iam_policy_document" "ci_plan_assume" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -22,13 +22,13 @@ data "aws_iam_policy_document" "github_plan_assume" {
   }
 }
 
-resource "aws_iam_role" "github_plan" {
-  name               = module.constants.role_names.github_plan
+resource "aws_iam_role" "ci_plan" {
+  name               = module.constants.role_names.ci_plan
   description        = "Read-only role for planning infra/ on pull requests"
-  assume_role_policy = data.aws_iam_policy_document.github_plan_assume.json
+  assume_role_policy = data.aws_iam_policy_document.ci_plan_assume.json
 }
 
-data "aws_iam_policy_document" "github_plan" {
+data "aws_iam_policy_document" "ci_plan" {
   statement {
     sid       = "TerraformState"
     actions   = ["s3:ListBucket", "s3:GetBucketLocation"]
@@ -189,8 +189,8 @@ data "aws_iam_policy_document" "github_plan" {
   }
 }
 
-resource "aws_iam_role_policy" "github_plan" {
-  name   = "penny-bot-terraform-plan"
-  role   = aws_iam_role.github_plan.id
-  policy = data.aws_iam_policy_document.github_plan.json
+resource "aws_iam_role_policy" "ci_plan" {
+  name   = "penny-bot-ci-plan"
+  role   = aws_iam_role.ci_plan.id
+  policy = data.aws_iam_policy_document.ci_plan.json
 }
