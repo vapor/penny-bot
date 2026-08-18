@@ -4,7 +4,7 @@ locals {
   ]
 }
 
-data "aws_iam_policy_document" "github_deploy_assume" {
+data "aws_iam_policy_document" "ci_deploy_assume" {
   statement {
     effect  = "Allow"
     actions = ["sts:AssumeRoleWithWebIdentity"]
@@ -28,12 +28,12 @@ data "aws_iam_policy_document" "github_deploy_assume" {
   }
 }
 
-resource "aws_iam_role" "github_deploy" {
-  name               = module.constants.role_names.github_deploy
-  assume_role_policy = data.aws_iam_policy_document.github_deploy_assume.json
+resource "aws_iam_role" "ci_deploy" {
+  name               = module.constants.role_names.ci_deploy
+  assume_role_policy = data.aws_iam_policy_document.ci_deploy_assume.json
 }
 
-data "aws_iam_policy_document" "github_deploy" {
+data "aws_iam_policy_document" "ci_deploy" {
   statement {
     sid       = "TerraformState"
     actions   = ["s3:ListBucket", "s3:GetBucketLocation"]
@@ -281,8 +281,8 @@ data "aws_iam_policy_document" "github_deploy" {
   }
 }
 
-resource "aws_iam_role_policy" "github_deploy" {
-  name   = "penny-bot-terraform-deploy"
-  role   = aws_iam_role.github_deploy.id
-  policy = data.aws_iam_policy_document.github_deploy.json
+resource "aws_iam_role_policy" "ci_deploy" {
+  name   = "penny-bot-ci-deploy"
+  role   = aws_iam_role.ci_deploy.id
+  policy = data.aws_iam_policy_document.ci_deploy.json
 }

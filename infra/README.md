@@ -39,7 +39,7 @@ mise x -- terraform -chdir=infra apply
 
 ## Changing CI permissions
 
-* All IAM stuff including the role CI assumes (`penny-bot-deploy`) are defined in `infra/bootstrap/iam_deploy.tf`.
+* The IAM stuff including the roles the CIs assume (`penny-bot-ci-*`) are defined in `infra/bootstrap/iam_ci*.tf`.
 * Modifying the roles requires manually applying the changes. The CI intentionally doesn't have permissions to do this.
 
 ```bash
@@ -96,9 +96,9 @@ On a **fresh account** there is no live task definition to read, so you must sup
 Not in code (needed to replicate elsewhere):
 
 - Secret values for all 7 `prod/penny/penny-bot/*` secrets.
-- `penny-bot-deployer` access-key secret (If needed, a recreation is required.).
 - Shared org resources used as data sources: default VPC, OIDC provider, `GithubOIdP-Role` (`repo:vapor/*`).
-- The `PENNY_OIDC_ROLE_ARN` repository variable, pointing at the `penny-bot-deploy` role both workflows assume.
+- The `PENNY_OIDC_CI_DEPLOY_ROLE_ARN` repository variable, pointing at the `penny-bot-ci-deploy` role `deploy.yml` assumes.
+- The `PENNY_OIDC_CI_PLAN_ROLE_ARN` repository variable, pointing at the `penny-bot-ci-plan` role `test.yml` assumes.
 
 ## Observability
 

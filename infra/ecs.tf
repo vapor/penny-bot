@@ -4,6 +4,7 @@ resource "aws_ecs_cluster" "penny" {
 
 resource "aws_ecs_task_definition" "penny" {
   family                   = "penny-bot"
+  skip_destroy             = true
   cpu                      = "256"
   memory                   = "512"
   network_mode             = "awsvpc"
@@ -77,6 +78,11 @@ resource "aws_ecs_service" "penny" {
 
   deployment_minimum_healthy_percent = 100
   deployment_maximum_percent         = 200
+
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
 
   network_configuration {
     subnets          = data.aws_subnets.default.ids
