@@ -61,8 +61,9 @@ jobs:
         run: |
           mkdir ./zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
+            # --scratch-path resolves a deadlock
             swift package \
-              --scratch-path .build-plugin \ # resolves a deadlock
+              --scratch-path .build-plugin \
               --allow-network-connections docker \
               lambda-build \
               --verbose \
