@@ -37,7 +37,9 @@ jobs:
         id: "restore-cache"
         uses: actions/cache@v6
         with:
-          path: .build
+          path: |
+            .build
+            .build-plugin
           key: "lambdas-build-${{ runner.os }}-${{ github.event.after }}"
           restore-keys: "lambdas-build-${{ runner.os }}-"
 
@@ -60,6 +62,7 @@ jobs:
           mkdir ./zips
           for name in ${{ steps.find_package_names.outputs.names }}; do
             swift package \
+              --scratch-path .build-plugin \ # resolves a deadlock
               --allow-network-connections docker \
               lambda-build \
               --verbose \
