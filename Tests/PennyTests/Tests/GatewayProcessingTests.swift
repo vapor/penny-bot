@@ -128,6 +128,60 @@ final class GatewayProcessingTests: Sendable {
     }
 
     @Test
+    func spamHandler() async throws {
+        let spammer: UserSnowflake = "1032312357818151033"
+        let messages: [(id: MessageSnowflake, channelId: ChannelSnowflake)] = [
+            ("1039637770005717040", "519613337638797315"),
+            ("1039637770005717041", "684159753189982218"),
+            ("1039637770005717042", "1018169583619821619"),
+        ]
+
+        for message in messages {
+            var event = TestData.decodedFor(gatewayEventKey: "thanksMessage")
+            event.data = .messageCreate(
+                TestData.rolelessMessage(
+                    id: message.id,
+                    channelId: message.channelId,
+                    authorId: spammer,
+                    content: "free nitro at https://example.com",
+                    timestamp: Date()
+                )
+            )
+            await manager.send(event: event)
+        }
+
+        let timeout = try #require(
+            await responseStorage.awaitResponse(
+                at: .updateGuildMember(guildId: Constants.vaporGuildId, userId: spammer)
+            ).value as? Payloads.ModifyGuildMember
+        )
+        let disabledUntil = try #require(timeout.communication_disabled_until?.date)
+        #expect(disabledUntil.timeIntervalSinceNow > SpamHandler.timeoutDuration.asTimeInterval - 60)
+        #expect(disabledUntil.timeIntervalSinceNow <= SpamHandler.timeoutDuration.asTimeInterval)
+
+        let report = try #require(
+            await responseStorage.awaitResponse(
+                at: .createMessage(channelId: Constants.Channels.modLogs.id)
+            ).value as? Payloads.CreateMessage
+        )
+        let embed = try #require(report.embeds?.first)
+        #expect(embed.title == "Spam messages detected")
+        #expect(embed.fields?.first(where: { $0.name == "Count" })?.value == "\(messages.count)")
+        /// The events are handled concurrently so the channels can be in any order.
+        let channelsField = embed.fields?.first(where: { $0.name == "Channels" })
+        #expect(
+            channelsField?.value.split(separator: ", ").sorted()
+                == messages.map({ "<#\($0.channelId.rawValue)>"[...] }).sorted()
+        )
+
+        for message in messages {
+            _ = await responseStorage.awaitResponse(
+                at: .deleteMessage(channelId: message.channelId, messageId: message.id)
+            )
+        }
+    }
+
+    @Test
     func reactionHandler() async throws {
         do {
             let response = try await manager.sendAndAwaitResponse(

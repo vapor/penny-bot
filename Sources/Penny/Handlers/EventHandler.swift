@@ -20,6 +20,7 @@ struct EventHandler: GatewayEventHandler {
     }
 
     func onMessageCreate(_ message: Gateway.MessageCreate) async {
+        await SpamHandler(event: message, context: context).handle()
         await MessageHandler(event: message, context: context).handle()
     }
 

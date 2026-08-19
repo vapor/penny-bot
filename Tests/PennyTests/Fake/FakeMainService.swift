@@ -119,6 +119,10 @@ actor FakeMainService: MainService {
             discordService: discordService
         )
         let reactionCache = ReactionCache()
+        let spamCache = SpamCache(
+            clock: ContinuousClock(),
+            runCleanupBackgroundTask: { _ in }
+        )
         let autoFaqsService = FakeAutoFaqsService()
 
         let context = HandlerContext(
@@ -147,7 +151,8 @@ actor FakeMainService: MainService {
             evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             swiftReleasesChecker: swiftReleasesChecker,
-            reactionCache: reactionCache
+            reactionCache: reactionCache,
+            spamCache: spamCache
         )
         context.botStateManager = BotStateManager(
             context: context,

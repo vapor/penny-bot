@@ -19,6 +19,7 @@ final class HandlerContext: Sendable {
     let soChecker: SOChecker
     let swiftReleasesChecker: SwiftReleasesChecker
     let reactionCache: ReactionCache
+    let spamCache: SpamCache<ContinuousClock>
 
     init(
         backgroundProcessor: BackgroundProcessor,
@@ -32,7 +33,8 @@ final class HandlerContext: Sendable {
         evolutionChecker: EvolutionChecker,
         soChecker: SOChecker,
         swiftReleasesChecker: SwiftReleasesChecker,
-        reactionCache: ReactionCache
+        reactionCache: ReactionCache,
+        spamCache: SpamCache<ContinuousClock>
     ) {
         self.backgroundProcessor = backgroundProcessor
         self.usersService = usersService
@@ -46,5 +48,6 @@ final class HandlerContext: Sendable {
         self.soChecker = soChecker
         self.swiftReleasesChecker = swiftReleasesChecker
         self.reactionCache = reactionCache
+        self.spamCache = spamCache
     }
 }
