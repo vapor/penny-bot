@@ -85,6 +85,29 @@ enum TestData {
         return decoded
     }
 
+    /// A message by a user with no roles at all, based on the `thanksMessage` event.
+    static func rolelessMessage(
+        id: MessageSnowflake,
+        channelId: ChannelSnowflake,
+        authorId: UserSnowflake,
+        content: String,
+        timestamp: Date
+    ) -> Gateway.MessageCreate {
+        guard case let .messageCreate(base) = decodedFor(gatewayEventKey: "thanksMessage").data else {
+            fatalError("The 'thanksMessage' event is not a message-create event anymore")
+        }
+        var message = base
+        message.id = id
+        message.channel_id = channelId
+        message.content = content
+        message.timestamp = .init(date: timestamp)
+        message.mentions = []
+        message.author?.id = authorId
+        message.author?.username = "Spammer"
+        message.member?.roles = []
+        return message
+    }
+
     private static let ghHooksEvents: [String: Data] = {
         let data = resource(named: "ghHooksEvents.json")
         let object = try! JSONSerialization.jsonObject(with: data, options: [])

@@ -3,6 +3,12 @@ import Logging
 import OrderedCollections
 import Shared
 
+#if canImport(FoundationEssentials)
+import FoundationEssentials
+#else
+import Foundation
+#endif
+
 actor DiscordService {
 
     enum Error: Swift.Error {
@@ -269,6 +275,60 @@ actor DiscordService {
         }
     }
 
+    func deleteMessage(
+        messageId: MessageSnowflake,
+        channelId: ChannelSnowflake,
+        reason: String
+    ) async {
+        do {
+            try await discordClient.deleteMessage(
+                channelId: channelId,
+                messageId: messageId,
+                reason: reason
+            ).guardSuccess()
+        } catch {
+            logger.report(
+                "Couldn't delete a message",
+                error: error,
+                metadata: [
+                    "messageId": .stringConvertible(messageId),
+                    "channelId": .stringConvertible(channelId),
+                    "reason": .string(reason),
+                ]
+            )
+        }
+    }
+
+    /// Times the member out, so they can't send messages or react for the specified duration.
+    func timeoutMember(
+        userId: UserSnowflake,
+        for duration: Duration,
+        reason: String
+    ) async {
+        do {
+            try await discordClient.updateGuildMember(
+                guildId: Constants.vaporGuildId,
+                userId: userId,
+                reason: reason,
+                payload: .init(
+                    communication_disabled_until: .init(
+                        date: Date(timeIntervalSinceNow: duration.asTimeInterval)
+                    )
+                )
+            ).guardSuccess()
+        } catch {
+            logger.report(
+                "Couldn't time a member out",
+                error: error,
+                metadata: [
+                    "userId": .stringConvertible(userId),
+                    "duration": .stringConvertible(duration),
+                    "reason": .string(reason),
+                ]
+            )
+        }
+    }
+
     /// Returns whether or not the response has been successfully sent.
     @discardableResult
     func respondToInteraction(
@@ -354,6 +414,19 @@ actor DiscordService {
             return nil
         }
         return messages
+    }
+
+    func getCachedMessages(
+        of userId: UserSnowflake,
+        in window: Duration
+    ) async -> [Gateway.MessageCreate] {
+        let now = Date.now
+        return await cache.messages.flatMap { (channelId, messages) in
+            messages.filter { message in
+                guard message.author?.id == userId else { return false }
+                return message.timestamp.date.distance(to: now) <= window.asTimeInterval
+            }
+        }
     }
 
     func getChannelMessage(
@@ -448,9 +521,9 @@ actor DiscordService {
     }
 
     func memberHasRolesForElevatedPublicCommandsAccess(member: Guild.Member) -> Bool {
-        Constants.Roles.elevatedPublicCommandsAccess.contains(where: {
-            member.roles.contains($0.rawValue)
-        })
+        !Set(member.roles)
+            .intersection(Constants.Roles.elevatedPublicCommandsAccessSet)
+            .isEmpty
     }
 
     func memberHasRolesForElevatedRestrictedCommandsAccess(member: Guild.Member) -> Bool {
