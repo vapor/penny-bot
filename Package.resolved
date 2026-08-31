@@ -1,5 +1,5 @@
 {
-  "originHash" : "f969be423303d94f8fee51de71926f99a01e866664d7978795024d8282ab1fea",
+  "originHash" : "5a0ba2e74479930cefadf01bf45c9055022db7b9a7450c9945508b2c73dde21a",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -222,8 +222,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-evolution-metadata-extractor.git",
       "state" : {
-        "revision" : "37b7075f766679dc3310454c385f93be8b4f5083",
-        "version" : "1.1.0"
+        "revision" : "8877f14497370eea12554e47d1c4d45fa37568d0",
+        "version" : "1.1.1"
       }
     },
     {
