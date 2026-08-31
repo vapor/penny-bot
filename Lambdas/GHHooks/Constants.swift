@@ -27,7 +27,7 @@ enum Constants {
         case botLogs = "1067060193982156880"
         case issuesAndPRs = "1123702585006768228"
         case release = "431926479752921098"
-        case communityRelease = "1544058108224082081"
+        case communityReleases = "1544058108224082081"
         case thanks = "443074453719744522"
         case documentation = "484454139506458634"
         case backers = "633345683012976640"

@@ -341,7 +341,7 @@ struct ReleaseReporter {
     }
 
     var releaseChannel: Constants.Channels {
-        repo.owner.id == Constants.GitHub.vaporOrgID ? .release : .communityRelease
+        repo.owner.id == Constants.GitHub.vaporOrgID ? .release : .communityReleases
     }
 
     func sendToDiscord(embed: Embed) async throws {
