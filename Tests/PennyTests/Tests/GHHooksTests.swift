@@ -1101,7 +1101,7 @@ actor GHHooksTests {
         try await handleEvent(
             key: "release6",
             eventName: .release,
-            expect: .response(at: .release, type: .create)
+            expect: .response(at: .communityRelease, type: .create)
         )
     }
 

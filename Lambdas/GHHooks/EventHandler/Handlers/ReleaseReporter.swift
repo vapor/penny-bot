@@ -340,9 +340,13 @@ struct ReleaseReporter {
         return nil
     }
 
+    var releaseChannel: Constants.Channels {
+        repo.owner.id == Constants.GitHub.vaporOrgID ? .release : .communityRelease
+    }
+
     func sendToDiscord(embed: Embed) async throws {
         try await context.discordClient.createMessage(
-            channelId: Constants.Channels.release.id,
+            channelId: self.releaseChannel.id,
             payload: .init(embeds: [embed])
         ).guardSuccess()
     }
