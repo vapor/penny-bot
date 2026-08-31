@@ -16,7 +16,7 @@ struct ReleaseMaker {
         /// Needs the Penny installation to be installed on the org,
         /// which is not possible without making Penny app public.
         /// The Vapor organization ID.
-        static let organizationIDAllowList: Set<Int64> = [17_364_220]
+        static let organizationIDAllowList: Set<Int64> = [Constants.GitHub.vaporOrgID]
         static let releaseNoticePrefix = "**These changes are now available in"
     }
 
