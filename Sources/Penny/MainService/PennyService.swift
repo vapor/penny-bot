@@ -134,6 +134,10 @@ struct PennyService: MainService {
             discordService: discordService
         )
         let reactionCache = ReactionCache()
+        let spamCache = SpamCache(
+            clock: ContinuousClock(),
+            runCleanupBackgroundTask: { task in backgroundProcessor.process(task) }
+        )
         let cachesService = DefaultCachesService(
             awsClient: awsClient,
             context: .init(
@@ -163,7 +167,8 @@ struct PennyService: MainService {
             evolutionChecker: evolutionChecker,
             soChecker: soChecker,
             swiftReleasesChecker: swiftReleasesChecker,
-            reactionCache: reactionCache
+            reactionCache: reactionCache,
+            spamCache: spamCache
         )
         context.botStateManager = BotStateManager(context: context)
         context.discordEventListener = DiscordEventListener(bot: bot, context: context)
