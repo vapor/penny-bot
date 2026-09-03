@@ -40,11 +40,20 @@ struct GHLeafSource: LeafSource {
                 if let existing = await self.getFromCache(key: template) {
                     return existing
                 } else {
-                    let new = try await pull(template: template)
-                    await self.saveToCache(key: template, value: new)
-                    return new
+                    do {
+                        return try await pullAndCache(template: template)
+                    } catch {
+                        try await Task.sleep(for: .milliseconds(500))
+                        return try await pullAndCache(template: template)
+                    }
                 }
             }
+        }
+
+        private func pullAndCache(template: String) async throws -> ByteBuffer {
+            let new = try await pull(template: template)
+            self.saveToCache(key: template, value: new)
+            return new
         }
 
         private func pull(template: String) async throws -> ByteBuffer {

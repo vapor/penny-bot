@@ -19,12 +19,15 @@ enum Constants {
         static let appID = 360798
         /// The installation-id of Penny for Vapor org.
         static let installationID = 39_698_047
+        /// The id of the Vapor organization.
+        static let vaporOrgID: Int64 = 17_364_220
     }
 
     enum Channels: ChannelSnowflake, CaseIterable {
         case botLogs = "1067060193982156880"
         case issuesAndPRs = "1123702585006768228"
         case release = "431926479752921098"
+        case communityReleases = "1544058108224082081"
         case thanks = "443074453719744522"
         case documentation = "484454139506458634"
         case backers = "633345683012976640"

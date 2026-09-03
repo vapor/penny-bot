@@ -1,5 +1,5 @@
 {
-  "originHash" : "658bcaf446f2717e5cbeb1916d2fbd00c379fde6052f93971282cd6e969fa683",
+  "originHash" : "5a0ba2e74479930cefadf01bf45c9055022db7b9a7450c9945508b2c73dde21a",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -222,8 +222,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swiftlang/swift-evolution-metadata-extractor.git",
       "state" : {
-        "revision" : "37b7075f766679dc3310454c385f93be8b4f5083",
-        "version" : "1.1.0"
+        "revision" : "8877f14497370eea12554e47d1c4d45fa37568d0",
+        "version" : "1.1.1"
       }
     },
     {
@@ -375,8 +375,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-service-lifecycle.git",
       "state" : {
-        "revision" : "9829955b385e5bb88128b73f1b8389e9b9c3191a",
-        "version" : "2.11.0"
+        "revision" : "7f9326b0326ff86e3646295ea6e891f68c471c5e",
+        "version" : "2.12.0"
       }
     },
     {
