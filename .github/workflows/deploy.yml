@@ -11,8 +11,11 @@ jobs:
       contents: read
       id-token: write
 
-    runs-on: ubuntu-24.04-arm
+    # https://runs-on.com/caching/tmpfs/
+    runs-on: runs-on=${{ github.run_id }}/family=r8g/cpu=8/ram=64/image=ubuntu24-full-arm64/extras=tmpfs+s3-cache
     container: swift:6.3-amazonlinux2023
+
+    timeout-minutes: 20
 
     outputs:
       names: ${{ steps.find_package_names.outputs.names }}
@@ -22,6 +25,14 @@ jobs:
       AWS_DEFAULT_REGION: eu-west-1
 
     steps:
+      - name: Configure RunsOn
+        uses: runs-on/action@efac073ea2507ec18797de3a81704201ade11d9d # v2.3.1
+
+      - name: Show where the build directories live
+        run: |
+          grep MemTotal /proc/meminfo
+          df -h . "${HOME}" /tmp
+
       - name: Install AWSCLI v2, jq, zstd, zip, and stub docker for the lambda-build plugin
         run: |
           dnf update -y
