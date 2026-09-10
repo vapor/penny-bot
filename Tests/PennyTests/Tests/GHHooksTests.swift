@@ -1145,16 +1145,50 @@ actor GHHooksTests {
     @Test
     func handleSponsorshipCreated() async throws {
         try await handleEvent(key: "sponsorship1", eventName: .sponsorship, expect: .response(at: .backers))
+        _ = await self.responseStorage.awaitResponse(
+            at: .addGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.backer.id
+            )
+        )
     }
 
     @Test
     func handleSponsorshipCancelled() async throws {
         try await handleEvent(key: "sponsorship2", eventName: .sponsorship, expect: .noResponse)
+        _ = await self.responseStorage.awaitResponse(
+            at: .deleteGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.sponsor.id
+            )
+        )
+        _ = await self.responseStorage.awaitResponse(
+            at: .deleteGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.backer.id
+            ),
+            expectFailure: true
+        )
     }
 
     @Test
     func handleSponsorshipPendingCancellation() async throws {
         try await handleEvent(key: "sponsorship3", eventName: .sponsorship, expect: .noResponse)
+    }
+
+    @Test
+    func handleSponsorshipTierChanged() async throws {
+        try await handleEvent(key: "sponsorship4", eventName: .sponsorship, expect: .noResponse)
+        _ = await self.responseStorage.awaitResponse(
+            at: .deleteGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.sponsor.id
+            )
+        )
     }
 
     func handleEvent(
