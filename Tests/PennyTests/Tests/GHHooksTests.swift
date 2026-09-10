@@ -1268,6 +1268,7 @@ actor GHHooksTests {
             )
         ).body
         #expect(body.contains("(HTTP status code: 422)"))
+        #expect(body.contains("> Required input 'sha' not provided"))
     }
 
     @Test

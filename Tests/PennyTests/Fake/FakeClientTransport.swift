@@ -9,12 +9,8 @@ import Foundation
 
 struct FakeClientTransport: ClientTransport {
 
-    /// Operations that don't respond with the `POST`/non-`POST` default.
-    private static let knownStatuses: [String: HTTPResponse.Status] = [
-        "actions/create-workflow-dispatch": .noContent
-    ]
-
     /// Keyed by operation id, for tests that need to see a failure response.
+    /// The response is then looked up with the status code appended to the request id.
     let statusOverrides: [String: HTTPResponse.Status]
     let recorder: GitHubRequestsRecorder
 
@@ -29,8 +25,6 @@ struct FakeClientTransport: ClientTransport {
         baseURL: URL,
         operationID: String
     ) async throws -> (HTTPResponse, HTTPBody?) {
-        let primaryID = "\(request.method.rawValue)-\(baseURL.absoluteString)\(request.path ?? "")"
-
         await self.recorder.record(
             .init(
                 operationID: operationID,
@@ -40,13 +34,15 @@ struct FakeClientTransport: ClientTransport {
             )
         )
 
-        guard let data = TestData.for(ghRequestID: primaryID) ?? TestData.for(ghRequestID: operationID) else {
+        let suffix = self.statusOverrides[operationID].map { "-\($0.code)" } ?? ""
+        let primaryID = "\(request.method.rawValue)-\(baseURL.absoluteString)\(request.path ?? "")\(suffix)"
+        let operationID = operationID + suffix
+        guard let response = TestData.for(ghRequestID: primaryID) ?? TestData.for(ghRequestID: operationID) else {
             fatalError("No test GitHub data for primary id: \(primaryID), operation id: \(operationID).")
         }
-        let status =
-            self.statusOverrides[operationID]
-            ?? Self.knownStatuses[operationID]
-            ?? (request.method == .post ? .created : .ok)
-        return (HTTPResponse(status: status), HTTPBody(data))
+        let headers: HTTPFields = response.body == nil ? [:] : [.contentType: "application/json"]
+        let httpResponse = HTTPResponse(status: response.status, headerFields: headers)
+        let httpBody = response.body.map { HTTPBody($0) }
+        return (httpResponse, httpBody)
     }
 }
