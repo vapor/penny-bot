@@ -2,20 +2,13 @@
 @_spi(Generated) package import OpenAPIRuntime
 
 #if os(Linux)
-@preconcurrency package import struct FoundationEssentials.URL
-@preconcurrency package import struct FoundationEssentials.Data
 @preconcurrency package import struct FoundationEssentials.Date
-package typealias _Foundation_T_URL = FoundationEssentials.URL
-package typealias _Foundation_T_Data = FoundationEssentials.Data
-package typealias _Foundation_T_Date = FoundationEssentials.Date
+package typealias _Foundation_Date = FoundationEssentials.Date
 #else
-package import struct Foundation.URL
-package import struct Foundation.Data
 package import struct Foundation.Date
-package typealias _Foundation_T_URL = Foundation.URL
-package typealias _Foundation_T_Data = Foundation.Data
-package typealias _Foundation_T_Date = Foundation.Date
+package typealias _Foundation_Date = Foundation.Date
 #endif
+
 /// A type that performs HTTP operations defined by the OpenAPI document.
 package protocol APIProtocol: Sendable {
     /// Create an installation access token for an app
@@ -94,6 +87,23 @@ package protocol APIProtocol: Sendable {
     func actionsCreateWorkflowDispatch(
         _ input: Operations.ActionsCreateWorkflowDispatch.Input
     ) async throws -> Operations.ActionsCreateWorkflowDispatch.Output
+    /// Get repository permissions for a user
+    ///
+    /// Checks the repository permission and role of a collaborator.
+    ///
+    /// The `permission` attribute provides the legacy base roles of `admin`, `write`, `read`, and `none`, where the
+    /// `maintain` role is mapped to `write` and the `triage` role is mapped to `read`.
+    /// The `role_name` attribute provides the name of the assigned role, including custom roles. The
+    /// `permission` can also be used to determine which base level of access the collaborator has to the repository.
+    ///
+    /// The calculated permissions are the highest role assigned to the collaborator after considering all sources of grants, including: repo, teams, organization, and enterprise.
+    /// There is presently not a way to differentiate between an organization level grant and a repository level grant from this endpoint response.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/collaborators/{username}/permission`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/collaborators/{username}/permission/get(repos/get-collaborator-permission-level)`.
+    func reposGetCollaboratorPermissionLevel(
+        _ input: Operations.ReposGetCollaboratorPermissionLevel.Input
+    ) async throws -> Operations.ReposGetCollaboratorPermissionLevel.Output
     /// List commits
     ///
     /// **Signature verification object**
@@ -227,6 +237,31 @@ package protocol APIProtocol: Sendable {
     /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/post(issues/create)`.
     func issuesCreate(_ input: Operations.IssuesCreate.Input) async throws -> Operations.IssuesCreate.Output
+    /// Update an issue comment
+    ///
+    /// You can use the REST API to update comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/patch(issues/update-comment)`.
+    func issuesUpdateComment(
+        _ input: Operations.IssuesUpdateComment.Input
+    ) async throws -> Operations.IssuesUpdateComment.Output
+    /// Create reaction for an issue comment
+    ///
+    /// Create a reaction to an [issue comment](https://docs.github.com/rest/issues/comments#get-an-issue-comment). A response with an HTTP `200` status means that you already added the reaction type to this issue comment.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/post(reactions/create-for-issue-comment)`.
+    func reactionsCreateForIssueComment(
+        _ input: Operations.ReactionsCreateForIssueComment.Input
+    ) async throws -> Operations.ReactionsCreateForIssueComment.Output
     /// Get an issue
     ///
     /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api#follow-redirects) if the issue was
@@ -249,6 +284,45 @@ package protocol APIProtocol: Sendable {
     /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}`.
     /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/get(issues/get)`.
     func issuesGet(_ input: Operations.IssuesGet.Input) async throws -> Operations.IssuesGet.Output
+    /// List issue comments
+    ///
+    /// You can use the REST API to list comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// Issue comments are ordered by ascending ID.
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/get(issues/list-comments)`.
+    func issuesListComments(
+        _ input: Operations.IssuesListComments.Input
+    ) async throws -> Operations.IssuesListComments.Output
+    /// Create an issue comment
+    ///
+    /// You can use the REST API to create comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications).
+    /// Creating content too quickly using this endpoint may result in secondary rate limiting.
+    /// For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)"
+    /// and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)."
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
+    func issuesCreateComment(
+        _ input: Operations.IssuesCreateComment.Input
+    ) async throws -> Operations.IssuesCreateComment.Output
     /// Get a pull request
     ///
     /// Draft pull requests are available in public repositories with GitHub Free and GitHub Free for organizations, GitHub Pro, and legacy per-repository billing plans, and in public and private repositories with GitHub Team and GitHub Enterprise Cloud. For more information, see [GitHub's products](https://docs.github.com/github/getting-started-with-github/githubs-products) in the GitHub Help documentation.
@@ -528,6 +602,31 @@ extension APIProtocol {
             )
         )
     }
+    /// Get repository permissions for a user
+    ///
+    /// Checks the repository permission and role of a collaborator.
+    ///
+    /// The `permission` attribute provides the legacy base roles of `admin`, `write`, `read`, and `none`, where the
+    /// `maintain` role is mapped to `write` and the `triage` role is mapped to `read`.
+    /// The `role_name` attribute provides the name of the assigned role, including custom roles. The
+    /// `permission` can also be used to determine which base level of access the collaborator has to the repository.
+    ///
+    /// The calculated permissions are the highest role assigned to the collaborator after considering all sources of grants, including: repo, teams, organization, and enterprise.
+    /// There is presently not a way to differentiate between an organization level grant and a repository level grant from this endpoint response.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/collaborators/{username}/permission`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/collaborators/{username}/permission/get(repos/get-collaborator-permission-level)`.
+    package func reposGetCollaboratorPermissionLevel(
+        path: Operations.ReposGetCollaboratorPermissionLevel.Input.Path,
+        headers: Operations.ReposGetCollaboratorPermissionLevel.Input.Headers = .init()
+    ) async throws -> Operations.ReposGetCollaboratorPermissionLevel.Output {
+        try await reposGetCollaboratorPermissionLevel(
+            Operations.ReposGetCollaboratorPermissionLevel.Input(
+                path: path,
+                headers: headers
+            )
+        )
+    }
     /// List commits
     ///
     /// **Signature verification object**
@@ -715,6 +814,51 @@ extension APIProtocol {
             )
         )
     }
+    /// Update an issue comment
+    ///
+    /// You can use the REST API to update comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/patch(issues/update-comment)`.
+    package func issuesUpdateComment(
+        path: Operations.IssuesUpdateComment.Input.Path,
+        headers: Operations.IssuesUpdateComment.Input.Headers = .init(),
+        body: Operations.IssuesUpdateComment.Input.Body
+    ) async throws -> Operations.IssuesUpdateComment.Output {
+        try await issuesUpdateComment(
+            Operations.IssuesUpdateComment.Input(
+                path: path,
+                headers: headers,
+                body: body
+            )
+        )
+    }
+    /// Create reaction for an issue comment
+    ///
+    /// Create a reaction to an [issue comment](https://docs.github.com/rest/issues/comments#get-an-issue-comment). A response with an HTTP `200` status means that you already added the reaction type to this issue comment.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/post(reactions/create-for-issue-comment)`.
+    package func reactionsCreateForIssueComment(
+        path: Operations.ReactionsCreateForIssueComment.Input.Path,
+        headers: Operations.ReactionsCreateForIssueComment.Input.Headers = .init(),
+        body: Operations.ReactionsCreateForIssueComment.Input.Body
+    ) async throws -> Operations.ReactionsCreateForIssueComment.Output {
+        try await reactionsCreateForIssueComment(
+            Operations.ReactionsCreateForIssueComment.Input(
+                path: path,
+                headers: headers,
+                body: body
+            )
+        )
+    }
     /// Get an issue
     ///
     /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api#follow-redirects) if the issue was
@@ -744,6 +888,65 @@ extension APIProtocol {
             Operations.IssuesGet.Input(
                 path: path,
                 headers: headers
+            )
+        )
+    }
+    /// List issue comments
+    ///
+    /// You can use the REST API to list comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// Issue comments are ordered by ascending ID.
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/get(issues/list-comments)`.
+    package func issuesListComments(
+        path: Operations.IssuesListComments.Input.Path,
+        query: Operations.IssuesListComments.Input.Query = .init(),
+        headers: Operations.IssuesListComments.Input.Headers = .init()
+    ) async throws -> Operations.IssuesListComments.Output {
+        try await issuesListComments(
+            Operations.IssuesListComments.Input(
+                path: path,
+                query: query,
+                headers: headers
+            )
+        )
+    }
+    /// Create an issue comment
+    ///
+    /// You can use the REST API to create comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications).
+    /// Creating content too quickly using this endpoint may result in secondary rate limiting.
+    /// For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)"
+    /// and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)."
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
+    package func issuesCreateComment(
+        path: Operations.IssuesCreateComment.Input.Path,
+        headers: Operations.IssuesCreateComment.Input.Headers = .init(),
+        body: Operations.IssuesCreateComment.Input.Body
+    ) async throws -> Operations.IssuesCreateComment.Output {
+        try await issuesCreateComment(
+            Operations.IssuesCreateComment.Input(
+                path: path,
+                headers: headers,
+                body: body
             )
         )
     }
@@ -977,16 +1180,16 @@ extension APIProtocol {
 /// Server URLs defined in the OpenAPI document.
 package enum Servers {
     package enum Server1 {
-        package static func url() throws -> _Foundation_T_URL {
-            try _Foundation_T_URL(
+        package static func url() throws -> _Foundation_URL {
+            try _Foundation_URL(
                 validatingOpenAPIServerURL: "https://api.github.com",
                 variables: []
             )
         }
     }
     @available(*, deprecated, renamed: "Servers.Server1.url")
-    package static func server1() throws -> _Foundation_T_URL {
-        try _Foundation_T_URL(
+    package static func server1() throws -> _Foundation_URL {
+        try _Foundation_URL(
             validatingOpenAPIServerURL: "https://api.github.com",
             variables: []
         )
@@ -1208,9 +1411,9 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/enterprise/slug`.
             package var slug: Swift.String
             /// - Remark: Generated from `#/components/schemas/enterprise/created_at`.
-            package var createdAt: _Foundation_T_Date?
+            package var createdAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/enterprise/updated_at`.
-            package var updatedAt: _Foundation_T_Date?
+            package var updatedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/enterprise/avatar_url`.
             package var avatarUrl: Swift.String
             /// Creates a new `Enterprise`.
@@ -1234,8 +1437,8 @@ package enum Components {
                 nodeId: Swift.String,
                 name: Swift.String,
                 slug: Swift.String,
-                createdAt: _Foundation_T_Date? = nil,
-                updatedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date? = nil,
+                updatedAt: _Foundation_Date? = nil,
                 avatarUrl: Swift.String
             ) {
                 self.description = description
@@ -2739,7 +2942,7 @@ package enum Components {
                 /// - Remark: Generated from `#/components/schemas/repository/pushed_at/case1`.
                 case case1(Swift.Int)
                 /// - Remark: Generated from `#/components/schemas/repository/pushed_at/case2`.
-                case case2(_Foundation_T_Date)
+                case case2(_Foundation_Date)
                 package init(from decoder: any Swift.Decoder) throws {
                     var errors: [any Swift.Error] = []
                     do {
@@ -2776,7 +2979,7 @@ package enum Components {
                 /// - Remark: Generated from `#/components/schemas/repository/created_at/case1`.
                 case case1(Swift.Int)
                 /// - Remark: Generated from `#/components/schemas/repository/created_at/case2`.
-                case case2(_Foundation_T_Date)
+                case case2(_Foundation_Date)
                 package init(from decoder: any Swift.Decoder) throws {
                     var errors: [any Swift.Error] = []
                     do {
@@ -2813,7 +3016,7 @@ package enum Components {
                 /// - Remark: Generated from `#/components/schemas/repository/updated_at/case1`.
                 case case1(Swift.Int)
                 /// - Remark: Generated from `#/components/schemas/repository/updated_at/case2`.
-                case case2(_Foundation_T_Date)
+                case case2(_Foundation_Date)
                 package init(from decoder: any Swift.Decoder) throws {
                     var errors: [any Swift.Error] = []
                     do {
@@ -3575,13 +3778,13 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/closed_issues`.
             package var closedIssues: Swift.Int
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/closed_at`.
-            package var closedAt: _Foundation_T_Date?
+            package var closedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/nullable-milestone/due_on`.
-            package var dueOn: _Foundation_T_Date?
+            package var dueOn: _Foundation_Date?
             /// Creates a new `NullableMilestone`.
             ///
             /// - Parameters:
@@ -3614,10 +3817,10 @@ package enum Components {
                 creator: Components.Schemas.NullableSimpleUser? = nil,
                 openIssues: Swift.Int,
                 closedIssues: Swift.Int,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
-                closedAt: _Foundation_T_Date? = nil,
-                dueOn: _Foundation_T_Date? = nil
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
+                closedAt: _Foundation_Date? = nil,
+                dueOn: _Foundation_Date? = nil
             ) {
                 self.url = url
                 self.htmlUrl = htmlUrl
@@ -3695,11 +3898,11 @@ package enum Components {
             /// The time the issue type created.
             ///
             /// - Remark: Generated from `#/components/schemas/issue-type/created_at`.
-            package var createdAt: _Foundation_T_Date?
+            package var createdAt: _Foundation_Date?
             /// The time the issue type last updated.
             ///
             /// - Remark: Generated from `#/components/schemas/issue-type/updated_at`.
-            package var updatedAt: _Foundation_T_Date?
+            package var updatedAt: _Foundation_Date?
             /// The enabled state of the issue type.
             ///
             /// - Remark: Generated from `#/components/schemas/issue-type/is_enabled`.
@@ -3721,8 +3924,8 @@ package enum Components {
                 name: Swift.String,
                 description: Swift.String? = nil,
                 color: Components.Schemas.IssueType.ColorPayload? = nil,
-                createdAt: _Foundation_T_Date? = nil,
-                updatedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date? = nil,
+                updatedAt: _Foundation_Date? = nil,
                 isEnabled: Swift.Bool? = nil
             ) {
                 self.id = id
@@ -3809,9 +4012,9 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-integration/html_url`.
             package var htmlUrl: Swift.String
             /// - Remark: Generated from `#/components/schemas/nullable-integration/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/nullable-integration/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// The set of permissions for the GitHub app
             ///
             /// - Remark: Generated from `#/components/schemas/nullable-integration/permissions`.
@@ -3953,8 +4156,8 @@ package enum Components {
                 description: Swift.String? = nil,
                 externalUrl: Swift.String,
                 htmlUrl: Swift.String,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
                 permissions: Components.Schemas.NullableIntegration.PermissionsPayload,
                 events: [Swift.String],
                 installationsCount: Swift.Int? = nil
@@ -4109,7 +4312,7 @@ package enum Components {
         /// - Remark: Generated from `#/components/schemas/nullable-pinned-issue-comment`.
         package struct NullablePinnedIssueComment: Codable, Hashable, Sendable {
             /// - Remark: Generated from `#/components/schemas/nullable-pinned-issue-comment/pinned_at`.
-            package var pinnedAt: _Foundation_T_Date
+            package var pinnedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/nullable-pinned-issue-comment/pinned_by`.
             package var pinnedBy: Components.Schemas.NullableSimpleUser?
             /// Creates a new `NullablePinnedIssueComment`.
@@ -4118,7 +4321,7 @@ package enum Components {
             ///   - pinnedAt:
             ///   - pinnedBy:
             package init(
-                pinnedAt: _Foundation_T_Date,
+                pinnedAt: _Foundation_Date,
                 pinnedBy: Components.Schemas.NullableSimpleUser? = nil
             ) {
                 self.pinnedAt = pinnedAt
@@ -4175,9 +4378,9 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/user`.
             package var user: Components.Schemas.NullableSimpleUser?
             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/issue_url`.
             package var issueUrl: Swift.String
             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/author_association`.
@@ -4218,8 +4421,8 @@ package enum Components {
                 bodyHtml: Swift.String? = nil,
                 htmlUrl: Swift.String,
                 user: Components.Schemas.NullableSimpleUser? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
                 issueUrl: Swift.String,
                 authorAssociation: Components.Schemas.AuthorAssociation? = nil,
                 performedViaGithubApp: Components.Schemas.NullableIntegration? = nil,
@@ -4677,7 +4880,7 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/issue/pull_request`.
             package struct PullRequestPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/merged_at`.
-                package var mergedAt: _Foundation_T_Date?
+                package var mergedAt: _Foundation_Date?
                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/diff_url`.
                 package var diffUrl: Swift.String?
                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/html_url`.
@@ -4695,7 +4898,7 @@ package enum Components {
                 ///   - patchUrl:
                 ///   - url:
                 package init(
-                    mergedAt: _Foundation_T_Date? = nil,
+                    mergedAt: _Foundation_Date? = nil,
                     diffUrl: Swift.String? = nil,
                     htmlUrl: Swift.String? = nil,
                     patchUrl: Swift.String? = nil,
@@ -4718,11 +4921,11 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/issue/pull_request`.
             package var pullRequest: Components.Schemas.Issue.PullRequestPayload?
             /// - Remark: Generated from `#/components/schemas/issue/closed_at`.
-            package var closedAt: _Foundation_T_Date?
+            package var closedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/issue/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/issue/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/issue/draft`.
             package var draft: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/issue/closed_by`.
@@ -4821,9 +5024,9 @@ package enum Components {
                 activeLockReason: Swift.String? = nil,
                 comments: Swift.Int,
                 pullRequest: Components.Schemas.Issue.PullRequestPayload? = nil,
-                closedAt: _Foundation_T_Date? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
+                closedAt: _Foundation_Date? = nil,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
                 draft: Swift.Bool? = nil,
                 closedBy: Components.Schemas.NullableSimpleUser? = nil,
                 bodyHtml: Swift.String? = nil,
@@ -4924,6 +5127,121 @@ package enum Components {
                 case issueFieldValues = "issue_field_values"
             }
         }
+        /// Comments provide a way for people to collaborate on an issue.
+        ///
+        /// - Remark: Generated from `#/components/schemas/issue-comment`.
+        package struct IssueComment: Codable, Hashable, Sendable {
+            /// Unique identifier of the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/issue-comment/id`.
+            package var id: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/issue-comment/node_id`.
+            package var nodeId: Swift.String
+            /// URL for the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/issue-comment/url`.
+            package var url: Swift.String
+            /// Contents of the issue comment
+            ///
+            /// - Remark: Generated from `#/components/schemas/issue-comment/body`.
+            package var body: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/body_text`.
+            package var bodyText: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/body_html`.
+            package var bodyHtml: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/html_url`.
+            package var htmlUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/issue-comment/user`.
+            package var user: Components.Schemas.NullableSimpleUser?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/created_at`.
+            package var createdAt: _Foundation_Date
+            /// - Remark: Generated from `#/components/schemas/issue-comment/updated_at`.
+            package var updatedAt: _Foundation_Date
+            /// - Remark: Generated from `#/components/schemas/issue-comment/issue_url`.
+            package var issueUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/issue-comment/author_association`.
+            package var authorAssociation: Components.Schemas.AuthorAssociation?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/performed_via_github_app`.
+            package var performedViaGithubApp: Components.Schemas.NullableIntegration?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/reactions`.
+            package var reactions: Components.Schemas.ReactionRollup?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/pin`.
+            package var pin: Components.Schemas.NullablePinnedIssueComment?
+            /// - Remark: Generated from `#/components/schemas/issue-comment/minimized`.
+            package var minimized: Components.Schemas.NullableIssueCommentMinimized?
+            /// Creates a new `IssueComment`.
+            ///
+            /// - Parameters:
+            ///   - id: Unique identifier of the issue comment
+            ///   - nodeId:
+            ///   - url: URL for the issue comment
+            ///   - body: Contents of the issue comment
+            ///   - bodyText:
+            ///   - bodyHtml:
+            ///   - htmlUrl:
+            ///   - user:
+            ///   - createdAt:
+            ///   - updatedAt:
+            ///   - issueUrl:
+            ///   - authorAssociation:
+            ///   - performedViaGithubApp:
+            ///   - reactions:
+            ///   - pin:
+            ///   - minimized:
+            package init(
+                id: Swift.Int64,
+                nodeId: Swift.String,
+                url: Swift.String,
+                body: Swift.String? = nil,
+                bodyText: Swift.String? = nil,
+                bodyHtml: Swift.String? = nil,
+                htmlUrl: Swift.String,
+                user: Components.Schemas.NullableSimpleUser? = nil,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
+                issueUrl: Swift.String,
+                authorAssociation: Components.Schemas.AuthorAssociation? = nil,
+                performedViaGithubApp: Components.Schemas.NullableIntegration? = nil,
+                reactions: Components.Schemas.ReactionRollup? = nil,
+                pin: Components.Schemas.NullablePinnedIssueComment? = nil,
+                minimized: Components.Schemas.NullableIssueCommentMinimized? = nil
+            ) {
+                self.id = id
+                self.nodeId = nodeId
+                self.url = url
+                self.body = body
+                self.bodyText = bodyText
+                self.bodyHtml = bodyHtml
+                self.htmlUrl = htmlUrl
+                self.user = user
+                self.createdAt = createdAt
+                self.updatedAt = updatedAt
+                self.issueUrl = issueUrl
+                self.authorAssociation = authorAssociation
+                self.performedViaGithubApp = performedViaGithubApp
+                self.reactions = reactions
+                self.pin = pin
+                self.minimized = minimized
+            }
+            package enum CodingKeys: String, CodingKey {
+                case id
+                case nodeId = "node_id"
+                case url
+                case body
+                case bodyText = "body_text"
+                case bodyHtml = "body_html"
+                case htmlUrl = "html_url"
+                case user
+                case createdAt = "created_at"
+                case updatedAt = "updated_at"
+                case issueUrl = "issue_url"
+                case authorAssociation = "author_association"
+                case performedViaGithubApp = "performed_via_github_app"
+                case reactions
+                case pin
+                case minimized
+            }
+        }
         /// Data related to a release.
         ///
         /// - Remark: Generated from `#/components/schemas/release-asset`.
@@ -4962,9 +5280,9 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/release-asset/download_count`.
             package var downloadCount: Swift.Int
             /// - Remark: Generated from `#/components/schemas/release-asset/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/release-asset/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/release-asset/uploader`.
             package var uploader: Components.Schemas.NullableSimpleUser?
             /// Creates a new `ReleaseAsset`.
@@ -4996,8 +5314,8 @@ package enum Components {
                 size: Swift.Int,
                 digest: Swift.String? = nil,
                 downloadCount: Swift.Int,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
                 uploader: Components.Schemas.NullableSimpleUser? = nil
             ) {
                 self.url = url
@@ -5077,11 +5395,11 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/release/immutable`.
             package var immutable: Swift.Bool?
             /// - Remark: Generated from `#/components/schemas/release/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/release/published_at`.
-            package var publishedAt: _Foundation_T_Date?
+            package var publishedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/release/updated_at`.
-            package var updatedAt: _Foundation_T_Date?
+            package var updatedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/release/author`.
             package var author: Components.Schemas.SimpleUser
             /// - Remark: Generated from `#/components/schemas/release/assets`.
@@ -5142,9 +5460,9 @@ package enum Components {
                 draft: Swift.Bool,
                 prerelease: Swift.Bool,
                 immutable: Swift.Bool? = nil,
-                createdAt: _Foundation_T_Date,
-                publishedAt: _Foundation_T_Date? = nil,
-                updatedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date,
+                publishedAt: _Foundation_Date? = nil,
+                updatedAt: _Foundation_Date? = nil,
                 author: Components.Schemas.SimpleUser,
                 assets: [Components.Schemas.ReleaseAsset],
                 bodyHtml: Swift.String? = nil,
@@ -5276,9 +5594,9 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/public-user/following`.
             package var following: Swift.Int
             /// - Remark: Generated from `#/components/schemas/public-user/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/public-user/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/public-user/plan`.
             package struct PlanPayload: Codable, Hashable, Sendable {
                 /// - Remark: Generated from `#/components/schemas/public-user/plan/collaborators`.
@@ -5402,8 +5720,8 @@ package enum Components {
                 publicGists: Swift.Int,
                 followers: Swift.Int,
                 following: Swift.Int,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
                 plan: Components.Schemas.PublicUser.PlanPayload? = nil,
                 privateGists: Swift.Int? = nil,
                 totalPrivateRepos: Swift.Int? = nil,
@@ -5625,11 +5943,11 @@ package enum Components {
                     forKey: .following
                 )
                 self.createdAt = try container.decode(
-                    _Foundation_T_Date.self,
+                    _Foundation_Date.self,
                     forKey: .createdAt
                 )
                 self.updatedAt = try container.decode(
-                    _Foundation_T_Date.self,
+                    _Foundation_Date.self,
                     forKey: .updatedAt
                 )
                 self.plan = try container.decodeIfPresent(
@@ -6345,13 +6663,13 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/active_lock_reason`.
             package var activeLockReason: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/closed_at`.
-            package var closedAt: _Foundation_T_Date?
+            package var closedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merged_at`.
-            package var mergedAt: _Foundation_T_Date?
+            package var mergedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merge_commit_sha`.
             package var mergeCommitSha: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request-simple/assignee`.
@@ -6578,10 +6896,10 @@ package enum Components {
                 labels: Components.Schemas.PullRequestSimple.LabelsPayload,
                 milestone: Components.Schemas.NullableMilestone? = nil,
                 activeLockReason: Swift.String? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
-                closedAt: _Foundation_T_Date? = nil,
-                mergedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
+                closedAt: _Foundation_Date? = nil,
+                mergedAt: _Foundation_Date? = nil,
                 mergeCommitSha: Swift.String? = nil,
                 assignee: Components.Schemas.NullableSimpleUser? = nil,
                 assignees: [Components.Schemas.SimpleUser]? = nil,
@@ -6695,11 +7013,11 @@ package enum Components {
             /// The time the draft issue was created
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-draft-issue/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// The time the draft issue was last updated
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-draft-issue/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// Creates a new `ProjectsV2DraftIssue`.
             ///
             /// - Parameters:
@@ -6716,8 +7034,8 @@ package enum Components {
                 title: Swift.String,
                 body: Swift.String? = nil,
                 user: Components.Schemas.NullableSimpleUser? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date
             ) {
                 self.id = id
                 self.nodeId = nodeId
@@ -6815,15 +7133,15 @@ package enum Components {
             /// The time when the item was created.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// The time when the item was last updated.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// The time when the item was archived.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/archived_at`.
-            package var archivedAt: _Foundation_T_Date?
+            package var archivedAt: _Foundation_Date?
             /// The URL of the project this item belongs to.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/project_url`.
@@ -6851,9 +7169,9 @@ package enum Components {
                 content: Components.Schemas.ProjectsV2ItemSimple.ContentPayload? = nil,
                 contentType: Components.Schemas.ProjectsV2ItemContentType,
                 creator: Components.Schemas.SimpleUser? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
-                archivedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
+                archivedAt: _Foundation_Date? = nil,
                 projectUrl: Swift.String? = nil,
                 itemUrl: Swift.String? = nil
             ) {
@@ -7148,11 +7466,11 @@ package enum Components {
             /// The time when the field was created.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-field/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// The time when the field was last updated.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-field/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// Creates a new `ProjectsV2Field`.
             ///
             /// - Parameters:
@@ -7175,8 +7493,8 @@ package enum Components {
                 dataType: Components.Schemas.ProjectsV2Field.DataTypePayload,
                 options: [Components.Schemas.ProjectsV2SingleSelectOptions]? = nil,
                 configuration: Components.Schemas.ProjectsV2Field.ConfigurationPayload? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date
             ) {
                 self.id = id
                 self.issueFieldId = issueFieldId
@@ -7249,15 +7567,15 @@ package enum Components {
             /// The time when the item was created.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// The time when the item was last updated.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// The time when the item was archived.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/archived_at`.
-            package var archivedAt: _Foundation_T_Date?
+            package var archivedAt: _Foundation_Date?
             /// The API URL of this item.
             ///
             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/item_url`.
@@ -7309,9 +7627,9 @@ package enum Components {
                 contentType: Components.Schemas.ProjectsV2ItemContentType,
                 content: Components.Schemas.ProjectsV2ItemWithContent.ContentPayload? = nil,
                 creator: Components.Schemas.SimpleUser? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
-                archivedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
+                archivedAt: _Foundation_Date? = nil,
                 itemUrl: Swift.String? = nil,
                 fields: Components.Schemas.ProjectsV2ItemWithContent.FieldsPayload? = nil
             ) {
@@ -7387,7 +7705,7 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/nullable-git-user/email`.
             package var email: Swift.String?
             /// - Remark: Generated from `#/components/schemas/nullable-git-user/date`.
-            package var date: _Foundation_T_Date?
+            package var date: _Foundation_Date?
             /// Creates a new `NullableGitUser`.
             ///
             /// - Parameters:
@@ -7397,7 +7715,7 @@ package enum Components {
             package init(
                 name: Swift.String? = nil,
                 email: Swift.String? = nil,
-                date: _Foundation_T_Date? = nil
+                date: _Foundation_Date? = nil
             ) {
                 self.name = name
                 self.email = email
@@ -7843,7 +8161,7 @@ package enum Components {
             /// Timestamp of the commit
             ///
             /// - Remark: Generated from `#/components/schemas/simple-commit/timestamp`.
-            package var timestamp: _Foundation_T_Date
+            package var timestamp: _Foundation_Date
             /// Information about the Git author
             ///
             /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
@@ -7923,7 +8241,7 @@ package enum Components {
                 id: Swift.String,
                 treeId: Swift.String,
                 message: Swift.String,
-                timestamp: _Foundation_T_Date,
+                timestamp: _Foundation_Date,
                 author: Components.Schemas.SimpleCommit.AuthorPayload? = nil,
                 committer: Components.Schemas.SimpleCommit.CommitterPayload? = nil
             ) {
@@ -7941,6 +8259,287 @@ package enum Components {
                 case timestamp
                 case author
                 case committer
+            }
+        }
+        /// Collaborator
+        ///
+        /// - Remark: Generated from `#/components/schemas/nullable-collaborator`.
+        package struct NullableCollaborator: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/login`.
+            package var login: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/id`.
+            package var id: Swift.Int64
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/email`.
+            package var email: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/name`.
+            package var name: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/node_id`.
+            package var nodeId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/avatar_url`.
+            package var avatarUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/gravatar_id`.
+            package var gravatarId: Swift.String?
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/url`.
+            package var url: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/html_url`.
+            package var htmlUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/followers_url`.
+            package var followersUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/following_url`.
+            package var followingUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/gists_url`.
+            package var gistsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/starred_url`.
+            package var starredUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/subscriptions_url`.
+            package var subscriptionsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/organizations_url`.
+            package var organizationsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/repos_url`.
+            package var reposUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/events_url`.
+            package var eventsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/received_events_url`.
+            package var receivedEventsUrl: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/type`.
+            package var _type: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/site_admin`.
+            package var siteAdmin: Swift.Bool
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions`.
+            package struct PermissionsPayload: Codable, Hashable, Sendable {
+                /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions/pull`.
+                package var pull: Swift.Bool
+                /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions/triage`.
+                package var triage: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions/push`.
+                package var push: Swift.Bool
+                /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions/maintain`.
+                package var maintain: Swift.Bool?
+                /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions/admin`.
+                package var admin: Swift.Bool
+                /// Creates a new `PermissionsPayload`.
+                ///
+                /// - Parameters:
+                ///   - pull:
+                ///   - triage:
+                ///   - push:
+                ///   - maintain:
+                ///   - admin:
+                package init(
+                    pull: Swift.Bool,
+                    triage: Swift.Bool? = nil,
+                    push: Swift.Bool,
+                    maintain: Swift.Bool? = nil,
+                    admin: Swift.Bool
+                ) {
+                    self.pull = pull
+                    self.triage = triage
+                    self.push = push
+                    self.maintain = maintain
+                    self.admin = admin
+                }
+                package enum CodingKeys: String, CodingKey {
+                    case pull
+                    case triage
+                    case push
+                    case maintain
+                    case admin
+                }
+            }
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/permissions`.
+            package var permissions: Components.Schemas.NullableCollaborator.PermissionsPayload?
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/role_name`.
+            package var roleName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/nullable-collaborator/user_view_type`.
+            package var userViewType: Swift.String?
+            /// Creates a new `NullableCollaborator`.
+            ///
+            /// - Parameters:
+            ///   - login:
+            ///   - id:
+            ///   - email:
+            ///   - name:
+            ///   - nodeId:
+            ///   - avatarUrl:
+            ///   - gravatarId:
+            ///   - url:
+            ///   - htmlUrl:
+            ///   - followersUrl:
+            ///   - followingUrl:
+            ///   - gistsUrl:
+            ///   - starredUrl:
+            ///   - subscriptionsUrl:
+            ///   - organizationsUrl:
+            ///   - reposUrl:
+            ///   - eventsUrl:
+            ///   - receivedEventsUrl:
+            ///   - _type:
+            ///   - siteAdmin:
+            ///   - permissions:
+            ///   - roleName:
+            ///   - userViewType:
+            package init(
+                login: Swift.String,
+                id: Swift.Int64,
+                email: Swift.String? = nil,
+                name: Swift.String? = nil,
+                nodeId: Swift.String,
+                avatarUrl: Swift.String,
+                gravatarId: Swift.String? = nil,
+                url: Swift.String,
+                htmlUrl: Swift.String,
+                followersUrl: Swift.String,
+                followingUrl: Swift.String,
+                gistsUrl: Swift.String,
+                starredUrl: Swift.String,
+                subscriptionsUrl: Swift.String,
+                organizationsUrl: Swift.String,
+                reposUrl: Swift.String,
+                eventsUrl: Swift.String,
+                receivedEventsUrl: Swift.String,
+                _type: Swift.String,
+                siteAdmin: Swift.Bool,
+                permissions: Components.Schemas.NullableCollaborator.PermissionsPayload? = nil,
+                roleName: Swift.String,
+                userViewType: Swift.String? = nil
+            ) {
+                self.login = login
+                self.id = id
+                self.email = email
+                self.name = name
+                self.nodeId = nodeId
+                self.avatarUrl = avatarUrl
+                self.gravatarId = gravatarId
+                self.url = url
+                self.htmlUrl = htmlUrl
+                self.followersUrl = followersUrl
+                self.followingUrl = followingUrl
+                self.gistsUrl = gistsUrl
+                self.starredUrl = starredUrl
+                self.subscriptionsUrl = subscriptionsUrl
+                self.organizationsUrl = organizationsUrl
+                self.reposUrl = reposUrl
+                self.eventsUrl = eventsUrl
+                self.receivedEventsUrl = receivedEventsUrl
+                self._type = _type
+                self.siteAdmin = siteAdmin
+                self.permissions = permissions
+                self.roleName = roleName
+                self.userViewType = userViewType
+            }
+            package enum CodingKeys: String, CodingKey {
+                case login
+                case id
+                case email
+                case name
+                case nodeId = "node_id"
+                case avatarUrl = "avatar_url"
+                case gravatarId = "gravatar_id"
+                case url
+                case htmlUrl = "html_url"
+                case followersUrl = "followers_url"
+                case followingUrl = "following_url"
+                case gistsUrl = "gists_url"
+                case starredUrl = "starred_url"
+                case subscriptionsUrl = "subscriptions_url"
+                case organizationsUrl = "organizations_url"
+                case reposUrl = "repos_url"
+                case eventsUrl = "events_url"
+                case receivedEventsUrl = "received_events_url"
+                case _type = "type"
+                case siteAdmin = "site_admin"
+                case permissions
+                case roleName = "role_name"
+                case userViewType = "user_view_type"
+            }
+        }
+        /// Repository Collaborator Permission
+        ///
+        /// - Remark: Generated from `#/components/schemas/repository-collaborator-permission`.
+        package struct RepositoryCollaboratorPermission: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/repository-collaborator-permission/permission`.
+            package var permission: Swift.String
+            /// - Remark: Generated from `#/components/schemas/repository-collaborator-permission/role_name`.
+            package var roleName: Swift.String
+            /// - Remark: Generated from `#/components/schemas/repository-collaborator-permission/user`.
+            package var user: Components.Schemas.NullableCollaborator?
+            /// Creates a new `RepositoryCollaboratorPermission`.
+            ///
+            /// - Parameters:
+            ///   - permission:
+            ///   - roleName:
+            ///   - user:
+            package init(
+                permission: Swift.String,
+                roleName: Swift.String,
+                user: Components.Schemas.NullableCollaborator? = nil
+            ) {
+                self.permission = permission
+                self.roleName = roleName
+                self.user = user
+            }
+            package enum CodingKeys: String, CodingKey {
+                case permission
+                case roleName = "role_name"
+                case user
+            }
+        }
+        /// Reactions to conversations provide a way to help people express their feelings more simply and effectively.
+        ///
+        /// - Remark: Generated from `#/components/schemas/reaction`.
+        package struct Reaction: Codable, Hashable, Sendable {
+            /// - Remark: Generated from `#/components/schemas/reaction/id`.
+            package var id: Swift.Int
+            /// - Remark: Generated from `#/components/schemas/reaction/node_id`.
+            package var nodeId: Swift.String
+            /// - Remark: Generated from `#/components/schemas/reaction/user`.
+            package var user: Components.Schemas.NullableSimpleUser?
+            /// The reaction to use
+            ///
+            /// - Remark: Generated from `#/components/schemas/reaction/content`.
+            @frozen package enum ContentPayload: String, Codable, Hashable, Sendable, CaseIterable {
+                case _plus_1 = "+1"
+                case _hyphen_1 = "-1"
+                case laugh = "laugh"
+                case confused = "confused"
+                case heart = "heart"
+                case hooray = "hooray"
+                case rocket = "rocket"
+                case eyes = "eyes"
+            }
+            /// The reaction to use
+            ///
+            /// - Remark: Generated from `#/components/schemas/reaction/content`.
+            package var content: Components.Schemas.Reaction.ContentPayload
+            /// - Remark: Generated from `#/components/schemas/reaction/created_at`.
+            package var createdAt: _Foundation_Date
+            /// Creates a new `Reaction`.
+            ///
+            /// - Parameters:
+            ///   - id:
+            ///   - nodeId:
+            ///   - user:
+            ///   - content: The reaction to use
+            ///   - createdAt:
+            package init(
+                id: Swift.Int,
+                nodeId: Swift.String,
+                user: Components.Schemas.NullableSimpleUser? = nil,
+                content: Components.Schemas.Reaction.ContentPayload,
+                createdAt: _Foundation_Date
+            ) {
+                self.id = id
+                self.nodeId = nodeId
+                self.user = user
+                self.content = content
+                self.createdAt = createdAt
+            }
+            package enum CodingKeys: String, CodingKey {
+                case id
+                case nodeId = "node_id"
+                case user
+                case content
+                case createdAt = "created_at"
             }
         }
         /// Commit Comparison
@@ -8301,13 +8900,13 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request/active_lock_reason`.
             package var activeLockReason: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/pull-request/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/pull-request/closed_at`.
-            package var closedAt: _Foundation_T_Date?
+            package var closedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/pull-request/merged_at`.
-            package var mergedAt: _Foundation_T_Date?
+            package var mergedAt: _Foundation_Date?
             /// - Remark: Generated from `#/components/schemas/pull-request/merge_commit_sha`.
             package var mergeCommitSha: Swift.String?
             /// - Remark: Generated from `#/components/schemas/pull-request/assignee`.
@@ -8572,10 +9171,10 @@ package enum Components {
                 labels: Components.Schemas.PullRequest.LabelsPayload,
                 milestone: Components.Schemas.NullableMilestone? = nil,
                 activeLockReason: Swift.String? = nil,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
-                closedAt: _Foundation_T_Date? = nil,
-                mergedAt: _Foundation_T_Date? = nil,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
+                closedAt: _Foundation_Date? = nil,
+                mergedAt: _Foundation_Date? = nil,
                 mergeCommitSha: Swift.String? = nil,
                 assignee: Components.Schemas.NullableSimpleUser? = nil,
                 assignees: [Components.Schemas.SimpleUser]? = nil,
@@ -8778,7 +9377,7 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/pull-request-review/_links`.
             package var _links: Components.Schemas.PullRequestReview._LinksPayload
             /// - Remark: Generated from `#/components/schemas/pull-request-review/submitted_at`.
-            package var submittedAt: _Foundation_T_Date?
+            package var submittedAt: _Foundation_Date?
             /// A commit SHA for the review. If the commit object was garbage collected or forcibly deleted, then it no longer exists in Git and this value will be `null`.
             ///
             /// - Remark: Generated from `#/components/schemas/pull-request-review/commit_id`.
@@ -8814,7 +9413,7 @@ package enum Components {
                 htmlUrl: Swift.String,
                 pullRequestUrl: Swift.String,
                 _links: Components.Schemas.PullRequestReview._LinksPayload,
-                submittedAt: _Foundation_T_Date? = nil,
+                submittedAt: _Foundation_Date? = nil,
                 commitId: Swift.String? = nil,
                 bodyHtml: Swift.String? = nil,
                 bodyText: Swift.String? = nil,
@@ -8985,9 +9584,9 @@ package enum Components {
             /// - Remark: Generated from `#/components/schemas/private-user/following`.
             package var following: Swift.Int
             /// - Remark: Generated from `#/components/schemas/private-user/created_at`.
-            package var createdAt: _Foundation_T_Date
+            package var createdAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/private-user/updated_at`.
-            package var updatedAt: _Foundation_T_Date
+            package var updatedAt: _Foundation_Date
             /// - Remark: Generated from `#/components/schemas/private-user/private_gists`.
             package var privateGists: Swift.Int
             /// - Remark: Generated from `#/components/schemas/private-user/total_private_repos`.
@@ -9120,8 +9719,8 @@ package enum Components {
                 publicGists: Swift.Int,
                 followers: Swift.Int,
                 following: Swift.Int,
-                createdAt: _Foundation_T_Date,
-                updatedAt: _Foundation_T_Date,
+                createdAt: _Foundation_Date,
+                updatedAt: _Foundation_Date,
                 privateGists: Swift.Int,
                 totalPrivateRepos: Swift.Int,
                 ownedPrivateRepos: Swift.Int,
@@ -9916,6 +10515,10 @@ package enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/page`.
         package typealias Page = Swift.Int
+        /// Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+        ///
+        /// - Remark: Generated from `#/components/parameters/since`.
+        package typealias Since = _Foundation_Date
         /// The unique identifier of the installation.
         ///
         /// - Remark: Generated from `#/components/parameters/installation-id`.
@@ -9928,6 +10531,10 @@ package enum Components {
         ///
         /// - Remark: Generated from `#/components/parameters/org`.
         package typealias Org = Swift.String
+        /// The unique identifier of the comment.
+        ///
+        /// - Remark: Generated from `#/components/parameters/comment-id`.
+        package typealias CommentId = Swift.Int64
         /// The account owner of the repository. The name is not case sensitive.
         ///
         /// - Remark: Generated from `#/components/parameters/owner`.
@@ -12403,6 +13010,192 @@ package enum Operations {
             }
         }
     }
+    /// Get repository permissions for a user
+    ///
+    /// Checks the repository permission and role of a collaborator.
+    ///
+    /// The `permission` attribute provides the legacy base roles of `admin`, `write`, `read`, and `none`, where the
+    /// `maintain` role is mapped to `write` and the `triage` role is mapped to `read`.
+    /// The `role_name` attribute provides the name of the assigned role, including custom roles. The
+    /// `permission` can also be used to determine which base level of access the collaborator has to the repository.
+    ///
+    /// The calculated permissions are the highest role assigned to the collaborator after considering all sources of grants, including: repo, teams, organization, and enterprise.
+    /// There is presently not a way to differentiate between an organization level grant and a repository level grant from this endpoint response.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/collaborators/{username}/permission`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/collaborators/{username}/permission/get(repos/get-collaborator-permission-level)`.
+    package enum ReposGetCollaboratorPermissionLevel {
+        package static let id: Swift.String = "repos/get-collaborator-permission-level"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/path/owner`.
+                package var owner: Components.Parameters.Owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/path/repo`.
+                package var repo: Components.Parameters.Repo
+                /// The handle for the GitHub user account.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/path/username`.
+                package var username: Components.Parameters.Username
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - username: The handle for the GitHub user account.
+                package init(
+                    owner: Components.Parameters.Owner,
+                    repo: Components.Parameters.Repo,
+                    username: Components.Parameters.Username
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.username = username
+                }
+            }
+            package var path: Operations.ReposGetCollaboratorPermissionLevel.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.ReposGetCollaboratorPermissionLevel.AcceptableContentType
+                    >]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.ReposGetCollaboratorPermissionLevel.AcceptableContentType
+                    >] = .defaultValues()
+                ) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.ReposGetCollaboratorPermissionLevel.Input.Headers
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - headers:
+            package init(
+                path: Operations.ReposGetCollaboratorPermissionLevel.Input.Path,
+                headers: Operations.ReposGetCollaboratorPermissionLevel.Input.Headers = .init()
+            ) {
+                self.path = path
+                self.headers = headers
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/responses/200/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/collaborators/{username}/permission/GET/responses/200/content/application\/json`.
+                    case json(Components.Schemas.RepositoryCollaboratorPermission)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: Components.Schemas.RepositoryCollaboratorPermission {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.ReposGetCollaboratorPermissionLevel.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                package init(body: Operations.ReposGetCollaboratorPermissionLevel.Output.Ok.Body) {
+                    self.body = body
+                }
+            }
+            /// if user has admin permissions
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/collaborators/{username}/permission/get(repos/get-collaborator-permission-level)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.ReposGetCollaboratorPermissionLevel.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            package var ok: Operations.ReposGetCollaboratorPermissionLevel.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/collaborators/{username}/permission/get(repos/get-collaborator-permission-level)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.NotFound)
+            /// The associated value of the enum case if `self` is `.notFound`.
+            ///
+            /// - Throws: An error if `self` is not `.notFound`.
+            /// - SeeAlso: `.notFound`.
+            package var notFound: Components.Responses.NotFound {
+                get throws {
+                    switch self {
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
     /// List commits
     ///
     /// **Signature verification object**
@@ -12485,11 +13278,11 @@ package enum Operations {
                 /// Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`. Due to limitations of Git, timestamps must be between 1970-01-01 and 2099-12-31 (inclusive) or unexpected results may be returned.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/since`.
-                package var since: _Foundation_T_Date?
+                package var since: _Foundation_Date?
                 /// Only commits before this date will be returned. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`. Due to limitations of Git, timestamps must be between 1970-01-01 and 2099-12-31 (inclusive) or unexpected results may be returned.
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/until`.
-                package var until: _Foundation_T_Date?
+                package var until: _Foundation_Date?
                 /// The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
                 ///
                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/per_page`.
@@ -12514,8 +13307,8 @@ package enum Operations {
                     path: Swift.String? = nil,
                     author: Swift.String? = nil,
                     committer: Swift.String? = nil,
-                    since: _Foundation_T_Date? = nil,
-                    until: _Foundation_T_Date? = nil,
+                    since: _Foundation_Date? = nil,
+                    until: _Foundation_Date? = nil,
                     perPage: Components.Parameters.PerPage? = nil,
                     page: Components.Parameters.Page? = nil
                 ) {
@@ -14272,6 +15065,485 @@ package enum Operations {
             }
         }
     }
+    /// Update an issue comment
+    ///
+    /// You can use the REST API to update comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `PATCH /repos/{owner}/{repo}/issues/comments/{comment_id}`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/patch(issues/update-comment)`.
+    package enum IssuesUpdateComment {
+        package static let id: Swift.String = "issues/update-comment"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/path/owner`.
+                package var owner: Components.Parameters.Owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/path/repo`.
+                package var repo: Components.Parameters.Repo
+                /// The unique identifier of the comment.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/path/comment_id`.
+                package var commentId: Components.Parameters.CommentId
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - commentId: The unique identifier of the comment.
+                package init(
+                    owner: Components.Parameters.Owner,
+                    repo: Components.Parameters.Repo,
+                    commentId: Components.Parameters.CommentId
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.commentId = commentId
+                }
+            }
+            package var path: Operations.IssuesUpdateComment.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.IssuesUpdateComment.AcceptableContentType>]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.IssuesUpdateComment.AcceptableContentType
+                    >] = .defaultValues()
+                ) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.IssuesUpdateComment.Input.Headers
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/requestBody`.
+            @frozen package enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/requestBody/json`.
+                package struct JsonPayload: Codable, Hashable, Sendable {
+                    /// The contents of the comment.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/requestBody/json/body`.
+                    package var body: Swift.String
+                    /// Creates a new `JsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - body: The contents of the comment.
+                    package init(body: Swift.String) {
+                        self.body = body
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case body
+                    }
+                }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/requestBody/content/application\/json`.
+                case json(Operations.IssuesUpdateComment.Input.Body.JsonPayload)
+            }
+            package var body: Operations.IssuesUpdateComment.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - headers:
+            ///   - body:
+            package init(
+                path: Operations.IssuesUpdateComment.Input.Path,
+                headers: Operations.IssuesUpdateComment.Input.Headers = .init(),
+                body: Operations.IssuesUpdateComment.Input.Body
+            ) {
+                self.path = path
+                self.headers = headers
+                self.body = body
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/responses/200/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/PATCH/responses/200/content/application\/json`.
+                    case json(Components.Schemas.IssueComment)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: Components.Schemas.IssueComment {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.IssuesUpdateComment.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                package init(body: Operations.IssuesUpdateComment.Output.Ok.Body) {
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/patch(issues/update-comment)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.IssuesUpdateComment.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            package var ok: Operations.IssuesUpdateComment.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/patch(issues/update-comment)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableContent`.
+            case unprocessableContent(Components.Responses.ValidationFailed)
+            /// The associated value of the enum case if `self` is `.unprocessableContent`.
+            ///
+            /// - Throws: An error if `self` is not `.unprocessableContent`.
+            /// - SeeAlso: `.unprocessableContent`.
+            package var unprocessableContent: Components.Responses.ValidationFailed {
+                get throws {
+                    switch self {
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
+    /// Create reaction for an issue comment
+    ///
+    /// Create a reaction to an [issue comment](https://docs.github.com/rest/issues/comments#get-an-issue-comment). A response with an HTTP `200` status means that you already added the reaction type to this issue comment.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/comments/{comment_id}/reactions`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/post(reactions/create-for-issue-comment)`.
+    package enum ReactionsCreateForIssueComment {
+        package static let id: Swift.String = "reactions/create-for-issue-comment"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/path/owner`.
+                package var owner: Components.Parameters.Owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/path/repo`.
+                package var repo: Components.Parameters.Repo
+                /// The unique identifier of the comment.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/path/comment_id`.
+                package var commentId: Components.Parameters.CommentId
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - commentId: The unique identifier of the comment.
+                package init(
+                    owner: Components.Parameters.Owner,
+                    repo: Components.Parameters.Repo,
+                    commentId: Components.Parameters.CommentId
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.commentId = commentId
+                }
+            }
+            package var path: Operations.ReactionsCreateForIssueComment.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.ReactionsCreateForIssueComment.AcceptableContentType
+                    >]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.ReactionsCreateForIssueComment.AcceptableContentType
+                    >] = .defaultValues()
+                ) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.ReactionsCreateForIssueComment.Input.Headers
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/requestBody`.
+            @frozen package enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/requestBody/json`.
+                package struct JsonPayload: Codable, Hashable, Sendable {
+                    /// The [reaction type](https://docs.github.com/rest/reactions/reactions#about-reactions) to add to the issue comment.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/requestBody/json/content`.
+                    @frozen package enum ContentPayload: String, Codable, Hashable, Sendable, CaseIterable {
+                        case _plus_1 = "+1"
+                        case _hyphen_1 = "-1"
+                        case laugh = "laugh"
+                        case confused = "confused"
+                        case heart = "heart"
+                        case hooray = "hooray"
+                        case rocket = "rocket"
+                        case eyes = "eyes"
+                    }
+                    /// The [reaction type](https://docs.github.com/rest/reactions/reactions#about-reactions) to add to the issue comment.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/requestBody/json/content`.
+                    package var content: Operations.ReactionsCreateForIssueComment.Input.Body.JsonPayload.ContentPayload
+                    /// Creates a new `JsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - content: The [reaction type](https://docs.github.com/rest/reactions/reactions#about-reactions) to add to the issue comment.
+                    package init(
+                        content: Operations.ReactionsCreateForIssueComment.Input.Body.JsonPayload.ContentPayload
+                    ) {
+                        self.content = content
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case content
+                    }
+                }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/requestBody/content/application\/json`.
+                case json(Operations.ReactionsCreateForIssueComment.Input.Body.JsonPayload)
+            }
+            package var body: Operations.ReactionsCreateForIssueComment.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - headers:
+            ///   - body:
+            package init(
+                path: Operations.ReactionsCreateForIssueComment.Input.Path,
+                headers: Operations.ReactionsCreateForIssueComment.Input.Headers = .init(),
+                body: Operations.ReactionsCreateForIssueComment.Input.Body
+            ) {
+                self.path = path
+                self.headers = headers
+                self.body = body
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/responses/200/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/responses/200/content/application\/json`.
+                    case json(Components.Schemas.Reaction)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: Components.Schemas.Reaction {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.ReactionsCreateForIssueComment.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                package init(body: Operations.ReactionsCreateForIssueComment.Output.Ok.Body) {
+                    self.body = body
+                }
+            }
+            /// Reaction exists
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/post(reactions/create-for-issue-comment)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.ReactionsCreateForIssueComment.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            package var ok: Operations.ReactionsCreateForIssueComment.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            package struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/responses/201/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/POST/responses/201/content/application\/json`.
+                    case json(Components.Schemas.Reaction)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: Components.Schemas.Reaction {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.ReactionsCreateForIssueComment.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - body: Received HTTP response body
+                package init(body: Operations.ReactionsCreateForIssueComment.Output.Created.Body) {
+                    self.body = body
+                }
+            }
+            /// Reaction created
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/post(reactions/create-for-issue-comment)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.ReactionsCreateForIssueComment.Output.Created)
+            /// The associated value of the enum case if `self` is `.created`.
+            ///
+            /// - Throws: An error if `self` is not `.created`.
+            /// - SeeAlso: `.created`.
+            package var created: Operations.ReactionsCreateForIssueComment.Output.Created {
+                get throws {
+                    switch self {
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/comments/{comment_id}/reactions/post(reactions/create-for-issue-comment)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableContent`.
+            case unprocessableContent(Components.Responses.ValidationFailed)
+            /// The associated value of the enum case if `self` is `.unprocessableContent`.
+            ///
+            /// - Throws: An error if `self` is not `.unprocessableContent`.
+            /// - SeeAlso: `.unprocessableContent`.
+            package var unprocessableContent: Components.Responses.ValidationFailed {
+                get throws {
+                    switch self {
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
     /// Get an issue
     ///
     /// The API returns a [`301 Moved Permanently` status](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api#follow-redirects) if the issue was
@@ -14502,6 +15774,569 @@ package enum Operations {
                     default:
                         try throwUnexpectedResponseStatus(
                             expectedStatus: "notModified",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
+    /// List issue comments
+    ///
+    /// You can use the REST API to list comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// Issue comments are ordered by ascending ID.
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `GET /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/get(issues/list-comments)`.
+    package enum IssuesListComments {
+        package static let id: Swift.String = "issues/list-comments"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/path/owner`.
+                package var owner: Components.Parameters.Owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/path/repo`.
+                package var repo: Components.Parameters.Repo
+                /// The number that identifies the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/path/issue_number`.
+                package var issueNumber: Components.Parameters.IssueNumber
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - issueNumber: The number that identifies the issue.
+                package init(
+                    owner: Components.Parameters.Owner,
+                    repo: Components.Parameters.Repo,
+                    issueNumber: Components.Parameters.IssueNumber
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.issueNumber = issueNumber
+                }
+            }
+            package var path: Operations.IssuesListComments.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/query`.
+            package struct Query: Sendable, Hashable {
+                /// Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/query/since`.
+                package var since: Components.Parameters.Since?
+                /// The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/query/per_page`.
+                package var perPage: Components.Parameters.PerPage?
+                /// The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/query/page`.
+                package var page: Components.Parameters.Page?
+                /// Creates a new `Query`.
+                ///
+                /// - Parameters:
+                ///   - since: Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+                ///   - perPage: The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
+                ///   - page: The page number of the results to fetch. For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
+                package init(
+                    since: Components.Parameters.Since? = nil,
+                    perPage: Components.Parameters.PerPage? = nil,
+                    page: Components.Parameters.Page? = nil
+                ) {
+                    self.since = since
+                    self.perPage = perPage
+                    self.page = page
+                }
+            }
+            package var query: Operations.IssuesListComments.Input.Query
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.IssuesListComments.AcceptableContentType>]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.IssuesListComments.AcceptableContentType
+                    >] = .defaultValues()
+                ) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.IssuesListComments.Input.Headers
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - query:
+            ///   - headers:
+            package init(
+                path: Operations.IssuesListComments.Input.Path,
+                query: Operations.IssuesListComments.Input.Query = .init(),
+                headers: Operations.IssuesListComments.Input.Headers = .init()
+            ) {
+                self.path = path
+                self.query = query
+                self.headers = headers
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Ok: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/responses/200/headers`.
+                package struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/responses/200/headers/Link`.
+                    package var link: Components.Headers.Link?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - link:
+                    package init(link: Components.Headers.Link? = nil) {
+                        self.link = link
+                    }
+                }
+                /// Received HTTP response headers
+                package var headers: Operations.IssuesListComments.Output.Ok.Headers
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/responses/200/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/GET/responses/200/content/application\/json`.
+                    case json([Components.Schemas.IssueComment])
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: [Components.Schemas.IssueComment] {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.IssuesListComments.Output.Ok.Body
+                /// Creates a new `Ok`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                package init(
+                    headers: Operations.IssuesListComments.Output.Ok.Headers = .init(),
+                    body: Operations.IssuesListComments.Output.Ok.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/get(issues/list-comments)/responses/200`.
+            ///
+            /// HTTP response code: `200 ok`.
+            case ok(Operations.IssuesListComments.Output.Ok)
+            /// The associated value of the enum case if `self` is `.ok`.
+            ///
+            /// - Throws: An error if `self` is not `.ok`.
+            /// - SeeAlso: `.ok`.
+            package var ok: Operations.IssuesListComments.Output.Ok {
+                get throws {
+                    switch self {
+                    case let .ok(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "ok",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/get(issues/list-comments)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.NotFound)
+            /// The associated value of the enum case if `self` is `.notFound`.
+            ///
+            /// - Throws: An error if `self` is not `.notFound`.
+            /// - SeeAlso: `.notFound`.
+            package var notFound: Components.Responses.NotFound {
+                get throws {
+                    switch self {
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/get(issues/list-comments)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.Gone)
+            /// The associated value of the enum case if `self` is `.gone`.
+            ///
+            /// - Throws: An error if `self` is not `.gone`.
+            /// - SeeAlso: `.gone`.
+            package var gone: Components.Responses.Gone {
+                get throws {
+                    switch self {
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Undocumented response.
+            ///
+            /// A response with a code that is not documented in the OpenAPI document.
+            case undocumented(statusCode: Swift.Int, OpenAPIRuntime.UndocumentedPayload)
+        }
+        @frozen package enum AcceptableContentType: AcceptableProtocol {
+            case json
+            case other(Swift.String)
+            package init?(rawValue: Swift.String) {
+                switch rawValue.lowercased() {
+                case "application/json":
+                    self = .json
+                default:
+                    self = .other(rawValue)
+                }
+            }
+            package var rawValue: Swift.String {
+                switch self {
+                case let .other(string):
+                    return string
+                case .json:
+                    return "application/json"
+                }
+            }
+            package static var allCases: [Self] {
+                [
+                    .json
+                ]
+            }
+        }
+    }
+    /// Create an issue comment
+    ///
+    /// You can use the REST API to create comments on issues and pull requests. Every pull request is an issue, but not every issue is a pull request.
+    ///
+    /// This endpoint triggers [notifications](https://docs.github.com/github/managing-subscriptions-and-notifications-on-github/about-notifications).
+    /// Creating content too quickly using this endpoint may result in secondary rate limiting.
+    /// For more information, see "[Rate limits for the API](https://docs.github.com/rest/using-the-rest-api/rate-limits-for-the-rest-api#about-secondary-rate-limits)"
+    /// and "[Best practices for using the REST API](https://docs.github.com/rest/guides/best-practices-for-using-the-rest-api)."
+    ///
+    /// This endpoint supports the following custom media types. For more information, see "[Media types](https://docs.github.com/rest/using-the-rest-api/getting-started-with-the-rest-api#media-types)."
+    ///
+    /// - **`application/vnd.github.raw+json`**: Returns the raw markdown body. Response will include `body`. This is the default if you do not pass any specific media type.
+    /// - **`application/vnd.github.text+json`**: Returns a text only representation of the markdown body. Response will include `body_text`.
+    /// - **`application/vnd.github.html+json`**: Returns HTML rendered from the body's markdown. Response will include `body_html`.
+    /// - **`application/vnd.github.full+json`**: Returns raw, text, and HTML representations. Response will include `body`, `body_text`, and `body_html`.
+    ///
+    /// - Remark: HTTP `POST /repos/{owner}/{repo}/issues/{issue_number}/comments`.
+    /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)`.
+    package enum IssuesCreateComment {
+        package static let id: Swift.String = "issues/create-comment"
+        package struct Input: Sendable, Hashable {
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path`.
+            package struct Path: Sendable, Hashable {
+                /// The account owner of the repository. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path/owner`.
+                package var owner: Components.Parameters.Owner
+                /// The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path/repo`.
+                package var repo: Components.Parameters.Repo
+                /// The number that identifies the issue.
+                ///
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/path/issue_number`.
+                package var issueNumber: Components.Parameters.IssueNumber
+                /// Creates a new `Path`.
+                ///
+                /// - Parameters:
+                ///   - owner: The account owner of the repository. The name is not case sensitive.
+                ///   - repo: The name of the repository without the `.git` extension. The name is not case sensitive.
+                ///   - issueNumber: The number that identifies the issue.
+                package init(
+                    owner: Components.Parameters.Owner,
+                    repo: Components.Parameters.Repo,
+                    issueNumber: Components.Parameters.IssueNumber
+                ) {
+                    self.owner = owner
+                    self.repo = repo
+                    self.issueNumber = issueNumber
+                }
+            }
+            package var path: Operations.IssuesCreateComment.Input.Path
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/header`.
+            package struct Headers: Sendable, Hashable {
+                package var accept:
+                    [OpenAPIRuntime.AcceptHeaderContentType<Operations.IssuesCreateComment.AcceptableContentType>]
+                /// Creates a new `Headers`.
+                ///
+                /// - Parameters:
+                ///   - accept:
+                package init(
+                    accept: [OpenAPIRuntime.AcceptHeaderContentType<
+                        Operations.IssuesCreateComment.AcceptableContentType
+                    >] = .defaultValues()
+                ) {
+                    self.accept = accept
+                }
+            }
+            package var headers: Operations.IssuesCreateComment.Input.Headers
+            /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody`.
+            @frozen package enum Body: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/json`.
+                package struct JsonPayload: Codable, Hashable, Sendable {
+                    /// The contents of the comment.
+                    ///
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/json/body`.
+                    package var body: Swift.String
+                    /// Creates a new `JsonPayload`.
+                    ///
+                    /// - Parameters:
+                    ///   - body: The contents of the comment.
+                    package init(body: Swift.String) {
+                        self.body = body
+                    }
+                    package enum CodingKeys: String, CodingKey {
+                        case body
+                    }
+                }
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/requestBody/content/application\/json`.
+                case json(Operations.IssuesCreateComment.Input.Body.JsonPayload)
+            }
+            package var body: Operations.IssuesCreateComment.Input.Body
+            /// Creates a new `Input`.
+            ///
+            /// - Parameters:
+            ///   - path:
+            ///   - headers:
+            ///   - body:
+            package init(
+                path: Operations.IssuesCreateComment.Input.Path,
+                headers: Operations.IssuesCreateComment.Input.Headers = .init(),
+                body: Operations.IssuesCreateComment.Input.Body
+            ) {
+                self.path = path
+                self.headers = headers
+                self.body = body
+            }
+        }
+        @frozen package enum Output: Sendable, Hashable {
+            package struct Created: Sendable, Hashable {
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/headers`.
+                package struct Headers: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/headers/Location`.
+                    package var location: Swift.String?
+                    /// Creates a new `Headers`.
+                    ///
+                    /// - Parameters:
+                    ///   - location:
+                    package init(location: Swift.String? = nil) {
+                        self.location = location
+                    }
+                }
+                /// Received HTTP response headers
+                package var headers: Operations.IssuesCreateComment.Output.Created.Headers
+                /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/content`.
+                @frozen package enum Body: Sendable, Hashable {
+                    /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/issues/{issue_number}/comments/POST/responses/201/content/application\/json`.
+                    case json(Components.Schemas.IssueComment)
+                    /// The associated value of the enum case if `self` is `.json`.
+                    ///
+                    /// - Throws: An error if `self` is not `.json`.
+                    /// - SeeAlso: `.json`.
+                    package var json: Components.Schemas.IssueComment {
+                        get throws {
+                            switch self {
+                            case let .json(body):
+                                return body
+                            }
+                        }
+                    }
+                }
+                /// Received HTTP response body
+                package var body: Operations.IssuesCreateComment.Output.Created.Body
+                /// Creates a new `Created`.
+                ///
+                /// - Parameters:
+                ///   - headers: Received HTTP response headers
+                ///   - body: Received HTTP response body
+                package init(
+                    headers: Operations.IssuesCreateComment.Output.Created.Headers = .init(),
+                    body: Operations.IssuesCreateComment.Output.Created.Body
+                ) {
+                    self.headers = headers
+                    self.body = body
+                }
+            }
+            /// Response
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/201`.
+            ///
+            /// HTTP response code: `201 created`.
+            case created(Operations.IssuesCreateComment.Output.Created)
+            /// The associated value of the enum case if `self` is `.created`.
+            ///
+            /// - Throws: An error if `self` is not `.created`.
+            /// - SeeAlso: `.created`.
+            package var created: Operations.IssuesCreateComment.Output.Created {
+                get throws {
+                    switch self {
+                    case let .created(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "created",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Forbidden
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/403`.
+            ///
+            /// HTTP response code: `403 forbidden`.
+            case forbidden(Components.Responses.Forbidden)
+            /// The associated value of the enum case if `self` is `.forbidden`.
+            ///
+            /// - Throws: An error if `self` is not `.forbidden`.
+            /// - SeeAlso: `.forbidden`.
+            package var forbidden: Components.Responses.Forbidden {
+                get throws {
+                    switch self {
+                    case let .forbidden(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "forbidden",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Gone
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/410`.
+            ///
+            /// HTTP response code: `410 gone`.
+            case gone(Components.Responses.Gone)
+            /// The associated value of the enum case if `self` is `.gone`.
+            ///
+            /// - Throws: An error if `self` is not `.gone`.
+            /// - SeeAlso: `.gone`.
+            package var gone: Components.Responses.Gone {
+                get throws {
+                    switch self {
+                    case let .gone(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "gone",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Validation failed, or the endpoint has been spammed.
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/422`.
+            ///
+            /// HTTP response code: `422 unprocessableContent`.
+            case unprocessableContent(Components.Responses.ValidationFailed)
+            /// The associated value of the enum case if `self` is `.unprocessableContent`.
+            ///
+            /// - Throws: An error if `self` is not `.unprocessableContent`.
+            /// - SeeAlso: `.unprocessableContent`.
+            package var unprocessableContent: Components.Responses.ValidationFailed {
+                get throws {
+                    switch self {
+                    case let .unprocessableContent(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "unprocessableContent",
+                            response: self
+                        )
+                    }
+                }
+            }
+            /// Resource not found
+            ///
+            /// - Remark: Generated from `#/paths//repos/{owner}/{repo}/issues/{issue_number}/comments/post(issues/create-comment)/responses/404`.
+            ///
+            /// HTTP response code: `404 notFound`.
+            case notFound(Components.Responses.NotFound)
+            /// The associated value of the enum case if `self` is `.notFound`.
+            ///
+            /// - Throws: An error if `self` is not `.notFound`.
+            /// - SeeAlso: `.notFound`.
+            package var notFound: Components.Responses.NotFound {
+                get throws {
+                    switch self {
+                    case let .notFound(response):
+                        return response
+                    default:
+                        try throwUnexpectedResponseStatus(
+                            expectedStatus: "notFound",
                             response: self
                         )
                     }

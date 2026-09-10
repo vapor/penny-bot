@@ -9,7 +9,7 @@ Two independent configurations, each with its own state:
 | Path               | State Key                     | How to Apply Changes                | Contents                                       |
 | ------------------ | ----------------------------- | ----------------------------------- | ---------------------------------------------- |
 | `infra/bootstrap/` | `penny-bot/bootstrap.tfstate` | Manually                            | The state bucket and all IAM role and policies |
-| `infra/`           | `penny-bot/terraform.tfstate` | CI (`deploy-penny.yml`) or Manually | Everything Penny runs on, excluding IAM        |
+| `infra/`           | `penny-bot/terraform.tfstate` | CI (`deploy.yml`) or Manually       | Everything Penny runs on, excluding IAM        |
 
 * All IAM lives in `bootstrap/` so that the CI role cannot modify permissions of anyone including its own.
 
@@ -93,12 +93,16 @@ Also ECR and Lambda deployments might fail since there can be cyclic dependencie
 When unset, it defaults to the tag of the **currently deployed** task definition (read live via a data source), so local `terraform plan` stays zero-diff with no hardcoded value. CI passes the freshly built tag explicitly (`-var penny_image_tag=<git-sha>`).
 On a **fresh account** there is no live task definition to read, so you must supply it on the first apply: `TF_VAR_penny_image_tag=<tag> terraform apply`.
 
-Not in code (needed to replicate elsewhere):
+## Not in code (needed to replicate elsewhere)
 
 - Secret values for all 7 `prod/penny/penny-bot/*` secrets.
-- Shared org resources used as data sources: default VPC, OIDC provider, `GithubOIdP-Role` (`repo:vapor/*`).
+- Shared org resources used as data sources: default VPC, OIDC provider.
 - The `PENNY_OIDC_CI_DEPLOY_ROLE_ARN` repository variable, pointing at the `penny-bot-ci-deploy` role `deploy.yml` assumes.
 - The `PENNY_OIDC_CI_PLAN_ROLE_ARN` repository variable, pointing at the `penny-bot-ci-plan` role `test.yml` assumes.
+- There are hardcoded constants in `./modules/constants`, which need to be accurate.
+  - For example `api_id` and `gh_oauth_client_id` must correlate to the an API Gateway and GitHub App.
+- The `penny-for-vapor` GitHub App's settings and its webhook event subscriptions that `GHHooksLambda` handles.
+  - The current list is `code_scanning_alert, issue_comment, issues, label, projects_v2_item, pull_request, pull_request_review, push, release, repository_advisory`.
 
 ## Observability
 
