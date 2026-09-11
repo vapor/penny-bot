@@ -4,8 +4,9 @@ import Logging
 import Models
 import Shared
 
-/// Handles GitHub Sponsors `sponsorship` webhook events by adding/removing the relevant
-/// Discord roles and welcoming new sponsors.
+/// Handles GitHub Sponsors `sponsorship` webhook events:
+/// 1. Triggers the `vapor/vapor` workflow that regenerates the sponsors README.
+/// 2. Adds/removes the relevant Discord roles and welcomes new sponsors.
 struct SponsorshipHandler: Sendable {
     let context: HandlerContext
     let action: Sponsorship.Action
@@ -35,6 +36,8 @@ struct SponsorshipHandler: Sendable {
     }
 
     func handle() async throws {
+        try await self.triggerSponsorsWorkflow()
+
         guard let user = try await self.context.usersService.getUser(githubID: "\(self.sponsor.id)") else {
             logger.error("No user found with GitHub ID")
             return
@@ -166,6 +169,19 @@ struct SponsorshipHandler: Sendable {
             throw error
         case .none:
             logger.info("Removed role from user", metadata: ["role": "\(role)", "user": "\(discordID)"])
+        }
+    }
+
+    private func triggerSponsorsWorkflow() async throws {
+        let response = try await self.context.githubClient.actionsCreateWorkflowDispatch(
+            path: .init(owner: "vapor", repo: "vapor", workflowId: .case2("sponsors.yml")),
+            body: .json(.init(ref: "main"))
+        )
+        switch response {
+        case .noContent, .ok:
+            break
+        case .undocumented:
+            throw Errors.httpRequestFailed(response: response)
         }
     }
 

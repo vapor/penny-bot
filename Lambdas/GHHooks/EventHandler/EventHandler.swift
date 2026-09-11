@@ -10,6 +10,8 @@ struct EventHandler: Sendable {
             try await IssueHandler(context: context).handle()
         case .pull_request:
             try await PRHandler(context: context).handle()
+        case .issue_comment:
+            try await CommentCommandHandler(context: context).handle()
         case .release:
             try await ReleaseReporter(context: context).handle()
         case .push:
@@ -20,10 +22,7 @@ struct EventHandler: Sendable {
         case .ping:
             try await onPing()
         case .sponsorship:
-            try await withThrowingAccumulatingVoidTaskGroup(tasks: [
-                { try await context.requester.triggerSponsorsWorkflow() },
-                { try await SponsorshipHandler(context: context).handle() },
-            ])
+            try await SponsorshipHandler(context: context).handle()
         case .pull_request_review,
             .projects_v2_item,
             .project_card,
