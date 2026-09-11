@@ -14,6 +14,7 @@ actor GitHubRequestsRecorder {
     }
 
     private(set) var requests: [Request] = []
+    let decoder = JSONDecoder()
 
     init() {}
 
@@ -39,7 +40,7 @@ actor GitHubRequestsRecorder {
     ) async throws -> Body? {
         guard let body = self.requests(for: operationID).first?.body else { return nil }
         let data = try await Data(collecting: body, upTo: Self.maxBodyBytes)
-        return try JSONDecoder().decode(Body.self, from: data)
+        return try self.decoder.decode(Body.self, from: data)
     }
 
     func decodeAll<Body: Decodable & Sendable>(
@@ -50,7 +51,8 @@ actor GitHubRequestsRecorder {
         for request in self.requests(for: operationID) {
             guard let body = request.body else { continue }
             let data = try await Data(collecting: body, upTo: Self.maxBodyBytes)
-            decoded.append(try JSONDecoder().decode(Body.self, from: data))
+            let decodedBody = try self.decoder.decode(Body.self, from: data)
+            decoded.append(decodedBody)
         }
         return decoded
     }

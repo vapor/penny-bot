@@ -68,4 +68,3 @@ Some notes:
 * Commands require `write` access to the repository, the same access GitHub requires to approve a workflow run.
 * Penny reacts with 👀 when it picks a command up, then 🚀 once the command succeeds.
 * On failure Penny reacts with 😕 and explains what went wrong in a comment.
-* An unrecognized command counts as a failure, and the comment lists the available commands.

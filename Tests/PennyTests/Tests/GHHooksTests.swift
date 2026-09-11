@@ -1145,17 +1145,19 @@ actor GHHooksTests {
 
     @Test
     func handleSponsorshipCreated() async throws {
-        let recorder = try await handleEvent(
+        let transport = FakeClientTransport()
+        try await handleEvent(
             key: "sponsorship1",
             eventName: .sponsorship,
             expect: .response(at: .backers),
+            transport: transport
         )
         #expect(
-            await recorder.paths(for: "actions/create-workflow-dispatch")
+            await transport.recorder.paths(for: "actions/create-workflow-dispatch")
                 == ["/repos/vapor/vapor/actions/workflows/sponsors.yml/dispatches"]
         )
         let dispatch = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "actions/create-workflow-dispatch",
                 as: Operations.ActionsCreateWorkflowDispatch.Input.Body.JsonPayload.self
             )
@@ -1183,38 +1185,39 @@ actor GHHooksTests {
 
     func handleCommentCommand(
         key: String,
-        statusOverrides: [String: HTTPResponse.Status] = [:],
+        transport: FakeClientTransport = FakeClientTransport(),
         sourceLocation: Testing.SourceLocation = #_sourceLocation
-    ) async throws -> GitHubRequestsRecorder {
+    ) async throws {
         try await handleEvent(
             key: key,
             eventName: .issue_comment,
             expect: .noResponse,
-            statusOverrides: statusOverrides,
+            transport: transport,
             sourceLocation: sourceLocation
         )
     }
 
     @Test
     func handleCommentCommandBenchmark() async throws {
-        let recorder = try await handleCommentCommand(key: "issue_comment1")
+        let transport = FakeClientTransport()
+        try await handleCommentCommand(key: "issue_comment1", transport: transport)
 
-        let reactions = try await recorder.decodeAll(
+        let reactions = try await transport.recorder.decodeAll(
             for: "reactions/create-for-issue-comment",
             as: Operations.ReactionsCreateForIssueComment.Input.Body.JsonPayload.self
         )
         #expect(reactions.map(\.content) == [.eyes, .rocket])
         #expect(
-            await recorder.paths(for: "reactions/create-for-issue-comment").first
+            await transport.recorder.paths(for: "reactions/create-for-issue-comment").first
                 == "/repos/vapor/jwt-kit/issues/comments/5622881715/reactions"
         )
 
         #expect(
-            await recorder.paths(for: "actions/create-workflow-dispatch")
+            await transport.recorder.paths(for: "actions/create-workflow-dispatch")
                 == ["/repos/vapor/jwt-kit/actions/workflows/benchmark.yml/dispatches"]
         )
         let dispatch = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "actions/create-workflow-dispatch",
                 as: Operations.ActionsCreateWorkflowDispatch.Input.Body.JsonPayload.self
             )
@@ -1226,26 +1229,31 @@ actor GHHooksTests {
         )
 
         /// The workflow posts its own report, so Penny never comments on success.
-        #expect(await !recorder.contains(operationID: "issues/create-comment"))
-        #expect(await !recorder.contains(operationID: "issues/update-comment"))
+        #expect(await !transport.recorder.contains(operationID: "issues/create-comment"))
+        #expect(await !transport.recorder.contains(operationID: "issues/update-comment"))
     }
 
     @Test
     func handleCommentCommandNoBenchmarkWorkflow() async throws {
-        let recorder = try await handleCommentCommand(
-            key: "issue_comment1",
+        let transport = FakeClientTransport(
             statusOverrides: ["actions/create-workflow-dispatch": .notFound]
         )
+        try await handleCommentCommand(
+            key: "issue_comment1",
+            transport: transport
+        )
 
-        let reactions = try await recorder.decodeAll(
+        let reactions = try await transport.recorder.decodeAll(
             for: "reactions/create-for-issue-comment",
             as: Operations.ReactionsCreateForIssueComment.Input.Body.JsonPayload.self
         )
         #expect(reactions.map(\.content) == [.eyes, .confused])
 
-        #expect(await recorder.paths(for: "issues/create-comment") == ["/repos/vapor/jwt-kit/issues/258/comments"])
+        #expect(
+            await transport.recorder.paths(for: "issues/create-comment") == ["/repos/vapor/jwt-kit/issues/258/comments"]
+        )
         let body = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "issues/create-comment",
                 as: Operations.IssuesCreateComment.Input.Body.JsonPayload.self
             )
@@ -1256,13 +1264,16 @@ actor GHHooksTests {
 
     @Test
     func handleCommentCommandDispatchRejected() async throws {
-        let recorder = try await handleCommentCommand(
-            key: "issue_comment1",
+        let transport = FakeClientTransport(
             statusOverrides: ["actions/create-workflow-dispatch": .unprocessableContent]
+        )
+        try await handleCommentCommand(
+            key: "issue_comment1",
+            transport: transport
         )
 
         let body = try #require(
-            await recorder.decodeFirst(
+            try await transport.recorder.decodeFirst(
                 for: "issues/create-comment",
                 as: Operations.IssuesCreateComment.Input.Body.JsonPayload.self
             )
@@ -1292,48 +1303,51 @@ actor GHHooksTests {
 
     @Test
     func handleCommentCommandOnAnIssue() async throws {
-        let recorder = try await handleCommentCommand(key: "issue_comment2")
+        let transport = FakeClientTransport()
+        try await handleCommentCommand(key: "issue_comment2", transport: transport)
 
         let body = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "issues/create-comment",
                 as: Operations.IssuesCreateComment.Input.Body.JsonPayload.self
             )
         ).body
         #expect(body.contains("only works on pull requests"))
         /// Bails out before spending a request on the pull request or the dispatch.
-        #expect(await !recorder.contains(operationID: "pulls/get"))
-        #expect(await !recorder.contains(operationID: "actions/create-workflow-dispatch"))
-        #expect(await !recorder.contains(operationID: "repos/get-collaborator-permission-level"))
+        #expect(await !transport.recorder.contains(operationID: "pulls/get"))
+        #expect(await !transport.recorder.contains(operationID: "actions/create-workflow-dispatch"))
+        #expect(await !transport.recorder.contains(operationID: "repos/get-collaborator-permission-level"))
     }
 
     @Test
     func handleCommentCommandWithoutWriteAccess() async throws {
-        let recorder = try await handleCommentCommand(key: "issue_comment3")
+        let transport = FakeClientTransport()
+        try await handleCommentCommand(key: "issue_comment3", transport: transport)
 
         let body = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "issues/create-comment",
                 as: Operations.IssuesCreateComment.Input.Body.JsonPayload.self
             )
         ).body
         #expect(body.contains("@ptoffy"))
         #expect(body.contains("you need `write` access"))
-        #expect(await !recorder.contains(operationID: "actions/create-workflow-dispatch"))
+        #expect(await !transport.recorder.contains(operationID: "actions/create-workflow-dispatch"))
     }
 
     @Test
     func handleUnknownCommentCommand() async throws {
-        let recorder = try await handleCommentCommand(key: "issue_comment8")
+        let transport = FakeClientTransport()
+        try await handleCommentCommand(key: "issue_comment8", transport: transport)
 
-        let reactions = try await recorder.decodeAll(
+        let reactions = try await transport.recorder.decodeAll(
             for: "reactions/create-for-issue-comment",
             as: Operations.ReactionsCreateForIssueComment.Input.Body.JsonPayload.self
         )
         #expect(reactions.map(\.content) == [.confused])
 
         let body = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "issues/create-comment",
                 as: Operations.IssuesCreateComment.Input.Body.JsonPayload.self
             )
@@ -1346,29 +1360,33 @@ actor GHHooksTests {
     /// answers with an already-posted report comment.
     @Test
     func handleCommentCommandEditsExistingReport() async throws {
-        let recorder = try await handleCommentCommand(
-            key: "issue_comment9",
+        let transport = FakeClientTransport(
             statusOverrides: ["actions/create-workflow-dispatch": .notFound]
+        )
+        try await handleCommentCommand(
+            key: "issue_comment9",
+            transport: transport
         )
 
         #expect(
-            await recorder.paths(for: "issues/update-comment")
+            await transport.recorder.paths(for: "issues/update-comment")
                 == ["/repos/vapor/jwt-kit/issues/comments/5622881701"]
         )
         let body = try #require(
-            await recorder.decodeFirst(
+            await transport.recorder.decodeFirst(
                 for: "issues/update-comment",
                 as: Operations.IssuesUpdateComment.Input.Body.JsonPayload.self
             )
         ).body
         #expect(body.contains("has no benchmark CI"))
-        #expect(await !recorder.contains(operationID: "issues/create-comment"))
+        #expect(await !transport.recorder.contains(operationID: "issues/create-comment"))
     }
 
     @Test(arguments: ["issue_comment4", "issue_comment5", "issue_comment6", "issue_comment7"])
     func handleIgnoredCommentEvent(key: String) async throws {
-        let recorder = try await handleCommentCommand(key: key)
-        #expect(await recorder.requests.isEmpty)
+        let transport = FakeClientTransport()
+        try await handleCommentCommand(key: key, transport: transport)
+        #expect(await transport.recorder.requests.isEmpty)
     }
 
     @Test(
@@ -1411,10 +1429,9 @@ actor GHHooksTests {
         key: String,
         eventName: GHEvent.Kind,
         expect: Expectation,
-        statusOverrides: [String: HTTPResponse.Status] = [:],
+        transport: FakeClientTransport = FakeClientTransport(),
         sourceLocation: Testing.SourceLocation = #_sourceLocation
-    ) async throws -> GitHubRequestsRecorder {
-        let transport = FakeClientTransport(statusOverrides: statusOverrides)
+    ) async throws {
         let data = TestData.for(ghEventKey: key)!
         do {
             let event = try decoder.decode(GHEvent.self, from: data)
@@ -1484,7 +1501,7 @@ actor GHHooksTests {
                 description == "\(error)"
             {
                 /// Expected error
-                return transport.recorder
+                return
             }
 
             let prettyJSON = try! JSONSerialization.data(
@@ -1502,8 +1519,6 @@ actor GHHooksTests {
                 sourceLocation: sourceLocation
             )
         }
-
-        return transport.recorder
     }
 
     func makeContext(
