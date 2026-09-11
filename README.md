@@ -18,6 +18,8 @@ Penny is a Swift bot that works for the [Vapor](https://vapor.codes) community.
 * [x] Automatically respond to commonly asked questions.
   * Implemented as `/auto-faqs` slash command.
 * [x] Automate SemVer releases and report on Discord.
+* [x] Run commands via GitHub comments.
+  * Implemented as the `@penny-for-vapor <command>`, for example `@penny-for-vapor benchmark`.
 * [x] Report GitHub PRs and Issues on Discord.
 * [x] Report Swift evolution proposals on Discord.
 * [x] Report Swift releases on Discord.
@@ -50,3 +52,19 @@ Some other notes:
 * Use `prerelease` label in combination with another semver label like `semver-patch` to make sure Penny can correctly create a prerelease, when a prerelease is needed.
   * For example when you have a `v5.0.0-alpha.1` release and want Penny to tag `v5.0.0-alpha.2` next.
 * Try to use `no-release-needed` or `semver-noop` when no release is needed.
+
+### Comment Commands
+
+Penny accepts commands written in pull-request comments, similar to Dependabot. The mention must start a line with `@penny` or `@penny-for-vapor`:
+
+```
+@penny-for-vapor benchmark
+```
+
+Currently available commands:
+* `benchmark`: dispatches the repository's `benchmark.yml` workflow against the pull request's current head.
+
+Some notes:
+* Commands require `write` access to the repository, the same access GitHub requires to approve a workflow run.
+* Penny reacts with 👀 when it picks a command up, then 🚀 once the command succeeds.
+* On failure Penny reacts with 😕 and explains what went wrong in a comment.

@@ -1,12 +1,14 @@
 import DiscordModels
 import EvolutionMetadataModel
 import GitHubAPI
+import HTTPTypes
 
 @testable import Penny
 
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 import class Foundation.JSONSerialization
+import class Foundation.NSNull
 #else
 import Foundation
 #endif
@@ -120,15 +122,24 @@ enum TestData {
         ghHooksEvents[key]
     }
 
-    private static let ghRestOperations: [String: Data] = {
+    struct GHRestResponse: Sendable {
+        let status: HTTPResponse.Status
+        let body: Data?
+    }
+
+    private static let ghRestOperations: [String: GHRestResponse] = {
         let data = resource(named: "ghRestOperations.json")
         let object = try! JSONSerialization.jsonObject(with: data, options: [])
-        let dict = object as! [String: Any]
-        let dataDict = dict.mapValues { try! JSONSerialization.data(withJSONObject: $0) }
-        return dataDict
+        let dict = object as! [String: [String: Any]]
+        return dict.mapValues { response in
+            let status = HTTPResponse.Status(code: response["status"] as! Int)
+            let body = response["body"]!
+            let bodyData = body is NSNull ? nil : try! JSONSerialization.data(withJSONObject: body)
+            return GHRestResponse(status: status, body: bodyData)
+        }
     }()
 
-    static func `for`(ghRequestID key: String) -> Data? {
+    static func `for`(ghRequestID key: String) -> GHRestResponse? {
         ghRestOperations[key]
     }
 }

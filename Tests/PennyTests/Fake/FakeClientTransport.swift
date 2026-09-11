@@ -9,7 +9,15 @@ import Foundation
 
 struct FakeClientTransport: ClientTransport {
 
-    init() {}
+    /// Keyed by operation id, for tests that need to see a failure response.
+    /// The response is then looked up with the status code appended to the request id.
+    let statusOverrides: [String: HTTPResponse.Status]
+    let recorder: GitHubRequestsRecorder
+
+    init(statusOverrides: [String: HTTPResponse.Status] = [:]) {
+        self.statusOverrides = statusOverrides
+        self.recorder = GitHubRequestsRecorder()
+    }
 
     func send(
         _ request: HTTPRequest,
@@ -17,12 +25,24 @@ struct FakeClientTransport: ClientTransport {
         baseURL: URL,
         operationID: String
     ) async throws -> (HTTPResponse, HTTPBody?) {
-        let primaryID = "\(request.method.rawValue)-\(baseURL.absoluteString)\(request.path ?? "")"
-        guard let data = TestData.for(ghRequestID: primaryID) ?? TestData.for(ghRequestID: operationID) else {
+        await self.recorder.record(
+            .init(
+                operationID: operationID,
+                method: request.method,
+                path: request.path ?? "",
+                body: body
+            )
+        )
+
+        let suffix = self.statusOverrides[operationID].map { "-\($0.code)" } ?? ""
+        let primaryID = "\(request.method.rawValue)-\(baseURL.absoluteString)\(request.path ?? "")\(suffix)"
+        let operationID = operationID + suffix
+        guard let response = TestData.for(ghRequestID: primaryID) ?? TestData.for(ghRequestID: operationID) else {
             fatalError("No test GitHub data for primary id: \(primaryID), operation id: \(operationID).")
         }
-        let body = HTTPBody(data)
-        let response = HTTPResponse(status: request.method == .post ? .created : .ok)
-        return (response, body)
+        let headers: HTTPFields = response.body == nil ? [:] : [.contentType: "application/json"]
+        let httpResponse = HTTPResponse(status: response.status, headerFields: headers)
+        let httpBody = response.body.map { HTTPBody($0) }
+        return (httpResponse, httpBody)
     }
 }

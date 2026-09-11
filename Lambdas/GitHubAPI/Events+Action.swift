@@ -49,6 +49,17 @@ extension Issue {
     }
 }
 
+extension IssueComment {
+    /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#issue_comment
+    package enum Action: String, Sendable, Codable {
+        case created
+        case deleted
+        case edited
+        case pinned
+        case unpinned
+    }
+}
+
 extension Release {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#release
     package enum Action: String, Codable {
