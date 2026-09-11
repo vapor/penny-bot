@@ -11,6 +11,7 @@ package struct GHEvent: Sendable, Codable {
     package let repository: Repository?
 
     package let issue: Issue?
+    package let comment: IssueComment?
     package let label: Label?
     package let number: Int?
     package let changes: Changes?

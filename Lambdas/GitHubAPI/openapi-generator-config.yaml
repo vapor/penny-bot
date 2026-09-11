@@ -11,7 +11,10 @@ filter:
     - actions/create-workflow-dispatch
     - apps/create-installation-access-token
     - issues/create
+    - issues/create-comment
     - issues/get
+    - issues/list-comments
+    - issues/update-comment
     - projects/add-item-for-org
     - projects/delete-item-for-org
     - projects/list-fields-for-org
@@ -23,11 +26,13 @@ filter:
     - pulls/list-files
     - pulls/list-reviews
     - pulls/update
+    - reactions/create-for-issue-comment
     # Need to manually mark all schemas.repository date fields as accepting both string and number.
     # For example "pushed_at", "created_at", "updated_at".
     # Look at other "pushed_at" fields in other schemas.
     - repos/compare-commits
     - repos/create-release
+    - repos/get-collaborator-permission-level
     - repos/get-latest-release
     - repos/list-commits
     - repos/list-contributors

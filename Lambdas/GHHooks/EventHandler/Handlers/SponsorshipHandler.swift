@@ -18,7 +18,7 @@ struct SponsorshipHandler: Sendable {
     }
 
     func handle() async throws {
-        try await self.context.requester.triggerSponsorsWorkflow()
+        try await self.triggerSponsorsWorkflow()
 
         guard let action = event.action.flatMap(Sponsorship.Action.init(rawValue:)) else {
             logger.error("Unknown or missing sponsorship action", metadata: ["action": "\(event.action ?? "<null>")"])
@@ -95,6 +95,19 @@ struct SponsorshipHandler: Sendable {
             throw error
         case .none:
             logger.info("Removed role from user", metadata: ["role": "\(role)", "user": "\(discordID)"])
+        }
+    }
+
+    private func triggerSponsorsWorkflow() async throws {
+        let response = try await self.context.githubClient.actionsCreateWorkflowDispatch(
+            path: .init(owner: "vapor", repo: "vapor", workflowId: .case2("sponsors.yml")),
+            body: .json(.init(ref: "main"))
+        )
+        switch response {
+        case .noContent, .ok:
+            break
+        case .undocumented:
+            throw Errors.httpRequestFailed(response: response)
         }
     }
 

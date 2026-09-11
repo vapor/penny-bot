@@ -10,6 +10,8 @@ struct EventHandler: Sendable {
             try await IssueHandler(context: context).handle()
         case .pull_request:
             try await PRHandler(context: context).handle()
+        case .issue_comment:
+            try await CommentCommandHandler(context: context).handle()
         case .release:
             try await ReleaseReporter(context: context).handle()
         case .push:

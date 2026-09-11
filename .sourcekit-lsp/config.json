@@ -1,7 +1,9 @@
 {
-  "$schema": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/refs/heads/main/config.schema.json",
+  "$schema": "https://raw.githubusercontent.com/swiftlang/sourcekit-lsp/refs/heads/release/6.4.x/config.schema.json",
   "backgroundIndexing": true,
-  "backgroundPreparationMode": "enabled",
+  "backgroundPreparationMode": "noLazy",
   "maxCoresPercentageToUseForBackgroundIndexing": 0.7,
-  "experimentalFeatures": ["on-type-formatting"]
+  "experimentalFeatures": [
+    "on-type-formatting"
+  ]
 }
