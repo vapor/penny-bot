@@ -15345,5 +15345,107 @@
       "user_view_type": "public",
       "site_admin": false
     }
+  },
+  "sponsorship4": {
+    "action": "tier_changed",
+    "sponsorship": {
+      "node_id": "S_kwAAAAAAAAAAAAAA",
+      "created_at": "2022-08-05T19:29:47+00:00",
+      "sponsorable": {
+        "login": "vapor",
+        "id": 17364220,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjE3MzY0MjIw",
+        "url": "https://api.github.com/orgs/vapor",
+        "repos_url": "https://api.github.com/orgs/vapor/repos",
+        "events_url": "https://api.github.com/orgs/vapor/events",
+        "hooks_url": "https://api.github.com/orgs/vapor/hooks",
+        "issues_url": "https://api.github.com/orgs/vapor/issues",
+        "members_url": "https://api.github.com/orgs/vapor/members{/member}",
+        "public_members_url": "https://api.github.com/orgs/vapor/public_members{/member}",
+        "avatar_url": "https://avatars.githubusercontent.com/u/17364220?v=4",
+        "description": "Creating modular server side software with Swift."
+      },
+      "maintainer": {
+        "login": "vapor",
+        "id": 17364220,
+        "node_id": "MDEyOk9yZ2FuaXphdGlvbjE3MzY0MjIw",
+        "url": "https://api.github.com/orgs/vapor",
+        "repos_url": "https://api.github.com/orgs/vapor/repos",
+        "events_url": "https://api.github.com/orgs/vapor/events",
+        "hooks_url": "https://api.github.com/orgs/vapor/hooks",
+        "issues_url": "https://api.github.com/orgs/vapor/issues",
+        "members_url": "https://api.github.com/orgs/vapor/members{/member}",
+        "public_members_url": "https://api.github.com/orgs/vapor/public_members{/member}",
+        "avatar_url": "https://avatars.githubusercontent.com/u/17364220?v=4",
+        "description": "Creating modular server side software with Swift."
+      },
+      "sponsor": {
+        "login": "fake-sponsor",
+        "id": 99999999,
+        "node_id": "MDQ6VXNlcjk5OTk5OTk5",
+        "avatar_url": "https://avatars.githubusercontent.com/u/99999999?v=4",
+        "gravatar_id": "",
+        "url": "https://api.github.com/users/fake-sponsor",
+        "html_url": "https://github.com/fake-sponsor",
+        "followers_url": "https://api.github.com/users/fake-sponsor/followers",
+        "following_url": "https://api.github.com/users/fake-sponsor/following{/other_user}",
+        "gists_url": "https://api.github.com/users/fake-sponsor/gists{/gist_id}",
+        "starred_url": "https://api.github.com/users/fake-sponsor/starred{/owner}{/repo}",
+        "subscriptions_url": "https://api.github.com/users/fake-sponsor/subscriptions",
+        "organizations_url": "https://api.github.com/users/fake-sponsor/orgs",
+        "repos_url": "https://api.github.com/users/fake-sponsor/repos",
+        "events_url": "https://api.github.com/users/fake-sponsor/events{/privacy}",
+        "received_events_url": "https://api.github.com/users/fake-sponsor/received_events",
+        "type": "User",
+        "user_view_type": "public",
+        "site_admin": false
+      },
+      "privacy_level": "public",
+      "tier": {
+        "node_id": "MDEyOlNwb25zb3JzVGllcjQzOTk4",
+        "created_at": "2020-10-06T16:24:31Z",
+        "description": "ð Free T-shirt from [store.vapor.codes](https://store.vapor.codes).\r\n\r\n_+ everything from previous tiers!_",
+        "monthly_price_in_cents": 2500,
+        "monthly_price_in_dollars": 25,
+        "name": "$25 a month",
+        "is_one_time": false,
+        "is_custom_amount": false
+      }
+    },
+    "sender": {
+      "login": "fake-sponsor",
+      "id": 99999999,
+      "node_id": "MDQ6VXNlcjk5OTk5OTk5",
+      "avatar_url": "https://avatars.githubusercontent.com/u/99999999?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/fake-sponsor",
+      "html_url": "https://github.com/fake-sponsor",
+      "followers_url": "https://api.github.com/users/fake-sponsor/followers",
+      "following_url": "https://api.github.com/users/fake-sponsor/following{/other_user}",
+      "gists_url": "https://api.github.com/users/fake-sponsor/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/fake-sponsor/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/fake-sponsor/subscriptions",
+      "organizations_url": "https://api.github.com/users/fake-sponsor/orgs",
+      "repos_url": "https://api.github.com/users/fake-sponsor/repos",
+      "events_url": "https://api.github.com/users/fake-sponsor/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/fake-sponsor/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "changes": {
+      "tier": {
+        "from": {
+          "node_id": "MDEyOlNwb25zb3JzVGllcjQ0MDAw",
+          "created_at": "2020-10-06T16:25:02Z",
+          "description": "Your logo on the Vapor website.\r\n\r\n_+ everything from previous tiers!_",
+          "monthly_price_in_cents": 10000,
+          "monthly_price_in_dollars": 100,
+          "name": "$100 a month",
+          "is_one_time": false,
+          "is_custom_amount": false
+        }
+      }
+    }
   }
 }
