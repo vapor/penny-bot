@@ -42,7 +42,7 @@ extension CommentCommand {
 
                 return .command(command)
             default:
-                /// Early-exit for most comment that are not commands.
+                /// Early-exit for most comments that are not commands.
                 continue
             }
         }

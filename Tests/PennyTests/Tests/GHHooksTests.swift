@@ -1424,7 +1424,6 @@ actor GHHooksTests {
         #expect(CommentCommand.parse(commentBody: body) == expected)
     }
 
-    @discardableResult
     func handleEvent(
         key: String,
         eventName: GHEvent.Kind,

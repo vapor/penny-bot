@@ -48,7 +48,9 @@ actor GitHubRequestsRecorder {
         as type: Body.Type = Body.self
     ) async throws -> [Body] {
         var decoded: [Body] = []
-        for request in self.requests(for: operationID) {
+        let requests = self.requests(for: operationID)
+        decoded.reserveCapacity(requests.count)
+        for request in requests {
             guard let body = request.body else { continue }
             let data = try await Data(collecting: body, upTo: Self.maxBodyBytes)
             let decodedBody = try self.decoder.decode(Body.self, from: data)
