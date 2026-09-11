@@ -68,7 +68,6 @@ jobs:
               lambda-build \
               --verbose \
               --output-path ./zips \
-              --no-strip \
               --products "${name}"
           done
 
