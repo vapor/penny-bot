@@ -12,7 +12,7 @@ jobs:
       id-token: write
 
     runs-on: ubuntu-24.04-arm
-    container: swift:6.3-amazonlinux2023
+    container: swift:6.4-amazonlinux2023
 
     outputs:
       names: ${{ steps.find_package_names.outputs.names }}
@@ -92,7 +92,7 @@ jobs:
       id-token: write
 
     runs-on: ubuntu-24.04-arm
-    container: swift:6.3-noble
+    container: swift:6.4-noble
 
     env:
       IMAGE_TAG: ${{ github.sha }}
