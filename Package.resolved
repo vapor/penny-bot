@@ -1,5 +1,5 @@
 {
-  "originHash" : "735b9062710655b1f24ab8ae81dd32aa6e3d39147abc15b367496c9de15fc8b3",
+  "originHash" : "a5fdfaf758a4d92359121ba47c90c47aafcb80abe3b1813400eba4dc731038b9",
   "pins" : [
     {
       "identity" : "async-http-client",
@@ -78,8 +78,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/mattpolzin/OpenAPIKit",
       "state" : {
-        "revision" : "0311432a8bb107c058b9f1895b581b48c69ad410",
-        "version" : "6.3.0"
+        "revision" : "5b72eb9a6b23b1fec439d9a0bf38f115400421f9",
+        "version" : "6.4.0"
       }
     },
     {
@@ -159,8 +159,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/swift-server/swift-aws-lambda-runtime.git",
       "state" : {
-        "revision" : "c824043fb067adac1c0b5d6f3b74e838f8bd2510",
-        "version" : "3.0.0-rc1"
+        "revision" : "12f016ed6d93c07d49d8cc2310d98c38eaf308dc",
+        "version" : "3.0.0"
       }
     },
     {
