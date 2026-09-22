@@ -1152,6 +1152,13 @@ actor GHHooksTests {
             expect: .response(at: .backers),
             transport: transport
         )
+        _ = await self.responseStorage.awaitResponse(
+            at: .addGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.backer.id
+            )
+        )
         #expect(
             await transport.recorder.paths(for: "actions/create-workflow-dispatch")
                 == ["/repos/vapor/vapor/actions/workflows/sponsors.yml/dispatches"]
@@ -1172,6 +1179,21 @@ actor GHHooksTests {
             eventName: .sponsorship,
             expect: .noResponse,
         )
+        _ = await self.responseStorage.awaitResponse(
+            at: .deleteGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.sponsor.id
+            )
+        )
+        _ = await self.responseStorage.awaitResponse(
+            at: .deleteGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.backer.id
+            ),
+            expectFailure: true
+        )
     }
 
     @Test
@@ -1180,6 +1202,18 @@ actor GHHooksTests {
             key: "sponsorship3",
             eventName: .sponsorship,
             expect: .noResponse,
+        )
+    }
+
+    @Test
+    func handleSponsorshipTierChanged() async throws {
+        try await handleEvent(key: "sponsorship4", eventName: .sponsorship, expect: .noResponse)
+        _ = await self.responseStorage.awaitResponse(
+            at: .deleteGuildMemberRole(
+                guildId: Constants.guildID,
+                userId: FakeUsersService.discordUserID,
+                roleId: Constants.Roles.sponsor.id
+            )
         )
     }
 
