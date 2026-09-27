@@ -5,6 +5,7 @@ import Shared
 @testable import Penny
 
 struct FakeUsersService: UsersService {
+    static let discordUserID: UserSnowflake = "1134810480968204288"
 
     init() {}
 
@@ -29,7 +30,7 @@ struct FakeUsersService: UsersService {
     }
 
     func getUser(githubID: String) async throws -> DynamoDBUser? {
-        var new = DynamoDBUser.createNew(forDiscordID: "1134810480968204288")
+        var new = DynamoDBUser.createNew(forDiscordID: Self.discordUserID)
         new.githubID = githubID
         return new
     }
