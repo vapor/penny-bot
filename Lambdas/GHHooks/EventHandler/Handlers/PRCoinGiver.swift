@@ -41,7 +41,17 @@ struct PRCoinGiver {
             var usersToReceiveCoins = codeOwners.contains(user: user) ? [] : [user.id]
 
             let mergeCommitSHA = try pr.mergeCommitSha.requireValue()
-            let commit = try (event.commits?.first { $0.id == mergeCommitSHA }).requireValue()
+            /// `commits` only contains the `before`...`after` compare, so it lacks the merge commit whenever
+            /// this push didn't introduce it: force-push rewinds, where `after` still points at an already-merged
+            /// PR's merge commit; branch creation; and pushes past the 2048-commit payload cap.
+            /// Skipping the whole PR is intentional, to not re-pay a PR that was paid when it originally merged.
+            guard let commit = event.commits?.first(where: { $0.id == mergeCommitSHA }) else {
+                logger.debug(
+                    "PR's merge commit is not included in this push",
+                    metadata: ["pr": "\(pr)", "mergeCommitSHA": "\(mergeCommitSHA)"]
+                )
+                continue
+            }
             let coAuthors = try await findCoAuthors(message: commit.message)
 
             usersToReceiveCoins +=
