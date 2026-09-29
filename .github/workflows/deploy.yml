@@ -29,6 +29,13 @@ jobs:
           printf '#!/bin/sh\nexit 127\n' > /usr/local/bin/docker
           chmod +x /usr/local/bin/docker
 
+      - name: Always pass -Xswiftc -static-stdlib to swift build (Temporary fix until Swift 6.4.1)
+        run: |
+          # Replace swift-build with a wrapper that always passes -Xswiftc -static-stdlib
+          rm /usr/bin/swift-build
+          printf '#!/bin/bash\nexec -a "$0" /usr/bin/swift-package "$@" -Xswiftc -static-stdlib\n' > /usr/bin/swift-build
+          chmod +x /usr/bin/swift-build
+
       - name: Check out repository
         uses: actions/checkout@v7
 
@@ -120,11 +127,13 @@ jobs:
         run: |
           apt-get update -y
           apt-get install -y libjemalloc-dev
+          # `-Xswiftc -static-stdlib` is temporary needed until Swift 6.4.1 is released
           swift build \
             --product Penny \
             -c release \
             --force-resolved-versions \
             --static-swift-stdlib \
+            -Xswiftc -static-stdlib \
             -Xlinker -ljemalloc
 
       - name: Install Docker
