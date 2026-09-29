@@ -92,7 +92,7 @@ jobs:
       id-token: write
 
     runs-on: ubuntu-24.04-arm
-    container: swift:6.4-noble
+    container: swift:6.4-resolute
 
     env:
       IMAGE_TAG: ${{ github.sha }}
