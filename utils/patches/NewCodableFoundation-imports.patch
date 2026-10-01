@@ -1,0 +1,53 @@
+Upstream, these files sit inside FoundationEssentials itself, so they never import it.
+
+diff --git a/Sources/NewCodableFoundation/CodingFormatStyle.swift b/Sources/NewCodableFoundation/CodingFormatStyle.swift
+index 78e3ce04..0d584d9a 100644
+--- a/Sources/NewCodableFoundation/CodingFormatStyle.swift
++++ b/Sources/NewCodableFoundation/CodingFormatStyle.swift
+@@ -12,6 +12,12 @@
+ 
+ import NewCodable
+ 
++#if canImport(FoundationEssentials)
++import FoundationEssentials
++#else
++import Foundation
++#endif
++
+ // NOTE: This is a provisional proof-of-concept. It will be up to Foundation how exactly they want to expose .format() and FormatStyles in @CodableBy() macros.
+ 
+ /// A type that converts a value into a representation in another type using a
+diff --git a/Sources/NewCodableFoundation/CodingStrategies+Foundation.swift b/Sources/NewCodableFoundation/CodingStrategies+Foundation.swift
+index 03361276..e8669c37 100644
+--- a/Sources/NewCodableFoundation/CodingStrategies+Foundation.swift
++++ b/Sources/NewCodableFoundation/CodingStrategies+Foundation.swift
+@@ -12,6 +12,12 @@
+ 
+ import NewCodable
+ 
++#if canImport(FoundationEssentials)
++import FoundationEssentials
++#else
++import Foundation
++#endif
++
+ // MARK: - StringFormattedCodingStrategy
+ 
+ /// A `CodingStrategy` that converts values to and from `String` formats using
+diff --git a/Sources/NewCodableFoundation/NewCodable+Foundation.swift b/Sources/NewCodableFoundation/NewCodable+Foundation.swift
+index bfcd4eb2..1581beb3 100644
+--- a/Sources/NewCodableFoundation/NewCodable+Foundation.swift
++++ b/Sources/NewCodableFoundation/NewCodable+Foundation.swift
+@@ -12,6 +12,12 @@
+ 
+ import NewCodable
+ 
++#if canImport(FoundationEssentials)
++import FoundationEssentials
++#else
++import Foundation
++#endif
++
+ internal extension Data {
+     init(_copying span: RawSpan) {
+         self = span.withUnsafeBytes {

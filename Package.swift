@@ -1,6 +1,7 @@
 // swift-tools-version:6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -17,6 +18,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
         .package(url: "https://github.com/swift-server/swift-openapi-async-http-client.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-openapi-generator.git", from: "1.6.0"),
@@ -173,6 +175,33 @@ let package = Package(
             ],
             swiftSettings: upcomingFeaturesSwiftSettings
         ),
+        .macro(
+            name: "NewCodableMacros",
+            dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                .product(name: "SwiftDiagnostics", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ],
+            swiftSettings: newCodableMacrosSwiftSettings
+        ),
+        .target(
+            name: "NewCodable",
+            dependencies: [
+                .product(name: "OrderedCollections", package: "swift-collections"),
+                .product(name: "BasicContainers", package: "swift-collections"),
+                .target(name: "NewCodableMacros"),
+            ],
+            swiftSettings: newCodableSwiftSettings
+        ),
+        .target(
+            name: "NewCodableFoundation",
+            dependencies: [
+                .target(name: "NewCodable")
+            ],
+            swiftSettings: newCodableSwiftSettings
+        ),
         .testTarget(
             name: "PennyTests",
             dependencies: [
@@ -192,6 +221,8 @@ let package = Package(
                 ),
                 .target(name: "GitHubAPI"),
                 .target(name: "LambdasShared"),
+                .target(name: "NewCodable"),
+                .target(name: "NewCodableFoundation"),
                 .target(name: "Shared"),
                 .target(name: "Rendering"),
                 .target(name: "Models"),
@@ -211,6 +242,27 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
         .enableUpcomingFeature("FullTypedThrows"),
         .enableUpcomingFeature("MemberImportVisibility"),
         .enableUpcomingFeature("InternalImportsByDefault"),
+    ]
+}
+
+/// Mirrors swift-foundation's own settings. The vendored sources are upstream's, so they don't
+/// get `upcomingFeaturesSwiftSettings`. See `utils/NewCodableSync.swift`.
+var newCodableSwiftSettings: [SwiftSetting] {
+    [
+        .enableExperimentalFeature("BuiltinModule"),
+        .enableExperimentalFeature("Lifetimes"),
+        .enableExperimentalFeature("SuppressedAssociatedTypesWithDefaults"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+    ]
+}
+
+var newCodableMacrosSwiftSettings: [SwiftSetting] {
+    [
+        .enableExperimentalFeature("StrictConcurrency"),
+        .enableExperimentalFeature("ImportMacroAliases"),
+        .enableUpcomingFeature("InferSendableFromCaptures"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+        .swiftLanguageMode(.v5),
     ]
 }
 

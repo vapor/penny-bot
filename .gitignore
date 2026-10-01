@@ -1,13 +1,12 @@
 .DS_Store
-/.build
-/.index-build
+/.build*
+/.claude
 /Packages
 /*.xcodeproj
 xcuserdata/
 DerivedData/
 .swiftpm/xcode/package.xcworkspace/contents.xcworkspacedata
 .swiftpm/*
-.build/*
 *.xcscheme
 .vscode/launch.json
 .devcontainer
