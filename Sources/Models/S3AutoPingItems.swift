@@ -1,6 +1,9 @@
-package struct S3AutoPingItems: Sendable, Codable {
+package import NewCodable
 
-    package enum Expression: Sendable, Codable, RawRepresentable, Hashable {
+@JSONCodable
+package struct S3AutoPingItems: Sendable {
+
+    package enum Expression: Sendable, JSONCodable, RawRepresentable, Hashable {
 
         package enum Kind: String, CaseIterable {
             case containment
@@ -72,9 +75,38 @@ package struct S3AutoPingItems: Sendable, Codable {
         }
     }
 
+    @CodableBy(ItemsCodingStrategy())
     package var items: [Expression: Set<UserSnowflake>]
 
     package init(items: [Expression: Set<UserSnowflake>] = [:]) {
         self.items = items
+    }
+}
+
+extension S3AutoPingItems {
+    struct ItemsCodingStrategy: JSONCodingStrategy {
+        func encode(
+            _ value: borrowing [Expression: Set<UserSnowflake>],
+            to encoder: inout JSONDirectEncoder
+        ) throws(CodingError.Encoding) {
+            try encoder.encodeArray { arrayEncoder throws(CodingError.Encoding) in
+                for index in value.indices {
+                    try arrayEncoder.encode(value.keys[index])
+                    try arrayEncoder.encode(value.values[index])
+                }
+            }
+        }
+
+        func decode(
+            from decoder: inout some JSONDecoderProtocol & ~Escapable
+        ) throws(CodingError.Decoding) -> [Expression: Set<UserSnowflake>] {
+            try decoder.decodeArray { arrayDecoder throws(CodingError.Decoding) in
+                var items = [Expression: Set<UserSnowflake>]()
+                while let expression = try arrayDecoder.decodeNext(Expression.self) {
+                    items[expression] = try arrayDecoder.decodeRequiredNext(Set<UserSnowflake>.self)
+                }
+                return items
+            }
+        }
     }
 }

@@ -1,6 +1,8 @@
+package import NewCodable
+
 extension PullRequest {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#pull_request
-    package enum Action: String, Codable {
+    package enum Action: String, JSONCodable {
         case assigned
         case auto_merge_disabled
         case auto_merge_enabled
@@ -28,7 +30,7 @@ extension PullRequest {
 
 extension Issue {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#issues
-    package enum Action: String, Sendable, Codable {
+    package enum Action: String, Sendable, JSONCodable {
         case assigned
         case closed
         case deleted
@@ -51,7 +53,7 @@ extension Issue {
 
 extension IssueComment {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#issue_comment
-    package enum Action: String, Sendable, Codable {
+    package enum Action: String, Sendable, JSONCodable {
         case created
         case deleted
         case edited
@@ -62,7 +64,7 @@ extension IssueComment {
 
 extension Release {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads#release
-    package enum Action: String, Codable {
+    package enum Action: String, JSONCodable {
         case created
         case deleted
         case edited

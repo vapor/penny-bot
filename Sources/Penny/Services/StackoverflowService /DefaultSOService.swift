@@ -1,8 +1,8 @@
 import AsyncHTTPClient
 import Logging
 import NIOCore
-import NIOFoundationEssentialsCompat
 import NIOHTTP1
+import NewCodable
 import Shared
 
 #if canImport(FoundationEssentials)
@@ -14,7 +14,6 @@ import Foundation
 struct DefaultSOService: SOService {
     let httpClient: HTTPClient
     let logger = Logger(label: "DefaultSOService")
-    let decoder = JSONDecoder()
     private static let urlEncodedAPIKey = Constants.StackOverflow.apiKey.urlQueryEncoded()
 
     func listQuestions(after: Date) async throws -> [SOQuestions.Item] {
@@ -49,9 +48,9 @@ struct DefaultSOService: SOService {
             throw ServiceError.badStatus(response.status)
         }
 
-        let questions = try decoder.decode(
+        let questions = try NewJSONDecoder().decode(
             SOQuestions.self,
-            from: buffer
+            from: buffer.readableBytesSpan
         ).items
         return questions
     }

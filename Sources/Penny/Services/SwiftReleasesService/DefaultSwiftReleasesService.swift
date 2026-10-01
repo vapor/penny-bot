@@ -1,23 +1,12 @@
 import AsyncHTTPClient
 import Logging
 import NIOCore
-import NIOFoundationEssentialsCompat
 import NIOHTTP1
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+import NewCodable
 
 struct DefaultSwiftReleasesService: SwiftReleasesService {
     let httpClient: HTTPClient
     let logger = Logger(label: "DefaultSwiftReleasesService")
-    let decoder: JSONDecoder = {
-        let decoder = JSONDecoder()
-        decoder.keyDecodingStrategy = .convertFromSnakeCase
-        return decoder
-    }()
 
     func listReleases() async throws -> [SwiftOrgRelease] {
         let url = "https://www.swift.org/api/v1/install/releases.json"
@@ -39,9 +28,9 @@ struct DefaultSwiftReleasesService: SwiftReleasesService {
             throw ServiceError.badStatus(response.status)
         }
 
-        let releases = try decoder.decode(
+        let releases = try NewJSONDecoder().decode(
             [SwiftOrgRelease].self,
-            from: buffer
+            from: buffer.readableBytesSpan
         )
         return releases
     }

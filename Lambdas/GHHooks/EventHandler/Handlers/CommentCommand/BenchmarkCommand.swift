@@ -1,13 +1,8 @@
 import DiscordBM
 import GitHubAPI
+import NewCodable
 import OpenAPIRuntime
 import Shared
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 struct BenchmarkCommand {
     enum Configuration {
@@ -79,13 +74,14 @@ struct BenchmarkCommand {
             return "<no GitHub error message>"
         }
         let collected = try await String(collecting: body, upTo: Configuration.maxErrorBodyBytes)
-        guard let json = try? JSONDecoder().decode(ErrorResponse.self, from: Data(collected.utf8)) else {
+        guard let json = try? NewJSONDecoder().decode(ErrorResponse.self, from: collected.utf8Span) else {
             return collected.unicodesPrefix(Configuration.maxErrorMessageLength)
         }
         return json.message.unicodesPrefix(Configuration.maxErrorMessageLength)
     }
 
-    private struct ErrorResponse: Codable {
+    @JSONCodable
+    fileprivate struct ErrorResponse {
         let message: String
     }
 }

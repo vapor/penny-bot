@@ -1,4 +1,7 @@
-package struct CoinResponse: Sendable, Codable {
+package import NewCodable
+
+@JSONCodable
+package struct CoinResponse: Sendable {
     package let sender: UserSnowflake
     package let receiver: UserSnowflake
     package let newCoinCount: Int

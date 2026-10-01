@@ -2,6 +2,8 @@ import DiscordModels
 import EvolutionMetadataModel
 import GitHubAPI
 import HTTPTypes
+import NewCodable
+import NewCodableFoundation
 
 @testable import Penny
 
@@ -27,6 +29,7 @@ enum TestData {
         return data
     }
 
+    @_disfavoredOverload
     private static func resource<D: Decodable>(
         named name: String,
         keyDecodingStrategy: JSONDecoder.KeyDecodingStrategy = .useDefaultKeys,
@@ -36,6 +39,14 @@ enum TestData {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = keyDecodingStrategy
         return try! decoder.decode(D.self, from: data)
+    }
+
+    private static func resource<D: JSONDecodable>(
+        named name: String,
+        as: D.Type = D.self
+    ) -> D {
+        let data = resource(named: name)
+        return try! NewJSONDecoder().decode(D.self, from: data)
     }
 
     static let vaporGuild = resource(

@@ -1,14 +1,9 @@
 import Models
-import NIOFoundationEssentialsCompat
+import NewCodable
+import NewCodableFoundation
 import SotoS3
 
 package import class SotoCore.AWSClient
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 package struct S3AutoFaqsRepository {
 
@@ -16,9 +11,6 @@ package struct S3AutoFaqsRepository {
     let logger: Logger
     let bucket = "penny-auto-faqs-lambda"
     let key = "auto-faqs-repo.json"
-
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     package init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
@@ -62,7 +54,7 @@ package struct S3AutoFaqsRepository {
             return [String: String]()
         }
         do {
-            return try decoder.decode([String: String].self, from: body)
+            return try NewJSONDecoder().decode([String: String].self, from: body.readableBytesSpan)
         } catch {
             logger.error(
                 "Cannot find any data in the bucket",
@@ -76,7 +68,7 @@ package struct S3AutoFaqsRepository {
     }
 
     package func save(items: [String: String]) async throws {
-        let data = try encoder.encode(items)
+        let data = try NewJSONEncoder().encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
             body: .init(bytes: data),

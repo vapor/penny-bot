@@ -1,11 +1,10 @@
-struct AccessTokenResponse: Decodable {
+import NewCodable
+
+@JSONDecodable
+struct AccessTokenResponse {
+    @CodingKey("access_token")
     let accessToken: String
     let scope: String
+    @CodingKey("token_type")
     let tokenType: String
-
-    enum CodingKeys: String, CodingKey {
-        case accessToken = "access_token"
-        case scope
-        case tokenType = "token_type"
-    }
 }
