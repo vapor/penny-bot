@@ -1,6 +1,7 @@
 // swift-tools-version:6.4
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -9,7 +10,7 @@ let package = Package(
         .macOS(.v26)
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", from: "2.57.0"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "2.103.0"),
         .package(url: "https://github.com/swift-server/async-http-client.git", from: "1.21.0"),
         .package(url: "https://github.com/apple/swift-crypto.git", from: "4.5.1"),
         .package(url: "https://github.com/apple/swift-collections.git", from: "1.0.0"),
@@ -17,6 +18,7 @@ let package = Package(
         .package(url: "https://github.com/apple/swift-atomics.git", from: "1.1.0"),
         .package(url: "https://github.com/apple/swift-log.git", from: "1.5.2"),
         .package(url: "https://github.com/apple/swift-algorithms.git", from: "1.0.0"),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0"),
         .package(url: "https://github.com/vapor/leaf-kit.git", from: "1.10.2"),
         .package(url: "https://github.com/swift-server/swift-openapi-async-http-client.git", from: "1.0.0"),
         .package(url: "https://github.com/apple/swift-openapi-generator.git", from: "1.6.0"),
@@ -53,6 +55,7 @@ let package = Package(
                 .target(name: "Rendering"),
                 .target(name: "Shared"),
                 .target(name: "Models"),
+                .target(name: "NewCodable"),
             ],
             swiftSettings: upcomingFeaturesSwiftSettings
         ),
@@ -66,19 +69,22 @@ let package = Package(
         .lambdaTarget(
             name: "AutoPings",
             additionalDependencies: [
-                .product(name: "SotoS3", package: "soto")
+                .product(name: "SotoS3", package: "soto"),
+                .target(name: "NewCodableFoundation"),
             ]
         ),
         .lambdaTarget(
             name: "Faqs",
             additionalDependencies: [
-                .product(name: "SotoS3", package: "soto")
+                .product(name: "SotoS3", package: "soto"),
+                .target(name: "NewCodableFoundation"),
             ]
         ),
         .lambdaTarget(
             name: "AutoFaqs",
             additionalDependencies: [
-                .product(name: "SotoS3", package: "soto")
+                .product(name: "SotoS3", package: "soto"),
+                .target(name: "NewCodableFoundation"),
             ]
         ),
         .lambdaTarget(
@@ -106,6 +112,7 @@ let package = Package(
                 .product(name: "DiscordBM", package: "DiscordBM"),
                 .product(name: "JWTKit", package: "jwt-kit"),
                 .target(name: "Shared"),
+                .target(name: "NewCodableFoundation"),
             ]
         ),
         .target(
@@ -115,7 +122,9 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "AWSLambdaEvents", package: "swift-aws-lambda-events"),
+                .product(name: "AWSLambdaRuntime", package: "swift-aws-lambda-runtime"),
                 .target(name: "Shared"),
+                .target(name: "NewCodable"),
             ],
             path: "./Lambdas/LambdasShared",
             swiftSettings: upcomingFeaturesSwiftSettings
@@ -132,6 +141,7 @@ let package = Package(
                 .product(name: "Logging", package: "swift-log"),
                 .product(name: "Atomics", package: "swift-atomics"),
                 .product(name: "Crypto", package: "swift-crypto"),
+                .target(name: "NewCodable"),
             ],
             path: "./Lambdas/GitHubAPI",
             exclude: [
@@ -143,7 +153,9 @@ let package = Package(
         .target(
             name: "Models",
             dependencies: [
-                .product(name: "DiscordModels", package: "DiscordBM")
+                .product(name: "DiscordModels", package: "DiscordBM"),
+                .target(name: "NewCodable"),
+                .target(name: "NewCodableFoundation"),
             ],
             swiftSettings: upcomingFeaturesSwiftSettings
         ),
@@ -158,6 +170,8 @@ let package = Package(
                 .product(name: "SotoCore", package: "soto-core"),
                 .product(name: "SotoLambda", package: "soto"),
                 .target(name: "Models"),
+                .target(name: "NewCodable"),
+                .target(name: "NewCodableFoundation"),
             ],
             swiftSettings: upcomingFeaturesSwiftSettings
         ),
@@ -172,6 +186,33 @@ let package = Package(
                 .target(name: "Shared"),
             ],
             swiftSettings: upcomingFeaturesSwiftSettings
+        ),
+        .macro(
+            name: "NewCodableMacros",
+            dependencies: [
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+                .product(name: "SwiftDiagnostics", package: "swift-syntax"),
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+            ],
+            swiftSettings: newCodableMacrosSwiftSettings
+        ),
+        .target(
+            name: "NewCodable",
+            dependencies: [
+                .product(name: "OrderedCollections", package: "swift-collections"),
+                .product(name: "BasicContainers", package: "swift-collections"),
+                .target(name: "NewCodableMacros"),
+            ],
+            swiftSettings: newCodableSwiftSettings
+        ),
+        .target(
+            name: "NewCodableFoundation",
+            dependencies: [
+                .target(name: "NewCodable")
+            ],
+            swiftSettings: newCodableSwiftSettings
         ),
         .testTarget(
             name: "PennyTests",
@@ -192,6 +233,8 @@ let package = Package(
                 ),
                 .target(name: "GitHubAPI"),
                 .target(name: "LambdasShared"),
+                .target(name: "NewCodable"),
+                .target(name: "NewCodableFoundation"),
                 .target(name: "Shared"),
                 .target(name: "Rendering"),
                 .target(name: "Models"),
@@ -214,6 +257,27 @@ var upcomingFeaturesSwiftSettings: [SwiftSetting] {
     ]
 }
 
+/// Mirrors swift-foundation's own settings. The vendored sources are upstream's, so they don't
+/// get `upcomingFeaturesSwiftSettings`. See `utils/NewCodableSync.swift`.
+var newCodableSwiftSettings: [SwiftSetting] {
+    [
+        .enableExperimentalFeature("BuiltinModule"),
+        .enableExperimentalFeature("Lifetimes"),
+        .enableExperimentalFeature("SuppressedAssociatedTypesWithDefaults"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+    ]
+}
+
+var newCodableMacrosSwiftSettings: [SwiftSetting] {
+    [
+        .enableExperimentalFeature("StrictConcurrency"),
+        .enableExperimentalFeature("ImportMacroAliases"),
+        .enableUpcomingFeature("InferSendableFromCaptures"),
+        .enableUpcomingFeature("MemberImportVisibility"),
+        .swiftLanguageMode(.v5),
+    ]
+}
+
 extension PackageDescription.Target {
     @MainActor
     static func lambdaTarget(
@@ -229,6 +293,7 @@ extension PackageDescription.Target {
                 .product(name: "Logging", package: "swift-log"),
                 .target(name: "LambdasShared"),
                 .target(name: "Models"),
+                .target(name: "NewCodable"),
             ] + additionalDependencies,
             path: "./Lambdas/\(name)",
             swiftSettings: upcomingFeaturesSwiftSettings

@@ -1,14 +1,10 @@
 import Logging
 package import Models
 import NIOFoundationEssentialsCompat
+import NewCodable
+import NewCodableFoundation
 package import SotoCore
 import SotoLambda
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 package struct LambdaInvoker: Sendable {
     package enum Errors: Error, CustomStringConvertible {
@@ -27,8 +23,6 @@ package struct LambdaInvoker: Sendable {
 
     private let lambda: Lambda
     private let logger = Logger(label: "LambdaInvoker")
-    private let encoder = JSONEncoder()
-    private let decoder = JSONDecoder()
 
     package init(awsClient: AWSClient, region: Region = .euwest1) {
         self.lambda = Lambda(client: awsClient, region: region)
@@ -59,14 +53,14 @@ package struct LambdaInvoker: Sendable {
     }
 
     private func invoke<
-        Request: Sendable & Encodable,
-        Success: Sendable & Codable
+        Request: Sendable & JSONEncodable,
+        Success: Sendable & JSONCodable
     >(
         functionName: Constants.LambdaFunctionName,
         request: Request,
         expecting: Success.Type = Success.self
     ) async throws -> Success {
-        let data = try self.encoder.encode(request)
+        let data = try NewJSONEncoder().encode(request)
         let response = try await self.lambda.invoke(
             .init(
                 functionName: functionName.rawValue,
@@ -87,7 +81,7 @@ package struct LambdaInvoker: Sendable {
             )
         }
 
-        switch try self.decoder.decode(LambdaResult<Success>.self, from: payload) {
+        switch try NewJSONDecoder().decode(LambdaResult<Success>.self, from: payload.readableBytesSpan) {
         case let .success(success):
             return success
         case let .failure(reason):

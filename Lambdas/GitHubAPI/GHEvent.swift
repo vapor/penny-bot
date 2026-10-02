@@ -1,3 +1,5 @@
+package import NewCodable
+
 #if canImport(FoundationEssentials)
 import FoundationEssentials
 #else
@@ -34,7 +36,7 @@ package struct GHEvent: Sendable, Codable {
 
 extension GHEvent {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
-    package enum Kind: String, Sendable, Codable {
+    package enum Kind: String, Sendable, JSONCodable {
         case branch_protection_rule
         case check_run
         case check_suite

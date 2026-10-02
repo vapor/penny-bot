@@ -1,6 +1,7 @@
 import DiscordBM
 import Logging
 import Markdown
+import NewCodable
 import ServiceLifecycle
 import Shared
 
@@ -90,76 +91,64 @@ extension String {
 }
 
 // MARK: - SOQuestions
-struct SOQuestions: Codable {
+@JSONCodable
+struct SOQuestions {
 
-    struct Item: Codable {
+    @JSONCodable
+    struct Item {
 
-        struct Owner: Codable {
+        @JSONCodable
+        struct Owner {
+            @CodingKey("account_id")
             let accountID: Int?
             let reputation: Int?
+            @CodingKey("user_id")
             let userID: Int?
+            @CodingKey("user_type")
             let userType: String
+            @CodingKey("accept_rate")
             let acceptRate: Int?
+            @CodingKey("profile_image")
             let profileImage: String?
+            @CodingKey("display_name")
             let displayName: String
             let link: String?
-
-            enum CodingKeys: String, CodingKey {
-                case accountID = "account_id"
-                case reputation
-                case userID = "user_id"
-                case userType = "user_type"
-                case acceptRate = "accept_rate"
-                case profileImage = "profile_image"
-                case displayName = "display_name"
-                case link
-            }
         }
 
         let tags: [String]
         let owner: Owner
+        @CodingKey("is_answered")
         let isAnswered: Bool
+        @CodingKey("view_count")
         let viewCount: Int
+        @CodingKey("accepted_answer_id")
         let acceptedAnswerID: Int?
+        @CodingKey("answer_count")
         let answerCount: Int
         let score: Int
+        @CodingKey("last_activity_date")
         let lastActivityDate: Int
+        @CodingKey("creation_date")
         let creationDate: Int
+        @CodingKey("question_id")
         let questionID: Int
+        @CodingKey("content_license")
         let contentLicense: String?
         let link: String
         let title: String
+        @CodingKey("last_edit_date")
         let lastEditDate: Int?
+        @CodingKey("closed_date")
         let closedDate: Int?
+        @CodingKey("closed_reason")
         let closedReason: String?
-
-        enum CodingKeys: String, CodingKey {
-            case tags, owner
-            case isAnswered = "is_answered"
-            case viewCount = "view_count"
-            case acceptedAnswerID = "accepted_answer_id"
-            case answerCount = "answer_count"
-            case score
-            case lastActivityDate = "last_activity_date"
-            case creationDate = "creation_date"
-            case questionID = "question_id"
-            case contentLicense = "content_license"
-            case link, title
-            case lastEditDate = "last_edit_date"
-            case closedDate = "closed_date"
-            case closedReason = "closed_reason"
-        }
     }
 
     let items: [Item]
+    @CodingKey("has_more")
     let hasMore: Bool
+    @CodingKey("quota_max")
     let quotaMax: Int
+    @CodingKey("quota_remaining")
     let quotaRemaining: Int
-
-    enum CodingKeys: String, CodingKey {
-        case items
-        case hasMore = "has_more"
-        case quotaMax = "quota_max"
-        case quotaRemaining = "quota_remaining"
-    }
 }

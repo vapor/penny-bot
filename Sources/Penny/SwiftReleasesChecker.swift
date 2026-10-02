@@ -1,5 +1,6 @@
 import DiscordBM
 import Logging
+import NewCodable
 import OrderedCollections
 import ServiceLifecycle
 import Shared
@@ -85,10 +86,12 @@ actor SwiftReleasesChecker: Service {
     }
 }
 
+@JSONCodable
 struct SwiftOrgRelease: Codable {
     let name: String
     let tag: String
     let xcode: String
+    @CodingKey("xcode_release")
     let xcodeRelease: Bool?
 }
 

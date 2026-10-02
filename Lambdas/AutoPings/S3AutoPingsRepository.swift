@@ -1,14 +1,9 @@
 package import Models
-import NIOFoundationEssentialsCompat
+import NewCodable
+import NewCodableFoundation
 import SotoS3
 
 package import class SotoCore.AWSClient
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
 
 package struct S3AutoPingsRepository {
 
@@ -16,9 +11,6 @@ package struct S3AutoPingsRepository {
     let logger: Logger
     let bucket = "penny-auto-pings-lambda"
     let key = "auto-pings-repo.json"
-
-    let decoder = JSONDecoder()
-    let encoder = JSONEncoder()
 
     package init(awsClient: AWSClient, logger: Logger) {
         self.s3 = S3(client: awsClient, region: .euwest1)
@@ -72,7 +64,7 @@ package struct S3AutoPingsRepository {
             return S3AutoPingItems()
         }
         do {
-            return try decoder.decode(S3AutoPingItems.self, from: body)
+            return try NewJSONDecoder().decode(S3AutoPingItems.self, from: body.readableBytesSpan)
         } catch {
             logger.error(
                 "Cannot find any data in the bucket",
@@ -86,7 +78,7 @@ package struct S3AutoPingsRepository {
     }
 
     package func save(items: S3AutoPingItems) async throws {
-        let data = try encoder.encode(items)
+        let data = try NewJSONEncoder().encode(items)
         let putObjectRequest = S3.PutObjectRequest(
             acl: .private,
             body: .init(bytes: data),

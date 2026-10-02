@@ -3,21 +3,13 @@ import DiscordModels
 import Logging
 import Models
 import NIOCore
-import NIOFoundationEssentialsCompat
 import NIOHTTP1
-
-#if canImport(FoundationEssentials)
-import FoundationEssentials
-#else
-import Foundation
-#endif
+import NewCodable
 
 struct DefaultUsersService: UsersService {
     let httpClient: HTTPClient
     let invoker: LambdaInvoker
     let logger = Logger(label: "DefaultUsersService")
-
-    let decoder = JSONDecoder()
 
     init(httpClient: HTTPClient, invoker: LambdaInvoker) {
         self.httpClient = httpClient
@@ -99,12 +91,13 @@ struct DefaultUsersService: UsersService {
             ]
         )
 
-        let githubUser = try decoder.decode(User.self, from: body)
+        let githubUser = try NewJSONDecoder().decode(User.self, from: body.readableBytesSpan)
 
         return .userName(githubUser.login)
     }
 }
 
-private struct User: Codable {
+@JSONCodable
+private struct User {
     let login: String
 }

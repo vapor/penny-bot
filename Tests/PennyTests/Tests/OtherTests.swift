@@ -1,5 +1,7 @@
 import EvolutionMetadataModel
 import Markdown
+import NewCodable
+import NewCodableFoundation
 import Testing
 
 @testable import Models
@@ -137,13 +139,13 @@ struct OtherTests {
         do {
             /// Expression.matches
             let exp = Expression.matches("Hello-world")
-            let encoder = JSONEncoder()
+            let encoder = NewJSONEncoder()
             let encoded = try encoder.encode(exp)
             let string = try #require(String(data: encoded, encoding: .utf8))
 
             #expect(string == #""T-Hello-world""#)
 
-            let decoder = JSONDecoder()
+            let decoder = NewJSONDecoder()
             let decoded = try decoder.decode(Expression.self, from: encoded)
 
             switch decoded {
@@ -156,13 +158,13 @@ struct OtherTests {
         do {
             /// Expression.contains
             let exp = Expression.contains("Hello-world")
-            let encoder = JSONEncoder()
+            let encoder = NewJSONEncoder()
             let encoded = try encoder.encode(exp)
             let string = try #require(String(data: encoded, encoding: .utf8))
 
             #expect(string == #""C-Hello-world""#)
 
-            let decoder = JSONDecoder()
+            let decoder = NewJSONDecoder()
             let decoded = try decoder.decode(Expression.self, from: encoded)
 
             switch decoded {

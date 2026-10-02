@@ -1,9 +1,13 @@
+package import NewCodable
+import NewCodableFoundation
+
 #if canImport(FoundationEssentials)
 package import FoundationEssentials
 #else
 package import Foundation
 #endif
 
+@JSONCodable
 package struct DynamoDBUser: Sendable, Codable {
     package let id: UUID
     package var discordID: UserSnowflake

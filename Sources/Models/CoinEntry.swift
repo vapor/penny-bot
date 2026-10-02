@@ -1,3 +1,5 @@
+package import NewCodable
+
 #if canImport(FoundationEssentials)
 package import FoundationEssentials
 #else
@@ -6,13 +8,13 @@ package import Foundation
 
 package struct CoinEntry: Sendable, Codable {
 
-    package enum Source: String, Sendable, Codable {
+    package enum Source: String, Sendable, Codable, JSONCodable {
         case discord
         case github
         case penny
     }
 
-    package enum Reason: String, Sendable, Codable {
+    package enum Reason: String, Sendable, Codable, JSONCodable {
         case userProvided
         case automationProvided
         case prSubmittedAndClosed

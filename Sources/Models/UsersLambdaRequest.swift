@@ -1,11 +1,15 @@
-package enum UsersLambdaRequest: Sendable, Codable {
+package import NewCodable
+
+@JSONCodable
+package enum UsersLambdaRequest: Sendable {
     case addCoin(CoinEntryRequest)
     case getOrCreateUser(discordID: UserSnowflake)
     case getUser(githubID: String)
     case linkGitHubID(discordID: UserSnowflake, toGitHubID: String)
     case unlinkGitHubID(discordID: UserSnowflake)
 
-    package struct CoinEntryRequest: Sendable, Codable {
+    @JSONCodable
+    package struct CoinEntryRequest: Sendable {
         package let amount: Int
         package let fromDiscordID: UserSnowflake
         package let toDiscordID: UserSnowflake

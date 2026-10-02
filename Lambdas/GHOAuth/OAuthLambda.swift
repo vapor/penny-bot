@@ -7,7 +7,8 @@ import JWTKit
 import LambdasShared
 import Logging
 import Models
-import NIOFoundationEssentialsCompat
+import NewCodable
+import NewCodableFoundation
 import Shared
 import SotoCore
 
@@ -25,8 +26,6 @@ struct GHOAuthHandler {
         let awsClient: AWSClient
         let secretsRetriever: SecretsRetriever
         let jwtKeys: JWTKeyCollection
-        let jsonDecoder = JSONDecoder()
-        let jsonEncoder = JSONEncoder()
     }
 
     subscript<T>(dynamicMember keyPath: KeyPath<SharedContext, T>) -> T {
@@ -230,7 +229,7 @@ struct GHOAuthHandler {
             "Accept": "application/json",
             "Content-Type": "application/json",
         ]
-        let requestBody = try self.jsonEncoder.encode([
+        let requestBody = try NewJSONEncoder().encode([
             "client_id": clientID,
             "client_secret": clientSecret,
             "code": code,
@@ -253,7 +252,10 @@ struct GHOAuthHandler {
             throw Errors.httpRequestFailed(response: response, body: String(buffer: body))
         }
 
-        let accessToken = try self.jsonDecoder.decode(AccessTokenResponse.self, from: body).accessToken
+        let accessToken = try NewJSONDecoder().decode(
+            AccessTokenResponse.self,
+            from: body.readableBytesSpan
+        ).accessToken
 
         return accessToken
     }
@@ -288,7 +290,7 @@ struct GHOAuthHandler {
             throw Errors.httpRequestFailed(response: response, body: String(buffer: body))
         }
 
-        let user = try self.jsonDecoder.decode(User.self, from: body)
+        let user = try NewJSONDecoder().decode(User.self, from: body.readableBytesSpan)
 
         logger.info("Got user: \(user)")
 

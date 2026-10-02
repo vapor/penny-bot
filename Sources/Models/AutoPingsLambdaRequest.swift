@@ -1,9 +1,13 @@
-package enum AutoPingsLambdaRequest: Sendable, Codable {
+package import NewCodable
+
+@JSONCodable
+package enum AutoPingsLambdaRequest: Sendable {
     case all
     case insert(UserExpressions)
     case remove(UserExpressions)
 
-    package struct UserExpressions: Sendable, Codable {
+    @JSONCodable
+    package struct UserExpressions: Sendable {
         package let discordID: UserSnowflake
         package let expressions: [S3AutoPingItems.Expression]
 
