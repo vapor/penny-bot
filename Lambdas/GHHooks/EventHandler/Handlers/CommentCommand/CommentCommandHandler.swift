@@ -88,13 +88,11 @@ struct CommentCommandHandler {
             throw CommentCommandError.notAPullRequest(command: command)
         }
         try await self.requireWriteAccess(of: sender)
-        switch command {
-        case .benchmark:
-            return try await BenchmarkCommand(
-                context: self.context,
-                number: self.issue.number
-            ).handle()
-        }
+        return try await CommentWorkflowCommand(
+            command: command,
+            context: self.context,
+            number: self.issue.number
+        ).handle()
     }
 
     func requireWriteAccess(of sender: User) async throws {

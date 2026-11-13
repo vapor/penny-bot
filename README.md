@@ -63,6 +63,15 @@ Penny accepts commands written in pull-request comments, similar to Dependabot. 
 
 Currently available commands:
 * `benchmark`: dispatches the repository's `benchmark.yml` workflow against the pull request's current head.
+* `deploy`: dispatches the repository's `preview.yml` workflow to deploy a PR preview, including for fork PRs.
+  The workflow must accept `pr`, `sha`, and `operation` inputs. Penny supplies the PR number,
+  its current head SHA, and `operation=deploy`, and runs the workflow from the default branch.
+
+For example, on a website PR:
+
+```
+@penny-for-vapor deploy
+```
 
 Some notes:
 * Commands require `write` access to the repository, the same access GitHub requires to approve a workflow run.

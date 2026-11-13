@@ -4,17 +4,17 @@ import NewCodable
 import OpenAPIRuntime
 import Shared
 
-struct BenchmarkCommand {
+struct CommentWorkflowCommand {
     enum Configuration {
-        static let workflowFileName = "benchmark.yml"
         static let maxErrorBodyBytes = 1 << 16
         static let maxErrorMessageLength = 500
     }
 
+    let command: CommentCommand
     let context: HandlerContext
     let number: Int
 
-    /// Returns the sha the benchmark workflow was dispatched against.
+    /// Returns the sha the workflow was dispatched against.
     func handle() async throws -> String {
         let repo = try self.context.event.repository.requireValue()
         let sha = try await self.findHeadSHA(repo: repo)
@@ -35,18 +35,25 @@ struct BenchmarkCommand {
     }
 
     func dispatchWorkflow(repo: Repository, sha: String) async throws {
+        let inputs: [String: String] =
+            switch self.command {
+            case .benchmark:
+                ["sha": sha]
+            case .deploy:
+                ["pr": String(self.number), "sha": sha, "operation": "deploy"]
+            }
         let response = try await self.context.githubClient.actionsCreateWorkflowDispatch(
             path: .init(
                 owner: repo.owner.login,
                 repo: repo.name,
-                workflowId: .case2(Configuration.workflowFileName)
+                workflowId: .case2(self.command.workflowFileName)
             ),
             body: .json(
                 .init(
                     /// Not `Repository.primaryBranch`, which reads the legacy `master_branch`
                     /// field that `issue_comment` payloads don't carry.
                     ref: repo.defaultBranch,
-                    inputs: .init(additionalProperties: try .init(unvalidatedValue: ["sha": sha]))
+                    inputs: .init(additionalProperties: try .init(unvalidatedValue: inputs))
                 )
             )
         )
@@ -57,10 +64,11 @@ struct BenchmarkCommand {
         case let .undocumented(statusCode, payload):
             switch statusCode {
             case 404:
-                throw CommentCommandError.noBenchmarkWorkflow(repo: repo.fullName)
+                throw CommentCommandError.noWorkflow(command: self.command, repo: repo.fullName)
             default:
                 let message = try await Self.retrieveGHErrorMessage(from: payload)
                 throw CommentCommandError.dispatchRejected(
+                    command: self.command,
                     repo: repo.fullName,
                     statusCode: statusCode,
                     message: message
