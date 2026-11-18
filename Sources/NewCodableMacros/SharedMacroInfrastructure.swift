@@ -373,14 +373,16 @@ func extractDetailedStoredProperties(
                 isOptional = false
                 typeName = type.trimmedDescription
             }
-
+          
+            let resolvedDefaultExpr = defaultExpr ?? binding.initializer?.value.trimmedDescription
+          
             properties.append(DetailedStoredProperty(
                 name: propertyName,
                 key: key,
                 aliases: aliases,
                 typeName: typeName,
                 isOptional: isOptional,
-                defaultExpr: defaultExpr,
+                defaultExpr: resolvedDefaultExpr,
                 encodingStrategy: encodingStrat,
                 decodingStrategy: decodingStrat
             ))
@@ -1489,7 +1491,6 @@ func makeEnumEncodableExtension(
     expansion: some CodableExpansion,
     peerInfo: PeerMacroInfo
 ) -> ExtensionDeclSyntax? {
-    let accessLevelPrefix = expansion.accessLevel.inlineDeclPrefix
     let switchCases: String
     if cases.isEmpty {
         // Empty enum - no cases to encode
@@ -1537,6 +1538,7 @@ func makeEnumEncodableExtension(
         """
     }
 
+    let accessLevelPrefix = expansion.accessLevel.inlineDeclPrefix
     let extensionDecl: DeclSyntax = """
     extension \(typeName): \(raw: expansion.encodableProtocolName) {
         \(raw: accessLevelPrefix)func encode(to encoder: inout \(raw: expansion.encoderType)) throws(CodingError.Encoding) {
@@ -1556,8 +1558,8 @@ func makeEnumDecodableExtension(
     expansion: some CodableExpansion,
     peerInfo: PeerMacroInfo
 ) -> [ExtensionDeclSyntax] {
-    let accessLevelPrefix = expansion.accessLevel.inlineDeclPrefix
     // Generate the main decode method
+    let accessLevelPrefix = expansion.accessLevel.inlineDeclPrefix
     let mainDecl: DeclSyntax
     if cases.isEmpty {
         mainDecl = """
