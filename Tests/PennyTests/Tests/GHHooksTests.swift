@@ -1219,6 +1219,7 @@ actor GHHooksTests {
 
     func handleCommentCommand(
         key: String,
+        command: CommentCommand? = nil,
         transport: FakeClientTransport = FakeClientTransport(),
         sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async throws {
@@ -1226,15 +1227,16 @@ actor GHHooksTests {
             key: key,
             eventName: .issue_comment,
             expect: .noResponse,
+            commentBody: command.map { "@penny-for-vapor \($0.rawValue)" },
             transport: transport,
             sourceLocation: sourceLocation
         )
     }
 
-    @Test
-    func handleCommentCommandBenchmark() async throws {
+    @Test(arguments: CommentCommand.allCases)
+    func handleCommentCommandWorkflow(command: CommentCommand) async throws {
         let transport = FakeClientTransport()
-        try await handleCommentCommand(key: "issue_comment1", transport: transport)
+        try await handleCommentCommand(key: "issue_comment1", command: command, transport: transport)
 
         let reactions = try await transport.recorder.decodeAll(
             for: "reactions/create-for-issue-comment",
@@ -1248,7 +1250,7 @@ actor GHHooksTests {
 
         #expect(
             await transport.recorder.paths(for: "actions/create-workflow-dispatch")
-                == ["/repos/vapor/jwt-kit/actions/workflows/benchmark.yml/dispatches"]
+                == ["/repos/vapor/jwt-kit/actions/workflows/\(command.workflowFileName)/dispatches"]
         )
         let dispatch = try #require(
             await transport.recorder.decodeFirst(
@@ -1262,18 +1264,28 @@ actor GHHooksTests {
                 == "981fd157f5e6975a589f597466c86c97635be990"
         )
 
+        switch command {
+        case .benchmark:
+            #expect(dispatch.inputs?.additionalProperties.value.count == 1)
+        case .deploy:
+            #expect(dispatch.inputs?.additionalProperties.value["pr"] as? String == "258")
+            #expect(dispatch.inputs?.additionalProperties.value["operation"] as? String == "deploy")
+            #expect(dispatch.inputs?.additionalProperties.value.count == 3)
+        }
+
         /// The workflow posts its own report, so Penny never comments on success.
         #expect(await !transport.recorder.contains(operationID: "issues/create-comment"))
         #expect(await !transport.recorder.contains(operationID: "issues/update-comment"))
     }
 
-    @Test
-    func handleCommentCommandNoBenchmarkWorkflow() async throws {
+    @Test(arguments: CommentCommand.allCases)
+    func handleCommentCommandNoWorkflow(command: CommentCommand) async throws {
         let transport = FakeClientTransport(
             statusOverrides: ["actions/create-workflow-dispatch": .notFound]
         )
         try await handleCommentCommand(
             key: "issue_comment1",
+            command: command,
             transport: transport
         )
 
@@ -1293,16 +1305,23 @@ actor GHHooksTests {
             )
         ).body
         #expect(body.hasPrefix("<!-- penny-command-report -->"))
-        #expect(body.contains("has no benchmark CI"))
+        switch command {
+        case .benchmark:
+            #expect(body.contains("has no benchmark CI"))
+        case .deploy:
+            #expect(body.contains("has no preview workflow"))
+            #expect(body.contains("preview.yml"))
+        }
     }
 
-    @Test
-    func handleCommentCommandDispatchRejected() async throws {
+    @Test(arguments: CommentCommand.allCases)
+    func handleCommentCommandDispatchRejected(command: CommentCommand) async throws {
         let transport = FakeClientTransport(
             statusOverrides: ["actions/create-workflow-dispatch": .unprocessableContent]
         )
         try await handleCommentCommand(
             key: "issue_comment1",
+            command: command,
             transport: transport
         )
 
@@ -1312,13 +1331,14 @@ actor GHHooksTests {
                 as: Operations.IssuesCreateComment.Input.Body.JsonPayload.self
             )
         ).body
+        #expect(body.contains(command.workflowFileName))
         #expect(body.contains("(HTTP status code: 422)"))
         #expect(body.contains("> Required input 'sha' not provided"))
     }
 
     @Test
-    func benchmarkDispatchErrorMessage() async throws {
-        let message = try await BenchmarkCommand.retrieveGHErrorMessage(
+    func workflowDispatchErrorMessage() async throws {
+        let message = try await CommentWorkflowCommand.retrieveGHErrorMessage(
             from: .init(
                 headerFields: [:],
                 body: .init(#"{"message":"Required input 'sha' not provided","documentation_url":"..."}"#)
@@ -1326,19 +1346,19 @@ actor GHHooksTests {
         )
         #expect(message == "Required input 'sha' not provided")
 
-        let notJSON = try await BenchmarkCommand.retrieveGHErrorMessage(
+        let notJSON = try await CommentWorkflowCommand.retrieveGHErrorMessage(
             from: .init(headerFields: [:], body: .init("nope"))
         )
         #expect(notJSON == "nope")
 
-        let noBody = try await BenchmarkCommand.retrieveGHErrorMessage(from: .init(headerFields: [:], body: nil))
+        let noBody = try await CommentWorkflowCommand.retrieveGHErrorMessage(from: .init(headerFields: [:], body: nil))
         #expect(noBody == "<no GitHub error message>")
     }
 
-    @Test
-    func handleCommentCommandOnAnIssue() async throws {
+    @Test(arguments: CommentCommand.allCases)
+    func handleCommentCommandOnAnIssue(command: CommentCommand) async throws {
         let transport = FakeClientTransport()
-        try await handleCommentCommand(key: "issue_comment2", transport: transport)
+        try await handleCommentCommand(key: "issue_comment2", command: command, transport: transport)
 
         let body = try #require(
             await transport.recorder.decodeFirst(
@@ -1353,10 +1373,10 @@ actor GHHooksTests {
         #expect(await !transport.recorder.contains(operationID: "repos/get-collaborator-permission-level"))
     }
 
-    @Test
-    func handleCommentCommandWithoutWriteAccess() async throws {
+    @Test(arguments: CommentCommand.allCases)
+    func handleCommentCommandWithoutWriteAccess(command: CommentCommand) async throws {
         let transport = FakeClientTransport()
-        try await handleCommentCommand(key: "issue_comment3", transport: transport)
+        try await handleCommentCommand(key: "issue_comment3", command: command, transport: transport)
 
         let body = try #require(
             await transport.recorder.decodeFirst(
@@ -1388,6 +1408,7 @@ actor GHHooksTests {
         ).body
         #expect(body.contains("`bench` isn't a command"))
         #expect(body.contains("`@penny benchmark`"))
+        #expect(body.contains("`@penny deploy`"))
     }
 
     /// `issue_comment9` is on pull request 259, which the `issues/list-comments` mocked data
@@ -1426,6 +1447,13 @@ actor GHHooksTests {
     @Test(
         arguments: [
             ("@penny benchmark", CommentCommand.ParseResult.command(.benchmark)),
+            ("@penny deploy", .command(.deploy)),
+            ("@penny-for-vapor deploy", .command(.deploy)),
+            ("@PENNY Deploy", .command(.deploy)),
+            ("LGTM!\n\n@penny deploy", .command(.deploy)),
+            ("> @penny deploy", .noMention),
+            ("```\n@penny deploy\n```", .noMention),
+            ("hey @penny deploy", .noMention),
             ("@penny-for-vapor benchmark", .command(.benchmark)),
             ("@PENNY Benchmark", .command(.benchmark)),
             ("@penny   benchmark", .command(.benchmark)),
@@ -1462,10 +1490,18 @@ actor GHHooksTests {
         key: String,
         eventName: GHEvent.Kind,
         expect: Expectation,
+        commentBody: String? = nil,
         transport: FakeClientTransport = FakeClientTransport(),
         sourceLocation: Testing.SourceLocation = #_sourceLocation
     ) async throws {
-        let data = TestData.for(ghEventKey: key)!
+        var data = TestData.for(ghEventKey: key)!
+        if let commentBody {
+            var payload = try #require(JSONSerialization.jsonObject(with: data) as? [String: Any])
+            var comment = try #require(payload["comment"] as? [String: Any])
+            comment["body"] = commentBody
+            payload["comment"] = comment
+            data = try JSONSerialization.data(withJSONObject: payload)
+        }
         do {
             let event = try decoder.decode(GHEvent.self, from: data)
             try await EventHandler(

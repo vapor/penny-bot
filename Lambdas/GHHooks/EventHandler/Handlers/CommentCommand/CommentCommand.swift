@@ -2,6 +2,21 @@ import Shared
 
 enum CommentCommand: String, CaseIterable {
     case benchmark
+    case deploy
+
+    var workflowFileName: String {
+        switch self {
+        case .benchmark: "benchmark.yml"
+        case .deploy: "preview.yml"
+        }
+    }
+
+    var workflowInputsDescription: String {
+        switch self {
+        case .benchmark: "a required `sha` input"
+        case .deploy: "`pr` and `sha` inputs and a `deploy` operation"
+        }
+    }
 }
 
 extension CommentCommand {
