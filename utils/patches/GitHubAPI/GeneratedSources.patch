@@ -1,0 +1,871 @@
+The generator imports all of Foundation and qualifies `Date`/`URL` with `Foundation.`. Where FoundationEssentials exists, import that instead and refer to both through `_Foundation_*` typealiases.
+
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Client.swift b/Lambdas/GitHubAPI/GeneratedSources/Client.swift
+index 04757dc..4f9fab2 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Client.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Client.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ import HTTPTypes
+ /// GitHub's v3 REST API.
+ package struct Client: APIProtocol {
+@@ -21,7 +26,7 @@ package struct Client: APIProtocol {
+     ///   - transport: A transport that performs HTTP operations.
+     ///   - middlewares: A list of middlewares to call before the transport.
+     package init(
+-        serverURL: Foundation.URL,
++        serverURL: _Foundation_URL,
+         configuration: Configuration = .init(),
+         transport: any ClientTransport,
+         middlewares: [any ClientMiddleware] = []
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Headers.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Headers.swift
+index 87fa796..59f14ba 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Headers.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Headers.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ extension Components {
+     /// Types generated from the `#/components/headers` section of the OpenAPI document.
+     package enum Headers {
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Parameters.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Parameters.swift
+index 0deb80f..b5e32a9 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Parameters.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Parameters.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ extension Components {
+     /// Types generated from the `#/components/parameters` section of the OpenAPI document.
+     package enum Parameters {
+@@ -29,7 +34,7 @@ extension Components {
+         /// Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`.
+         ///
+         /// - Remark: Generated from `#/components/parameters/since`.
+-        package typealias Since = Foundation.Date
++        package typealias Since = _Foundation_Date
+         /// The unique identifier of the installation.
+         ///
+         /// - Remark: Generated from `#/components/parameters/installation-id`.
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+RequestBodies.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+RequestBodies.swift
+index 8be1396..e003a66 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+RequestBodies.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+RequestBodies.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ extension Components {
+     /// Types generated from the `#/components/requestBodies` section of the OpenAPI document.
+     package enum RequestBodies {}
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Responses.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Responses.swift
+index 1a2efc6..a55230e 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Responses.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Responses.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ extension Components {
+     /// Types generated from the `#/components/responses` section of the OpenAPI document.
+     package enum Responses {
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Schemas.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Schemas.swift
+index 36960c0..8a4f4dd 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Schemas.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Components+Schemas.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ extension Components {
+     /// Types generated from the `#/components/schemas` section of the OpenAPI document.
+     package enum Schemas {
+@@ -221,9 +226,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/enterprise/slug`.
+             package var slug: Swift.String
+             /// - Remark: Generated from `#/components/schemas/enterprise/created_at`.
+-            package var createdAt: Foundation.Date?
++            package var createdAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/enterprise/updated_at`.
+-            package var updatedAt: Foundation.Date?
++            package var updatedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/enterprise/avatar_url`.
+             package var avatarUrl: Swift.String
+             /// Creates a new `Enterprise`.
+@@ -247,8 +252,8 @@ extension Components {
+                 nodeId: Swift.String,
+                 name: Swift.String,
+                 slug: Swift.String,
+-                createdAt: Foundation.Date? = nil,
+-                updatedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date? = nil,
++                updatedAt: _Foundation_Date? = nil,
+                 avatarUrl: Swift.String
+             ) {
+                 self.description = description
+@@ -1751,7 +1756,7 @@ extension Components {
+                 /// - Remark: Generated from `#/components/schemas/repository/pushed_at/case1`.
+                 case case1(Swift.Int)
+                 /// - Remark: Generated from `#/components/schemas/repository/pushed_at/case2`.
+-                case case2(Foundation.Date)
++                case case2(_Foundation_Date)
+                 package init(from decoder: any Swift.Decoder) throws {
+                     var errors: [any Swift.Error] = []
+                     do {
+@@ -1788,7 +1793,7 @@ extension Components {
+                 /// - Remark: Generated from `#/components/schemas/repository/created_at/case1`.
+                 case case1(Swift.Int)
+                 /// - Remark: Generated from `#/components/schemas/repository/created_at/case2`.
+-                case case2(Foundation.Date)
++                case case2(_Foundation_Date)
+                 package init(from decoder: any Swift.Decoder) throws {
+                     var errors: [any Swift.Error] = []
+                     do {
+@@ -1825,7 +1830,7 @@ extension Components {
+                 /// - Remark: Generated from `#/components/schemas/repository/updated_at/case1`.
+                 case case1(Swift.Int)
+                 /// - Remark: Generated from `#/components/schemas/repository/updated_at/case2`.
+-                case case2(Foundation.Date)
++                case case2(_Foundation_Date)
+                 package init(from decoder: any Swift.Decoder) throws {
+                     var errors: [any Swift.Error] = []
+                     do {
+@@ -2515,7 +2520,7 @@ extension Components {
+             /// Timestamp indicating when the label was archived, or `null` if it has not been archived.
+             ///
+             /// - Remark: Generated from `#/components/schemas/label/archived_at`.
+-            package var archivedAt: Foundation.Date?
++            package var archivedAt: _Foundation_Date?
+             /// The user who archived the label, or `null` if it has not been archived.
+             ///
+             /// - Remark: Generated from `#/components/schemas/label/archived_by`.
+@@ -2560,7 +2565,7 @@ extension Components {
+                 description: Swift.String? = nil,
+                 color: Swift.String,
+                 _default: Swift.Bool,
+-                archivedAt: Foundation.Date? = nil,
++                archivedAt: _Foundation_Date? = nil,
+                 archivedBy: Components.Schemas.Label.ArchivedByPayload? = nil
+             ) {
+                 self.id = id
+@@ -2627,13 +2632,13 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/nullable-milestone/closed_issues`.
+             package var closedIssues: Swift.Int
+             /// - Remark: Generated from `#/components/schemas/nullable-milestone/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/nullable-milestone/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/nullable-milestone/closed_at`.
+-            package var closedAt: Foundation.Date?
++            package var closedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/nullable-milestone/due_on`.
+-            package var dueOn: Foundation.Date?
++            package var dueOn: _Foundation_Date?
+             /// Creates a new `NullableMilestone`.
+             ///
+             /// - Parameters:
+@@ -2666,10 +2671,10 @@ extension Components {
+                 creator: Components.Schemas.NullableSimpleUser? = nil,
+                 openIssues: Swift.Int,
+                 closedIssues: Swift.Int,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
+-                closedAt: Foundation.Date? = nil,
+-                dueOn: Foundation.Date? = nil
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
++                closedAt: _Foundation_Date? = nil,
++                dueOn: _Foundation_Date? = nil
+             ) {
+                 self.url = url
+                 self.htmlUrl = htmlUrl
+@@ -2747,11 +2752,11 @@ extension Components {
+             /// The time the issue type created.
+             ///
+             /// - Remark: Generated from `#/components/schemas/issue-type/created_at`.
+-            package var createdAt: Foundation.Date?
++            package var createdAt: _Foundation_Date?
+             /// The time the issue type last updated.
+             ///
+             /// - Remark: Generated from `#/components/schemas/issue-type/updated_at`.
+-            package var updatedAt: Foundation.Date?
++            package var updatedAt: _Foundation_Date?
+             /// The enabled state of the issue type.
+             ///
+             /// - Remark: Generated from `#/components/schemas/issue-type/is_enabled`.
+@@ -2773,8 +2778,8 @@ extension Components {
+                 name: Swift.String,
+                 description: Swift.String? = nil,
+                 color: Components.Schemas.IssueType.ColorPayload? = nil,
+-                createdAt: Foundation.Date? = nil,
+-                updatedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date? = nil,
++                updatedAt: _Foundation_Date? = nil,
+                 isEnabled: Swift.Bool? = nil
+             ) {
+                 self.id = id
+@@ -2861,9 +2866,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/nullable-integration/html_url`.
+             package var htmlUrl: Swift.String
+             /// - Remark: Generated from `#/components/schemas/nullable-integration/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/nullable-integration/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// The set of permissions for the GitHub app
+             ///
+             /// - Remark: Generated from `#/components/schemas/nullable-integration/permissions`.
+@@ -3005,8 +3010,8 @@ extension Components {
+                 description: Swift.String? = nil,
+                 externalUrl: Swift.String,
+                 htmlUrl: Swift.String,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 permissions: Components.Schemas.NullableIntegration.PermissionsPayload,
+                 events: [Swift.String],
+                 installationsCount: Swift.Int? = nil
+@@ -3161,7 +3166,7 @@ extension Components {
+         /// - Remark: Generated from `#/components/schemas/nullable-pinned-issue-comment`.
+         package struct NullablePinnedIssueComment: Codable, Hashable, Sendable {
+             /// - Remark: Generated from `#/components/schemas/nullable-pinned-issue-comment/pinned_at`.
+-            package var pinnedAt: Foundation.Date
++            package var pinnedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/nullable-pinned-issue-comment/pinned_by`.
+             package var pinnedBy: Components.Schemas.NullableSimpleUser?
+             /// Creates a new `NullablePinnedIssueComment`.
+@@ -3170,7 +3175,7 @@ extension Components {
+             ///   - pinnedAt:
+             ///   - pinnedBy:
+             package init(
+-                pinnedAt: Foundation.Date,
++                pinnedAt: _Foundation_Date,
+                 pinnedBy: Components.Schemas.NullableSimpleUser? = nil
+             ) {
+                 self.pinnedAt = pinnedAt
+@@ -3227,9 +3232,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/user`.
+             package var user: Components.Schemas.NullableSimpleUser?
+             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/issue_url`.
+             package var issueUrl: Swift.String
+             /// - Remark: Generated from `#/components/schemas/nullable-issue-comment/author_association`.
+@@ -3270,8 +3275,8 @@ extension Components {
+                 bodyHtml: Swift.String? = nil,
+                 htmlUrl: Swift.String,
+                 user: Components.Schemas.NullableSimpleUser? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 issueUrl: Swift.String,
+                 authorAssociation: Components.Schemas.AuthorAssociation? = nil,
+                 performedViaGithubApp: Components.Schemas.NullableIntegration? = nil,
+@@ -3756,7 +3761,7 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/issue/pull_request`.
+             package struct PullRequestPayload: Codable, Hashable, Sendable {
+                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/merged_at`.
+-                package var mergedAt: Foundation.Date?
++                package var mergedAt: _Foundation_Date?
+                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/diff_url`.
+                 package var diffUrl: Swift.String?
+                 /// - Remark: Generated from `#/components/schemas/issue/pull_request/html_url`.
+@@ -3774,7 +3779,7 @@ extension Components {
+                 ///   - patchUrl:
+                 ///   - url:
+                 package init(
+-                    mergedAt: Foundation.Date? = nil,
++                    mergedAt: _Foundation_Date? = nil,
+                     diffUrl: Swift.String? = nil,
+                     htmlUrl: Swift.String? = nil,
+                     patchUrl: Swift.String? = nil,
+@@ -3797,11 +3802,11 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/issue/pull_request`.
+             package var pullRequest: Components.Schemas.Issue.PullRequestPayload?
+             /// - Remark: Generated from `#/components/schemas/issue/closed_at`.
+-            package var closedAt: Foundation.Date?
++            package var closedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/issue/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/issue/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/issue/draft`.
+             package var draft: Swift.Bool?
+             /// - Remark: Generated from `#/components/schemas/issue/closed_by`.
+@@ -3900,9 +3905,9 @@ extension Components {
+                 activeLockReason: Swift.String? = nil,
+                 comments: Swift.Int,
+                 pullRequest: Components.Schemas.Issue.PullRequestPayload? = nil,
+-                closedAt: Foundation.Date? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                closedAt: _Foundation_Date? = nil,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 draft: Swift.Bool? = nil,
+                 closedBy: Components.Schemas.NullableSimpleUser? = nil,
+                 bodyHtml: Swift.String? = nil,
+@@ -4030,9 +4035,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/issue-comment/user`.
+             package var user: Components.Schemas.NullableSimpleUser?
+             /// - Remark: Generated from `#/components/schemas/issue-comment/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/issue-comment/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/issue-comment/issue_url`.
+             package var issueUrl: Swift.String
+             /// - Remark: Generated from `#/components/schemas/issue-comment/author_association`.
+@@ -4073,8 +4078,8 @@ extension Components {
+                 bodyHtml: Swift.String? = nil,
+                 htmlUrl: Swift.String,
+                 user: Components.Schemas.NullableSimpleUser? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 issueUrl: Swift.String,
+                 authorAssociation: Components.Schemas.AuthorAssociation? = nil,
+                 performedViaGithubApp: Components.Schemas.NullableIntegration? = nil,
+@@ -4156,9 +4161,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/release-asset/download_count`.
+             package var downloadCount: Swift.Int
+             /// - Remark: Generated from `#/components/schemas/release-asset/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/release-asset/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/release-asset/uploader`.
+             package var uploader: Components.Schemas.NullableSimpleUser?
+             /// Creates a new `ReleaseAsset`.
+@@ -4190,8 +4195,8 @@ extension Components {
+                 size: Swift.Int,
+                 digest: Swift.String? = nil,
+                 downloadCount: Swift.Int,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 uploader: Components.Schemas.NullableSimpleUser? = nil
+             ) {
+                 self.url = url
+@@ -4271,11 +4276,11 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/release/immutable`.
+             package var immutable: Swift.Bool?
+             /// - Remark: Generated from `#/components/schemas/release/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/release/published_at`.
+-            package var publishedAt: Foundation.Date?
++            package var publishedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/release/updated_at`.
+-            package var updatedAt: Foundation.Date?
++            package var updatedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/release/author`.
+             package var author: Components.Schemas.SimpleUser
+             /// - Remark: Generated from `#/components/schemas/release/assets`.
+@@ -4336,9 +4341,9 @@ extension Components {
+                 draft: Swift.Bool,
+                 prerelease: Swift.Bool,
+                 immutable: Swift.Bool? = nil,
+-                createdAt: Foundation.Date,
+-                publishedAt: Foundation.Date? = nil,
+-                updatedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date,
++                publishedAt: _Foundation_Date? = nil,
++                updatedAt: _Foundation_Date? = nil,
+                 author: Components.Schemas.SimpleUser,
+                 assets: [Components.Schemas.ReleaseAsset],
+                 bodyHtml: Swift.String? = nil,
+@@ -4470,9 +4475,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/public-user/following`.
+             package var following: Swift.Int
+             /// - Remark: Generated from `#/components/schemas/public-user/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/public-user/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/public-user/plan`.
+             package struct PlanPayload: Codable, Hashable, Sendable {
+                 /// - Remark: Generated from `#/components/schemas/public-user/plan/collaborators`.
+@@ -4596,8 +4601,8 @@ extension Components {
+                 publicGists: Swift.Int,
+                 followers: Swift.Int,
+                 following: Swift.Int,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 plan: Components.Schemas.PublicUser.PlanPayload? = nil,
+                 privateGists: Swift.Int? = nil,
+                 totalPrivateRepos: Swift.Int? = nil,
+@@ -4819,11 +4824,11 @@ extension Components {
+                     forKey: .following
+                 )
+                 self.createdAt = try container.decode(
+-                    Foundation.Date.self,
++                    _Foundation_Date.self,
+                     forKey: .createdAt
+                 )
+                 self.updatedAt = try container.decode(
+-                    Foundation.Date.self,
++                    _Foundation_Date.self,
+                     forKey: .updatedAt
+                 )
+                 self.plan = try container.decodeIfPresent(
+@@ -5645,13 +5650,13 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/active_lock_reason`.
+             package var activeLockReason: Swift.String?
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/closed_at`.
+-            package var closedAt: Foundation.Date?
++            package var closedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merged_at`.
+-            package var mergedAt: Foundation.Date?
++            package var mergedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/merge_commit_sha`.
+             package var mergeCommitSha: Swift.String?
+             /// - Remark: Generated from `#/components/schemas/pull-request-simple/assignee`.
+@@ -5881,10 +5886,10 @@ extension Components {
+                 labels: Components.Schemas.PullRequestSimple.LabelsPayload,
+                 milestone: Components.Schemas.NullableMilestone? = nil,
+                 activeLockReason: Swift.String? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
+-                closedAt: Foundation.Date? = nil,
+-                mergedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
++                closedAt: _Foundation_Date? = nil,
++                mergedAt: _Foundation_Date? = nil,
+                 mergeCommitSha: Swift.String? = nil,
+                 assignee: Components.Schemas.NullableSimpleUser? = nil,
+                 assignees: [Components.Schemas.SimpleUser]? = nil,
+@@ -6001,11 +6006,11 @@ extension Components {
+             /// The time the draft issue was created
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-draft-issue/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// The time the draft issue was last updated
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-draft-issue/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// Creates a new `ProjectsV2DraftIssue`.
+             ///
+             /// - Parameters:
+@@ -6022,8 +6027,8 @@ extension Components {
+                 title: Swift.String,
+                 body: Swift.String? = nil,
+                 user: Components.Schemas.NullableSimpleUser? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date
+             ) {
+                 self.id = id
+                 self.nodeId = nodeId
+@@ -6121,15 +6126,15 @@ extension Components {
+             /// The time when the item was created.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// The time when the item was last updated.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// The time when the item was archived.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/archived_at`.
+-            package var archivedAt: Foundation.Date?
++            package var archivedAt: _Foundation_Date?
+             /// The URL of the project this item belongs to.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-simple/project_url`.
+@@ -6157,9 +6162,9 @@ extension Components {
+                 content: Components.Schemas.ProjectsV2ItemSimple.ContentPayload? = nil,
+                 contentType: Components.Schemas.ProjectsV2ItemContentType,
+                 creator: Components.Schemas.SimpleUser? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
+-                archivedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
++                archivedAt: _Foundation_Date? = nil,
+                 projectUrl: Swift.String? = nil,
+                 itemUrl: Swift.String? = nil
+             ) {
+@@ -6454,11 +6459,11 @@ extension Components {
+             /// The time when the field was created.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-field/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// The time when the field was last updated.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-field/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// Creates a new `ProjectsV2Field`.
+             ///
+             /// - Parameters:
+@@ -6481,8 +6486,8 @@ extension Components {
+                 dataType: Components.Schemas.ProjectsV2Field.DataTypePayload,
+                 options: [Components.Schemas.ProjectsV2SingleSelectOptions]? = nil,
+                 configuration: Components.Schemas.ProjectsV2Field.ConfigurationPayload? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date
+             ) {
+                 self.id = id
+                 self.issueFieldId = issueFieldId
+@@ -6555,15 +6560,15 @@ extension Components {
+             /// The time when the item was created.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// The time when the item was last updated.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// The time when the item was archived.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/archived_at`.
+-            package var archivedAt: Foundation.Date?
++            package var archivedAt: _Foundation_Date?
+             /// The API URL of this item.
+             ///
+             /// - Remark: Generated from `#/components/schemas/projects-v2-item-with-content/item_url`.
+@@ -6615,9 +6620,9 @@ extension Components {
+                 contentType: Components.Schemas.ProjectsV2ItemContentType,
+                 content: Components.Schemas.ProjectsV2ItemWithContent.ContentPayload? = nil,
+                 creator: Components.Schemas.SimpleUser? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
+-                archivedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
++                archivedAt: _Foundation_Date? = nil,
+                 itemUrl: Swift.String? = nil,
+                 fields: Components.Schemas.ProjectsV2ItemWithContent.FieldsPayload? = nil
+             ) {
+@@ -6693,7 +6698,7 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/nullable-git-user/email`.
+             package var email: Swift.String?
+             /// - Remark: Generated from `#/components/schemas/nullable-git-user/date`.
+-            package var date: Foundation.Date?
++            package var date: _Foundation_Date?
+             /// Creates a new `NullableGitUser`.
+             ///
+             /// - Parameters:
+@@ -6703,7 +6708,7 @@ extension Components {
+             package init(
+                 name: Swift.String? = nil,
+                 email: Swift.String? = nil,
+-                date: Foundation.Date? = nil
++                date: _Foundation_Date? = nil
+             ) {
+                 self.name = name
+                 self.email = email
+@@ -7149,7 +7154,7 @@ extension Components {
+             /// Timestamp of the commit
+             ///
+             /// - Remark: Generated from `#/components/schemas/simple-commit/timestamp`.
+-            package var timestamp: Foundation.Date
++            package var timestamp: _Foundation_Date
+             /// Information about the Git author
+             ///
+             /// - Remark: Generated from `#/components/schemas/simple-commit/author`.
+@@ -7229,7 +7234,7 @@ extension Components {
+                 id: Swift.String,
+                 treeId: Swift.String,
+                 message: Swift.String,
+-                timestamp: Foundation.Date,
++                timestamp: _Foundation_Date,
+                 author: Components.Schemas.SimpleCommit.AuthorPayload? = nil,
+                 committer: Components.Schemas.SimpleCommit.CommitterPayload? = nil
+             ) {
+@@ -7500,7 +7505,7 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/reaction/content`.
+             package var content: Components.Schemas.Reaction.ContentPayload
+             /// - Remark: Generated from `#/components/schemas/reaction/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// Creates a new `Reaction`.
+             ///
+             /// - Parameters:
+@@ -7514,7 +7519,7 @@ extension Components {
+                 nodeId: Swift.String,
+                 user: Components.Schemas.NullableSimpleUser? = nil,
+                 content: Components.Schemas.Reaction.ContentPayload,
+-                createdAt: Foundation.Date
++                createdAt: _Foundation_Date
+             ) {
+                 self.id = id
+                 self.nodeId = nodeId
+@@ -7916,13 +7921,13 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/pull-request/active_lock_reason`.
+             package var activeLockReason: Swift.String?
+             /// - Remark: Generated from `#/components/schemas/pull-request/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/pull-request/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/pull-request/closed_at`.
+-            package var closedAt: Foundation.Date?
++            package var closedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/pull-request/merged_at`.
+-            package var mergedAt: Foundation.Date?
++            package var mergedAt: _Foundation_Date?
+             /// - Remark: Generated from `#/components/schemas/pull-request/merge_commit_sha`.
+             package var mergeCommitSha: Swift.String?
+             /// - Remark: Generated from `#/components/schemas/pull-request/assignee`.
+@@ -8190,10 +8195,10 @@ extension Components {
+                 labels: Components.Schemas.PullRequest.LabelsPayload,
+                 milestone: Components.Schemas.NullableMilestone? = nil,
+                 activeLockReason: Swift.String? = nil,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
+-                closedAt: Foundation.Date? = nil,
+-                mergedAt: Foundation.Date? = nil,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
++                closedAt: _Foundation_Date? = nil,
++                mergedAt: _Foundation_Date? = nil,
+                 mergeCommitSha: Swift.String? = nil,
+                 assignee: Components.Schemas.NullableSimpleUser? = nil,
+                 assignees: [Components.Schemas.SimpleUser]? = nil,
+@@ -8399,7 +8404,7 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/pull-request-review/_links`.
+             package var _links: Components.Schemas.PullRequestReview._LinksPayload
+             /// - Remark: Generated from `#/components/schemas/pull-request-review/submitted_at`.
+-            package var submittedAt: Foundation.Date?
++            package var submittedAt: _Foundation_Date?
+             /// A commit SHA for the review. If the commit object was garbage collected or forcibly deleted, then it no longer exists in Git and this value will be `null`.
+             ///
+             /// - Remark: Generated from `#/components/schemas/pull-request-review/commit_id`.
+@@ -8435,7 +8440,7 @@ extension Components {
+                 htmlUrl: Swift.String,
+                 pullRequestUrl: Swift.String,
+                 _links: Components.Schemas.PullRequestReview._LinksPayload,
+-                submittedAt: Foundation.Date? = nil,
++                submittedAt: _Foundation_Date? = nil,
+                 commitId: Swift.String? = nil,
+                 bodyHtml: Swift.String? = nil,
+                 bodyText: Swift.String? = nil,
+@@ -8606,9 +8611,9 @@ extension Components {
+             /// - Remark: Generated from `#/components/schemas/private-user/following`.
+             package var following: Swift.Int
+             /// - Remark: Generated from `#/components/schemas/private-user/created_at`.
+-            package var createdAt: Foundation.Date
++            package var createdAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/private-user/updated_at`.
+-            package var updatedAt: Foundation.Date
++            package var updatedAt: _Foundation_Date
+             /// - Remark: Generated from `#/components/schemas/private-user/private_gists`.
+             package var privateGists: Swift.Int
+             /// - Remark: Generated from `#/components/schemas/private-user/total_private_repos`.
+@@ -8741,8 +8746,8 @@ extension Components {
+                 publicGists: Swift.Int,
+                 followers: Swift.Int,
+                 following: Swift.Int,
+-                createdAt: Foundation.Date,
+-                updatedAt: Foundation.Date,
++                createdAt: _Foundation_Date,
++                updatedAt: _Foundation_Date,
+                 privateGists: Swift.Int,
+                 totalPrivateRepos: Swift.Int,
+                 ownedPrivateRepos: Swift.Int,
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Components.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Components.swift
+index 7a9aa1f..e9a69c8 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Components.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Components.swift
+@@ -3,9 +3,14 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ /// Types generated from the components section of the OpenAPI document.
+ package enum Components {}
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types+Operations.swift b/Lambdas/GitHubAPI/GeneratedSources/Types+Operations.swift
+index 9df84c4..5be675d 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types+Operations.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types+Operations.swift
+@@ -3,10 +3,15 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++#endif
+ /// API operations, with input and output types, generated from `#/paths` in the OpenAPI document.
+ package enum Operations {
+     /// Create an installation access token for an app
+@@ -2257,11 +2262,11 @@ package enum Operations {
+                 /// Only show results that were last updated after the given time. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`. Due to limitations of Git, timestamps must be between 1970-01-01 and 2099-12-31 (inclusive) or unexpected results may be returned.
+                 ///
+                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/since`.
+-                package var since: Foundation.Date?
++                package var since: _Foundation_Date?
+                 /// Only commits before this date will be returned. This is a timestamp in [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format: `YYYY-MM-DDTHH:MM:SSZ`. Due to limitations of Git, timestamps must be between 1970-01-01 and 2099-12-31 (inclusive) or unexpected results may be returned.
+                 ///
+                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/until`.
+-                package var until: Foundation.Date?
++                package var until: _Foundation_Date?
+                 /// The number of results per page (max 100). For more information, see "[Using pagination in the REST API](https://docs.github.com/rest/using-the-rest-api/using-pagination-in-the-rest-api)."
+                 ///
+                 /// - Remark: Generated from `#/paths/repos/{owner}/{repo}/commits/GET/query/per_page`.
+@@ -2286,8 +2291,8 @@ package enum Operations {
+                     path: Swift.String? = nil,
+                     author: Swift.String? = nil,
+                     committer: Swift.String? = nil,
+-                    since: Foundation.Date? = nil,
+-                    until: Foundation.Date? = nil,
++                    since: _Foundation_Date? = nil,
++                    until: _Foundation_Date? = nil,
+                     perPage: Components.Parameters.PerPage? = nil,
+                     page: Components.Parameters.Page? = nil
+                 ) {
+diff --git a/Lambdas/GitHubAPI/GeneratedSources/Types.swift b/Lambdas/GitHubAPI/GeneratedSources/Types.swift
+index 50fbd8c..854fc0e 100644
+--- a/Lambdas/GitHubAPI/GeneratedSources/Types.swift
++++ b/Lambdas/GitHubAPI/GeneratedSources/Types.swift
+@@ -3,10 +3,19 @@
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ @_spi(Generated) package import OpenAPIRuntime
++#if canImport(FoundationEssentials)
++@diagnose(UnusedImportAccess, as: ignored)
++package import FoundationEssentials
++package typealias _Foundation_Date = FoundationEssentials.Date
++package typealias _Foundation_URL = FoundationEssentials.URL
++#else
+ #if compiler(>=6.4)
+ @diagnose(UnusedImportAccess, as: ignored)
+ #endif
+ package import Foundation
++package typealias _Foundation_Date = Foundation.Date
++package typealias _Foundation_URL = Foundation.URL
++#endif
+ /// A type that performs HTTP operations defined by the OpenAPI document.
+ package protocol APIProtocol: Sendable {
+     /// Create an installation access token for an app
+@@ -1104,16 +1113,16 @@ extension APIProtocol {
+ /// Server URLs defined in the OpenAPI document.
+ package enum Servers {
+     package enum Server1 {
+-        package static func url() throws -> Foundation.URL {
+-            try Foundation.URL(
++        package static func url() throws -> _Foundation_URL {
++            try _Foundation_URL(
+                 validatingOpenAPIServerURL: "https://api.github.com",
+                 variables: []
+             )
+         }
+     }
+     @available(*, deprecated, renamed: "Servers.Server1.url")
+-    package static func server1() throws -> Foundation.URL {
+-        try Foundation.URL(
++    package static func server1() throws -> _Foundation_URL {
++        try _Foundation_URL(
+             validatingOpenAPIServerURL: "https://api.github.com",
+             variables: []
+         )

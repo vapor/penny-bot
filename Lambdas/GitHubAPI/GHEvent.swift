@@ -37,17 +37,21 @@ package struct GHEvent: Sendable, Codable {
 extension GHEvent {
     /// https://docs.github.com/en/webhooks-and-events/webhooks/webhook-events-and-payloads
     package enum Kind: String, Sendable, JSONCodable {
+        case branch_protection_configuration
         case branch_protection_rule
         case check_run
         case check_suite
         case code_scanning_alert
         case commit_comment
         case create
+        case custom_property
+        case custom_property_values
         case delete
         case dependabot_alert
         case deploy_key
         case deployment
         case deployment_protection_rule
+        case deployment_review
         case deployment_status
         case discussion
         case discussion_comment
@@ -58,6 +62,8 @@ extension GHEvent {
         case installation_repositories
         case installation_target
         case issue_comment
+        case issue_dependencies
+        case issue_relates_to
         case issues
         case label
         case marketplace_purchase
@@ -77,6 +83,7 @@ extension GHEvent {
         case project_column
         case projects_v2
         case projects_v2_item
+        case projects_v2_status_update
         case `public`
         case pull_request
         case pull_request_review_comment
@@ -89,14 +96,17 @@ extension GHEvent {
         case repository
         case repository_dispatch
         case repository_import
+        case repository_ruleset
         case repository_vulnerability_alert
         case secret_scanning_alert
         case secret_scanning_alert_location
+        case secret_scanning_scan
         case security_advisory
         case security_and_analysis
         case sponsorship
         case star
         case status
+        case sub_issues
         case team_add
         case team
         case watch

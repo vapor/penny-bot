@@ -16,17 +16,19 @@ let vendoredDirectories: [(upstream: String, destination: String)] = [
     ("Sources/FoundationEssentials/NewCodable", "Sources/NewCodableFoundation"),
 ]
 
+let patchesDirectory = "utils/patches/NewCodable"
+
 /// `experimental/new-codable` is an unreleased prototype branch that moves constantly. Rather
 /// than tracking its tip, the sync picks the last commit made before the start of the current
-/// week, so the resolved commit is identical for every run within a week and only rolls over
-/// on Mondays.
-func startOfCurrentWeek() -> Date {
+/// month, so the resolved commit is identical for every run within a month and only rolls over
+/// on the first day of each month.
+func startOfCurrentMonth() -> Date {
     var calendar = Calendar(identifier: .iso8601)
     calendar.timeZone = TimeZone(identifier: "UTC")!
-    guard let week = calendar.dateInterval(of: .weekOfYear, for: Date()) else {
-        fatalError("Could not determine the current week.")
+    guard let month = calendar.dateInterval(of: .month, for: Date()) else {
+        fatalError("Could not determine the current month.")
     }
-    return week.start
+    return month.start
 }
 
 func iso8601(_ date: Date) -> String {
@@ -151,6 +153,17 @@ func listFiles(in directory: String, at sha: String) -> [RemoteFile] {
     return files
 }
 
+func execute(_ arguments: [String]) {
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: "/usr/bin/env")
+    process.arguments = arguments
+    try! process.run()
+    process.waitUntilExit()
+    guard process.terminationStatus == 0 else {
+        fatalError("`\(arguments.joined(separator: " "))` failed with exit code \(process.terminationStatus).")
+    }
+}
+
 func run() {
     let manifest = "Package.swift"
     guard FileManager.default.fileExists(atPath: manifest),
@@ -162,7 +175,7 @@ func run() {
         )
     }
 
-    let cutoff = startOfCurrentWeek()
+    let cutoff = startOfCurrentMonth()
     print("Resolving the last \(branch) commit before \(iso8601(cutoff)) ...")
     let commit = resolveCommit(before: cutoff.addingTimeInterval(-1))
     print("Resolved \(commit.sha) (\(commit.date))")
@@ -191,6 +204,14 @@ func run() {
         }
 
         print("Vendored \(files.count) files into \(destination)")
+    }
+
+    let patches = try! FileManager.default.contentsOfDirectory(atPath: patchesDirectory)
+        .filter { $0.hasSuffix(".patch") }
+        .sorted()
+    for patch in patches {
+        print("Applying \(patchesDirectory)/\(patch) ...")
+        execute(["git", "apply", "\(patchesDirectory)/\(patch)"])
     }
 
     print("Done!")

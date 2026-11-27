@@ -6,7 +6,7 @@ on:
   pull_request: { types: [opened, reopened, synchronize, ready_for_review] }
   push: { branches: [main] }
   schedule:
-    - cron: "0 6 * * 1"
+    - cron: "0 6 1 * *"
 
 defaults:
   run:
@@ -19,7 +19,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    container: swift:6.3-noble
+    container: swift:6.4-resolute
 
     timeout-minutes: 10
 
@@ -39,14 +39,8 @@ jobs:
         run: |
           printf '%s\n' "- Running NewCodable Sync..."
           swift utils/NewCodableSync.swift
-
-      - name: Apply patches
-        run: |
-          shopt -s failglob
-          for patch in utils/patches/*.patch; do
-            printf '%s\n' "- Applying ${patch}..."
-            git apply "${patch}"
-          done
+          printf '%s\n' "- Running GitHubAPI Sync..."
+          swift utils/GitHubAPISync.swift
 
       - name: Check for modifications
         id: check-modifications
