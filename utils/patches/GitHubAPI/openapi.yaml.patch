@@ -1,0 +1,423 @@
+GitHub's description is stricter than its payloads: fields that can be missing or null become optional, and repository timestamps accept the Unix integers push events send. The projects add-item `oneOf` lists only `required` keys, which the generator turns into empty payloads, so it is removed.
+
+diff --git a/Lambdas/GitHubAPI/openapi.yaml b/Lambdas/GitHubAPI/openapi.yaml
+index 0f785e3..e133892 100644
+--- a/Lambdas/GitHubAPI/openapi.yaml
++++ b/Lambdas/GitHubAPI/openapi.yaml
+@@ -39599,27 +39599,20 @@ paths:
+                   type: string
+                   description: The repository owner login.
+                 repo:
+                   type: string
+                   description: The repository name.
+                 number:
+                   type: integer
+                   description: The issue or pull request number.
+               required:
+               - type
+-              oneOf:
+-              - required:
+-                - id
+-              - required:
+-                - owner
+-                - repo
+-                - number
+             examples:
+               issue_with_id:
+                 summary: Add an issue using its unique ID
+                 value:
+                   type: Issue
+                   id: 3
+               pull_request_with_id:
+                 summary: Add a pull request using its unique ID
+                 value:
+                   type: PullRequest
+@@ -82566,27 +82559,20 @@ paths:
+                   type: string
+                   description: The repository owner login.
+                 repo:
+                   type: string
+                   description: The repository name.
+                 number:
+                   type: integer
+                   description: The issue or pull request number.
+               required:
+               - type
+-              oneOf:
+-              - required:
+-                - id
+-              - required:
+-                - owner
+-                - repo
+-                - number
+             examples:
+               issue_with_id:
+                 summary: Add an issue using its unique ID
+                 value:
+                   type: Issue
+                   id: 3
+               pull_request_with_id:
+                 summary: Add a pull request using its unique ID
+                 value:
+                   type: PullRequest
+@@ -103672,33 +103658,36 @@ components:
+           default: false
+           type: boolean
+         disabled:
+           type: boolean
+           description: Returns whether or not this repository disabled.
+         visibility:
+           description: 'The repository visibility: public, private, or internal.'
+           default: public
+           type: string
+         pushed_at:
+-          type: string
+-          format: date-time
+-          example: '2011-01-26T19:06:43Z'
++          oneOf:
++          - type: integer
++          - type: string
++            format: date-time
+           nullable: true
+         created_at:
+-          type: string
+-          format: date-time
+-          example: '2011-01-26T19:01:12Z'
++          oneOf:
++          - type: integer
++          - type: string
++            format: date-time
+           nullable: true
+         updated_at:
+-          type: string
+-          format: date-time
+-          example: '2011-01-26T19:14:43Z'
++          oneOf:
++          - type: integer
++          - type: string
++            format: date-time
+           nullable: true
+         allow_rebase_merge:
+           description: Whether to allow rebase merges for pull requests.
+           default: true
+           type: boolean
+           example: true
+         temp_clone_token:
+           description: |-
+             When present and non-empty, a temporary credential for read-only Git access to this repository.
+             It expires five minutes after generation and cannot be used to push changes.
+@@ -105738,21 +105727,20 @@ components:
+           description: The user who archived the label, or `null` if it has not been
+             archived.
+           nullable: true
+           allOf:
+           - "$ref": "#/components/schemas/simple-user"
+       required:
+       - id
+       - node_id
+       - url
+       - name
+-      - description
+       - color
+       - default
+       - archived_at
+       - archived_by
+     discussion:
+       title: Discussion
+       description: A Discussion in a repository.
+       type: object
+       properties:
+         active_lock_reason:
+@@ -114916,22 +114904,22 @@ components:
+           - rebase
+         commit_title:
+           type: string
+           description: Title for the merge commit message.
+         commit_message:
+           type: string
+           description: Commit message for the merge commit.
+       required:
+       - enabled_by
+       - merge_method
+-      - commit_title
+-      - commit_message
++      # - commit_title
++      # - commit_message
+       nullable: true
+     pull-request-stack:
+       title: Pull Request Stack
+       description: The stack information associated with a pull request.
+       type: object
+       properties:
+         base:
+           type: object
+           properties:
+             ref:
+@@ -115052,21 +115040,20 @@ components:
+                 description: The user who archived the label, or `null` if it has
+                   not been archived.
+                 nullable: true
+                 allOf:
+                 - "$ref": "#/components/schemas/simple-user"
+             required:
+             - id
+             - node_id
+             - url
+             - name
+-            - description
+             - color
+             - default
+             - archived_at
+             - archived_by
+         milestone:
+           "$ref": "#/components/schemas/nullable-milestone"
+         active_lock_reason:
+           type: string
+           example: too heated
+           nullable: true
+@@ -115091,45 +115078,47 @@ components:
+         merge_commit_sha:
+           type: string
+           example: e5bd3914e2e596debea16f433f57875b5b90bcd6
+           nullable: true
+         assignee:
+           "$ref": "#/components/schemas/nullable-simple-user"
+         assignees:
+           type: array
+           items:
+             "$ref": "#/components/schemas/simple-user"
++          nullable: true
+         requested_reviewers:
+           type: array
+           items:
+             "$ref": "#/components/schemas/simple-user"
++          nullable: true
+         requested_teams:
+           type: array
+           items:
+             "$ref": "#/components/schemas/team"
++          nullable: true
+         head:
+           type: object
+           properties:
+             label:
+               type: string
+             ref:
+               type: string
+             repo:
+               "$ref": "#/components/schemas/repository"
+             sha:
+               type: string
+             user:
+               "$ref": "#/components/schemas/nullable-simple-user"
+           required:
+           - label
+           - ref
+-          - repo
+           - sha
+           - user
+         base:
+           type: object
+           properties:
+             label:
+               type: string
+             ref:
+               type: string
+             repo:
+@@ -123227,21 +123216,21 @@ components:
+               description: Name of the commit's committer
+               example: Monalisa Octocat
+               type: string
+             email:
+               description: Git email address of the commit's committer
+               example: monalisa.octocat@example.com
+               type: string
+               format: email
+           required:
+           - name
+-          - email
++          # - email
+           nullable: true
+       required:
+       - id
+       - tree_id
+       - message
+       - timestamp
+       - author
+       - committer
+     check-suite:
+       title: CheckSuite
+@@ -130873,21 +130862,20 @@ components:
+                 description: The user who archived the label, or `null` if it has
+                   not been archived.
+                 nullable: true
+                 allOf:
+                 - "$ref": "#/components/schemas/simple-user"
+             required:
+             - id
+             - node_id
+             - url
+             - name
+-            - description
+             - color
+             - default
+             - archived_at
+             - archived_by
+         milestone:
+           "$ref": "#/components/schemas/nullable-milestone"
+         active_lock_reason:
+           type: string
+           example: too heated
+           nullable: true
+@@ -130912,45 +130900,47 @@ components:
+         merge_commit_sha:
+           type: string
+           example: e5bd3914e2e596debea16f433f57875b5b90bcd6
+           nullable: true
+         assignee:
+           "$ref": "#/components/schemas/nullable-simple-user"
+         assignees:
+           type: array
+           items:
+             "$ref": "#/components/schemas/simple-user"
++          nullable: true
+         requested_reviewers:
+           type: array
+           items:
+             "$ref": "#/components/schemas/simple-user"
++          nullable: true
+         requested_teams:
+           type: array
+           items:
+             "$ref": "#/components/schemas/team-simple"
++          nullable: true
+         head:
+           type: object
+           properties:
+             label:
+               type: string
+             ref:
+               type: string
+             repo:
+               "$ref": "#/components/schemas/repository"
+             sha:
+               type: string
+             user:
+               "$ref": "#/components/schemas/simple-user"
+           required:
+           - label
+           - ref
+-          - repo
+           - sha
+           - user
+         base:
+           type: object
+           properties:
+             label:
+               type: string
+             ref:
+               type: string
+             repo:
+@@ -131035,61 +131025,61 @@ components:
+           type: integer
+           example: 100
+         deletions:
+           type: integer
+           example: 3
+         changed_files:
+           type: integer
+           example: 5
+       required:
+       - _links
+-      - assignee
++      # - assignee
+       - labels
+       - base
+-      - body
+-      - closed_at
++      # - body
++      # - closed_at
+       - comments_url
+       - commits_url
+       - created_at
+       - diff_url
+       - head
+       - html_url
+       - id
+       - node_id
+       - issue_url
+-      - merge_commit_sha
+-      - merged_at
+-      - milestone
++      # - merge_commit_sha
++      # - merged_at
++      # - milestone
+       - number
+       - patch_url
+       - review_comment_url
+       - review_comments_url
+       - statuses_url
+       - state
+       - locked
+       - title
+       - updated_at
+       - url
+       - user
+       - author_association
+-      - auto_merge
+-      - additions
+-      - changed_files
+-      - comments
+-      - commits
+-      - deletions
+-      - mergeable
+-      - mergeable_state
+-      - merged
+-      - maintainer_can_modify
+-      - merged_by
+-      - review_comments
++      # - auto_merge
++      # - additions
++      # - changed_files
++      # - comments
++      # - commits
++      # - deletions
++      # - mergeable
++      # - mergeable_state
++      # - merged
++      # - maintainer_can_modify
++      # - merged_by
++      # - review_comments
+       x-github-breaking-changes:
+       - changeset: remove_pull_request_merge_commit_sha
+         patch:
+           properties:
+             merge_commit_sha:
+           required:
+           - _links
+           - assignee
+           - labels
+           - base
+@@ -134969,21 +134959,21 @@ components:
+         id:
+           description: The ID of the installation.
+           type: integer
+           example: 1
+         node_id:
+           description: The global node ID of the installation.
+           type: string
+           example: MDQ6VXNlcjU4MzIzMQ==
+       required:
+       - id
+-      - node_id
++      # - node_id
+     organization-simple-webhooks:
+       title: Organization Simple
+       description: |-
+         A GitHub organization. Webhook payloads contain the `organization` property when the webhook is configured for an
+         organization, or when the event occurs from activity in a repository owned by an organization.
+       type: object
+       properties:
+         login:
+           type: string
+           example: github

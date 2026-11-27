@@ -38,11 +38,12 @@ struct IssueHandler: Sendable {
         switch self.action {
         case .opened:
             try await self.onOpened()
-        case .closed, .deleted, .locked, .reopened, .unlocked, .edited, .labeled, .unlabeled:
+        case .closed, .deleted, .locked, .reopened, .unlocked, .edited, .labeled, .unlabeled, .status_changed:
             try await self.onEdited()
         case .transferred:
             try await self.onTransferred()
-        case .typed, .assigned, .demilestoned, .milestoned, .pinned, .unassigned, .unpinned:
+        case .typed, .untyped, .field_added, .field_removed, .assigned, .demilestoned, .milestoned, .pinned,
+            .unassigned, .unpinned:
             break
         }
     }

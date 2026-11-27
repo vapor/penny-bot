@@ -43,7 +43,7 @@ struct PRHandler {
         case .edited, .converted_to_draft, .dequeued, .enqueued, .locked, .ready_for_review, .reopened, .unlocked:
             try await self.onEdited()
         case .assigned, .auto_merge_disabled, .auto_merge_enabled, .demilestoned, .labeled, .milestoned,
-            .review_request_removed, .review_requested, .synchronize, .unassigned, .unlabeled, .submitted:
+            .review_request_removed, .review_requested, .stacked, .synchronize, .unassigned, .unlabeled, .submitted:
             break
         }
     }

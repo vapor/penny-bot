@@ -20,6 +20,7 @@ extension PullRequest {
         case reopened
         case review_request_removed
         case review_requested
+        case stacked
         case synchronize
         case unassigned
         case unlabeled
@@ -36,18 +37,22 @@ extension Issue {
         case deleted
         case demilestoned
         case edited
+        case field_added
+        case field_removed
         case labeled
         case locked
         case milestoned
         case opened
         case pinned
         case reopened
+        case status_changed
         case transferred
-        case typed  // undocumented?
+        case typed
         case unassigned
         case unlabeled
         case unlocked
         case unpinned
+        case untyped
     }
 }
 
